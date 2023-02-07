@@ -30,14 +30,11 @@ const AuthLayout = ({ children }) => {
         </Menu>
         {/* <Header className={classes.header}> <Navbar /> </Header> */}
         <Content className="site-layout mainsec">
-          <Row>
-            <Col md={12}>
+          
               <Outlet />
-            </Col>
-            <Col md={12}>
-              <LoginSlider />
-            </Col>
-          </Row>
+           
+              {/* <LoginSlider /> */}
+          
         </Content>
       </Layout>
     </>

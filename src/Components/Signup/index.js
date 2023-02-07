@@ -1,51 +1,102 @@
-import { Button, Col, Form, Input, Row } from "antd";
+import { Button,  Form, Input } from "antd";
 import React from "react";
-import DateInputBox from "../../Sharedcomponents/DateInputBox";
+import { Link, NavLink } from "react-router-dom";
+// import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
 
 const Signup = () => {
   return (
-    <>
-      <Row gutter={[15]}>
-        <Col span={24}>
-          <p className={classes.label}> Name</p>
-          <Form.Item name="firstname" className="errormsg">
-            <Input className={classes.textBox} placeholder="Enter your name" />
-          </Form.Item>
-        </Col>
-      </Row>
+    <>   
+      <div className={classes.loginbg}>
 
-      <Row>
-        <Col span={24}>
-          <p className={classes.label}>Email Address</p>
-          <Form.Item name="email" className="errormsg">
-            <Input
-              className={classes.textBox}
-              placeholder="Enter your email address"
-            />
-          </Form.Item>
-        </Col>
-      </Row>
-
+<div className={classes.loginSec}>
+  <div className={classes.loginBox}>
+    <Link>
+      <img
+        className={classes.hideMob}
+        src={require("../../Assets/Images/png/rawcater_logo.png")}
+      />
+    </Link>
+    <h1 className={classes.heading_h1}> Welcome to Rawcaster</h1>
+    <p className={classes.subText}>
+      Log in now to access the latest insights, experience for your
+      social media performance.
+    </p>
+    <Form
+      name="normal_login"
+      className="login-form"
+      initialValues={{ remember: true }}
+      autoComplete={"off"}
+    >
+      <p className={classes.label}>Login ID </p>
+      <Form.Item
+        name="username"
+      >
+        <Input
+          className={classes.textBox}
+          placeholder="Email or Phone Number"
+        />
+      </Form.Item>
       <p className={classes.label}>Password</p>
-      <p>
-        We recommend your password to be at least 8 characters long, contain
-        uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a
-        number (0-9).
-      </p>
-      <Form.Item name="password" className="errormsg">
-        <Input.Password className={classes.textBox} placeholder="Password" />
+      <Form.Item
+        name="password"   
+      >
+        <Input.Password
+          className={classes.textBox}
+          type="password"
+          placeholder="Password"
+          autoComplete="off"
+        />
       </Form.Item>
-
-      <Form.Item name="password" className="errormsg">
-        <DateInputBox />
-      </Form.Item>
-
       <Form.Item>
-        <Button size="large" block htmlType="submit" className={classes.btn}>
-          Join Rawcaster Family
+        <div className={`fwgpsw ${classes.fwgpsw}`}>
+          {/* <div className={classes.left}>
+            <Checkbox>Keep me signed in</Checkbox>
+          </div> */}
+          <div className={classes.right}>
+            <NavLink> Forgot Password?</NavLink>
+          </div>
+        </div>
+      </Form.Item>
+      <Form.Item>
+        <Button block htmlType="submit" className={classes.btn}>
+          Sign in
         </Button>
       </Form.Item>
+      <p className={classes.dntacc}>
+        Not registered yet?{" "}
+        <span>
+          <Link to="/signup">Create an Account</Link>
+        </span>
+      </p>
+    </Form>
+
+    <div className={classes.copyright}>
+      {/* <img src={require("../../assets/r_logo.png")} /> */}
+      <p>
+        © Copyright Rawcaster 2021
+        <br />
+        <Link to="/termsandconditions">
+          Terms and Conditions
+        </Link> | <Link to="/privacypolicy">Privacy Policy</Link> |{" "}
+        <Link to="/cookiespolicy">Cookies Policy</Link>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div className={classes.sliderSec}>
+  <div className={classes.contentBox}>
+    <img src={require("../../Assets/Images/svg/signup-intro.svg")} />
+    <h2>Post Nuggets</h2>
+    <h4>
+      These are small pieces or tidbit of thoughts in your mind or an
+      image (video or picture) that you want to share with one or more
+      connected persons.
+    </h4>
+  </div>
+</div>
+</div>
     </>
   );
 };
