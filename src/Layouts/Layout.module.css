@@ -1,0 +1,73 @@
+
+.topbar {
+    background: #563662;
+    float: left;
+    width: 100%;
+    font-size: 15px;
+    padding: 7px 30px;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    
+  }
+  .topbar li {
+    color: #fff;
+    float: right;
+    line-height: 25px;
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  
+  }
+  .topbar li a {
+    color: #fff !important;
+    border: none !important;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .topbar li:hover {border: none !important; }
+  .header {
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 0px 30px;
+    background-color: #ffffff;
+    box-shadow: 0px 3px 6px #00000014;
+    min-height: 70px;
+  }
+  
+  @media (max-width: 768px) {
+    .topbar {
+      display: none;
+    }
+    .header {
+      padding: 0px 15px; background: #53284F; min-height: 40px !important;
+    }
+    .authlayout {
+      display: none;
+    }
+    .downscreenFlag.authlayout {
+      display: block;
+    }
+    .downloadSec {
+      display: none;
+    }
+    .downloadcontainer .downloadSec {
+      display: block;
+    }
+  }
+  /*@media (min-width: 769px) {*/
+  /*  .downloadSec {*/
+  /*    display: none;*/
+  /*  }*/
+  /*}*/
+  
+
+  
+  @media (max-width: 520px) {
+    .downloadSec {
+      background-size: 1010px;
+    }
+  }
+  

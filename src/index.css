@@ -1,0 +1,43 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --background:#FFFFFF;
+  --whiteColor:#fff;
+  --headerBg :rgba(251, 215, 201, 0.9);
+  --blackColor:#000;
+  --linkText:#007BFF;
+  --activeText:#777;
+  --dangerColor: #fa424a;
+  --primaryColor: #563662;
+  --secondaryColor: #F2718D;
+  --primaryBtnColor:#F2718D;
+  --secondaryBtnColor:#563662;
+  --textXs: 14px;
+  --textSm: 16px;
+  --textMd: 20px;
+  --textLg: 24px;
+  --textXl: 26px;
+  --textDefault: 17px;
+  --texth6: 19px;
+  --xlText: 75px;
+  --lgText: 63px;
+  --mdText: 48px;
+}
+
+@font-face {
+  font-family: "Gilroy-Bold";
+  font-style: normal;
+  font-weight: 600;
+  src: local("Gilroy-Bold"),
+    url("./Assets/Fonts/Gilroy-Bold.ttf") format("woff");
+}
+.mainsec {
+width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin: auto;
+}
