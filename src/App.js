@@ -1,6 +1,7 @@
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
+import Homepage from "./Components/Homepage/Homepage";
 import Login from "./Components/Login/Login";
 import Signup from "./Components/Signup";
 import AuthContainerLayout from "./Layouts/AuthContainerLayout";
@@ -25,6 +26,10 @@ function App() {
               element: <Signup />,
             },
           ],
+        },
+        {
+          path: "/home",
+          element: <Homepage />,
         },
       ],
     },
