@@ -36,7 +36,55 @@
     box-shadow: 0px 3px 6px #00000014;
     min-height: 70px;
   }
+  .Authcontainer {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin:50px auto;
   
+  }
+  .Authcontainer img {
+    max-width: 250px;
+  }
+  .Authcontainer h1 {
+   font-family: "Gilroy-Bold";
+   font-size: var(--mdText);
+   font-size: 32px!important;
+   text-align: left;
+   margin: 20px 0 0!important;
+  }
+  .Authcontainer p {
+    font-family: 'DM Sans';
+    font-size: 17px;
+    margin-bottom: 20px;
+    color: #1d1c1c;
+  }
+  .AuthfooterSec {
+    display: flex;
+    flex-direction: row;
+    height: 20%;
+    align-items: center;
+  }
+  .AuthfooterSec img {
+    max-height: 50px;
+  }
+  .AuthfooterSec p {
+    font-size: var(--textSm);
+    margin-left: 10px;
+    color: var(--secondaryTxtColor);
+    font-family: 'Roboto';
+   margin-bottom: 0px !important; 
+  }
+  .linkTxt {
+    color:  var(--secondaryTxtColor) !important;
+    margin-top: 10px;
+    font-size: 16px;
+    font-family: "DM Sans",sans-serif;
+  }
+  .linkTxt span {
+    color: var(--linkText) !important;
+  }
   @media (max-width: 768px) {
     .topbar {
       display: none;

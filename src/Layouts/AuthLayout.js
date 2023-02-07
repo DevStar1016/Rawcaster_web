@@ -34,7 +34,9 @@ const AuthLayout = ({ children }) => {
             <Col md={12}>
               <Outlet />
             </Col>
-            <Col md={12}>{/* <LoginSlider /> */}</Col>
+            <Col md={12}>
+              <LoginSlider />
+            </Col>
           </Row>
         </Content>
       </Layout>

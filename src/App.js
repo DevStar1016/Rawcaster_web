@@ -2,6 +2,8 @@ import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import Login from "./Components/Login/Login";
+import Signup from "./Components/Signup";
+import AuthContainerLayout from "./Layouts/AuthContainerLayout";
 import AuthLayout from "./Layouts/AuthLayout";
 
 function App() {
@@ -12,7 +14,17 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Login />,
+          element: <AuthContainerLayout />,
+          children: [
+            {
+              path: "/",
+              element: <Login />,
+            },
+            {
+              path: "/signup",
+              element: <Signup />,
+            },
+          ],
         },
       ],
     },
