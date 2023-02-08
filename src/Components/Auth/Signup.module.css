@@ -176,7 +176,8 @@ line-height: 25px;
 border-radius: 8px;
 }
 .resendTxt {
-   color: #99A0B0
+   color: #99A0B0;
+   margin-bottom: 0px !important;
 }
 @media (max-width:768px) {
 .loginSec, .loginbg, .sliderSec, .verifybg { display: block !important; width: 100% !important; }

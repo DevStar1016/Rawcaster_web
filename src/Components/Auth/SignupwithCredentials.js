@@ -3,32 +3,56 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
-import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.png";
 import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import * as yup from "yup";
 import { useFormik } from "formik";
-
-const validationSchema = yup.object().shape({
-  name: yup
-    .string()
-    .max(50, "Name cannot be longer than 50 characters")
-    .required("Please input your Name!"),
-  login_id: yup
-    .string()
-    .max(50, "Login ID cannot be longer than 50 characters")
-    .required("Please input your Login ID!"),
-  password: yup
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .required("Please input your Password!"),
-  date_of_birth: yup.string().required("Please input your Date of Birth!"),
-});
+import { EMAIL_REGEX } from "../../Shared/Constant";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  const getLoginType = () => {
+    if (pathname.includes("signupwithemail")) {
+      return {
+        id: 1,
+        title: "Email",
+        instead: "Phone Number",
+        pathname: "/signupwithmobile",
+        image: SignupwithMobileImg,
+      };
+    } else {
+      return {
+        id: 2,
+        title: "Phone Number ",
+        instead: "Email",
+        pathname: "/signupwithemail",
+        image: SignupwithEmailImg,
+      };
+    }
+  };
+
+  const validationSchema = yup.object().shape({
+    name: yup
+      .string()
+      .max(50, "Name cannot be longer than 50 characters")
+      .required("Please input your Name!"),
+    login_id: yup
+      .string()
+      .matches(
+        getLoginType().id === 1 ? EMAIL_REGEX : "",
+        `Please Enter Valid ${getLoginType().title}!`
+      )
+      .required(`Please input your ${getLoginType().title}!`),
+    password: yup
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .required("Please input your Password!"),
+    date_of_birth: yup.string().required("Please input your Date of Birth!"),
+  });
+
   const { values, handleChange, handleSubmit, setFieldValue, errors } =
     useFormik({
       initialValues: {
@@ -42,24 +66,6 @@ const SignupwithCredentials = () => {
         console.log(values);
       },
     });
-
-  const getLoginType = () => {
-    if (pathname.includes("signupwithemail")) {
-      return {
-        title: "Email",
-        instead: "Phone Number",
-        pathname: "/signupwithmobile",
-        image: SignupwithMobileImg,
-      };
-    } else {
-      return {
-        title: "Phone Number ",
-        instead: "Email",
-        pathname: "/signupwithemail",
-        image: SignupwithEmailImg,
-      };
-    }
-  };
 
   return (
     <>
@@ -78,8 +84,7 @@ const SignupwithCredentials = () => {
               media performance.
             </p>
             <Form
-              name="normal_login"
-              className="login-form"
+              name="rawcaster_signup"
               autoComplete="off"
               onSubmitCapture={handleSubmit}
             >

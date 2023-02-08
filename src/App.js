@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router";
+import { RouterProvider, useLocation } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import Homepage from "./Components/Homepage/Homepage";
@@ -9,6 +9,7 @@ import AuthLayout from "./Layouts/AuthLayout";
 import SignupwithCredentials from "./Components/Auth/SignupwithCredentials";
 import ForgotPassword from "./Components/Auth/ForgotPassword";
 import ResetPassword from "./Components/Auth/ResetPassword";
+import { useEffect } from "react";
 
 function App() {
   const router = createBrowserRouter([
@@ -53,6 +54,12 @@ function App() {
       ],
     },
   ]);
+
+  useEffect(() => {
+    if (window.location.pathname !== "/setpassword") {
+      window.sessionStorage.removeItem("CountDown");
+    }
+  }, [window.location]);
 
   return <RouterProvider router={router} />;
 }

@@ -1,13 +1,29 @@
 import { Button, Form, Input } from "antd";
 import React from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-// import DateInputBox from "../../Sharedcomponents/DateInputBox";
+import { Link, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+const validationSchema = yup.object().shape({
+  login_id: yup.string().required(`Please input your Login ID!`),
+});
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+
+  const { values, handleChange, handleSubmit, setFieldValue, errors } =
+    useFormik({
+      initialValues: {
+        login_id: "",
+      },
+      validationSchema: validationSchema,
+      onSubmit: (values) => {
+        navigate("/setpassword");
+      },
+    });
   return (
     <>
       <div className={classes.loginbg}>
@@ -24,28 +40,26 @@ const ForgotPassword = () => {
               Please enter your email address to search for your account
             </p>
             <Form
-              name="normal_login"
-              className="login-form"
-              initialValues={{ remember: true }}
+              name="rawcaster_forgot_password"
               autoComplete={"off"}
+              onSubmitCapture={handleSubmit}
             >
               <p className={classes.label}>Login ID </p>
-              <Form.Item name="username">
+              <Form.Item name="login_id">
                 <Input
                   className={classes.textBox}
                   placeholder="Enter your phone number or email address"
+                  value={values.login_id}
+                  onChange={handleChange("login_id")}
+                  status={errors.login_id ? "error" : ""}
+                  maxLength={50}
+                  autoComplete="off"
                 />
+                <p className="ErrTxt">{errors?.login_id}</p>
               </Form.Item>
 
               <Form.Item>
-                <Button
-                  block
-                  htmlType="submit"
-                  className={classes.btn}
-                  onClickCapture={() => {
-                    navigate("/setpassword");
-                  }}
-                >
+                <Button block htmlType="submit" className={classes.btn}>
                   Send
                 </Button>
               </Form.Item>

@@ -32,7 +32,6 @@ const Signup = () => {
             <Form
               name="normal_login"
               className="login-form"
-              initialValues={{ remember: true }}
               autoComplete={"off"}
             >
               <Form.Item>

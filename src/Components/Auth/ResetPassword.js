@@ -1,31 +1,48 @@
 import { Button, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { useFormik } from "formik";
 import OtpInput from "react-otp-input";
 import dayjs from "dayjs";
+import * as yup from "yup";
+
+const validationSchema = yup.object().shape({
+  otp: yup
+    .string()
+    .min(6, "Please Enter Valid OTP!")
+    .required(`Please input your OTP!`),
+  new_password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .required("Please input your Password!"),
+  confirm_password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .required("Please input your Password!"),
+});
 
 const ResetPassword = () => {
+  const navigate = useNavigate();
   let TimeVal = window.sessionStorage.getItem("CountDown") || {
     counter: 60,
     Date: new Date(),
   };
-
-  const navigate = useNavigate();
   const [TimerValue, setTimerValue] = useState(60);
-  const { values, setFieldValue, handleChange, handleSubmit } = useFormik({
-    initialValues: {
-      otp: "",
-      new_password: "",
-      confirm_password: "",
-    },
-    onSubmit: (values) => {
-      console.log(values);
-    },
-  });
+  const { values, setFieldValue, handleChange, handleSubmit, errors } =
+    useFormik({
+      initialValues: {
+        otp: "",
+        new_password: "",
+        confirm_password: "",
+      },
+      validationSchema: validationSchema,
+      onSubmit: (values) => {
+        navigate("/login");
+      },
+    });
 
   useEffect(() => {
     let finalTimeVal;
@@ -102,10 +119,9 @@ const ResetPassword = () => {
               provided
             </p>
             <Form
-              name="normal_login"
-              className="login-form"
-              initialValues={{ remember: true }}
+              name="rawcaster_reset_password"
               autoComplete={"off"}
+              onSubmitCapture={handleSubmit}
             >
               <p className={classes.label}>Enter OTP </p>
               <div className="w-100 my-2">
@@ -124,25 +140,38 @@ const ResetPassword = () => {
                   separator={<span>{""}</span>}
                 />
                 <div className="d-flex flex-row justify-content-between">
-                  <p className={classes.resendTxt}>Resend code</p>{" "}
+                  <p className={classes.resendTxt}>Resend code</p>
                   <p className={classes.resendTxt}>
                     {secondsToHms(TimerValue)}
                   </p>
                 </div>
               </div>
+              <p className="ErrTxt mb-1">{errors?.otp}</p>
               <p className={classes.label}>Password </p>
               <Form.Item>
                 <Input
                   className={classes.textBox}
                   placeholder="Enter your password"
+                  value={values.new_password}
+                  onChange={handleChange("new_password")}
+                  status={errors.new_password ? "error" : ""}
+                  maxLength={50}
+                  autoComplete="off"
                 />
+                <p className="ErrTxt">{errors?.new_password}</p>
               </Form.Item>
-              <p className={classes.label}>Confirm your password </p>
+              <p className={classes.label}>Confirm your password</p>
               <Form.Item>
                 <Input
                   className={classes.textBox}
-                  placeholder="Enter your password"
+                  placeholder="Enter your  password"
+                  value={values.confirm_password}
+                  onChange={handleChange("confirm_password")}
+                  status={errors.confirm_password ? "error" : ""}
+                  maxLength={50}
+                  autoComplete="off"
                 />
+                <p className="ErrTxt">{errors?.confirm_password}</p>
               </Form.Item>
               <Form.Item>
                 <Button block htmlType="submit" className={classes.btn}>
@@ -150,7 +179,7 @@ const ResetPassword = () => {
                 </Button>
               </Form.Item>
               <p className={classes.dntacc}>
-                Already Registered?{" "}
+                Already Registered?
                 <span>
                   <Link to="/login">Login</Link>
                 </span>
@@ -164,23 +193,10 @@ const ResetPassword = () => {
                 <br />
                 <Link to="/termsandconditions">
                   Terms and Conditions
-                </Link> | <Link to="/privacypolicy">Privacy Policy</Link> |{" "}
+                </Link> | <Link to="/privacypolicy">Privacy Policy</Link> |
                 <Link to="/cookiespolicy">Cookies Policy</Link>
               </p>
             </div>
-          </div>
-
-          <div
-            className={classes.goBackBtn}
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <img
-              className={classes.backBtn}
-              src={require("../../Assets/Icons/png/Backbtn.png")}
-            />
-            Go Back
           </div>
         </div>
 

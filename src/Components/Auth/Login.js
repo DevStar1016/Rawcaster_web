@@ -1,12 +1,32 @@
 import { Button, Form, Input } from "antd";
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-// import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+const validationSchema = yup.object().shape({
+  login_id: yup.string().required(`Please input your Login ID!`),
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .required("Please input your Password!"),
+});
 
 const Login = () => {
+  const { values, handleChange, handleSubmit, setFieldValue, errors } =
+    useFormik({
+      initialValues: {
+        login_id: "",
+        password: "",
+      },
+      validationSchema: validationSchema,
+      onSubmit: (values) => {
+        console.log(values);
+      },
+    });
   return (
     <>
       <div className={classes.loginbg}>
@@ -24,17 +44,22 @@ const Login = () => {
               social media performance.
             </p>
             <Form
-              name="normal_login"
-              className="login-form"
-              initialValues={{ remember: true }}
+              name="rawcaster_login"
               autoComplete={"off"}
+              onSubmitCapture={handleSubmit}
             >
               <p className={classes.label}>Login ID </p>
-              <Form.Item name="username">
+              <Form.Item name="login_id">
                 <Input
                   className={classes.textBox}
                   placeholder="Email or Phone Number"
+                  value={values.login_id}
+                  onChange={handleChange("login_id")}
+                  status={errors.login_id ? "error" : ""}
+                  maxLength={50}
+                  autoComplete="off"
                 />
+                <p className="ErrTxt">{errors?.login_id}</p>
               </Form.Item>
               <p className={classes.label}>Password</p>
               <Form.Item name="password">
@@ -42,14 +67,16 @@ const Login = () => {
                   className={classes.textBox}
                   type="password"
                   placeholder="Password"
-                  autoComplete="off"
+                  autoComplete="new-password"
+                  value={values.password}
+                  maxLength={50}
+                  status={errors.password ? "error" : ""}
+                  onChange={handleChange("password")}
                 />
+                <p className="ErrTxt">{errors?.password}</p>
               </Form.Item>
               <Form.Item>
                 <div className={`fwgpsw ${classes.fwgpsw}`}>
-                  {/* <div className={classes.left}>
-          <Checkbox>Keep me signed in</Checkbox>
-        </div> */}
                   <div className={classes.right}>
                     <NavLink to="/forgotpassword"> Forgot Password?</NavLink>
                   </div>
