@@ -30,6 +30,20 @@
 .rightSec .contentBox h2 {
    margin-top: 30px;
 }
+
+.signupSec img {
+   padding-left: 50px;
+   padding-top: 50px;
+   padding-bottom: 20px;
+ 
+}
+.hintTxt {
+   font-size: 13px;
+   line-height: 21px;
+  
+   color: #4A4949;
+  
+}
 .loginBox { padding: 25px;  max-width: 470px; margin: auto; }
 .subText { font-size: 17px; margin-bottom: 20px; color: #1D1C1C; }
 .verifyBox { padding: 25px;  max-width: 570px; margin:40px auto 40px auto; padding:50px 100px 130px 100px; border-radius: 8px; border: 1px solid #E8EAEE; }
@@ -52,6 +66,15 @@ height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; m
    border: none; font-size: 17px; font-weight: 500; clear: both; display: block; color: #fff;
 }
 .btn:hover { color: #fff; border: none; background: #563662; }
+.changeTxt {
+   font-size: 12px;
+   line-height: 10px;
+   margin: 10px 0;
+   color: #F2718D;
+   cursor: pointer;
+
+   font-weight: 500;
+}
 .validateBtn {
    height: 52px; width: calc(50% - 5px); color: #191919;
    background: #F2718D;
@@ -128,6 +151,32 @@ text-transform: uppercase;
    height: 20px;
    margin-right: 10px;
  
+}
+.goBackBtn { 
+   background: rgba(230, 232, 236, 0.5);
+border-radius: 34px;
+padding: 10px;
+height: fit-content;
+margin-right: 20px;
+margin-top: 15px;
+cursor: pointer;
+font-size: 12px;
+line-height: 25px;
+
+}
+.backBtn {
+   height: 12px;
+   margin-right: 7px;
+}
+.otpInput {
+   height: 52px;
+   width: 52px;
+   margin: 5px;
+   border: 1px solid #E8EAEE;
+border-radius: 8px;
+}
+.resendTxt {
+   color: #99A0B0
 }
 @media (max-width:768px) {
 .loginSec, .loginbg, .sliderSec, .verifybg { display: block !important; width: 100% !important; }

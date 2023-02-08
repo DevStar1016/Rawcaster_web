@@ -51,7 +51,7 @@ const Login = () => {
           <Checkbox>Keep me signed in</Checkbox>
         </div> */}
                   <div className={classes.right}>
-                    <NavLink> Forgot Password?</NavLink>
+                    <NavLink to="/forgotpassword"> Forgot Password?</NavLink>
                   </div>
                 </div>
               </Form.Item>

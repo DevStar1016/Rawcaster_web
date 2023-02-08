@@ -1,6 +1,6 @@
 import { Button, Form, Input } from "antd";
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 // import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
 import SignupImg from "../../Assets/Images/png/signup-intro.png";
@@ -12,6 +12,7 @@ import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 
 const Signup = () => {
+  const navigate = useNavigate();
   return (
     <>
       <div className={classes.loginbg}>
@@ -35,7 +36,14 @@ const Signup = () => {
               autoComplete={"off"}
             >
               <Form.Item>
-                <Button block htmlType="submit" className={classes.btn}>
+                <Button
+                  block
+                  htmlType="submit"
+                  className={classes.btn}
+                  onClick={() => {
+                    navigate("/signupwithemail");
+                  }}
+                >
                   Signup with a phone number or email
                 </Button>
               </Form.Item>

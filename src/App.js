@@ -6,6 +6,9 @@ import Login from "./Components/Auth/Login";
 import Signup from "./Components/Auth/Signup";
 import AuthContainerLayout from "./Layouts/AuthContainerLayout";
 import AuthLayout from "./Layouts/AuthLayout";
+import SignupwithCredentials from "./Components/Auth/SignupwithCredentials";
+import ForgotPassword from "./Components/Auth/ForgotPassword";
+import ResetPassword from "./Components/Auth/ResetPassword";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +27,22 @@ function App() {
             {
               path: "/signup",
               element: <Signup />,
+            },
+            {
+              path: "/signupwithemail",
+              element: <SignupwithCredentials />,
+            },
+            {
+              path: "/signupwithmobile",
+              element: <SignupwithCredentials />,
+            },
+            {
+              path: "/forgotpassword",
+              element: <ForgotPassword />,
+            },
+            {
+              path: "/setpassword",
+              element: <ResetPassword />,
             },
           ],
         },

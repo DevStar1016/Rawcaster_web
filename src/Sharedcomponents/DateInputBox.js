@@ -1,23 +1,13 @@
 import { Select } from "antd";
-import React, { useState } from "react";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+var localeData = require("dayjs/plugin/localeData");
+dayjs.extend(localeData);
+dayjs().localeData();
 
-const DateInputBox = () => {
+var ValidAge = 13;
+const DateInputBox = ({ onSelectDate, status = "" }) => {
   const [date, setDate] = useState({ year: "", month: "", day: "" });
-
-  let monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
   function getDaysInMonthByYear(month, year) {
     let date = new Date(year, month, 0);
@@ -32,9 +22,9 @@ const DateInputBox = () => {
   }
 
   function getyears(startingYear = 1900) {
-    const offset = new Date().getFullYear() - startingYear;
+    let thisYear = new Date().getFullYear() - ValidAge;
+    const offset = thisYear - startingYear;
 
-    let thisYear = new Date().getFullYear();
     let allYears = [];
     for (let x = 0; x <= offset; x++) {
       allYears.push({ value: thisYear - x, label: thisYear - x });
@@ -42,8 +32,17 @@ const DateInputBox = () => {
     return allYears;
   }
 
+  const getMonthsList = () => {
+    let thisYear = new Date().getFullYear() - ValidAge;
+
+    if (isValidData(date.year) && date.year === thisYear) {
+      return dayjs.months().slice(0, new Date().getMonth() + 1);
+    }
+    return dayjs.months();
+  };
+
   function getMonths() {
-    let monthValue = monthNames.map((ele, index) => {
+    let monthValue = getMonthsList().map((ele, index) => {
       return {
         id: index + 1,
         value: ele,
@@ -62,18 +61,33 @@ const DateInputBox = () => {
   };
 
   function getDays(month, year) {
-    if (isValidData(month) && isValidData(year)) {
-      return getDaysInMonthByYear(month, year);
-    } else if (isValidData(month)) {
-      return getDaysInMonthByYear(month, new Date().getFullYear());
-    } else {
-      let monthValue = [...new Array(31)].map((ele, index) => {
-        return {
-          value: index + 1,
-          label: index + 1,
-        };
-      });
+    let thisYear = new Date().getFullYear() - ValidAge;
+    let thisMonth = new Date().getMonth() + 1;
+
+    if (thisYear === date.year && thisMonth === date.month) {
+      let monthValue = [...new Array(new Date().getDate())].map(
+        (ele, index) => {
+          return {
+            value: index + 1,
+            label: index + 1,
+          };
+        }
+      );
       return monthValue;
+    } else {
+      if (isValidData(month) && isValidData(year)) {
+        return getDaysInMonthByYear(month, year);
+      } else if (isValidData(month)) {
+        return getDaysInMonthByYear(month, new Date().getFullYear());
+      } else {
+        let monthValue = [...new Array(31)].map((ele, index) => {
+          return {
+            value: index + 1,
+            label: index + 1,
+          };
+        });
+        return monthValue;
+      }
     }
   }
 
@@ -88,7 +102,6 @@ const DateInputBox = () => {
 
   const getDay = (value) => {
     const year = isValidData(date.year) ? date.year : new Date().getFullYear();
-    console.log(getDays(value, year), "===>getDays(value, year)", value, year);
     let findDay = getDays(value, year).find(
       (ele) => ele.value === parseInt(date.day)
     );
@@ -108,46 +121,68 @@ const DateInputBox = () => {
     }
   };
 
-  const handleValue = () => {
-    let final = new Date(date.year, date.month, date.year);
-    console.log(final);
-  };
+  useEffect(() => {
+    if (
+      isValidData(date.day) &&
+      isValidData(date.month) &&
+      isValidData(date.year)
+    ) {
+      let finalDate = new Date(date.year, date.month, date.day);
+      onSelectDate(finalDate);
+    }
+  }, [date]);
 
+  const getStatus = (data) => {
+    if (isValidData(data)) {
+      return "";
+    } else {
+      return status;
+    }
+  };
   return (
-    <div className="test">
-      <Select
-        style={{ width: 120 }}
-        value={getMonth()}
-        placeholder="Month"
-        options={getMonths()}
-        onSelect={(val, value) => {
-          setDate((pre) => ({ ...pre, month: value.id }));
-          if (getDay(value.id) === null) {
-            setDate((pre) => ({ ...pre, day: "" }));
-          }
-          handleValue();
-        }}
-      />
-      <Select
-        style={{ width: 120 }}
-        placeholder="Day"
-        value={getDay()}
-        options={getDays(date.month, date.year)}
-        onSelect={(val, value) => {
-          setDate((pre) => ({ ...pre, day: val }));
-          handleValue();
-        }}
-      />
-      <Select
-        style={{ width: 120 }}
-        options={getyears().reverse()}
-        value={getYear(date.year)}
-        placeholder="Year"
-        onSelect={(value) => {
-          setDate((pre) => ({ ...pre, year: value }));
-          handleValue();
-        }}
-      />
+    <div className="dateinputBox">
+      <div>
+        <Select
+          style={{ width: 120 }}
+          value={getMonth()}
+          className="textBox"
+          status={getStatus(date.month)}
+          placeholder="Month"
+          options={getMonths()}
+          onSelect={(val, value) => {
+            setDate((pre) => ({ ...pre, month: value.id }));
+            if (getDay(value.id) === null) {
+              setDate((pre) => ({ ...pre, day: "" }));
+            }
+          }}
+        />
+      </div>
+      <div>
+        <Select
+          style={{ width: 127 }}
+          placeholder="Day"
+          className="textBox"
+          status={getStatus(date.day)}
+          value={getDay()}
+          options={getDays(date.month, date.year)}
+          onSelect={(val, value) => {
+            setDate((pre) => ({ ...pre, day: val }));
+          }}
+        />
+      </div>
+      <div>
+        <Select
+          style={{ width: 120 }}
+          className="textBox"
+          options={getyears().reverse()}
+          status={getStatus(date.year)}
+          value={getYear(date.year)}
+          placeholder="Year"
+          onSelect={(value) => {
+            setDate((pre) => ({ ...pre, year: value }));
+          }}
+        />
+      </div>
     </div>
   );
 };
