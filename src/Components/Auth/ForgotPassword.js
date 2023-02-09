@@ -6,24 +6,50 @@ import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
+import { forgotPasswordService } from "../../Services/ApiService";
+import { toast } from "react-hot-toast";
 
 const validationSchema = yup.object().shape({
-  login_id: yup.string().required(`Please input your Login ID!`),
+  username: yup.string().required(`Please input your Login ID!`),
 });
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
 
-  const { values, handleChange, handleSubmit, setFieldValue, errors } =
-    useFormik({
-      initialValues: {
-        login_id: "",
-      },
-      validationSchema: validationSchema,
-      onSubmit: (values) => {
-        navigate("/setpassword");
-      },
-    });
+  const { values, handleChange, handleSubmit, errors } = useFormik({
+    initialValues: {
+      username: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      HandleSendOTP(values);
+    },
+  });
+
+  const HandleSendOTP = (values) => {
+    let ForgotPasswordValues = {
+      ...values,
+      auth_code: getAuthToken(values.username),
+    };
+    forgotPasswordService(JSONtoformdata(ForgotPasswordValues))
+      .then((res) => {
+        if (res.data.status === 1) {
+          navigate("/setpassword", {
+            state: {
+              otp_ref_id: res.data.otp_ref_id,
+              remaining_seconds: res.data.remaining_seconds,
+            },
+          });
+          toast.success(res.data.msg);
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
   return (
     <>
       <div className={classes.loginbg}>
@@ -45,17 +71,17 @@ const ForgotPassword = () => {
               onSubmitCapture={handleSubmit}
             >
               <p className={classes.label}>Login ID </p>
-              <Form.Item name="login_id">
+              <Form.Item name="username">
                 <Input
                   className={classes.textBox}
                   placeholder="Enter your phone number or email address"
-                  value={values.login_id}
-                  onChange={handleChange("login_id")}
-                  status={errors.login_id ? "error" : ""}
+                  value={values.username}
+                  onChange={handleChange("username")}
+                  status={errors.username ? "error" : ""}
                   maxLength={50}
                   autoComplete="off"
                 />
-                <p className="ErrTxt">{errors?.login_id}</p>
+                <p className="ErrTxt">{errors?.username}</p>
               </Form.Item>
 
               <Form.Item>

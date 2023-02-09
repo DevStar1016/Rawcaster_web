@@ -1,6 +1,6 @@
 import { Button, Form, Input } from "antd";
-import React from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 // import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
 import SignupImg from "../../Assets/Images/png/signup-intro.png";
@@ -10,9 +10,33 @@ import FacebookIcon from "../../Assets/Icons/png/facebook_logo.png";
 import TwitterIcon from "../../Assets/Icons/png/twitter_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
+import { getGeocodeData } from "../../Shared/Utility";
+import {
+  LoginSocialApple,
+  LoginSocialFacebook,
+  LoginSocialGoogle,
+  LoginSocialTwitter,
+} from "reactjs-social-login";
+import {
+  APPLE_API_KEY,
+  FACEBOOK_APP_ID,
+  GOOGLE_CLIENT_ID,
+  REDIRECT_URI,
+  TWITTER_API_KEY,
+} from "../../Shared/Constant";
 
 const Signup = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getGeocodeData()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   return (
     <>
       <div className={classes.loginbg}>
@@ -53,24 +77,75 @@ const Signup = () => {
               </div>
               <Row className="my-2">
                 <Col sm={6}>
-                  <button className={classes.altSignBtn}>
-                    <img src={GoogleIcon} /> Signup with Google
-                  </button>
+                  <LoginSocialGoogle
+                    client_id={GOOGLE_CLIENT_ID}
+                    redirect_uri={REDIRECT_URI}
+                    scope="openid profile email"
+                    discoveryDocs="claims_supported"
+                    access_type="offline"
+                    onResolve={({ provider, data }) => {
+                      console.log(provider, data);
+                    }}
+                    onReject={(err) => {
+                      console.log(err);
+                    }}
+                  >
+                    <button className={classes.altSignBtn}>
+                      <img src={GoogleIcon} /> Signup with Google
+                    </button>
+                  </LoginSocialGoogle>
                 </Col>
                 <Col sm={6}>
-                  <button className={classes.altSignBtn}>
-                    <img src={FacebookIcon} /> Signup with Facebook
-                  </button>
+                  <LoginSocialFacebook
+                    appId={FACEBOOK_APP_ID}
+                    fieldsProfile={
+                      "id,first_name,last_name,middle_name,name,name_format,picture,short_name,email,gender"
+                    }
+                    redirect_uri={REDIRECT_URI}
+                    onResolve={({ provider, data }) => {
+                      console.log(provider, data);
+                    }}
+                    onReject={(err) => {
+                      console.log(err);
+                    }}
+                  >
+                    <button className={classes.altSignBtn}>
+                      <img src={FacebookIcon} /> Signup with Facebook
+                    </button>
+                  </LoginSocialFacebook>
                 </Col>
                 <Col sm={6}>
-                  <button className={classes.altSignBtn}>
-                    <img src={TwitterIcon} /> Signup with Twitter
-                  </button>
+                  <LoginSocialTwitter
+                    client_id={TWITTER_API_KEY}
+                    redirect_uri={REDIRECT_URI}
+                    onResolve={({ provider, data }) => {
+                      console.log(provider, data);
+                    }}
+                    onReject={(err) => {
+                      console.log(err);
+                    }}
+                  >
+                    <button className={classes.altSignBtn}>
+                      <img src={TwitterIcon} /> Signup with Twitter
+                    </button>
+                  </LoginSocialTwitter>
                 </Col>
                 <Col sm={6}>
-                  <button className={classes.altSignBtn}>
-                    <img src={AppleIcon} /> Signup with Apple
-                  </button>
+                  <LoginSocialApple
+                    client_id={APPLE_API_KEY}
+                    scope={"name email"}
+                    redirect_uri={REDIRECT_URI}
+                    onResolve={({ provider, data }) => {
+                      console.log(provider, data, "===>provider, data");
+                    }}
+                    onReject={(err) => {
+                      console.log(err);
+                    }}
+                  >
+                    <button className={classes.altSignBtn}>
+                      <img src={AppleIcon} /> Signup with Apple
+                    </button>
+                  </LoginSocialApple>
                 </Col>
               </Row>
               <p className={classes.dntacc}>

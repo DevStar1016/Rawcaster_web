@@ -127,8 +127,10 @@ const DateInputBox = ({ onSelectDate, status = "" }) => {
       isValidData(date.month) &&
       isValidData(date.year)
     ) {
-      let finalDate = new Date(date.year, date.month, date.day);
-      onSelectDate(finalDate);
+      let resultDate = dayjs(
+        date.year + "-" + getMonth().label + "-" + date.day
+      ).toDate();
+      onSelectDate(resultDate);
     }
   }, [date]);
 

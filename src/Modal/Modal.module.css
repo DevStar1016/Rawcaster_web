@@ -1,0 +1,37 @@
+.profileModal {
+    text-align: center;
+    padding: 50px 0;
+  }
+  .profileModal .cancelBtn {
+    border: #f2718d 1px solid;
+    border-radius: 7px;
+    color: #f2718d;
+    font-weight: 500;
+    font-size: 15px;
+    font-family: "DM Sans", sans-serif;
+    padding: 10px 15px;
+    width: 160px;
+    height: 45px;
+  }
+  .profileModal .reportBtn {
+    border: #f2718d 1px solid;
+    border-radius: 7px;
+    color: #fff;
+    background: #f2718d;
+    font-weight: 500;
+    font-size: 15px;
+    font-family: "DM Sans", sans-serif;
+    padding: 10px 15px;
+    width: 160px;
+    height: 45px;
+  }
+  .profileModal p {
+    font-weight: 500;
+    font-size: 23px !important;
+    margin: 30px auto;
+    max-width: 450px;
+    line-height: 35px !important;
+    text-align: center;
+    font-family: "DM Sans", sans-serif;
+    color: #1d1c1c;
+  }

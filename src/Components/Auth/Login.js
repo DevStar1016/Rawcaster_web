@@ -1,32 +1,60 @@
 import { Button, Form, Input } from "antd";
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import RedirectModal from "../../Modal/RedirectModal";
+import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
+import { loginService } from "../../Services/ApiService";
+import { toast } from "react-hot-toast";
+import { PASSWORD_EXP } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
-  login_id: yup.string().required(`Please input your Login ID!`),
+  username: yup.string().required(`Please input your Login ID!`),
   password: yup
     .string()
+    .matches(
+      PASSWORD_EXP,
+      "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
+    )
     .min(8, "Password must be at least 8 characters long")
     .required("Please input your Password!"),
 });
 
 const Login = () => {
-  const { values, handleChange, handleSubmit, setFieldValue, errors } =
-    useFormik({
-      initialValues: {
-        login_id: "",
-        password: "",
-      },
-      validationSchema: validationSchema,
-      onSubmit: (values) => {
-        console.log(values);
-      },
-    });
+  const navigate = useNavigate();
+  const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
+  const { values, handleChange, handleSubmit, errors, touched } = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      HandleLoginService(values);
+    },
+  });
+
+  const HandleLoginService = (values) => {
+    let loginData = {
+      ...values,
+      auth_code: getAuthToken(values.username),
+    };
+    loginService(JSONtoformdata(loginData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          toast.success(res.data.msg);
+        } else if (res.data.status === 0) {
+          setredirectModal({ show: true, msg: res.data.msg });
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
   return (
     <>
       <div className={classes.loginbg}>
@@ -49,17 +77,19 @@ const Login = () => {
               onSubmitCapture={handleSubmit}
             >
               <p className={classes.label}>Login ID </p>
-              <Form.Item name="login_id">
+              <Form.Item name="username">
                 <Input
                   className={classes.textBox}
                   placeholder="Email or Phone Number"
-                  value={values.login_id}
-                  onChange={handleChange("login_id")}
-                  status={errors.login_id ? "error" : ""}
+                  value={values.username}
+                  onChange={handleChange("username")}
+                  status={touched.username && errors.username ? "error" : ""}
                   maxLength={50}
                   autoComplete="off"
                 />
-                <p className="ErrTxt">{errors?.login_id}</p>
+                {touched.username && (
+                  <p className="ErrTxt">{errors?.username}</p>
+                )}
               </Form.Item>
               <p className={classes.label}>Password</p>
               <Form.Item name="password">
@@ -70,10 +100,12 @@ const Login = () => {
                   autoComplete="new-password"
                   value={values.password}
                   maxLength={50}
-                  status={errors.password ? "error" : ""}
+                  status={touched.password && errors.password ? "error" : ""}
                   onChange={handleChange("password")}
                 />
-                <p className="ErrTxt">{errors?.password}</p>
+                {touched.password && (
+                  <p className="ErrTxt">{errors?.password}</p>
+                )}
               </Form.Item>
               <Form.Item>
                 <div className={`fwgpsw ${classes.fwgpsw}`}>
@@ -121,6 +153,18 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <RedirectModal
+        open={redirectModal.show}
+        msg={redirectModal.msg}
+        Btnname={"Sign up"}
+        onSuccess={() => {
+          navigate("/signup");
+          setredirectModal({ show: false, msg: "" });
+        }}
+        onClose={() => {
+          setredirectModal({ show: false, msg: "" });
+        }}
+      />
     </>
   );
 };

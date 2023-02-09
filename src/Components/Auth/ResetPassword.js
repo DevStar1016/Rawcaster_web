@@ -8,6 +8,10 @@ import { useFormik } from "formik";
 import OtpInput from "react-otp-input";
 import dayjs from "dayjs";
 import * as yup from "yup";
+import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
+import { verifyotpsendPasswordService } from "../../Services/ApiService";
+import { toast } from "react-hot-toast";
+import { PASSWORD_EXP } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -16,33 +20,63 @@ const validationSchema = yup.object().shape({
     .required(`Please input your OTP!`),
   new_password: yup
     .string()
+    .matches(
+      PASSWORD_EXP,
+      "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
+    )
     .min(8, "Password must be at least 8 characters long")
     .required("Please input your Password!"),
   confirm_password: yup
     .string()
+    .matches(
+      PASSWORD_EXP,
+      "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
+    )
     .min(8, "Password must be at least 8 characters long")
+    .oneOf([yup.ref("new_password"), null], "Passwords must match")
     .required("Please input your Password!"),
 });
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+
   let TimeVal = window.sessionStorage.getItem("CountDown") || {
-    counter: 60,
+    counter: state?.remaining_seconds,
     Date: new Date(),
   };
-  const [TimerValue, setTimerValue] = useState(60);
-  const { values, setFieldValue, handleChange, handleSubmit, errors } =
-    useFormik({
-      initialValues: {
-        otp: "",
-        new_password: "",
-        confirm_password: "",
-      },
-      validationSchema: validationSchema,
-      onSubmit: (values) => {
-        navigate("/login");
-      },
-    });
+  const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
+  const { values, handleChange, handleSubmit, errors, touched } = useFormik({
+    initialValues: {
+      otp: "",
+      new_password: "",
+      confirm_password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      HandlesubmitResetPassword(values);
+    },
+  });
+
+  const HandlesubmitResetPassword = (values) => {
+    let ResetPasswordValue = {
+      ...values,
+      otp_ref_id: state?.otp_ref_id,
+      auth_code: getAuthToken(state?.otp_ref_id),
+    };
+    verifyotpsendPasswordService(JSONtoformdata(ResetPasswordValue))
+      .then((res) => {
+        if (res.data.status === 1) {
+          navigate("/login");
+          toast.success(res.data.msg);
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
 
   useEffect(() => {
     let finalTimeVal;
@@ -84,6 +118,7 @@ const ResetPassword = () => {
         );
       }, 1000);
     } else {
+      window.sessionStorage.removeItem("CountDown");
       clearInterval(timer);
     }
     return () => {
@@ -93,12 +128,10 @@ const ResetPassword = () => {
 
   function secondsToHms(d) {
     d = Number(d);
-
-    var m = Math.floor((d % 3600) / 60);
-    var s = Math.floor((d % 3600) % 60);
-
-    var mDisplay = m > 0 ? m : "00";
-    var sDisplay = s > 0 ? s : "00";
+    let m = Math.floor((d % 3600) / 60);
+    let s = Math.floor((d % 3600) % 60);
+    let mDisplay = m > 0 ? m : "00";
+    let sDisplay = s > 0 ? s : "00";
     return mDisplay + ":" + sDisplay;
   }
 
@@ -140,13 +173,21 @@ const ResetPassword = () => {
                   separator={<span>{""}</span>}
                 />
                 <div className="d-flex flex-row justify-content-between">
-                  <p className={classes.resendTxt}>Resend code</p>
+                  <p
+                    className={
+                      TimerValue === 0
+                        ? classes.activeresendTxt
+                        : classes.resendTxt
+                    }
+                  >
+                    Resend code
+                  </p>
                   <p className={classes.resendTxt}>
                     {secondsToHms(TimerValue)}
                   </p>
                 </div>
               </div>
-              <p className="ErrTxt mb-1">{errors?.otp}</p>
+              {touched.otp && <p className="ErrTxt mb-1">{errors?.otp}</p>}
               <p className={classes.label}>Password </p>
               <Form.Item>
                 <Input
@@ -154,11 +195,15 @@ const ResetPassword = () => {
                   placeholder="Enter your password"
                   value={values.new_password}
                   onChange={handleChange("new_password")}
-                  status={errors.new_password ? "error" : ""}
+                  status={
+                    touched.new_password && errors.new_password ? "error" : ""
+                  }
                   maxLength={50}
                   autoComplete="off"
                 />
-                <p className="ErrTxt">{errors?.new_password}</p>
+                {touched.new_password && (
+                  <p className="ErrTxt">{errors?.new_password}</p>
+                )}
               </Form.Item>
               <p className={classes.label}>Confirm your password</p>
               <Form.Item>
@@ -167,13 +212,25 @@ const ResetPassword = () => {
                   placeholder="Enter your  password"
                   value={values.confirm_password}
                   onChange={handleChange("confirm_password")}
-                  status={errors.confirm_password ? "error" : ""}
+                  status={
+                    touched.confirm_password && errors.confirm_password
+                      ? "error"
+                      : ""
+                  }
                   maxLength={50}
                   autoComplete="off"
                 />
-                <p className="ErrTxt">{errors?.confirm_password}</p>
+                {touched.confirm_password && (
+                  <p className="ErrTxt">{errors?.confirm_password}</p>
+                )}
+                <span className={classes.hintTxt}>
+                  We recommend your password to be at least 8 characters long,
+                  contain uppercase letter (A-Z), lowercase letter (a-z), symbol
+                  (!@#$%) and a number (0-9).
+                </span>
               </Form.Item>
-              <Form.Item>
+
+              <Form.Item className="mt-2">
                 <Button block htmlType="submit" className={classes.btn}>
                   Send
                 </Button>

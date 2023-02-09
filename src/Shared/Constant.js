@@ -5,3 +5,16 @@ export const NAME_REGEX = /^[A-Za-z_ ]+$/;
 export const NUMBER_REGEX = /^[0-9]*$/;
 export const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export const GECODE_API_KEY = "AIzaSyBOEl17DNwCcE0sR9LGJh72rBGF_vDfk1c";
+
+export const GOOGLE_CLIENT_ID =
+  "307641306325-8tf2v7n1ojhbb55fcphff06gvp1dgg2e.apps.googleusercontent.com";
+
+export const FACEBOOK_APP_ID = "501963974865826";
+
+export const TWITTER_API_KEY = "YTF4cTFKU25UVld2Yk1JUzFFSnU6MTpjaQ";
+
+export const APPLE_API_KEY = "CR8PDZDGNZcom.rawcaster.app";
+
+export const REDIRECT_URI = "https://rawcaster.com";
