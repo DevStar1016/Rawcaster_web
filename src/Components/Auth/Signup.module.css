@@ -1,6 +1,6 @@
 .loginbg { 
   /* background: url(../../assets/login_bg.jpg) center top  no-repeat; */
-  min-height: 100%; float: left; width: 100%; display: flex;
+  min-height: 100vh; float: left; width: 100%; display: flex;
   font-family: 'DM Sans', sans-serif;
 }
 .verifybg { 
@@ -23,7 +23,7 @@
 .sliderSec .contentBox { max-width: 540px; }
 .sliderSec .contentBox img { width: 100%; }
 .sliderSec .contentBox h2 { color: #fff; font-family: 'Gilroy-Bold'; font-size: 28px; margin-top: 15px; }
-.sliderSec .contentBox h4 { color: #fff; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 400; }
+.sliderSec .contentBox h4 { color: #fff; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 300; }
 .rightSec .contentBox h2,.rightSec .contentBox h4 {
    color: #000 !important;
 }
@@ -45,7 +45,7 @@
   
 }
 .loginBox { padding: 25px;  max-width: 470px; margin: auto; }
-.subText { font-size: 17px; margin-bottom: 20px; color: #1D1C1C; }
+.subText { font-size: 17px; margin-bottom: 20px; color: #1D1C1C; font-weight: 300; }
 .verifyBox { padding: 25px;  max-width: 570px; margin:40px auto 40px auto; padding:50px 100px 130px 100px; border-radius: 8px; border: 1px solid #E8EAEE; }
 .centerLogo { margin: auto !important; text-align: center;  }
 .agreeTxt { color: #121F3F; font-family: 'DM Sans', sans-serif; font-size: 13px;  }
@@ -59,13 +59,15 @@
 height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
 .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px;  } 
 .textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
-.btn {
+.signupbtn { margin-top: 0px !important; font-weight: 300 !important; font-size: 14px !important;}
+.btn, .signupbtn {
    height: 52px; width: 100%; color: #191919;
    background: #F2718D;
    border-radius: 7px; 
-   border: none; font-size: 17px; font-weight: 500; clear: both; display: block; color: #fff;
+   border: none; font-size: 18px; font-weight: 500; clear: both; display: block; color: #fff; margin-top: -20px; margin-bottom:-5px;
 }
-.btn:hover { color: #fff; border: none; background: #563662; }
+.btn span, .signupbtn span { color: #fff;}
+.btn span:hover, .btn:hover, .signupbtn:hover { color: #fff; border: none; background: #563662; }
 .changeTxt {
    font-size: 12px;
    line-height: 10px;
@@ -89,21 +91,21 @@ height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; m
    font-size: 17px; font-weight: 500; color: #F2718D;
 }
 .cancelBtn:hover { color: #fff; border: none; background: #563662; border: 1px solid #563662 !important; }
-p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-size: 14px; margin-bottom: 3px !important; }
-.fwgpsw { width: 100%; float: left; clear: both; display: block; font-size: 14px; color: #555555; margin-bottom: 10px; }
-.fwgpsw a { color: #E26386; font-weight: 500; }
+p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-size: 15px; margin-bottom: 3px !important; }
+.fwgpsw { width: 100%; float: left;  margin-top: -28px; clear: both; display: block;  color: #555555; margin-bottom: -10px !important; }
+.fwgpsw a { color: #E26386; font-weight: 500; text-decoration: none; font-size: 15px;  }
 .fwgpsw .left {  float: left; }
 .fwgpsw .right { float: right; }
 .fwgpsw .ant-checkbox + span { font-size: 14px !important; font-weight: 500; color: #121F3F; }
 
-.dntacc { margin-top: 10px; font-size: 16px; color: #9BA0AA; font-family: 'DM Sans', sans-serif; }
+.dntacc { margin-top: 10px; font-size: 17px; color: #9BA0AA; font-family: 'DM Sans', sans-serif; }
 .dntacc span { color:#E26386 !important; font-weight: 500; cursor: pointer;margin-left: 5px; }
-.dntacc span a { color:#E26386 !important; }
+.dntacc span a { color:#E26386 !important; text-decoration: none; }
 
 .mt20 { margin-top: 20px; }
 .copyright { margin-top: 30px; color: #9BA0AA; }
 .copyright img { float: left; width: 45px; margin-right: 10px; }
-.copyright a { color: #9BA0AA;}
+.copyright a {font-family: 'DM Sans', sans-serif;  color: #9BA0AA; text-decoration: none;}
 .mobHeader { background: #563662; padding:30px 10px; text-align: center; }
 
 .stepOne { font-family: 'DM Sans', sans-serif; background: #fff; border-bottom: #E8EAEE 1px solid;
@@ -119,24 +121,25 @@ p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-si
    margin: 10px;
    display: flex;
    flex-direction: row;
-   justify-content: space-between;
-   width: 90%;
+   justify-content: space-around;
+   align-items: top;
+   width: 96%;
 }
 .dividerSec p {
-   font-size: 20px;
-line-height: 25px;
-text-align: center;
-text-transform: uppercase;
+   font-size: 14px;
+line-height: 20px;
+text-align: center; 
+text-transform: uppercase; color: #1D1C1C; margin-bottom: 0;
 }
 .dividerSec .divider {
-   border-bottom: 1px solid black;
-   width: 43%;
-   margin-bottom: 30px !important;
+   border-bottom: 1px solid #ECECEC; padding-top: 10px;
+   width: 44%;
+   margin-bottom: 20px !important;
    color: #1D1C1C;
 }
 .altSignBtn {
-   padding: 10px;
-   margin-bottom: 10px;
+   padding:14px 10px;
+   margin-bottom: 12px;
    width: 100%;
    background-color: #ffffff;
    border: 1px solid #E8EAEE !important;
@@ -144,7 +147,6 @@ text-transform: uppercase;
    font-size: 14px;
    display: flex;
    flex-direction: row;
-   justify-content:"center";
    align-items: center;
 }
 .altSignBtn  img {
@@ -186,6 +188,7 @@ cursor: pointer;
    margin-bottom: 0px !important; 
 }
 @media (max-width:768px) {
+.loginSec { margin-top: 0 !important; }
 .loginSec, .loginbg, .sliderSec, .verifybg { display: block !important; width: 100% !important; }
 .subText { font-size: 15px; line-height: 23px !important; }
 .heading_h1 {font-size: 26px !important; line-height: 26px !important; margin-top: 10px !important; margin-bottom:10px !important; }
@@ -201,6 +204,7 @@ cursor: pointer;
 .verifyCopy img { width: 16px; margin-right: 7px !important; margin-top: -2px; display: inline-block; float: none; }
 .verifyCopy p { display: inline-block; }
 .stepOne span, .stepTwo { display: none; }
+.altSignBtn {justify-content: center;}
 }
 @media (min-width:768px) {
 .mobHeader { display: none; }    
