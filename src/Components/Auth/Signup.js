@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import { Col, Row } from "react-bootstrap";
+import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
+import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
 import FacebookIcon from "../../Assets/Icons/png/facebook_logo.png";
 import TwitterIcon from "../../Assets/Icons/png/twitter_logo.png";
@@ -40,19 +42,24 @@ const Signup = () => {
   return (
     <>
       <div className={classes.loginbg}>
+      <div className={classes.mobHeader}>
+          <Link to="/home">
+            <img src={mainlogowhite}  />
+          </Link>
+        </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link>
               <img
                 className={classes.hideMob}
-                src={require("../../Assets/Images/png/rawcater_logo.png")}
+                src={mainlogo}       
               />
             </Link>
             <h1 className={classes.heading_h1}>Join Rawcaster Family</h1>
             <p className={classes.subText}>
               Join now to access the latest insights, experience for your social
               media performance.
-            </p>
+            </p>            
             <Form
               name="normal_login"
               className="login-form"
@@ -62,7 +69,7 @@ const Signup = () => {
                 <Button
                   block
                   htmlType="submit"
-                  className={classes.btn}
+                  className={classes.signupbtn}
                   onClick={() => {
                     navigate("/signupwithemail");
                   }}
@@ -75,7 +82,7 @@ const Signup = () => {
                 <p>Or</p>
                 <p className={classes.divider}></p>
               </div>
-              <Row className="my-2">
+              <Row className="my-2 g-2">
                 <Col sm={6}>
                   <LoginSocialGoogle
                     client_id={GOOGLE_CLIENT_ID}

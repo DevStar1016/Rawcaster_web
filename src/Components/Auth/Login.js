@@ -4,6 +4,8 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
+import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
+import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import RedirectModal from "../../Modal/RedirectModal";
@@ -58,12 +60,17 @@ const Login = () => {
   return (
     <>
       <div className={classes.loginbg}>
+      <div className={classes.mobHeader}>
+          <Link to="/home">
+            <img src={mainlogowhite}  />
+          </Link>
+        </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link>
               <img
                 className={classes.hideMob}
-                src={require("../../Assets/Images/png/rawcater_logo.png")}
+                src={mainlogo}                
               />
             </Link>
             <h1 className={classes.heading_h1}> Welcome to Rawcaster</h1>
@@ -102,11 +109,11 @@ const Login = () => {
                   maxLength={50}
                   status={touched.password && errors.password ? "error" : ""}
                   onChange={handleChange("password")}
-                />
-                {touched.password && (
+                />               
+              </Form.Item>
+              {touched.password && (
                   <p className="ErrTxt">{errors?.password}</p>
                 )}
-              </Form.Item>
               <Form.Item>
                 <div className={`fwgpsw ${classes.fwgpsw}`}>
                   <div className={classes.right}>
@@ -116,7 +123,7 @@ const Login = () => {
               </Form.Item>
               <Form.Item>
                 <Button block htmlType="submit" className={classes.btn}>
-                  Sign in
+                  Login
                 </Button>
               </Form.Item>
               <p className={classes.dntacc}>
@@ -144,11 +151,9 @@ const Login = () => {
         <div className={classes.sliderSec}>
           <div className={classes.contentBox}>
             <img src={SigninImg} />
-            <h2>Post Nuggets</h2>
+            <h2>Connect Share Express</h2>
             <h4>
-              These are small pieces or tidbit of thoughts in your mind or an
-              image (video or picture) that you want to share with one or more
-              connected persons.
+              with Rawcaster influencers, bloggers, writers, photographers can collaborate with their fans easily
             </h4>
           </div>
         </div>
