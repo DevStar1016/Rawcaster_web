@@ -11,32 +11,37 @@ import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { loginService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { PASSWORD_EXP } from "../../Shared/Constant";
+import { useDispatch } from "react-redux";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 
 const validationSchema = yup.object().shape({
   username: yup.string().required(`Please input your Login ID!`),
   password: yup
     .string()
-    .matches(
-      PASSWORD_EXP,
-      "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-    )
+    // .matches(
+    //   PASSWORD_EXP,
+    //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
+    // )
     .min(8, "Password must be at least 8 characters long")
     .required("Please input your Password!"),
 });
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
-  const { values, handleChange, handleSubmit, errors, touched } = useFormik({
-    initialValues: {
-      username: "",
-      password: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      HandleLoginService(values);
-    },
-  });
+  const { values, handleChange, handleSubmit, errors, touched, setFieldError } =
+    useFormik({
+      initialValues: {
+        username: "",
+        password: "",
+      },
+      validationSchema: validationSchema,
+      onSubmit: (values) => {
+        HandleLoginService(values);
+      },
+    });
 
   const HandleLoginService = (values) => {
     let loginData = {
@@ -47,8 +52,14 @@ const Login = () => {
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-        } else if (res.data.status === 0) {
+          dispatch(handleLoginData(res.data));
+          setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
+          setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
+          navigate("/selectinfluencers");
+        } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
+        } else if (res.data.status === 0) {
+          setFieldError("username", res.data.msg);
         }
       })
       .catch((err) => {

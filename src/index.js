@@ -5,12 +5,16 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Toaster } from "react-hot-toast";
+import { Provider as StoreProvider } from "react-redux";
+import store from "../src/Store/Redux/Config/Store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
-    <Toaster />
+    <StoreProvider store={store}>
+      <App />
+      <Toaster />
+    </StoreProvider>
   </React.StrictMode>
 );
 

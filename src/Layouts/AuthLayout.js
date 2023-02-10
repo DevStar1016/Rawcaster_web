@@ -1,8 +1,6 @@
-import { Col, Layout, Menu, Row } from "antd";
+import { Layout, Menu } from "antd";
 import React from "react";
 import { Outlet } from "react-router";
-import LoginSlider from "../Components/AuthComponents/LoginSlider";
-import Navbar from "../Components/Navbar";
 import classes from "./Layout.module.css";
 
 const AuthLayout = ({ children }) => {
@@ -30,11 +28,9 @@ const AuthLayout = ({ children }) => {
         </Menu>
         {/* <Header className={classes.header}> <Navbar /> </Header> */}
         <Content className="site-layout mainsec">
-          
-              <Outlet />
-           
-              {/* <LoginSlider /> */}
-          
+          <Outlet />
+
+          {/* <LoginSlider /> */}
         </Content>
       </Layout>
     </>

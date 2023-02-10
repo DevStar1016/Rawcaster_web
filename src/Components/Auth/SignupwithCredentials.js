@@ -18,12 +18,15 @@ import dayjs from "dayjs";
 import { signupService } from "../../Services/ApiService";
 import RedirectModal from "../../Modal/RedirectModal";
 import { toast } from "react-hot-toast";
+import { setCookieData, setLocalStorageData } from "../../Store/Storage";
+import { useDispatch } from "react-redux";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const getLoginType = () => {
     if (pathname.includes("signupwithemail")) {
       return {
@@ -36,7 +39,7 @@ const SignupwithCredentials = () => {
     } else {
       return {
         id: 2,
-        title: "Phone Number ",
+        title: "Phone Number",
         instead: "Email",
         pathname: "/signupwithemail",
         image: SignupwithEmailImg,
@@ -118,13 +121,19 @@ const SignupwithCredentials = () => {
       display_name: values.first_name,
       confirm_password: values.password,
       auth_code: getAuthToken(values.email_id),
+      signup_type: getLoginType().id,
     };
     signupService(JSONtoformdata(signupValue))
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-        } else if (res.data.status === 0) {
+          dispatch(handleLoginData(res.data));
+          setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
+          setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
+        } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
         }
       })
       .catch((err) => {

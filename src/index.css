@@ -42,3 +42,11 @@ width: 100%;
   margin: auto;
   background: var(--background);
 }
+
+.logoImage, .whitelogoImage {
+  width: 222px;
+  height: 46px;
+  background-image: url("./Assets/Images/png/rawcater_logo.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+}

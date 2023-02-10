@@ -9,9 +9,17 @@ import OtpInput from "react-otp-input";
 import dayjs from "dayjs";
 import * as yup from "yup";
 import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
-import { verifyotpsendPasswordService } from "../../Services/ApiService";
+import {
+  resendOtpService,
+  verifyotpsendPasswordService,
+} from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { PASSWORD_EXP } from "../../Shared/Constant";
+import {
+  getSessionStorageData,
+  removeSessionStorageData,
+  setSessionStorageData,
+} from "../../Store/Storage";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -41,11 +49,12 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  let TimeVal = window.sessionStorage.getItem("CountDown") || {
+  let TimeVal = getSessionStorageData("CountDown") || {
     counter: state?.remaining_seconds,
     Date: new Date(),
   };
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
+  const [otpRefId, setotpRefId] = useState();
   const { values, handleChange, handleSubmit, errors, touched } = useFormik({
     initialValues: {
       otp: "",
@@ -57,12 +66,17 @@ const ResetPassword = () => {
       HandlesubmitResetPassword(values);
     },
   });
+  useEffect(() => {
+    if (!otpRefId) {
+      setotpRefId(state?.otp_ref_id);
+    }
+  }, [state]);
 
   const HandlesubmitResetPassword = (values) => {
     let ResetPasswordValue = {
       ...values,
-      otp_ref_id: state?.otp_ref_id,
-      auth_code: getAuthToken(state?.otp_ref_id),
+      otp_ref_id: otpRefId,
+      auth_code: getAuthToken(otpRefId),
     };
     verifyotpsendPasswordService(JSONtoformdata(ResetPasswordValue))
       .then((res) => {
@@ -92,7 +106,7 @@ const ResetPassword = () => {
       );
 
       setTimerValue(finalTimeVal.counter - difference);
-      window.sessionStorage.setItem(
+      setSessionStorageData(
         "CountDown",
         JSON.stringify({
           counter: finalTimeVal.counter - difference,
@@ -109,7 +123,7 @@ const ResetPassword = () => {
         let val = TimerValue - 1;
         setTimerValue(val);
 
-        window.sessionStorage.setItem(
+        setSessionStorageData(
           "CountDown",
           JSON.stringify({
             counter: val,
@@ -118,7 +132,7 @@ const ResetPassword = () => {
         );
       }, 1000);
     } else {
-      window.sessionStorage.removeItem("CountDown");
+      removeSessionStorageData("CountDown");
       clearInterval(timer);
     }
     return () => {
@@ -126,15 +140,43 @@ const ResetPassword = () => {
     };
   }, [TimerValue]);
 
-  function secondsToHms(d) {
-    d = Number(d);
-    let m = Math.floor((d % 3600) / 60);
-    let s = Math.floor((d % 3600) % 60);
-    let mDisplay = m > 0 ? m : "00";
-    let sDisplay = s > 0 ? s : "00";
-    return mDisplay + ":" + sDisplay;
+  function minTwoDigits(n) {
+    return (n < 10 ? "0" : "") + n;
   }
 
+  function secondsToHms(d) {
+    d = Number(d);
+    let mDisplay = Math.floor((d % 3600) / 60);
+    let sDisplay = Math.floor((d % 3600) % 60);
+    return minTwoDigits(mDisplay) + ":" + minTwoDigits(sDisplay);
+  }
+
+  const handleresendOTP = () => {
+    let ResendValues = {
+      otp_ref_id: otpRefId,
+      auth_code: getAuthToken(otpRefId),
+    };
+    resendOtpService(JSONtoformdata(ResendValues))
+      .then((res) => {
+        if (res.data.status === 1) {
+          setTimerValue(res.data.remaining_seconds);
+          setSessionStorageData(
+            "CountDown",
+            JSON.stringify({
+              counter: res.data.remaining_seconds,
+              Date: new Date(),
+            })
+          );
+          setotpRefId(res.data.otp_ref_id);
+          toast.success(res.data.msg);
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
   return (
     <>
       <div className={classes.loginbg}>
@@ -179,6 +221,11 @@ const ResetPassword = () => {
                         ? classes.activeresendTxt
                         : classes.resendTxt
                     }
+                    onClick={() => {
+                      if (TimerValue === 0) {
+                        handleresendOTP();
+                      }
+                    }}
                   >
                     Resend code
                   </p>
