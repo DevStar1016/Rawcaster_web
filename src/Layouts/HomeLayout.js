@@ -31,9 +31,9 @@ const HomeLayout = () => {
             <img src={HomeIcon} className={classes.menuIcon} />
             <img src={SettingsIcon} className={classes.menuIcon} />
             <img src={NotificationIcon} className={classes.menuIcon} />
-            <Dropdown menu={{ items }} placement="topRight" arrow>
+            {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
-            </Dropdown>
+            </Dropdown> */}
             {/* <Dropdown className={classes.DropMenu}>
               <Dropdown.Toggle className={classes.dropMenuSec}>
                 <ProfileImg src={UserImg} Badgetype={1} /> Danii
