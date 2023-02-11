@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
+import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
+import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.png";
 import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
@@ -31,7 +33,7 @@ const SignupwithCredentials = () => {
     if (pathname.includes("signupwithemail")) {
       return {
         id: 1,
-        title: "Email",
+        title: "Email Address",
         instead: "Phone Number",
         pathname: "/signupwithmobile",
         image: SignupwithMobileImg,
@@ -144,6 +146,11 @@ const SignupwithCredentials = () => {
   return (
     <>
       <div className={classes.loginbg}>
+        <div className={classes.mobHeader}>
+          <Link to="/home">
+            <img src={mainlogowhite}  />
+          </Link>
+        </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link>
@@ -242,6 +249,7 @@ const SignupwithCredentials = () => {
                   <p className="ErrTxt">{errors?.date_of_birth}</p>
                 )}
               </Form.Item>
+              <p className={classes.termText}>By Signing up you agree with Rawcaster's <Link>terms and conditions</Link></p><br/>
               <Form.Item>
                 <Button block htmlType="submit" className={classes.btn}>
                   Join Rawcaster Family
@@ -271,12 +279,10 @@ const SignupwithCredentials = () => {
         </div>
 
         <div
-          className={`${classes.sliderSec} ${classes.rightSec} ${classes.signupSec}`}
+          className={`${classes.sliderSec} ${classes.rightSec}`}
         >
-          <div className={classes.contentBox}>
-            <div className={classes.signupImgSec}>
+          <div className={`${classes.contentBox} ${classes.stickypart}`}>
               <img src={getLoginType().image} />
-            </div>
             <h2>Connect Share Express</h2>
             <h4>
               with Rawcaster Influencers, bloggers, writers, photographers can

@@ -8,18 +8,18 @@
   font-family: 'DM Sans', sans-serif;
 }
 .loginSec { width: 50%; display: flex; margin-top: 40px; }
-.sliderSec { width: 50%; margin-top: 40px; background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%); justify-content: center;
+.sliderSec { width: 50%; margin-top: 40px; background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%); justify-content: top;
    display: flex;  flex-direction: column; align-items: center;
    text-align: center;
    padding:10px 20px; }
 .rightSec {
    background: #fff !important;
 }
+.rightSec img { max-width: 90%;}
 .signupImgSec {
    background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%);
    border-radius: 44.61px; 
 }
-
 .sliderSec .contentBox { max-width: 540px; }
 .sliderSec .contentBox img { width: 100%; }
 .sliderSec .contentBox h2 { color: #fff; font-family: 'Gilroy-Bold'; font-size: 28px; margin-top: 15px; }
@@ -30,13 +30,7 @@
 .rightSec .contentBox h2 {
    margin-top: 30px;
 }
-
-.signupSec img {
-   padding-left: 50px;
-   padding-top: 50px;
-   padding-bottom: 20px;
- 
-}
+.stickypart { top: 25%; position: sticky;}
 .hintTxt {
    font-size: 13px;
    line-height: 21px;
@@ -71,10 +65,9 @@ height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; m
 .changeTxt {
    font-size: 12px;
    line-height: 10px;
-   margin: 10px 0;
+   margin: 5px 0 -10px 0;
    color: #F2718D;
    cursor: pointer;
-
    font-weight: 500;
 }
 .validateBtn {
@@ -98,10 +91,10 @@ p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-si
 .fwgpsw .right { float: right; }
 .fwgpsw .ant-checkbox + span { font-size: 14px !important; font-weight: 500; color: #121F3F; }
 
-.dntacc { margin-top: 10px; font-size: 17px; color: #9BA0AA; font-family: 'DM Sans', sans-serif; }
+.dntacc { margin-top: 5px; font-size: 16px; color: #9BA0AA; font-family: 'DM Sans', sans-serif; font-weight: 300; }
 .dntacc span { color:#E26386 !important; font-weight: 500; cursor: pointer;margin-left: 5px; }
 .dntacc span a { color:#E26386 !important; text-decoration: none; }
-
+.termText a { text-decoration: none; color:#E26386; }
 .mt20 { margin-top: 20px; }
 .copyright { margin-top: 30px; color: #9BA0AA; }
 .copyright img { float: left; width: 45px; margin-right: 10px; }
