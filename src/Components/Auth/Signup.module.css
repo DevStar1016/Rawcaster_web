@@ -8,7 +8,7 @@
   font-family: 'DM Sans', sans-serif;
 }
 .loginSec { width: 50%; display: flex; margin-top: 40px; }
-.sliderSec { width: 50%; margin-top: 40px; background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%); justify-content: top;
+.sliderSec { width: 50%; margin-top: 40px; background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%); justify-content: center;
    display: flex;  flex-direction: column; align-items: center;
    text-align: center;
    padding:10px 20px; }
@@ -149,15 +149,14 @@ text-transform: uppercase; color: #1D1C1C; margin-bottom: 0;
 }
 .goBackBtn { 
    background: rgba(230, 232, 236, 0.5);
-border-radius: 34px;
-padding: 10px;
-height: fit-content;
-margin-right: 20px;
-margin-top: 15px;
-cursor: pointer;
-font-size: 12px;
-line-height: 25px;
-
+   border-radius: 34px;
+   padding: 10px 15px;
+   height: fit-content;
+   margin-right: 25px;
+   margin-top: 20px;
+   cursor: pointer;
+   font-size: 14px;
+   line-height: 25px;
 }
 .backBtn {
    height: 12px;
@@ -165,10 +164,10 @@ line-height: 25px;
 }
 .otpInput {
    height: 52px;
-   width: 52px;
+   width: 16%;
    margin: 5px;
    border: 1px solid #E8EAEE;
-border-radius: 8px;
+   border-radius: 8px;
 }
 .resendTxt {
    color: #99A0B0;
@@ -180,6 +179,8 @@ cursor: pointer;
    color: #EE456A;
    margin-bottom: 0px !important; 
 }
+.rSec { background: url(../../Assets/Images/png/r-bg.png) no-repeat center center;  background-size: cover; width: 100%; height: calc(100vh - 40px); display: flex; justify-content: center; align-items: center;}
+.nopad { padding: 0 !important;}
 @media (max-width:768px) {
 .loginSec { margin-top: 0 !important; }
 .loginSec, .loginbg, .sliderSec, .verifybg { display: block !important; width: 100% !important; }
@@ -198,6 +199,7 @@ cursor: pointer;
 .verifyCopy p { display: inline-block; }
 .stepOne span, .stepTwo { display: none; }
 .altSignBtn {justify-content: center;}
+.goBackBtn { display: none;}
 }
 @media (min-width:768px) {
 .mobHeader { display: none; }    

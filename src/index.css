@@ -38,14 +38,14 @@
     url("./Assets/Fonts/Gilroy-Bold.ttf") format("woff");
 }
 .mainsec {
-width: 100%;
+  width: 100%;
   margin: auto;
   background: var(--background);
 }
 
 .logoImage, .whitelogoImage {
-  width: 222px;
-  height: 46px;
+  width: 210px;
+  height: 40px;
   background-image: url("./Assets/Images/png/rawcater_logo.png");
   background-repeat: no-repeat;
   background-size: contain;

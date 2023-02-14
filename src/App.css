@@ -45,8 +45,8 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
     color: red;
     margin-bottom: 0px !important;
 }
-
-.dashboardContainer {
-  margin-top: 80px;
-}
+.innerContent { padding-top: 60px; }
 .ant-form-item { margin-bottom: 20px !important;}
+.mainWrapper { max-width: 1170px; margin: auto;}
+.ant-menu { border-bottom: none;}
+::placeholder { font-weight: 300; font-size: 15.5px; color: #1D1C1C; opacity: 1;}

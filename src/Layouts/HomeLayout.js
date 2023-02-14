@@ -15,7 +15,9 @@ const HomeLayout = () => {
   return (
     <>
       <Layout>
-        <Menu className={`${classes.hometopbar}`} mode="horizontal">
+        <div className={`${classes.topheader}`}>
+        <div className="mainWrapper">
+        <Menu  mode="horizontal">
           <div className="logoImage" />
           <InputGroup className={` ${classes.homeSearchInput}`}>
             <InputGroup.Text>
@@ -47,6 +49,8 @@ const HomeLayout = () => {
             </Dropdown> */}
           </div>
         </Menu>
+        </div>
+        </div>
         <Content className="site-layout mainsec">
           <Outlet />
         </Content>
