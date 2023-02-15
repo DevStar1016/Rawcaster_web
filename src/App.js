@@ -21,13 +21,14 @@ function App() {
     }
   };
 
-  const router = createBrowserRouter([
+  const routerpaths = [
     {
       path: "/",
       element: loginUserData ? <HomeLayout /> : <AuthLayout />,
       children: RootElement(getPrivateRouteValue()),
     },
-  ]);
+  ];
+  const router = createBrowserRouter(routerpaths, { basename: "/" });
 
   useEffect(() => {
     if (window.location.pathname !== "/setpassword") {

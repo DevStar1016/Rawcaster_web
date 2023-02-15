@@ -15,17 +15,22 @@ import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { getGeocodeData } from "../../Shared/Utility";
 import {
   LoginSocialApple,
-  LoginSocialFacebook,
   LoginSocialGoogle,
+  LoginSocialInstagram,
   LoginSocialTwitter,
 } from "reactjs-social-login";
 import {
   APPLE_API_KEY,
-  FACEBOOK_APP_ID,
   GOOGLE_CLIENT_ID,
+  INSTAGRAM_APP_ID,
+  INSTAGRAM_APP_SECRET,
+  PRIMARY_REDIRECT_URI,
   REDIRECT_URI,
-  TWITTER_API_KEY,
+  TWITTER_CLIENT_ID,
+  TWITTER_CLIENT_SECRET,
 } from "../../Shared/Constant";
+import axios from "axios";
+import AppleLogin from "react-apple-login";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -38,28 +43,30 @@ const Signup = () => {
       .catch((err) => {
         console.log(err);
       });
+    window.caches.keys().then((names) => {
+      // Delete all the cache files
+      console.log(names);
+    });
   }, []);
+
   return (
     <>
       <div className={classes.loginbg}>
-      <div className={classes.mobHeader}>
+        <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite}  />
+            <img src={mainlogowhite} />
           </Link>
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link>
-              <img
-                className={classes.hideMob}
-                src={mainlogo}       
-              />
+              <img className={classes.hideMob} src={mainlogo} />
             </Link>
             <h1 className={classes.heading_h1}>Join Rawcaster Family</h1>
             <p className={classes.subText}>
               Join now to access the latest insights, experience for your social
               media performance.
-            </p>            
+            </p>
             <Form
               name="normal_login"
               className="login-form"
@@ -86,7 +93,7 @@ const Signup = () => {
                 <Col sm={6}>
                   <LoginSocialGoogle
                     client_id={GOOGLE_CLIENT_ID}
-                    redirect_uri={REDIRECT_URI}
+                    redirect_uri={PRIMARY_REDIRECT_URI}
                     scope="openid profile email"
                     discoveryDocs="claims_supported"
                     access_type="offline"
@@ -97,13 +104,18 @@ const Signup = () => {
                       console.log(err);
                     }}
                   >
-                    <button className={classes.altSignBtn}>
+                    <button
+                      className={classes.altSignBtn}
+                      onClick={() => {
+                        // Makes sure the page reloads. Changes are only visible after you refresh.
+                      }}
+                    >
                       <img src={GoogleIcon} /> Signup with Google
                     </button>
                   </LoginSocialGoogle>
                 </Col>
                 <Col sm={6}>
-                  <LoginSocialFacebook
+                  {/* <LoginSocialFacebook
                     appId={FACEBOOK_APP_ID}
                     fieldsProfile={
                       "id,first_name,last_name,middle_name,name,name_format,picture,short_name,email,gender"
@@ -115,15 +127,29 @@ const Signup = () => {
                     onReject={(err) => {
                       console.log(err);
                     }}
+                  ></LoginSocialFacebook> */}
+
+                  <LoginSocialInstagram
+                    client_id={INSTAGRAM_APP_ID}
+                    client_secret={INSTAGRAM_APP_SECRET}
+                    // scope="basic"
+                    redirect_uri={REDIRECT_URI}
+                    onResolve={({ provider, data }) => {
+                      console.log(provider, data);
+                    }}
+                    onReject={(err) => {
+                      console.log(err, "==>err");
+                    }}
                   >
                     <button className={classes.altSignBtn}>
                       <img src={FacebookIcon} /> Signup with Facebook
                     </button>
-                  </LoginSocialFacebook>
+                  </LoginSocialInstagram>
                 </Col>
                 <Col sm={6}>
                   <LoginSocialTwitter
-                    client_id={TWITTER_API_KEY}
+                    client_id={TWITTER_CLIENT_ID}
+                    client_secret={TWITTER_CLIENT_SECRET}
                     redirect_uri={REDIRECT_URI}
                     onResolve={({ provider, data }) => {
                       console.log(provider, data);
@@ -138,10 +164,29 @@ const Signup = () => {
                   </LoginSocialTwitter>
                 </Col>
                 <Col sm={6}>
+                  {/* <AppleLogin
+                    clientId={APPLE_API_KEY}
+                    redirectURI={PRIMARY_REDIRECT_URI}
+                    scope={"name email"}
+                    responseMode="form_post"
+                    render={({ onClick }) => {
+                      return (
+                        <button
+                          className={classes.altSignBtn}
+                          onClick={onClick}
+                        >
+                          <img src={AppleIcon} /> Signup with Apple
+                        </button>
+                      );
+                    }}
+                    callback={(value) => {
+                      console.log(value, "==>value");
+                    }}
+                  /> */}
                   <LoginSocialApple
                     client_id={APPLE_API_KEY}
                     scope={"name email"}
-                    redirect_uri={REDIRECT_URI}
+                    redirect_uri={PRIMARY_REDIRECT_URI}
                     onResolve={({ provider, data }) => {
                       console.log(provider, data, "===>provider, data");
                     }}

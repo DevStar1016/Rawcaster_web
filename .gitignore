@@ -26,3 +26,6 @@ yarn-error.log*
 # node
 .vscode/
 package-lock.json
+cert.pem
+key.pem
+keytmp.pem
