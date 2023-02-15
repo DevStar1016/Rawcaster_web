@@ -2,7 +2,8 @@ import { Button, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
-import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
+import forgotImg from "../../Assets/Images/png/forgot-password.png"; 
+import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { useFormik } from "formik";
 import OtpInput from "react-otp-input";
@@ -180,6 +181,11 @@ const ResetPassword = () => {
   return (
     <>
       <div className={classes.loginbg}>
+      <div className={classes.mobHeader}>
+          <Link to="/home">
+            <img src={mainlogowhite}  />
+          </Link>
+        </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link>
@@ -206,10 +212,12 @@ const ResetPassword = () => {
                   numInputs={6}
                   className={classes.otpInput}
                   inputStyle={{
-                    height: "52px",
-                    width: "53px",
-                    border: "1px solid #E8EAEE",
+                    height: "50px",
+                    width: "100%",
+                    border: "none",
+                    borderRadius:"20px",
                     borderRadius: "8px",
+                    marginTop:"1px"
                   }}
                   containerStyle={{ margin: "10px 0 0 0" }}
                   separator={<span>{""}</span>}
@@ -304,9 +312,11 @@ const ResetPassword = () => {
           </div>
         </div>
 
-        <div className={classes.sliderSec}>
+        <div className={`${classes.sliderSec} ${classes.nopad}`}>
+          <div className={classes.rSec}>
           <div className={classes.contentBox}>
-            <img src={SigninImg} />
+            <img src={forgotImg} />
+          </div>
           </div>
         </div>
       </div>

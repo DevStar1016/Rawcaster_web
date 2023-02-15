@@ -13,6 +13,7 @@
     "bootstrap": "^5.2.3",
     "dayjs": "^1.11.7",
     "formik": "^2.2.9",
+    "material-icons": "^1.13.1",
     "react": "^18.2.0",
     "react-apple-login": "^1.1.6",
     "react-bootstrap": "^2.7.0",

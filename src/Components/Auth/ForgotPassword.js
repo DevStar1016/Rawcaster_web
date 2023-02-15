@@ -2,7 +2,8 @@ import { Button, Form, Input } from "antd";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
-import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
+import forgotImg from "../../Assets/Images/png/forgot-password.png"; 
+import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -53,6 +54,11 @@ const ForgotPassword = () => {
   return (
     <>
       <div className={classes.loginbg}>
+      <div className={classes.mobHeader}>
+          <Link to="/home">
+            <img src={mainlogowhite}  />
+          </Link>
+        </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link>
@@ -124,9 +130,11 @@ const ForgotPassword = () => {
           </div>
         </div>
 
-        <div className={classes.sliderSec}>
-          <div className={classes.contentBox}>
-            <img src={SigninImg} />
+        <div className={`${classes.sliderSec} ${classes.nopad}`}>
+          <div className={classes.rSec}>
+            <div className={classes.contentBox}>
+              <img src={forgotImg} />
+            </div>
           </div>
         </div>
       </div>
