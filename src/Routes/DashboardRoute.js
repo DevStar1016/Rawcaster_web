@@ -1,4 +1,4 @@
-import InfluencerDashboard from "../Components/Influencers/InfluencerDashboard";
+import Dashboard from "../Components/Dashboard/Dashboard";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
 import { HomePrivateRoute } from "./PrivateRoute";
 
@@ -13,10 +13,10 @@ export const DashboardRoute = (isHome = true) => {
       ),
     },
     {
-      path: "/profile",
+      path: "/dashboard",
       element: (
         <HomePrivateRoute auth={isHome}>
-          <InfluencerDashboard />
+          <Dashboard />
         </HomePrivateRoute>
       ),
     },

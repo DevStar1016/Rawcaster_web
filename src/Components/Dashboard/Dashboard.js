@@ -1,7 +1,7 @@
 import React from "react";
 
-const InfluencerDashboard = () => {
+const Dashboard = () => {
   return <div>InfluencerDashboard</div>;
 };
 
-export default InfluencerDashboard;
+export default Dashboard;
