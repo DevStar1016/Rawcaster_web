@@ -181,3 +181,17 @@ export const listEventsService = (data) => {
 export const deleteEventService = (data) => {
   return axios.post("deleteevent", data);
 };
+
+// Influencer
+
+export const getInfluencerCategoryService = (data) => {
+  return axios.get("getinfluencercategory", data);
+};
+
+export const InfluencerListService = (data) => {
+  return axios.post("influencerlist", data);
+};
+
+export const InfluencerFollowService = (data) => {
+  return axios.post("influencerfollow", data);
+};

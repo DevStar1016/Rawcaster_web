@@ -8,6 +8,7 @@ import AuthLayout from "../src/Layouts/AuthLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { RootElement } from "./Routes";
 import { handleLoginData } from "./Store/Redux/Reducer/AuthReducer";
+import Homepage from "./Components/Homepage/Homepage";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,6 +23,16 @@ function App() {
   };
 
   const routerpaths = [
+    {
+      path: "/",
+      element: <AuthLayout />,
+      children: [
+        {
+          index: true,
+          element: <Homepage />,
+        },
+      ],
+    },
     {
       path: "/",
       element: loginUserData ? <HomeLayout /> : <AuthLayout />,

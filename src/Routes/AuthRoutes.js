@@ -3,16 +3,10 @@ import Login from "../Components/Auth/Login";
 import ResetPassword from "../Components/Auth/ResetPassword";
 import Signup from "../Components/Auth/Signup";
 import SignupwithCredentials from "../Components/Auth/SignupwithCredentials";
-import Homepage from "../Components/Homepage/Homepage";
 import { AuthPrivateRoute } from "./PrivateRoute";
 
 export const AuthRoute = (isAuth = true) => {
-  console.log(isAuth);
   return [
-    {
-      path: "/",
-      element: <Homepage />,
-    },
     {
       path: "/login",
       element: (

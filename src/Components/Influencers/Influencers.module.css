@@ -33,7 +33,7 @@
     border-radius: 12px; clear: both;
 }
 .inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
-.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 11; border-radius: 50px !important; background: #563662 !important; width:45px; }
+.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 1; border-radius: 50px !important; background: #563662 !important; width:45px; }
 .searchIcon span {color: #fff; }
 .rightarrow { float: right; font-size: 19px; margin-left: 5px;}
 .influencers {
@@ -53,7 +53,16 @@ border: 1px solid rgba(0, 0, 0, 0.1);
 border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text-align: center; border: none; text-decoration: none; display: flex; justify-content: center; }
 .influencers .fanBtn span { font-size: 20px; margin-left: 5px; }
 .influencers .fanBtn:hover { text-decoration: none; }
-
+.selectCategory {
+    margin: 0px 20px;
+    width: 90% !important;
+    height: 100%;
+}
+.selectCategory span {
+    margin-top: 10px;
+    line-height: 20px !important;
+    color: #1D1C1C !important;
+}
 @media (max-width:768px) {
 .headerSec { display: block; width: 100%; float: left;}
 .headerSec h1 { width: 100%; margin: auto; text-align: center; font-size: 25px; line-height: 26px; }   

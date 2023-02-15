@@ -16,40 +16,44 @@ const HomeLayout = () => {
     <>
       <Layout>
         <div className={`${classes.topheader}`}>
-        <div className="mainWrapper">
-        <Menu  mode="horizontal">
-          <div className="logoImage" />
-          <InputGroup className={` ${classes.homeSearchInput}`}>
-            <InputGroup.Text>
-              <span class="material-symbols-outlined">search</span>
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Search Rawcaster"
-              aria-label="Search Rawcaster"
-            />
-          </InputGroup>
-          <div className="d-flex flex-row justify-content-between align-items-center">
-            <img src={LiveIcon} className={classes.liveIcon} />
-            <img src={HomeIcon} className={classes.menuIcon} />
-            <img src={SettingsIcon} className={classes.menuIcon} />
-            <img src={NotificationIcon} className={classes.menuIcon} />
-            {/* <Dropdown menu={{ items }} placement="topRight" arrow>
+          <div className="mainWrapper">
+            <Menu mode="horizontal">
+              <div className="logoImage" />
+              <InputGroup className={` ${classes.homeSearchInput}`}>
+                <InputGroup.Text>
+                  <span class="material-symbols-outlined">search</span>
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="Search Rawcaster"
+                  aria-label="Search Rawcaster"
+                />
+              </InputGroup>
+              <div className="d-flex flex-row justify-content-between align-items-center">
+                <img src={LiveIcon} className={classes.liveIcon} />
+                <img src={HomeIcon} className={classes.menuIcon} />
+                <img src={SettingsIcon} className={classes.menuIcon} />
+                <img src={NotificationIcon} className={classes.menuIcon} />
+                {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
             </Dropdown> */}
-            {/* <Dropdown className={classes.DropMenu}>
-              <Dropdown.Toggle className={classes.dropMenuSec}>
-                <ProfileImg src={UserImg} Badgetype={1} /> Danii
-              </Dropdown.Toggle>
+                <Dropdown className={classes.DropMenu}>
+                  <Dropdown.Toggle className={classes.dropMenuSec}>
+                    <ProfileImg src={UserImg} Badgetype={1} /> Danii
+                  </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown> */}
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                    <Dropdown.Item href="#/action-2">
+                      Another action
+                    </Dropdown.Item>
+                    <Dropdown.Item href="#/action-3">
+                      Something else
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </Menu>
           </div>
-        </Menu>
-        </div>
         </div>
         <Content className="site-layout mainsec">
           <Outlet />

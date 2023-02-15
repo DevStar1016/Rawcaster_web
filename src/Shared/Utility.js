@@ -65,3 +65,10 @@ export const getGeocodeData = () => {
     }
   });
 };
+
+export const getSelectData = (listData = []) => {
+  return listData.map((value) => ({
+    label: value,
+    value: value,
+  }));
+};
