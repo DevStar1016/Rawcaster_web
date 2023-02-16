@@ -37,7 +37,7 @@ const Homepage = () => {
                 allows you to share with the whole world, very small pieces or
                 tidbit of treasures in your mind.
               </p>
-              <Link className={classes.getStarted} to="/home">
+              <Link className={classes.getStarted} to="/dashboard">
                 Explore Rawcaster
               </Link>
             </div>
@@ -171,7 +171,10 @@ const Homepage = () => {
           The first platform that gives you a space to chat, talk, host and
           participate in live events virtually
         </h5>
-        <img width="100%" src={require("../../Assets/Images/png/rawcaster_window.png")} />
+        <img
+          width="100%"
+          src={require("../../Assets/Images/png/rawcaster_window.png")}
+        />
       </div>
       <div className={classes.platform}>
         <h1>Happy users around the globe</h1>
@@ -233,14 +236,24 @@ const Homepage = () => {
       </div>
       <div className={classes.founder}>
         <div className={classes.msgBox}>
-            <img className={classes.bgShape} src={bgelements} />           
-            <img className={classes.profileImg} src={require("../../Assets/Images/png/godfrey.png")} />
-            <p>
-            <img className={classes.smLogo} src={mainlogowhite} /><br/><br/>
-            “Rawcaster is a platform created to appeal to young and educated people whose lifestyle, activities and social profile give them influence over many others who look to them as role models. Rawcaster is built to offer these influencers every tool they need to interact with their fans and for the fans to interact with each other”
-            <br/><br/>
-            - Godfrey (Co-founder)
-            </p>                
+          <img className={classes.bgShape} src={bgelements} />
+          <img
+            className={classes.profileImg}
+            src={require("../../Assets/Images/png/godfrey.png")}
+          />
+          <p>
+            <img className={classes.smLogo} src={mainlogowhite} />
+            <br />
+            <br />
+            “Rawcaster is a platform created to appeal to young and educated
+            people whose lifestyle, activities and social profile give them
+            influence over many others who look to them as role models.
+            Rawcaster is built to offer these influencers every tool they need
+            to interact with their fans and for the fans to interact with each
+            other”
+            <br />
+            <br />- Godfrey (Co-founder)
+          </p>
         </div>
       </div>
 

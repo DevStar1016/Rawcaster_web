@@ -1,24 +1,29 @@
 import Dashboard from "../Components/Dashboard/Dashboard";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
+import HomeLayout from "../Layouts/HomeLayout";
 import { HomePrivateRoute } from "./PrivateRoute";
 
-export const DashboardRoute = (isHome = true) => {
+export const DashboardRoute = () => {
   return [
     {
-      path: "/selectinfluencers",
-      element: (
-        <HomePrivateRoute auth={isHome}>
-          <SelectInfluencers />
-        </HomePrivateRoute>
-      ),
-    },
-    {
-      path: "/dashboard",
-      element: (
-        <HomePrivateRoute auth={isHome}>
-          <Dashboard />
-        </HomePrivateRoute>
-      ),
+      path: "/",
+      element: <HomePrivateRoute />,
+      children: [
+        {
+          path: "/",
+          element: <HomeLayout />,
+          children: [
+            {
+              path: "/selectinfluencers",
+              element: <SelectInfluencers />,
+            },
+            {
+              path: "/dashboard",
+              element: <Dashboard />,
+            },
+          ],
+        },
+      ],
     },
   ];
 };

@@ -1,6 +1,8 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
 import { GECODE_API_KEY } from "./Constant";
+import { removeCookieData, removeLocalStorageData } from "../Store/Storage";
+import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 
 export const getAuthToken = (value) => {
   var sha1 = require("sha1");
@@ -81,3 +83,9 @@ export function filterValidObject(obj) {
     return acc;
   }, {});
 }
+
+export const RemoveToken = (dispatch) => {
+  dispatch(handleLoginData(null));
+  removeCookieData("rawcaster_user_token");
+  removeLocalStorageData("rawcaster_user_token");
+};

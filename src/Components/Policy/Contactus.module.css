@@ -1,0 +1,17 @@
+.contactBg {margin-top: 100px; background: url(../../Assets/Images/contact_bg.jpg) center top  no-repeat; min-height: calc(100% - 171px); float: left; width: 100%; padding: 15px;  }
+.contactBox { max-width: 620px; margin: 40px auto 50px auto; background: #fff; padding:25px 35px; box-shadow: 0px 3px 6px #00000029;    border-radius: 8px }
+.heading_h1 { color: #fff !important; font-family: 'Montserrat', sans-serif; font-size: 32px !important; margin-top: 40px; margin-bottom: 5px !important; font-weight: 700; text-align: center; text-align: center; }
+p.subhead { color: #fff; font-size: 16px; font-weight: 500; text-align: center; }
+p.subhead a { color: #F4C314; font-weight: 600; cursor: pointer;  }
+.textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #839BA0; margin-bottom: 5px; padding-left: 20px; }
+.textBox::placeholder { color: #C3C3C3; font-size: 16px; } 
+.textBox:focus, .textBox::selection, .textBox:hover { border: #191919 1px solid !important; outline: none !important; box-shadow: none !important; }
+.textarea { height: 180px !important; }
+.btn {
+    height: 50px; width: 275px; margin:10px auto 0 auto; color: #fff; border-radius: 25px;
+    background: #FAA21B;
+    border: none; font-size: 16px; font-weight: 800; clear: both; display: block;
+    font-family: 'Montserrat', sans-serif;
+}
+.btn:hover { color: #fff; border: none; background: #0F2C48; }
+p.label { color: #191919 !important; font-size: 16px; font-weight: bold; margin-bottom: 5px; font-family: 'Montserrat', sans-serif; }

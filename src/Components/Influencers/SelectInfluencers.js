@@ -94,9 +94,11 @@ const SelectInfluencers = () => {
   };
 
   useEffect(() => {
-    getCategoryList();
-    getInfluencerList();
-  }, []);
+    if (loginUserData !== null) {
+      getCategoryList();
+      getInfluencerList();
+    }
+  }, [loginUserData]);
 
   const getSelectData = (listData = []) => {
     return listData.map((value) => ({

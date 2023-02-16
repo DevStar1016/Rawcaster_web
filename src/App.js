@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router";
+import { RouterProvider, useNavigate } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import { useEffect } from "react";
@@ -13,35 +13,22 @@ import Spinner from "./Sharedcomponents/Spinner";
 import MainLayout from "./Layouts/MainLayout";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
+import axios from "axios";
+import { RemoveToken } from "./Shared/Utility";
+import { toast } from "react-hot-toast";
+import Privacypolicy from "./Components/Policy/Privacypolicy";
+import TermsandConditions from "./Components/Policy/TermsandConditions";
+import Cookiespolicy from "./Components/Policy/CookiePolicy";
+import Contactus from "./Components/Policy/Contactus";
 
 function App() {
   const dispatch = useDispatch();
-  const { loginUserData } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.dashboard);
-
-  const getPrivateRouteValue = () => {
-    if (loginUserData) {
-      return { isAuth: false, isHome: true };
-    } else {
-      return { isAuth: true, isHome: false };
-    }
-  };
 
   const routerpaths = [
     {
       path: "/",
-      element: <MainLayout />,
-      children: [
-        {
-          index: true,
-          element: <Homepage />,
-        },
-      ],
-    },
-    {
-      path: "/",
-      element: loginUserData ? <HomeLayout /> : <AuthLayout />,
-      children: RootElement(getPrivateRouteValue()),
+      children: RootElement(),
     },
   ];
   const router = createBrowserRouter(routerpaths, { basename: "/" });
@@ -51,6 +38,20 @@ function App() {
       removeSessionStorageData("CountDown");
     }
   }, [window.location]);
+
+  axios.interceptors.response.use(
+    function (response) {
+      if (response.data.status === -1) {
+        RemoveToken(dispatch);
+        window.location.assign("/login");
+        toast.error(response.data.msg);
+      }
+      return response;
+    },
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
 
   useEffect(() => {
     if (getLocalStorageData("rawcaster_user_token")) {

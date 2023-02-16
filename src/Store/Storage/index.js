@@ -25,7 +25,7 @@ export const getSessionStorageData = (key, value) => {
 };
 
 export const removeCookieData = (key) => {
-  return setCookie(key, undefined);
+  return setCookie(key, null, null);
 };
 
 export const removeLocalStorageData = (key, value) => {
