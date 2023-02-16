@@ -5,6 +5,7 @@ import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
 import thumblogo from "../../Assets/Images/svg/Fav-Rawcaster.svg";
 import { Button } from "antd";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
+import bgelements from "../../Assets/Images/svg/bg-elemtns.svg";
 // import { Carousel } from '@trendyol-js/react-carousel';
 
 
@@ -137,8 +138,8 @@ const Homepage = () => {
 
           <div className={classes.founder}>
             <div className={classes.msgBox}>
-                <img className={classes.bgShape} src={require("../../Assets/Images/svg/bg-elemtns.svg")} />           
-                {/* <img className={classes.profileImg} src={require("../../assets/home/profile-img.png")} /> */}
+                <img className={classes.bgShape} src={bgelements} />           
+                <img className={classes.profileImg} src={require("../../Assets/Images/png/godfrey.png")} />
                 <p>
                 <img className={classes.smLogo} src={mainlogowhite} /><br/><br/>
                 “Rawcaster is a platform created to appeal to young and educated people whose lifestyle, activities and social profile give them influence over many others who look to them as role models. Rawcaster is built to offer these influencers every tool they need to interact with their fans and for the fans to interact with each other”

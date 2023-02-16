@@ -85,7 +85,7 @@
   .homeContent .imgSec { width: 50%; float: left; justify-content: center; align-items: center; display: flex;}
   .homeContent .imgSec img { width: 100%; }
   .homeContent h2 { color: #1D1C1C; font-family: 'Gilroy-Bold'; font-size: 27px; }
-  .homeContent p { font-size: 16px; line-height: 24px;  color: #616060; font-family: 'DM Sans', sans-serif;}
+  .homeContent p { font-size: 17px; line-height: 24px;  color: #616060; font-family: 'DM Sans', sans-serif;}
   .homeContent .textSec img { margin-left: -40px; margin-top: -50px; max-width: 150px; }
   .homeContent .getStarted { background: #563662 !important; border-radius: 12px; width: 200px; margin-top: 10px;}
   .homeContent .getStarted:hover { background: #E26386 !important; color: #fff; }
