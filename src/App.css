@@ -56,14 +56,18 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
   box-shadow: none !important;
   height: 40px !important;
 }
-.login_carosel .owl-dot span{
+.login_carosel .owl-dot span ,.signup_carosel .owl-dot span{
   background: #FFFFFF !important;
   opacity: 0.6 !important;
   width: 6.33px !important;
 height: 6.3px !important;
 }
-.login_carosel .active span {
+.login_carosel .active span,.signup_carosel .active span {
   width: 21px !important;
 height: 6.97px !important;
 opacity: 1 !important;
+}
+.signup_carosel .owl-dot span {
+  background: #1D1C1C !important;
+
 }

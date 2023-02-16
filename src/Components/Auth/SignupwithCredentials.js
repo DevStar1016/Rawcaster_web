@@ -7,6 +7,7 @@ import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.png";
 import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
+import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -23,6 +24,7 @@ import { toast } from "react-hot-toast";
 import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import OwlCarousel from "react-owl-carousel";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();
@@ -143,12 +145,18 @@ const SignupwithCredentials = () => {
       });
   };
 
+  const carouselOptions = {
+    items: 1,
+    nav: false,
+    loop: true,
+  };
+
   return (
     <>
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite}  />
+            <img src={mainlogowhite} />
           </Link>
         </div>
         <div className={classes.loginSec}>
@@ -249,7 +257,11 @@ const SignupwithCredentials = () => {
                   <p className="ErrTxt">{errors?.date_of_birth}</p>
                 )}
               </Form.Item>
-              <p className={classes.termText}>By Signing up you agree with Rawcaster's <Link>terms and conditions</Link></p><br/>
+              <p className={classes.termText}>
+                By Signing up you agree with Rawcaster's{" "}
+                <Link>terms and conditions</Link>
+              </p>
+              <br />
               <Form.Item>
                 <Button block htmlType="submit" className={classes.btn}>
                   Join Rawcaster Family
@@ -279,16 +291,40 @@ const SignupwithCredentials = () => {
         </div>
 
         <div
-          className={`${classes.sliderSec} ${classes.rightSec}`}
+          className={`${classes.sliderSec} ${classes.rightSec} signup_carosel`}
         >
-          <div className={`${classes.contentBox} ${classes.stickypart}`}>
-              <img src={getLoginType().image} />
-            <h2>Connect Share Express</h2>
-            <h4>
-              with Rawcaster Influencers, bloggers, writers, photographers can
-              collaborate with their fans easily
-            </h4>
-          </div>
+          <OwlCarousel className={"owl-theme "} {...carouselOptions}>
+            <div className={classes.contentBox}>
+              <div className={classes.signupImgSec}>
+                <img src={SignupImg} />
+              </div>
+              <h2>Connect Share Express</h2>
+              <h4>
+                with Rawcaster Influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+            <div className={classes.contentBox}>
+              <div className={classes.signupImgSec}>
+                <img src={SignupwithMobileImg} />
+              </div>
+              <h2>Live Talk Shows</h2>
+              <h4>
+                with Rawcaster Influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+            <div className={classes.contentBox}>
+              <div className={classes.signupImgSec}>
+                <img src={SignupwithEmailImg} />
+              </div>
+              <h2>Schedule Events</h2>
+              <h4>
+                with Rawcaster Influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+          </OwlCarousel>
         </div>
       </div>
       <RedirectModal

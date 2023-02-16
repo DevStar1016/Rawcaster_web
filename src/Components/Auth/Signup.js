@@ -40,6 +40,9 @@ import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 import RedirectModal from "../../Modal/RedirectModal";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.png";
+import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
+import OwlCarousel from "react-owl-carousel";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -93,6 +96,12 @@ const Signup = () => {
       .catch((err) => {
         toast.error(err.message);
       });
+  };
+
+  const carouselOptions = {
+    items: 1,
+    nav: false,
+    loop: true,
   };
 
   return (
@@ -287,17 +296,41 @@ const Signup = () => {
           </div>
         </div>
 
-        <div className={`${classes.sliderSec} ${classes.rightSec}`}>
-          <div className={classes.contentBox}>
-            <div className={classes.signupImgSec}>
-              <img src={SignupImg} />
+        <div
+          className={`${classes.sliderSec} ${classes.rightSec} signup_carosel`}
+        >
+          <OwlCarousel className={"owl-theme "} {...carouselOptions}>
+            <div className={classes.contentBox}>
+              <div className={classes.signupImgSec}>
+                <img src={SignupImg} />
+              </div>
+              <h2>Connect Share Express</h2>
+              <h4>
+                with Rawcaster Influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
             </div>
-            <h2>Connect Share Express</h2>
-            <h4>
-              with Rawcaster Influencers, bloggers, writers, photographers can
-              collaborate with their fans easily
-            </h4>
-          </div>
+            <div className={classes.contentBox}>
+              <div className={classes.signupImgSec}>
+                <img src={SignupwithMobileImg} />
+              </div>
+              <h2>Live Talk Shows</h2>
+              <h4>
+                with Rawcaster Influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+            <div className={classes.contentBox}>
+              <div className={classes.signupImgSec}>
+                <img src={SignupwithEmailImg} />
+              </div>
+              <h2>Schedule Events</h2>
+              <h4>
+                with Rawcaster Influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+          </OwlCarousel>
           <RedirectModal
             open={redirectModal.show}
             msg={redirectModal.msg}
