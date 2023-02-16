@@ -4,9 +4,16 @@ import classes from "./Homepage.module.css";
 import thumblogo from "../../Assets/Images/svg/Fav-Rawcaster.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import bgelements from "../../Assets/Images/svg/bg-elemtns.svg";
+import OwlCarousel from "react-owl-carousel";
 // import { Carousel } from '@trendyol-js/react-carousel';
 
 const Homepage = () => {
+  const carouselOptions = {
+    items: 3.5,
+    nav: false,
+    loop: true,
+    dots: false,
+  };
   return (
     <div>
       <div className={classes.welcomeSec}>
@@ -163,7 +170,64 @@ const Homepage = () => {
         </h5>
         <img width="100%" src={require("../../Assets/Images/png/rawcaster_window.png")} />
       </div>
+      <div className={classes.platform}>
+        <h1>Happy users around the globe</h1>
+        <h5>
+          The first platform that gives you a space to chat, talk, host and
+          participate in live events virtually
+        </h5>
 
+        <div className={classes.deskSlide}>
+          <OwlCarousel className="owl-theme" {...carouselOptions}>
+            <div className={classes.userSec}>
+              <p>
+                Rawcaster is the epitome of what a social media platform should
+                be and poised to take the world by storm. By taking the best
+                features of existing social media platforms and putting all in
+                one platform is a brilliant idea.
+              </p>
+              <div className={classes.author}>
+                <img src={require("../../Assets/Images/png/elakkiya.png")} />
+                <p>William Sagoe</p>
+              </div>
+            </div>
+            <div className={classes.userSec}>
+              <p>
+                This is highly commendable. And should be made to go viral.
+                However, I would like to suggest that a video presentation be
+                made to show how the app works.
+              </p>
+              <div className={classes.author}>
+                <img src={require("../../Assets/Images/png/elakkiya.png")} />
+                <p>Ngozi Jones</p>
+              </div>
+            </div>
+            <div className={classes.userSec}>
+              <p>
+                Rawcaster is amazing! Because it combines many tools in a single
+                platform. Anyone who wants to influence others or communicate
+                better with others should have it.
+              </p>
+              <div className={classes.author}>
+                <img src={require("../../Assets/Images/png/elakkiya.png")} />
+                <p>Abel Consiglio</p>
+              </div>
+            </div>
+            <div className={classes.userSec}>
+              <p>
+                Rawcaster is a great application that acts as an all in one
+                platform. This will be a big hit with both general and
+                professional users to interact. Additionally, events will allow
+                users from different locations to come together and celebrate.
+              </p>
+              <div className={classes.author}>
+                <img src={require("../../Assets/Images/png/elakkiya.png")} />
+                <p>Elakkiya Manivannan</p>
+              </div>
+            </div>
+          </OwlCarousel>
+        </div>
+      </div>
       <div className={classes.founder}>
         <div className={classes.msgBox}>
             <img className={classes.bgShape} src={bgelements} />           

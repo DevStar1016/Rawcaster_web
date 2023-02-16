@@ -11,6 +11,8 @@ import { handleLoginData } from "./Store/Redux/Reducer/AuthReducer";
 import Homepage from "./Components/Homepage/Homepage";
 import Spinner from "./Sharedcomponents/Spinner";
 import MainLayout from "./Layouts/MainLayout";
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
 
 function App() {
   const dispatch = useDispatch();

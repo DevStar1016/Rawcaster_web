@@ -12,7 +12,11 @@ import FacebookIcon from "../../Assets/Icons/png/facebook_logo.png";
 import TwitterIcon from "../../Assets/Icons/png/twitter_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
-import { getAuthToken, getGeocodeData } from "../../Shared/Utility";
+import {
+  getAuthToken,
+  getGeocodeData,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import {
   LoginSocialApple,
   LoginSocialGoogle,
@@ -29,39 +33,22 @@ import {
   TWITTER_CLIENT_ID,
   TWITTER_CLIENT_SECRET,
 } from "../../Shared/Constant";
-import axios from "axios";
-import AppleLogin from "react-apple-login";
-import { useFormik } from "formik";
+import jwt_decode from "jwt-decode";
+import { toast } from "react-hot-toast";
+import { SocialMediaLoginService } from "../../Services/ApiService";
+import { setCookieData, setLocalStorageData } from "../../Store/Storage";
+import RedirectModal from "../../Modal/RedirectModal";
+import { useDispatch } from "react-redux";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
     latitude: "",
     longitude: "",
-  });
-
-  const {
-    values,
-    handleChange,
-    handleSubmit,
-    setFieldValue,
-    errors,
-    touched,
-    setValues,
-  } = useFormik({
-    initialValues: {
-      signin_type: "",
-      first_name: "",
-      display_name: "",
-      email_id: "",
-      geo_location: "",
-      latitude: "",
-      longitude: "",
-    },
-    onSubmit: (values) => {
-      console.log(values);
-    },
   });
 
   useEffect(() => {
@@ -83,6 +70,30 @@ const Signup = () => {
         }));
       });
   }, []);
+
+  const HandleSignup = (values) => {
+    let finalData = {
+      ...values,
+      ...LocationValue,
+      auth_code: getAuthToken(values.email_id),
+    };
+    SocialMediaLoginService(JSONtoformdata(finalData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          toast.success(res.data.msg);
+          dispatch(handleLoginData(res.data));
+          setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
+          setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
+        } else if (res.data.status === 2) {
+          setredirectModal({ show: true, msg: res.data.msg });
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
 
   return (
     <>
@@ -133,18 +144,16 @@ const Signup = () => {
                     discoveryDocs="claims_supported"
                     access_type="offline"
                     onResolve={({ provider, data }) => {
-                      console.log(provider, data);
-                      setValues((pre) => ({
-                        ...pre,
+                      let resultVal = {
                         signin_type: 5,
                         first_name: data.name,
                         display_name: data.name,
                         email_id: data.email,
-                      }));
-                      handleSubmit();
+                      };
+                      HandleSignup(resultVal);
                     }}
                     onReject={(err) => {
-                      console.log(err);
+                      toast.error("Something Went Wrong !!");
                     }}
                   >
                     <button
@@ -181,7 +190,7 @@ const Signup = () => {
                       console.log(provider, data);
                     }}
                     onReject={(err) => {
-                      console.log(err, "==>err");
+                      toast.error("Something Went Wrong !!");
                     }}
                   >
                     <button className={classes.altSignBtn}>
@@ -198,7 +207,7 @@ const Signup = () => {
                       console.log(provider, data);
                     }}
                     onReject={(err) => {
-                      console.log(err);
+                      toast.error("Something Went Wrong !!");
                     }}
                   >
                     <button className={classes.altSignBtn}>
@@ -231,10 +240,23 @@ const Signup = () => {
                     scope={"name email"}
                     redirect_uri={PRIMARY_REDIRECT_URI}
                     onResolve={({ provider, data }) => {
-                      console.log(provider, data, "===>provider, data");
+                      var decoded = jwt_decode(data.authorization.id_token);
+                      if (decoded?.email && decoded?.email !== "") {
+                        let resultVal = {
+                          signin_type: 2,
+                          first_name:
+                            data?.user?.name?.firstName || decoded.email,
+                          display_name:
+                            data?.user?.name?.firstName || decoded.email,
+                          email_id: decoded.email,
+                        };
+                        HandleSignup(resultVal);
+                      } else {
+                        toast.error("Something Went Wrong !!");
+                      }
                     }}
                     onReject={(err) => {
-                      console.log(err);
+                      toast.error("Something Went Wrong !!");
                     }}
                   >
                     <button className={classes.altSignBtn}>
@@ -276,6 +298,18 @@ const Signup = () => {
               collaborate with their fans easily
             </h4>
           </div>
+          <RedirectModal
+            open={redirectModal.show}
+            msg={redirectModal.msg}
+            Btnname={"Sign in"}
+            onSuccess={() => {
+              navigate("/login");
+              setredirectModal({ show: false, msg: "" });
+            }}
+            onClose={() => {
+              setredirectModal({ show: false, msg: "" });
+            }}
+          />
         </div>
       </div>
     </>

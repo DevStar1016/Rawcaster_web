@@ -3,15 +3,29 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router";
 import classes from "./Layout.module.css";
 import mainlogo from "../Assets/Images/svg/rawcaster_logo.svg";
-import { Button } from "antd";
+import { Button, Drawer } from "antd";
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 
 const MainLayout = () => {
+
+  const [visible, setVisible] = useState(false);
+  const showDrawer = () => {
+    setVisible(true);
+  };
+  const onClose = () => {
+    setVisible(false);
+  };
+  
   const { Header, Content } = Layout;
   const navigate = useNavigate();
   return (
+    <div
+    className={classes.main_menu}
+    mode="horizontal"
+  >
     <Layout>
-      <Menu className={`${classes.topbar}`} mode="horizontal">
+      <Menu className={`${classes.topbar} ${classes.onlydes}`} mode="horizontal">
         <Menu.Item key="join">
           <a to="/joinmeeting">Join a meeting</a>
         </Menu.Item>
@@ -28,9 +42,46 @@ const MainLayout = () => {
           <a to="/faq">FAQs</a>
         </Menu.Item>
       </Menu>
+
+      <div className={classes.mobmenu}>
+        <div className={classes.mobheader}>
+          <img className={classes.moblogo} src={require("../Assets/Images/png/mob-rlogo.png")}/>
+          <div className={classes.rightmenu}>
+              <ul>
+              <li>
+                <Link to="#">Join</Link>
+              </li>
+              <li>
+                <Link to="#">Host</Link>
+              </li>
+            </ul>
+            <i onClick={showDrawer} className="material-icons">
+              menu
+            </i>
+          </div>
+        </div>
+
+        <Drawer
+          width="250px"
+          placement="right"
+          className={classes.sidemenu}
+          closable={false}
+          onClose={onClose}
+          visible={visible}
+        >
+        <img width="100%" className={classes.mainlogo} src={mainlogo} />
+        <p><Link to="#">LOGIN</Link></p>
+        <p><Link to="#">SIGN UP</Link></p>
+        <p><Link to="#">FAQ</Link></p>
+        <p><Link to="#">DOWNLOAD</Link></p>
+        <p><Link to="#">SUPPORT</Link></p>
+        </Drawer>
+      </div>
+     
+
       {/* <Header className={classes.header}> <Navbar /> </Header> */}
       <Content className="site-layout mainsec">
-        <div className={classes.homeheader}>
+        <div className={`${classes.homeheader} ${classes.onlydes}`}>
           <img className={classes.mainlogo} src={mainlogo} />
           <div className={classes.rightmenu}>
             <Link>Tutorials</Link>
@@ -85,6 +136,7 @@ const MainLayout = () => {
 
       </Content>
     </Layout>
+    </div>
   );
 };
 

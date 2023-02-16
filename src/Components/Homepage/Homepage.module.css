@@ -8,28 +8,27 @@
     float: left;
     clear: both;
     display: flex;
-    /* background: url(../../assets/top_vector.jpg) no-repeat top right; */
+    margin-top: 110px;
 }
 .welcomeSec2 {
     width: 100%;
     float: left;
     clear: both;
     display: flex;
-    /* background: url(../../assets/bottom_vector.png) no-repeat bottom left; */
 }
   .getStarted {
     cursor: pointer;
-    background: #E26386 !important;
+    background: #F2718D !important;
     color: #fff;
-    border-radius: 12px;
+    border-radius: 10px;
     border: none;
-    height: 58px;
+    height: 60px;
     text-align: center;
     width: 225px;
     font-weight: 500;
     font-size: 17px; 
     float: left;
-    padding-top: 15px; text-decoration: none;
+    padding-top: 16px; text-decoration: none;
     font-family: 'DM Sans', sans-serif;
   }
   .getStarted:hover { background: #563662 !important; color: #fff; }
@@ -61,7 +60,7 @@
     background: url(../../Assets/Images/svg/line.svg) no-repeat bottom; 
     padding-bottom: 3px; padding-left: 10px; padding-right: 10px; }
   .leftSec p {
-    font-size: 17px;
+    font-size: 18px;
     margin-top: 0px;
     color: #616060;
     max-width: 480px;
@@ -95,8 +94,8 @@
   .platform h5 { text-align: center; font-size: 18px !important; color: #1D1C1C; font-weight: normal; font-family: 'DM Sans', sans-serif; max-width: 540px; margin: auto; margin-bottom: 20px;}
   .platform .textSec { margin:20px 25px 0 25px; width: calc(33% - 50px); float: left; }
   .platform .textSec img { width: 100%; margin-bottom: 20px;}
-  .platform .textSec h3 { font-size: 20px !important; color: #1D1C1C; font-weight: 600; font-family: 'DM Sans', sans-serif; margin-bottom: 10px;}
-  .platform .textSec p, .userSec p, .downloadApp .textSec p { font-size:16px !important; line-height: 24px; color: #1D1C1C; font-weight: 400; font-family: 'DM Sans', sans-serif; }
+  .platform .textSec h3 { font-size: 21px !important; color: #1D1C1C; font-weight: 600; font-family: 'DM Sans', sans-serif; margin-bottom: 10px;}
+  .platform .textSec p, .userSec p, .downloadApp .textSec p { font-size:17px !important; line-height: 24px; color: #1D1C1C; font-weight: 400; font-family: 'DM Sans', sans-serif; }
   .platform .btnSec { margin:30px auto 100px auto; text-align: center; float: left; width: 100%; justify-content: center; display: flex; }
 
   .userSec { display: flex;  min-height: 315px; flex-direction: column; position: relative;  background: #fff; padding:30px; margin: 20px; box-shadow:0px 1px 16px rgb(0 0 0 / 16%);
@@ -111,7 +110,7 @@
     left: 0;
     z-index: -1;
     margin: -7px;
-    background: linear-gradient(to right, #F3738B, orange);
+    background: linear-gradient(to right, #F2718D, orange);
   }
   .userSec .author { bottom: 30px; position: absolute; width: calc(100% - 50px); }
   .userSec .author img { width: 50px; height: 50px; border-radius: 50%; float: left; margin-right: 10px; }
@@ -131,14 +130,33 @@
   .downloadApp .textSec h4 { font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight: bold; }
   .downloadApp .textSec .Rlogo { max-height: 80px; margin-bottom: 15px; }
   .downloadApp .textSec p { max-width: 300px; font-size: 19px !important; }
-  .downloadApp .textSec .appImg { max-height: 58px; margin-right: 10px; }
+  .downloadApp .textSec .appImg { max-height: 58px; margin-right: 10px; margin-bottom: 10px; }
   .downloadApp .imgSec img { width: 100%; }
   
   .bgart { 
     background: url(../../Assets/Images/svg/bg-2.svg) no-repeat top center;
      background-size: 1200px 200px; float: left; width: 100%;}
   
+     .userSec { display: flex;  min-height: 315px; flex-direction: column; position: relative;  background: #fff; padding:30px; margin: 20px; box-shadow:0px 1px 16px rgb(0 0 0 / 16%);
+      border-radius: 22px; border: solid 5px transparent; }
+   .userSec:before {
+     content: "";
+     border-radius: 22px;
+     position: absolute;
+     top: 0;
+     right: 0;
+     bottom: 0;
+     left: 0;
+     z-index: -1;
+     margin: -7px;
+     background: linear-gradient(to right, #F2718D, orange);
+   }
+   .userSec .author { bottom: 30px; position: absolute; width: calc(100% - 50px); }
+   .userSec .author img { width: 50px !important; height: 50px; border-radius: 50%; float: left; margin-right: 10px; }
+   .userSec .author p {font-weight: 600; margin-top: 10px; }
+   .userSec button { display: none; }
   @media (max-width: 768px) {
+    .welcomeSec { margin-top: 50px; }
     .rightSec {
       display: none;
     }
@@ -156,7 +174,7 @@
       margin-bottom: 50px;
     }
     .founder .msgBox, .downloadApp { margin: 0 15px; width: calc(100% - 30px) !important;  }
-    .downloadApp .textSec { padding-bottom: 50px; text-align: center; }
+    .downloadApp .textSec {padding-bottom: 50px; text-align: center; }
     .downloadApp .textSec p { text-align: center; max-width: 100%; }  
     .founder .msgBox { text-align: center; }
     .msgBox .profileImg { margin:0 auto 20px auto !important; width: 130px; height: 130px;}

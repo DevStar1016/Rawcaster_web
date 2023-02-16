@@ -195,3 +195,7 @@ export const InfluencerListService = (data) => {
 export const InfluencerFollowService = (data) => {
   return axios.post("influencerfollow", data);
 };
+
+export const SocialMediaLoginService = (data) => {
+  return axios.post("socialmedialogin", data);
+};

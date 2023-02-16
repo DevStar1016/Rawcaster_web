@@ -1,4 +1,4 @@
-.topbar ,.hometopbar{
+.topbar, .hometopbar{
   min-height: 40px;
   background: #563662;
   float: left;
@@ -81,11 +81,12 @@ width: 100px;
   height: 25px;
   margin: 0 7px;
 }
-.homeheader { margin-top: 40px; float: left; width: 100%; padding: 10px 35px; box-shadow: 0 3px 6px rgb(0 0 0 / 8%); }
+.homeheader { background: #fff; position: fixed; margin-top: 40px; float: left; width: 100%; padding: 10px 35px; box-shadow: 0 3px 6px rgb(0 0 0 / 8%); }
 .homeheader .mainlogo { max-height: 45px;}
 .homeheader .rightmenu { text-align: right; float: right; }
 .homeheader .rightmenu a { margin-left: 25px; color: #1D1C1C; text-decoration: none; font-size: 16px; }
-.homeheader .rightmenu button { margin-left: 25px; background: #563662; color: #fff; font-size: 17px; padding: 9px 30px; height: 47px; border-radius: 10px; }
+.homeheader .rightmenu button { margin-left: 25px; background: #563662; border: 0;color: #fff; font-size: 17px; padding: 9px 30px; height: 47px; border-radius: 10px; }
+.homeheader .rightmenu button:hover { color: #fff; text-decoration: none; }
 
 .footer {
   background: #fff;
@@ -156,7 +157,22 @@ width: 100px;
   margin-right: 10px;
 }
 
+.mobmenu { display: none;}
+
 @media (max-width: 768px) {
+.onlydes { display: none; }    
+.mobmenu { display: block; }
+.mobmenu { display: block; }
+.mobmenu .mobheader {background: #563662; width: 100%; float: left; max-height: 60px; position: fixed;}
+.mobmenu .moblogo { float: left; height: 25px; margin: 15px 0 0 20px;}
+.mobmenu .mobheader .rightmenu { float: right; padding-top: 10px; padding-right: 15px;}
+.mobmenu ul { color: #000; display: block; float: left; }
+.mobmenu li { padding:8px 15px !important; text-transform: uppercase; display: inline-block; }
+.mobmenu li a { text-decoration: none; color: #fff !important; font-family: 'DM Sans', sans-serif; font-size: 14px; }
+.mobmenu i { float: left; margin-top: 8px; margin-left: 5px; color: #fff  }
+.sidemenu p { padding:15px 10px !important; margin-bottom: 0; font-weight: 600; color: #000; }
+.sidemenu p a { text-decoration: none; color: #000;}
+.sidemenu .mainlogo { margin-bottom: 20px;}
   .topbar { display: none;}
   .leftSec,
   .rightSec {
