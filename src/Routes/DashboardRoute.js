@@ -17,11 +17,18 @@ export const DashboardRoute = () => {
               path: "/selectinfluencers",
               element: <SelectInfluencers />,
             },
-            {
-              path: "/dashboard",
-              element: <Dashboard />,
-            },
           ],
+        },
+      ],
+    },
+
+    {
+      path: "/",
+      element: <HomeLayout />,
+      children: [
+        {
+          path: "/dashboard",
+          element: <Dashboard />,
         },
       ],
     },
