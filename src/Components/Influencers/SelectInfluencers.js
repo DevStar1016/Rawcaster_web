@@ -1,4 +1,4 @@
-import { Col, Row, Select } from "antd";
+import { Col, Row, Select, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Influencers.module.css";
@@ -10,7 +10,7 @@ import {
   InfluencerListService,
 } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getAuthToken,
   JSONtoformdata,
@@ -18,13 +18,16 @@ import {
 } from "../../Shared/Utility";
 import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const SelectInfluencers = () => {
+  const dispatch = useDispatch();
   const loginUserData = useSelector((state) => state.auth.loginUserData);
   const navigate = useNavigate();
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [influencerList, setinfluencerList] = useState([]);
   const [SelectedInfluencersList, setSelectedInfluencersList] = useState([]);
+  const [isLoadMore, setisLoadMore] = useState(null);
 
   const [SearchValues, setSearchValues] = useState({
     search_key: "",
@@ -55,11 +58,20 @@ const SelectInfluencers = () => {
             setinfluencerList((pre) => [...pre, ...res.data.users_list]);
           }
         } else {
-          toast.error(res.data.message);
+          setinfluencerList([]);
+          setSearchValues((pre) => ({
+            ...pre,
+            pageNum: 1,
+            total_page: 1,
+          }));
         }
       })
       .catch((err) => {
         toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleLoading(false));
+        setisLoadMore(null);
       });
   };
 
@@ -108,6 +120,7 @@ const SelectInfluencers = () => {
             SearchValues.category,
             SearchValues.search_key
           );
+          setSelectedInfluencersList([]);
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }
@@ -152,6 +165,7 @@ const SelectInfluencers = () => {
                 <InputGroup.Text
                   className={classes.searchIcon}
                   onClick={() => {
+                    dispatch(handleLoading(true));
                     getInfluencerList(
                       1,
                       SearchValues.category,
@@ -194,6 +208,7 @@ const SelectInfluencers = () => {
               }
               onClick={() => {
                 if (SelectedInfluencersList.length !== 0) {
+                  dispatch(handleLoading(true));
                   HandleupdateFans();
                 }
               }}
@@ -268,15 +283,22 @@ const SelectInfluencers = () => {
                       <span class="material-symbols-outlined">done</span>
                     </Link>
                   ) : (
-                    <Link
-                      className={classes.fanBtn}
-                      onClick={() => {
-                        HandleupdateFans([ele?.user_ref_id]);
-                      }}
-                    >
-                      Become a Fan{" "}
-                      <span class="material-icons">arrow_forward</span>
-                    </Link>
+                    <>
+                      {isLoadMore === ele.user_ref_id ? (
+                        <Spin />
+                      ) : (
+                        <Link
+                          className={classes.fanBtn}
+                          onClick={() => {
+                            dispatch(handleLoading(true));
+                            HandleupdateFans([ele?.user_ref_id]);
+                          }}
+                        >
+                          Become a Fan{" "}
+                          <span class="material-icons">arrow_forward</span>
+                        </Link>
+                      )}
+                    </>
                   )}
                 </div>
               </Col>
@@ -285,18 +307,22 @@ const SelectInfluencers = () => {
         </Row>
         {SearchValues.pageNum !== SearchValues.total_page && (
           <div className={classes.loadmoreSec}>
-            <p
-              onClick={() => {
-                getInfluencerList(
-                  SearchValues.pageNum + 1,
-                  SearchValues.category,
-                  SearchValues.search_key
-                );
-              }}
-            >
-              View more
-              <span class="material-symbols-outlined">arrow_forward</span>
-            </p>
+            {isLoadMore === "load_more" ? (
+              <Spin />
+            ) : (
+              <p
+                onClick={() => {
+                  getInfluencerList(
+                    SearchValues.pageNum + 1,
+                    SearchValues.category,
+                    SearchValues.search_key
+                  );
+                }}
+              >
+                View more
+                <span class="material-symbols-outlined">arrow_forward</span>
+              </p>
+            )}
           </div>
         )}
       </div>

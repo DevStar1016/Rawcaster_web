@@ -26,10 +26,10 @@
     height: 58px;
     text-align: center;
     width: 225px;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 17px; 
     float: left;
-    padding-top: 14px; text-decoration: none;
+    padding-top: 15px; text-decoration: none;
     font-family: 'DM Sans', sans-serif;
   }
   .getStarted:hover { background: #563662 !important; color: #fff; }
