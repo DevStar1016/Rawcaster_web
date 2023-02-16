@@ -35,7 +35,7 @@
 .inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
 .searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 1; border-radius: 50px !important; background: #563662 !important; width:45px; }
 .searchIcon span {color: #fff; }
-.rightarrow { float: right; font-size: 19px; margin-left: 5px;}
+.rightarrow { float: right; font-size: 19px; margin-left: 5px;    margin-top: 2px;}
 .influencers {
     background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 15px; margin-top: 20px; padding: 20px; float: left;
@@ -48,11 +48,16 @@
 .influencers .name span { display:list-item; float: right; margin-left: 25px; opacity: 0.7; font-size: 15px; font-weight: 300}
 .influencers .desc {opacity: 0.7; color: #1D1C1C; font-weight: 400;}
 .influencers .desc .readmore { padding-left: 8px; color: #F2718D; font-weight:600; cursor: pointer; }
-.influencers .fanBtn { background: linear-gradient(91.19deg, #E26C89 1.82%, #82456F 97.17%);
+.influencers .fanBtn,.influencers .selectedBtn { background: linear-gradient(91.19deg, #E26C89 1.82%, #82456F 97.17%);
 border: 1px solid rgba(0, 0, 0, 0.1);
 border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text-align: center; border: none; text-decoration: none; display: flex; justify-content: center; }
-.influencers .fanBtn span { font-size: 20px; margin-left: 5px; }
-.influencers .fanBtn:hover { text-decoration: none; }
+.influencers .fanBtn span,.influencers .selectedBtn span { font-size: 20px; margin-left: 5px; }
+.influencers .selectedBtn {
+    background: #563662 !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    cursor:default !important;
+}
+.influencers .fanBtn:hover ,.influencers .selectedBtn:hover { text-decoration: none; }
 .selectCategory {
     margin: 0px 20px;
     width: 90% !important;
@@ -62,6 +67,35 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
     margin-top: 10px;
     line-height: 20px !important;
     color: #1D1C1C !important;
+}
+.checked_icon {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+}
+.becameFanBtn {
+    cursor: default;
+    color: #ECECEC !important;
+}
+.activebecameFanBtn {
+    cursor: pointer;
+}
+.loadmoreSec {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+  
+}
+.loadmoreSec p {
+
+font-weight: 500;
+font-size: 22px;
+line-height: 29px;
+color: #1D1C1C;
+cursor: pointer;
+display: flex;
+flex-direction: row;
+justify-content: center;
 }
 @media (max-width:768px) {
 .headerSec { display: block; width: 100%; float: left;}

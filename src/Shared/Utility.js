@@ -72,3 +72,12 @@ export const getSelectData = (listData = []) => {
     value: value,
   }));
 };
+
+export function filterValidObject(obj) {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+}
