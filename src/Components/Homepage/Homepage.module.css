@@ -138,6 +138,24 @@
     background: url(../../Assets/Images/svg/bg-2.svg) no-repeat top center;
      background-size: 1200px 200px; float: left; width: 100%;}
   
+     .userSec { display: flex;  min-height: 315px; flex-direction: column; position: relative;  background: #fff; padding:30px; margin: 20px; box-shadow:0px 1px 16px rgb(0 0 0 / 16%);
+      border-radius: 22px; border: solid 5px transparent; }
+   .userSec:before {
+     content: "";
+     border-radius: 22px;
+     position: absolute;
+     top: 0;
+     right: 0;
+     bottom: 0;
+     left: 0;
+     z-index: -1;
+     margin: -7px;
+     background: linear-gradient(to right, #F3738B, orange);
+   }
+   .userSec .author { bottom: 30px; position: absolute; width: calc(100% - 50px); }
+   .userSec .author img { width: 50px !important; height: 50px; border-radius: 50%; float: left; margin-right: 10px; }
+   .userSec .author p {font-weight: 600; margin-top: 10px; }
+   .userSec button { display: none; }
   @media (max-width: 768px) {
     .rightSec {
       display: none;

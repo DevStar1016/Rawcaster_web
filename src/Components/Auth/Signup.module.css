@@ -20,7 +20,7 @@
    background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%);
    border-radius: 44.61px; 
 }
-.sliderSec .contentBox { max-width: 540px; }
+.sliderSec .contentBox { max-width: 540px;  margin: auto; width: 100%;}
 .sliderSec .contentBox img { width: 100%; }
 .sliderSec .contentBox h2 { color: #fff; font-family: 'Gilroy-Bold'; font-size: 28px; margin-top: 15px; }
 .sliderSec .contentBox h4 { color: #fff; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 300; }

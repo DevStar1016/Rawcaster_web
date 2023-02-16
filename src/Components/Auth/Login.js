@@ -12,10 +12,10 @@ import RedirectModal from "../../Modal/RedirectModal";
 import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { loginService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
-import { PASSWORD_EXP } from "../../Shared/Constant";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import { setCookieData, setLocalStorageData } from "../../Store/Storage";
+import OwlCarousel from "react-owl-carousel";
 
 const validationSchema = yup.object().shape({
   username: yup.string().required(`Please input your Login ID!`),
@@ -68,21 +68,24 @@ const Login = () => {
         toast.error(err.message);
       });
   };
+
+  const carouselOptions = {
+    items: 1,
+    nav: false,
+    loop: true,
+  };
   return (
     <>
       <div className={classes.loginbg}>
-      <div className={classes.mobHeader}>
+        <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite}  />
+            <img src={mainlogowhite} />
           </Link>
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link>
-              <img
-                className={classes.hideMob}
-                src={mainlogo}                
-              />
+              <img className={classes.hideMob} src={mainlogo} />
             </Link>
             <h1 className={classes.heading_h1}> Welcome to Rawcaster</h1>
             <p className={classes.subText}>
@@ -120,11 +123,9 @@ const Login = () => {
                   maxLength={50}
                   status={touched.password && errors.password ? "error" : ""}
                   onChange={handleChange("password")}
-                />               
+                />
               </Form.Item>
-              {touched.password && (
-                  <p className="ErrTxt">{errors?.password}</p>
-                )}
+              {touched.password && <p className="ErrTxt">{errors?.password}</p>}
               <Form.Item>
                 <div className={`fwgpsw ${classes.fwgpsw}`}>
                   <div className={classes.right}>
@@ -159,14 +160,33 @@ const Login = () => {
           </div>
         </div>
 
-        <div className={classes.sliderSec}>
-          <div className={classes.contentBox}>
-            <img src={SigninImg} />
-            <h2>Connect Share Express</h2>
-            <h4>
-              with Rawcaster influencers, bloggers, writers, photographers can collaborate with their fans easily
-            </h4>
-          </div>
+        <div className={`${classes.sliderSec} login_carosel`}>
+          <OwlCarousel className={"owl-theme "} {...carouselOptions}>
+            <div className={classes.contentBox}>
+              <img src={SigninImg} />
+              <h2>Connect Share Express</h2>
+              <h4>
+                with Rawcaster influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+            <div className={classes.contentBox}>
+              <img src={SigninImg} />
+              <h2>Connect Share Express</h2>
+              <h4>
+                with Rawcaster influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+            <div className={classes.contentBox}>
+              <img src={SigninImg} />
+              <h2>Connect Share Express</h2>
+              <h4>
+                with Rawcaster influencers, bloggers, writers, photographers can
+                collaborate with their fans easily
+              </h4>
+            </div>
+          </OwlCarousel>
         </div>
       </div>
       <RedirectModal
