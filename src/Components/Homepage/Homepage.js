@@ -4,6 +4,9 @@ import classes from "./Homepage.module.css";
 import thumblogo from "../../Assets/Images/svg/Fav-Rawcaster.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import bgelements from "../../Assets/Images/svg/bg-elemtns.svg";
+import ngozijones from "../../Assets/Images/png/ngozijones.png";
+import william from "../../Assets/Images/png/william.png";
+import abel from "../../Assets/Images/png/abel.png";
 import OwlCarousel from "react-owl-carousel";
 // import { Carousel } from '@trendyol-js/react-carousel';
 
@@ -187,7 +190,7 @@ const Homepage = () => {
                 one platform is a brilliant idea.
               </p>
               <div className={classes.author}>
-                <img src={require("../../Assets/Images/png/elakkiya.png")} />
+                <img src={william} />
                 <p>William Sagoe</p>
               </div>
             </div>
@@ -198,7 +201,7 @@ const Homepage = () => {
                 made to show how the app works.
               </p>
               <div className={classes.author}>
-                <img src={require("../../Assets/Images/png/elakkiya.png")} />
+                <img src={ngozijones} />
                 <p>Ngozi Jones</p>
               </div>
             </div>
@@ -209,7 +212,7 @@ const Homepage = () => {
                 better with others should have it.
               </p>
               <div className={classes.author}>
-                <img src={require("../../Assets/Images/png/elakkiya.png")} />
+                <img src={abel} />
                 <p>Abel Consiglio</p>
               </div>
             </div>
@@ -222,7 +225,7 @@ const Homepage = () => {
               </p>
               <div className={classes.author}>
                 <img src={require("../../Assets/Images/png/elakkiya.png")} />
-                <p>Elakkiya Manivannan</p>
+                <p>Alandra</p>
               </div>
             </div>
           </OwlCarousel>
