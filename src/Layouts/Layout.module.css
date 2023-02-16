@@ -81,8 +81,8 @@ width: 100px;
   height: 25px;
   margin: 0 7px;
 }
-.homeheader { background: #fff; position: fixed; margin-top: 40px; float: left; width: 100%; padding: 10px 35px; box-shadow: 0 3px 6px rgb(0 0 0 / 8%); }
-.homeheader .mainlogo { max-height: 45px;}
+.homeheader { background: #fff; position: fixed; margin-top: 40px; float: left; width: 100%; padding: 10px 35px; box-shadow: 0 3px 6px rgb(0 0 0 / 8%); z-index: 4; }
+.homeheader .mainlogo { max-height: 45px; cursor: pointer;}
 .homeheader .rightmenu { text-align: right; float: right; }
 .homeheader .rightmenu a { margin-left: 25px; color: #1D1C1C; text-decoration: none; font-size: 16px; }
 .homeheader .rightmenu button { margin-left: 25px; background: #563662; border: 0;color: #fff; font-size: 17px; padding: 9px 30px; height: 47px; border-radius: 10px; }
@@ -113,6 +113,10 @@ width: 100px;
 .leftSec {
   width: 100%;
   float: left; margin-bottom: 45px;
+
+}
+.leftSec img {
+  cursor: pointer;
 }
 .rightSec {
   border-top: #E7EEF3 1px solid;

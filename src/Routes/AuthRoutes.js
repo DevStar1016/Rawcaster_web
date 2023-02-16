@@ -3,57 +3,78 @@ import Login from "../Components/Auth/Login";
 import ResetPassword from "../Components/Auth/ResetPassword";
 import Signup from "../Components/Auth/Signup";
 import SignupwithCredentials from "../Components/Auth/SignupwithCredentials";
+import Homepage from "../Components/Homepage/Homepage";
+import Contactus from "../Components/Policy/Contactus";
+import Cookiespolicy from "../Components/Policy/CookiePolicy";
+import Privacypolicy from "../Components/Policy/Privacypolicy";
+import TermsandConditions from "../Components/Policy/TermsandConditions";
+import AuthLayout from "../Layouts/AuthLayout";
+import MainLayout from "../Layouts/MainLayout";
 import { AuthPrivateRoute } from "./PrivateRoute";
 
-export const AuthRoute = (isAuth = true) => {
+export const AuthRoute = () => {
   return [
     {
-      path: "/login",
-      element: (
-        <AuthPrivateRoute auth={isAuth}>
-          <Login />
-        </AuthPrivateRoute>
-      ),
-    },
-    {
-      path: "/signup",
-      element: (
-        <AuthPrivateRoute auth={isAuth}>
-          <Signup />
-        </AuthPrivateRoute>
-      ),
-    },
-    {
-      path: "/signupwithemail",
-      element: (
-        <AuthPrivateRoute auth={isAuth}>
-          <SignupwithCredentials />
-        </AuthPrivateRoute>
-      ),
-    },
-    {
-      path: "/signupwithmobile",
-      element: (
-        <AuthPrivateRoute auth={isAuth}>
-          <SignupwithCredentials />
-        </AuthPrivateRoute>
-      ),
-    },
-    {
-      path: "/forgotpassword",
-      element: (
-        <AuthPrivateRoute auth={isAuth}>
-          <ForgotPassword />
-        </AuthPrivateRoute>
-      ),
-    },
-    {
-      path: "/setpassword",
-      element: (
-        <AuthPrivateRoute auth={isAuth}>
-          <ResetPassword />
-        </AuthPrivateRoute>
-      ),
+      path: "/",
+      element: <AuthPrivateRoute />,
+      children: [
+        {
+          path: "/",
+          element: <AuthLayout />,
+          children: [
+            {
+              path: "/login",
+              element: <Login />,
+            },
+            {
+              path: "/signup",
+              element: <Signup />,
+            },
+            {
+              path: "/signupwithemail",
+              element: <SignupwithCredentials />,
+            },
+            {
+              path: "/signupwithmobile",
+              element: <SignupwithCredentials />,
+            },
+            {
+              path: "/forgotpassword",
+              element: <ForgotPassword />,
+            },
+            {
+              path: "/setpassword",
+              element: <ResetPassword />,
+            },
+          ],
+        },
+        {
+          path: "/",
+          element: <MainLayout />,
+          children: [
+            {
+              index: true,
+              element: <Homepage />,
+            },
+            {
+              path: "privacypolicy",
+              element: <Privacypolicy />,
+            },
+            {
+              path: "termsandconditions",
+              element: <TermsandConditions />,
+            },
+            {
+              path: "cookiespolicy",
+              element: <Cookiespolicy />,
+            },
+            {
+              path: "support",
+              element: <Contactus />,
+            },
+          ],
+        },
+      ],
     },
   ];
 };

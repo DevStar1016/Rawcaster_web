@@ -1,7 +1,7 @@
 import { Dropdown, Layout, Menu } from "antd";
 import React from "react";
 import { Form, InputGroup } from "react-bootstrap";
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import classes from "./Layout.module.css";
 import UserImg from "../Assets/Images/svg/userImg.svg";
 import ProfileImg from "../UIComponents/ProfileImg";
@@ -9,10 +9,40 @@ import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
 import HomeIcon from "../Assets/Icons/svg/Home_icon.svg";
 import SettingsIcon from "../Assets/Icons/svg/Settings_icon.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutService } from "../Services/ApiService";
+import { JSONtoformdata, RemoveToken } from "../Shared/Utility";
+import { toast } from "react-hot-toast";
 
 const HomeLayout = () => {
+  const loginUserData = useSelector((state) => state.auth.loginUserData);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { Content } = Layout;
+  const onClick = ({ key }) => {
+    if (key == 2) {
+      handleLogout();
+    }
+  };
 
+  const handleLogout = () => {
+    let logutData = {
+      token: loginUserData?.token,
+    };
+    logoutService(JSONtoformdata(logutData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          RemoveToken(dispatch);
+          navigate("/login");
+          toast.success("Logged out Successfully !!");
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
   return (
     <>
       <Layout>
@@ -41,25 +71,22 @@ const HomeLayout = () => {
                   menu={{
                     items: [
                       {
-                        key: "1",
-                        label: "Item 1",
+                        key: 1,
+                        label: "My Profile",
                       },
                       {
-                        key: "2",
-                        label: "Item 2",
-                      },
-                      {
-                        key: "3",
-                        label: "Item 3",
+                        key: 2,
+                        label: "Logout",
                       },
                     ],
-
+                    onClick,
                     selectable: true,
                   }}
                 >
                   <div className={classes.DropMenu}>
                     <div className={classes.dropMenuSec}>
-                      <ProfileImg src={UserImg} Badgetype={1} /> Danii
+                      <ProfileImg src={UserImg} Badgetype={1} />{" "}
+                      {loginUserData?.name || "User"}
                     </div>
                   </div>
                 </Dropdown>
