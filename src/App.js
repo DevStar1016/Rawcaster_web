@@ -9,10 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootElement } from "./Routes";
 import { handleLoginData } from "./Store/Redux/Reducer/AuthReducer";
 import Homepage from "./Components/Homepage/Homepage";
+import Spinner from "./Sharedcomponents/Spinner";
 
 function App() {
   const dispatch = useDispatch();
   const { loginUserData } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.dashboard);
 
   const getPrivateRouteValue = () => {
     if (loginUserData) {
@@ -55,7 +57,12 @@ function App() {
     }
   }, []);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      {isLoading ? <Spinner /> : null}
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;

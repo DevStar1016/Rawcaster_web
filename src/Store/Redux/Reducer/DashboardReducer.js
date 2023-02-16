@@ -1,13 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {};
+const initialState = {
+  isLoading: false,
+};
 
 export const { actions, reducer } = createSlice({
   name: "dashboard",
   initialState,
-  reducers: {},
+  reducers: {
+    handleLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+  },
 });
 
-// export const { handleLoginData, handleSessionModal } = actions;
+export const { handleLoading } = actions;
 
 export default reducer;
