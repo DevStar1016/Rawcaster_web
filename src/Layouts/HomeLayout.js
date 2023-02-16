@@ -1,6 +1,6 @@
-import { Layout, Menu } from "antd";
+import { Dropdown, Layout, Menu } from "antd";
 import React from "react";
-import { Dropdown, Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import { Outlet } from "react-router";
 import classes from "./Layout.module.css";
 import UserImg from "../Assets/Images/svg/userImg.svg";
@@ -12,6 +12,7 @@ import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
 
 const HomeLayout = () => {
   const { Content } = Layout;
+
   return (
     <>
       <Layout>
@@ -36,9 +37,35 @@ const HomeLayout = () => {
                 {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
             </Dropdown> */}
-                <Dropdown className={classes.DropMenu}>
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: "1",
+                        label: "Item 1",
+                      },
+                      {
+                        key: "2",
+                        label: "Item 2",
+                      },
+                      {
+                        key: "3",
+                        label: "Item 3",
+                      },
+                    ],
+
+                    selectable: true,
+                  }}
+                >
+                  <div className={classes.DropMenu}>
+                    <div className={classes.dropMenuSec}>
+                      <ProfileImg src={UserImg} Badgetype={1} /> Danii
+                    </div>
+                  </div>
+                </Dropdown>
+                {/* <Dropdown className={classes.DropMenu}>
                   <Dropdown.Toggle className={classes.dropMenuSec}>
-                    <ProfileImg src={UserImg} Badgetype={1} /> Danii
+               
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
@@ -50,7 +77,7 @@ const HomeLayout = () => {
                       Something else
                     </Dropdown.Item>
                   </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown> */}
               </div>
             </Menu>
           </div>

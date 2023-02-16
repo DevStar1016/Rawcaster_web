@@ -13,9 +13,9 @@ export const GOOGLE_CLIENT_ID =
 
 export const FACEBOOK_APP_ID = "501963974865826";
 
-export const INSTAGRAM_APP_ID = "5398302956938000";
+export const INSTAGRAM_APP_ID = "1652047128572389";
 
-export const INSTAGRAM_APP_SECRET = "9d8478f6c0a6a5a8b2065ea2f55838a0";
+export const INSTAGRAM_APP_SECRET = "a4ccdb1961ffe87bd5f38861c7958586";
 
 export const TWITTER_CLIENT_ID = "YTF4cTFKU25UVld2Yk1JUzFFSnU6MTpjaQ";
 
@@ -24,6 +24,6 @@ export const TWITTER_CLIENT_SECRET =
 
 export const APPLE_API_KEY = "CR8PDZDGNZcom.rawcaster.app";
 
-export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com/signup";
-export const REDIRECT_URI = "https://localhost:3000/signup";
+export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com";
+export const REDIRECT_URI = "https://localhost:3000";
 //

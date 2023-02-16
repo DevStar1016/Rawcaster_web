@@ -30,9 +30,9 @@ const ProfileImg = ({ src, Badgetype }) => {
     }
   };
   return (
-    <div>
+    <div className={classes.profileSec}>
       <img src={src} className={classes.profileImg} />
-      <img src={getBadge()} className={classes.badgeImg} />
+      {/* <img src={getBadge()} className={classes.badgeImg} /> */}
     </div>
   );
 };

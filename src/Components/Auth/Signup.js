@@ -133,7 +133,7 @@ const Signup = () => {
                     client_id={INSTAGRAM_APP_ID}
                     client_secret={INSTAGRAM_APP_SECRET}
                     // scope="basic"
-                    redirect_uri={REDIRECT_URI}
+                    redirect_uri={PRIMARY_REDIRECT_URI}
                     onResolve={({ provider, data }) => {
                       console.log(provider, data);
                     }}
