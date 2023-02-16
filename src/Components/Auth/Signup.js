@@ -1,5 +1,5 @@
 import { Button, Form, Input } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
@@ -12,7 +12,7 @@ import FacebookIcon from "../../Assets/Icons/png/facebook_logo.png";
 import TwitterIcon from "../../Assets/Icons/png/twitter_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
-import { getGeocodeData } from "../../Shared/Utility";
+import { getAuthToken, getGeocodeData } from "../../Shared/Utility";
 import {
   LoginSocialApple,
   LoginSocialGoogle,
@@ -31,22 +31,57 @@ import {
 } from "../../Shared/Constant";
 import axios from "axios";
 import AppleLogin from "react-apple-login";
+import { useFormik } from "formik";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [LocationValue, setLocationValue] = useState({
+    geo_location: "",
+    latitude: "",
+    longitude: "",
+  });
+
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    errors,
+    touched,
+    setValues,
+  } = useFormik({
+    initialValues: {
+      signin_type: "",
+      first_name: "",
+      display_name: "",
+      email_id: "",
+      geo_location: "",
+      latitude: "",
+      longitude: "",
+    },
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   useEffect(() => {
     getGeocodeData()
       .then((res) => {
-        console.log(res);
+        setLocationValue((pre) => ({
+          ...pre,
+          geo_location: res.address,
+          latitude: res.location.lat,
+          longitude: res.location.lng,
+        }));
       })
       .catch((err) => {
-        console.log(err);
+        setLocationValue((pre) => ({
+          ...pre,
+          geo_location: "",
+          latitude: "",
+          longitude: "",
+        }));
       });
-    window.caches.keys().then((names) => {
-      // Delete all the cache files
-      console.log(names);
-    });
   }, []);
 
   return (
@@ -99,6 +134,14 @@ const Signup = () => {
                     access_type="offline"
                     onResolve={({ provider, data }) => {
                       console.log(provider, data);
+                      setValues((pre) => ({
+                        ...pre,
+                        signin_type: 5,
+                        first_name: data.name,
+                        display_name: data.name,
+                        email_id: data.email,
+                      }));
+                      handleSubmit();
                     }}
                     onReject={(err) => {
                       console.log(err);

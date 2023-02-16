@@ -10,6 +10,7 @@ import { RootElement } from "./Routes";
 import { handleLoginData } from "./Store/Redux/Reducer/AuthReducer";
 import Homepage from "./Components/Homepage/Homepage";
 import Spinner from "./Sharedcomponents/Spinner";
+import MainLayout from "./Layouts/MainLayout";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ function App() {
   const routerpaths = [
     {
       path: "/",
-      element: <AuthLayout />,
+      element: <MainLayout />,
       children: [
         {
           index: true,
