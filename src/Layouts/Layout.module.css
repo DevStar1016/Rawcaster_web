@@ -81,7 +81,7 @@ width: 100px;
   height: 25px;
   margin: 0 7px;
 }
-.homeheader { background: #fff; position: fixed; margin-top: 40px; float: left; width: 100%; padding: 10px 35px; box-shadow: 0 3px 6px rgb(0 0 0 / 8%); }
+.homeheader { z-index: 1; background: #fff; position: fixed; margin-top: 40px; float: left; width: 100%; padding: 10px 35px; box-shadow: 0 3px 6px rgb(0 0 0 / 8%); }
 .homeheader .mainlogo { max-height: 45px;}
 .homeheader .rightmenu { text-align: right; float: right; }
 .homeheader .rightmenu a { margin-left: 25px; color: #1D1C1C; text-decoration: none; font-size: 16px; }
