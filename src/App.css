@@ -71,3 +71,17 @@ opacity: 1 !important;
   background: #1D1C1C !important;
 
 }
+.profilenavbar .nav-link ,.profilenavbar .nav-link:hover {
+  border-radius: 0px !important;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  color: #1D1C1C;
+}
+
+.profilenavbar .nav-link.active{
+  background: linear-gradient(116.6deg, #F3738B 0.88%, #F99F46 99.2%) !important;
+}

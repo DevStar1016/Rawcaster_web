@@ -6,8 +6,32 @@ dayjs.extend(localeData);
 dayjs().localeData();
 
 var ValidAge = 13;
-const DateInputBox = ({ onSelectDate, status = "" }) => {
+const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
   const [date, setDate] = useState({ year: "", month: "", day: "" });
+
+  const isValidData = (value) => {
+    if (value && value !== "") {
+      return value;
+    } else {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    if (
+      !isValidData(date.day) &&
+      !isValidData(date.month) &&
+      !isValidData(date.year)
+    ) {
+      if (isValidData(displayDate)) {
+        setDate({
+          year: dayjs(displayDate).get("year"),
+          month: dayjs(displayDate).get("month"),
+          day: dayjs(displayDate).get("date"),
+        });
+      }
+    }
+  }, [displayDate]);
 
   function getDaysInMonthByYear(month, year) {
     let date = new Date(year, month, 0);
@@ -51,14 +75,6 @@ const DateInputBox = ({ onSelectDate, status = "" }) => {
     });
     return monthValue;
   }
-
-  const isValidData = (value) => {
-    if (value && value !== "") {
-      return value;
-    } else {
-      return false;
-    }
-  };
 
   function getDays(month, year) {
     let thisYear = new Date().getFullYear() - ValidAge;
@@ -130,6 +146,7 @@ const DateInputBox = ({ onSelectDate, status = "" }) => {
       let resultDate = dayjs(
         date.year + "-" + getMonth().label + "-" + date.day
       ).toDate();
+
       onSelectDate(resultDate);
     }
   }, [date]);
