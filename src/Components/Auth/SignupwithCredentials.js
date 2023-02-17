@@ -161,7 +161,7 @@ const SignupwithCredentials = () => {
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
-            <Link>
+            <Link to="/">
               <img
                 className={classes.hideMob}
                 src={require("../../Assets/Images/png/rawcater_logo.png")}

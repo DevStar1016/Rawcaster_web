@@ -78,13 +78,13 @@ const Login = () => {
     <>
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
-          <Link to="/home">
+          <Link to="/">
             <img src={mainlogowhite} />
           </Link>
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
-            <Link>
+            <Link to="/">
               <img className={classes.hideMob} src={mainlogo} />
             </Link>
             <h1 className={classes.heading_h1}> Welcome to Rawcaster</h1>

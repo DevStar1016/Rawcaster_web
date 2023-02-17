@@ -114,7 +114,7 @@ const Signup = () => {
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
-            <Link>
+            <Link to="/">
               <img className={classes.hideMob} src={mainlogo} />
             </Link>
             <h1 className={classes.heading_h1}>Join Rawcaster Family</h1>
