@@ -1,9 +1,22 @@
 .eventSec { 
-    width: 345px;
+    width: 320px;
     float: left;
-    height: calc(100vh - 80px);
+    height:calc(100vh - 67px);
     position: sticky;
     /* overflow-y: scroll; */
-    top: 67px;
+    padding-top: 20px;
+    padding-right: 10px;
     padding-bottom: 74px;
  }
+ .beforelogin a { display: flex; font-size: 15.5px; align-items: center; margin-top: 18px; clear: both; text-decoration: none; color: #000;}
+ .beforelogin a.active { color: #F2718D; }
+ .beforelogin a span { font-size: 30px; float: left; padding-right:8px; }
+ .loginSec { float: left; border-top: 1px solid #ECECEC; border-bottom: 1px solid #ECECEC; padding: 30px 0; margin-top: 25px; }
+ .loginSec p { font-size: 15px; }
+ .loginSec a.btn { text-decoration: none; float: left; font-weight: 500; font-size: 16px; width: 100%; padding: 12px; text-align: center; border-radius: 10px; color: #F2718D; border: 2px solid #F2718D;}
+ .eventStatic {float: left; width: 100%; padding-top: 20px;}
+ .eventStatic h1 { font-size: 21px; font-weight: 600; color: #1D1C1C; margin-bottom: 18px;  }
+ .eventStatic .list { background: #FFFFFF; border: 1px solid #ECECEC; border-radius: 12px;  border-radius: 10px;  }
+ .eventStatic .list img { width: 100%; border-top-right-radius: 10px; border-top-left-radius: 10px; margin-bottom: 10px; }
+ .eventStatic .list a  { font-size: 15px; color:#000000; display: flex; justify-content: center; width: 100%; margin-bottom: 10px; font-weight:500; text-decoration: none;}
+ .eventStatic .list a span { font-size: 22px;} 
