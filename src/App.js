@@ -20,6 +20,9 @@ import Privacypolicy from "./Components/Policy/Privacypolicy";
 import TermsandConditions from "./Components/Policy/TermsandConditions";
 import Cookiespolicy from "./Components/Policy/CookiePolicy";
 import Contactus from "./Components/Policy/Contactus";
+import ProfileVerification from "./ProfileVerification";
+import UpdateProfile from "./ProfileVerification/UpdateProfile";
+import VerifyOtp from "./ProfileVerification/VerifyOtp";
 
 function App() {
   const dispatch = useDispatch();
@@ -30,12 +33,29 @@ function App() {
       path: "/",
       children: RootElement(),
     },
+    {
+      path: "/",
+      element: <ProfileVerification />,
+      children: [
+        {
+          path: "/profile",
+          element: <UpdateProfile />,
+        },
+        {
+          path: "/verifyotp",
+          element: <VerifyOtp />,
+        },
+      ],
+    },
   ];
   const router = createBrowserRouter(routerpaths, { basename: "/" });
 
   useEffect(() => {
     if (window.location.pathname !== "/setpassword") {
       removeSessionStorageData("CountDown");
+    }
+    if (window.location.pathname !== "/verifyotp") {
+      removeSessionStorageData("verifyCountDown");
     }
   }, [window.location]);
 

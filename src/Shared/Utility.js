@@ -3,18 +3,19 @@ import Geocode from "react-geocode";
 import { GECODE_API_KEY } from "./Constant";
 import { removeCookieData, removeLocalStorageData } from "../Store/Storage";
 import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
+import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+
+// Auth
 
 export const getAuthToken = (value) => {
   var sha1 = require("sha1");
   return sha1(SALT_KEY + value);
 };
 
-export const JSONtoformdata = (object) => {
-  const formData = new FormData();
-  for (const key in object) {
-    formData.append(key, object[key]);
-  }
-  return formData;
+export const RemoveToken = (dispatch) => {
+  dispatch(handleLoginData(null));
+  removeCookieData("rawcaster_user_token");
+  removeLocalStorageData("rawcaster_user_token");
 };
 
 //GEO_CODE_CONFIGURE
@@ -68,6 +69,25 @@ export const getGeocodeData = () => {
   });
 };
 
+export const ConvertAddresstoLatLng = (address) => {
+  return new Promise((resolve, reject) => {
+    geocodeByAddress(address)
+      .then((results) => getLatLng(results[0]))
+      .then((latLng) => resolve(latLng))
+      .catch((error) => reject(error));
+  });
+};
+
+// Common Utility
+
+export const JSONtoformdata = (object) => {
+  const formData = new FormData();
+  for (const key in object) {
+    formData.append(key, object[key]);
+  }
+  return formData;
+};
+
 export const getSelectData = (listData = []) => {
   return listData.map((value) => ({
     label: value,
@@ -84,8 +104,10 @@ export function filterValidObject(obj) {
   }, {});
 }
 
-export const RemoveToken = (dispatch) => {
-  dispatch(handleLoginData(null));
-  removeCookieData("rawcaster_user_token");
-  removeLocalStorageData("rawcaster_user_token");
+export const getValidImageUrl = (img) => {
+  if (typeof img === "object") {
+    return URL.createObjectURL(img);
+  } else {
+    return img;
+  }
 };
