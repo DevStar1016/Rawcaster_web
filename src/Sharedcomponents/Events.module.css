@@ -1,0 +1,9 @@
+.eventSec { 
+    width: 345px;
+    float: left;
+    height: calc(100vh - 80px);
+    position: sticky;
+    /* overflow-y: scroll; */
+    top: 67px;
+    padding-bottom: 74px;
+ }

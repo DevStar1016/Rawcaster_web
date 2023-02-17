@@ -1,0 +1,38 @@
+.nuggetSec { 
+    padding: 0 20px;
+    height: 100%;
+    float: left;
+    width: calc(100% - 680px);
+    background: #fff;
+    border-top: 20px solid #fff;
+ }
+ .profilePart { width: 100%; float: left;}
+ .proImg { position: relative; width: 72px; float: left; }
+ .proImg img { width: 50px; height: 50px; border-radius: 60px; }
+ .viewCount {
+    color: #fff;
+    background: #e26386;
+    border-radius: 15px;
+    font-size: 10px;
+    padding: 3px 2px;
+    width: 22px;
+    height: 22px;
+    float: right;
+    right: 10px;
+    position: relative;
+    font-style: normal;
+    bottom: -25px;
+    font-family: "DM Sans",sans-serif;
+    text-align: center;
+ }
+ .proName {color: #1D1C1C; font-size: 18px; margin-bottom: 0px; }
+ .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
+ .detailsRange span { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
+ .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
+ .feedsSec { font-size: 15.5px; line-height: 23px; width: calc(100% - 70px); float: left;}
+ .nuggetsFeed { width: 100%; border-radius: 12px; }
+ .floattingSec { display: flex; justify-content: end; align-items: center; flex-direction: column; width: 70px; padding-left: 15px; float: left;}
+ .floattingSec .iconsec {  display: flex; flex-direction: column; align-items: center;  }
+ .floattingSec .iconsec p {cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 55px; height: 55px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .iconsec img { height: 20px; }
+ .floattingSec .iconsec span { font-weight: 500; }

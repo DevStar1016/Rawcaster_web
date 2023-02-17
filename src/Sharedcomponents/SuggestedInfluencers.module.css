@@ -1,0 +1,11 @@
+.suggInfluencersSec {
+    background-color: transparent;
+    float: left;
+    width: 335px;
+    height: 100vh;
+    position: sticky!important;
+    /* position: -webkit-sticky; */
+    top: 74px;
+    padding-bottom: 74px;
+    /* overflow-y: scroll; */
+ }
