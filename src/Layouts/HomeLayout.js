@@ -85,8 +85,7 @@ const HomeLayout = () => {
                 >
                   <div className={classes.DropMenu}>
                     <div className={classes.dropMenuSec}>
-                      <ProfileImg src={UserImg} Badgetype={1} />{" "}
-                      {loginUserData?.name || "User"}
+                      <ProfileImg src={UserImg} Badgetype={1} /> {"User"}
                     </div>
                   </div>
                 </Dropdown>

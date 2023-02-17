@@ -85,3 +85,41 @@ opacity: 1 !important;
 .profilenavbar .nav-link.active{
   background: linear-gradient(116.6deg, #F3738B 0.88%, #F99F46 99.2%) !important;
 }
+
+.ant-collapse
+  > .ant-collapse-item
+  > .ant-collapse-header
+  .ant-collapse-arrow
+  svg {
+  display: none;
+}
+.ant-collapse {
+  border: none;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  font-family: "DM Sans", sans-serif;
+  background: #ffffff !important;
+  color: #242424 !important;
+  font-weight: 600;
+  border: none;
+  font-size: 20px;
+  padding: 20px 20px 12px 25px;
+  border: none !important;
+}
+.ant-collapse-content {
+  background: #fafafa !important;
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  line-height: 30px;
+  color: #242424;
+  border: none;
+  padding: 15px 30px 15px 80px;
+}
+.ant-collapse i {
+  float: right;
+  font-size: 42px;
+}
+.ant-collapse-item-active i {
+  transform: rotate(180deg) !important;
+  float: right;
+}

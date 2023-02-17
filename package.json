@@ -20,6 +20,7 @@
     "react-dom": "^18.2.0",
     "react-geocode": "^0.2.3",
     "react-hot-toast": "^2.4.0",
+    "react-media-recorder": "^1.6.6",
     "react-otp-input": "^2.4.0",
     "react-owl-carousel": "^2.3.3",
     "react-places-autocomplete": "^7.3.0",

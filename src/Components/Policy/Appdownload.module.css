@@ -1,0 +1,10 @@
+.downloadApp { max-width: 1620px; padding: 0 30px; margin: auto; display: flex; justify-content: center;width:100% ;align-items:center; }
+.downloadApp .textSec { width: 45%; float: left; flex-direction: column; justify-content: center; align-items: center; display: flex; }
+.downloadApp .imgSec { width: 55%; float: left;}
+.downloadApp .textSec h4 { font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight: bold; }
+.downloadApp .textSec .Rlogo { max-height: 80px; margin-bottom: 15px; }
+.downloadApp .textSec p { max-width: 300px; font-size: 19px !important; }
+.downloadApp .textSec .appImg { max-height: 58px; margin-right: 10px; }
+.downloadApp .imgSec img { width: 100%; }
+.downloadApp .textSec p { font-size:16px !important; line-height: 24px; color: #1D1C1C; font-weight: 400; font-family: 'DM Sans', sans-serif; }
+.downloadApp .textSec, .downloadApp .imgSec { width: 100%; display: block; float: left; }
