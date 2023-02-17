@@ -1,11 +1,38 @@
 .suggInfluencersSec {
     background-color: transparent;
     float: left;
-    width: 335px;
-    height: 100vh;
-    position: sticky!important;
+    width: 320px;
+    height: calc(100vh - 67px);
+    /* position: sticky!important; */
     /* position: -webkit-sticky; */
-    top: 74px;
-    padding-bottom: 74px;
+    padding-top:20px;
+    padding-bottom: 10px;
     /* overflow-y: scroll; */
  }
+ .signupbtn {
+    height: 52px; width: 100%; color: #191919;
+    background: #fff; float: left;
+    border-radius: 7px; color: #F2718D;
+    border: 2px solid #F2718D; font-size: 15px; font-weight: 500; margin-bottom: 15px; clear: both; color: #F2718D; 
+ }
+ .signupbtn:hover { background: #fff; color:#563662 !important; border-color: #563662 !important;}
+ .altSignBtn {
+    padding:10px; float: left; height: 48px;
+    margin-bottom: 12px;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #E8EAEE !important;
+    border-radius: 7px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    align-items: center; justify-content: center;
+ }
+ .altSignBtn img {
+    height: 20px;
+    margin-right: 10px;
+ }
+ .altSignBtn a, .altSignBtn a:hover {color: #000;}
+ .advideoSec h1 { font-size: 21px; font-weight: 600; color: #1D1C1C; margin-bottom: 5px; }
+ .advideoSec img { margin-bottom: 10px; width: 100%; }
+ .advideoSec p { margin-bottom: 15px; font-size: 13px; }
