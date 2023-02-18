@@ -12,12 +12,12 @@
     font-family: "Gilroy-Bold";
     font-size: 32px !important;
     text-align: left;
-  margin-bottom: 0px !important;
+    margin-bottom: 0px !important;
   }
   .subText {
     font-size: 17px;
     margin-bottom: 20px;
-    color: #1d1c1c;
+    color: #1d1c1c; text-align: left;
   }
   .picSec .chgavatar {
     background: rgba(0, 0, 0, 0.25);
@@ -57,7 +57,6 @@
     width: 155px;
     float: right;
     height: 160px;
-    margin-top: 50px;
   }
   .profile_img {
     position: absolute;
@@ -168,12 +167,13 @@
     box-shadow: none !important;
     border: none !important;
   }
-  .centerLogo { margin: auto !important; text-align: center;  }
+  .centerLogo { margin:25px auto !important; text-align: center;  }
+  .updatebg { border-radius: 8px; border: 1px solid #E8EAEE; padding: 30px; }
   .verifybg { 
     min-height: 100%; float: left; width: 100%;
     font-family: 'DM Sans', sans-serif;
  }
- .verifyBox { padding: 25px;  max-width: 570px; margin:40px auto 40px auto; padding:50px 100px 130px 100px; border-radius: 8px; border: 1px solid #E8EAEE; }
+ .verifyBox { padding: 25px; width: 100%; max-width: 600px; margin:30px auto 40px auto; padding:50px 80px; min-height: 400px; display: flex; flex-direction: column; justify-content: center; border-radius: 8px; border: 1px solid #E8EAEE; }
  .cancelBtn {
   height: 52px; width: calc(50% - 5px); float: left;
   background: #fff;

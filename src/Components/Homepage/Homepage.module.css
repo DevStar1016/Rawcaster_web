@@ -4,7 +4,7 @@
 .homeheader .rightmenu a { margin-left: 25px; color: #1D1C1C; text-decoration: none; font-size: 16px; }
 .homeheader .rightmenu button { margin-left: 25px; background: #563662; color: #fff; font-size: 17px; padding: 9px 30px; height: 47px; border-radius: 10px; }
 .welcomeSec {
-    width: 100%;
+    width: calc(100% - 60px);
     float: left;
     clear: both;
     display: flex;
