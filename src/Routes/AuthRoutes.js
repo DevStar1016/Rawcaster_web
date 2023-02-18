@@ -4,8 +4,10 @@ import ResetPassword from "../Components/Auth/ResetPassword";
 import Signup from "../Components/Auth/Signup";
 import SignupwithCredentials from "../Components/Auth/SignupwithCredentials";
 import Homepage from "../Components/Homepage/Homepage";
+import AppdownloadScreen from "../Components/Policy/AppdownloadScreen";
 import Contactus from "../Components/Policy/Contactus";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
+import Faq from "../Components/Policy/Faq";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
 import TermsandConditions from "../Components/Policy/TermsandConditions";
 import AuthLayout from "../Layouts/AuthLayout";
@@ -71,6 +73,14 @@ export const AuthRoute = () => {
             {
               path: "support",
               element: <Contactus />,
+            },
+            {
+              path: "faq",
+              element: <Faq />,
+            },
+            {
+              path: "appdownloadscreen",
+              element: <AppdownloadScreen />,
             },
           ],
         },

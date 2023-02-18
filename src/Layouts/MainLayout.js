@@ -32,13 +32,13 @@ const MainLayout = () => {
             <a to="/signin">Host a meeting</a>
           </Menu.Item>
           <Menu.Item key="download">
-            <a to="/appdownloadscreen">Download</a>
+            <Link to="/appdownloadscreen">Download</Link>
           </Menu.Item>
           <Menu.Item key="app">
-            <a to="/support">Support</a>
+            <Link to="/support">Support</Link>
           </Menu.Item>
           <Menu.Item key="mail">
-            <a to="/faq">FAQs</a>
+            <Link to="/faq">FAQs</Link>
           </Menu.Item>
         </Menu>
 

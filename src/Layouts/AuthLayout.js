@@ -1,6 +1,7 @@
 import { Layout, Menu } from "antd";
 import React from "react";
 import { Outlet } from "react-router";
+import { Link } from "react-router-dom";
 import classes from "./Layout.module.css";
 
 const AuthLayout = ({ children }) => {
@@ -17,13 +18,13 @@ const AuthLayout = ({ children }) => {
             <a to="/signin">Host a meeting</a>
           </Menu.Item>
           <Menu.Item key="download">
-            <a to="/appdownloadscreen">Download</a>
+            <Link to="/appdownloadscreen">Download</Link>
           </Menu.Item>
           <Menu.Item key="app">
-            <a to="/support">Support</a>
+            <Link to="/support">Support</Link>
           </Menu.Item>
           <Menu.Item key="mail">
-            <a to="/faq">FAQs</a>
+            <Link to="/faq">FAQs</Link>
           </Menu.Item>
         </Menu>
         {/* <Header className={classes.header}> <Navbar /> </Header> */}

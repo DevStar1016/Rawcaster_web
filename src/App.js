@@ -23,6 +23,7 @@ import Contactus from "./Components/Policy/Contactus";
 import ProfileVerification from "./ProfileVerification";
 import UpdateProfile from "./ProfileVerification/UpdateProfile";
 import VerifyOtp from "./ProfileVerification/VerifyOtp";
+import Development from "./Components/Development";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,6 +47,10 @@ function App() {
           element: <VerifyOtp />,
         },
       ],
+    },
+    {
+      path: "/dev",
+      element: <Development />,
     },
   ];
   const router = createBrowserRouter(routerpaths, { basename: "/" });
