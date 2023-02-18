@@ -21,28 +21,29 @@ const MainLayout = () => {
   return (
     <div className={classes.main_menu} mode="horizontal">
       <Layout>
-        <Menu
-          className={`${classes.topbar} ${classes.onlydes}`}
-          mode="horizontal"
-        >
-          <Menu.Item key="join">
-            <a to="/joinmeeting">Join a meeting</a>
-          </Menu.Item>
-          <Menu.Item key="Host">
-            <a to="/signin">Host a meeting</a>
-          </Menu.Item>
-          <Menu.Item key="download">
-            <Link to="/appdownloadscreen">Download</Link>
-          </Menu.Item>
-          <Menu.Item key="app">
-            <Link to="/support">Support</Link>
-          </Menu.Item>
-          <Menu.Item key="mail">
-            <Link to="/faq">FAQs</Link>
-          </Menu.Item>
+      <div  className={`${classes.topbar} ${classes.onlydes}`}>
+          <div className={classes.headermargin}>
+        <Menu mode="horizontal">          
+            <Menu.Item key="join">
+              <a to="/joinmeeting">Join a meeting</a>
+            </Menu.Item>
+            <Menu.Item key="Host">
+              <a to="/signin">Host a meeting</a>
+            </Menu.Item>
+            <Menu.Item key="download">
+              <Link to="/appdownloadscreen">Download</Link>
+            </Menu.Item>
+            <Menu.Item key="app">
+              <Link to="/support">Support</Link>
+            </Menu.Item>
+            <Menu.Item key="mail">
+              <Link to="/faq">FAQs</Link>
+            </Menu.Item>          
         </Menu>
-
-        <div className={classes.mobmenu}>
+        </div>
+     </div>
+       
+      <div className={classes.mobmenu}>
           <div className={classes.mobheader}>
             <img
               className={classes.moblogo}
@@ -93,6 +94,7 @@ const MainLayout = () => {
         {/* <Header className={classes.header}> <Navbar /> </Header> */}
         <Content className="site-layout mainsec">
           <div className={`${classes.homeheader} ${classes.onlydes}`}>
+            <div className={classes.headermargin}>
             <img
               className={classes.mainlogo}
               src={mainlogo}
@@ -110,6 +112,7 @@ const MainLayout = () => {
               >
                 Signup
               </Button>
+            </div>
             </div>
           </div>
           <Outlet />
