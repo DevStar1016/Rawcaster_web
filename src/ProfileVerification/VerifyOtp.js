@@ -1,18 +1,37 @@
 import { Button, Col } from "antd";
 import dayjs from "dayjs";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getSessionStorageData,
   removeSessionStorageData,
   setSessionStorageData,
 } from "../Store/Storage";
 import classes from "./Profilverification.module.css";
+import * as yup from "yup";
+import { toast } from "react-hot-toast";
+import {
+  resendOtpService,
+  signupVerifyService,
+  verifyotpsendPasswordService,
+} from "../Services/ApiService";
+import { getAuthToken, JSONtoformdata } from "../Shared/Utility";
+
+const validationSchema = yup.object().shape({
+  otp: yup
+    .string()
+    .min(6, "Please Enter Valid OTP!")
+    .required(`Please input your OTP!`),
+});
 
 const VerifyOtp = () => {
+  const navigate = useNavigate();
   const { state } = useLocation();
+  console.log(state);
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
+  const [otpRefId, setotpRefId] = useState();
 
   let TimeVal = getSessionStorageData("verifyCountDown") || {
     counter: state?.remaining_seconds || 60,
@@ -22,6 +41,12 @@ const VerifyOtp = () => {
   function minTwoDigits(n) {
     return (n < 10 ? "0" : "") + n;
   }
+
+  useEffect(() => {
+    if (!otpRefId) {
+      setotpRefId(state?.otp_ref_id);
+    }
+  }, [state]);
 
   function secondsToHms(d) {
     d = Number(d);
@@ -78,6 +103,63 @@ const VerifyOtp = () => {
     };
   }, [TimerValue]);
 
+  const handleresendOTP = () => {
+    let ResendValues = {
+      otp_ref_id: otpRefId,
+      auth_code: getAuthToken(otpRefId),
+    };
+    resendOtpService(JSONtoformdata(ResendValues))
+      .then((res) => {
+        if (res.data.status === 1) {
+          setTimerValue(res.data.remaining_seconds);
+          setSessionStorageData(
+            "verifyCountDown",
+            JSON.stringify({
+              counter: res.data.remaining_seconds,
+              Date: new Date(),
+            })
+          );
+          setotpRefId(res.data.otp_ref_id);
+          toast.success(res.data.msg);
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
+  const { values, handleChange, handleSubmit, touched, errors } = useFormik({
+    initialValues: {
+      otp: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      HandlesubmitVerify(values);
+    },
+  });
+
+  const HandlesubmitVerify = (values) => {
+    let ResetPasswordValue = {
+      ...values,
+      otp_ref_id: otpRefId,
+      auth_code: getAuthToken(otpRefId),
+    };
+    signupVerifyService(JSONtoformdata(ResetPasswordValue))
+      .then((res) => {
+        if (res.data.status === 1) {
+          navigate("/dashboard");
+          toast.success(res.data.msg);
+        } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
   return (
     <Col xs={24} sm={24} md={12} lg={12} xl={12} style={{ margin: "auto" }}>
       <div className="d-flex flex-column align-content-center justify-content-center">
@@ -90,15 +172,13 @@ const VerifyOtp = () => {
         <div className={classes.verifybg}>
           <div className={classes.verifyBox}>
             <h1 className={classes.heading_h1}>Validate your {state?.type}</h1>
-            <p className={classes.subText}>
-              {" "}
-              Please enter the One Time Password (OTP) sent to{" "}
-              {/* <span>{getDisplayContent()}</span> */}
-            </p>
+            <p className={classes.subText}> {state?.msg}</p>
 
             <p className={classes.label}>Enter OTP</p>
 
             <OtpInput
+              value={values.otp}
+              onChange={handleChange("otp")}
               numInputs={6}
               className={classes.otpInput}
               inputStyle={{
@@ -117,11 +197,17 @@ const VerifyOtp = () => {
                 className={
                   TimerValue === 0 ? classes.activeresendTxt : classes.resendTxt
                 }
+                onClick={() => {
+                  if (TimerValue === 0) {
+                    handleresendOTP();
+                  }
+                }}
               >
                 Resend code
               </p>
               <p className={classes.resendTxt}>{secondsToHms(TimerValue)}</p>
             </div>
+            {touched.otp && <p className="ErrTxt mb-3">{errors?.otp}</p>}
             <div className="d-flex flex-row">
               <Button
                 size="large"
@@ -135,6 +221,9 @@ const VerifyOtp = () => {
                 size="large"
                 block
                 className={classes.validateBtn}
+                onClickCapture={() => {
+                  handleSubmit();
+                }}
                 htmlType="submit"
               >
                 Validate

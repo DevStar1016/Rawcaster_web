@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Nuggets.module.css";
-import hearticon from "../Assets/Images/svg/heart.svg";
-import commenticon from "../Assets/Images/svg/comment.svg";
-import shareicon from "../Assets/Images/svg/share.svg";
+import hearticon from "../../Assets/Images/svg/heart.svg";
+import commenticon from "../../Assets/Images/svg/comment.svg";
+import shareicon from "../../Assets/Images/svg/share.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { listNuggetsService } from "../Services/ApiService";
-import { getDataValueById, JSONtoformdata } from "../Shared/Utility";
+import { listNuggetsService } from "../../Services/ApiService";
+import { getDataValueById, JSONtoformdata } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
-import { SHARED_TYPE } from "../Shared/Constant";
+import { SHARED_TYPE } from "../../Shared/Constant";
 import { Tooltip } from "antd";
-import ImageGrid from "../UIComponents/ImageGrid";
+import ImageGrid from "../../UIComponents/ImageGrid";
+import PostNuggets from "./PostNuggets";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
@@ -71,6 +72,7 @@ const Nuggets = () => {
 
   return (
     <div className={classes.nuggetSec} ref={scrollRef}>
+      <PostNuggets />
       {NuggetList?.map((ele) => {
         // let imageGallery = ele.media_list.map((ele) => {
         //   if (ele.media_type === "image") return ele.path;
@@ -133,19 +135,19 @@ const Nuggets = () => {
                   <p>
                     <img src={hearticon} />
                   </p>
-                  <span>82.3K</span>
+                  <span>{ele.total_likes}</span>
                 </div>
                 <div className={classes.iconsec}>
                   <p>
                     <img src={commenticon} />
                   </p>
-                  <span>172</span>
+                  <span>{ele.total_comments}</span>
                 </div>
                 <div className={classes.iconsec}>
                   <p>
                     <img src={shareicon} />
                   </p>
-                  <span>726</span>
+                  <span>500</span>
                 </div>
               </div>
             </div>
