@@ -29,3 +29,5 @@
     padding-top: 3px;
     cursor: pointer;
  }
+.imageModalsec { position: absolute;}
+ .modalSingleimage { max-width: 100%; margin: auto; height: 700px; width: auto !important;}

@@ -7,7 +7,7 @@ import UserImg from "../Assets/Images/svg/userImg.svg";
 import ProfileImg from "../UIComponents/ProfileImg";
 import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
 import HomeIcon from "../Assets/Icons/svg/Home_icon.svg";
-import RawcasterLogo from "../Assets/Images/png/rawcater_logo.png";
+import RawcasterLogo from "../Assets/Images/svg/rawcaster_logo.svg";
 import SettingsIcon from "../Assets/Icons/svg/Settings_icon.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
 import { useDispatch, useSelector } from "react-redux";

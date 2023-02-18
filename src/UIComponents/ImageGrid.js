@@ -73,10 +73,9 @@ const ImageGrid = (props) => {
     if (data.media_type === "image") {
       return (
         <img
-          className={type === "fullview" ? "" : "imgGridsize"}
+          className={`type === "fullview" ? "" : "imgGridsize" ${classes.modalSingleimage}`}
           src={data.path}
           alt=""
-          style={{ zIndex: 0, height: "700px", margin: "auto", width: "500px" }}
         />
       );
     } else {
@@ -448,7 +447,7 @@ const ImageGrid = (props) => {
           setIsVisible(false);
         }}
         footer={null}
-        width={1500}
+        width={1000}
       >
         <div className="nuggets_popup">
           {downloadable === 1 && (
@@ -492,8 +491,9 @@ const ImageGrid = (props) => {
                         height: "100%",
                       }}
                     ></div>
-
-                    {imageOrVideoSingleGallery(ele, "fullview")}
+                    <div className={classes.imageModalsec}>
+                      {imageOrVideoSingleGallery(ele, "fullview")}
+                    </div>
                   </div>
                 );
               })}

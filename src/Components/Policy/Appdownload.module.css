@@ -1,4 +1,4 @@
-.downloadApp { max-width: 1620px; padding: 0 30px; margin: auto; display: flex; justify-content: center;width:100% ;align-items:center; }
+.downloadApp {  max-width: 1620px; padding: 0 30px; margin:107px auto 0 auto; display: flex; justify-content: center;width:100% ;align-items:center; }
 .downloadApp .textSec { width: 45%; float: left; flex-direction: column; justify-content: center; align-items: center; display: flex; }
 .downloadApp .imgSec { width: 55%; float: left;}
 .downloadApp .textSec h4 { font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight: bold; }
@@ -7,4 +7,17 @@
 .downloadApp .textSec .appImg { max-height: 58px; margin-right: 10px; }
 .downloadApp .imgSec img { width: 100%; }
 .downloadApp .textSec p { font-size:16px !important; line-height: 24px; color: #1D1C1C; font-weight: 400; font-family: 'DM Sans', sans-serif; }
-.downloadApp .textSec, .downloadApp .imgSec { width: 100%; display: block; float: left; }
+
+@media (max-width: 768px) {
+    .downloadApp { margin: 0 15px; width: calc(100% - 30px) !important;  }
+    .downloadApp .textSec { padding-bottom: 50px; text-align: center; }
+    .downloadApp .textSec p { text-align: center; max-width: 100%; }  
+    .textSec, .downloadApp .textSec, .downloadApp .imgSec { width: 100%; display: block; float: left; }
+  }
+  @media (min-width:768px) {
+    .desEvent, .downloadApp .imgSec { flex-direction: row-reverse; }
+    .mobSlide { display: none; }
+  } 
+  @media (min-width:769px) and (max-width:1150px) { 
+    .downloadApp .appImg {height: 40px; }
+  }
