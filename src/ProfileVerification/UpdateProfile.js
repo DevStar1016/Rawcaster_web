@@ -94,7 +94,7 @@ const UpdateProfile = () => {
             dob: profileData.dob,
             email_id: profileData.email_id,
             mobile_no: profileData.mobile,
-            // profile_image: profileData.profile_image,
+            profile_image: profileData.profile_image,
             geo_location: profileData.geo_location || "",
           }));
           const isTwoStepVerified =
@@ -125,7 +125,7 @@ const UpdateProfile = () => {
   };
 
   const HandleprofileUpdate = (value) => {
-    if (value.two_type_verification === 0) {
+    if (!isTwoStepVerified) {
       if (value.is_email_id_verified === 0) {
         HandleVerifyOtp({ type: "Email" });
       } else if (value.is_mobile_no_verified === 0) {
@@ -188,7 +188,7 @@ const UpdateProfile = () => {
     let profileValue = {
       ...values,
       token: loginUserData?.token,
-      auth_code: getAuthToken(loginUserData?.token + values.name),
+      auth_code: getAuthToken(loginUserData?.token + values.name.trim()),
     };
     if (typeof ProfileImage === "object") {
       profileValue = {
