@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import PlacesAutocomplete from "react-places-autocomplete";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   getProfileService,
@@ -13,6 +13,7 @@ import {
 } from "../Services/ApiService";
 import {
   ConvertAddresstoLatLng,
+  filterValidObject,
   getAuthToken,
   getGeocodeData,
   getValidImageUrl,
@@ -21,6 +22,7 @@ import {
 import DateInputBox from "../Sharedcomponents/DateInputBox";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
+import { handleTwoStepVerified } from "../Store/Redux/Reducer/DashboardReducer";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -34,8 +36,10 @@ const validationSchema = yup.object().shape({
 });
 
 const UpdateProfile = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserData = useSelector((state) => state.auth.loginUserData);
+  const { isTwoStepVerified } = useSelector((state) => state.dashboard);
   const [IsValidCredentials, setIsValidCredentials] = useState({
     email: false,
     mobile: false,
@@ -89,10 +93,13 @@ const UpdateProfile = () => {
             dob: profileData.dob,
             email_id: profileData.email_id,
             mobile_no: profileData.mobile,
-            profile_image: profileData.profile_image,
+            // profile_image: profileData.profile_image,
             geo_location: profileData.geo_location || "",
           }));
-
+          const isTwoStepVerified =
+            profileData.is_email_id_verified === 1 &&
+            profileData.is_mobile_no_verified === 1;
+          dispatch(handleTwoStepVerified(isTwoStepVerified));
           if (isNext) {
             HandleprofileUpdate(profileData);
           }
@@ -176,6 +183,7 @@ const UpdateProfile = () => {
   };
 
   const handleupdateProfile = (values, isNext = false) => {
+    console.log(loginUserData?.token + values.name);
     let profileValue = {
       ...values,
       token: loginUserData?.token,
@@ -187,7 +195,7 @@ const UpdateProfile = () => {
         profile_image: ProfileImage,
       };
     }
-    updateProfileService(JSONtoformdata(profileValue))
+    updateProfileService(JSONtoformdata(filterValidObject(profileValue)))
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
@@ -485,17 +493,20 @@ const UpdateProfile = () => {
               >
                 Update Info
               </Button>
-
-              {isValid && isNextEnabled && (
-                <Button
-                  block
-                  onClick={() => {
-                    handleupdateProfile(values, true);
-                  }}
-                  className={classes.nextBtn}
-                >
-                  Next
-                </Button>
+              {!isTwoStepVerified && (
+                <>
+                  {isValid && isNextEnabled && (
+                    <Button
+                      block
+                      onClick={() => {
+                        handleupdateProfile(values, true);
+                      }}
+                      className={classes.nextBtn}
+                    >
+                      Next
+                    </Button>
+                  )}
+                </>
               )}
             </Form.Item>
           </Col>

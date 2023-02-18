@@ -111,3 +111,13 @@ export const getValidImageUrl = (img) => {
     return img;
   }
 };
+
+export const getDataValueById = (data, id) => {
+  let findData = data.find((ele) => ele.id === parseInt(id));
+
+  if (findData) {
+    return findData.Value;
+  } else {
+    return "";
+  }
+};
