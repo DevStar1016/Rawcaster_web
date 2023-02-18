@@ -21,6 +21,7 @@ import {
 import DateInputBox from "../Sharedcomponents/DateInputBox";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
+import { Container } from "react-bootstrap";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -208,33 +209,16 @@ const UpdateProfile = () => {
   }, [loginUserData]);
 
   return (
-    <Col xs={24} sm={24} md={12} lg={12} xl={12} style={{ margin: "auto" }}>
-      <div className={classes.updateprofileBox}>
+    <Container>
+    <Col xs={24} sm={24} md={24} lg={24} xl={16} style={{ margin: "auto" }}>
+      <div className={classes.centerLogo}>
+          <Link to="/">
+            <img src={require("../Assets/Images/png/rawcater_logo.png")} />
+          </Link>
+        </div>
+      <div className={classes.updatebg}>
         <Row className="mb-4">
-          <Col md={18}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                height: "70%",
-              }}
-            >
-              <div style={{ cursor: "pointer" }}>
-                <img
-                  height={25}
-                  width={25}
-                  style={{ marginRight: "20px" }}
-                  src={require("../Assets/Icons/png/arrow_back.png")}
-                />
-              </div>
-              <Link to="/">
-                <img
-                  className={classes.hideMob}
-                  src={require("../Assets/Images/png/rawcater_logo.png")}
-                />
-              </Link>
-            </div>
+          <Col md={18}>         
             <h1 className={classes.heading_h1}>Please update your profile</h1>
             <p className={classes.subText}>
               Please update your profile info to continue on Rawcaster
@@ -502,6 +486,7 @@ const UpdateProfile = () => {
         </Row>
       </div>
     </Col>
+    </Container>
   );
 };
 

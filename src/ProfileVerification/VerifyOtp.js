@@ -80,7 +80,7 @@ const VerifyOtp = () => {
 
   return (
     <Col xs={24} sm={24} md={12} lg={12} xl={12} style={{ margin: "auto" }}>
-      <div className="d-flex flex-column align-content-center justify-content-center mt-5">
+      <div className="d-flex flex-column align-content-center justify-content-center">
         <div className={classes.centerLogo}>
           <Link to="/">
             <img src={require("../Assets/Images/png/rawcater_logo.png")} />
