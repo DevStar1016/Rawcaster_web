@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import PlacesAutocomplete from "react-places-autocomplete";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   getProfileService,
@@ -24,6 +24,7 @@ import classes from "./Profilverification.module.css";
 import * as yup from "yup";
 import { handleTwoStepVerified } from "../Store/Redux/Reducer/DashboardReducer";
 import { Container } from "react-bootstrap";
+import { getDashboard, getUserData } from "../Shared/Reduxfetcher";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -39,8 +40,8 @@ const validationSchema = yup.object().shape({
 const UpdateProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loginUserData = useSelector((state) => state.auth.loginUserData);
-  const { isTwoStepVerified } = useSelector((state) => state.dashboard);
+  const loginUserData = getUserData();
+  const { isTwoStepVerified } = getDashboard();
   const [IsValidCredentials, setIsValidCredentials] = useState({
     email: false,
     mobile: false,

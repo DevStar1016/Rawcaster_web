@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Nuggets.module.css";
-import hearticon from "../../Assets/Images/svg/heart.svg";
-import commenticon from "../../Assets/Images/svg/comment.svg";
-import shareicon from "../../Assets/Images/svg/share.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { listNuggetsService } from "../../Services/ApiService";
-import { getDataValueById, JSONtoformdata } from "../../Shared/Utility";
+import { useDispatch } from "react-redux";
+import {
+  likeAndUnlikeNuggetService,
+  listNuggetsService,
+} from "../../Services/ApiService";
+import {
+  getAuthenticated,
+  getDataValueById,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
@@ -13,11 +17,17 @@ import { SHARED_TYPE } from "../../Shared/Constant";
 import { Tooltip } from "antd";
 import ImageGrid from "../../UIComponents/ImageGrid";
 import PostNuggets from "./PostNuggets";
+import { getLocalStorageData } from "../../Store/Storage";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import { Spinner } from "react-bootstrap";
+import { getUserData } from "../../Shared/Reduxfetcher";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 const Nuggets = () => {
-  const loginUserData = useSelector((state) => state.auth.loginUserData);
+  const dispatch = useDispatch();
+  const loginUserData = getUserData();
+  const [isLoading, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);
   const [Pages, setPages] = useState({
     page: 1,
@@ -25,12 +35,14 @@ const Nuggets = () => {
   });
 
   const getToken = () => {
-    if (loginUserData) {
-      return loginUserData?.token;
+    if (getAuthenticated()) {
+      const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+      return userData?.token;
     } else {
       return "RAWCAST";
     }
   };
+
   const getNuggetList = (page = 1) => {
     let nuggetData = {
       nugget_type: 0,
@@ -55,47 +67,78 @@ const Nuggets = () => {
       })
       .catch((err) => {
         toast.error(err.message);
+      })
+      .finally(() => {
+        setisLoading(false);
+        dispatch(handleLoading(false));
       });
   };
 
   useEffect(() => {
+    dispatch(handleLoading(true));
     getNuggetList();
   }, []);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {
+      setisLoading(true);
       getNuggetList(Pages.page + 1);
     }
+  };
+
+  const HandleLike = (id, like) => {
+    let findIndex = NuggetList.findIndex((elem) => elem.nugget_id === id);
+    let tempData = [...NuggetList];
+    tempData[findIndex].liked = like === 1 ? true : false;
+    tempData[findIndex].total_likes =
+      like === 1
+        ? tempData[findIndex].total_likes + 1
+        : tempData[findIndex].total_likes - 1;
+    setNuggetList(tempData);
+
+    let nuggetData = {
+      token: loginUserData?.token,
+      nugget_id: id,
+      like: like,
+    };
+    likeAndUnlikeNuggetService(JSONtoformdata(nuggetData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          getNuggetList();
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
   };
 
   const scrollRef = useBottomScrollListener(onEndReached);
 
   return (
     <div className={classes.nuggetSec} ref={scrollRef}>
-      <PostNuggets />
+      {getAuthenticated() && <PostNuggets />}
       {NuggetList?.map((ele) => {
-        // let imageGallery = ele.media_list.map((ele) => {
-        //   if (ele.media_type === "image") return ele.path;
-        // });
-        // let VideoGallery = ele.media_list.map((ele) => {
-        //   if (ele.media_type === "video") return ele.path;
-        // });
-        // imageGallery = imageGallery.filter((ele) => ele !== undefined);
-        // VideoGallery = VideoGallery.filter((ele) => ele !== undefined);
         return (
           <div className={classes.nuggetItem}>
             <div className={classes.profilePart}>
               <div className={classes.proImg}>
                 <img src={ele?.original_user_image} />
                 <Tooltip title="Became A Fan" color="#e26386">
-                  <i className={classes.viewCount}>
-                    {ele?.follow_count ? ele?.follow_count : ""}
-                  </i>
+                  <i className={classes.viewCount}>{ele?.follow_count}</i>
                 </Tooltip>
               </div>
               <p className={classes.proName}>{ele?.original_user_name}</p>
               <p className={classes.detailsRange}>
-                {dayjs(ele?.created_date).fromNow(true)} ago{" "}
+                <Tooltip
+                  title={dayjs(ele?.created_date).format(
+                    "DD MMM YYYY - hh:mm  A"
+                  )}
+                  color="rgb(250, 162, 27)"
+                >
+                  {dayjs(ele?.created_date).fromNow(true)} ago{" "}
+                </Tooltip>
                 <span class="material-icons">fiber_manual_record</span>
                 {ele?.total_views} Views{" "}
                 <span class="material-icons">fiber_manual_record</span>
@@ -103,49 +146,57 @@ const Nuggets = () => {
               </p>
             </div>
             <div className={classes.dropMenu}>
-              <span class="material-icons">more_horiz</span>
+              {getAuthenticated() && (
+                <span class="material-icons">more_horiz</span>
+              )}
             </div>
             <div className={classes.contentSec}>
               <div className={classes.feedsSec}>
                 <p>{ele?.content}</p>
                 <ImageGrid imgArray={ele.media_list} />
-                {/* 
-                {imageGallery.length !== 0 && (
-                  <FbImageLibrary images={imageGallery} />
-                )}
-                {VideoGallery.length !== 0 && (
-                  <Player aspectRatio={"4:3"}>
-                    <source src={VideoGallery[0]} />
-                  </Player>
-                )} */}
-                {/* {VideoGallery.length !== 0 && (
-                  <ImageGrid>
-                    {VideoGallery.map((ele) => (
-                      <video src={ele} />
-                    ))}
-                  </ImageGrid>
-                )} */}
-                {/* <img
-                  className={classes.nuggetsFeed}
-                  src={require("../Assets/Images/png/nuggetfeed.png")}
-                /> */}
               </div>
               <div className={classes.floattingSec}>
-                <div className={classes.iconsec}>
-                  <p>
-                    <img src={hearticon} />
+                <div
+                  className={
+                    ele?.liked ? classes.activeiconsec : classes.iconsec
+                  }
+                  onClick={() => {
+                    if (getAuthenticated()) {
+                      let like = ele.liked ? 2 : 1;
+                      HandleLike(ele.nugget_id, like);
+                    }
+                  }}
+                >
+                  <p
+                    style={{ cursor: getAuthenticated() ? "pointer" : "auto" }}
+                  >
+                    <i
+                      className={`${classes.inactive_like_icon} ${
+                        !getAuthenticated() && classes.disabled
+                      }`}
+                    />
                   </p>
                   <span>{ele.total_likes}</span>
                 </div>
                 <div className={classes.iconsec}>
-                  <p>
-                    <img src={commenticon} />
+                  <p
+                    style={{ cursor: getAuthenticated() ? "pointer" : "auto" }}
+                  >
+                    <i
+                      className={`${classes.commentIcon} ${
+                        !getAuthenticated() && classes.disabled
+                      }`}
+                    />
                   </p>
                   <span>{ele.total_comments}</span>
                 </div>
                 <div className={classes.iconsec}>
-                  <p>
-                    <img src={shareicon} />
+                  <p style={{ cursor: loginUserData ? "pointer" : "auto" }}>
+                    <i
+                      className={`${classes.share_icon} ${
+                        !getAuthenticated() && classes.disabled
+                      }`}
+                    />
                   </p>
                   <span>500</span>
                 </div>
@@ -154,6 +205,11 @@ const Nuggets = () => {
           </div>
         );
       })}
+      {isLoading && (
+        <div className="text-center py-2">
+          <Spinner animation="border" role="status" />
+        </div>
+      )}
     </div>
   );
 };

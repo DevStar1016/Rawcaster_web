@@ -134,6 +134,7 @@ const SignupwithCredentials = () => {
           dispatch(handleLoginData(res.data));
           setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
           setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
+          navigate("/selectinfluencers");
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {

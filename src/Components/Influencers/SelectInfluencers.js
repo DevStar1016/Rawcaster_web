@@ -10,7 +10,7 @@ import {
   InfluencerListService,
 } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   getAuthToken,
   JSONtoformdata,
@@ -19,11 +19,14 @@ import {
 import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import ProfileImg from "../../UIComponents/ProfileImg";
+import { getUserData } from "../../Shared/Reduxfetcher";
 
 const SelectInfluencers = () => {
   const dispatch = useDispatch();
-  const loginUserData = useSelector((state) => state.auth.loginUserData);
   const navigate = useNavigate();
+  const loginUserData = getUserData();
+
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [influencerList, setinfluencerList] = useState([]);
   const [SelectedInfluencersList, setSelectedInfluencersList] = useState([]);
@@ -141,7 +144,7 @@ const SelectInfluencers = () => {
         <div className={classes.btnSec}>
           <button
             onClick={() => {
-              navigate("/profile");
+              navigate("/dashboard");
             }}
           >
             Skip this
@@ -230,14 +233,13 @@ const SelectInfluencers = () => {
                 <div className={classes.influencers}>
                   <div className="d-flex flex-row w-100">
                     <div className={classes.top}>
-                      <img
-                        className={classes.profileimg}
+                      <ProfileImg
                         src={ele.profile_img}
+                        imgClassName={classes.profileimg}
+                        badgeClassName={classes.diamond}
+                        Badgetype={8}
                       />
-                      <img
-                        className={classes.diamond}
-                        src={influencerdiamond}
-                      />
+
                       <p className={classes.counts}>{ele.followers}</p>
                     </div>
 

@@ -1,7 +1,11 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
 import { GECODE_API_KEY } from "./Constant";
-import { removeCookieData, removeLocalStorageData } from "../Store/Storage";
+import {
+  getLocalStorageData,
+  removeCookieData,
+  removeLocalStorageData,
+} from "../Store/Storage";
 import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
@@ -119,5 +123,13 @@ export const getDataValueById = (data, id) => {
     return findData.Value;
   } else {
     return "";
+  }
+};
+
+export const getAuthenticated = () => {
+  if (getLocalStorageData("rawcaster_user_token")) {
+    return true;
+  } else {
+    return false;
   }
 };

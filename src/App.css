@@ -205,3 +205,11 @@ opacity: 1 !important;
 .gallery_popup .owl-theme .owl-nav {
   margin-top: 0px !important;
 }
+
+.ant-tooltip-inner {
+  font-weight: 500;
+font-size: 13px;
+letter-spacing: 0.032em;
+line-height: 23px;
+
+}
