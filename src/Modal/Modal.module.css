@@ -1,37 +1,44 @@
 .profileModal {
     text-align: center;
     padding: 50px 0;
-  }
-  .profileModal .cancelBtn {
-    border: #f2718d 1px solid;
-    border-radius: 7px;
-    color: #f2718d;
-    font-weight: 500;
-    font-size: 15px;
-    font-family: "DM Sans", sans-serif;
-    padding: 10px 15px;
-    width: 160px;
-    height: 45px;
-  }
-  .profileModal .reportBtn {
-    border: #f2718d 1px solid;
-    border-radius: 7px;
-    color: #fff;
-    background: #f2718d;
-    font-weight: 500;
-    font-size: 15px;
-    font-family: "DM Sans", sans-serif;
-    padding: 10px 15px;
-    width: 160px;
-    height: 45px;
-  }
-  .profileModal p {
-    font-weight: 500;
-    font-size: 23px !important;
-    margin: 30px auto;
-    max-width: 450px;
-    line-height: 35px !important;
-    text-align: center;
-    font-family: "DM Sans", sans-serif;
-    color: #1d1c1c;
-  }
+}
+.profileModal .cancelBtn {
+  border: #f2718d 1px solid;
+  border-radius: 7px;
+  color: #f2718d;
+  font-weight: 500;
+  font-size: 15px;
+  font-family: "DM Sans", sans-serif;
+  padding: 10px 15px;
+  width: 160px;
+  height: 45px;
+}
+.profileModal .reportBtn {
+  border: #f2718d 1px solid;
+  border-radius: 7px;
+  color: #fff;
+  background: #f2718d;
+  font-weight: 500;
+  font-size: 15px;
+  font-family: "DM Sans", sans-serif;
+  padding: 10px 15px;
+  width: 160px;
+  height: 45px;
+}
+.profileModal p {
+  font-weight: 500;
+  font-size: 23px !important;
+  margin: 30px auto;
+  max-width: 450px;
+  line-height: 35px !important;
+  text-align: center;
+  font-family: "DM Sans", sans-serif;
+  color: #1d1c1c;
+}
+
+.nuggetModal h1 { border-bottom: 1px solid #ECECEC; padding-bottom: 15px; font-size: 22px; text-align: center; color: #000 !important; opacity: 1 !important; font-weight: 700;}
+.imguser { width: 70px; height: 70px; float: left; border-radius: 60px; }
+.topProsec { width: 100%; min-height: 100px;}
+.topProsec p { float: left; }
+.onlymeBtn { width: 130px; background: #D9D9D9; border-radius: 6px; color: #000; padding:2px 3px; display: flex; justify-content: center; align-items: center; }
+.onlymeBtn span { font-size: 16px; }
