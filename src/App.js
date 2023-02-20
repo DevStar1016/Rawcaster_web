@@ -1,33 +1,26 @@
-import { RouterProvider, useNavigate } from "react-router";
+import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import { useEffect } from "react";
 import { getLocalStorageData, removeSessionStorageData } from "./Store/Storage";
-import HomeLayout from "./Layouts/HomeLayout";
-import AuthLayout from "../src/Layouts/AuthLayout";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { RootElement } from "./Routes";
 import { handleLoginData } from "./Store/Redux/Reducer/AuthReducer";
-import Homepage from "./Components/Homepage/Homepage";
 import Spinner from "./Sharedcomponents/Spinner";
-import MainLayout from "./Layouts/MainLayout";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import axios from "axios";
 import { RemoveToken } from "./Shared/Utility";
 import { toast } from "react-hot-toast";
-import Privacypolicy from "./Components/Policy/Privacypolicy";
-import TermsandConditions from "./Components/Policy/TermsandConditions";
-import Cookiespolicy from "./Components/Policy/CookiePolicy";
-import Contactus from "./Components/Policy/Contactus";
 import ProfileVerification from "./ProfileVerification";
 import UpdateProfile from "./ProfileVerification/UpdateProfile";
 import VerifyOtp from "./ProfileVerification/VerifyOtp";
 import Development from "./Components/Development";
+import { getDashboard } from "./Shared/Reduxfetcher";
 
 function App() {
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.dashboard);
+  const { isLoading } = getDashboard();
 
   const routerpaths = [
     {

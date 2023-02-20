@@ -41,7 +41,63 @@
  .feedsSec { font-size: 15.5px; line-height: 23px; width: calc(100% - 65px); float: left;}
  .nuggetsFeed { width: 100%; border-radius: 12px; }
  .floattingSec { display: flex; justify-content: end; align-items: center; flex-direction: column; width: 65px; padding-left: 15px; float: left;}
- .floattingSec .iconsec {  display: flex; flex-direction: column; align-items: center;  }
+ .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }
+ 
+ .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .activeiconsec p { background: #F2718D;  }
+ .floattingSec .activeiconsec p i { background: #FFFFFF;  }
  .floattingSec .iconsec p {cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  .floattingSec .iconsec img { height: 18px; }
  .floattingSec .iconsec span { font-weight: 500; font-size: 15px; }
+
+ .inactive_like_icon,.disabled_like_icon {
+   float: left;
+   width: 22px;
+   height: 22px;
+   background: #000;
+   mask: url("../../Assets/Images/svg/heart.svg") no-repeat center / contain;
+   -webkit-mask: url("../../Assets/Images/svg/heart.svg") no-repeat center /
+     contain;
+ }
+
+.disabled {
+  background:grey !important;
+}
+
+
+ .commentIcon {
+  float: left;
+   width: 22px;
+   height: 22px;
+   background: #000;
+   mask: url("../../Assets/Images/svg/comment.svg") no-repeat center / contain;
+   -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
+     contain;
+ }
+ .disabledcommentIcon {
+  float: left;
+   width: 22px;
+   height: 22px;
+   background:grey;
+   mask: url("../../Assets/Images/svg/comment.svg") no-repeat center / contain;
+   -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
+     contain;
+ }
+ .share_icon {
+  float: left;
+   width: 22px;
+   height: 22px;
+   background: #000;
+   mask: url("../../Assets/Images/svg/share.svg") no-repeat center / contain;
+   -webkit-mask: url("../../Assets/Images/svg/share.svg") no-repeat center /
+     contain;
+ }
+ .disabled_share_icon {
+  float: left;
+   width: 22px;
+   height: 22px;
+   background:grey;
+   mask: url("../../Assets/Images/svg/share.svg") no-repeat center / contain;
+   -webkit-mask: url("../../Assets/Images/svg/share.svg") no-repeat center /
+     contain;
+ }

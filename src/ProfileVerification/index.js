@@ -1,14 +1,14 @@
 import React from "react";
 import { Nav } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Outlet, useLocation } from "react-router";
 import { Link } from "react-router-dom";
+import { getDashboard } from "../Shared/Reduxfetcher";
 import { removeSessionStorageData } from "../Store/Storage";
 import classes from "./Profilverification.module.css";
 
 const ProfileVerification = () => {
   const { pathname } = useLocation();
-  const { isTwoStepVerified } = useSelector((state) => state.dashboard);
+  const { isTwoStepVerified } = getDashboard();
 
   return (
     <>
