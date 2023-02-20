@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { getUserData } from "../../Shared/Reduxfetcher";
+import DashboardSignup from "../../Sharedcomponents/DashboardSignup";
 import Events from "../../Sharedcomponents/Events";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import SuggestedInfluencers from "../../Sharedcomponents/SuggestedInfluencers";
@@ -24,7 +25,7 @@ const Dashboard = () => {
       )}
       <Events />
       <Nuggets />
-      <SuggestedInfluencers />
+      <DashboardSignup />
     </div>
   );
 };
