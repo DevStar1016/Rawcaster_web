@@ -139,9 +139,9 @@ const Nuggets = () => {
                 >
                   {dayjs(ele?.created_date).fromNow(true)} ago{" "}
                 </Tooltip>
-                <span class="material-icons">fiber_manual_record</span>
+                <i class="material-icons">fiber_manual_record</i>
                 {ele?.total_views} Views{" "}
-                <span class="material-icons">fiber_manual_record</span>
+                <i class="material-icons">fiber_manual_record</i>
                 {getDataValueById(SHARED_TYPE, ele?.share_type)}
               </p>
             </div>

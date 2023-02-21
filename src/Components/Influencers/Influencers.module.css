@@ -54,14 +54,14 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
 .influencers .fanBtn span,.influencers .selectedBtn span { font-size: 20px; margin-left: 5px; }
 .influencers .selectedBtn {
     background: #563662 !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    /* border: 1px solid rgba(0, 0, 0, 0.1) !important; */
     cursor:default !important;
 }
 .influencers .fanBtn:hover ,.influencers .selectedBtn:hover { text-decoration: none; }
 .selectCategory {
     margin: 0px 20px;
     width: 90% !important;
-    height: 100%;
+    height: 45px;
 }
 .selectCategory span {
     margin-top: 10px;
@@ -83,20 +83,19 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
 .loadmoreSec {
     width: 100%;
     text-align: center;
-    padding: 10px 0;
-  
+    padding: 10px 0;  margin-top: 15px;
 }
 .loadmoreSec p {
-
-font-weight: 500;
-font-size: 22px;
-line-height: 29px;
-color: #1D1C1C;
-cursor: pointer;
-display: flex;
-flex-direction: row;
-justify-content: center;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 29px;
+    color: #1D1C1C;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row; align-items: center;
+    justify-content: center; margin-bottom: 0;
 }
+.loadmoreSec p span { padding-left: 5px; font-size: 19px; }
 @media (max-width:768px) {
 .headerSec { display: block; width: 100%; float: left;}
 .headerSec h1 { width: 100%; margin: auto; text-align: center; font-size: 25px; line-height: 26px; }   

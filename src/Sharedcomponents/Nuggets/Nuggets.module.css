@@ -36,7 +36,7 @@
  }
  .proName {color: #1D1C1C; font-size: 18px; margin-bottom: 0px; }
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
- .detailsRange span { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
+ .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
  .feedsSec { font-size: 15.5px; line-height: 23px; width: calc(100% - 65px); float: left;}
  .nuggetsFeed { width: 100%; border-radius: 12px; }
