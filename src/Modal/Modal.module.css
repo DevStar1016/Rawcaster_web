@@ -41,9 +41,34 @@
 .topProsec { width: 100%; min-height: 100px;}
 .topProsec .name { font-size: 17px; margin: 10px 0; font-weight: 500; font-size: 16px; color: #000 !important; opacity: 1;}
 /* .topProsec p { float: left; } */
-.onlymeBtn { float: left; width: 100px; font-size: 13px; background: #D9D9D9; border-radius: 6px; color: #000; padding:2px 3px; display: flex; justify-content: center; align-items: center; }
-.onlymeBtn span { font-size: 16px; }
+.onlymeBtn { cursor: pointer; float: left; width: 100px; font-size: 13px; background: #D9D9D9; border-radius: 6px; color: #000; padding:2px 3px; display: flex; justify-content: center; align-items: center; }
+.onlymeBtn span { font-size: 16px;margin-right: 5px; }
 .rightSec { display: flex; float:right;}
 .rightSec img { cursor: pointer; height: 23px; padding-left: 15px; }
 .btnstyle { background: #f2718d; color: #fff; border: none; padding: 5px; height: 45px; margin-top: 20px; width: 100%; font-weight: 600; font-size: 16px; }
 .btnstyle:hover { background: #f2718d; color: #fff !important; }
+.cameraSec {
+  padding: 10px;
+}
+.cameraSec button{
+  z-index: 11;
+  position: absolute;
+  bottom: 30px;
+  left: 45%;
+  border:none !important ;
+padding: 10px 20px;
+border-radius: 100px;
+}
+.cameraSec button span {
+  font-size: 32px;
+}
+.thumbPlayBtn {
+  position: absolute;
+  color: #fff !important;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.3);
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import classes from "./Nuggets.module.css";
 import { useDispatch } from "react-redux";
 import {
+  deleteNuggetService,
   likeAndUnlikeNuggetService,
   listNuggetsService,
 } from "../../Services/ApiService";
@@ -14,7 +15,7 @@ import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import { SHARED_TYPE } from "../../Shared/Constant";
-import { Tooltip } from "antd";
+import { Dropdown, Tooltip } from "antd";
 import ImageGrid from "../../UIComponents/ImageGrid";
 import PostNuggets from "./PostNuggets";
 import { getLocalStorageData } from "../../Store/Storage";
@@ -27,6 +28,7 @@ dayjs.extend(relativeTime);
 const Nuggets = () => {
   const dispatch = useDispatch();
   const loginUserData = getUserData();
+  const [isUpdated, setisUpdated] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);
   const [Pages, setPages] = useState({
@@ -54,6 +56,9 @@ const Nuggets = () => {
         if (res.data.status === 1) {
           if (NuggetList.length === 0) {
             setNuggetList(res.data.nuggets_list);
+          } else if (res.data.current_page_no === 1) {
+            console.log("test");
+            setNuggetList(res.data.nuggets_list);
           } else {
             setNuggetList((pre) => [...pre, ...res.data.nuggets_list]);
           }
@@ -77,7 +82,7 @@ const Nuggets = () => {
   useEffect(() => {
     dispatch(handleLoading(true));
     getNuggetList();
-  }, []);
+  }, [isUpdated]);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {
@@ -114,11 +119,37 @@ const Nuggets = () => {
       });
   };
 
+  const deletenugget = (id) => {
+    dispatch(handleLoading(true));
+    let formData = new FormData();
+    formData.append("token", loginUserData?.token);
+    formData.append("nugget_id", id);
+
+    deleteNuggetService(formData)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.status === 1) {
+          toast.success(res.data.msg);
+          getNuggetList(1);
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleLoading(false));
+      });
+  };
+
   const scrollRef = useBottomScrollListener(onEndReached);
 
   return (
     <div className={classes.nuggetSec} ref={scrollRef}>
-      {getAuthenticated() && <PostNuggets />}
+      {getAuthenticated() && (
+        <PostNuggets getNuggetList={getNuggetList} isUpdated={isUpdated} />
+      )}
       {NuggetList?.map((ele) => {
         return (
           <div className={classes.nuggetItem}>
@@ -145,11 +176,40 @@ const Nuggets = () => {
                 {getDataValueById(SHARED_TYPE, ele?.share_type)}
               </p>
             </div>
-            <div className={classes.dropMenu}>
-              {getAuthenticated() && (
-                <span class="material-icons">more_horiz</span>
-              )}
-            </div>
+            {getAuthenticated() && (
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: 1,
+                      label: "Block user",
+                    },
+                    {
+                      key: 2,
+                      label: "Report Abuse",
+                    },
+                    {
+                      key: 3,
+                      label: "Share Link",
+                    },
+                    {
+                      key: 4,
+                      label: "Delete Nugget",
+                    },
+                  ],
+                  onClick: (val) => {
+                    if (parseInt(val.key)) {
+                      deletenugget(ele.nugget_id);
+                    }
+                  },
+                  selectable: true,
+                }}
+              >
+                <div className={classes.dropMenu}>
+                  <span class="material-icons">more_horiz</span>
+                </div>
+              </Dropdown>
+            )}
             <div className={classes.contentSec}>
               <div className={classes.feedsSec}>
                 <p>{ele?.content}</p>

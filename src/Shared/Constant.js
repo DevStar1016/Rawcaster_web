@@ -31,9 +31,16 @@ export const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export const SHARED_TYPE = [
-  { id: 1, Value: "Public" },
-  { id: 2, Value: "Only me" },
-  { id: 3, Value: "Groups" },
-  { id: 4, Value: "Individual" },
-  { id: 5, Value: "both Group and Individual" },
+  { id: 1, key: 1, Value: "Public", label: "Public" },
+  { id: 2, key: 2, Value: "Only me", label: "Only me" },
+  { id: 3, key: 3, Value: "Groups", label: "Groups" },
+  { id: 4, key: 4, Value: "Individual", label: "Individual" },
+  {
+    id: 5,
+    key: 5,
+    Value: "both Group and Individual",
+    label: "both Group and Individual",
+  },
+  { id: 6, key: 6, Value: "All My Friends", label: "All My Friends" },
+  { id: 7, key: 7, Value: "Only fans", label: "Only fans" },
 ];
