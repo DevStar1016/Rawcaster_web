@@ -4,7 +4,6 @@ import { getUserData } from "../../Shared/Reduxfetcher";
 import DashboardSignup from "../../Sharedcomponents/DashboardSignup";
 import Events from "../../Sharedcomponents/Events";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
-import SuggestedInfluencers from "../../Sharedcomponents/SuggestedInfluencers";
 import classes from "./Dashboard.module.css";
 
 const Dashboard = () => {
