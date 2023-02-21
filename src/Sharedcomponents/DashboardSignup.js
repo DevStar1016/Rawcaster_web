@@ -85,7 +85,7 @@ const DashboardSignup = () => {
 
   return (
     <>
-      <div className={classes.suggInfluencersSec}>
+      <div className={classes.beforeloginSec}>
         <div className={classes.advideoSec}>
           <img src={require("../Assets/Images/png/videoimg.png")} />
           <h1>New to Rawcaster?</h1>
