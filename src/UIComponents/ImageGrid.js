@@ -42,7 +42,7 @@ const ImageGrid = (props) => {
           style={{ zIndex: 0 }}
         />
       );
-    } else {
+    } else if (data.media_type === "video") {
       return (
         <Fragment>
           {/* <img
@@ -57,6 +57,7 @@ const ImageGrid = (props) => {
             height="400"
             controls
             disablePictureInPicture
+            className={classes.SingleVideoBg}
             playsInline
             controlsList="nodownload"
             muted={muted}
@@ -78,7 +79,7 @@ const ImageGrid = (props) => {
           alt=""
         />
       );
-    } else {
+    } else if (data.media_type === "video") {
       return (
         <Fragment>
           <video
@@ -129,7 +130,7 @@ const ImageGrid = (props) => {
           />
         </Fragment>
       );
-    } else {
+    } else if (data.media_type === "video") {
       return (
         <Fragment>
           <img

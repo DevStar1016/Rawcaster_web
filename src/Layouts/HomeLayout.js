@@ -22,6 +22,7 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAuthData } from "../Shared/Reduxfetcher";
 import ValidateTypeModal from "../Modal/ValidateTypeModal";
+import { handledasboardTab } from "../Store/Redux/Reducer/DashboardReducer";
 
 const HomeLayout = () => {
   const loginUserData = useAuthData();
@@ -60,7 +61,10 @@ const HomeLayout = () => {
             <Menu mode="horizontal">
               <Link className={classes.logopart} to="/dashboard">
                 <img className="d-none d-sm-block" src={RawcasterLogo} />
-                <img className={`d-block d-sm-none ${classes.smLogo}`} src={smLogo} />
+                <img
+                  className={`d-block d-sm-none ${classes.smLogo}`}
+                  src={smLogo}
+                />
               </Link>
               <div className={`d-none d-sm-block ${classes.topSearch}`}>
                 <InputGroup>
@@ -85,7 +89,8 @@ const HomeLayout = () => {
                 {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
             </Dropdown> */}
-                <Dropdown placement="bottomRight"
+                <Dropdown
+                  placement="bottomRight"
                   menu={{
                     items: [
                       {
@@ -103,7 +108,6 @@ const HomeLayout = () => {
                   }}
                   trigger={["click"]}
                   disabled={loginUserData === null}
-                  
                 >
                   <div
                     className={classes.DropMenu}
@@ -122,7 +126,9 @@ const HomeLayout = () => {
                         Badgetype={loginUserData?.user_status_id}
                         BadgeTitle={loginUserData?.user_status}
                       />
-                      <span className={classes.onlydes}>{loginUserData ? loginUserData?.name : "Log in/Sign up"}</span>
+                      <span className={classes.onlydes}>
+                        {loginUserData ? loginUserData?.name : "Log in/Sign up"}
+                      </span>
                     </div>
                   </div>
                 </Dropdown>
@@ -146,11 +152,27 @@ const HomeLayout = () => {
           </div>
         </div>
         <div className={classes.bottomMenu}>
-            <img src={btmevent} />
-            <img src={btmbell} />
-            <img className={classes.btmhome} src={btmhome} />
-            <img src={btmtv} />
-            <img src={btmuser} />
+          <img
+            src={btmevent}
+            onClick={() => {
+              dispatch(handledasboardTab("event"));
+            }}
+          />
+          <img src={btmbell} />
+          <img
+            className={classes.btmhome}
+            src={btmhome}
+            onClick={() => {
+              dispatch(handledasboardTab("nugget"));
+            }}
+          />
+          <img src={btmtv} />
+          <img
+            src={btmuser}
+            onClick={() => {
+              dispatch(handledasboardTab("usermenu"));
+            }}
+          />
         </div>
         <Content className="site-layout mainsec">
           <Outlet />

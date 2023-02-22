@@ -31,3 +31,9 @@
  }
 .imageModalsec { position: absolute;}
  .modalSingleimage { max-width: 100%; margin: auto; height: 700px; width: auto !important;}
+ .SingleVideoBg {
+    background-image: url(../Assets/Images/png/audioImg.png);
+    /* height: 100%;
+    width: 100%; */
+   
+ }

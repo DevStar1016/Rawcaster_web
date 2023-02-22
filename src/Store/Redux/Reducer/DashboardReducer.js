@@ -4,6 +4,7 @@ const initialState = {
   isLoading: false,
   isTwoStepVerified: false,
   profileVerifyModalShow: { show: false, msg: "" },
+  dashboardMenu: "nugget",
 };
 
 export const { actions, reducer } = createSlice({
@@ -19,6 +20,9 @@ export const { actions, reducer } = createSlice({
     handleprofileVerifyModalShow: (state, action) => {
       state.profileVerifyModalShow = action.payload;
     },
+    handledasboardTab: (state, action) => {
+      state.dashboardMenu = action.payload;
+    },
   },
 });
 
@@ -26,6 +30,7 @@ export const {
   handleLoading,
   handleTwoStepVerified,
   handleprofileVerifyModalShow,
+  handledasboardTab,
 } = actions;
 
 export default reducer;
