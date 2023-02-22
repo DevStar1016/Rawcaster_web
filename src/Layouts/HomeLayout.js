@@ -1,5 +1,5 @@
 import { Dropdown, Layout, Menu } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useNavigate } from "react-router";
 import classes from "./Layout.module.css";
@@ -25,6 +25,7 @@ import ValidateTypeModal from "../Modal/ValidateTypeModal";
 import { handledasboardTab } from "../Store/Redux/Reducer/DashboardReducer";
 
 const HomeLayout = () => {
+  const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const loginUserData = useAuthData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -89,6 +90,39 @@ const HomeLayout = () => {
                 {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
             </Dropdown> */}
+
+                <div className={classes.searchIconmob}>
+                  <span
+                    className={`material-icons ${classes.search_icon}`}
+                    onClick={() => {
+                      setisshowSearchBox(true);
+                    }}
+                  >
+                    search
+                  </span>
+                </div>
+
+                <div
+                  className={classes.searchSec}
+                  style={{ display: isshowSearchBox ? "block" : "none " }}
+                >
+                  <span className={`material-icons ${classes.search_icon}`}>
+                    search
+                  </span>
+                  <input
+                    className={classes.top_search}
+                    type="text"
+                    placeholder={"Search Rawcaster"}
+                  ></input>
+                  <span
+                    className={`material-icons ${classes.clsIcon}`}
+                    onClick={() => {
+                      setisshowSearchBox(false);
+                    }}
+                  >
+                    close
+                  </span>
+                </div>
                 <Dropdown
                   placement="bottomRight"
                   menu={{
