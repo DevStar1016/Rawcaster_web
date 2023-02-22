@@ -223,3 +223,26 @@ width: fit-content;
   .DropMenu { background: none !important; box-shadow:none; }
   .badgeImg {height: 20px !important; left: 33px !important; top: 16px !important;}
 }
+
+
+@media (min-width:769px) {
+  .searchIconmob, .searchSec .clsIcon { display: none; }
+ }
+ @media (max-width:768px) {
+ .onlydes { display: none; }    
+ .mobmenu { display: block; }
+ .mobmenu ul { color: #000; display: block; float: left; }
+ .mobmenu li { padding:8px 15px !important; text-transform: uppercase; }
+ .mobmenu li a { color: #fff !important; font-family: 'DM Sans', sans-serif; font-size: 14px; }
+ .mobmenu i { float: left; margin-top: 8px; margin-left: 5px; color: #fff  }
+ .sidemenu p { padding: 15px !important; margin-bottom: 0; font-weight: 600; color: #000; }
+ .sidemenu p a { color: #000;}
+ .logo_img { margin: 15px 15px 5px 15px; border-bottom: #fafafa 2px solid; padding-bottom: 15px; }
+ .searchSec { left: 15px; display: none; width: calc(100% - 23px); z-index: 1;}
+ .searchSec .clsIcon {  position: absolute; right: 20px; top: 8px; background: #eee; border-radius: 12px; font-size: 16px; padding: 5px; cursor: pointer; }       
+ .top_search { margin-left: 0; }
+ .search_icon { margin-left: 10px; }
+ .searchIconmob {     float: right;
+     width: 30px;  right: 195px; cursor: pointer;
+     position: absolute; top: 15px;} 
+ }
