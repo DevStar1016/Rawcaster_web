@@ -1,7 +1,6 @@
 import { Button, Dropdown, Modal } from "antd";
 import React, { useContext, useState } from "react";
 import classes from "./Modal.module.css";
-import sampleuser from "../Assets/Images/svg/userImg.svg";
 import pollIcon from "../Assets/Images/svg/pollIcon.svg";
 import mikeIcon from "../Assets/Images/svg/mikeicon.svg";
 import videoIcon from "../Assets/Images/svg/videoIcon.png";
@@ -12,19 +11,24 @@ import TextArea from "antd/es/input/TextArea";
 import CameraModal from "./CameraModal";
 import { PostNuggetContext } from "../Shared/Context";
 import { SHARED_TYPE } from "../Shared/Constant";
+import { Picker } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
+import AudioRecordModal from "./AudioRecordModal";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
     getPostValues,
     setFileValues,
     setNuggetValues,
-    getUserData,
+    useAuthData,
     setFieldValue,
     handleSubmit,
     values,
     handleChange,
   } = useContext(PostNuggetContext);
-  const loginUserData = getUserData();
+  const [isAudioModal, setisAudioModal] = useState(false);
+  const loginUserData = useAuthData();
+  const [showEmojis, setShowEmojis] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
   const imageOrVideoSingle = (data) => {
@@ -57,6 +61,7 @@ const Postmodal = ({ visible, onClose }) => {
       );
     }
   };
+
   return (
     <Modal
       footer={null}
@@ -90,7 +95,12 @@ const Postmodal = ({ visible, onClose }) => {
           </Dropdown>
           <div className={classes.rightSec}>
             <img src={pollIcon} />
-            <img src={mikeIcon} />
+            <img
+              src={mikeIcon}
+              onClick={() => {
+                setisAudioModal(true);
+              }}
+            />
             <img
               src={videoIcon}
               onClick={() => {
@@ -165,10 +175,38 @@ const Postmodal = ({ visible, onClose }) => {
             );
           })}
         </div>
+        <div className="text-end">
+          <span
+            class="material-icons"
+            style={{ cursor: "pointer" }}
+            onClick={() => setShowEmojis(!showEmojis)}
+          >
+            sentiment_satisfied_alt
+          </span>
+        </div>
+        {showEmojis && (
+          <div>
+            <Picker
+              showPreview={false}
+              showSkinTones={false}
+              style={{
+                position: "absolute",
+                top: "65%",
+                right: "50px",
+                zIndex: 11,
+              }}
+              onSelect={(e) => {
+                setFieldValue("content", values.content.concat(e.native));
+              }}
+            />
+          </div>
+        )}
         <Button
           className={classes.btnstyle}
           onClick={() => {
+            setShowEmojis(false);
             handleSubmit();
+
             onClose();
           }}
         >
@@ -180,10 +218,17 @@ const Postmodal = ({ visible, onClose }) => {
         type={isCamera.type}
         onSuccess={(value) => {
           setFileValues(value);
+
           setisCamera({ show: false, type: "" });
         }}
         onClose={() => {
           setisCamera({ show: false, type: "" });
+        }}
+      />
+      <AudioRecordModal
+        visible={isAudioModal}
+        onClose={() => {
+          setisAudioModal(false);
         }}
       />
     </Modal>

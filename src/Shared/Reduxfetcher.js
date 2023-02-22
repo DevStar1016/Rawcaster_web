@@ -1,9 +1,13 @@
 import { useSelector } from "react-redux";
 
-export const getUserData = () => {
+export const useAuthData = () => {
   return useSelector((state) => state.auth.loginUserData);
 };
 
-export const getDashboard = () => {
+export const useDashboard = () => {
   return useSelector((state) => state.dashboard);
+};
+
+export const useProfileVerifyModal = () => {
+  return useSelector((state) => state.dashboard.profileVerifyModalShow);
 };

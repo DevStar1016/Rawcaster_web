@@ -43,6 +43,7 @@ import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.png";
 import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
 import OwlCarousel from "react-owl-carousel";
+import { getProfile } from "./getProfile";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -87,7 +88,8 @@ const Signup = () => {
           dispatch(handleLoginData(res.data));
           setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
           setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
-          navigate("/selectinfluencers");
+          getProfile(res.data.token, dispatch);
+          navigate("/dashboard");
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {

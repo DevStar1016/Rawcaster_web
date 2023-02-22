@@ -20,10 +20,11 @@ import { logoutService } from "../Services/ApiService";
 import { JSONtoformdata, RemoveToken } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { getUserData } from "../Shared/Reduxfetcher";
+import { useAuthData } from "../Shared/Reduxfetcher";
+import ValidateTypeModal from "../Modal/ValidateTypeModal";
 
 const HomeLayout = () => {
-  const loginUserData = getUserData();
+  const loginUserData = useAuthData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { Content } = Layout;
@@ -118,7 +119,8 @@ const HomeLayout = () => {
                         src={loginUserData?.profile_image}
                         imgClassName={classes.profileimg}
                         badgeClassName={classes.badgeImg}
-                        Badgetype={4}
+                        Badgetype={loginUserData?.user_status_id}
+                        BadgeTitle={loginUserData?.user_status}
                       />
                       <span className={classes.onlydes}>{loginUserData ? loginUserData?.name : "Log in/Sign up"}</span>
                     </div>
@@ -153,6 +155,12 @@ const HomeLayout = () => {
         <Content className="site-layout mainsec">
           <Outlet />
         </Content>
+        <ValidateTypeModal
+          open={false}
+          handleClose={() => {
+            console.log("test");
+          }}
+        />
       </Layout>
     </>
   );

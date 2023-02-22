@@ -5,7 +5,7 @@ import cameraIcon from "../../Assets/Images/svg/camera.svg";
 import imageIcon from "../../Assets/Images/svg/picture.svg";
 import pollIcon from "../../Assets/Images/svg/thumb.svg";
 import { Input } from "antd";
-import { getUserData } from "../../Shared/Reduxfetcher";
+import { useAuthData } from "../../Shared/Reduxfetcher";
 import { addNuggetsService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
@@ -13,13 +13,15 @@ import { useDispatch } from "react-redux";
 import CameraModal from "../../Modal/CameraModal";
 import { PostNuggetContext } from "../../Shared/Context";
 import { useFormik } from "formik";
+import AudioRecordModal from "../../Modal/AudioRecordModal";
 
 const PostNuggets = ({ getNuggetList }) => {
   const dispatch = useDispatch();
   const [NuggetData, setNuggetData] = useState([]);
   const [postModalShow, setpostModalShow] = useState(false);
+
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
-  const LoginUserData = getUserData();
+  const LoginUserData = useAuthData();
 
   const { values, setFieldValue, handleSubmit, handleChange, resetForm } =
     useFormik({
@@ -75,7 +77,7 @@ const PostNuggets = ({ getNuggetList }) => {
     setNuggetValues(value) {
       return setNuggetData(value);
     },
-    getUserData: getUserData,
+    useAuthData: useAuthData,
     handleChange: handleChange,
     handleSubmit: handleSubmit,
     setFieldValue: setFieldValue,
@@ -155,6 +157,7 @@ const PostNuggets = ({ getNuggetList }) => {
           setisCamera({ show: false, type: "" });
         }}
       />
+
       <Postmodal
         visible={postModalShow}
         onClose={() => {
