@@ -41,7 +41,7 @@ const Postmodal = ({ visible, onClose }) => {
           style={{ width: "100%", height: "100%", borderRadius: 10 }}
         />
       );
-    } else {
+    } else if (data.type.includes("video")) {
       return (
         <>
           <video
@@ -57,6 +57,14 @@ const Postmodal = ({ visible, onClose }) => {
           <span class={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
             play_circle
           </span>
+        </>
+      );
+    } else if (data.type.includes("audio")) {
+      return (
+        <>
+          <div className={classes.musicIcon}>
+            <span class="material-symbols-outlined">music_note</span>
+          </div>
         </>
       );
     }

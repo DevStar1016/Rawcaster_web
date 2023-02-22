@@ -108,3 +108,23 @@ border-bottom: 0.5px solid grey;
   height: 25px;
   margin-right: 15px;
 }
+.RecordBtn {
+  text-align: center;
+  padding: 20px 0;
+}
+.RecordBtn span {
+  font-size: 35px;
+  cursor: pointer;
+}
+.musicIcon {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../Assets/Images/png/audioImg.png);
+}
+.musicIcon span {
+  font-size: 45px;
+  color: #fff;
+}
