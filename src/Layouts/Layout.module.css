@@ -181,11 +181,10 @@ width: fit-content;
   margin-right: 10px;
 }
 
-.mobmenu { display: none;}
+.mobmenu, .bottomMenu { display: none;}
 
 @media (max-width: 768px) {
 .onlydes { display: none; }    
-.mobmenu { display: block; }
 .mobmenu { display: block; }
 .mobmenu .mobheader {background: #563662; width: 100%; float: left; max-height: 60px; position: fixed;}
 .mobmenu .moblogo { float: left; height: 25px; margin: 15px 0 0 20px;}
@@ -217,4 +216,10 @@ width: fit-content;
     margin-right: 5px;
   }
   .leftSec { display: none; }
+  .bottomMenu { border-top: 1px solid #e4e4e4; display: block; background: #fff; height: 50px; position: fixed; bottom: 0; z-index: 1; width: 100%; display: flex; justify-content: space-around; align-items: center;}
+  .btmhome { height: 60px; margin-top: -50px; box-shadow: 0 0 9px 1px rgb(0 0 0 / 20%); border-radius: 50%;}
+  .bottomMenu img { cursor: pointer;}
+  .smLogo { height: 30px !important; margin-left: 10px; }
+  .DropMenu { background: none !important; box-shadow:none; }
+  .badgeImg {height: 20px !important; left: 33px !important; top: 16px !important;}
 }

@@ -7,7 +7,13 @@ import ProfileImg from "../UIComponents/ProfileImg";
 import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
 import HomeIcon from "../Assets/Icons/svg/Home_icon.svg";
 import RawcasterLogo from "../Assets/Images/svg/rawcaster_logo.svg";
+import smLogo from "../Assets/Images/png/r_logo.png";
 import SettingsIcon from "../Assets/Icons/svg/Settings_icon.svg";
+import btmevent from "../Assets/Images/svg/btmevent.svg";
+import btmbell from "../Assets/Images/svg/btmbell.svg";
+import btmtv from "../Assets/Images/svg/btmtv.svg";
+import btmuser from "../Assets/Images/svg/btmuser.svg";
+import btmhome from "../Assets/Images/svg/btmhome.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
 import { useDispatch } from "react-redux";
 import { logoutService } from "../Services/ApiService";
@@ -52,9 +58,10 @@ const HomeLayout = () => {
           <div className={classes.fullcontainer}>
             <Menu mode="horizontal">
               <Link className={classes.logopart} to="/dashboard">
-                <img src={RawcasterLogo} />
+                <img className="d-none d-sm-block" src={RawcasterLogo} />
+                <img className={`d-block d-sm-none ${classes.smLogo}`} src={smLogo} />
               </Link>
-              <div className={` ${classes.topSearch}`}>
+              <div className={`d-none d-sm-block ${classes.topSearch}`}>
                 <InputGroup>
                   <InputGroup.Text>
                     <span class="material-symbols-outlined">search</span>
@@ -67,17 +74,17 @@ const HomeLayout = () => {
               </div>
               <div className={classes.rightMenus}>
                 {loginUserData && (
-                  <>
+                  <div className={classes.onlydes}>
                     <img src={LiveIcon} className={classes.liveIcon} />
                     <img src={HomeIcon} className={classes.menuIcon} />
                     <img src={SettingsIcon} className={classes.menuIcon} />
                     <img src={NotificationIcon} className={classes.menuIcon} />
-                  </>
+                  </div>
                 )}
                 {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
             </Dropdown> */}
-                <Dropdown
+                <Dropdown placement="bottomRight"
                   menu={{
                     items: [
                       {
@@ -95,6 +102,7 @@ const HomeLayout = () => {
                   }}
                   trigger={["click"]}
                   disabled={loginUserData === null}
+                  
                 >
                   <div
                     className={classes.DropMenu}
@@ -112,7 +120,7 @@ const HomeLayout = () => {
                         badgeClassName={classes.badgeImg}
                         Badgetype={4}
                       />
-                      {loginUserData ? loginUserData?.name : "Log in/Sign up"}
+                      <span className={classes.onlydes}>{loginUserData ? loginUserData?.name : "Log in/Sign up"}</span>
                     </div>
                   </div>
                 </Dropdown>
@@ -134,6 +142,13 @@ const HomeLayout = () => {
               </div>
             </Menu>
           </div>
+        </div>
+        <div className={classes.bottomMenu}>
+            <img src={btmevent} />
+            <img src={btmbell} />
+            <img className={classes.btmhome} src={btmhome} />
+            <img src={btmtv} />
+            <img src={btmuser} />
         </div>
         <Content className="site-layout mainsec">
           <Outlet />
