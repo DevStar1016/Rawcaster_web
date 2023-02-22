@@ -15,7 +15,7 @@ import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import { SHARED_TYPE } from "../../Shared/Constant";
-import { Dropdown, Tooltip } from "antd";
+import { Dropdown, Input, Tooltip } from "antd";
 import ImageGrid from "../../UIComponents/ImageGrid";
 import PostNuggets from "./PostNuggets";
 import { getLocalStorageData } from "../../Store/Storage";
@@ -24,6 +24,8 @@ import { Spinner } from "react-bootstrap";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import hearticon from "../../Assets/Images/svg/heart.svg";
 import replyicon from "../../Assets/Images/svg/comment.svg";
+import sendicon from "../../Assets/Images/svg/sendicon.svg";
+import emoji from "../../Assets/Images/svg/emoji.svg";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
@@ -291,9 +293,18 @@ const Nuggets = () => {
                     <div className={classes.agree}><img src={hearticon}/> Agree</div>
                     <div className={classes.agree}><img src={replyicon}/> Reply</div>
                     <div className={classes.time}>3 days ago</div>
+                  </div> 
+                </div>
+
+                <div className={classes.comtArea}>
+                  <div className={classes.proImg}><img src={require("../../Assets/Images/png/elakkiya.png")}/></div>
+                  <div className={classes.textBox}>
+                    <Input placeholder="Write your message here..." />
+                    <img  className={classes.emojiicon} src={emoji}/>
+                    <img  className={classes.sendicon} src={sendicon}/>
                   </div>
                 </div>
-                
+
             </div>          
           </div>
         );

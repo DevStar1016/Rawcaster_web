@@ -23,12 +23,18 @@ const Dashboard = () => {
           </Link>
         </div>
       )}
-      <Events />
-      <Nuggets />
-      <DashboardSignup />
-      {/* {dashboardMenu === "event" && <Events />}
-      {dashboardMenu === "nugget" && <Nuggets />}
-      {dashboardMenu === "usermenu" && <DashboardSignup />} */}
+      <div className="d-none d-sm-block">
+        <Events />
+        <Nuggets />
+        <DashboardSignup />
+      </div>
+      
+      <div className="d-block d-sm-none">
+        {dashboardMenu === "event" && <Events />}
+        {dashboardMenu === "nugget" && <Nuggets />}
+        {dashboardMenu === "usermenu" && <DashboardSignup />} 
+      </div>
+
     </div>
   );
 };

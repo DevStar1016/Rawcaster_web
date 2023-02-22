@@ -237,3 +237,4 @@ line-height: 23px;
   transition: transform 0.5s ease;
   background-color: rgba(0, 0, 0, 0.8);
 }
+.clearfix { clear: both;}
