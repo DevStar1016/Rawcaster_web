@@ -51,9 +51,8 @@
    float: left;
    width: 100%;
    cursor: pointer;
-   font-size: 18px;
+   font-size: 17px;
 }
-.seemoreSec span {
-  
-   margin-left: 10px;
+.seemoreSec span {  
+   margin-left: 5px; font-size: 20px;
 }

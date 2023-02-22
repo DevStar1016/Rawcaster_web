@@ -39,13 +39,11 @@ const SuggestedInfluencers = () => {
         {influencerList?.map((ele) => {
           return (
             <div className={classes.suggAcc}>
-              <img src={ele?.profile_img} />
-              <div className="d-flex flex-column">
-                <p className={classes.name}>{ele?.display_name}</p>
+              <img src={ele?.profile_img} />             
+                <p className={classes.name}>{ele?.display_name}</p><br/>
                 {ele.category && ele.category.length !== 0 && (
                   <p className={classes.username}>{ele.category.toString()}</p>
-                )}
-              </div>
+                )}            
             </div>
           );
         })}

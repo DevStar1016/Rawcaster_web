@@ -22,6 +22,8 @@ import { getLocalStorageData } from "../../Store/Storage";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { useAuthData } from "../../Shared/Reduxfetcher";
+import hearticon from "../../Assets/Images/svg/heart.svg";
+import replyicon from "../../Assets/Images/svg/comment.svg";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
@@ -262,6 +264,37 @@ const Nuggets = () => {
                 </div>
               </div>
             </div>
+
+            <div className={classes.cmtSec}>
+                <div className={classes.item}>
+                  <div className={classes.proImg}><img src={require("../../Assets/Images/png/elakkiya.png")}/></div>
+                  <div className={classes.rightitem}>
+                    <div className={classes.cmtText}>
+                      <p>Mark ken</p>
+                      <span>Your detail comment here...</span>
+                    </div>
+                    <div className="clearfix"></div>
+                    <div className={classes.agree}><img src={hearticon}/> Agree</div>
+                    <div className={classes.agree}><img src={replyicon}/> Reply</div>
+                    <div className={classes.time}>3 days ago</div>
+                  </div>
+                </div>
+
+                <div className={classes.item}>
+                  <div className={classes.proImg}><img src={require("../../Assets/Images/png/elakkiya.png")}/></div>
+                  <div className={classes.rightitem}>
+                    <div className={classes.cmtText}>
+                      <p>Mark ken</p>
+                      <span>Your detail comment here...</span>
+                    </div>
+                    <div className="clearfix"></div>
+                    <div className={classes.agree}><img src={hearticon}/> Agree</div>
+                    <div className={classes.agree}><img src={replyicon}/> Reply</div>
+                    <div className={classes.time}>3 days ago</div>
+                  </div>
+                </div>
+                
+            </div>          
           </div>
         );
       })}
