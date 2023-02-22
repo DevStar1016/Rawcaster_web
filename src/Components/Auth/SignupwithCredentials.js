@@ -25,6 +25,7 @@ import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import OwlCarousel from "react-owl-carousel";
+import { getProfile } from "./getProfile";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();
@@ -131,9 +132,7 @@ const SignupwithCredentials = () => {
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-          dispatch(handleLoginData(res.data));
-          setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
-          setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
+          getProfile(res.data.token, dispatch);
           navigate("/selectinfluencers");
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });

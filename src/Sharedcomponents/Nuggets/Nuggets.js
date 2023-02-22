@@ -21,13 +21,13 @@ import PostNuggets from "./PostNuggets";
 import { getLocalStorageData } from "../../Store/Storage";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
-import { getUserData } from "../../Shared/Reduxfetcher";
+import { useAuthData } from "../../Shared/Reduxfetcher";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 const Nuggets = () => {
   const dispatch = useDispatch();
-  const loginUserData = getUserData();
+  const loginUserData = useAuthData();
   const [isUpdated, setisUpdated] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);

@@ -20,12 +20,12 @@ import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import ProfileImg from "../../UIComponents/ProfileImg";
-import { getUserData } from "../../Shared/Reduxfetcher";
+import { useAuthData } from "../../Shared/Reduxfetcher";
 
 const SelectInfluencers = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loginUserData = getUserData();
+  const loginUserData = useAuthData();
 
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [influencerList, setinfluencerList] = useState([]);

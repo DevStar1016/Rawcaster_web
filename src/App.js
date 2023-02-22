@@ -16,11 +16,14 @@ import ProfileVerification from "./ProfileVerification";
 import UpdateProfile from "./ProfileVerification/UpdateProfile";
 import VerifyOtp from "./ProfileVerification/VerifyOtp";
 import Development from "./Components/Development";
-import { getDashboard } from "./Shared/Reduxfetcher";
+import { useDashboard, useProfileVerifyModal } from "./Shared/Reduxfetcher";
+import { VerificationModal } from "./Modal/ProfileVerificationModal";
+import { handleprofileVerifyModalShow } from "./Store/Redux/Reducer/DashboardReducer";
 
 function App() {
   const dispatch = useDispatch();
-  const { isLoading } = getDashboard();
+  const { isLoading } = useDashboard();
+  const profileverifyStatus = useProfileVerifyModal();
 
   const routerpaths = [
     {
@@ -83,6 +86,13 @@ function App() {
     <>
       {isLoading ? <Spinner /> : null}
       <RouterProvider router={router} />
+      <VerificationModal
+        open={profileverifyStatus.show}
+        msg={profileverifyStatus.msg}
+        close={() => {
+          dispatch(handleprofileVerifyModalShow({ show: false, msg: "" }));
+        }}
+      />
     </>
   );
 }

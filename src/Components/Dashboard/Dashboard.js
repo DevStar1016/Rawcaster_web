@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { getUserData } from "../../Shared/Reduxfetcher";
+import { useAuthData } from "../../Shared/Reduxfetcher";
 import DashboardSignup from "../../Sharedcomponents/DashboardSignup";
 import Events from "../../Sharedcomponents/Events";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import classes from "./Dashboard.module.css";
 
 const Dashboard = () => {
-  const loginUserData = getUserData();
+  const loginUserData = useAuthData();
   return (
     <div className={classes.fullcontainer}>
       {loginUserData === null && (

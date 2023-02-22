@@ -156,3 +156,41 @@ export function loadXHR(url) {
     }
   });
 }
+
+export const getPartialHiddenEmail = (email) => {
+  if (email) {
+    let emailSplitedList = email?.toString().split("@");
+    let emailNameText = "";
+    emailSplitedList[0]
+      .toString()
+      .split("")
+      .map((letter, index) => {
+        if (index > 2) {
+          emailNameText = emailNameText + "*";
+        } else {
+          emailNameText = emailNameText + letter;
+        }
+      });
+
+    return emailNameText + "@" + emailSplitedList[1];
+  } else {
+    return "";
+  }
+};
+
+export const getPartialHiddenMobileNumber = (number) => {
+  if (number) {
+    let splitedNumbersList = number?.toString().split("");
+    let phoneNumber = "";
+    splitedNumbersList.map((num, index) => {
+      if (index < 2 || index > splitedNumbersList.length - 3) {
+        phoneNumber = phoneNumber + num;
+      } else {
+        phoneNumber = phoneNumber + "*";
+      }
+    });
+    return phoneNumber;
+  } else {
+    return "";
+  }
+};

@@ -16,6 +16,8 @@ import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 import OwlCarousel from "react-owl-carousel";
+import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
+import { getProfile } from "./getProfile";
 
 const validationSchema = yup.object().shape({
   username: yup.string().required(`Please input your Login ID!`),
@@ -54,10 +56,8 @@ const Login = () => {
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-          dispatch(handleLoginData(res.data));
-          setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
-          setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
-          navigate("/selectinfluencers");
+          getProfile(res.data.token, dispatch);
+          navigate("/dashboard");
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {

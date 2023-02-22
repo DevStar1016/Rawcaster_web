@@ -13,6 +13,7 @@ const ProfileImg = ({
   isLoggedIn = true,
   src,
   Badgetype,
+  BadgeTitle = "",
   imgClassName,
   badgeClassName,
 }) => {
@@ -41,7 +42,7 @@ const ProfileImg = ({
   return (
     <>
       <img className={imgClassName} src={isLoggedIn ? src : userImg} />
-      <Tooltip title={getBadge().title} color={"#e26386"} placement="bottom">
+      <Tooltip title={BadgeTitle} color={"#e26386"} placement="bottom">
         {isLoggedIn && getBadge() && (
           <img
             className={badgeClassName}

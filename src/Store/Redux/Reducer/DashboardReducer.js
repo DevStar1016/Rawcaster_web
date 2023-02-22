@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isLoading: false,
   isTwoStepVerified: false,
+  profileVerifyModalShow: { show: false, msg: "" },
 };
 
 export const { actions, reducer } = createSlice({
@@ -15,9 +16,16 @@ export const { actions, reducer } = createSlice({
     handleTwoStepVerified: (state, action) => {
       state.isTwoStepVerified = action.payload;
     },
+    handleprofileVerifyModalShow: (state, action) => {
+      state.profileVerifyModalShow = action.payload;
+    },
   },
 });
 
-export const { handleLoading, handleTwoStepVerified } = actions;
+export const {
+  handleLoading,
+  handleTwoStepVerified,
+  handleprofileVerifyModalShow,
+} = actions;
 
 export default reducer;

@@ -24,7 +24,7 @@ import classes from "./Profilverification.module.css";
 import * as yup from "yup";
 import { handleTwoStepVerified } from "../Store/Redux/Reducer/DashboardReducer";
 import { Container } from "react-bootstrap";
-import { getDashboard, getUserData } from "../Shared/Reduxfetcher";
+import { useDashboard, useAuthData } from "../Shared/Reduxfetcher";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -40,8 +40,8 @@ const validationSchema = yup.object().shape({
 const UpdateProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loginUserData = getUserData();
-  const { isTwoStepVerified } = getDashboard();
+  const loginUserData = useAuthData();
+  const { isTwoStepVerified } = useDashboard();
   const [IsValidCredentials, setIsValidCredentials] = useState({
     email: false,
     mobile: false,
