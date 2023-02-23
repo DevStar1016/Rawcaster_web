@@ -57,6 +57,7 @@
 .cmtSec .cmtText p { font-weight: 600; font-size: 16px; color: #000; opacity: 1; margin-bottom: 0;  }
 .cmtSec .cmtText span { color: rgba(0,0,0.0.7) !important; font-weight: 300; font-size: 14px; }
 .cmtSec .rightitem, .cmtSec .comtArea .textBox { width: calc(100% - 65px);}
+.cmtSec .rightitem .moreBtn { margin-left: 15px; cursor: pointer;width: fit-content;    height: fit-content;}
 .cmtSec .rightitem .time {color: rgba(0,0,0.0.7); }
 .cmtSec .rightitem .agree { cursor: pointer; display: flex; align-items: center; justify-content: center; float: left; margin-right: 10px; }
 .cmtSec .rightitem .agree img { height: 13px; margin-right: 4px; }

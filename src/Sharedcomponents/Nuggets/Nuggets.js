@@ -5,6 +5,7 @@ import {
   deleteNuggetService,
   likeAndUnlikeNuggetService,
   listNuggetsService,
+  nuggetCommentListService,
 } from "../../Services/ApiService";
 import {
   getAuthenticated,
@@ -15,25 +16,26 @@ import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import { SHARED_TYPE } from "../../Shared/Constant";
-import { Dropdown, Input, Tooltip } from "antd";
+import { Dropdown, Tooltip } from "antd";
 import ImageGrid from "../../UIComponents/ImageGrid";
 import PostNuggets from "./PostNuggets";
 import { getLocalStorageData } from "../../Store/Storage";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { useAuthData } from "../../Shared/Reduxfetcher";
-import hearticon from "../../Assets/Images/svg/heart.svg";
-import replyicon from "../../Assets/Images/svg/comment.svg";
-import sendicon from "../../Assets/Images/svg/sendicon.svg";
-import emoji from "../../Assets/Images/svg/emoji.svg";
+
+import CommentsList from "./CommentsList";
+import { ListNuggetContext } from "../../Shared/Context";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 const Nuggets = () => {
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
-  const [isUpdated, setisUpdated] = useState(true);
   const [isLoading, setisLoading] = useState(false);
+  const [CommentList, setCommentList] = useState([]);
+  const [isCommentLoading, setisCommentLoading] = useState(false);
+  const [Comments, setComments] = useState("");
   const [NuggetList, setNuggetList] = useState([]);
   const [Pages, setPages] = useState({
     page: 1,
@@ -86,7 +88,7 @@ const Nuggets = () => {
   useEffect(() => {
     dispatch(handleLoading(true));
     getNuggetList();
-  }, [isUpdated]);
+  }, []);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {
@@ -131,7 +133,6 @@ const Nuggets = () => {
 
     deleteNuggetService(formData)
       .then((res) => {
-        console.log(res.data);
         if (res.data.status === 1) {
           toast.success(res.data.msg);
           getNuggetList(1);
@@ -149,172 +150,188 @@ const Nuggets = () => {
 
   const scrollRef = useBottomScrollListener(onEndReached);
 
+  const getCommentList = (id) => {
+    setisCommentLoading(true);
+    let listComment = {
+      token: loginUserData?.token,
+      nugget_id: id,
+    };
+    nuggetCommentListService(JSONtoformdata(listComment))
+      .then((res) => {
+        if (res.data.status === 1) {
+          setCommentList(res.data.comments);
+        } else {
+          setCommentList([]);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      })
+      .finally(() => {
+        setisCommentLoading(false);
+      });
+  };
+
+  const ListNuggetData = {
+    nugget_id: Comments,
+    CommentList: CommentList,
+    isCommentLoading: isCommentLoading,
+    getCommentList(id) {
+      return getCommentList(id);
+    },
+    getNuggetList() {
+      return getNuggetList();
+    },
+  };
+
   return (
-    <div className={classes.nuggetSec} ref={scrollRef}>
-      {getAuthenticated() && (
-        <PostNuggets getNuggetList={getNuggetList} isUpdated={isUpdated} />
-      )}
-      {NuggetList?.map((ele) => {
-        return (
-          <div className={classes.nuggetItem}>
-            <div className={classes.profilePart}>
-              <div className={classes.proImg}>
-                <img src={ele?.original_user_image} />
-                <Tooltip title="Became A Fan" color="#e26386">
-                  <i className={classes.viewCount}>{ele?.follow_count}</i>
-                </Tooltip>
-              </div>
-              <p className={classes.proName}>{ele?.original_user_name}</p>
-              <p className={classes.detailsRange}>
-                <Tooltip
-                  title={dayjs(ele?.created_date).format(
-                    "DD MMM YYYY - hh:mm  A"
-                  )}
-                  color="rgb(250, 162, 27)"
-                >
-                  {dayjs(ele?.created_date).fromNow(true)} ago{" "}
-                </Tooltip>
-                <i class="material-icons">fiber_manual_record</i>
-                {ele?.total_views} Views{" "}
-                <i class="material-icons">fiber_manual_record</i>
-                {getDataValueById(SHARED_TYPE, ele?.share_type)}
-              </p>
-            </div>
-            {getAuthenticated() && (
-              <Dropdown
-                menu={{
-                  items: [
-                    {
-                      key: 1,
-                      label: "Block user",
-                    },
-                    {
-                      key: 2,
-                      label: "Report Abuse",
-                    },
-                    {
-                      key: 3,
-                      label: "Share Link",
-                    },
-                    {
-                      key: 4,
-                      label: "Delete Nugget",
-                    },
-                  ],
-                  onClick: (val) => {
-                    if (parseInt(val.key)) {
-                      deletenugget(ele.nugget_id);
-                    }
-                  },
-                  selectable: true,
-                }}
-              >
-                <div className={classes.dropMenu}>
-                  <span class="material-icons">more_horiz</span>
+    <ListNuggetContext.Provider value={ListNuggetData}>
+      <div className={classes.nuggetSec} ref={scrollRef}>
+        {getAuthenticated() && <PostNuggets getNuggetList={getNuggetList} />}
+        {NuggetList?.map((ele, index) => {
+          return (
+            <div className={classes.nuggetItem}>
+              <div className={classes.profilePart}>
+                <div className={classes.proImg}>
+                  <img src={ele?.original_user_image} />
+                  <Tooltip title="Became A Fan" color="#e26386">
+                    <i className={classes.viewCount}>{ele?.follow_count}</i>
+                  </Tooltip>
                 </div>
-              </Dropdown>
-            )}
-            <div className={classes.contentSec}>
-              <div className={classes.feedsSec}>
-                <p>{ele?.content}</p>
-                <ImageGrid imgArray={ele.media_list} />
+                <p className={classes.proName}>{ele?.original_user_name}</p>
+                <p className={classes.detailsRange}>
+                  <Tooltip
+                    title={dayjs(ele?.created_date).format(
+                      "DD MMM YYYY - hh:mm  A"
+                    )}
+                    color="rgb(250, 162, 27)"
+                  >
+                    {dayjs(ele?.created_date).fromNow(true)} ago{" "}
+                  </Tooltip>
+                  <i class="material-icons">fiber_manual_record</i>
+                  {ele?.total_views} Views{" "}
+                  <i class="material-icons">fiber_manual_record</i>
+                  {getDataValueById(SHARED_TYPE, ele?.share_type)}
+                </p>
               </div>
-              <div className={classes.floattingSec}>
-                <div
-                  className={
-                    ele?.liked ? classes.activeiconsec : classes.iconsec
-                  }
-                  onClick={() => {
-                    if (getAuthenticated()) {
-                      let like = ele.liked ? 2 : 1;
-                      HandleLike(ele.nugget_id, like);
-                    }
+              {getAuthenticated() && (
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: 1,
+                        label: "Block user",
+                      },
+                      {
+                        key: 2,
+                        label: "Report Abuse",
+                      },
+                      {
+                        key: 3,
+                        label: "Share Link",
+                      },
+                      {
+                        key: 4,
+                        label: "Delete Nugget",
+                      },
+                    ],
+                    onClick: (val) => {
+                      if (parseInt(val.key)) {
+                        deletenugget(ele.nugget_id);
+                      }
+                    },
+                    selectable: true,
                   }}
                 >
-                  <p
-                    style={{ cursor: getAuthenticated() ? "pointer" : "auto" }}
-                  >
-                    <i
-                      className={`${classes.inactive_like_icon} ${
-                        !getAuthenticated() && classes.disabled
-                      }`}
-                    />
-                  </p>
-                  <span>{ele.total_likes}</span>
+                  <div className={classes.dropMenu}>
+                    <span class="material-icons">more_horiz</span>
+                  </div>
+                </Dropdown>
+              )}
+              <div className={classes.contentSec}>
+                <div className={classes.feedsSec}>
+                  <p>{ele?.content}</p>
+                  <ImageGrid imgArray={ele.media_list} />
                 </div>
-                <div className={classes.iconsec}>
-                  <p
-                    style={{ cursor: getAuthenticated() ? "pointer" : "auto" }}
+                <div className={classes.floattingSec}>
+                  <div
+                    className={
+                      ele?.liked ? classes.activeiconsec : classes.iconsec
+                    }
+                    onClick={() => {
+                      if (getAuthenticated()) {
+                        let like = ele.liked ? 2 : 1;
+                        HandleLike(ele.nugget_id, like);
+                      }
+                    }}
                   >
-                    <i
-                      className={`${classes.commentIcon} ${
-                        !getAuthenticated() && classes.disabled
-                      }`}
-                    />
-                  </p>
-                  <span>{ele.total_comments}</span>
-                </div>
-                <div className={classes.iconsec}>
-                  <p style={{ cursor: loginUserData ? "pointer" : "auto" }}>
-                    <i
-                      className={`${classes.share_icon} ${
-                        !getAuthenticated() && classes.disabled
-                      }`}
-                    />
-                  </p>
-                  <span>500</span>
+                    <p
+                      style={{
+                        cursor: getAuthenticated() ? "pointer" : "auto",
+                      }}
+                    >
+                      <i
+                        className={`${classes.inactive_like_icon} ${
+                          !getAuthenticated() && classes.disabled
+                        }`}
+                      />
+                    </p>
+                    <span>{ele.total_likes}</span>
+                  </div>
+                  <div className={classes.iconsec}>
+                    <p
+                      style={{
+                        cursor: getAuthenticated() ? "pointer" : "auto",
+                      }}
+                      onClick={() => {
+                        if (Comments === ele.nugget_id) {
+                          setCommentList([]);
+                          setComments("");
+                        } else {
+                          setCommentList([]);
+                          setComments(ele.nugget_id);
+                          getCommentList(ele.nugget_id);
+                        }
+                      }}
+                    >
+                      <i
+                        className={`${classes.commentIcon} ${
+                          !getAuthenticated() && classes.disabled
+                        }`}
+                      />
+                    </p>
+                    <span>{ele.total_comments}</span>
+                  </div>
+                  <div className={classes.iconsec}>
+                    <p style={{ cursor: loginUserData ? "pointer" : "auto" }}>
+                      <i
+                        className={`${classes.share_icon} ${
+                          !getAuthenticated() && classes.disabled
+                        }`}
+                      />
+                    </p>
+                    <span>500</span>
+                  </div>
                 </div>
               </div>
+
+              {Comments === ele.nugget_id && (
+                <CommentsList
+                  nugget_id={Comments}
+                  index={index}
+                  CommentList={CommentList}
+                />
+              )}
             </div>
-
-            <div className={classes.cmtSec}>
-                <div className={classes.item}>
-                  <div className={classes.proImg}><img src={require("../../Assets/Images/png/elakkiya.png")}/></div>
-                  <div className={classes.rightitem}>
-                    <div className={classes.cmtText}>
-                      <p>Mark ken</p>
-                      <span>Your detail comment here...</span>
-                    </div>
-                    <div className="clearfix"></div>
-                    <div className={classes.agree}><img src={hearticon}/> Agree</div>
-                    <div className={classes.agree}><img src={replyicon}/> Reply</div>
-                    <div className={classes.time}>3 days ago</div>
-                  </div>
-                </div>
-
-                <div className={classes.item}>
-                  <div className={classes.proImg}><img src={require("../../Assets/Images/png/elakkiya.png")}/></div>
-                  <div className={classes.rightitem}>
-                    <div className={classes.cmtText}>
-                      <p>Mark ken</p>
-                      <span>Your detail comment here...</span>
-                    </div>
-                    <div className="clearfix"></div>
-                    <div className={classes.agree}><img src={hearticon}/> Agree</div>
-                    <div className={classes.agree}><img src={replyicon}/> Reply</div>
-                    <div className={classes.time}>3 days ago</div>
-                  </div> 
-                </div>
-
-                <div className={classes.comtArea}>
-                  <div className={classes.proImg}><img src={require("../../Assets/Images/png/elakkiya.png")}/></div>
-                  <div className={classes.textBox}>
-                    <Input placeholder="Write your message here..." />
-                    <img  className={classes.emojiicon} src={emoji}/>
-                    <img  className={classes.sendicon} src={sendicon}/>
-                  </div>
-                </div>
-
-            </div>          
+          );
+        })}
+        {isLoading && (
+          <div className="text-center py-2">
+            <Spinner animation="border" role="status" />
           </div>
-        );
-      })}
-      {isLoading && (
-        <div className="text-center py-2">
-          <Spinner animation="border" role="status" />
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </ListNuggetContext.Provider>
   );
 };
 
