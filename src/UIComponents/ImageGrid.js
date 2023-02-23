@@ -486,7 +486,7 @@ const ImageGrid = (props) => {
                         // filter: "blur(10px)",
                         // backgroundPosition: "center",
                         // opacity: 0.5,
-                        backgroundImage: `url(${ele.path})`,
+                        // backgroundImage: `url(${ele.path})`,
                         // top: 0,
                         // left: 0,
                         // width: "100%",

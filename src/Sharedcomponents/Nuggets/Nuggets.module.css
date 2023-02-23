@@ -11,7 +11,7 @@
  .nuggetSec::-webkit-scrollbar {
    display: none !important;
  }
- .nuggetItem { margin-top: 20px; float: left; width: 100%;  }
+ .nuggetItem { margin-top: 20px; float: left; width: 100%;border-bottom: 1px solid #ECECEC; padding-bottom: 15px;  }
  .profilePart { width: calc(100% - 70px); float: left;}
  .dropMenu { cursor: pointer; width: 70px; float: left;  }
  .dropMenu span {font-size: 33px; padding-top: 5px; color: #959595; cursor: pointer;}
