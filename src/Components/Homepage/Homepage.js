@@ -25,7 +25,7 @@ const Homepage = () => {
             <div className={classes.contentSec}>
               <img
                 className={classes.onlyMob}
-                src={require("../../Assets/Images/welcome.gif")}
+                src={require("../../Assets/Images/png/welcome-img.png")}
               />
               <h1>
                 The one-stop <span>platform</span> for all your social media

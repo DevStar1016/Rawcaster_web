@@ -37,6 +37,13 @@
   src: local("Gilroy-Bold"),
     url("./Assets/Fonts/Gilroy-Bold.ttf") format("woff");
 }
+@font-face {
+  font-family: "Gilroy-Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Gilroy-Bold"),
+    url("./Assets/Fonts/Gilroy-Regular.ttf") format("woff");
+}
 .mainsec {
   width: 100%;
   margin: auto;

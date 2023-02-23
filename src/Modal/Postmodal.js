@@ -7,6 +7,7 @@ import videoIcon from "../Assets/Images/svg/videoIcon.png";
 import cameraIcon from "../Assets/Images/svg/cameraicon.svg";
 import pictureIcon from "../Assets/Images/png/photoIcon.png";
 import imageIcon from "../Assets/Images/png/videoAttach.png";
+import emoji from "../Assets/Images/svg/emoji.svg";
 import TextArea from "antd/es/input/TextArea";
 import CameraModal from "./CameraModal";
 import { PostNuggetContext } from "../Shared/Context";
@@ -98,7 +99,7 @@ const Postmodal = ({ visible, onClose }) => {
             }}
           >
             <p className={classes.onlymeBtn}>
-              {ShareType} <span class="material-icons">arrow_drop_down</span>
+            <span class="material-icons">lock</span> {ShareType} <span class="material-icons">arrow_drop_down</span>
             </p>
           </Dropdown>
           <div className={classes.rightSec}>
@@ -154,18 +155,44 @@ const Postmodal = ({ visible, onClose }) => {
             />
           </div>
         </div>
+        <div className={classes.postTextcontent}>
         <TextArea
+        className={classes.postTextarea}
           placeholder={`What's on your mind, ${loginUserData?.name}!`}
           value={values.content}
           onChange={handleChange("content")}
-        />
-        <div className="d-flex flex-row pt-3">
+        />       
+        <img width="24px" className={classes.emojiIcon}
+        src={emoji}
+          style={{ cursor: "pointer" }}
+          onClick={() => setShowEmojis(!showEmojis)}
+        />        
+        </div>
+        {showEmojis && (
+          <div>
+            <Picker
+              showPreview={false}
+              showSkinTones={false}
+              className={classes.emojiPart}
+              style={{
+                position: "absolute",
+                bottom: "100px",
+                right: "50px",
+                zIndex: 11,
+              }}
+              onSelect={(e) => {
+                setFieldValue("content", values.content.concat(e.native));
+              }}
+            />
+          </div>
+        )}
+        <div className={classes.attachementtDisplay}>
           {getPostValues().map((ele, index) => {
             return (
-              <div className="card--content">
+              <div className={classes.cardcontent}>
                 {imageOrVideoSingle(ele)}
                 <div
-                  className="middle"
+                  className={classes.overlay}
                   onClick={() => {
                     setNuggetValues((pre) =>
                       pre.filter((ele, i) => i !== index)
@@ -183,38 +210,12 @@ const Postmodal = ({ visible, onClose }) => {
             );
           })}
         </div>
-        <div className="text-end">
-          <span
-            class="material-icons"
-            style={{ cursor: "pointer" }}
-            onClick={() => setShowEmojis(!showEmojis)}
-          >
-            sentiment_satisfied_alt
-          </span>
-        </div>
-        {showEmojis && (
-          <div>
-            <Picker
-              showPreview={false}
-              showSkinTones={false}
-              style={{
-                position: "absolute",
-                top: "65%",
-                right: "50px",
-                zIndex: 11,
-              }}
-              onSelect={(e) => {
-                setFieldValue("content", values.content.concat(e.native));
-              }}
-            />
-          </div>
-        )}
+        
         <Button
           className={classes.btnstyle}
           onClick={() => {
             setShowEmojis(false);
             handleSubmit();
-
             onClose();
           }}
         >
