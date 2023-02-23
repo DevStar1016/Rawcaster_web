@@ -154,7 +154,6 @@ opacity: 1 !important;
   max-height: 400px;
   cursor: pointer;
 }
-
 .nuggets_popup,
 .custom-slider,
 .carousel-root {
@@ -238,3 +237,6 @@ line-height: 23px;
   background-color: rgba(0, 0, 0, 0.8);
 }
 .clearfix { clear: both;}
+@media (max-width:768px) {
+  .singleImage { max-width: 300px !important; }
+}
