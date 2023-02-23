@@ -59,6 +59,11 @@
 padding: 10px 20px;
 border-radius: 100px;
 }
+.timeSec {
+  z-index: 11;
+  position: absolute;
+  color: #ECECEC;
+}
 .cameraSec button span {
   font-size: 32px;
 }

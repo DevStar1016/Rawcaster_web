@@ -1,28 +1,51 @@
 import { Modal } from "antd";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { Camera } from "react-camera-pro";
 import classes from "./Modal.module.css";
-import { loadXHR } from "../Shared/Utility";
+import { millisecondsToMMSS } from "../Shared/Utility";
 
 const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
   const camera = useRef(null);
-  const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ video: true });
+  const [TimerValue, setTimerValue] = useState(0);
+  let countdownInterval;
 
-  useEffect(() => {
-    if (mediaBlobUrl) {
-      handleVideo(mediaBlobUrl);
-    }
-  }, [mediaBlobUrl]);
+  function countdown(seconds) {
+    countdownInterval = setInterval(() => {
+      setTimerValue(seconds);
+      seconds++;
+    }, 1000);
+  }
 
-  const handleVideo = async (mediaBlobUrl) => {
-    loadXHR(mediaBlobUrl).then(function (blob) {
-      const file = new File([blob], "myVideo.mp4", {
-        type: "video/mp4",
-      });
-      onSuccess(file);
+  const onRecordStart = () => {
+    const seconds = parseInt(0);
+    countdown(seconds);
+  };
+
+  const onRecordStop = (url, blob) => {
+    const file = new File([blob], "myVideo.mp4", {
+      type: "video/mp4",
     });
+    onSuccess(file);
+    clearInterval(countdownInterval);
+    setTimerValue(0);
+  };
+
+  const { status, startRecording, stopRecording } = useReactMediaRecorder({
+    video: true,
+    onStart: onRecordStart,
+    onStop: onRecordStop,
+  });
+
+  const handleStartVideo = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: { width: 300 } })
+      .then((stream) => {
+        startRecording();
+      })
+      .catch((err) => {
+        console.error("error:", err);
+      });
   };
 
   const handleImage = (base64String) => {
@@ -57,6 +80,11 @@ const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
           className={classes.cameraSec}
         >
           <Camera ref={camera} />
+          {status === "recording" && (
+            <div className={classes.timeSec}>
+              {millisecondsToMMSS(TimerValue * 1000)}
+            </div>
+          )}
           {type === "Camera" && (
             <button onClick={() => handleImage(camera.current.takePhoto())}>
               <span class="material-symbols-outlined">photo_camera</span>
@@ -67,7 +95,9 @@ const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
               {status === "recording" ? (
                 <button onClick={stopRecording}>Stop Recording</button>
               ) : (
-                <button onClick={startRecording}>Start Recording</button>
+                <button onClick={() => handleStartVideo()}>
+                  Start Recording
+                </button>
               )}
             </div>
           )}
