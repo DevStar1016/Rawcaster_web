@@ -8,7 +8,20 @@
     padding-top:20px;
     padding-bottom: 10px;
     /* overflow-y: scroll; */
+    /* height: 100vh; */
+    position: sticky !important;
+    position: -webkit-sticky;
+    top: 74px;
+    overflow-y: scroll;
+    mask-image: linear-gradient(0deg,transparent,#000),linear-gradient(270deg,transparent 17px,#000 0);
+    mask-size: 100% 20000px;
+    mask-position: left bottom;
+    -webkit-mask-image: linear-gradient(0deg,transparent,#000),linear-gradient(270deg,transparent 17px,#000 0);
+    -webkit-mask-size: 100% 20000px;
+    -webkit-mask-position: left bottom;
+    transition: mask-position .3s,-webkit-mask-position .3s;
  }
+ /* .inpad { padding: 0 10px 0 15px; } */
  .signupbtn {
     height: 52px; width: 100%; color: #191919;
     background: #fff; float: left;

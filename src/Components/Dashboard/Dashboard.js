@@ -10,7 +10,7 @@ const Dashboard = () => {
   const loginUserData = useAuthData();
   const { dashboardMenu } = useDashboard();
   return (
-    <div className={classes.fullcontainer}>
+    <div>
       {loginUserData === null && (
         <div className={classes.ribbon}>
           <Link to="/login">
@@ -24,15 +24,19 @@ const Dashboard = () => {
         </div>
       )}
       <div className="d-none d-sm-block">
-        <Events />
-        <Nuggets />
-        <DashboardSignup />
+        <div className={classes.fullcontainer}>
+          <Events />
+          <Nuggets />
+          <DashboardSignup />
+        </div>
       </div>
       
       <div className="d-block d-sm-none">
-        {dashboardMenu === "event" && <Events />}
-        {dashboardMenu === "nugget" && <Nuggets />}
-        {dashboardMenu === "usermenu" && <DashboardSignup />} 
+        <div className={classes.fullcontainer}>
+          {dashboardMenu === "event" && <Events />}
+          {dashboardMenu === "nugget" && <Nuggets />}
+          {dashboardMenu === "usermenu" && <DashboardSignup />} 
+        </div>
       </div>
 
     </div>

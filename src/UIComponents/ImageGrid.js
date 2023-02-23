@@ -82,6 +82,7 @@ const ImageGrid = (props) => {
     } else if (data.media_type === "video") {
       return (
         <Fragment>
+          
           <video
             width="100%"
             height="100%"
@@ -477,24 +478,24 @@ const ImageGrid = (props) => {
               {imgArray.map((ele, index) => {
                 return (
                   <div key={index}>
-                    <div
+                    <div className={classes.bgblured} data-content={`url(${ele.path})`}
                       style={{
-                        position: "absolute",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        filter: "blur(10px)",
-                        backgroundPosition: "center",
-                        opacity: 0.5,
+                        // position: "absolute",
+                        // backgroundRepeat: "no-repeat",
+                        // backgroundSize: "cover",
+                        // filter: "blur(10px)",
+                        // backgroundPosition: "center",
+                        // opacity: 0.5,
                         backgroundImage: `url(${ele.path})`,
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
+                        // top: 0,
+                        // left: 0,
+                        // width: "100%",
+                        // height: "100%",
                       }}
                     ></div>
-                    <div className={classes.imageModalsec}>
+                   <div className={classes.modalContainer}>
                       {imageOrVideoSingleGallery(ele, "fullview")}
-                    </div>
+                      </div>
                   </div>
                 );
               })}
