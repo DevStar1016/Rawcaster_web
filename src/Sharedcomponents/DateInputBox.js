@@ -35,6 +35,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
 
   function getDaysInMonthByYear(month, year) {
     let date = new Date(year, month, 0);
+
     let DayValue = [...new Array(date.getDate())].map((ele, index) => {
       return {
         value: index + 1,
@@ -143,11 +144,12 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
       isValidData(date.month) &&
       isValidData(date.year)
     ) {
-      let resultDate = dayjs(
-        date.year + "-" + getMonth().label + "-" + date.day
-      ).toDate();
-
-      onSelectDate(resultDate);
+      if (getMonth()) {
+        let resultDate = dayjs(
+          date.year + "-" + getMonth().label + "-" + date.day
+        ).toDate();
+        onSelectDate(resultDate);
+      }
     }
   }, [date]);
 
@@ -193,7 +195,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
         <Select
           style={{ width: 120 }}
           className="textBox"
-          options={getyears().reverse()}
+          options={getyears()}
           status={getStatus(date.year)}
           value={getYear(date.year)}
           placeholder="Year"

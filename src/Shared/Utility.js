@@ -158,6 +158,7 @@ export function loadXHR(url) {
 }
 
 export const getPartialHiddenEmail = (email) => {
+  console.log(email);
   if (email) {
     let emailSplitedList = email?.toString().split("@");
     let emailNameText = "";
@@ -174,7 +175,7 @@ export const getPartialHiddenEmail = (email) => {
 
     return emailNameText + "@" + emailSplitedList[1];
   } else {
-    return "";
+    return "1234";
   }
 };
 
@@ -204,3 +205,20 @@ export function millisecondsToMMSS(milliseconds) {
     .toString()
     .padStart(2, "0")}`;
 }
+
+export const isValidData = (data) => {
+  if (data && data !== "") {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const isAccountValid = () => {
+  let userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+  if (userData.acc_verify_status === 1) {
+    return true;
+  } else {
+    return false;
+  }
+};

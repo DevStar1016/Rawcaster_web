@@ -16,41 +16,41 @@ import ProfileVerification from "./ProfileVerification";
 import UpdateProfile from "./ProfileVerification/UpdateProfile";
 import VerifyOtp from "./ProfileVerification/VerifyOtp";
 import Development from "./Components/Development";
-import { useDashboard, useProfileVerifyModal } from "./Shared/Reduxfetcher";
-import { VerificationModal } from "./Modal/ProfileVerificationModal";
-import {
-  handleloginModalShow,
-  handleprofileVerifyModalShow,
-} from "./Store/Redux/Reducer/DashboardReducer";
-import LoginModal from "./Modal/LoginModal";
+import { useDashboard } from "./Shared/Reduxfetcher";
+import ModalLayout from "./Layouts/ModalLayout";
 
 function App() {
   const dispatch = useDispatch();
-  const { isLoading, loginModalShow } = useDashboard();
-  const profileverifyStatus = useProfileVerifyModal();
+  const { isLoading } = useDashboard();
 
   const routerpaths = [
     {
       path: "/",
-      children: RootElement(),
-    },
-    {
-      path: "/",
-      element: <ProfileVerification />,
+      element: <ModalLayout />,
       children: [
         {
-          path: "/profile",
-          element: <UpdateProfile />,
+          path: "/",
+          children: RootElement(),
         },
         {
-          path: "/verifyotp",
-          element: <VerifyOtp />,
+          path: "/",
+          element: <ProfileVerification />,
+          children: [
+            {
+              path: "/profile",
+              element: <UpdateProfile />,
+            },
+            {
+              path: "/verifyotp",
+              element: <VerifyOtp />,
+            },
+          ],
+        },
+        {
+          path: "/dev",
+          element: <Development />,
         },
       ],
-    },
-    {
-      path: "/dev",
-      element: <Development />,
     },
   ];
   const router = createBrowserRouter(routerpaths, { basename: "/" });
@@ -90,13 +90,6 @@ function App() {
     <>
       {isLoading ? <Spinner /> : null}
       <RouterProvider router={router} />
-      <VerificationModal
-        open={profileverifyStatus.show}
-        msg={profileverifyStatus.msg}
-        close={() => {
-          dispatch(handleprofileVerifyModalShow({ show: false, msg: "" }));
-        }}
-      />
     </>
   );
 }

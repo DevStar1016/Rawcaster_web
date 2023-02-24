@@ -17,14 +17,23 @@ import {
   getAuthToken,
   getGeocodeData,
   getValidImageUrl,
+  isValidData,
   JSONtoformdata,
 } from "../Shared/Utility";
 import DateInputBox from "../Sharedcomponents/DateInputBox";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
-import { handleTwoStepVerified } from "../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleTwoStepVerified,
+  handletwostepVerifyModalshow,
+  handleverifyEnabled,
+} from "../Store/Redux/Reducer/DashboardReducer";
 import { Container } from "react-bootstrap";
-import { useDashboard, useAuthData } from "../Shared/Reduxfetcher";
+import { useAuthData } from "../Shared/Reduxfetcher";
+import { setLocalStorageData } from "../Store/Storage";
+import { getProfile } from "../Components/Auth/getProfile";
+import { useProfileContext } from "../Shared/Context";
+import { EMAIL_REGEX } from "../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -33,20 +42,24 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(`Please input your Display Name!`),
   dob: yup.string().required(`Please input your Date of Birth!`),
   geo_location: yup.string().required(`Please input your Location!`),
-  mobile_no: yup.string().required(`Please input your Mobile Number!`),
-  email_id: yup.string().required(`Please input your Email!`),
+  mobile_no: yup
+    .string()
+    .min(5, `Please input Valid Mobile Number!`)
+    .required(`Please input your Mobile Number!`),
+  email_id: yup
+    .string()
+    .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
+    .required(`Please input your Email!`),
 });
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserData = useAuthData();
-  const { isTwoStepVerified } = useDashboard();
   const [IsValidCredentials, setIsValidCredentials] = useState({
     email: false,
     mobile: false,
   });
-  const [isNextEnabled, setisNextEnabled] = useState(false);
   const [ProfileImage, setProfileImage] = useState("");
   const {
     values,
@@ -86,6 +99,13 @@ const UpdateProfile = () => {
       .then((res) => {
         if (res.data.status === 1) {
           let profileData = res.data.profile;
+          // dispatch(
+          //   handleLoginData({ token: loginUserData?.token, ...profileData })
+          // );
+          setLocalStorageData(
+            "rawcaster_user_token",
+            JSON.stringify({ token: loginUserData?.token, ...profileData })
+          );
           setValues((pre) => ({
             ...pre,
             name: profileData.name,
@@ -102,14 +122,9 @@ const UpdateProfile = () => {
             profileData.is_email_id_verified === 1 &&
             profileData.is_mobile_no_verified === 1;
           dispatch(handleTwoStepVerified(isTwoStepVerified));
+
           if (isNext) {
             HandleprofileUpdate(profileData);
-          }
-          if (
-            profileData.is_email_id_verified === 0 ||
-            profileData.is_mobile_no_verified === 0
-          ) {
-            setisNextEnabled(true);
           }
 
           setIsValidCredentials({
@@ -126,25 +141,32 @@ const UpdateProfile = () => {
   };
 
   const HandleprofileUpdate = (value) => {
-    if (!isTwoStepVerified) {
-      if (value.is_email_id_verified === 0) {
-        HandleVerifyOtp({ type: "Email" });
-      } else if (value.is_mobile_no_verified === 0) {
-        HandleVerifyOtp({ type: "Mobile" });
-      }
+    if (
+      value.two_type_verification === 1 &&
+      isValidData(value.email_id) &&
+      isValidData(value.mobile)
+    ) {
+      dispatch(handletwostepVerifyModalshow(true));
+    } else if (isValidData(value.email_id)) {
+      handleSendOTP("email");
+    } else if (isValidData(value.mobile)) {
+      handleSendOTP("sms");
+    } else {
+      toast.error("Phone Number and Email ID Missing");
     }
   };
 
-  const HandleVerifyOtp = (value) => {
+  const handleSendOTP = (value) => {
     let finalData = {
       auth_code: getAuthToken("Rawcaster"),
       token: loginUserData?.token,
+      otp_flag: value,
     };
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-          navigate("/verifyotp", { state: { ...value, ...res.data } });
+          navigate("/verifyotp", { state: { type: value, ...res.data } });
         } else {
           toast.error(res.data.message);
         }
@@ -185,7 +207,6 @@ const UpdateProfile = () => {
   };
 
   const handleupdateProfile = (values, isNext = false) => {
-    console.log(loginUserData?.token + values.name);
     let profileValue = {
       ...values,
       token: loginUserData?.token,
@@ -482,20 +503,17 @@ const UpdateProfile = () => {
                 >
                   Update Info
                 </Button>
-                {!isTwoStepVerified && (
-                  <>
-                    {isValid && isNextEnabled && (
-                      <Button
-                        block
-                        onClick={() => {
-                          handleupdateProfile(values, true);
-                        }}
-                        className={classes.nextBtn}
-                      >
-                        Next
-                      </Button>
-                    )}
-                  </>
+
+                {loginUserData?.acc_verify_status === 0 && (
+                  <Button
+                    block
+                    onClick={() => {
+                      handleupdateProfile(values, true);
+                    }}
+                    className={classes.nextBtn}
+                  >
+                    Next
+                  </Button>
                 )}
               </Form.Item>
             </Col>

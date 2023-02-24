@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
-import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.png";
 import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
@@ -21,9 +20,7 @@ import dayjs from "dayjs";
 import { signupService } from "../../Services/ApiService";
 import RedirectModal from "../../Modal/RedirectModal";
 import { toast } from "react-hot-toast";
-import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 import { useDispatch } from "react-redux";
-import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
 
@@ -60,6 +57,7 @@ const SignupwithCredentials = () => {
       .required("Please input your Name!"),
     email_id: yup
       .string()
+      .min(5, `Please Enter Valid ${getLoginType().title}`)
       .matches(
         getLoginType().id === 1 ? EMAIL_REGEX : "",
         `Please Enter Valid ${getLoginType().title}!`
@@ -261,7 +259,7 @@ const SignupwithCredentials = () => {
               </Form.Item>
               <p className={classes.termText}>
                 By Signing up you agree with Rawcaster's{" "}
-                <Link>terms and conditions</Link>
+                <Link to="/termsandconditions">terms and conditions</Link>
               </p>
               <br />
               <Form.Item>

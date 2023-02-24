@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import { useDispatch } from "react-redux";
 import {
@@ -10,6 +10,7 @@ import {
 import {
   getAuthenticated,
   getDataValueById,
+  isAccountValid,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
@@ -23,18 +24,24 @@ import { getLocalStorageData } from "../../Store/Storage";
 import {
   handleLoading,
   handleloginModalShow,
+  handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 
 import CommentsList from "./CommentsList";
 import { ListNuggetContext } from "../../Shared/Context";
+import axios from "axios";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+let isRequestCancel = false;
+
 const Nuggets = () => {
+  const source = useRef(null);
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
+  const [muted, setmuted] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
@@ -55,17 +62,20 @@ const Nuggets = () => {
   };
 
   const getNuggetList = (page = 1) => {
+    if (source.current) {
+      isRequestCancel = true;
+      source.current.cancel("Request Cancelled");
+    }
+    source.current = axios.CancelToken.source();
     let nuggetData = {
       nugget_type: 0,
       token: getToken(),
       page_number: page,
     };
-    listNuggetsService(JSONtoformdata(nuggetData))
+    listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
       .then((res) => {
         if (res.data.status === 1) {
-          if (NuggetList.length === 0) {
-            setNuggetList(res.data.nuggets_list);
-          } else if (res.data.current_page_no === 1) {
+          if (res.data.current_page_no === 1) {
             console.log("test");
             setNuggetList(res.data.nuggets_list);
           } else {
@@ -80,7 +90,9 @@ const Nuggets = () => {
         }
       })
       .catch((err) => {
-        toast.error(err.message);
+        if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
+          toast.error(err.message);
+        }
       })
       .finally(() => {
         setisLoading(false);
@@ -96,6 +108,7 @@ const Nuggets = () => {
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {
       setisLoading(true);
+      console.log("test");
       getNuggetList(Pages.page + 1);
     }
   };
@@ -187,6 +200,31 @@ const Nuggets = () => {
     },
   };
 
+  const getMoreValues = (ele) => {
+    let resultData = [
+      {
+        key: 1,
+        label: "Block user",
+      },
+      {
+        key: 2,
+        label: "Report Abuse",
+      },
+      {
+        key: 3,
+        label: "Share Link",
+      },
+      {
+        key: 4,
+        label: "Delete Nugget",
+      },
+    ];
+    if (ele.user_id !== loginUserData?.user_id) {
+      resultData = resultData.filter((ele) => ele.key !== 4);
+    }
+    return resultData;
+  };
+
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <div className={classes.nuggetSec} ref={scrollRef}>
@@ -220,30 +258,13 @@ const Nuggets = () => {
               {getAuthenticated() && (
                 <Dropdown
                   menu={{
-                    items: [
-                      {
-                        key: 1,
-                        label: "Block user",
-                      },
-                      {
-                        key: 2,
-                        label: "Report Abuse",
-                      },
-                      {
-                        key: 3,
-                        label: "Share Link",
-                      },
-                      {
-                        key: 4,
-                        label: "Delete Nugget",
-                      },
-                    ],
+                    items: getMoreValues(ele),
                     onClick: (val) => {
-                      if (parseInt(val.key)) {
+                      if (parseInt(val.key) === 4) {
                         deletenugget(ele.nugget_id);
                       }
                     },
-                    selectable: true,
+                    selectable: false,
                   }}
                 >
                   <div className={classes.dropMenu}>
@@ -254,7 +275,11 @@ const Nuggets = () => {
               <div className={classes.contentSec}>
                 <div className={classes.feedsSec}>
                   <p>{ele?.content}</p>
-                  <ImageGrid imgArray={ele.media_list} />
+                  <ImageGrid
+                    imgArray={ele.media_list}
+                    muted={muted}
+                    mutenuggetaudio={setmuted}
+                  />
                 </div>
                 <div className={classes.floattingSec}>
                   <div
@@ -263,8 +288,17 @@ const Nuggets = () => {
                     }
                     onClick={() => {
                       if (getAuthenticated()) {
-                        let like = ele.liked ? 2 : 1;
-                        HandleLike(ele.nugget_id, like);
+                        if (isAccountValid()) {
+                          let like = ele.liked ? 2 : 1;
+                          HandleLike(ele.nugget_id, like);
+                        } else {
+                          dispatch(
+                            handleprofileVerifyModalShow({
+                              show: true,
+                              msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                            })
+                          );
+                        }
                       } else {
                         dispatch(handleloginModalShow(true));
                       }
@@ -292,13 +326,22 @@ const Nuggets = () => {
                       }}
                       onClick={() => {
                         if (getAuthenticated()) {
-                          if (Comments === ele.nugget_id) {
-                            setCommentList([]);
-                            setComments("");
+                          if (isAccountValid()) {
+                            if (Comments === ele.nugget_id) {
+                              setCommentList([]);
+                              setComments("");
+                            } else {
+                              setCommentList([]);
+                              setComments(ele.nugget_id);
+                              getCommentList(ele.nugget_id);
+                            }
                           } else {
-                            setCommentList([]);
-                            setComments(ele.nugget_id);
-                            getCommentList(ele.nugget_id);
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
+                            );
                           }
                         } else {
                           dispatch(handleloginModalShow(true));
@@ -314,7 +357,16 @@ const Nuggets = () => {
                       style={{ cursor: "pointer" }}
                       onClick={() => {
                         if (getAuthenticated()) {
-                          console.log("share");
+                          if (isAccountValid()) {
+                            console.log("share");
+                          } else {
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
+                            );
+                          }
                         } else {
                           dispatch(handleloginModalShow(true));
                         }
