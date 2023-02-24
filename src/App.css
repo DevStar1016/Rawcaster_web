@@ -154,7 +154,6 @@ opacity: 1 !important;
   max-height: 400px;
   cursor: pointer;
 }
-.nuggets_popup,
 .custom-slider,
 .carousel-root {
   height: 100%;
@@ -164,9 +163,10 @@ opacity: 1 !important;
   padding: 0 !important;
 }
 .gallery_popup.arrow:hover {
-  background: #869791; 
+  background: transparent; 
   color: #fff !important;
 }
+.owl-prev, .owl-next { background: transparent !important; }
 .gallery_popup .next {
   right: 10px; width:30px; height: 30px; display: block;
   padding:0 5px;

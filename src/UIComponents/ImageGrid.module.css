@@ -30,41 +30,42 @@
     cursor: pointer;
  }
 /* .imageModalsec { position: absolute;} */
- .modalSingleimage { max-width: 100%; margin: auto; height: 700px; width: auto !important;}
+ .modalSingleimage { max-width: 100%; margin: auto; height: auto; max-height: 550px; width: auto !important;}
  .SingleVideoBg {
     background-image: url(../Assets/Images/png/audioImg.png);
     /* height: 100%;
     width: 100%; */
  }
+ .nuggets_popup { background: #000;}
  .bgblured {
+   background: #000;
    display: none;
    position: relative; 
    height: 100vh;
+   max-height: 600px;
    width: 100%;
    display: flex;
+   opacity: 0.4;
    align-items: center;
-   justify-content: center; opacity: 1; height: 100vh;
-   filter: blur(10px);
+   justify-content: center; 
+   filter: blur(10px);     border-radius: 10px;
 }
-
-
 .bgblured::before {    
      content: "";
-   display: block;
+     display: block;
      background-size: cover;
-     filter: blur(10px);
+     filter: blur(15px);
      position: absolute;
      top: 0px;
      right: 0px;
      bottom: 0px;
-     left: 0px;
-   
+     left: 0px;  border-radius: 10px;
 }
 .modalContainer { position: absolute;
    top: 0;
    display: flex;
    align-items: center;
-   justify-content: center;
+   justify-content: center; width: 100%;
    bottom: 0; }
 
    
