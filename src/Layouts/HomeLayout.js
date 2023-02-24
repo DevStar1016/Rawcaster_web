@@ -33,6 +33,9 @@ const HomeLayout = () => {
     if (key == 2) {
       handleLogout();
     }
+    if (key == 1) {
+      navigate("/profile");
+    }
   };
 
   const handleLogout = () => {

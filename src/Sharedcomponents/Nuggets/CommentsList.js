@@ -5,7 +5,7 @@ import {
   deleteNuggetCommentService,
   nuggetCommentListService,
 } from "../../Services/ApiService";
-import { JSONtoformdata } from "../../Shared/Utility";
+import { isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import hearticon from "../../Assets/Images/svg/heart.svg";
 import replyicon from "../../Assets/Images/svg/comment.svg";
@@ -223,10 +223,14 @@ const CommentsList = ({ index }) => {
             className={classes.sendicon}
             src={sendicon}
             onClick={() => {
-              AddCommentforAnugget(nugget_id, CommentTxt[index]);
-              let tempData = [...CommentTxt];
-              tempData[index] = "";
-              setCommentTxt(tempData);
+              if (isValidData(CommentTxt[index])) {
+                AddCommentforAnugget(nugget_id, CommentTxt[index]);
+                let tempData = [...CommentTxt];
+                tempData[index] = "";
+                setCommentTxt(tempData);
+              } else {
+                toast.error("Please Enter Valid Comment");
+              }
             }}
           />
         </div>

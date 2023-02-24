@@ -72,7 +72,7 @@ const Postmodal = ({ visible, onClose }) => {
   };
 
   return (
-    <Modal     
+    <Modal
       footer={null}
       open={visible}
       height={600}
@@ -100,7 +100,8 @@ const Postmodal = ({ visible, onClose }) => {
             }}
           >
             <p className={classes.onlymeBtn}>
-            <span class="material-icons">lock</span> {ShareType} <span class="material-icons">arrow_drop_down</span>
+              <span class="material-icons">lock</span> {ShareType}{" "}
+              <span class="material-icons">arrow_drop_down</span>
             </p>
           </Dropdown>
           <div className={classes.rightSec}>
@@ -126,48 +127,57 @@ const Postmodal = ({ visible, onClose }) => {
             <img
               src={pictureIcon}
               onClick={() => {
-                document.getElementById("nugget_image").click();
+                document.getElementById("post_nugget_image").click();
               }}
             />
 
             <input
               type="file"
               name="file"
-              id="nugget_image"
+              id="post_nugget_image"
+              accept="image/png, image/gif, image/jpeg"
               onChange={(e) => {
-                setFileValues(e.target.files[0]);
+                console.log(e.target.files);
+                if (e.target.files && e.target.files.length !== 0) {
+                  setFileValues(e.target.files[0]);
+                }
               }}
               style={{ display: "none" }}
             />
             <img
               src={imageIcon}
               onClick={() => {
-                document.getElementById("nugget_video").click();
+                document.getElementById("post_nugget_video").click();
               }}
             />
             <input
               type="file"
               name="file"
-              id="nugget_video"
+              id="post_nugget_video"
+              accept="video/mp4"
               onChange={(e) => {
-                setFileValues(e.target.files[0]);
+                if (e.target.files && e.target.files.length !== 0) {
+                  setFileValues(e.target.files[0]);
+                }
               }}
               style={{ display: "none" }}
             />
           </div>
         </div>
         <div className={classes.postTextcontent}>
-        <TextArea
-        className={classes.postTextarea}
-          placeholder={`What's on your mind, ${loginUserData?.name}!`}
-          value={values.content}
-          onChange={handleChange("content")}
-        />       
-        <img width="24px" className={classes.emojiIcon}
-        src={emoji}
-          style={{ cursor: "pointer" }}
-          onClick={() => setShowEmojis(!showEmojis)}
-        />        
+          <TextArea
+            className={classes.postTextarea}
+            placeholder={`What's on your mind, ${loginUserData?.name}!`}
+            value={values.content}
+            onChange={handleChange("content")}
+          />
+          <img
+            width="24px"
+            className={classes.emojiIcon}
+            src={emoji}
+            style={{ cursor: "pointer" }}
+            onClick={() => setShowEmojis(!showEmojis)}
+          />
         </div>
         {showEmojis && (
           <div>
@@ -187,31 +197,33 @@ const Postmodal = ({ visible, onClose }) => {
             />
           </div>
         )}
-        <div className={classes.attachementtDisplay}>
-          {getPostValues().map((ele, index) => {
-            return (
-              <div className={classes.cardcontent}>
-                {imageOrVideoSingle(ele)}
-                <div
-                  className={classes.overlay}
-                  onClick={() => {
-                    setNuggetValues((pre) =>
-                      pre.filter((ele, i) => i !== index)
-                    );
-                  }}
-                >
-                  {/* <img
+        {getPostValues().length !== 0 && (
+          <div className={classes.attachementtDisplay}>
+            {getPostValues().map((ele, index) => {
+              return (
+                <div className={classes.cardcontent}>
+                  {imageOrVideoSingle(ele)}
+                  <div
+                    className={classes.overlay}
+                    onClick={() => {
+                      setNuggetValues((pre) =>
+                        pre.filter((ele, i) => i !== index)
+                      );
+                    }}
+                  >
+                    {/* <img
                 src={require("../../../assets/delete.png")}
                 alt="more"
                 style={{ width: "20px", height: "20px" }}
               /> */}
-                  <span style={{ color: "#fff" }}>Delete</span>
+                    <span style={{ color: "#fff" }}>Delete</span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-        
+              );
+            })}
+          </div>
+        )}
+
         <Button
           className={classes.btnstyle}
           onClick={() => {

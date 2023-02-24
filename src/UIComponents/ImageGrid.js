@@ -1,8 +1,8 @@
 import { Modal } from "antd";
 import React, { Fragment, useState } from "react";
 import OwlCarousel from "react-owl-carousel";
-import styled from "styled-components";
 import classes from "./ImageGrid.module.css";
+import BackgroundImg from "../Assets/Images/png/audioImg.png";
 
 const ImageGrid = (props) => {
   const { imgArray, downloadable, muted, mutenuggetaudio } = props;
@@ -98,6 +98,16 @@ const ImageGrid = (props) => {
           </video>
         </Fragment>
       );
+    }
+  };
+
+  const imageOrVideoSingleBg = (data) => {
+    if (data.media_type === "image") {
+      return `url(
+        ${data.path}
+      )`;
+    } else if (data.media_type === "video") {
+      return BackgroundImg;
     }
   };
 
@@ -481,9 +491,7 @@ const ImageGrid = (props) => {
                     <div
                       className={classes.bgblured}
                       style={{
-                        backgroundImage: `url(
-                          ${ele.path}
-                        )`,
+                        backgroundImage: imageOrVideoSingleBg(ele),
                       }}
                     ></div>
                     <div className={classes.modalContainer}>

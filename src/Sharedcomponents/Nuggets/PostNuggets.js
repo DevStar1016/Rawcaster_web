@@ -8,12 +8,15 @@ import { Input } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import { addNuggetsService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
-import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleLoading,
+  handleprofileVerifyModalShow,
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
 import CameraModal from "../../Modal/CameraModal";
 import { PostNuggetContext } from "../../Shared/Context";
 import { useFormik } from "formik";
-import AudioRecordModal from "../../Modal/AudioRecordModal";
+import { isAccountValid } from "../../Shared/Utility";
 
 const PostNuggets = ({ getNuggetList }) => {
   const dispatch = useDispatch();
@@ -96,26 +99,46 @@ const PostNuggets = ({ getNuggetList }) => {
             placeholder={`hey ${LoginUserData?.name}, share some nuggets...`}
             className={classes.searchbar}
             onClick={() => {
-              setpostModalShow(true);
+              if (isAccountValid()) {
+                setpostModalShow(true);
+              } else {
+                dispatch(
+                  handleprofileVerifyModalShow({
+                    show: true,
+                    msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                  })
+                );
+              }
             }}
           />
           <div className={classes.iconSec}>
-            <div className={classes.item}>
-              <img
-                src={cameraIcon}
-                onClick={() => {
+            <div
+              className={classes.item}
+              onClick={() => {
+                if (isAccountValid()) {
                   document.getElementById("nugget_video").click();
-                }}
-              />
+                } else {
+                  dispatch(
+                    handleprofileVerifyModalShow({
+                      show: true,
+                      msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                    })
+                  );
+                }
+              }}
+            >
+              <img src={cameraIcon} />
               Video
               <input
                 type="file"
                 name="file"
                 id="nugget_video"
+                accept="video/mp4"
                 onChange={(e) => {
-                  console.log(e.target.files);
-                  PostNuggetValues.setFileValues(e.target.files[0]);
-                  setpostModalShow(true);
+                  if (e.target.files && e.target.files.length !== 0) {
+                    PostNuggetValues.setFileValues(e.target.files[0]);
+                    setpostModalShow(true);
+                  }
                 }}
                 style={{ display: "none" }}
               />
@@ -123,7 +146,16 @@ const PostNuggets = ({ getNuggetList }) => {
             <div
               className={classes.item}
               onClick={() => {
-                document.getElementById("nugget_image").click();
+                if (isAccountValid()) {
+                  document.getElementById("nugget_image").click();
+                } else {
+                  dispatch(
+                    handleprofileVerifyModalShow({
+                      show: true,
+                      msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                    })
+                  );
+                }
               }}
             >
               <img src={imageIcon} /> Image
@@ -131,9 +163,12 @@ const PostNuggets = ({ getNuggetList }) => {
                 type="file"
                 name="file"
                 id="nugget_image"
+                accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => {
-                  PostNuggetValues.setFileValues(e.target.files[0]);
-                  setpostModalShow(true);
+                  if (e.target.files && e.target.files.length !== 0) {
+                    PostNuggetValues.setFileValues(e.target.files[0]);
+                    setpostModalShow(true);
+                  }
                 }}
                 style={{ display: "none" }}
               />

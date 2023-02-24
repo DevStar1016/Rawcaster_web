@@ -33,6 +33,7 @@ import { useAuthData } from "../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../Store/Storage";
 import { getProfile } from "../Components/Auth/getProfile";
 import { useProfileContext } from "../Shared/Context";
+import { EMAIL_REGEX } from "../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -41,8 +42,14 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(`Please input your Display Name!`),
   dob: yup.string().required(`Please input your Date of Birth!`),
   geo_location: yup.string().required(`Please input your Location!`),
-  mobile_no: yup.string().required(`Please input your Mobile Number!`),
-  email_id: yup.string().required(`Please input your Email!`),
+  mobile_no: yup
+    .string()
+    .min(5, `Please input Valid Mobile Number!`)
+    .required(`Please input your Mobile Number!`),
+  email_id: yup
+    .string()
+    .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
+    .required(`Please input your Email!`),
 });
 
 const UpdateProfile = () => {
