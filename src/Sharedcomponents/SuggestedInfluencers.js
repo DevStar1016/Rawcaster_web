@@ -35,7 +35,7 @@ const SuggestedInfluencers = () => {
     <div>
       <div className={classes.suggInfluencersSec}>
         <h3>Suggested accounts ({influencerList?.length})</h3>
-
+        <div className={classes.scrollSec}>
         {influencerList?.map((ele) => {
           return (
             <div className={classes.suggAcc}>
@@ -47,6 +47,7 @@ const SuggestedInfluencers = () => {
             </div>
           );
         })}
+        </div>
       </div>
       <div
         className={classes.seemoreSec}
