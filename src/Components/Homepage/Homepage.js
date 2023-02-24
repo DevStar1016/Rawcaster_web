@@ -20,7 +20,7 @@ const Homepage = () => {
   return (
     <div>
       <div className={classes.welcomeSec}>
-        <div className={classes.welcomeSec2}>
+        <div className={`${classes.homeContent} ${classes.welcomeSec2}`}>
           <div className={classes.leftSec}>
             <div className={classes.contentSec}>
               <img

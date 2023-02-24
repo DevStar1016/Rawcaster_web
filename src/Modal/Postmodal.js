@@ -205,7 +205,7 @@ const Postmodal = ({ visible, onClose }) => {
                 alt="more"
                 style={{ width: "20px", height: "20px" }}
               /> */}
-                  <span style={{ color: "#fff" }}>Delete</span>
+                  <span class="material-icons">delete</span>
                 </div>
               </div>
             );
