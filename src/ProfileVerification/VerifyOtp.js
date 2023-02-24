@@ -12,11 +12,7 @@ import {
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
 import { toast } from "react-hot-toast";
-import {
-  resendOtpService,
-  signupVerifyService,
-  verifyotpsendPasswordService,
-} from "../Services/ApiService";
+import { resendOtpService, signupVerifyService } from "../Services/ApiService";
 import { getAuthToken, JSONtoformdata } from "../Shared/Utility";
 
 const validationSchema = yup.object().shape({
@@ -29,7 +25,6 @@ const validationSchema = yup.object().shape({
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log(state);
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
   const [otpRefId, setotpRefId] = useState();
 
@@ -214,6 +209,9 @@ const VerifyOtp = () => {
                 block
                 className={classes.cancelBtn}
                 htmlType="submit"
+                onClickCapture={() => {
+                  navigate("/dashboard");
+                }}
               >
                 Cancel
               </Button>

@@ -476,8 +476,6 @@ const ImageGrid = (props) => {
               ]}
             >
               {imgArray.map((ele, index) => {
-                // document.getElementsByClassName("bgblured").style.display =
-                //   "none";
                 return (
                   <div key={index}>
                     <div

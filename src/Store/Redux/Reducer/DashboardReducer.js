@@ -5,7 +5,9 @@ const initialState = {
   isTwoStepVerified: false,
   loginModalShow: false,
   profileVerifyModalShow: { show: false, msg: "" },
+  twostepVerifyModalshow: false,
   dashboardMenu: "nugget",
+  isVeifyEnabled: false,
 };
 
 export const { actions, reducer } = createSlice({
@@ -27,6 +29,12 @@ export const { actions, reducer } = createSlice({
     handledasboardTab: (state, action) => {
       state.dashboardMenu = action.payload;
     },
+    handletwostepVerifyModalshow: (state, action) => {
+      state.twostepVerifyModalshow = action.payload;
+    },
+    handleverifyEnabled: (state, action) => {
+      state.isVeifyEnabled = action.payload;
+    },
   },
 });
 
@@ -36,6 +44,8 @@ export const {
   handleprofileVerifyModalShow,
   handledasboardTab,
   handleloginModalShow,
+  handletwostepVerifyModalshow,
+  handleverifyEnabled,
 } = actions;
 
 export default reducer;

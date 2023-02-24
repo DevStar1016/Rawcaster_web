@@ -10,6 +10,7 @@ import {
 import {
   getAuthenticated,
   getDataValueById,
+  isAccountValid,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
@@ -23,6 +24,7 @@ import { getLocalStorageData } from "../../Store/Storage";
 import {
   handleLoading,
   handleloginModalShow,
+  handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { useAuthData } from "../../Shared/Reduxfetcher";
@@ -263,8 +265,17 @@ const Nuggets = () => {
                     }
                     onClick={() => {
                       if (getAuthenticated()) {
-                        let like = ele.liked ? 2 : 1;
-                        HandleLike(ele.nugget_id, like);
+                        if (isAccountValid()) {
+                          let like = ele.liked ? 2 : 1;
+                          HandleLike(ele.nugget_id, like);
+                        } else {
+                          dispatch(
+                            handleprofileVerifyModalShow({
+                              show: true,
+                              msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                            })
+                          );
+                        }
                       } else {
                         dispatch(handleloginModalShow(true));
                       }
@@ -292,13 +303,22 @@ const Nuggets = () => {
                       }}
                       onClick={() => {
                         if (getAuthenticated()) {
-                          if (Comments === ele.nugget_id) {
-                            setCommentList([]);
-                            setComments("");
+                          if (isAccountValid()) {
+                            if (Comments === ele.nugget_id) {
+                              setCommentList([]);
+                              setComments("");
+                            } else {
+                              setCommentList([]);
+                              setComments(ele.nugget_id);
+                              getCommentList(ele.nugget_id);
+                            }
                           } else {
-                            setCommentList([]);
-                            setComments(ele.nugget_id);
-                            getCommentList(ele.nugget_id);
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
+                            );
                           }
                         } else {
                           dispatch(handleloginModalShow(true));
@@ -314,7 +334,16 @@ const Nuggets = () => {
                       style={{ cursor: "pointer" }}
                       onClick={() => {
                         if (getAuthenticated()) {
-                          console.log("share");
+                          if (isAccountValid()) {
+                            console.log("share");
+                          } else {
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
+                            );
+                          }
                         } else {
                           dispatch(handleloginModalShow(true));
                         }

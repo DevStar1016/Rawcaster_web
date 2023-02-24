@@ -1,19 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { Outlet, useLocation } from "react-router";
 import { Link } from "react-router-dom";
-import { useDashboard } from "../Shared/Reduxfetcher";
+import { useAuthData } from "../Shared/Reduxfetcher";
 import { removeSessionStorageData } from "../Store/Storage";
 import classes from "./Profilverification.module.css";
 
 const ProfileVerification = () => {
   const { pathname } = useLocation();
-  const { isTwoStepVerified } = useDashboard();
+  const [eventKey, seteventKey] = useState(pathname);
+  const { isVeifyEnabled } = useDispatch();
+  const loginUserData = useAuthData();
+
+  useEffect(() => {
+    console.log(eventKey);
+    seteventKey(pathname);
+  }, [pathname]);
 
   return (
     <>
-      {!isTwoStepVerified && (
-        <Nav variant="pills" className="flex-row" activeKey={pathname}>
+      {loginUserData?.acc_verify_status === 0 && (
+        <Nav variant="pills" className="flex-row" activeKey={eventKey}>
           <Nav.Item className={`${classes.navbarItem} profilenavbar`}>
             <Nav.Link
               eventKey="/profile"
@@ -27,7 +35,12 @@ const ProfileVerification = () => {
             </Nav.Link>
           </Nav.Item>
           <Nav.Item className={`${classes.navbarItem} profilenavbar`}>
-            <Nav.Link eventKey="/verifyotp" as={Link} to="/verifyotp" disabled>
+            <Nav.Link
+              eventKey="/verifyotp"
+              as={Link}
+              to="/verifyotp"
+              disabled={!isVeifyEnabled}
+            >
               Step 2: Verify your email
             </Nav.Link>
           </Nav.Item>

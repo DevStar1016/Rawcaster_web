@@ -16,19 +16,25 @@ const ValidateTypeModal = ({ open, handleClose }) => {
   const navigate = useNavigate();
   const loginUserData = useAuthData();
 
-  const handleSendOTP = (type = 1) => {
+  const handleNavigate = (res, type) => {
+    navigate("/verifyotp", { state: { type: type, ...res?.data } });
+    window.location.reload();
+  };
+
+  const handleSendOTP = (type) => {
     let finalData = {
       auth_code: getAuthToken("Rawcaster"),
       token: loginUserData?.token,
+      otp_flag: type,
     };
+
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-
-          navigate("/verifyotp", { state: { ...res.data } });
+          handleNavigate(res, type);
         } else {
-          toast.error(res.data.message);
+          toast.error(res.data.msg);
         }
       })
       .catch((err) => {
@@ -54,12 +60,12 @@ const ValidateTypeModal = ({ open, handleClose }) => {
                 className={classes.heading_divider}
                 onClick={() => {
                   handleClose();
-                  handleSendOTP(1);
+                  handleSendOTP("email");
                 }}
               >
                 <span class="material-icons">mail_outline</span>
                 Get a verification code at{" "}
-                {getPartialHiddenEmail(loginUserData?.email)}
+                {getPartialHiddenEmail(loginUserData?.email_id)}
               </h3>
             )}
           {loginUserData &&
@@ -69,7 +75,7 @@ const ValidateTypeModal = ({ open, handleClose }) => {
                 className={classes.heading_divider}
                 onClick={() => {
                   handleClose();
-                  handleSendOTP(2);
+                  handleSendOTP("sms");
                 }}
               >
                 <span class="material-icons">phone_iphone</span>

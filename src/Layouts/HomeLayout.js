@@ -20,17 +20,11 @@ import { logoutService } from "../Services/ApiService";
 import { JSONtoformdata, RemoveToken } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { useAuthData, useDashboard } from "../Shared/Reduxfetcher";
-import ValidateTypeModal from "../Modal/ValidateTypeModal";
-import {
-  handledasboardTab,
-  handleloginModalShow,
-} from "../Store/Redux/Reducer/DashboardReducer";
-import LoginModal from "../Modal/LoginModal";
+import { useAuthData } from "../Shared/Reduxfetcher";
+import { handledasboardTab } from "../Store/Redux/Reducer/DashboardReducer";
 
 const HomeLayout = () => {
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
-  const { loginModalShow } = useDashboard();
   const loginUserData = useAuthData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -88,15 +82,27 @@ const HomeLayout = () => {
                   <div>
                     <img src={LiveIcon} className={classes.liveIcon} />
                     <img src={HomeIcon} className={classes.menuIcon} />
-                    <img src={SettingsIcon}  className={`${classes.onlydes} ${classes.menuIcon}`}  />
-                    <img src={NotificationIcon} className={`${classes.onlydes} ${classes.menuIcon}`} />
+                    <img
+                      src={SettingsIcon}
+                      className={`${classes.onlydes} ${classes.menuIcon}`}
+                    />
+                    <img
+                      src={NotificationIcon}
+                      className={`${classes.onlydes} ${classes.menuIcon}`}
+                    />
                   </div>
                 )}
                 {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
             </Dropdown> */}
 
-                <div className={loginUserData ? classes.searchIconmob : classes.beforeSearchicon}>
+                <div
+                  className={
+                    loginUserData
+                      ? classes.searchIconmob
+                      : classes.beforeSearchicon
+                  }
+                >
                   <span
                     className={`material-icons ${classes.search_icon}`}
                     onClick={() => {
@@ -114,10 +120,7 @@ const HomeLayout = () => {
                   <span className={`material-icons ${classes.search_icon}`}>
                     search
                   </span>
-                  <input                   
-                    type="text"
-                    placeholder={"Search Rawcaster"}
-                  ></input>
+                  <input type="text" placeholder={"Search Rawcaster"}></input>
                   <span
                     className={`material-icons ${classes.clsIcon}`}
                     onClick={() => {
@@ -219,18 +222,6 @@ const HomeLayout = () => {
         <Content className="site-layout mainsec">
           <Outlet />
         </Content>
-        <ValidateTypeModal
-          open={false}
-          handleClose={() => {
-            console.log("test");
-          }}
-        />
-        <LoginModal
-          open={loginModalShow}
-          close={() => {
-            dispatch(handleloginModalShow(false));
-          }}
-        />
       </Layout>
     </>
   );
