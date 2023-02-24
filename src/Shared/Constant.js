@@ -18,8 +18,9 @@ export const TWITTER_CLIENT_SECRET =
 
 export const APPLE_API_KEY = "CR8PDZDGNZcom.rawcaster.app";
 
-export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com";
-export const REDIRECT_URI = "https://localhost:3000";
+export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com/";
+export const REDIRECT_URI = "https://localhost:3000/signup/";
+export const SECONDARY_REDIRECT_URI = "https://dev.rawcaster.com/signup/";
 
 // SECONDARY CONSTANTS
 

@@ -5,7 +5,7 @@ import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 
-export const getProfile = (token, dispatch) => {
+export const getProfile = (token, dispatch, navigateHandle) => {
   let profileData = {
     token: token,
     auth_code: getAuthToken(token),
@@ -19,9 +19,11 @@ export const getProfile = (token, dispatch) => {
           "rawcaster_user_token",
           JSON.stringify({ token: token, ...res.data.profile })
         );
+
         if (res.data.profile.acc_verify_status === 0) {
           handleVerifyModal(res.data.profile, dispatch);
         }
+        navigateHandle();
       } else {
         toast.error(res.data.msg);
       }

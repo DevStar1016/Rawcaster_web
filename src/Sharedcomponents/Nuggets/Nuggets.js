@@ -20,7 +20,10 @@ import { Dropdown, Tooltip } from "antd";
 import ImageGrid from "../../UIComponents/ImageGrid";
 import PostNuggets from "./PostNuggets";
 import { getLocalStorageData } from "../../Store/Storage";
-import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleLoading,
+  handleloginModalShow,
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 
@@ -262,55 +265,64 @@ const Nuggets = () => {
                       if (getAuthenticated()) {
                         let like = ele.liked ? 2 : 1;
                         HandleLike(ele.nugget_id, like);
+                      } else {
+                        dispatch(handleloginModalShow(true));
                       }
                     }}
                   >
                     <p
                       style={{
-                        cursor: getAuthenticated() ? "pointer" : "auto",
+                        cursor: "pointer",
                       }}
                     >
-                      <i
-                        className={`${classes.inactive_like_icon} ${
-                          !getAuthenticated() && classes.disabled
-                        }`}
-                      />
+                      <i className={`${classes.inactive_like_icon}`} />
                     </p>
                     <span>{ele.total_likes}</span>
                   </div>
-                  <div className={classes.iconsec}>
+                  <div
+                    className={
+                      Comments === ele.nugget_id
+                        ? classes.activeiconsec
+                        : classes.iconsec
+                    }
+                  >
                     <p
                       style={{
-                        cursor: getAuthenticated() ? "pointer" : "auto",
+                        cursor: "pointer",
                       }}
                       onClick={() => {
-                        if (Comments === ele.nugget_id) {
-                          setCommentList([]);
-                          setComments("");
+                        if (getAuthenticated()) {
+                          if (Comments === ele.nugget_id) {
+                            setCommentList([]);
+                            setComments("");
+                          } else {
+                            setCommentList([]);
+                            setComments(ele.nugget_id);
+                            getCommentList(ele.nugget_id);
+                          }
                         } else {
-                          setCommentList([]);
-                          setComments(ele.nugget_id);
-                          getCommentList(ele.nugget_id);
+                          dispatch(handleloginModalShow(true));
                         }
                       }}
                     >
-                      <i
-                        className={`${classes.commentIcon} ${
-                          !getAuthenticated() && classes.disabled
-                        }`}
-                      />
+                      <i className={`${classes.commentIcon}`} />
                     </p>
                     <span>{ele.total_comments}</span>
                   </div>
                   <div className={classes.iconsec}>
-                    <p style={{ cursor: loginUserData ? "pointer" : "auto" }}>
-                      <i
-                        className={`${classes.share_icon} ${
-                          !getAuthenticated() && classes.disabled
-                        }`}
-                      />
+                    <p
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        if (getAuthenticated()) {
+                          console.log("share");
+                        } else {
+                          dispatch(handleloginModalShow(true));
+                        }
+                      }}
+                    >
+                      <i className={`${classes.share_icon}`} />
                     </p>
-                    <span>500</span>
+                    <span>0</span>
                   </div>
                 </div>
               </div>

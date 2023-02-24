@@ -18,11 +18,15 @@ import VerifyOtp from "./ProfileVerification/VerifyOtp";
 import Development from "./Components/Development";
 import { useDashboard, useProfileVerifyModal } from "./Shared/Reduxfetcher";
 import { VerificationModal } from "./Modal/ProfileVerificationModal";
-import { handleprofileVerifyModalShow } from "./Store/Redux/Reducer/DashboardReducer";
+import {
+  handleloginModalShow,
+  handleprofileVerifyModalShow,
+} from "./Store/Redux/Reducer/DashboardReducer";
+import LoginModal from "./Modal/LoginModal";
 
 function App() {
   const dispatch = useDispatch();
-  const { isLoading } = useDashboard();
+  const { isLoading, loginModalShow } = useDashboard();
   const profileverifyStatus = useProfileVerifyModal();
 
   const routerpaths = [

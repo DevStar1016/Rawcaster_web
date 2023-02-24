@@ -8,7 +8,7 @@ import { Col, Row } from "react-bootstrap";
 import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
-import FacebookIcon from "../../Assets/Icons/png/facebook_logo.png";
+import InstaIcon from "../../Assets/Icons/png/instagram_logo.png";
 import TwitterIcon from "../../Assets/Icons/png/twitter_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
@@ -30,13 +30,19 @@ import {
   INSTAGRAM_APP_SECRET,
   PRIMARY_REDIRECT_URI,
   REDIRECT_URI,
+  SECONDARY_REDIRECT_URI,
   TWITTER_CLIENT_ID,
   TWITTER_CLIENT_SECRET,
 } from "../../Shared/Constant";
 import jwt_decode from "jwt-decode";
 import { toast } from "react-hot-toast";
 import { SocialMediaLoginService } from "../../Services/ApiService";
-import { setCookieData, setLocalStorageData } from "../../Store/Storage";
+import {
+  getSessionStorageData,
+  removeSessionStorageData,
+  setCookieData,
+  setLocalStorageData,
+} from "../../Store/Storage";
 import RedirectModal from "../../Modal/RedirectModal";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
@@ -44,6 +50,7 @@ import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.
 import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
+import axios from "axios";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -88,8 +95,15 @@ const Signup = () => {
           dispatch(handleLoginData(res.data));
           setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
           setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
-          getProfile(res.data.token, dispatch);
-          navigate("/dashboard");
+          const navigateHandle = () => {
+            if (getSessionStorageData("influencerData")) {
+              navigate("/selectinfluencers");
+              removeSessionStorageData("influencerData");
+            } else {
+              navigate("/dashboard");
+            }
+          };
+          getProfile(res.data.token, dispatch, navigateHandle);
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {
@@ -105,6 +119,19 @@ const Signup = () => {
     items: 1,
     nav: false,
     loop: true,
+  };
+
+  const handleInstaLogin = () => {
+    axios
+      .get(
+        `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_APP_ID}&redirect_uri=https://localhost:3000/signup/&scope=user_profile,user_media&response_type=code`
+      )
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -196,8 +223,8 @@ const Signup = () => {
                   <LoginSocialInstagram
                     client_id={INSTAGRAM_APP_ID}
                     client_secret={INSTAGRAM_APP_SECRET}
-                    // scope="basic"
-                    redirect_uri={PRIMARY_REDIRECT_URI}
+                    scope="user_profile"
+                    redirect_uri={SECONDARY_REDIRECT_URI}
                     onResolve={({ provider, data }) => {
                       console.log(provider, data);
                     }}
@@ -205,8 +232,13 @@ const Signup = () => {
                       toast.error("Something Went Wrong !!");
                     }}
                   >
-                    <button className={classes.altSignBtn}>
-                      <img src={FacebookIcon} /> Signup with Facebook
+                    <button
+                      className={classes.altSignBtn}
+                      onClick={() => {
+                        handleInstaLogin();
+                      }}
+                    >
+                      <img src={InstaIcon} /> Signup with Instagram
                     </button>
                   </LoginSocialInstagram>
                 </Col>

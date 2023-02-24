@@ -237,6 +237,28 @@ line-height: 23px;
   background-color: rgba(0, 0, 0, 0.8);
 }
 .clearfix { clear: both;}
+
+.bgblured {
+  position: relative; 
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; opacity: 1; height: 100vh;
+}
+
+.bgblured::before {    
+    content: "";
+    /* background-image:url("https://www.simplilearn.com/ice9/free_resources_article_thumb/Advantages_and_Disadvantages_of_artificial_intelligence.jpg"); */
+    background-size: cover;
+    filter: blur(10px);
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+  
+}
 @media (max-width:768px) {
   .singleImage { max-width: 300px !important; }
 }

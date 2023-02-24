@@ -14,10 +14,16 @@ import { loginService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
-import { setCookieData, setLocalStorageData } from "../../Store/Storage";
+import {
+  getSessionStorageData,
+  removeSessionStorageData,
+  setCookieData,
+  setLocalStorageData,
+} from "../../Store/Storage";
 import OwlCarousel from "react-owl-carousel";
 import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 import { getProfile } from "./getProfile";
+import { useDashboard } from "../../Shared/Reduxfetcher";
 
 const validationSchema = yup.object().shape({
   username: yup.string().required(`Please input your Login ID!`),
@@ -35,6 +41,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
+  const { loginModalShow } = useDashboard();
   const { values, handleChange, handleSubmit, errors, touched, setFieldError } =
     useFormik({
       initialValues: {
@@ -56,8 +63,16 @@ const Login = () => {
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-          getProfile(res.data.token, dispatch);
-          navigate("/dashboard");
+
+          const navigateHandle = () => {
+            if (getSessionStorageData("influencerData")) {
+              navigate("/selectinfluencers");
+              removeSessionStorageData("influencerData");
+            } else {
+              navigate("/dashboard");
+            }
+          };
+          getProfile(res.data.token, dispatch, navigateHandle);
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {

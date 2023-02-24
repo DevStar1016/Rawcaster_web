@@ -132,8 +132,10 @@ const SignupwithCredentials = () => {
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-          getProfile(res.data.token, dispatch);
-          navigate("/selectinfluencers");
+          const navigateHandle = () => {
+            navigate("/selectinfluencers");
+          };
+          getProfile(res.data.token, dispatch, navigateHandle);
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {
