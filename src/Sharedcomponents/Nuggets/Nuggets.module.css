@@ -38,7 +38,7 @@
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
- .feedsSec { font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left;}
+ .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left;}
  .nuggetsFeed { width: 100%; border-radius: 12px; }
  .floattingSec { display: flex; justify-content: end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }

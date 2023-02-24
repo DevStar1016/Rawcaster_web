@@ -50,7 +50,8 @@
  .advideoSec img { margin-bottom: 10px; width: 100%; }
  .advideoSec p { margin-bottom: 15px; font-size: 13px; }
  
- .suggInfluencersSec { border-top:1px solid #ECECEC; padding-top: 20px; float: left; margin-top: 10px; overflow-y: scroll;max-height: 270px;width:100% ;}
+ .suggInfluencersSec { border-top:1px solid #ECECEC; padding-top: 20px; float: left; margin-top: 10px;  max-height: 270px;width:100% ;}
+ .suggInfluencersSec .scrollSec { width: calc(100% - 10px); overflow: auto; }
  .suggInfluencersSec h3 { font-family: "DM Sans", sans-serif; font-size: 18px; color: #000; opacity: 1; margin-bottom: 8px; }
  .suggAcc { float: left; width: 100%; margin-top: 5px; clear: both; margin-bottom: 10px;cursor: pointer; }
  .suggAcc img { width: 42px; height: 42px; float: left; margin-right: 10px;border-radius: 190px; }

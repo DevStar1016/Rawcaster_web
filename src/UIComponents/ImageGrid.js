@@ -451,7 +451,7 @@ const ImageGrid = (props) => {
         footer={null}
         width={1000}
       >
-        <div className="nuggets_popup">
+        <div className={classes.nuggets_popup}>
           {downloadable === 1 && (
             <i
               onClick={() => {

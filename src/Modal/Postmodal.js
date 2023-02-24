@@ -72,10 +72,11 @@ const Postmodal = ({ visible, onClose }) => {
   };
 
   return (
-    <Modal
+    <Modal     
       footer={null}
       open={visible}
-      width={"650px"}
+      height={600}
+      width={650}
       onCancel={() => {
         onClose();
       }}
