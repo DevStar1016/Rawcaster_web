@@ -11,9 +11,9 @@
  .nuggetSec::-webkit-scrollbar {
    display: none !important;
  }
- .nuggetItem { margin-top: 20px; float: left; width: 100%;  }
+ .nuggetItem { margin-top: 20px; float: left; width: 100%;border-bottom: 1px solid #ECECEC; padding-bottom: 15px;  }
  .profilePart { width: calc(100% - 70px); float: left;}
- .dropMenu { cursor: pointer; width: 70px; float: left;  }
+ .dropMenu { cursor: pointer; width: 70px; float: left; text-align: right;  }
  .dropMenu span {font-size: 33px; padding-top: 5px; color: #959595; cursor: pointer;}
  .proImg { position: relative; width: 72px; float: left; }
  .proImg img { width: 50px; height: 50px; border-radius: 60px; }
@@ -34,21 +34,21 @@
     text-align: center;
     cursor: pointer;
  }
- .proName {color: #1D1C1C; font-size: 18px; margin-bottom: 0px; }
+ .proName {color: #1D1C1C; font-size: 16px; margin-bottom: 0px; font-weight: 500; }
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
- .feedsSec { font-size: 15.5px; line-height: 23px; width: calc(100% - 65px); float: left;}
+ .feedsSec { font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left;}
  .nuggetsFeed { width: 100%; border-radius: 12px; }
- .floattingSec { display: flex; justify-content: end; align-items: center; flex-direction: column; width: 65px; padding-left: 15px; float: left;}
+ .floattingSec { display: flex; justify-content: end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }
- 
- .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec span { height: 25px; }
+ .floattingSec .iconsec p, .floattingSec .activeiconsec p {cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  .floattingSec .activeiconsec p { background: #F2718D;  }
  .floattingSec .activeiconsec p i { background: #FFFFFF;  }
- .floattingSec .iconsec p {cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
- .floattingSec .iconsec img { height: 18px; }
- .floattingSec .iconsec span { font-weight: 500; font-size: 15px; }
+ .floattingSec .iconsec p {cursor: pointer; margin:13px 0 5px 0; text-align: center; background: #F1F2F5; width: 42px; height: 42px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .iconsec img { height: 15px; }
+ .floattingSec .iconsec span { font-weight: 500; font-size: 13px; }
 
 .cmtSec { float: left; width: 100%; }
 .cmtSec .item { display: flex; flex-direction: row; width: 100%; margin-top: 20px; }
@@ -69,8 +69,8 @@
 
  .inactive_like_icon, .disabled_like_icon {
    float: left;
-   width: 22px;
-   height: 22px;
+   width: 18px;
+   height: 18px;
    background: #000;
    mask: url("../../Assets/Images/svg/heart.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/heart.svg") no-repeat center /
@@ -82,8 +82,8 @@
 }
  .commentIcon {
   float: left;
-   width: 22px;
-   height: 22px;
+   width: 18px;
+   height: 18px;
    background: #000;
    mask: url("../../Assets/Images/svg/comment.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
@@ -91,8 +91,8 @@
  }
  .disabledcommentIcon {
   float: left;
-   width: 22px;
-   height: 22px;
+   width: 18px;
+   height: 18px;
    background:grey;
    mask: url("../../Assets/Images/svg/comment.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
@@ -100,8 +100,8 @@
  }
  .share_icon {
   float: left;
-   width: 22px;
-   height: 22px;
+   width: 18px;
+   height: 18px;
    background: #000;
    mask: url("../../Assets/Images/svg/share.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/share.svg") no-repeat center /
@@ -127,7 +127,8 @@
   .dropMenu { width: 30px;}
   .profilePart { width: calc(100% - 30px); }
   .floattingSec { width: 45px; padding-left: 10px;  }
-  .floattingSec .iconsec p { width: 30px; height: 30px; }
+  .floattingSec .iconsec p, .floattingSec .activeiconsec p { width: 30px; height: 30px; margin: 12px 0 5px 0; }
+  .floattingSec span { height: 22px; }
   .feedsSec { width: calc(100% - 45px);}
   .cmtSec .proImg { width: 40px; }
   .cmtSec .cmtText { max-width: 95%; padding: 5px 18px; border-radius: 30px; font-size: 13px;}

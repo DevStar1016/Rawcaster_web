@@ -85,18 +85,18 @@ const HomeLayout = () => {
               </div>
               <div className={classes.rightMenus}>
                 {loginUserData && (
-                  <div className={classes.onlydes}>
+                  <div>
                     <img src={LiveIcon} className={classes.liveIcon} />
                     <img src={HomeIcon} className={classes.menuIcon} />
-                    <img src={SettingsIcon} className={classes.menuIcon} />
-                    <img src={NotificationIcon} className={classes.menuIcon} />
+                    <img src={SettingsIcon}  className={`${classes.onlydes} ${classes.menuIcon}`}  />
+                    <img src={NotificationIcon} className={`${classes.onlydes} ${classes.menuIcon}`} />
                   </div>
                 )}
                 {/* <Dropdown menu={{ items }} placement="topRight" arrow>
               <Button>topRight</Button>
             </Dropdown> */}
 
-                <div className={classes.searchIconmob}>
+                <div className={loginUserData ? classes.searchIconmob : classes.beforeSearchicon}>
                   <span
                     className={`material-icons ${classes.search_icon}`}
                     onClick={() => {
@@ -108,14 +108,13 @@ const HomeLayout = () => {
                 </div>
 
                 <div
-                  className={classes.searchSec}
+                  className={classes.searchmobSec}
                   style={{ display: isshowSearchBox ? "block" : "none " }}
                 >
                   <span className={`material-icons ${classes.search_icon}`}>
                     search
                   </span>
-                  <input
-                    className={classes.top_search}
+                  <input                   
                     type="text"
                     placeholder={"Search Rawcaster"}
                   ></input>

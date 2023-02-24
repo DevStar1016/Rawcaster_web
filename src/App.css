@@ -203,62 +203,11 @@ letter-spacing: 0.032em;
 line-height: 23px;
 
 }
-.card--content {
-  background-color: #eeeeee;
-  min-width: 100px;
-  max-width: 100px;
-  height: 100px;
-  margin: 5px;
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-}
-.card--content:hover .middle {
-  opacity: 1;
-}
-.middle {
-  transition: 0.5s ease;
-  opacity: 0;
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  text-align: center;
-}
-.middle:hover {
-  transform: scale(1.1);
-  transition: transform 0.5s ease;
-  background-color: rgba(0, 0, 0, 0.8);
-}
+
 .clearfix { clear: both;}
-
-.bgblured {
-  position: relative; 
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center; opacity: 1; height: 100vh;
-}
-
-.bgblured::before {    
-    content: "";
-    /* background-image:url("https://www.simplilearn.com/ice9/free_resources_article_thumb/Advantages_and_Disadvantages_of_artificial_intelligence.jpg"); */
-    background-size: cover;
-    filter: blur(10px);
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-  
-}
+.ant-modal-close-x { background: #ECECEC; width: 30px; height: 30px; border-radius: 50px; }
+.ant-modal-close:hover { background: transparent !important;}
+.anticon svg {fill: #000; font-size: 15px; margin-top: 3px; }
 @media (max-width:768px) {
   .singleImage { max-width: 300px !important; }
 }
