@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isLoading: false,
   isTwoStepVerified: false,
+  loginModalShow: false,
   profileVerifyModalShow: { show: false, msg: "" },
   dashboardMenu: "nugget",
 };
@@ -20,6 +21,9 @@ export const { actions, reducer } = createSlice({
     handleprofileVerifyModalShow: (state, action) => {
       state.profileVerifyModalShow = action.payload;
     },
+    handleloginModalShow: (state, action) => {
+      state.loginModalShow = action.payload;
+    },
     handledasboardTab: (state, action) => {
       state.dashboardMenu = action.payload;
     },
@@ -31,6 +35,7 @@ export const {
   handleTwoStepVerified,
   handleprofileVerifyModalShow,
   handledasboardTab,
+  handleloginModalShow,
 } = actions;
 
 export default reducer;

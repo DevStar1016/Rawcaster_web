@@ -1,6 +1,7 @@
 import { Modal } from "antd";
 import React, { Fragment, useState } from "react";
 import OwlCarousel from "react-owl-carousel";
+import styled from "styled-components";
 import classes from "./ImageGrid.module.css";
 
 const ImageGrid = (props) => {
@@ -82,7 +83,6 @@ const ImageGrid = (props) => {
     } else if (data.media_type === "video") {
       return (
         <Fragment>
-          
           <video
             width="100%"
             height="100%"
@@ -476,26 +476,21 @@ const ImageGrid = (props) => {
               ]}
             >
               {imgArray.map((ele, index) => {
+                // document.getElementsByClassName("bgblured").style.display =
+                //   "none";
                 return (
                   <div key={index}>
-                    <div className={classes.bgblured} data-content={`url(${ele.path})`}
+                    <div
+                      className={classes.bgblured}
                       style={{
-                        // position: "absolute",
-                        // backgroundRepeat: "no-repeat",
-                        // backgroundSize: "cover",
-                        // filter: "blur(10px)",
-                        // backgroundPosition: "center",
-                        // opacity: 0.5,
-                        // backgroundImage: `url(${ele.path})`,
-                        // top: 0,
-                        // left: 0,
-                        // width: "100%",
-                        // height: "100%",
+                        backgroundImage: `url(
+                          ${ele.path}
+                        )`,
                       }}
                     ></div>
-                   <div className={classes.modalContainer}>
+                    <div className={classes.modalContainer}>
                       {imageOrVideoSingleGallery(ele, "fullview")}
-                      </div>
+                    </div>
                   </div>
                 );
               })}

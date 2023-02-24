@@ -1,4 +1,4 @@
-import { Dropdown, Layout, Menu } from "antd";
+import { Dropdown, Layout, Menu, Tooltip } from "antd";
 import React, { useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useNavigate } from "react-router";
@@ -20,12 +20,17 @@ import { logoutService } from "../Services/ApiService";
 import { JSONtoformdata, RemoveToken } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { useAuthData } from "../Shared/Reduxfetcher";
+import { useAuthData, useDashboard } from "../Shared/Reduxfetcher";
 import ValidateTypeModal from "../Modal/ValidateTypeModal";
-import { handledasboardTab } from "../Store/Redux/Reducer/DashboardReducer";
+import {
+  handledasboardTab,
+  handleloginModalShow,
+} from "../Store/Redux/Reducer/DashboardReducer";
+import LoginModal from "../Modal/LoginModal";
 
 const HomeLayout = () => {
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
+  const { loginModalShow } = useDashboard();
   const loginUserData = useAuthData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -159,9 +164,13 @@ const HomeLayout = () => {
                         Badgetype={loginUserData?.user_status_id}
                         BadgeTitle={loginUserData?.user_status}
                       />
-                      <span className={classes.onlydes}>
-                        {loginUserData ? loginUserData?.name : "Log in/Sign up"}
-                      </span>
+                      <Tooltip title={loginUserData?.name}>
+                        <span className={classes.onlydes}>
+                          {loginUserData
+                            ? loginUserData?.name
+                            : "Log in/Sign up"}
+                        </span>
+                      </Tooltip>
                     </div>
                   </div>
                 </Dropdown>
@@ -214,6 +223,12 @@ const HomeLayout = () => {
           open={false}
           handleClose={() => {
             console.log("test");
+          }}
+        />
+        <LoginModal
+          open={loginModalShow}
+          close={() => {
+            dispatch(handleloginModalShow(false));
           }}
         />
       </Layout>

@@ -24,8 +24,10 @@ import jwt_decode from "jwt-decode";
 import RedirectModal from "../Modal/RedirectModal";
 import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
+import { useAuthData } from "../Shared/Reduxfetcher";
 
 const DashboardSignup = () => {
+  const loginUserData = useAuthData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
@@ -86,88 +88,97 @@ const DashboardSignup = () => {
   return (
     <>
       <div className={classes.beforeloginSec}>
-      <div className={classes.inpad}>
-        <div className={classes.advideoSec}>
-          <img src={require("../Assets/Images/png/videoimg.png")} />
-          <h1>New to Rawcaster?</h1>
-          <p>
-            Sign up now to get your own space and post a Nuggets, talk shows,
-            Events and more.
-          </p>
-        </div>
-        <LoginSocialGoogle
-          client_id={GOOGLE_CLIENT_ID}
-          redirect_uri={PRIMARY_REDIRECT_URI}
-          scope="openid profile email"
-          discoveryDocs="claims_supported"
-          access_type="offline"
-          onResolve={({ provider, data }) => {
-            dispatch(handleLoading(true));
-            let resultVal = {
-              signin_type: 5,
-              first_name: data.name,
-              display_name: data.name,
-              email_id: data.email,
-            };
-            HandleSignup(resultVal);
-          }}
-          onReject={(err) => {
-            toast.error("Something Went Wrong !!");
-          }}
-        >
-          <Button className={classes.altSignBtn}>
-            <img src={GoogleIcon} /> Signup with Google
-          </Button>
-        </LoginSocialGoogle>
-        <LoginSocialApple
-          client_id={APPLE_API_KEY}
-          scope={"name email"}
-          redirect_uri={PRIMARY_REDIRECT_URI}
-          onResolve={({ provider, data }) => {
-            dispatch(handleLoading(true));
-            var decoded = jwt_decode(data.authorization.id_token);
-            if (decoded?.email && decoded?.email !== "") {
-              let resultVal = {
-                signin_type: 2,
-                first_name: data?.user?.name?.firstName || decoded.email,
-                display_name: data?.user?.name?.firstName || decoded.email,
-                email_id: decoded.email,
-              };
-              HandleSignup(resultVal);
-            } else {
-              toast.error("Something Went Wrong !!");
-            }
-          }}
-          onReject={(err) => {
-            toast.error("Something Went Wrong !!");
-          }}
-        >
-          <Button className={classes.altSignBtn}>
-            <img src={AppleIcon} /> Signup with Apple
-          </Button>
-        </LoginSocialApple>
-        <Button
-          className={classes.signupbtn}
-          onClick={() => {
-            navigate("/signupwithemail");
-          }}
-        >
-          Signup with a phone number or email
-        </Button>
-        <RedirectModal
-          open={redirectModal.show}
-          msg={redirectModal.msg}
-          Btnname={"Sign in"}
-          onSuccess={() => {
-            navigate("/login");
-            setredirectModal({ show: false, msg: "" });
-          }}
-          onClose={() => {
-            setredirectModal({ show: false, msg: "" });
-          }}
-        />
-        <SuggestedInfluencers />
-      </div>
+        {loginUserData === null ? (
+          <div className={classes.inpad}>
+            <div className={classes.advideoSec}>
+              <img src={require("../Assets/Images/png/videoimg.png")} />
+
+              <h1>New to Rawcaster?</h1>
+              <p>
+                Sign up now to get your own space and post a Nuggets, talk
+                shows, Events and more.
+              </p>
+            </div>
+            <LoginSocialGoogle
+              client_id={GOOGLE_CLIENT_ID}
+              redirect_uri={PRIMARY_REDIRECT_URI}
+              scope="openid profile email"
+              discoveryDocs="claims_supported"
+              access_type="offline"
+              onResolve={({ provider, data }) => {
+                dispatch(handleLoading(true));
+                let resultVal = {
+                  signin_type: 5,
+                  first_name: data.name,
+                  display_name: data.name,
+                  email_id: data.email,
+                };
+                HandleSignup(resultVal);
+              }}
+              onReject={(err) => {
+                toast.error("Something Went Wrong !!");
+              }}
+            >
+              <Button className={classes.altSignBtn}>
+                <img src={GoogleIcon} /> Signup with Google
+              </Button>
+            </LoginSocialGoogle>
+            <LoginSocialApple
+              client_id={APPLE_API_KEY}
+              scope={"name email"}
+              redirect_uri={PRIMARY_REDIRECT_URI}
+              onResolve={({ provider, data }) => {
+                dispatch(handleLoading(true));
+                var decoded = jwt_decode(data.authorization.id_token);
+                if (decoded?.email && decoded?.email !== "") {
+                  let resultVal = {
+                    signin_type: 2,
+                    first_name: data?.user?.name?.firstName || decoded.email,
+                    display_name: data?.user?.name?.firstName || decoded.email,
+                    email_id: decoded.email,
+                  };
+                  HandleSignup(resultVal);
+                } else {
+                  toast.error("Something Went Wrong !!");
+                }
+              }}
+              onReject={(err) => {
+                toast.error("Something Went Wrong !!");
+              }}
+            >
+              <Button className={classes.altSignBtn}>
+                <img src={AppleIcon} /> Signup with Apple
+              </Button>
+            </LoginSocialApple>
+            <Button
+              className={classes.signupbtn}
+              onClick={() => {
+                navigate("/signupwithemail");
+              }}
+            >
+              Signup with a phone number or email
+            </Button>
+            <RedirectModal
+              open={redirectModal.show}
+              msg={redirectModal.msg}
+              Btnname={"Sign in"}
+              onSuccess={() => {
+                navigate("/login");
+                setredirectModal({ show: false, msg: "" });
+              }}
+              onClose={() => {
+                setredirectModal({ show: false, msg: "" });
+              }}
+            />
+            <SuggestedInfluencers />
+          </div>
+        ) : (
+          <div className={classes.inpad}>
+            <div className={classes.advideoSec}>
+              <img src={require("../Assets/Images/png/videoimg.png")} />
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
