@@ -41,10 +41,10 @@
     padding: 0 0 0 20px;
     display: flex;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: column; align-items:start;
   }
   .leftSec .contentSec {
-    margin: auto;
+    /* margin: auto; */
     max-width: 490px;
   }
   .leftSec h1 {
@@ -79,7 +79,7 @@
   .onlyMob {
     display: none;
   }
-  .homeContent { max-width: 1620px; width: calc(100% - 60px); padding: 40px 30px 50px 30px; display: flex; margin: auto; }
+  .homeContent { max-width: 1620px; width: calc(100% - 60px); padding: 40px 15px 50px 15px; display: flex; margin: auto; }
   .homeContent .textSec { width: 50%; float: left; padding: 20px; max-width: 550px; margin: auto; justify-content: center; align-items: center; }
   .homeContent .imgSec { width: 50%; float: left; justify-content: center; align-items: center; display: flex;}
   .homeContent .imgSec img { width: 100%; }
