@@ -8,6 +8,7 @@ import {
   nuggetCommentListService,
 } from "../../Services/ApiService";
 import {
+  decodeHtml,
   getAuthenticated,
   getDataValueById,
   isAccountValid,
@@ -274,7 +275,7 @@ const Nuggets = () => {
               )}
               <div className={classes.contentSec}>
                 <div className={classes.feedsSec}>
-                  <p>{ele?.content}</p>
+                  <p>{decodeHtml(ele?.content)}</p>
                   <ImageGrid
                     imgArray={ele.media_list}
                     muted={muted}

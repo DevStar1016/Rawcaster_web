@@ -5,7 +5,7 @@ import {
   deleteNuggetCommentService,
   nuggetCommentListService,
 } from "../../Services/ApiService";
-import { isValidData, JSONtoformdata } from "../../Shared/Utility";
+import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import hearticon from "../../Assets/Images/svg/heart.svg";
 import replyicon from "../../Assets/Images/svg/comment.svg";
@@ -16,8 +16,7 @@ import { useAuthData } from "../../Shared/Reduxfetcher";
 import dayjs from "dayjs";
 import { useListNuggetContext } from "../../Shared/Context";
 import ReplyList from "./ReplyList";
-import { Picker } from "emoji-mart";
-import "emoji-mart/css/emoji-mart.css";
+import EmojiPicker from "emoji-picker-react";
 
 const CommentsList = ({ index }) => {
   const {
@@ -96,7 +95,7 @@ const CommentsList = ({ index }) => {
                         <div className="d-flex flex-row">
                           <div className={classes.cmtText}>
                             <p>{elem?.name}</p>
-                            <span>{elem?.comment}</span>
+                            <span>{decodeHtml(elem?.comment)}</span>
                           </div>
                           {/* <Dropdown
                             menu={{
@@ -196,20 +195,19 @@ const CommentsList = ({ index }) => {
             }}
           />
           {showEmojis === nugget_id && (
-            <div>
-              <Picker
-                showPreview={false}
-                showSkinTones={false}
-                style={{
-                  position: "absolute",
-                  bottom: "90%",
-                  right: "50px",
-                  zIndex: 11,
-                }}
-                onSelect={(e) => {
+            <div
+              style={{
+                position: "absolute",
+                bottom: "90%",
+                right: "50px",
+                zIndex: 11,
+              }}
+            >
+              <EmojiPicker
+                onEmojiClick={(e) => {
                   let tempData = [...CommentTxt];
                   if (tempData[index]) {
-                    tempData[index] = tempData[index].concat(e.native);
+                    tempData[index] = tempData[index].concat(e.emoji);
                   } else {
                     tempData[index] = e.native;
                   }

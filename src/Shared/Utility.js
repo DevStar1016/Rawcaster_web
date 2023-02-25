@@ -8,6 +8,7 @@ import {
 } from "../Store/Storage";
 import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+import { decode } from "html-entities";
 
 // Auth
 
@@ -222,3 +223,7 @@ export const isAccountValid = () => {
     return false;
   }
 };
+
+export const decodeHtml = (data) => {
+  return decode(data)
+}

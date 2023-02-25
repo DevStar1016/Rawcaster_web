@@ -12,9 +12,8 @@ import TextArea from "antd/es/input/TextArea";
 import CameraModal from "./CameraModal";
 import { PostNuggetContext } from "../Shared/Context";
 import { SHARED_TYPE } from "../Shared/Constant";
-import { Picker } from "emoji-mart";
-import "emoji-mart/css/emoji-mart.css";
 import AudioRecordModal from "./AudioRecordModal";
+import EmojiPicker from "emoji-picker-react";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -180,6 +179,28 @@ const Postmodal = ({ visible, onClose }) => {
           />
         </div>
         {showEmojis && (
+          <div
+            className={classes.emojiPart}
+            style={{
+              position: "absolute",
+              top: "190px",
+              right: "50px",
+              zIndex: 11,
+            }}
+          >
+            <EmojiPicker
+              searchDisabled
+              suggestedEmojisMode="frequent"
+              previewConfig={{
+                showPreview: false,
+              }}
+              onEmojiClick={(e) => {
+                setFieldValue("content", values.content.concat(e.emoji));
+              }}
+            />
+          </div>
+        )}
+        {/* {showEmojis && (
           <div>
             <Picker
               showPreview={false}
@@ -196,7 +217,7 @@ const Postmodal = ({ visible, onClose }) => {
               }}
             />
           </div>
-        )}
+        )} */}
         {getPostValues().length !== 0 && (
           <div className={classes.attachementtDisplay}>
             {getPostValues().map((ele, index) => {
