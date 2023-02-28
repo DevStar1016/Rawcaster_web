@@ -247,7 +247,9 @@ const Nuggets = () => {
                     <i className={classes.viewCount}>{ele?.follow_count}</i>
                   </Tooltip>
                 </div>
-                <p className={classes.proName}>{ele?.original_user_name}</p>
+                <p className={classes.proName}>
+                  {decodeHtml(ele?.original_user_name)}
+                </p>
                 <p className={classes.detailsRange}>
                   <Tooltip
                     title={dayjs(ele?.created_date).format(

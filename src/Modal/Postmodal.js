@@ -31,6 +31,8 @@ const Postmodal = ({ visible, onClose }) => {
   const loginUserData = useAuthData();
   const ImageRef = useRef();
   const VideoRef = useRef();
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
   const [showEmojis, setShowEmojis] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
@@ -284,11 +286,11 @@ const Postmodal = ({ visible, onClose }) => {
       </div>
       <CameraModal
         visible={isCamera.show}
+        videoRef={videoRef}
+        canvasRef={canvasRef}
         type={isCamera.type}
         onSuccess={(value) => {
           setFileValues(value);
-
-          setisCamera({ show: false, type: "" });
         }}
         onClose={() => {
           setisCamera({ show: false, type: "" });

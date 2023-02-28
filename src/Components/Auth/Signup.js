@@ -226,7 +226,8 @@ const Signup = () => {
                     client_id={INSTAGRAM_APP_ID}
                     client_secret={INSTAGRAM_APP_SECRET}
                     scope="user_profile"
-                    redirect_uri={INSTA_REDIRECT_URI}
+                    fields="id,username,account_type,email"
+                    redirect_uri={REDIRECT_URI}
                     onResolve={({ provider, data }) => {
                       console.log(provider, data);
                     }}
@@ -236,9 +237,9 @@ const Signup = () => {
                   >
                     <button
                       className={classes.altSignBtn}
-                      onClick={() => {
-                        handleInstaLogin();
-                      }}
+                      // onClick={() => {
+                      //   handleInstaLogin();
+                      // }}
                     >
                       <img src={InstaIcon} /> Signup with Instagram
                     </button>

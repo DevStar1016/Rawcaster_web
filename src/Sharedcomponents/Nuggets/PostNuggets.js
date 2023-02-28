@@ -213,8 +213,6 @@ const PostNuggets = ({ getNuggetList }) => {
         type={isCamera.type}
         onSuccess={(value) => {
           PostNuggetValues.setFileValues(value);
-
-          setisCamera({ show: false, type: "" });
           setpostModalShow(true);
         }}
         onClose={() => {

@@ -2,7 +2,7 @@
     text-align: center;
     padding: 50px 0;
 }
-.profileModal .cancelBtn {
+.profileModal .cancelBtn ,.actionBtn .cancelBtn {
   border: #f2718d 1px solid;
   border-radius: 7px;
   color: #f2718d;
@@ -13,7 +13,7 @@
   width: 160px;
   height: 45px;
 }
-.profileModal .reportBtn {
+.profileModal .reportBtn,.actionBtn .reportBtn {
   border: #f2718d 1px solid;
   border-radius: 7px;
   color: #fff;
@@ -25,11 +25,11 @@
   width: 160px;
   height: 45px;
 }
-.profileModal .reportBtn:hover {
+.profileModal .reportBtn:hover,.actionBtn .reportBtn:hover{
   background: #563662 !important;
   border: #563662 1px solid !important;
 }
-.profileModal .cancelBtn:hover {
+.profileModal .cancelBtn:hover,.actionBtn .cancelBtn:hover {
   border: #563662 1px solid !important;
   color: #563662 !important;
 }
@@ -63,7 +63,7 @@
   z-index: 11;
   position: absolute;
   bottom: 30px;
-  left: 45%;
+  left: 40%;
   border:none !important ;
 padding: 10px 20px;
 border-radius: 100px;
@@ -72,6 +72,8 @@ border-radius: 100px;
   z-index: 11;
   position: absolute;
   color: #ECECEC;
+  top: 20px;
+  left: 48%;
 }
 .cameraSec button span {
   font-size: 32px;
@@ -162,3 +164,17 @@ border-bottom: 0.5px solid grey;
 .overlay:hover { transform: scale(1.1);transition: transform 0.5s ease; background-color: rgba(0, 0, 0, 0.8);
 }
 .overlay span { color: #fff;}
+
+.imageGridContainer {
+  max-width: 575px;
+  height: 100%;
+  margin: auto;
+  padding-top: 40px;
+}
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  padding: 10px;
+}
