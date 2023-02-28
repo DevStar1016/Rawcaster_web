@@ -138,6 +138,7 @@ const VerifyOtp = () => {
   const HandlesubmitVerify = (values) => {
     let ResetPasswordValue = {
       ...values,
+      otp_flag: state?.type,
       otp_ref_id: otpRefId,
       auth_code: getAuthToken(otpRefId),
     };

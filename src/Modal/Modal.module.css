@@ -25,6 +25,14 @@
   width: 160px;
   height: 45px;
 }
+.profileModal .reportBtn:hover {
+  background: #563662 !important;
+  border: #563662 1px solid !important;
+}
+.profileModal .cancelBtn:hover {
+  border: #563662 1px solid !important;
+  color: #563662 !important;
+}
 .profileModal p {
   font-weight: 500;
   font-size: 23px !important;
@@ -48,9 +56,9 @@
 .rightSec img { margin-left: 12px; cursor: pointer; height: 21px; padding-left: 12px; border-left: 1px solid #ECECEC; }
 .btnstyle { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; margin-top: 20px; width: 100%; font-weight: 600; font-size: 16px; }
 .btnstyle:hover { background: #f2718d; color: #fff !important; }
-.cameraSec {
+/* .cameraSec {
   padding: 10px;
-}
+} */
 .cameraSec button{
   z-index: 11;
   position: absolute;

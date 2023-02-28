@@ -1,6 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuthData, useDashboard } from "../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useDashboard,
+} from "../../Shared/Reduxfetcher";
 import DashboardSignup from "../../Sharedcomponents/DashboardSignup";
 import Events from "../../Sharedcomponents/Events";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
@@ -8,6 +12,7 @@ import classes from "./Dashboard.module.css";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
+  const loginToken = useAuthToken();
   const { dashboardMenu } = useDashboard();
   return (
     <div>
@@ -30,15 +35,14 @@ const Dashboard = () => {
           <DashboardSignup />
         </div>
       </div>
-      
+
       <div className="d-block d-sm-none">
         <div className={classes.fullcontainer}>
           {dashboardMenu === "event" && <Events />}
           {dashboardMenu === "nugget" && <Nuggets />}
-          {dashboardMenu === "usermenu" && <DashboardSignup />} 
+          {dashboardMenu === "usermenu" && <DashboardSignup />}
         </div>
       </div>
-
     </div>
   );
 };

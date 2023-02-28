@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Postmodal from "../../Modal/Postmodal";
 import classes from "./PostNuggets.module.css";
 import cameraIcon from "../../Assets/Images/svg/camera.svg";
@@ -16,10 +16,12 @@ import { useDispatch } from "react-redux";
 import CameraModal from "../../Modal/CameraModal";
 import { PostNuggetContext } from "../../Shared/Context";
 import { useFormik } from "formik";
-import { isAccountValid } from "../../Shared/Utility";
+import { isAccountValid, isValidData } from "../../Shared/Utility";
 
 const PostNuggets = ({ getNuggetList }) => {
   const dispatch = useDispatch();
+  const ImageRef = useRef();
+  const VideoRef = useRef();
   const [NuggetData, setNuggetData] = useState([]);
   const [postModalShow, setpostModalShow] = useState(false);
 
@@ -38,6 +40,11 @@ const PostNuggets = ({ getNuggetList }) => {
     });
 
   const uploadNugget = (val) => {
+    if (NuggetData.length === 0 && !isValidData(val.content)) {
+      toast.error("Sorry! Nuggets content or Media can not be empty.");
+      return;
+    }
+    setpostModalShow(false);
     dispatch(handleLoading(true));
     let formData = new FormData();
     formData.append("token", LoginUserData?.token);
@@ -84,6 +91,7 @@ const PostNuggets = ({ getNuggetList }) => {
     handleChange: handleChange,
     handleSubmit: handleSubmit,
     setFieldValue: setFieldValue,
+    resetForm: resetForm,
     values: values,
   };
 
@@ -91,32 +99,17 @@ const PostNuggets = ({ getNuggetList }) => {
     <PostNuggetContext.Provider value={PostNuggetValues}>
       <div className={classes.postNuggets}>
         <div className={classes.searchUser}>
-          <img
-            src={LoginUserData?.profile_image}
-            className={classes.profileImg}
-          />
-          <Input
-            placeholder={`hey ${LoginUserData?.name}, share some nuggets...`}
-            className={classes.searchbar}
-            onClick={() => {
-              if (isAccountValid()) {
-                setpostModalShow(true);
-              } else {
-                dispatch(
-                  handleprofileVerifyModalShow({
-                    show: true,
-                    msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                  })
-                );
-              }
-            }}
-          />
-          <div className={classes.iconSec}>
+          <div className="d-flex flex-row ">
+            <img
+              src={LoginUserData?.profile_image}
+              className={classes.profileImg}
+              alt="Post_profileimg"
+            />
             <div
-              className={classes.item}
+              className="w-100"
               onClick={() => {
                 if (isAccountValid()) {
-                  document.getElementById("nugget_video").click();
+                  setpostModalShow(true);
                 } else {
                   dispatch(
                     handleprofileVerifyModalShow({
@@ -127,14 +120,44 @@ const PostNuggets = ({ getNuggetList }) => {
                 }
               }}
             >
-              <img src={cameraIcon} />
+              <Input
+                placeholder={`hey ${LoginUserData?.name}, share some nuggets...`}
+                className={classes.searchbar}
+                disabled
+              />
+            </div>
+          </div>
+          <div className={classes.iconSec}>
+            <div
+              className={classes.item}
+              onClick={() => {
+                if (isAccountValid()) {
+                  if (VideoRef.current) {
+                    VideoRef.current.click();
+                  }
+                } else {
+                  dispatch(
+                    handleprofileVerifyModalShow({
+                      show: true,
+                      msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                    })
+                  );
+                }
+              }}
+            >
+              <img src={cameraIcon} alt="camera_icon" />
               Video
               <input
+                ref={VideoRef}
                 type="file"
                 name="file"
                 id="nugget_video"
                 accept="video/mp4"
+                onClick={(event) => {
+                  event.target.value = null;
+                }}
                 onChange={(e) => {
+                  console.log(e.target.files);
                   if (e.target.files && e.target.files.length !== 0) {
                     PostNuggetValues.setFileValues(e.target.files[0]);
                     setpostModalShow(true);
@@ -147,7 +170,9 @@ const PostNuggets = ({ getNuggetList }) => {
               className={classes.item}
               onClick={() => {
                 if (isAccountValid()) {
-                  document.getElementById("nugget_image").click();
+                  if (ImageRef.current) {
+                    ImageRef.current.click();
+                  }
                 } else {
                   dispatch(
                     handleprofileVerifyModalShow({
@@ -158,12 +183,16 @@ const PostNuggets = ({ getNuggetList }) => {
                 }
               }}
             >
-              <img src={imageIcon} /> Image
+              <img src={imageIcon} alt="Image_icon" /> Image
               <input
+                ref={ImageRef}
                 type="file"
                 name="file"
                 id="nugget_image"
                 accept="image/png, image/gif, image/jpeg"
+                onClick={(event) => {
+                  event.target.value = null;
+                }}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length !== 0) {
                     PostNuggetValues.setFileValues(e.target.files[0]);
@@ -174,7 +203,7 @@ const PostNuggets = ({ getNuggetList }) => {
               />
             </div>
             <div className={classes.item}>
-              <img src={pollIcon} /> Poll
+              <img src={pollIcon} alt="poll_icon" /> Poll
             </div>
           </div>
         </div>
@@ -196,6 +225,8 @@ const PostNuggets = ({ getNuggetList }) => {
       <Postmodal
         visible={postModalShow}
         onClose={() => {
+          resetForm();
+          setNuggetData([]);
           setpostModalShow(false);
         }}
       />

@@ -31,6 +31,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
         });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayDate]);
 
   function getDaysInMonthByYear(month, year) {
@@ -151,6 +152,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
         onSelectDate(resultDate);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   const getStatus = (data) => {

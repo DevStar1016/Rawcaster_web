@@ -42,7 +42,14 @@ const ValidateTypeModal = ({ open, handleClose }) => {
       });
   };
   return (
-    <Modal closable={false} open={open} footer={null}>
+    <Modal
+      closable={true}
+      open={open}
+      footer={null}
+      onCancel={() => {
+        handleClose();
+      }}
+    >
       <div
         className={`${classes.profileModal} ${classes.veriyOptionContainer}`}
       >

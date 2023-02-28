@@ -27,7 +27,7 @@ const RedirectModal = ({
               onClose();
             }}
           >
-            Later
+            Cancel
           </Button>
           <Button
             type="primary"

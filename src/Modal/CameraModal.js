@@ -4,11 +4,40 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import { Camera } from "react-camera-pro";
 import classes from "./Modal.module.css";
 import { millisecondsToMMSS } from "../Shared/Utility";
+import Webcam from "react-webcam";
+import { RecordWebcam, useRecordWebcam } from "react-record-webcam";
+let streamMedia;
 
 const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
-  const camera = useRef(null);
+  let videoRef = useRef(null);
+  const recordWebcam = useRecordWebcam({ frameRate: 60 });
   const [TimerValue, setTimerValue] = useState(0);
   let countdownInterval;
+
+  const handleCloseMedia = () => {
+    let stream = videoRef.current.video.srcObject;
+    // var options = {
+    //   video: true,
+    //   audio: false,
+    // };
+    // navigator.webkitGetUserMedia(
+    //   options,
+    //   function (stream) {
+    //     try {
+    //       stream.getTracks().forEach(function (track) {
+    //         track.stop();
+    //       });
+    //       onClose();
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   },
+    //   function (e) {
+    //     console.log("background error : " + e.name);
+    //     onClose();
+    //   }
+    // );
+  };
 
   function countdown(seconds) {
     countdownInterval = setInterval(() => {
@@ -27,6 +56,7 @@ const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
       type: "video/mp4",
     });
     onSuccess(file);
+    handleCloseMedia();
     clearInterval(countdownInterval);
     setTimerValue(0);
   };
@@ -41,6 +71,7 @@ const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
     navigator.mediaDevices
       .getUserMedia({ video: { width: 300 } })
       .then((stream) => {
+        streamMedia = stream;
         startRecording();
       })
       .catch((err) => {
@@ -65,28 +96,44 @@ const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
     onSuccess(file);
   };
 
+  useEffect(() => {
+    if (visible) {
+      recordWebcam.open();
+    }
+  }, [visible]);
+
   return (
     <Modal
       footer={null}
       open={visible}
       width={"650px"}
+      className="CameraModal"
       onCancel={() => {
-        onClose();
+        recordWebcam.close();
+        close();
       }}
     >
       {visible && (
         <div
-          style={{ height: "500px", width: "500px" }}
+          style={{ height: "500px", width: "100%" }}
           className={classes.cameraSec}
         >
-          <Camera ref={camera} />
+          <video
+            ref={recordWebcam.webcamRef}
+            autoPlay
+            muted
+            style={{ height: "500px", width: "100%" }}
+          />
+          {/* {visible ? <Camera ref={camera} /> : null} */}
           {status === "recording" && (
             <div className={classes.timeSec}>
               {millisecondsToMMSS(TimerValue * 1000)}
             </div>
           )}
           {type === "Camera" && (
-            <button onClick={() => handleImage(camera.current.takePhoto())}>
+            <button
+              onClick={() => handleImage(videoRef.current.getScreenshot())}
+            >
               <span class="material-symbols-outlined">photo_camera</span>
             </button>
           )}

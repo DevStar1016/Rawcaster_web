@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loginUserData: null,
+  loginToken: null,
 };
 
 export const { actions, reducer } = createSlice({
@@ -11,9 +12,12 @@ export const { actions, reducer } = createSlice({
     handleLoginData: (state, action) => {
       state.loginUserData = action.payload;
     },
+    handleToken: (state, action) => {
+      state.loginToken = action.payload;
+    },
   },
 });
 
-export const { handleLoginData } = actions;
+export const { handleLoginData, handleToken } = actions;
 
 export default reducer;

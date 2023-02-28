@@ -41,7 +41,7 @@
     padding: 0 0 0 20px;
     display: flex;
     justify-content: center;
-    flex-direction: column; align-items:start;
+    flex-direction: column; align-items:flex-start;
   }
   .leftSec .contentSec {
     /* margin: auto; */

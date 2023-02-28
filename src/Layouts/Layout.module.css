@@ -39,7 +39,7 @@ width: 100%;
 }
 .logopart { width: 320px; cursor: pointer;}
 .logopart img { height: 40px;}
-.rightMenus { float: right; display: flex; align-items: center; justify-content: end; width: 320px; }
+.rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 320px; }
 .topSearch {
   width: calc(100% - 640px);
   height: 45px;
@@ -74,7 +74,7 @@ width: fit-content;
 .profileimg {
   height: 35px;
   width: 35px;
-  margin-right: 6px;
+  margin-right: 10px;
   border-radius: 190px;
 }
 .badgeImg {
@@ -100,7 +100,7 @@ width: fit-content;
   text-overflow:ellipsis;
 }
 .liveIcon ,.menuIcon{
-  height: 35px;
+  height: 30px;
   cursor: pointer;
   margin: 0 7px;
 }

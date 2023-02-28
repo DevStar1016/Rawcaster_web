@@ -91,7 +91,17 @@ const DashboardSignup = () => {
         {loginUserData === null ? (
           <div className={classes.inpad}>
             <div className={classes.advideoSec}>
-              <img src={require("../Assets/Images/png/videoimg.png")} />
+              <video
+                width="100%"
+                height="100%"
+                style={{ zIndex: 500 }}
+                controls
+                disablePictureInPicture
+                playsInline
+                controlsList="nodownload"
+              >
+                <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
+              </video>
 
               <h1>New to Rawcaster?</h1>
               <p>
@@ -120,7 +130,8 @@ const DashboardSignup = () => {
               }}
             >
               <Button className={classes.altSignBtn}>
-                <img src={GoogleIcon} /> Signup with Google
+                <img src={GoogleIcon} alt="Signup_with_Google" /> Signup with
+                Google
               </Button>
             </LoginSocialGoogle>
             <LoginSocialApple
@@ -147,7 +158,8 @@ const DashboardSignup = () => {
               }}
             >
               <Button className={classes.altSignBtn}>
-                <img src={AppleIcon} /> Signup with Apple
+                <img src={AppleIcon} alt="Signup_with_Apple" /> Signup with
+                Apple
               </Button>
             </LoginSocialApple>
             <Button
@@ -175,7 +187,15 @@ const DashboardSignup = () => {
         ) : (
           <div className={classes.inpad}>
             <div className={classes.advideoSec}>
-              <img src={require("../Assets/Images/png/videoimg.png")} />
+              <video
+                style={{ zIndex: 500 }}
+                controls
+                disablePictureInPicture
+                playsInline
+                controlsList="nodownload"
+              >
+                <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
+              </video>
             </div>
           </div>
         )}

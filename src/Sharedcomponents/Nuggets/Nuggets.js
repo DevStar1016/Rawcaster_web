@@ -33,15 +33,18 @@ import { useAuthData } from "../../Shared/Reduxfetcher";
 import CommentsList from "./CommentsList";
 import { ListNuggetContext } from "../../Shared/Context";
 import axios from "axios";
+
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 let isRequestCancel = false;
 
 const Nuggets = () => {
+  var _ = require("lodash");
   const source = useRef(null);
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
+
   const [muted, setmuted] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [CommentList, setCommentList] = useState([]);
@@ -77,7 +80,6 @@ const Nuggets = () => {
       .then((res) => {
         if (res.data.status === 1) {
           if (res.data.current_page_no === 1) {
-            console.log("test");
             setNuggetList(res.data.nuggets_list);
           } else {
             setNuggetList((pre) => [...pre, ...res.data.nuggets_list]);
@@ -102,34 +104,28 @@ const Nuggets = () => {
   };
 
   useEffect(() => {
-    dispatch(handleLoading(true));
-    getNuggetList();
+    if (NuggetList.length === 0) {
+      dispatch(handleLoading(true));
+      getNuggetList();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {
       setisLoading(true);
-      console.log("test");
+
       getNuggetList(Pages.page + 1);
     }
   };
 
   const HandleLike = (id, like) => {
-    let findIndex = NuggetList.findIndex((elem) => elem.nugget_id === id);
-    let tempData = [...NuggetList];
-    tempData[findIndex].liked = like === 1 ? true : false;
-    tempData[findIndex].total_likes =
-      like === 1
-        ? tempData[findIndex].total_likes + 1
-        : tempData[findIndex].total_likes - 1;
-    setNuggetList(tempData);
-
     let nuggetData = {
       token: loginUserData?.token,
       nugget_id: id,
       like: like,
     };
-    likeAndUnlikeNuggetService(JSONtoformdata(nuggetData))
+    likeAndUnlikeNuggetService(JSONtoformdata(nuggetData), source.current.token)
       .then((res) => {
         if (res.data.status === 1) {
           getNuggetList();
@@ -226,6 +222,14 @@ const Nuggets = () => {
     return resultData;
   };
 
+  var debounceProcess = _.debounce(
+    function (nugget_id, like) {
+      HandleLike(nugget_id, like);
+    },
+    1000,
+    true
+  );
+
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <div className={classes.nuggetSec} ref={scrollRef}>
@@ -235,7 +239,10 @@ const Nuggets = () => {
             <div className={classes.nuggetItem}>
               <div className={classes.profilePart}>
                 <div className={classes.proImg}>
-                  <img src={ele?.original_user_image} />
+                  <img
+                    src={ele?.original_user_image}
+                    alt="original_user_image"
+                  />
                   <Tooltip title="Became A Fan" color="#e26386">
                     <i className={classes.viewCount}>{ele?.follow_count}</i>
                   </Tooltip>
@@ -276,11 +283,13 @@ const Nuggets = () => {
               <div className={classes.contentSec}>
                 <div className={classes.feedsSec}>
                   <p>{decodeHtml(ele?.content)}</p>
-                  <ImageGrid
-                    imgArray={ele.media_list}
-                    muted={muted}
-                    mutenuggetaudio={setmuted}
-                  />
+                  <div className={classes.imgContainer}>
+                    <ImageGrid
+                      imgArray={ele.media_list}
+                      muted={muted}
+                      mutenuggetaudio={setmuted}
+                    />
+                  </div>
                 </div>
                 <div className={classes.floattingSec}>
                   <div
@@ -291,7 +300,17 @@ const Nuggets = () => {
                       if (getAuthenticated()) {
                         if (isAccountValid()) {
                           let like = ele.liked ? 2 : 1;
-                          HandleLike(ele.nugget_id, like);
+                          let findIndex = NuggetList.findIndex(
+                            (elem) => elem.nugget_id === ele.nugget_id
+                          );
+                          let tempData = [...NuggetList];
+                          tempData[findIndex].liked = like === 1 ? true : false;
+                          tempData[findIndex].total_likes =
+                            like === 1
+                              ? tempData[findIndex].total_likes + 1
+                              : tempData[findIndex].total_likes - 1;
+                          setNuggetList(tempData);
+                          debounceProcess(ele.nugget_id, like);
                         } else {
                           dispatch(
                             handleprofileVerifyModalShow({

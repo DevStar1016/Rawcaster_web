@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
 import { InfluencerListService } from "../Services/ApiService";
-import { getAuthToken, JSONtoformdata } from "../Shared/Utility";
+import {
+  getAuthenticated,
+  getAuthToken,
+  JSONtoformdata,
+} from "../Shared/Utility";
 import { handleloginModalShow } from "../Store/Redux/Reducer/DashboardReducer";
 import { setSessionStorageData } from "../Store/Storage";
 import classes from "./SuggestedInfluencers.module.css";
 
 const SuggestedInfluencers = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [influencerList, setinfluencerList] = useState();
   const getInfluencerList = () => {
@@ -32,7 +34,9 @@ const SuggestedInfluencers = () => {
   };
 
   useEffect(() => {
-    getInfluencerList();
+    if (!getAuthenticated()) {
+      getInfluencerList();
+    }
   }, []);
 
   return (
@@ -40,24 +44,24 @@ const SuggestedInfluencers = () => {
       <div className={classes.suggInfluencersSec}>
         <h3>Suggested accounts ({influencerList?.length})</h3>
         <div className={classes.scrollSec}>
-        {influencerList?.map((ele) => {
-          return (
-            <div
-              className={classes.suggAcc}
-              onClick={() => {
-                setSessionStorageData("influencerData", JSON.stringify(ele));
-                dispatch(handleloginModalShow(true));
-              }}
-            >
-              <img src={ele?.profile_img} />
-              <p className={classes.name}>{ele?.display_name}</p>
-              <br />
-              {ele.category && ele.category.length !== 0 && (
-                <p className={classes.username}>{ele.category.toString()}</p>
-              )}
-            </div>
-          );
-        })}
+          {influencerList?.map((ele) => {
+            return (
+              <div
+                className={classes.suggAcc}
+                onClick={() => {
+                  setSessionStorageData("influencerData", JSON.stringify(ele));
+                  dispatch(handleloginModalShow(true));
+                }}
+              >
+                <img src={ele?.profile_img} alt={ele?.display_name} />
+                <p className={classes.name}>{ele?.display_name}</p>
+                <br />
+                {ele.category && ele.category.length !== 0 && (
+                  <p className={classes.username}>{ele.category.toString()}</p>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div

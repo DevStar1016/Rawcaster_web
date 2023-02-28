@@ -41,12 +41,22 @@ const ProfileImg = ({
   };
   return (
     <>
-      <img className={imgClassName} src={isLoggedIn ? src : userImg} />
-      <Tooltip title={BadgeTitle} color={"#e26386"} placement="bottom">
+      <img
+        className={imgClassName}
+        src={isLoggedIn ? src : userImg}
+        alt={isLoggedIn ? src : userImg}
+      />
+      <Tooltip
+        title={BadgeTitle}
+        color={"#e26386"}
+        placement="bottomRight"
+        trigger={["click"]}
+      >
         {isLoggedIn && getBadge() && (
           <img
             className={badgeClassName}
             style={{ cursor: "pointer" }}
+            alt={BadgeTitle}
             src={getBadge().img}
           />
         )}

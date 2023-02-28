@@ -15,7 +15,7 @@
 .headerSec .btnSec {
     width: 25%;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 .headerSec .btnSec button { margin-top: 5px;
     width: 130px;

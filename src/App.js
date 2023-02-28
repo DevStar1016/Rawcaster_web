@@ -1,59 +1,26 @@
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
-import "./App.css";
 import { useEffect } from "react";
-import { getLocalStorageData, removeSessionStorageData } from "./Store/Storage";
+import {
+  getCookieData,
+  getLocalStorageData,
+  removeSessionStorageData,
+} from "./Store/Storage";
 import { useDispatch } from "react-redux";
-import { RootElement } from "./Routes";
-import { handleLoginData } from "./Store/Redux/Reducer/AuthReducer";
-import Spinner from "./Sharedcomponents/Spinner";
-import "owl.carousel/dist/assets/owl.carousel.css";
-import "owl.carousel/dist/assets/owl.theme.default.css";
-import axios from "axios";
+import { routerpaths } from "./Routes";
+import {
+  handleLoginData,
+  handleToken,
+} from "./Store/Redux/Reducer/AuthReducer";
 import { RemoveToken } from "./Shared/Utility";
 import { toast } from "react-hot-toast";
-import ProfileVerification from "./ProfileVerification";
-import UpdateProfile from "./ProfileVerification/UpdateProfile";
-import VerifyOtp from "./ProfileVerification/VerifyOtp";
-import Development from "./Components/Development";
 import { useDashboard } from "./Shared/Reduxfetcher";
-import ModalLayout from "./Layouts/ModalLayout";
+import Spinner from "./Sharedcomponents/Spinner";
+import axios from "axios";
 
 function App() {
   const dispatch = useDispatch();
   const { isLoading } = useDashboard();
-
-  const routerpaths = [
-    {
-      path: "/",
-      element: <ModalLayout />,
-      children: [
-        {
-          path: "/",
-          children: RootElement(),
-        },
-        {
-          path: "/",
-          element: <ProfileVerification />,
-          children: [
-            {
-              path: "/profile",
-              element: <UpdateProfile />,
-            },
-            {
-              path: "/verifyotp",
-              element: <VerifyOtp />,
-            },
-          ],
-        },
-        {
-          path: "/dev",
-          element: <Development />,
-        },
-      ],
-    },
-  ];
-  const router = createBrowserRouter(routerpaths, { basename: "/" });
 
   useEffect(() => {
     if (window.location.pathname !== "/setpassword") {
@@ -69,6 +36,7 @@ function App() {
       if (response.data.status === -1) {
         RemoveToken(dispatch);
         window.location.assign("/login");
+        toast.dismiss();
         toast.error(response.data.msg);
       }
       return response;
@@ -79,12 +47,20 @@ function App() {
   );
 
   useEffect(() => {
-    if (getLocalStorageData("rawcaster_user_token")) {
+    if (
+      getLocalStorageData("rawcaster_user_token") &&
+      getCookieData("rawcaster_user_token")
+    ) {
       dispatch(
         handleLoginData(JSON.parse(getLocalStorageData("rawcaster_user_token")))
       );
+      dispatch(handleToken(JSON.parse(getCookieData("rawcaster_user_token"))));
     }
   }, []);
+
+  // Router
+
+  const router = createBrowserRouter(routerpaths, { basename: "/" });
 
   return (
     <>

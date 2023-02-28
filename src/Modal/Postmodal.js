@@ -1,5 +1,5 @@
-import { Button, Dropdown, Modal } from "antd";
-import React, { useContext, useState } from "react";
+import { Button, Dropdown, Modal, Tooltip } from "antd";
+import React, { useContext, useRef, useState } from "react";
 import classes from "./Modal.module.css";
 import pollIcon from "../Assets/Images/svg/pollIcon.svg";
 import mikeIcon from "../Assets/Images/svg/mikeicon.svg";
@@ -25,9 +25,12 @@ const Postmodal = ({ visible, onClose }) => {
     handleSubmit,
     values,
     handleChange,
+    resetForm,
   } = useContext(PostNuggetContext);
   const [isAudioModal, setisAudioModal] = useState(false);
   const loginUserData = useAuthData();
+  const ImageRef = useRef();
+  const VideoRef = useRef();
   const [showEmojis, setShowEmojis] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
@@ -105,36 +108,49 @@ const Postmodal = ({ visible, onClose }) => {
           </Dropdown>
           <div className={classes.rightSec}>
             <img src={pollIcon} />
-            <img
-              src={mikeIcon}
-              onClick={() => {
-                setisAudioModal(true);
-              }}
-            />
-            <img
-              src={videoIcon}
-              onClick={() => {
-                setisCamera({ show: true, type: "Video" });
-              }}
-            />
-            <img
-              src={cameraIcon}
-              onClick={() => {
-                setisCamera({ show: true, type: "Camera" });
-              }}
-            />
-            <img
-              src={pictureIcon}
-              onClick={() => {
-                document.getElementById("post_nugget_image").click();
-              }}
-            />
-
+            <Tooltip title="Record Audio">
+              <img
+                src={mikeIcon}
+                onClick={() => {
+                  setisAudioModal(true);
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="Record Video">
+              <img
+                src={videoIcon}
+                onClick={() => {
+                  setisCamera({ show: true, type: "Video" });
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="Capture Image">
+              <img
+                src={cameraIcon}
+                onClick={() => {
+                  setisCamera({ show: true, type: "Camera" });
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="Upload Image">
+              <img
+                src={pictureIcon}
+                onClick={() => {
+                  if (ImageRef.current) {
+                    ImageRef.current.click();
+                  }
+                }}
+              />
+            </Tooltip>
             <input
+              ref={ImageRef}
               type="file"
               name="file"
               id="post_nugget_image"
               accept="image/png, image/gif, image/jpeg"
+              onClick={(event) => {
+                event.target.value = null;
+              }}
               onChange={(e) => {
                 console.log(e.target.files);
                 if (e.target.files && e.target.files.length !== 0) {
@@ -143,17 +159,25 @@ const Postmodal = ({ visible, onClose }) => {
               }}
               style={{ display: "none" }}
             />
-            <img
-              src={imageIcon}
-              onClick={() => {
-                document.getElementById("post_nugget_video").click();
-              }}
-            />
+            <Tooltip title="Upload Video">
+              <img
+                src={imageIcon}
+                onClick={() => {
+                  if (VideoRef.current) {
+                    VideoRef.current.click();
+                  }
+                }}
+              />
+            </Tooltip>
             <input
+              ref={VideoRef}
               type="file"
               name="file"
               id="post_nugget_video"
               accept="video/mp4"
+              onClick={(event) => {
+                event.target.value = null;
+              }}
               onChange={(e) => {
                 if (e.target.files && e.target.files.length !== 0) {
                   setFileValues(e.target.files[0]);
@@ -167,6 +191,9 @@ const Postmodal = ({ visible, onClose }) => {
           <TextArea
             className={classes.postTextarea}
             placeholder={`What's on your mind, ${loginUserData?.name}!`}
+            onKeyDown={(e) => {
+              console.log(e.key, "--->key");
+            }}
             value={values.content}
             onChange={handleChange("content")}
           />
@@ -237,7 +264,7 @@ const Postmodal = ({ visible, onClose }) => {
                 alt="more"
                 style={{ width: "20px", height: "20px" }}
               /> */}
-                     <span class="material-icons">delete</span>
+                    <span class="material-icons">delete</span>
                   </div>
                 </div>
               );
@@ -250,7 +277,6 @@ const Postmodal = ({ visible, onClose }) => {
           onClick={() => {
             setShowEmojis(false);
             handleSubmit();
-            onClose();
           }}
         >
           Post Nugget

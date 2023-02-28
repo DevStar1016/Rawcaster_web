@@ -1,4 +1,3 @@
-import { Button } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuthData } from "../Shared/Reduxfetcher";
@@ -13,7 +12,7 @@ const Events = () => {
         <Link className={classes.active}>
           <span class="material-icons">home</span> For You
         </Link>
-        <Link>
+        <Link aria-disabled>
           <span class="material-icons">people</span> Following
         </Link>
       </div>
@@ -29,7 +28,10 @@ const Events = () => {
           <div className={classes.eventStatic}>
             <h1>Create a new event</h1>
             <div className={classes.list}>
-              <img src={require("../Assets/Images/png/eventpic.png")} />
+              <img
+                src={require("../Assets/Images/png/eventpic.png")}
+                alt="eventpic"
+              />
               <Link to="/login">
                 Login/Signup to continue{" "}
                 <span class="material-icons">arrow_forward</span>

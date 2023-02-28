@@ -170,7 +170,7 @@ const HomeLayout = () => {
                         Badgetype={loginUserData?.user_status_id}
                         BadgeTitle={loginUserData?.user_status}
                       />
-                      <Tooltip title={loginUserData?.name}>
+                      <Tooltip title={loginUserData?.name} placement="right">
                         <span className={classes.onlydes}>
                           {loginUserData
                             ? loginUserData?.name

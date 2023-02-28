@@ -1,7 +1,6 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
 import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import { Col, Row } from "react-bootstrap";
@@ -28,6 +27,7 @@ import {
   GOOGLE_CLIENT_ID,
   INSTAGRAM_APP_ID,
   INSTAGRAM_APP_SECRET,
+  INSTA_REDIRECT_URI,
   PRIMARY_REDIRECT_URI,
   REDIRECT_URI,
   SECONDARY_REDIRECT_URI,
@@ -51,6 +51,7 @@ import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.pn
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
 import axios from "axios";
+import Seo from "../../SEO/Seo";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -136,6 +137,7 @@ const Signup = () => {
 
   return (
     <>
+      <Seo title={"Signup"} />
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/home">
@@ -224,7 +226,7 @@ const Signup = () => {
                     client_id={INSTAGRAM_APP_ID}
                     client_secret={INSTAGRAM_APP_SECRET}
                     scope="user_profile"
-                    redirect_uri={SECONDARY_REDIRECT_URI}
+                    redirect_uri={INSTA_REDIRECT_URI}
                     onResolve={({ provider, data }) => {
                       console.log(provider, data);
                     }}
@@ -282,7 +284,7 @@ const Signup = () => {
                   <LoginSocialApple
                     client_id={APPLE_API_KEY}
                     scope={"name email"}
-                    redirect_uri={PRIMARY_REDIRECT_URI}
+                    redirect_uri={SECONDARY_REDIRECT_URI}
                     onResolve={({ provider, data }) => {
                       var decoded = jwt_decode(data.authorization.id_token);
                       if (decoded?.email && decoded?.email !== "") {

@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import {
-  addNuggetCommentService,
-  deleteNuggetCommentService,
-  nuggetCommentListService,
-} from "../../Services/ApiService";
+import { addNuggetCommentService } from "../../Services/ApiService";
 import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import hearticon from "../../Assets/Images/svg/heart.svg";
 import replyicon from "../../Assets/Images/svg/comment.svg";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
-import { Dropdown, Input, Spin } from "antd";
+import { Input, Spin } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import dayjs from "dayjs";
 import { useListNuggetContext } from "../../Shared/Context";
@@ -28,7 +24,7 @@ const CommentsList = ({ index }) => {
   } = useListNuggetContext();
   const loginUserData = useAuthData();
   const [CommentTxt, setCommentTxt] = useState([]);
-  const [isReplyEnabled, setisReplyEnabled] = useState(false);
+  // const [isReplyEnabled, setisReplyEnabled] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
 
   const AddCommentforAnugget = (id, comment, type = 1) => {
@@ -52,24 +48,24 @@ const CommentsList = ({ index }) => {
       });
   };
 
-  const handleDeleteNuggetComment = (comment_id) => {
-    let deleteComment = {
-      token: loginUserData?.token,
-      comment_id: comment_id,
-    };
-    deleteNuggetCommentService(JSONtoformdata(deleteComment))
-      .then((res) => {
-        if (res.data.status === 1) {
-          getNuggetList();
-          getCommentList(nugget_id);
-        } else {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
-  };
+  // const handleDeleteNuggetComment = (comment_id) => {
+  //   let deleteComment = {
+  //     token: loginUserData?.token,
+  //     comment_id: comment_id,
+  //   };
+  //   deleteNuggetCommentService(JSONtoformdata(deleteComment))
+  //     .then((res) => {
+  //       if (res.data.status === 1) {
+  //         getNuggetList();
+  //         getCommentList(nugget_id);
+  //       } else {
+  //         toast.error(res.data.msg);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       toast.error(err.message);
+  //     });
+  // };
   return (
     <div className={classes.cmtSec}>
       {isCommentLoading ? (
@@ -81,7 +77,7 @@ const CommentsList = ({ index }) => {
           ></Spin>
         </div>
       ) : (
-        <>
+        <div className={classes.commentContainer}>
           {CommentList.length !== 0 ? (
             <>
               {CommentList.map((elem, ind) => {
@@ -89,7 +85,10 @@ const CommentsList = ({ index }) => {
                   <>
                     <div className={classes.item}>
                       <div className={classes.proImg}>
-                        <img src={elem?.profile_image} />
+                        <img
+                          src={elem?.profile_image}
+                          alt={elem?.profile_image}
+                        />
                       </div>
                       <div className={classes.rightitem}>
                         <div className="d-flex flex-row">
@@ -131,7 +130,7 @@ const CommentsList = ({ index }) => {
                         </div>
                         <div className="clearfix"></div>
                         <div className={classes.agree}>
-                          <img src={hearticon} /> Agree
+                          <img src={hearticon} alt="Heart_Icon" /> Agree
                         </div>
                         <div
                           className={classes.agree}
@@ -143,7 +142,7 @@ const CommentsList = ({ index }) => {
                           //   }
                           // }}
                         >
-                          <img src={replyicon} /> Reply
+                          <img src={replyicon} alt="reply_icon" /> Reply
                         </div>
                         <div className={classes.time}>
                           {dayjs(elem?.created_date).fromNow(true)} ago
@@ -153,7 +152,7 @@ const CommentsList = ({ index }) => {
 
                     <div style={{ display: "flex", justifyContent: "end" }}>
                       <ReplyList
-                        isReplyEnabled={isReplyEnabled}
+                        // isReplyEnabled={isReplyEnabled}
                         comment_id={elem.comment_id}
                         index={ind}
                       />
@@ -167,11 +166,11 @@ const CommentsList = ({ index }) => {
               {/* <span>Comments is Empty</span> */}
             </div>
           )}
-        </>
+        </div>
       )}
       <div className={classes.comtArea}>
         <div className={classes.proImg}>
-          <img src={loginUserData?.profile_image} />
+          <img src={loginUserData?.profile_image} alt="profile_image" />
         </div>
         <div className={classes.textBox}>
           <Input
@@ -185,6 +184,7 @@ const CommentsList = ({ index }) => {
           />
           <img
             className={classes.emojiicon}
+            alt="emoji"
             src={emoji}
             onClick={() => {
               if (showEmojis === nugget_id) {
@@ -204,12 +204,15 @@ const CommentsList = ({ index }) => {
               }}
             >
               <EmojiPicker
+                previewConfig={{
+                  showPreview: false,
+                }}
                 onEmojiClick={(e) => {
                   let tempData = [...CommentTxt];
                   if (tempData[index]) {
                     tempData[index] = tempData[index].concat(e.emoji);
                   } else {
-                    tempData[index] = e.native;
+                    tempData[index] = e.emoji;
                   }
 
                   setCommentTxt(tempData);
@@ -220,12 +223,14 @@ const CommentsList = ({ index }) => {
           <img
             className={classes.sendicon}
             src={sendicon}
+            alt="send_icon"
             onClick={() => {
               if (isValidData(CommentTxt[index])) {
                 AddCommentforAnugget(nugget_id, CommentTxt[index]);
                 let tempData = [...CommentTxt];
                 tempData[index] = "";
                 setCommentTxt(tempData);
+                setShowEmojis("");
               } else {
                 toast.error("Please Enter Valid Comment");
               }

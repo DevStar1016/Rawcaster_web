@@ -10,9 +10,14 @@ import * as yup from "yup";
 import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { forgotPasswordService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
+import { LOGIN_ID } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
-  username: yup.string().required(`Please input your Login ID!`),
+  username: yup
+    .string()
+    .min(5, "Login ID Must be atleast 5 Characters")
+    // .matches(LOGIN_ID, "Please Enter Valid Login ID")
+    .required(`Please input your Login ID!`),
 });
 
 const ForgotPassword = () => {

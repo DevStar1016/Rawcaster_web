@@ -159,7 +159,6 @@ export function loadXHR(url) {
 }
 
 export const getPartialHiddenEmail = (email) => {
-  console.log(email);
   if (email) {
     let emailSplitedList = email?.toString().split("@");
     let emailNameText = "";
@@ -225,5 +224,5 @@ export const isAccountValid = () => {
 };
 
 export const decodeHtml = (data) => {
-  return decode(data)
-}
+  return decode(data);
+};

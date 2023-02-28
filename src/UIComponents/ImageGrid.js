@@ -7,8 +7,6 @@ import BackgroundImg from "../Assets/Images/png/audioImg.png";
 const ImageGrid = (props) => {
   const { imgArray, downloadable, muted, mutenuggetaudio } = props;
   const [isVisible, setIsVisible] = useState(false);
-  const [index, setIndex] = useState(0);
-  const [downloadPath, setdownloadPath] = useState(null);
 
   // const [ref] = useInView({
   //   threshold: 0.5,
@@ -34,7 +32,6 @@ const ImageGrid = (props) => {
       return (
         <img
           onClick={() => {
-            console.log("open");
             openGallery(0);
           }}
           className="imgGridsize"
@@ -118,7 +115,6 @@ const ImageGrid = (props) => {
           <div
             className="borderLight"
             onClick={() => {
-              console.log("open");
               openGallery(0);
             }}
             style={{
@@ -171,24 +167,9 @@ const ImageGrid = (props) => {
   };
 
   const openGallery = (index) => {
-    setdownloadPath(imgArray[index].path);
-    setIndex(index);
+    // setdownloadPath(imgArray[index].path);
+    // setIndex(index);
     setIsVisible(true);
-  };
-
-  const arrowStyles = {
-    position: "absolute",
-    zIndex: 2,
-    top: "calc(50% - 15px)",
-    width: 30,
-    height: 30,
-    cursor: "pointer",
-    borderRadius: 25,
-    border: "none",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
   };
 
   return (

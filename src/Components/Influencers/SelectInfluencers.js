@@ -39,12 +39,12 @@ const SelectInfluencers = () => {
     total_page: 1,
   });
 
-  const getInfluencerList = (page = 1, calegory = "", search_key = "") => {
+  const getInfluencerList = (page = 1, category = "", search_key = "") => {
     let influencerData = {
       token: loginUserData?.token,
       auth_code: getAuthToken(loginUserData?.token),
       page_number: page,
-      calegory: calegory,
+      category: category,
       search_key: search_key,
     };
     InfluencerListService(JSONtoformdata(filterValidObject(influencerData)))

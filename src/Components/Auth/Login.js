@@ -13,20 +13,22 @@ import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { loginService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import {
   getSessionStorageData,
   removeSessionStorageData,
-  setCookieData,
-  setLocalStorageData,
 } from "../../Store/Storage";
 import OwlCarousel from "react-owl-carousel";
-import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 import { getProfile } from "./getProfile";
 import { useDashboard } from "../../Shared/Reduxfetcher";
+import Seo from "../../SEO/Seo";
+import { LOGIN_ID } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
-  username: yup.string().required(`Please input your Login ID!`),
+  username: yup
+    .string()
+    .min(5, "Login ID Must be atleast 5 Characters")
+    // .matches(LOGIN_ID, "Please Enter Valid Login ID")
+    .required(`Please input your Login ID!`),
   password: yup
     .string()
     // .matches(
@@ -91,6 +93,10 @@ const Login = () => {
   };
   return (
     <>
+      <Seo
+        title={"Login"}
+        description="Log in now to access the latest insights, experience for your social media performance."
+      />
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/">

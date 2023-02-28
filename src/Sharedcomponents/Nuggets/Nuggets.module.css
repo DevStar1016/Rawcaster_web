@@ -40,17 +40,27 @@
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
  .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left;}
  .nuggetsFeed { width: 100%; border-radius: 12px; }
- .floattingSec { display: flex; justify-content: end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
+ .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }
  .floattingSec span { height: 25px; }
  .floattingSec .iconsec p, .floattingSec .activeiconsec p {cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
- .floattingSec .activeiconsec p { background: #F2718D;  }
+ 
  .floattingSec .activeiconsec p i { background: #FFFFFF;  }
- .floattingSec .iconsec p {cursor: pointer; margin:13px 0 5px 0; text-align: center; background: #F1F2F5; width: 42px; height: 42px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
- .floattingSec .iconsec img { height: 15px; }
- .floattingSec .iconsec span { font-weight: 500; font-size: 13px; }
+ .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:13px 0 5px 0; text-align: center; background: #F1F2F5; width: 42px; height: 42px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .iconsec img,.floattingSec .activeiconsec img { height: 15px; }
+ .floattingSec .iconsec span,.floattingSec .activeiconsec span { font-weight: 500; font-size: 13px; }
+ .floattingSec .activeiconsec p { background: #F2718D;  }
 
-.cmtSec { float: left; width: 100%; }
+.cmtSec { float: left;     width: 91%  ; }
+.cmtSec .commentContainer {
+  max-height: 250px; overflow-y: scroll;
+}
+.imgContainer {
+
+  object-fit: cover;
+  border-radius: 12px;
+  overflow: hidden;
+}
 .cmtSec .item { display: flex; flex-direction: row; width: 100%; margin-top: 20px; }
 .cmtSec .proImg, .comtArea .proImg { width: 60px; height: 60px; border-radius: 60px; margin-right: 5px; }
 .cmtSec .cmtText { border: 1px solid #ECECEC; padding:8px 20px; border-radius: 40px; margin-bottom:8px; float: left; max-width: 85%; min-width: 100px; }
@@ -61,7 +71,7 @@
 .cmtSec .rightitem .time {color: rgba(0,0,0.0.7); }
 .cmtSec .rightitem .agree { cursor: pointer; display: flex; align-items: center; justify-content: center; float: left; margin-right: 10px; }
 .cmtSec .rightitem .agree img { height: 13px; margin-right: 4px; }
-.cmtSec .comtArea { display: flex; margin-top: 20px;}
+.cmtSec .comtArea { display: flex;margin-top: 5px;}
 .cmtSec .comtArea .textBox { position: relative;}
 .cmtSec .comtArea .textBox input { border: none; height: 48px; padding-left: 15px; background: #F1F2F5; border-radius: 30px; margin-top: 3px; }
 .cmtSec .comtArea .textBox .sendicon { cursor: pointer; position: absolute; right:15px; top:12px; height: 32px;}

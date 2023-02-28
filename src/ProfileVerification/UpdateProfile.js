@@ -26,14 +26,12 @@ import * as yup from "yup";
 import {
   handleTwoStepVerified,
   handletwostepVerifyModalshow,
-  handleverifyEnabled,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { Container } from "react-bootstrap";
-import { useAuthData } from "../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../Store/Storage";
-import { getProfile } from "../Components/Auth/getProfile";
-import { useProfileContext } from "../Shared/Context";
 import { EMAIL_REGEX } from "../Shared/Constant";
+import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -56,6 +54,7 @@ const UpdateProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserData = useAuthData();
+  const loginToken = useAuthToken();
   const [IsValidCredentials, setIsValidCredentials] = useState({
     email: false,
     mobile: false,
@@ -92,19 +91,17 @@ const UpdateProfile = () => {
 
   const getProfileInfo = (isNext = false) => {
     let profileData = {
-      token: loginUserData?.token,
-      auth_code: getAuthToken(loginUserData?.token),
+      token: loginToken,
+      auth_code: getAuthToken(loginToken),
     };
     getProfileService(JSONtoformdata(profileData))
       .then((res) => {
         if (res.data.status === 1) {
           let profileData = res.data.profile;
-          // dispatch(
-          //   handleLoginData({ token: loginUserData?.token, ...profileData })
-          // );
+          dispatch(handleLoginData({ token: loginToken, ...profileData }));
           setLocalStorageData(
             "rawcaster_user_token",
-            JSON.stringify({ token: loginUserData?.token, ...profileData })
+            JSON.stringify({ token: loginToken, ...profileData })
           );
           setValues((pre) => ({
             ...pre,
@@ -209,8 +206,8 @@ const UpdateProfile = () => {
   const handleupdateProfile = (values, isNext = false) => {
     let profileValue = {
       ...values,
-      token: loginUserData?.token,
-      auth_code: getAuthToken(loginUserData?.token + values.name.trim()),
+      token: loginToken,
+      auth_code: getAuthToken(loginToken + values.name.trim()),
     };
     if (typeof ProfileImage === "object") {
       profileValue = {
@@ -233,10 +230,11 @@ const UpdateProfile = () => {
   };
 
   useEffect(() => {
-    if (loginUserData) {
+    console.log(loginUserData, loginToken);
+    if (loginToken) {
       getProfileInfo();
     }
-  }, [loginUserData]);
+  }, [loginToken]);
 
   return (
     <Container>

@@ -30,6 +30,7 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
     if (findReply) {
       setReplyList(findReply.reply);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const AddCommentforAnugget = (id, comment, type = 2) => {
@@ -71,7 +72,7 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
                 return (
                   <div className={classes.item}>
                     <div className={classes.proImg}>
-                      <img src={elem?.profile_image} />
+                      <img src={elem?.profile_image} alt={elem?.name} />
                     </div>
                     <div className={classes.rightitem}>
                       <div className="d-flex flex-row">
@@ -101,7 +102,7 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
                       </div>
                       <div className="clearfix"></div>
                       <div className={classes.agree}>
-                        <img src={hearticon} /> Agree
+                        <img src={hearticon} alt="Agree" /> Agree
                       </div>
 
                       <div className={classes.time}>
@@ -122,7 +123,10 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
       {isReplyEnabled === comment_id && (
         <div className={classes.comtArea}>
           <div className={classes.proImg}>
-            <img src={loginUserData?.profile_image} />
+            <img
+              src={loginUserData?.profile_image}
+              alt={loginUserData?.profile_image}
+            />
           </div>
           <div className={classes.textBox}>
             <Input
@@ -134,9 +138,10 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
                 setReplyTxt(tempData);
               }}
             />
-            <img className={classes.emojiicon} src={emoji} />
+            <img className={classes.emojiicon} src={emoji} alt="emoji" />
             <img
               className={classes.sendicon}
+              alt="Send_icon"
               src={sendicon}
               onClick={() => {
                 AddCommentforAnugget(nugget_id, ReplyTxt[index]);

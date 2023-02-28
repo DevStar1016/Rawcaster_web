@@ -10,7 +10,11 @@ import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { EMAIL_REGEX, PASSWORD_EXP } from "../../Shared/Constant";
+import {
+  EMAIL_REGEX,
+  MOBILE_NUMBER_REGEX,
+  PASSWORD_EXP,
+} from "../../Shared/Constant";
 import {
   getAuthToken,
   getGeocodeData,
@@ -59,7 +63,7 @@ const SignupwithCredentials = () => {
       .string()
       .min(5, `Please Enter Valid ${getLoginType().title}`)
       .matches(
-        getLoginType().id === 1 ? EMAIL_REGEX : "",
+        getLoginType().id === 1 ? EMAIL_REGEX : MOBILE_NUMBER_REGEX,
         `Please Enter Valid ${getLoginType().title}!`
       )
       .required(`Please input your ${getLoginType().title}!`),
@@ -71,7 +75,7 @@ const SignupwithCredentials = () => {
       )
       .min(8, "Password must be at least 8 characters long")
       .required("Please input your Password!"),
-    date_of_birth: yup.string().required("Please input your Date of Birth!"),
+    dob: yup.string().required("Please input your Date of Birth!"),
   });
 
   const {
@@ -87,7 +91,7 @@ const SignupwithCredentials = () => {
       first_name: "",
       email_id: "",
       password: "",
-      date_of_birth: "",
+      dob: "",
       geo_location: "",
       latitude: "",
       longitude: "",
@@ -244,18 +248,13 @@ const SignupwithCredentials = () => {
               <p className={classes.label}>Date of Birth</p>
               <Form.Item>
                 <DateInputBox
-                  value={values.date_of_birth}
-                  status={errors.date_of_birth ? "error" : ""}
+                  value={values.dob}
+                  status={errors.dob ? "error" : ""}
                   onSelectDate={(date) => {
-                    setFieldValue(
-                      "date_of_birth",
-                      dayjs(date).format("YYYY-MM-DD")
-                    );
+                    setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
                   }}
                 />
-                {touched.date_of_birth && (
-                  <p className="ErrTxt">{errors?.date_of_birth}</p>
-                )}
+                {touched.dob && <p className="ErrTxt">{errors?.dob}</p>}
               </Form.Item>
               <p className={classes.termText}>
                 By Signing up you agree with Rawcaster's{" "}
