@@ -1,11 +1,9 @@
 import { Modal } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
-import { Camera } from "react-camera-pro";
 import classes from "./Modal.module.css";
 import { millisecondsToMMSS } from "../Shared/Utility";
-import Webcam from "react-webcam";
-import { RecordWebcam, useRecordWebcam } from "react-record-webcam";
+import { useRecordWebcam } from "react-record-webcam";
 let streamMedia;
 
 const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
@@ -110,7 +108,7 @@ const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
       className="CameraModal"
       onCancel={() => {
         recordWebcam.close();
-        close();
+        onClose();
       }}
     >
       {visible && (
@@ -124,7 +122,7 @@ const CameraModal = ({ visible, onClose, onSuccess, type = "Camera" }) => {
             muted
             style={{ height: "500px", width: "100%" }}
           />
-          {/* {visible ? <Camera ref={camera} /> : null} */}
+
           {status === "recording" && (
             <div className={classes.timeSec}>
               {millisecondsToMMSS(TimerValue * 1000)}
