@@ -26,7 +26,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
       if (isValidData(displayDate)) {
         setDate({
           year: dayjs(displayDate).get("year"),
-          month: dayjs(displayDate).get("month"),
+          month: dayjs(displayDate).get("month") + 1,
           day: dayjs(displayDate).get("date"),
         });
       }
@@ -82,7 +82,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
     let thisYear = new Date().getFullYear() - ValidAge;
     let thisMonth = new Date().getMonth() + 1;
 
-    if (thisYear === date.year && thisMonth === date.month) {
+    if (thisYear === year && thisMonth === month) {
       let monthValue = [...new Array(new Date().getDate())].map(
         (ele, index) => {
           return {
@@ -109,8 +109,8 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
     }
   }
 
-  const getMonth = () => {
-    let findMonth = getMonths().find((ele) => ele.id === date.month);
+  const getMonth = (month) => {
+    let findMonth = getMonths().find((ele) => ele.id === month);
     if (findMonth) {
       return { value: findMonth.value, label: findMonth.value };
     } else {
@@ -145,12 +145,15 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
       isValidData(date.month) &&
       isValidData(date.year)
     ) {
-      if (getMonth()) {
+      if (getMonth(date.month)) {
         let resultDate = dayjs(
-          date.year + "-" + getMonth().label + "-" + date.day
+          date.year + "-" + getMonth(date.month).label + "-" + date.day
         ).toDate();
+        console.log(resultDate);
         onSelectDate(resultDate);
       }
+    } else {
+      onSelectDate("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
@@ -167,14 +170,18 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
       <div>
         <Select
           style={{ width: 120 }}
-          value={getMonth()}
+          value={getMonth(date.month)}
           className="textBox"
           status={getStatus(date.month)}
           placeholder="Month"
           options={getMonths()}
           onSelect={(val, value) => {
             setDate((pre) => ({ ...pre, month: value.id }));
-            if (getDay(value.id) === null) {
+            let findData = getDays(value.id, date.year).find(
+              (ele) => ele.value === date.day
+            );
+            console.log(findData);
+            if (!findData) {
               setDate((pre) => ({ ...pre, day: "" }));
             }
           }}
@@ -203,6 +210,9 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
           placeholder="Year"
           onSelect={(value) => {
             setDate((pre) => ({ ...pre, year: value }));
+            if (getStatus(date.month) === "") {
+              setDate((pre) => ({ ...pre, month: "" }));
+            }
           }}
         />
       </div>

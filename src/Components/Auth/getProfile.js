@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast";
 import { getProfileService } from "../../Services/ApiService";
-import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
+import { decodeHtml, getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import {
   handleLoginData,
   handleToken,
@@ -16,12 +16,18 @@ export const getProfile = (token, dispatch, navigateHandle) => {
   getProfileService(JSONtoformdata(profileData))
     .then((res) => {
       if (res.data.status === 1) {
-        dispatch(handleLoginData({ token: token, ...res.data.profile }));
+        let profileData = {
+          ...res.data.profile,
+          first_name: decodeHtml(res.data.profile.first_name),
+          last_name: decodeHtml(res.data.profile.last_name),
+          name: decodeHtml(res.data.profile.name),
+        };
+        dispatch(handleLoginData({ token: token, ...profileData }));
         dispatch(handleToken(token));
         setCookieData("rawcaster_user_token", token);
         setLocalStorageData(
           "rawcaster_user_token",
-          JSON.stringify({ token: token, ...res.data.profile })
+          JSON.stringify({ token: token, ...profileData })
         );
 
         if (res.data.profile.acc_verify_status === 0) {

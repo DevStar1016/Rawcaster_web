@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   useAuthData,
   useAuthToken,
@@ -8,17 +8,30 @@ import {
 import DashboardSignup from "../../Sharedcomponents/DashboardSignup";
 import Events from "../../Sharedcomponents/Events";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
+import { removeSessionStorageData } from "../../Store/Storage";
 import classes from "./Dashboard.module.css";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
   const loginToken = useAuthToken();
+  const { pathname } = useLocation();
   const { dashboardMenu } = useDashboard();
+
+  useEffect(() => {
+    if (loginToken === null) {
+      removeSessionStorageData("influencerData");
+    }
+  }, [pathname]);
   return (
     <div>
       {loginUserData === null && (
         <div className={classes.ribbon}>
-          <Link to="/login">
+          <Link
+            to="/login"
+            onClick={() => {
+              removeSessionStorageData("influencerData");
+            }}
+          >
             <img
               className={classes.smlogo}
               src={require("../../Assets/Images/png/mob-rlogo.png")}

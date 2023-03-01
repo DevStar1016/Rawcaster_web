@@ -109,8 +109,10 @@ export const deleteFriendGroupService = (data) => {
 
 // Nugget services
 
-export const addNuggetsService = (data) => {
-  return axios.post("addnuggets", data);
+export const addNuggetsService = (data, progress) => {
+  return axios.post("addnuggets", data, {
+    onUploadProgress: progress,
+  });
 };
 
 export const listNuggetsService = (data, token) => {

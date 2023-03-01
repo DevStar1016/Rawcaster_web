@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { InfluencerListService } from "../Services/ApiService";
 import {
+  decodeHtml,
   getAuthenticated,
   getAuthToken,
   JSONtoformdata,
@@ -54,7 +55,7 @@ const SuggestedInfluencers = () => {
                 }}
               >
                 <img src={ele?.profile_img} alt={ele?.display_name} />
-                <p className={classes.name}>{ele?.display_name}</p>
+                <p className={classes.name}>{decodeHtml(ele?.display_name)}</p>
                 <br />
                 {ele.category && ele.category.length !== 0 && (
                   <p className={classes.username}>{ele.category.toString()}</p>

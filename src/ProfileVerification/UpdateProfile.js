@@ -46,7 +46,8 @@ const validationSchema = yup.object().shape({
     .required(`Please input your Mobile Number!`),
   email_id: yup
     .string()
-    .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
+    .email(`Please input Valid Email Id!`)
+    // .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
     .required(`Please input your Email!`),
 });
 
@@ -98,6 +99,7 @@ const UpdateProfile = () => {
       .then((res) => {
         if (res.data.status === 1) {
           let profileData = res.data.profile;
+          console.log(profileData);
           dispatch(handleLoginData({ token: loginToken, ...profileData }));
           setLocalStorageData(
             "rawcaster_user_token",
@@ -230,11 +232,12 @@ const UpdateProfile = () => {
   };
 
   useEffect(() => {
-    console.log(loginUserData, loginToken);
     if (loginToken) {
       getProfileInfo();
     }
   }, [loginToken]);
+
+  console.log(values);
 
   return (
     <Container>
@@ -290,6 +293,7 @@ const UpdateProfile = () => {
                   size="large"
                   className={classes.textBox}
                   placeholder="First Name"
+                  maxLength={50}
                   status={
                     touched.first_name && errors.first_name ? "error" : ""
                   }
@@ -308,6 +312,7 @@ const UpdateProfile = () => {
                   size="large"
                   className={classes.textBox}
                   placeholder="Last Name"
+                  maxLength={50}
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
                   onChange={handleChange("last_name")}
@@ -326,6 +331,7 @@ const UpdateProfile = () => {
                   placeholder="Display Name"
                   status={touched.name && errors.name ? "error" : ""}
                   value={values.name}
+                  maxLength={40}
                   onChange={handleChange("name")}
                 />
                 {touched.name && <p className="ErrTxt">{errors?.name}</p>}
@@ -356,8 +362,11 @@ const UpdateProfile = () => {
               <DateInputBox
                 displayDate={values.dob}
                 onSelectDate={(date) => {
-                  console.log(dayjs(date).format("YYYY-MM-DD"));
-                  setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
+                  if (date !== "") {
+                    setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
+                  } else {
+                    setFieldValue("dob", "");
+                  }
                 }}
               />
               {touched.dob && <p className="ErrTxt">{errors?.dob}</p>}
@@ -385,6 +394,7 @@ const UpdateProfile = () => {
                         id="geoLocation"
                         size="large"
                         className={`${classes.textBox} ${classes.locationInputHeight}`}
+                        maxLength={100}
                         {...getInputProps({
                           style: { paddingRight: "40px" },
                           placeholder: "Search Places ...",
@@ -480,6 +490,7 @@ const UpdateProfile = () => {
                   size="large"
                   className={classes.textBox}
                   placeholder="Email"
+                  maxLength={50}
                   disabled={IsValidCredentials.email}
                   status={touched.email_id && errors.email_id ? "error" : ""}
                   value={values.email_id}

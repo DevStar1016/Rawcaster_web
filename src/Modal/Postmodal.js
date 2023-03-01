@@ -14,6 +14,8 @@ import { PostNuggetContext } from "../Shared/Context";
 import { SHARED_TYPE } from "../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
 import EmojiPicker from "emoji-picker-react";
+import { toast } from "react-hot-toast";
+import ImageGrid from "../UIComponents/ImageGrid";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -25,7 +27,7 @@ const Postmodal = ({ visible, onClose }) => {
     handleSubmit,
     values,
     handleChange,
-    resetForm,
+    NuggetData,
   } = useContext(PostNuggetContext);
   const [isAudioModal, setisAudioModal] = useState(false);
   const loginUserData = useAuthData();
@@ -36,44 +38,19 @@ const Postmodal = ({ visible, onClose }) => {
   const [showEmojis, setShowEmojis] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
-  const imageOrVideoSingle = (data) => {
-    if (data.type.includes("image")) {
-      return (
-        <img
-          className="selecedImages"
-          src={URL.createObjectURL(data)}
-          alt=""
-          style={{ width: "100%", height: "100%", borderRadius: 10 }}
-        />
-      );
-    } else if (data.type.includes("video")) {
-      return (
-        <>
-          <video
-            className="selecedImages"
-            controls={false}
-            disablePictureInPicture
-            playsInline={false}
-            controlsList="nodownload"
-            style={{ width: "100%", height: "100%", borderRadius: 10 }}
-          >
-            <source src={URL.createObjectURL(data)} />
-          </video>
-          <span class={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
-            play_circle
-          </span>
-        </>
-      );
-    } else if (data.type.includes("audio")) {
-      return (
-        <>
-          <div className={classes.musicIcon}>
-            <span class="material-symbols-outlined">music_note</span>
-          </div>
-        </>
-      );
-    }
-  };
+
+  function fetchData(type) {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+      })
+      .then((res) => {
+        setisCamera({ show: true, type: type });
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  }
 
   return (
     <Modal
@@ -122,7 +99,7 @@ const Postmodal = ({ visible, onClose }) => {
               <img
                 src={videoIcon}
                 onClick={() => {
-                  setisCamera({ show: true, type: "Video" });
+                  fetchData("Video");
                 }}
               />
             </Tooltip>
@@ -130,7 +107,7 @@ const Postmodal = ({ visible, onClose }) => {
               <img
                 src={cameraIcon}
                 onClick={() => {
-                  setisCamera({ show: true, type: "Camera" });
+                  fetchData("Camera");
                 }}
               />
             </Tooltip>
@@ -247,15 +224,32 @@ const Postmodal = ({ visible, onClose }) => {
             />
           </div>
         )} */}
-        {getPostValues().length !== 0 && (
+        {NuggetData.length !== 0 && (
           <div className={classes.attachementtDisplay}>
-            {getPostValues().map((ele, index) => {
+            {NuggetData.map((ele, index) => {
+              const getURL = () => {
+                console.log(URL.createObjectURL(ele));
+                let type = ele.type.split("/");
+                return {
+                  path: URL.createObjectURL(ele),
+                  media_type: type[0],
+                  media_file_type: type[1],
+                  media_id: ele.lastModified,
+                };
+              };
               return (
                 <div className={classes.cardcontent}>
-                  {imageOrVideoSingle(ele)}
+                  <ImageGrid
+                    imgArray={[getURL()]}
+                    muted={false}
+                    isThumb={true}
+                  />
                   <div
                     className={classes.overlay}
                     onClick={() => {
+                      let tempData = getPostValues().filter(
+                        (ele, i) => i !== index
+                      );
                       setNuggetValues((pre) =>
                         pre.filter((ele, i) => i !== index)
                       );

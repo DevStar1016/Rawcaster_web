@@ -22,6 +22,7 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAuthData } from "../Shared/Reduxfetcher";
 import { handledasboardTab } from "../Store/Redux/Reducer/DashboardReducer";
+import { removeSessionStorageData } from "../Store/Storage";
 
 const HomeLayout = () => {
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
@@ -171,7 +172,12 @@ const HomeLayout = () => {
                         BadgeTitle={loginUserData?.user_status}
                       />
                       <Tooltip title={loginUserData?.name} placement="right">
-                        <span className={classes.onlydes}>
+                        <span
+                          className={classes.onlydes}
+                          onClick={() => {
+                            removeSessionStorageData("influencerData");
+                          }}
+                        >
                           {loginUserData
                             ? loginUserData?.name
                             : "Log in/Sign up"}

@@ -4,6 +4,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import classes from "./Modal.module.css";
 import { millisecondsToMMSS } from "../Shared/Utility";
 import PreviewModal from "./PreviewModal";
+import { toast } from "react-hot-toast";
 
 const CameraModal = ({
   visible,
@@ -111,7 +112,7 @@ const CameraModal = ({
 
       videoRef.current.srcObject = stream;
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   }
 

@@ -207,7 +207,7 @@ export function millisecondsToMMSS(milliseconds) {
 }
 
 export const isValidData = (data) => {
-  if (data && data !== "") {
+  if (data && data !== "" && data.trim() !== "") {
     return true;
   } else {
     return false;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuthData } from "../Shared/Reduxfetcher";
+import { removeSessionStorageData } from "../Store/Storage";
 import classes from "./Events.module.css";
 
 const Events = () => {
@@ -20,7 +21,13 @@ const Events = () => {
         <>
           <div className={classes.loginSec}>
             <p>Log in to follow creators, like video, and view comments.</p>
-            <Link className={classes.btn} to="/login">
+            <Link
+              className={classes.btn}
+              to="/login"
+              onClick={() => {
+                removeSessionStorageData("influencerData");
+              }}
+            >
               Log in/Sign up
             </Link>
           </div>
@@ -32,7 +39,12 @@ const Events = () => {
                 src={require("../Assets/Images/png/eventpic.png")}
                 alt="eventpic"
               />
-              <Link to="/login">
+              <Link
+                to="/login"
+                onClick={() => {
+                  removeSessionStorageData("influencerData");
+                }}
+              >
                 Login/Signup to continue{" "}
                 <span class="material-icons">arrow_forward</span>
               </Link>
