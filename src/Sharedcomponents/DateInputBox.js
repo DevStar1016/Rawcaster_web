@@ -58,17 +58,17 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
     return allYears;
   }
 
-  const getMonthsList = () => {
+  const getMonthsList = (year) => {
     let thisYear = new Date().getFullYear() - ValidAge;
 
-    if (isValidData(date.year) && date.year === thisYear) {
+    if (isValidData(year) && year === thisYear) {
       return dayjs.months().slice(0, new Date().getMonth() + 1);
     }
     return dayjs.months();
   };
 
-  function getMonths() {
-    let monthValue = getMonthsList().map((ele, index) => {
+  function getMonths(year = date.year) {
+    let monthValue = getMonthsList(year).map((ele, index) => {
       return {
         id: index + 1,
         value: ele,
@@ -140,6 +140,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
   };
 
   useEffect(() => {
+    console.log(date);
     if (
       isValidData(date.day) &&
       isValidData(date.month) &&
@@ -210,8 +211,19 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
           placeholder="Year"
           onSelect={(value) => {
             setDate((pre) => ({ ...pre, year: value }));
-            if (getStatus(date.month) === "") {
-              setDate((pre) => ({ ...pre, month: "" }));
+            let findData = getMonths(value).find(
+              (ele) => ele.id === date.month
+            );
+
+            if (!findData) {
+              setDate((pre) => ({ ...pre, day: "" }));
+            } else {
+              let findMonth = getDays(findData.id, value).find(
+                (ele) => ele.value === date.day
+              );
+              if (!findMonth) {
+                setDate((pre) => ({ ...pre, month: "" }));
+              }
             }
           }}
         />

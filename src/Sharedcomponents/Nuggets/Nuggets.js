@@ -96,10 +96,22 @@ const Nuggets = () => {
     listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
       .then((res) => {
         if (res.data.status === 1) {
+          console.log(res.data);
           if (res.data.current_page_no === 1) {
             setNuggetList(res.data.nuggets_list);
           } else {
-            setNuggetList((pre) => [...pre, ...res.data.nuggets_list]);
+            setNuggetList((pre) =>
+              [...pre, ...res.data.nuggets_list].reduce((acc, current) => {
+                const x = acc.find(
+                  (item) => item.nugget_id === current.nugget_id
+                );
+                if (!x) {
+                  return acc.concat([current]);
+                } else {
+                  return acc;
+                }
+              }, [])
+            );
           }
           setPages({
             page: res.data.current_page_no,
@@ -254,6 +266,19 @@ const Nuggets = () => {
     true
   );
 
+  const getValidNuggets = () => {
+    const filteredArr = NuggetList.reduce((acc, current) => {
+      const x = acc.find((item) => item.nugget_id === current.nugget_id);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
+      }
+    }, []);
+
+    return filteredArr;
+  };
+
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <div className={classes.nuggetSec} ref={scrollRef}>
@@ -266,7 +291,7 @@ const Nuggets = () => {
             )}
           </>
         )}
-        {NuggetList?.map((ele, index) => {
+        {getValidNuggets()?.map((ele, index) => {
           return (
             // <Spin
             //   tip="Please Wait..."
@@ -322,7 +347,9 @@ const Nuggets = () => {
               )}
               <div className={classes.contentSec}>
                 <div className={classes.feedsSec}>
-                  <p>{decodeHtml(ele?.content)}</p>
+                  <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
+                    {decodeHtml(ele?.content)}
+                  </p>
                   <div className={classes.imgContainer}>
                     <ImageGrid
                       imgArray={ele.media_list}

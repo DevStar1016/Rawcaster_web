@@ -7,13 +7,26 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getSessionStorageData,
   removeSessionStorageData,
+  setCookieData,
+  setLocalStorageData,
   setSessionStorageData,
 } from "../Store/Storage";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
 import { toast } from "react-hot-toast";
-import { resendOtpService, signupVerifyService } from "../Services/ApiService";
-import { getAuthToken, JSONtoformdata } from "../Shared/Utility";
+import {
+  getProfileService,
+  resendOtpService,
+  signupVerifyService,
+} from "../Services/ApiService";
+import { decodeHtml, getAuthToken, JSONtoformdata } from "../Shared/Utility";
+import {
+  handleLoginData,
+  handleToken,
+} from "../Store/Redux/Reducer/AuthReducer";
+import { useAuthToken } from "../Shared/Reduxfetcher";
+import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
+import { useDispatch } from "react-redux";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -24,7 +37,9 @@ const validationSchema = yup.object().shape({
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { state } = useLocation();
+  const loginToken = useAuthToken();
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
   const [otpRefId, setotpRefId] = useState();
 
@@ -145,9 +160,42 @@ const VerifyOtp = () => {
     signupVerifyService(JSONtoformdata(ResetPasswordValue))
       .then((res) => {
         if (res.data.status === 1) {
-          navigate("/dashboard");
+          getProfile();
           toast.success(res.data.msg);
         } else if (res.data.status === 0) {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
+  const getProfile = () => {
+    dispatch(handleLoading(true));
+    let profileData = {
+      token: loginToken,
+      auth_code: getAuthToken(loginToken),
+    };
+    getProfileService(JSONtoformdata(profileData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          let profileData = {
+            ...res.data.profile,
+            first_name: decodeHtml(res.data.profile.first_name),
+            last_name: decodeHtml(res.data.profile.last_name),
+            name: decodeHtml(res.data.profile.name),
+          };
+          dispatch(handleLoginData({ token: loginToken, ...profileData }));
+          dispatch(handleToken(loginToken));
+          setCookieData("rawcaster_user_token", loginToken);
+          setLocalStorageData(
+            "rawcaster_user_token",
+            JSON.stringify({ token: loginToken, ...profileData })
+          );
+          navigate("/dashboard");
+          dispatch(handleLoading(false));
+        } else {
           toast.error(res.data.msg);
         }
       })

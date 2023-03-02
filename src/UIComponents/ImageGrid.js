@@ -37,7 +37,6 @@ const ImageGrid = ({
     if (nuggetVideoPaused) {
       if (imgArray && imgArray.length > 0) {
         var v = document.getElementById(`videoSingleId${imgArray[0].media_id}`);
-        console.log(v);
         if (v) {
           v.pause();
         }
@@ -54,12 +53,10 @@ const ImageGrid = ({
   };
 
   useEffect(() => {
-    console.log(imgArray);
     if (imgArray.length !== 0) {
       let filter = imgArray.filter(
         (ele) => `videoSingleId${ele.media_id}` !== isPlaying
       );
-      console.log(filter);
       filter.map((ele) => {
         let v = document.getElementById(`videoSingleId${ele.media_id}`);
         if (v) {
@@ -140,9 +137,6 @@ const ImageGrid = ({
             playsInline
             controlsList="nodownload"
             muted={muted}
-            onPlaying={(e) => {
-              console.log(e);
-            }}
             onPlayCapture={(e) => {
               setisPlaying(e.target.id);
               // if (`videoSingleId${data.media_id}` !== e.target.id) {
@@ -196,11 +190,11 @@ const ImageGrid = ({
                   return;
                 }
               });
-              console.log(findArray);
+
               findArray = findArray.filter((ele) => ele !== undefined);
               findArray.map((ele) => {
                 let findVal = document.getElementById(ele);
-                console.log(findVal);
+
                 if (findVal) {
                   findVal.pause();
                 }
@@ -277,9 +271,6 @@ const ImageGrid = ({
             playsInline
             controlsList="nodownload"
             muted={muted}
-            onPlay={(vid) => {
-              console.log(vid);
-            }}
             onVolumeChange={volumechanged.bind(this)}
           >
             <source src={data.path} />

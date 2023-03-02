@@ -51,7 +51,7 @@ const Postmodal = ({ visible, onClose }) => {
         toast.error(error.message);
       });
   }
-
+  console.log(values);
   return (
     <Modal
       footer={null}
@@ -167,7 +167,7 @@ const Postmodal = ({ visible, onClose }) => {
           </div>
         </div>
         <div className={classes.postTextcontent}>
-          <TextArea
+          <textarea
             className={classes.postTextarea}
             placeholder={`What's on your mind, ${loginUserData?.name}!`}
             onKeyDown={(e) => {
