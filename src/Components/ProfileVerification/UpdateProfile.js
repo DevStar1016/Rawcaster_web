@@ -288,7 +288,7 @@ const UpdateProfile = () => {
             </Col>
           </Row>
           <Row gutter={10}>
-            <Col sm={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>First Name</p>
               <Form.Item name="first_name">
                 <Input
@@ -307,7 +307,7 @@ const UpdateProfile = () => {
                 )}
               </Form.Item>
             </Col>
-            <Col sm={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>Last Name</p>
               <Form.Item name="last_name">
                 <Input
@@ -324,7 +324,7 @@ const UpdateProfile = () => {
                 )}
               </Form.Item>
             </Col>
-            <Col md={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>Display Name</p>
               <Form.Item name="name">
                 <Input
@@ -340,7 +340,7 @@ const UpdateProfile = () => {
               </Form.Item>
             </Col>
 
-            <Col md={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>Gender</p>
               <Form.Item name="gender" className="genderSelect">
                 <Select
@@ -359,7 +359,7 @@ const UpdateProfile = () => {
               </Form.Item>
             </Col>
 
-            <Col md={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>Date of Birth</p>
               <DateInputBox
                 displayDate={values.dob}
@@ -374,7 +374,7 @@ const UpdateProfile = () => {
               {touched.dob && <p className="ErrTxt">{errors?.dob}</p>}
             </Col>
 
-            <Col md={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>Location</p>
               <Form.Item name="geo_location">
                 <PlacesAutocomplete
@@ -398,7 +398,6 @@ const UpdateProfile = () => {
                         className={`${classes.textBox} ${classes.locationInputHeight}`}
                         maxLength={100}
                         {...getInputProps({
-                          style: { paddingRight: "40px" },
                           placeholder: "Search Places ...",
                           className: "location-search-input",
                         })}
@@ -468,7 +467,7 @@ const UpdateProfile = () => {
               </Form.Item>
             </Col>
 
-            <Col md={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>Mobile Number</p>
               <Form.Item name="mobile">
                 <Input
@@ -485,7 +484,7 @@ const UpdateProfile = () => {
                 )}
               </Form.Item>
             </Col>
-            <Col md={12}>
+            <Col sm={12} xs={24}>
               <p className={classes.label}>Email</p>
               <Form.Item name="email_id">
                 <Input

@@ -1,4 +1,4 @@
-.fullcontainer { height: 100vh; padding-top: 67px; margin: auto;  max-width: 670px;display: flex; justify-content: center;margin: auto; }
+.fullcontainer { height: 100vh; padding-top: 67px;   max-width: 670px;display: flex; justify-content: center;margin: auto; }
 .nuggetSec { 
     padding: 0 20px;
     height:calc(100vh - 67px);

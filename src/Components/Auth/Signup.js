@@ -92,7 +92,6 @@ const Signup = () => {
     SocialMediaLoginService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
           dispatch(handleLoginData(res.data));
           setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
           setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));

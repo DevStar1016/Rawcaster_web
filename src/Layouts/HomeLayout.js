@@ -50,7 +50,6 @@ const HomeLayout = () => {
         if (res.data.status === 1) {
           RemoveToken(dispatch);
           navigate("/");
-          toast.success("Logged out Successfully !!");
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }

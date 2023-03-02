@@ -133,7 +133,6 @@ const SignupwithCredentials = () => {
     signupService(JSONtoformdata(signupValue))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
           const navigateHandle = () => {
             navigate("/selectinfluencers");
           };

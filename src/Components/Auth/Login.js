@@ -64,10 +64,7 @@ const Login = () => {
     loginService(JSONtoformdata(loginData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
-
           const navigateHandle = () => {
-            console.log(getSessionStorageData("influencerData"));
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
