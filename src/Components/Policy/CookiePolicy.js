@@ -1,4 +1,6 @@
 import React from "react";
+import classes from "./Faq.module.css";
+
 
 const Cookiespolicy = () => {
   (function (d, s, id) {
@@ -13,7 +15,7 @@ const Cookiespolicy = () => {
   })(document, "script", "termly-jssdk3");
   return (
     <div
-      className="pt-5 mt-3"
+    className={classes.termsbg}
       name="termly-embed"
       data-id="39acab2c-8f0e-4711-b581-400589ce3866"
       data-type="iframe"

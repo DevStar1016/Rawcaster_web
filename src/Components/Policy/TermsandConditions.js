@@ -1,4 +1,5 @@
 import React from "react";
+import classes from "./Faq.module.css";
 
 const TermsandConditions = () => {
   (function (d, s, id) {
@@ -14,7 +15,7 @@ const TermsandConditions = () => {
   })(document, "script", "termly-jssdk2");
   return (
     <div
-      className="pt-5 mt-3"
+     className={classes.termsbg}
       name="termly-embed"
       data-id="435d9ebf-27f8-44f1-85e7-a8250034c899"
       data-type="iframe"

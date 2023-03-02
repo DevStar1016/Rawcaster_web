@@ -194,7 +194,7 @@ width: fit-content;
 .topheader { padding: 5px 0;}
 .onlydes { display: none; }    
 .mobmenu { display: block; }
-.mobmenu .mobheader {background: #563662; width: 100%; float: left; max-height: 60px; position: fixed;}
+.mobmenu .mobheader {background: #563662; width: 100%; float: left; max-height: 60px; position: fixed;     z-index: 1;}
 .mobmenu .moblogo { float: left; height: 25px; margin: 15px 0 0 20px;}
 .mobmenu .mobheader .rightmenu { float: right; padding-top: 10px; padding-right: 15px;}
 .mobmenu ul { color: #000; display: block; float: left; }
