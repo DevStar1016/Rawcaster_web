@@ -168,9 +168,9 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
   };
   return (
     <div className="dateinputBox">
-      <div>
+      <div style={{ width: "42%" }}>
         <Select
-          style={{ width: 120 }}
+          style={{ width: "100%" }}
           value={getMonth(date.month)}
           className="textBox"
           status={getStatus(date.month)}
@@ -188,9 +188,9 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
           }}
         />
       </div>
-      <div>
+      <div style={{ width: "20%" }}>
         <Select
-          style={{ width: 127 }}
+           style={{ width: "100%" }}
           placeholder="Day"
           className="textBox"
           status={getStatus(date.day)}
@@ -201,9 +201,9 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
           }}
         />
       </div>
-      <div>
+      <div style={{ width: "34%" }}>
         <Select
-          style={{ width: 120 }}
+          style={{ width: "100%" }}
           className="textBox"
           options={getyears()}
           status={getStatus(date.year)}

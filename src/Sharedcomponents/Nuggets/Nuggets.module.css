@@ -39,6 +39,7 @@
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
  .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left;font-family:  "Noto Color Emoji"}
+ .feedsSec p { white-space: "pre-wrap"; line-break: "anywhere"; }
  .nuggetsFeed { width: 100%; border-radius: 12px; }
  .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }

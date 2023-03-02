@@ -38,7 +38,6 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
 .dateinputBox .ant-select-selector {
   height: 42px !important;
   text-align: center;
- 
 }
 .ant-select-selection-item ,.ant-select-selection-placeholder{
   margin-top: 8px !important;
@@ -236,6 +235,7 @@ line-height: 23px;
 .CameraModal .ant-modal-content {
   padding: 0px !important;
 }
+.location-search-input {height: 48px;}
 @media (max-width:768px) {
   .singleImage { max-width: 300px !important; }
 }

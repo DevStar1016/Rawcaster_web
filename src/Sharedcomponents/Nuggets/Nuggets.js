@@ -347,7 +347,7 @@ const Nuggets = () => {
               )}
               <div className={classes.contentSec}>
                 <div className={classes.feedsSec}>
-                  <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
+                  <p>
                     {decodeHtml(ele?.content)}
                   </p>
                   <div className={classes.imgContainer}>
