@@ -198,17 +198,19 @@ const CameraModal = ({
               </div>
             )}
             {type === "Camera" && (
+               <div className={classes.btnSec}>
               <button onClick={() => captureImage()}>
                 <span class="material-symbols-outlined">photo_camera</span>
               </button>
+              </div>
             )}
             {type === "Video" && (
-              <div>
+              <div className={classes.btnSec}>
                 {status === "recording" ? (
-                  <button onClick={stopRecording}>Stop Recording</button>
+                  <button onClick={stopRecording}><span className={`material-symbols-outlined ${classes.recIcon}`}>slideshow</span> Stop Recording</button>
                 ) : (
                   <button onClick={() => handleStartVideo()}>
-                    Start Recording
+                    <span className={`material-symbols-outlined ${classes.recIcon}`}>radio_button_checked</span> Start Recording
                   </button>
                 )}
               </div>
