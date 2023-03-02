@@ -1,4 +1,4 @@
-import { Button, Modal } from "antd";
+import { Button } from "antd";
 import React from "react";
 import ImageGrid from "../UIComponents/ImageGrid";
 import classes from "./Modal.module.css";

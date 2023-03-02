@@ -18,13 +18,17 @@ import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import { SHARED_TYPE } from "../../Shared/Constant";
-import { Dropdown, Tooltip } from "antd";
+import { Dropdown, Spin, Tooltip } from "antd";
 import ImageGrid from "../../UIComponents/ImageGrid";
 import PostNuggets from "./PostNuggets";
-import { getLocalStorageData } from "../../Store/Storage";
+import {
+  getLocalStorageData,
+  removeSessionStorageData,
+} from "../../Store/Storage";
 import {
   handleLoading,
   handleloginModalShow,
+  handlenuggetVideoPaused,
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
@@ -33,6 +37,7 @@ import { useAuthData } from "../../Shared/Reduxfetcher";
 import CommentsList from "./CommentsList";
 import { ListNuggetContext } from "../../Shared/Context";
 import axios from "axios";
+import PostProgress from "./PostProgress";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -44,7 +49,11 @@ const Nuggets = () => {
   const source = useRef(null);
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
-
+  const [Progress, setProgress] = useState({
+    percent: 0,
+    show: false,
+  });
+  const [DeleteData, setDeleteData] = useState("");
   const [muted, setmuted] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [CommentList, setCommentList] = useState([]);
@@ -63,6 +72,14 @@ const Nuggets = () => {
     } else {
       return "RAWCAST";
     }
+  };
+
+  const handleProgress = (progress) => {
+    let val = (progress.loaded / progress.total) * 100;
+    setProgress({
+      percent: Math.round(val),
+      show: true,
+    });
   };
 
   const getNuggetList = (page = 1) => {
@@ -139,7 +156,6 @@ const Nuggets = () => {
   };
 
   const deletenugget = (id) => {
-    dispatch(handleLoading(true));
     let formData = new FormData();
     formData.append("token", loginUserData?.token);
     formData.append("nugget_id", id);
@@ -157,6 +173,7 @@ const Nuggets = () => {
         toast.error(err.message);
       })
       .finally(() => {
+        setDeleteData("");
         dispatch(handleLoading(false));
       });
   };
@@ -192,9 +209,16 @@ const Nuggets = () => {
     getCommentList(id) {
       return getCommentList(id);
     },
+    getProgress() {
+      return Progress;
+    },
     getNuggetList() {
       return getNuggetList();
     },
+    handleProgress(val) {
+      return handleProgress(val);
+    },
+    setProgress: setProgress,
   };
 
   const getMoreValues = (ele) => {
@@ -233,9 +257,22 @@ const Nuggets = () => {
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <div className={classes.nuggetSec} ref={scrollRef}>
-        {getAuthenticated() && <PostNuggets getNuggetList={getNuggetList} />}
+        {getAuthenticated() && (
+          <>
+            {Progress.show ? (
+              <PostProgress />
+            ) : (
+              <PostNuggets getNuggetList={getNuggetList} />
+            )}
+          </>
+        )}
         {NuggetList?.map((ele, index) => {
           return (
+            // <Spin
+            //   tip="Please Wait..."
+            //   size="small"
+            //   spinning={DeleteData === ele.nugget_id}
+            // >
             <div className={classes.nuggetItem}>
               <div className={classes.profilePart}>
                 <div className={classes.proImg}>
@@ -271,6 +308,7 @@ const Nuggets = () => {
                     items: getMoreValues(ele),
                     onClick: (val) => {
                       if (parseInt(val.key) === 4) {
+                        setDeleteData(ele.nugget_id);
                         deletenugget(ele.nugget_id);
                       }
                     },
@@ -290,6 +328,15 @@ const Nuggets = () => {
                       imgArray={ele.media_list}
                       muted={muted}
                       mutenuggetaudio={setmuted}
+                      onPlay={() => {
+                        let dashboardPlayer = document.getElementById(
+                          "dashboard_signup_video"
+                        );
+                        if (dashboardPlayer) {
+                          dashboardPlayer.pause();
+                          dispatch(handlenuggetVideoPaused(false));
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -409,6 +456,7 @@ const Nuggets = () => {
                 />
               )}
             </div>
+            // </Spin>
           );
         })}
         {isLoading && (

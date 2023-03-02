@@ -144,15 +144,15 @@ border-bottom: 0.5px solid grey;
   font-size: 45px;
   color: #fff;
 }
-.postTextarea { border: none; padding: 0; height: 90px !important; resize: none !important;}
+.postTextarea { border: none; padding: 0; height: 90px !important; resize: none !important;  font-family:  "Noto Color Emoji"}
 .postTextarea:focus { border: none; box-shadow: none; outline: none;}
 .postTextarea::placeholder { font-family: "Gilroy-Regular"; color: #757575; font-size: 18px; font-weight: 300; }
 .postTextcontent { position: relative; width: 100%;}
 .emojiIcon { position: absolute; right: 0; bottom: 0; background: #fff; }
 .emojiPart { position: absolute; right: 0; z-index: 11; }
-.attachementtDisplay { border: 2px dashed #ced0d4bf; border-radius: 12px; margin-top: 20px; display: flex; }
+.attachementtDisplay { border: 2px dashed #ced0d4bf; border-radius: 12px; margin-top: 20px; display: flex;overflow-y: scroll; }
 .cardcontent { background-color: #eeeeee;  min-width: 100px; border: #d9d9d900 1px solid;
-  max-width: 20%;  height: 90px; margin:7px;  position: relative;  border-radius: 10px;  overflow: hidden;
+  height: 90px;max-width: 20%; margin:7px;  position: relative;  border-radius: 10px;  overflow: hidden;
   position: relative;}
 .cardcontent:hover .middle {
   opacity: 1;

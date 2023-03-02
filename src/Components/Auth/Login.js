@@ -67,6 +67,7 @@ const Login = () => {
           toast.success(res.data.msg);
 
           const navigateHandle = () => {
+            console.log(getSessionStorageData("influencerData"));
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");

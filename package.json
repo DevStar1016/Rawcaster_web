@@ -25,6 +25,7 @@
     "react-dom": "^18.2.0",
     "react-geocode": "^0.2.3",
     "react-helmet": "^6.1.0",
+    "react-hook-inview": "^4.5.0",
     "react-hot-toast": "^2.4.0",
     "react-media-recorder": "^1.6.6",
     "react-otp-input": "^2.4.0",

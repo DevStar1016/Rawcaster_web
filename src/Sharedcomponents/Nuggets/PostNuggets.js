@@ -14,7 +14,7 @@ import {
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
 import CameraModal from "../../Modal/CameraModal";
-import { PostNuggetContext } from "../../Shared/Context";
+import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
 import { useFormik } from "formik";
 import { isAccountValid, isValidData } from "../../Shared/Utility";
 
@@ -27,6 +27,8 @@ const PostNuggets = ({ getNuggetList }) => {
 
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const LoginUserData = useAuthData();
+
+  const { handleProgress, setProgress } = useListNuggetContext();
 
   const { values, setFieldValue, handleSubmit, handleChange, resetForm } =
     useFormik({
@@ -45,7 +47,7 @@ const PostNuggets = ({ getNuggetList }) => {
       return;
     }
     setpostModalShow(false);
-    dispatch(handleLoading(true));
+    // dispatch(handleLoading(true));
     let formData = new FormData();
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
@@ -55,7 +57,7 @@ const PostNuggets = ({ getNuggetList }) => {
       formData.append("nuggets_media[]", file);
     }
 
-    addNuggetsService(formData)
+    addNuggetsService(formData, handleProgress)
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
@@ -69,6 +71,7 @@ const PostNuggets = ({ getNuggetList }) => {
         toast.error(err.message);
       })
       .finally(() => {
+        setProgress((pre) => ({ ...pre, show: false }));
         dispatch(handleLoading(false));
       });
   };
@@ -92,6 +95,7 @@ const PostNuggets = ({ getNuggetList }) => {
     handleSubmit: handleSubmit,
     setFieldValue: setFieldValue,
     resetForm: resetForm,
+    NuggetData: NuggetData,
     values: values,
   };
 
@@ -108,6 +112,7 @@ const PostNuggets = ({ getNuggetList }) => {
             <div
               className="w-100"
               onClick={() => {
+                console.log("Click");
                 if (isAccountValid()) {
                   setpostModalShow(true);
                 } else {
@@ -123,7 +128,7 @@ const PostNuggets = ({ getNuggetList }) => {
               <Input
                 placeholder={`hey ${LoginUserData?.name}, share some nuggets...`}
                 className={classes.searchbar}
-                disabled
+                readOnly={true}
               />
             </div>
           </div>

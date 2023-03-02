@@ -8,6 +8,7 @@ import {
   APPLE_API_KEY,
   GOOGLE_CLIENT_ID,
   PRIMARY_REDIRECT_URI,
+  SECONDARY_REDIRECT_URI,
 } from "../Shared/Constant";
 import { SocialMediaLoginService } from "../Services/ApiService";
 import {
@@ -22,7 +23,10 @@ import { setCookieData, setLocalStorageData } from "../Store/Storage";
 import { useNavigate } from "react-router";
 import jwt_decode from "jwt-decode";
 import RedirectModal from "../Modal/RedirectModal";
-import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleLoading,
+  handlenuggetVideoPaused,
+} from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuthData } from "../Shared/Reduxfetcher";
 
@@ -99,6 +103,9 @@ const DashboardSignup = () => {
                 disablePictureInPicture
                 playsInline
                 controlsList="nodownload"
+                onPlayCapture={() => {
+                  console.log("test");
+                }}
               >
                 <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
               </video>
@@ -137,7 +144,7 @@ const DashboardSignup = () => {
             <LoginSocialApple
               client_id={APPLE_API_KEY}
               scope={"name email"}
-              redirect_uri={PRIMARY_REDIRECT_URI}
+              redirect_uri={SECONDARY_REDIRECT_URI}
               onResolve={({ provider, data }) => {
                 dispatch(handleLoading(true));
                 var decoded = jwt_decode(data.authorization.id_token);
@@ -154,7 +161,7 @@ const DashboardSignup = () => {
                 }
               }}
               onReject={(err) => {
-                toast.error("Something Went Wrong !!");
+                console.log(err);
               }}
             >
               <Button className={classes.altSignBtn}>
@@ -188,11 +195,15 @@ const DashboardSignup = () => {
           <div className={classes.inpad}>
             <div className={classes.advideoSec}>
               <video
+                id="dashboard_signup_video"
                 style={{ zIndex: 500 }}
                 controls
                 disablePictureInPicture
                 playsInline
                 controlsList="nodownload"
+                onPlayCapture={() => {
+                  dispatch(handlenuggetVideoPaused(true));
+                }}
               >
                 <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
               </video>

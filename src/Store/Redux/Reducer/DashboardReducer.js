@@ -8,6 +8,7 @@ const initialState = {
   twostepVerifyModalshow: false,
   dashboardMenu: "nugget",
   isVeifyEnabled: false,
+  nuggetVideoPaused: false,
 };
 
 export const { actions, reducer } = createSlice({
@@ -35,6 +36,9 @@ export const { actions, reducer } = createSlice({
     handleverifyEnabled: (state, action) => {
       state.isVeifyEnabled = action.payload;
     },
+    handlenuggetVideoPaused: (state, action) => {
+      state.nuggetVideoPaused = action.payload;
+    },
   },
 });
 
@@ -46,6 +50,7 @@ export const {
   handleloginModalShow,
   handletwostepVerifyModalshow,
   handleverifyEnabled,
+  handlenuggetVideoPaused,
 } = actions;
 
 export default reducer;

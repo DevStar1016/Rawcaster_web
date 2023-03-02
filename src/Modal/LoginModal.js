@@ -1,6 +1,7 @@
 import { Button, Modal } from "antd";
 import React from "react";
 import { useNavigate } from "react-router";
+import { removeSessionStorageData } from "../Store/Storage";
 import classes from "./Modal.module.css";
 
 const LoginModal = ({ open, close }) => {
@@ -21,6 +22,7 @@ const LoginModal = ({ open, close }) => {
             type="primary"
             htmlType="button"
             onClick={() => {
+              removeSessionStorageData("influencerData");
               close();
             }}
             size="large"

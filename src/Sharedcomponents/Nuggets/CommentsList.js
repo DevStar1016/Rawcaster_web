@@ -93,7 +93,7 @@ const CommentsList = ({ index }) => {
                       <div className={classes.rightitem}>
                         <div className="d-flex flex-row">
                           <div className={classes.cmtText}>
-                            <p>{elem?.name}</p>
+                            <p>{decodeHtml(elem?.name)}</p>
                             <span>{decodeHtml(elem?.comment)}</span>
                           </div>
                           {/* <Dropdown

@@ -25,6 +25,7 @@ export const VerificationModal = ({ open, close }) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
           navigate("/verifyotp", { state: { ...value, ...res.data } });
+          window.location.reload();
         } else {
           toast.error(res.data.message);
         }

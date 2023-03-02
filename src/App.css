@@ -5,10 +5,12 @@ body {
   height: 100%;
 }
 body {
-  font-family: "DM Sans", sans-serif;
+  font-family: "DM Sans", sans-serif, "Noto Color Emoji";
   background-color: var(--background);
 }
-
+/* body p {
+  font-family:  "Noto Color Emoji","DM Sans", sans-serif,;
+} */
 .dateinputBox {
   display: flex;
   flex-direction: row;

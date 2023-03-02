@@ -194,7 +194,7 @@ const Signup = () => {
                       HandleSignup(resultVal);
                     }}
                     onReject={(err) => {
-                      toast.error("Something Went Wrong !!");
+                      console.log(err);
                     }}
                   >
                     <button
@@ -232,7 +232,7 @@ const Signup = () => {
                       console.log(provider, data);
                     }}
                     onReject={(err) => {
-                      toast.error("Something Went Wrong !!");
+                      console.log(err);
                     }}
                   >
                     <button
@@ -254,7 +254,7 @@ const Signup = () => {
                       console.log(provider, data);
                     }}
                     onReject={(err) => {
-                      toast.error("Something Went Wrong !!");
+                      console.log(err);
                     }}
                   >
                     <button className={classes.altSignBtn}>
@@ -303,7 +303,8 @@ const Signup = () => {
                       }
                     }}
                     onReject={(err) => {
-                      toast.error("Something Went Wrong !!");
+                      console.log(err);
+                      // toast.error("Something Went Wrong !!");
                     }}
                   >
                     <button className={classes.altSignBtn}>
