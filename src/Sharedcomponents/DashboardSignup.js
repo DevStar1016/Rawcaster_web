@@ -29,6 +29,7 @@ import {
 } from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuthData } from "../Shared/Reduxfetcher";
+import VideoPlayer from "../UIComponents/VideoPlayer";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();
@@ -194,6 +195,11 @@ const DashboardSignup = () => {
         ) : (
           <div className={classes.inpad}>
             <div className={classes.advideoSec}>
+              {/* <VideoPlayer
+                url={
+                  "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4"
+                }
+              /> */}
               <video
                 id="dashboard_signup_video"
                 style={{ zIndex: 500 }}

@@ -207,3 +207,9 @@ export const InfluencerFollowService = (data) => {
 export const SocialMediaLoginService = (data) => {
   return axios.post("socialmedialogin", data);
 };
+
+// Global Search
+
+export const globalSearchNuggetsService = (data) => {
+  return axios.post("globalsearchnuggets", data);
+};

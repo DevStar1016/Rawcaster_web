@@ -20,7 +20,7 @@ import {
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
 import { useDashboard } from "../../Shared/Reduxfetcher";
-import Seo from "../../SEO/Seo";
+import Seo from "../SEO/Seo";
 import { LOGIN_ID } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({

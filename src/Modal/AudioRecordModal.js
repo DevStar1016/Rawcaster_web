@@ -95,7 +95,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
         {isRecording ? (
           <span class="material-symbols-outlined">stop_circle</span>
         ) : (
-          <span class="material-symbols-outlined">play_circle</span>
+          <span class="material-symbols-outlined">mic</span>
         )}
       </div>
     </Modal>

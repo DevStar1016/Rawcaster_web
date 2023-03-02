@@ -7,26 +7,20 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getSessionStorageData,
   removeSessionStorageData,
-  setCookieData,
-  setLocalStorageData,
   setSessionStorageData,
-} from "../Store/Storage";
+} from "../../Store/Storage";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
 import { toast } from "react-hot-toast";
 import {
-  getProfileService,
   resendOtpService,
   signupVerifyService,
-} from "../Services/ApiService";
-import { decodeHtml, getAuthToken, JSONtoformdata } from "../Shared/Utility";
-import {
-  handleLoginData,
-  handleToken,
-} from "../Store/Redux/Reducer/AuthReducer";
-import { useAuthToken } from "../Shared/Reduxfetcher";
-import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
+} from "../../Services/ApiService";
+import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
+import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
+import { getProfile } from "../../Components/Auth/getProfile";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -151,6 +145,7 @@ const VerifyOtp = () => {
   });
 
   const HandlesubmitVerify = (values) => {
+    dispatch(handleLoading(true));
     let ResetPasswordValue = {
       ...values,
       otp_flag: state?.type,
@@ -160,42 +155,13 @@ const VerifyOtp = () => {
     signupVerifyService(JSONtoformdata(ResetPasswordValue))
       .then((res) => {
         if (res.data.status === 1) {
-          getProfile();
-          toast.success(res.data.msg);
-        } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
-  };
-
-  const getProfile = () => {
-    dispatch(handleLoading(true));
-    let profileData = {
-      token: loginToken,
-      auth_code: getAuthToken(loginToken),
-    };
-    getProfileService(JSONtoformdata(profileData))
-      .then((res) => {
-        if (res.data.status === 1) {
-          let profileData = {
-            ...res.data.profile,
-            first_name: decodeHtml(res.data.profile.first_name),
-            last_name: decodeHtml(res.data.profile.last_name),
-            name: decodeHtml(res.data.profile.name),
+          const navigateHandle = () => {
+            navigate("/dashboard");
+            dispatch(handleLoading(false));
+            toast.success(res.data.msg);
           };
-          dispatch(handleLoginData({ token: loginToken, ...profileData }));
-          dispatch(handleToken(loginToken));
-          setCookieData("rawcaster_user_token", loginToken);
-          setLocalStorageData(
-            "rawcaster_user_token",
-            JSON.stringify({ token: loginToken, ...profileData })
-          );
-          navigate("/dashboard");
-          dispatch(handleLoading(false));
-        } else {
+          getProfile(loginToken, dispatch, navigateHandle);
+        } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }
       })
@@ -209,7 +175,7 @@ const VerifyOtp = () => {
       <div className="d-flex flex-column align-content-center justify-content-center">
         <div className={classes.centerLogo}>
           <Link to="/">
-            <img src={require("../Assets/Images/png/rawcater_logo.png")} />
+            <img src={require("../../Assets/Images/png/rawcater_logo.png")} />
           </Link>
         </div>
 
@@ -280,7 +246,7 @@ const VerifyOtp = () => {
 
           <div className={`${classes.copyright} ${classes.verifyCopy}`}>
             <p>
-              <img src={require("../Assets/Images/png/r_logo.png")} />
+              <img src={require("../../Assets/Images/png/r_logo.png")} />
               © Copyright Rawcaster 2021
               <br />
               <Link to="/termsandconditions">Terms and Conditions</Link> |{" "}

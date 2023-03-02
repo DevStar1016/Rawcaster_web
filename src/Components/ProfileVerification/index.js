@@ -3,8 +3,8 @@ import { Nav } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { Outlet, useLocation } from "react-router";
 import { Link } from "react-router-dom";
-import { useAuthData } from "../Shared/Reduxfetcher";
-import { removeSessionStorageData } from "../Store/Storage";
+import { useAuthData } from "../../Shared/Reduxfetcher";
+import { removeSessionStorageData } from "../../Store/Storage";
 import classes from "./Profilverification.module.css";
 
 const ProfileVerification = () => {

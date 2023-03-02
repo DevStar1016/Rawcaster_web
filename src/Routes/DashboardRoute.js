@@ -1,4 +1,5 @@
 import Dashboard from "../Components/Dashboard/Dashboard";
+import GlobalSearchResult from "../Components/GlobalSearchResult";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
@@ -32,6 +33,10 @@ export const DashboardRoute = () => {
         {
           path: "/dashboard",
           element: <Dashboard />,
+        },
+        {
+          path: "/globalsearch/:key",
+          element: <GlobalSearchResult />,
         },
         {
           path: "privacypolicy",

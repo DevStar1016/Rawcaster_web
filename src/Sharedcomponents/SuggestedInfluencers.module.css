@@ -44,7 +44,7 @@
  }
  .altSignBtn a, .altSignBtn a:hover {color: #000;}
  .advideoSec h1 { font-size: 21px; font-weight: 600; color: #1D1C1C; margin-bottom: 5px; }
- .advideoSec video { margin-bottom: 10px; width: 100%;border-radius: 11px; }
+ .advideoSec video { width: 100%;border-radius: 11px; }
  .advideoSec p { margin-bottom: 15px; font-size: 13px; }
  
  .suggInfluencersSec { border-top:1px solid #ECECEC; padding-top: 20px; float: left; margin-top: 10px;  max-height: 310px;width:100% ;}

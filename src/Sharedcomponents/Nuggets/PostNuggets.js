@@ -24,7 +24,6 @@ const PostNuggets = ({ getNuggetList }) => {
   const VideoRef = useRef();
   const [NuggetData, setNuggetData] = useState([]);
   const [postModalShow, setpostModalShow] = useState(false);
-
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const LoginUserData = useAuthData();
 
@@ -47,7 +46,6 @@ const PostNuggets = ({ getNuggetList }) => {
       return;
     }
     setpostModalShow(false);
-    // dispatch(handleLoading(true));
     let formData = new FormData();
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
@@ -56,7 +54,6 @@ const PostNuggets = ({ getNuggetList }) => {
       console.log(URL.createObjectURL(file));
       formData.append("nuggets_media[]", file);
     }
-
     addNuggetsService(formData, handleProgress)
       .then((res) => {
         if (res.data.status === 1) {

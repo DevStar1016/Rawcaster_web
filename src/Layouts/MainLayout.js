@@ -21,29 +21,29 @@ const MainLayout = () => {
   return (
     <div className={classes.main_menu} mode="horizontal">
       <Layout>
-      <div  className={`${classes.topbar} ${classes.onlydes}`}>
+        <div className={`${classes.topbar} ${classes.onlydes}`}>
           <div className={classes.headermargin}>
-        <Menu mode="horizontal">          
-            <Menu.Item key="join">
-              <a to="/joinmeeting">Join a meeting</a>
-            </Menu.Item>
-            <Menu.Item key="Host">
-              <a to="/signin">Host a meeting</a>
-            </Menu.Item>
-            <Menu.Item key="download">
-              <Link to="/appdownloadscreen">Download</Link>
-            </Menu.Item>
-            <Menu.Item key="app">
-              <Link to="/support">Support</Link>
-            </Menu.Item>
-            <Menu.Item key="mail">
-              <Link to="/faq">FAQs</Link>
-            </Menu.Item>          
-        </Menu>
+            <Menu mode="horizontal">
+              <Menu.Item key="join">
+                <a to="/joinmeeting">Join a meeting</a>
+              </Menu.Item>
+              <Menu.Item key="Host">
+                <a to="/signin">Host a meeting</a>
+              </Menu.Item>
+              <Menu.Item key="download">
+                <Link to="/appdownloadscreen">Download</Link>
+              </Menu.Item>
+              <Menu.Item key="app">
+                <Link to="/support">Support</Link>
+              </Menu.Item>
+              <Menu.Item key="mail">
+                <Link to="/faq">FAQs</Link>
+              </Menu.Item>
+            </Menu>
+          </div>
         </div>
-     </div>
-       
-      <div className={classes.mobmenu}>
+
+        <div className={classes.mobmenu}>
           <div className={classes.mobheader}>
             <img
               className={classes.moblogo}
@@ -74,19 +74,29 @@ const MainLayout = () => {
           >
             <img width="100%" className={classes.mainlogo} src={mainlogo} />
             <p>
-              <Link to="#">LOGIN</Link>
+              <Link to="/login" onClick={onClose}>
+                LOGIN
+              </Link>
             </p>
             <p>
-              <Link to="#">SIGN UP</Link>
+              <Link to="/signup" onClick={onClose}>
+                SIGN UP
+              </Link>
             </p>
             <p>
-              <Link to="#">FAQ</Link>
+              <Link to="/faq" onClick={onClose}>
+                FAQ
+              </Link>
             </p>
             <p>
-              <Link to="#">DOWNLOAD</Link>
+              <Link to="/appdownloadscreen" onClick={onClose}>
+                DOWNLOAD
+              </Link>
             </p>
             <p>
-              <Link to="#">SUPPORT</Link>
+              <Link to="/support" onClick={onClose}>
+                SUPPORT
+              </Link>
             </p>
           </Drawer>
         </div>
@@ -95,24 +105,24 @@ const MainLayout = () => {
         <Content className="site-layout mainsec">
           <div className={`${classes.homeheader} ${classes.onlydes}`}>
             <div className={classes.headermargin}>
-            <img
-              className={classes.mainlogo}
-              src={mainlogo}
-              onClick={() => {
-                navigate("/");
-              }}
-            />
-            <div className={classes.rightmenu}>
-              <Link>Tutorials</Link>
-              <Link to="/login">Sign in</Link>
-              <Button
+              <img
+                className={classes.mainlogo}
+                src={mainlogo}
                 onClick={() => {
-                  navigate("/signup");
+                  navigate("/");
                 }}
-              >
-                Signup
-              </Button>
-            </div>
+              />
+              <div className={classes.rightmenu}>
+                <Link>Tutorials</Link>
+                <Link to="/login">Sign in</Link>
+                <Button
+                  onClick={() => {
+                    navigate("/signup");
+                  }}
+                >
+                  Signup
+                </Button>
+              </div>
             </div>
           </div>
           <Outlet />

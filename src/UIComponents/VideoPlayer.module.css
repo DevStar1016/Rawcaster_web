@@ -1,0 +1,57 @@
+
+
+  
+  .player {
+    position: relative;
+
+    font-size: 0;
+  }
+  .player_video {
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .play_icon {
+    float: left;
+  
+    width: 20px;
+    height: 20px;
+    margin-left: 4px;
+    margin-right: -2px;
+    background: #fff;
+    mask: url("../Assets/Icons/svg/play_icon.svg") no-repeat center / contain;
+    -webkit-mask:  url("../Assets/Icons/svg/play_icon.svg") no-repeat center /
+      contain;
+  }
+ 
+  .player_controls {
+    display: none;
+  }
+  .player:hover .player_controls {
+    display: block !important;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 100%;
+    flex-wrap: wrap; 
+    padding: 0 1.5rem;
+  }
+
+ 
+  .playSec {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .playBtn {
+    padding: 12px 11px;
+    border-radius: 70px;
+    background-color: black;
+  }
+    .playBtn {
+    color: #fff;
+    cursor: pointer;
+    }

@@ -51,7 +51,7 @@ import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.pn
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
 import axios from "axios";
-import Seo from "../../SEO/Seo";
+import Seo from "../SEO/Seo";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -120,19 +120,6 @@ const Signup = () => {
     items: 1,
     nav: false,
     loop: true,
-  };
-
-  const handleInstaLogin = () => {
-    axios
-      .get(
-        `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_APP_ID}&redirect_uri=https://localhost:3000/signup/&scope=user_profile,user_media&response_type=code`
-      )
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (

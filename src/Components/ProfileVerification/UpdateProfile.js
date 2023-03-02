@@ -10,7 +10,7 @@ import {
   getProfileService,
   resendOtpService,
   updateProfileService,
-} from "../Services/ApiService";
+} from "../../Services/ApiService";
 import {
   ConvertAddresstoLatLng,
   decodeHtml,
@@ -20,18 +20,18 @@ import {
   getValidImageUrl,
   isValidData,
   JSONtoformdata,
-} from "../Shared/Utility";
-import DateInputBox from "../Sharedcomponents/DateInputBox";
+} from "../../Shared/Utility";
+import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
 import {
   handleTwoStepVerified,
   handletwostepVerifyModalshow,
-} from "../Store/Redux/Reducer/DashboardReducer";
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import { Container } from "react-bootstrap";
-import { useAuthData, useAuthToken } from "../Shared/Reduxfetcher";
-import { setLocalStorageData } from "../Store/Storage";
-import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { setLocalStorageData } from "../../Store/Storage";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -246,7 +246,7 @@ const UpdateProfile = () => {
       <Col xs={24} sm={24} md={24} lg={24} xl={16} style={{ margin: "auto" }}>
         <div className={classes.centerLogo}>
           <Link to="/">
-            <img src={require("../Assets/Images/png/rawcater_logo.png")} />
+            <img src={require("../../Assets/Images/png/rawcater_logo.png")} />
           </Link>
         </div>
         <div className={classes.updatebg}>

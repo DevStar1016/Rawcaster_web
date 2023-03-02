@@ -1,7 +1,7 @@
 import { Dropdown, Layout, Menu, Tooltip } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useNavigate, useParams } from "react-router";
 import classes from "./Layout.module.css";
 import ProfileImg from "../UIComponents/ProfileImg";
 import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
@@ -25,7 +25,9 @@ import { handledasboardTab } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
 
 const HomeLayout = () => {
+  const params = useParams();
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
+  const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -57,6 +59,12 @@ const HomeLayout = () => {
         toast.error(err.message);
       });
   };
+
+  useEffect(() => {
+    if (params) {
+      setsearchData(params.key);
+    }
+  }, [params]);
   return (
     <>
       <Layout>
@@ -78,6 +86,19 @@ const HomeLayout = () => {
                   <Form.Control
                     placeholder="Search Rawcaster"
                     aria-label="Search Rawcaster"
+                    value={searchData}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        if (e.nativeEvent.target.value !== "") {
+                          navigate(
+                            `/globalsearch/${e.nativeEvent.target.value}`
+                          );
+                        }
+                      }
+                    }}
+                    onChange={(e) => {
+                      searchData(e.target.value);
+                    }}
                   />
                 </InputGroup>
               </div>

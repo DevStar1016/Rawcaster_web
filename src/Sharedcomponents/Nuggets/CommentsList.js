@@ -10,18 +10,17 @@ import emoji from "../../Assets/Images/svg/emoji.svg";
 import { Input, Spin } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import dayjs from "dayjs";
-import { useListNuggetContext } from "../../Shared/Context";
+import {
+  useListNuggetContext,
+  useSingleNuggetContext,
+} from "../../Shared/Context";
 import ReplyList from "./ReplyList";
 import EmojiPicker from "emoji-picker-react";
 
 const CommentsList = ({ index }) => {
-  const {
-    nugget_id,
-    CommentList,
-    getCommentList,
-    getNuggetList,
-    isCommentLoading,
-  } = useListNuggetContext();
+  const { getNuggetList } = useListNuggetContext();
+  const { nugget_id, CommentList, getCommentList, isCommentLoading } =
+    useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [CommentTxt, setCommentTxt] = useState([]);
   // const [isReplyEnabled, setisReplyEnabled] = useState(false);

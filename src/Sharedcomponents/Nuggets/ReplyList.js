@@ -9,16 +9,15 @@ import emoji from "../../Assets/Images/svg/emoji.svg";
 import { Dropdown, Input, Spin } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import dayjs from "dayjs";
-import { useListNuggetContext } from "../../Shared/Context";
+import {
+  useListNuggetContext,
+  useSingleNuggetContext,
+} from "../../Shared/Context";
 
 const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
-  const {
-    nugget_id,
-    CommentList,
-    getCommentList,
-    getNuggetList,
-    isCommentLoading,
-  } = useListNuggetContext();
+  const { getNuggetList } = useListNuggetContext();
+  const { nugget_id, CommentList, getCommentList, isCommentLoading } =
+    useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [ReplyTxt, setReplyTxt] = useState([]);
   const [ReplyList, setReplyList] = useState([]);

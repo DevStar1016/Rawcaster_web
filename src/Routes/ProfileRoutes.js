@@ -1,6 +1,6 @@
-import ProfileVerification from "../ProfileVerification";
-import UpdateProfile from "../ProfileVerification/UpdateProfile";
-import VerifyOtp from "../ProfileVerification/VerifyOtp";
+import ProfileVerification from "../Components/ProfileVerification";
+import UpdateProfile from "../Components/ProfileVerification/UpdateProfile";
+import VerifyOtp from "../Components/ProfileVerification/VerifyOtp";
 
 export const ProfileRoute = () => {
   return [
