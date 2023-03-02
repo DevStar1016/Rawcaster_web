@@ -1,4 +1,6 @@
 import React from "react";
+import classes from "./Faq.module.css";
+
 
 const Privacypolicy = () => {
   (function (d, s, id) {
@@ -14,7 +16,7 @@ const Privacypolicy = () => {
   })(document, "script", "termly-jssdk1");
   return (
     <div
-      className="pt-5 mt-3"
+    className={classes.termsbg}
       name="termly-embed"
       data-id="49507419-4ad0-4709-a042-6ba76cf03cdd"
       data-type="iframe"
