@@ -144,7 +144,7 @@ border-bottom: 0.5px solid grey;
   font-size: 45px;
   color: #fff;
 }
-.postTextarea { border: none; padding: 0; height: 90px !important; resize: none !important;  font-family:  "Noto Color Emoji"}
+.postTextarea { border: none; padding: 0; height: 90px !important; resize: none !important;  font-family:  "Noto Color Emoji";width: 100%;}
 .postTextarea:focus { border: none; box-shadow: none; outline: none;}
 .postTextarea::placeholder { font-family: "Gilroy-Regular"; color: #757575; font-size: 18px; font-weight: 300; }
 .postTextcontent { position: relative; width: 100%;}

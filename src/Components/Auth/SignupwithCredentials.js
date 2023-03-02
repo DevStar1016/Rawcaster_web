@@ -251,7 +251,12 @@ const SignupwithCredentials = () => {
                   value={values.dob}
                   status={errors.dob ? "error" : ""}
                   onSelectDate={(date) => {
-                    setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
+                    console.log(date);
+                    if (date !== "") {
+                      setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
+                    } else {
+                      setFieldValue("dob", "");
+                    }
                   }}
                 />
                 {touched.dob && <p className="ErrTxt">{errors?.dob}</p>}

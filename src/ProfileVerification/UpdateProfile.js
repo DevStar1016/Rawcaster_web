@@ -13,6 +13,7 @@ import {
 } from "../Services/ApiService";
 import {
   ConvertAddresstoLatLng,
+  decodeHtml,
   filterValidObject,
   getAuthToken,
   getGeocodeData,
@@ -30,7 +31,6 @@ import {
 import { Container } from "react-bootstrap";
 import { useAuthData, useAuthToken } from "../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../Store/Storage";
-import { EMAIL_REGEX } from "../Shared/Constant";
 import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 
 const validationSchema = yup.object().shape({
@@ -69,7 +69,7 @@ const UpdateProfile = () => {
     touched,
     errors,
     handleSubmit,
-    isValid,
+    validateForm,
   } = useFormik({
     initialValues: {
       name: "",
@@ -98,8 +98,12 @@ const UpdateProfile = () => {
     getProfileService(JSONtoformdata(profileData))
       .then((res) => {
         if (res.data.status === 1) {
-          let profileData = res.data.profile;
-          console.log(profileData);
+          let profileData = {
+            ...res.data.profile,
+            first_name: decodeHtml(res.data.profile.first_name),
+            last_name: decodeHtml(res.data.profile.last_name),
+            name: decodeHtml(res.data.profile.name),
+          };
           dispatch(handleLoginData({ token: loginToken, ...profileData }));
           setLocalStorageData(
             "rawcaster_user_token",
@@ -236,8 +240,6 @@ const UpdateProfile = () => {
       getProfileInfo();
     }
   }, [loginToken]);
-
-  console.log(values);
 
   return (
     <Container>
@@ -517,7 +519,18 @@ const UpdateProfile = () => {
                   <Button
                     block
                     onClick={() => {
-                      handleupdateProfile(values, true);
+                      validateForm()
+                        .then((res) => {
+                          if (Object.keys(res).length === 0) {
+                            handleupdateProfile(values, true);
+                          } else {
+                            handleSubmit();
+                          }
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                        });
+                      //
                     }}
                     className={classes.nextBtn}
                   >
