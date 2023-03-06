@@ -5,6 +5,7 @@ import classes from "./Modal.module.css";
 import { millisecondsToMMSS } from "../Shared/Utility";
 import PreviewModal from "./PreviewModal";
 import { toast } from "react-hot-toast";
+import { MediaPermissionsErrorType, requestMediaPermissions } from "mic-check";
 
 const CameraModal = ({
   visible,
@@ -41,7 +42,7 @@ const CameraModal = ({
     setTimerValue(0);
   };
 
-  const { status, startRecording, stopRecording, clearBlobUrl, mediaBlobUrl } =
+  const { status, startRecording, stopRecording, clearBlobUrl } =
     useReactMediaRecorder({
       video: true,
       onStart: onRecordStart,
@@ -57,24 +58,16 @@ const CameraModal = ({
     if (videoRef.current) {
       const stream = videoRef.current.srcObject;
       if (stream) {
-        console.log("test");
         const tracks = stream.getTracks();
-        console.log(tracks);
         tracks.forEach((track) => track.stop());
         videoRef.current.srcObject = null;
       }
-    } else {
-      let video = document.getElementById("Camera_ref");
-      console.log(video, "==>videoRef");
-      const stream = videoRef.current.srcObject;
-      const tracks = stream.getTracks();
-      console.log(tracks);
     }
     clearBlobUrl();
     onClose();
   };
 
-  const handleStartVideo = () => {
+  const handleVideoonly = () => {
     navigator.mediaDevices
       .getUserMedia({ video: { width: 300 } })
       .then((stream) => {
@@ -83,6 +76,51 @@ const CameraModal = ({
       .catch((err) => {
         console.error("error:", err);
       });
+  };
+
+  const handleVideoandAudio = () => {
+    requestMediaPermissions()
+      .then(() => {
+        startRecording();
+      })
+      .catch((err) => {
+        const { type, name, message } = err;
+
+        handleVideoonly();
+        if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
+          toast.error(
+            "browser does not have permission to access camera or microphone"
+          );
+        } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
+          toast.error("user didn't allow app to access camera or microphone");
+        } else if (
+          type === MediaPermissionsErrorType.CouldNotStartVideoSource
+        ) {
+          toast.error(
+            "camera is in use by another application (Zoom, Skype) or browser tab (Google Meet, Messenger Video)"
+          );
+        } else {
+          toast.error(message);
+        }
+      });
+  };
+
+  const handleStartVideo = () => {
+    handleVideoandAudio();
+    // Promise.all([
+    //   navigator.permissions.query({ name: "camera" }),
+    //   navigator.permissions.query({ name: "microphone" }),
+    // ])
+    //   .then((res) => {
+    //     let isGranted = res.every((ele) => ele.state === "granted");
+    //     let isDenied = res.every((ele) => ele.state === "denied");
+    //     if (isGranted || isDenied) {
+    //       handleVideoandAudio();
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log("Got error :", error);
+    //   });
   };
 
   const handleImage = (base64String) => {

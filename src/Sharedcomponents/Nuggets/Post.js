@@ -17,6 +17,7 @@ import {
   getDataValueById,
   isAccountValid,
   JSONtoformdata,
+  ReadMore,
 } from "../../Shared/Utility";
 import {
   handleLoading,
@@ -58,7 +59,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
         toast.error(err.message);
       })
       .finally(() => {
-        setDeleteData("");
+        // setDeleteData("");
         dispatch(handleLoading(false));
       });
   };
@@ -85,29 +86,57 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
       });
   };
 
+  const handleDelete = () => {
+    // setDeleteData(ele.nugget_id);
+    deletenugget(ele.nugget_id);
+  };
+
+  const handleEdit = () => {
+    console.log("edit");
+  };
+
+  const handleBlock = () => {
+    console.log("Block");
+  };
+
+  const handleReport = () => {
+    console.log("report");
+  };
+
+  const handleShareLink = () => {
+    console.log("sharelink");
+  };
+
   const getMoreValues = (ele) => {
-    let resultData = [
-      {
-        key: 1,
-        label: "Block user",
-      },
-      {
-        key: 2,
-        label: "Report Abuse",
-      },
-      {
-        key: 3,
-        label: "Share Link",
-      },
-      {
-        key: 4,
-        label: "Delete Nugget",
-      },
-    ];
-    if (ele.user_id !== loginUserData?.user_id) {
-      resultData = resultData.filter((ele) => ele.key !== 4);
+    if (ele.user_id === loginUserData?.user_id) {
+      let resultData = [
+        {
+          key: 1,
+          label: <div onClick={() => handleEdit()}>Edit</div>,
+        },
+        {
+          key: 2,
+          label: <div onClick={() => handleDelete()}>Delete</div>,
+        },
+      ];
+      return resultData;
+    } else {
+      let resultData = [
+        {
+          key: 1,
+          label: <div onClick={() => handleBlock()}>Block user</div>,
+        },
+        {
+          key: 2,
+          label: <div onClick={() => handleReport()}>Report Abuse</div>,
+        },
+        {
+          key: 3,
+          label: <div onClick={() => handleShareLink()}>Share Link</div>,
+        },
+      ];
+      return resultData;
     }
-    return resultData;
   };
 
   const HandleLike = (id, like) => {
@@ -177,12 +206,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
           <Dropdown
             menu={{
               items: getMoreValues(ele),
-              onClick: (val) => {
-                if (parseInt(val.key) === 4) {
-                  setDeleteData(ele.nugget_id);
-                  deletenugget(ele.nugget_id);
-                }
-              },
+
               selectable: false,
             }}
           >
@@ -194,7 +218,9 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
         <div className={classes.contentSec}>
           <div className={classes.feedsSec}>
             <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
-              {decodeHtml(ele?.content)}
+              <ReadMore CharactersLength={120} index={index}>
+                {decodeHtml(ele?.content)}
+              </ReadMore>
             </p>
             <div className={classes.imgContainer}>
               <ImageGrid

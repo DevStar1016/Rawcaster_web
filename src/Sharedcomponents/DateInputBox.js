@@ -140,19 +140,15 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
   };
 
   useEffect(() => {
-    console.log(date);
     if (
       isValidData(date.day) &&
       isValidData(date.month) &&
       isValidData(date.year)
     ) {
-      if (getMonth(date.month)) {
-        let resultDate = dayjs(
-          date.year + "-" + getMonth(date.month).label + "-" + date.day
-        ).toDate();
-        console.log(resultDate);
-        onSelectDate(resultDate);
-      }
+      let resultDate = dayjs(
+        date.year + "-" + date.month + "-" + date.day
+      ).toDate();
+      onSelectDate(resultDate);
     } else {
       onSelectDate("");
     }
@@ -190,7 +186,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
       </div>
       <div style={{ width: "20%" }}>
         <Select
-           style={{ width: "100%" }}
+          style={{ width: "100%" }}
           placeholder="Day"
           className="textBox"
           status={getStatus(date.day)}

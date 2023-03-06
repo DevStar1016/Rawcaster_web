@@ -5,6 +5,8 @@ import classes from "./ImageGrid.module.css";
 import BackgroundImg from "../Assets/Images/png/audioImg.png";
 import { useInView } from "react-hook-inview";
 import { useDashboard } from "../Shared/Reduxfetcher";
+import AudioPlayer from "../Sharedcomponents/AudioPlayer";
+import { Carousel } from "react-bootstrap";
 
 const ImageGrid = ({
   imgArray,
@@ -17,7 +19,7 @@ const ImageGrid = ({
   const { nuggetVideoPaused } = useDashboard();
   const [isPlaying, setisPlaying] = useState();
   const [isVisible, setIsVisible] = useState(false);
-
+  const [ActiveModalIndex, setActiveModalIndex] = useState(0);
   const [ref] = useInView({
     threshold: 0.5,
     onEnter: (entry) => {
@@ -32,6 +34,30 @@ const ImageGrid = ({
       }
     },
   });
+
+  const getAspectRatio = (index) => {
+    const length = imgArray.length;
+
+    if (length === 1) {
+      return 0.89;
+    } else if (length === 2) {
+      return 0.7;
+    } else if (length >= 3) {
+      if (index === 1) {
+        return 1;
+      }
+      return 0.8;
+      // else {
+      //   if (length === 3) {
+      //     return 0.8;
+      //   }
+      //    else if (length === 4) {
+      //     return 0.9;
+      //   }
+      // }
+    }
+    return 1.3;
+  };
 
   useEffect(() => {
     if (nuggetVideoPaused) {
@@ -80,15 +106,19 @@ const ImageGrid = ({
       return (
         <>
           <video
+            preload="metadata"
+            src={`${data.path}#t=0.001`}
+            type="video/mp4"
             className="selecedImages"
             controls={false}
             disablePictureInPicture
             playsInline={false}
             controlsList="nodownload"
             style={{ width: "100%", height: "100%", borderRadius: 10 }}
-          >
-            <source src={data.path} />
-          </video>
+            onClickCapture={(e) => {
+              console.log(e, "===>ImageOrVideoThumb");
+            }}
+          ></video>
           <span class={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
             play_circle
           </span>
@@ -118,7 +148,9 @@ const ImageGrid = ({
           style={{ zIndex: 0 }}
         />
       );
-    } else {
+    } else if (data.media_file_type === "wav") {
+      return <>{/* <AudioPlayer url={data.path} /> */}</>;
+    } else if (data.media_type === "video") {
       return (
         <Fragment>
           {/* <img
@@ -137,7 +169,11 @@ const ImageGrid = ({
             playsInline
             controlsList="nodownload"
             muted={muted}
+            onClickCapture={(e) => {
+              console.log(e, "===>imageOrVideoSingle");
+            }}
             onPlayCapture={(e) => {
+              console.log(e);
               setisPlaying(e.target.id);
               // if (`videoSingleId${data.media_id}` !== e.target.id) {
               //   {
@@ -151,11 +187,20 @@ const ImageGrid = ({
                 onPlay();
               }
             }}
+            preload="metadata"
+            src={`${data.path}#t=0.001`}
+            type="video/mp4"
             onVolumeChange={volumechanged.bind(this)}
-          >
-            <source src={data.path} />
-          </video>
+          ></video>
         </Fragment>
+      );
+    } else if (data.media_type === "audio") {
+      return (
+        <>
+          <div className={classes.musicIcon}>
+            <span class="material-symbols-outlined">music_note</span>
+          </div>
+        </>
       );
     }
   };
@@ -169,45 +214,56 @@ const ImageGrid = ({
           alt=""
         />
       );
-    } else {
+    } else if (data.media_type === "video") {
       return (
-        <Fragment>
-          <video
-            width="100%"
-            height="100%"
-            style={{ zIndex: 500 }}
-            controls
-            id={`modal_video_${i}`}
-            disablePictureInPicture
-            playsInline
-            controlsList="nodownload"
-            muted={muted}
-            onPlayCapture={(e) => {
-              let findArray = imgArray.map((ele, i) => {
-                if (`modal_video_${i}` !== e.target.id) {
-                  return `modal_video_${i}`;
-                } else {
-                  return;
-                }
-              });
-
-              findArray = findArray.filter((ele) => ele !== undefined);
-              findArray.map((ele) => {
-                let findVal = document.getElementById(ele);
-
-                if (findVal) {
-                  findVal.pause();
-                }
-              });
-              if (onPlay) {
-                onPlay();
+        <video
+          width="100%"
+          height="100%"
+          style={{ zIndex: 500 }}
+          controls
+          preload="metadata"
+          id={`modal_video_${i}`}
+          className="video-item"
+          disablePictureInPicture
+          playsInline
+          controlsList="nodownload"
+          muted={muted}
+          onClickCapture={(e) => {
+            console.log(e, "===>imageOrVideoSingleGallery");
+          }}
+          onPlayCapture={(e) => {
+            let findArray = imgArray.map((ele, i) => {
+              if (`modal_video_${i}` !== e.target.id) {
+                return `modal_video_${i}`;
+              } else {
+                return;
               }
-            }}
-            onVolumeChange={volumechanged.bind(this)}
-          >
-            <source src={data.path} />
-          </video>
-        </Fragment>
+            });
+
+            findArray = findArray.filter((ele) => ele !== undefined);
+            findArray.map((ele) => {
+              let findVal = document.getElementById(ele);
+
+              if (findVal) {
+                findVal.pause();
+              }
+            });
+            if (onPlay) {
+              onPlay();
+            }
+          }}
+          src={`${data.path}#t=0.001`}
+          type="video/mp4"
+          onVolumeChange={volumechanged.bind(this)}
+        ></video>
+      );
+    } else if (data.media_type === "audio") {
+      return (
+        <>
+          <div className={classes.musicIcon}>
+            <span class="material-symbols-outlined">music_note</span>
+          </div>
+        </>
       );
     }
   };
@@ -251,6 +307,8 @@ const ImageGrid = ({
           />
         </Fragment>
       );
+    } else if (data.media_file_type === "wav") {
+      return <>{/* <AudioPlayer url={data.path} /> */}</>;
     } else if (data.media_type === "video") {
       return (
         <Fragment>
@@ -263,6 +321,7 @@ const ImageGrid = ({
           <video
             width="100%"
             height="100%"
+            preload="metadata"
             style={{
               objectFit: "cover",
               objectPosition: "top",
@@ -272,18 +331,51 @@ const ImageGrid = ({
             controlsList="nodownload"
             muted={muted}
             onVolumeChange={volumechanged.bind(this)}
-          >
-            <source src={data.path} />
-          </video>
+            src={`${data.path}#t=0.001`}
+            type="video/mp4"
+            onClickCapture={(e) => {
+              console.log(e, "===>imageOrVideo");
+            }}
+            onPlay={(e) => {
+              console.log(e);
+            }}
+          ></video>
         </Fragment>
       );
     }
   };
 
   const openGallery = (index) => {
+    setActiveModalIndex(index);
     // setdownloadPath(imgArray[index].path);
     // setIndex(index);
     setIsVisible(true);
+  };
+
+  const ImageorSingleModal = (data, index) => {
+    if (data.media_type === "image") {
+      return (
+        <div key={index} style={{ height: "100%" }}>
+          <div
+            className={classes.bgblured}
+            style={{
+              backgroundImage: imageOrVideoSingleBg(data),
+            }}
+          ></div>
+          <div className={classes.imagemodalContainer}>
+            {imageOrVideoSingleGallery(data, "fullview", index)}
+          </div>
+        </div>
+      );
+    } else if (data.media_type === "video") {
+      return (
+        <div key={index} style={{ height: "100%" }}>
+          <div className={`${classes.videomodalContainer}`}>
+            {imageOrVideoSingleGallery(data, "fullview", index)}
+          </div>
+        </div>
+      );
+    }
   };
 
   return (
@@ -586,7 +678,7 @@ const ImageGrid = ({
               )}
 
               <div className="custom-slider">
-                <OwlCarousel
+                {/* <OwlCarousel
                   className="owl-theme"
                   margin={10}
                   nav
@@ -596,23 +688,34 @@ const ImageGrid = ({
                     '<span class="arrow prev">‹</span>',
                     '<span class="arrow next">›</span>',
                   ]}
+                  video={true}
+                > */}
+                <Carousel
+                  indicators={false}
+                  interval={null}
+                  touch={false}
+                  activeIndex={ActiveModalIndex}
+                  onSelect={(e) => {
+                    setActiveModalIndex(e);
+                  }}
+                  nextIcon={
+                    ActiveModalIndex !== imgArray.length - 1 ? (
+                      <b class="arrow next ">›</b>
+                    ) : null
+                  }
+                  prevIcon={
+                    ActiveModalIndex !== 0 ? <b class="arrow prev">‹</b> : null
+                  }
                 >
                   {imgArray.map((ele, index) => {
                     return (
-                      <div key={index}>
-                        <div
-                          className={classes.bgblured}
-                          style={{
-                            backgroundImage: imageOrVideoSingleBg(ele),
-                          }}
-                        ></div>
-                        <div className={classes.modalContainer}>
-                          {imageOrVideoSingleGallery(ele, "fullview", index)}
-                        </div>
-                      </div>
+                      <Carousel.Item>
+                        {ImageorSingleModal(ele, index)}
+                      </Carousel.Item>
                     );
                   })}
-                </OwlCarousel>
+                </Carousel>
+                {/* </OwlCarousel> */}
               </div>
             </div>
           </Modal>

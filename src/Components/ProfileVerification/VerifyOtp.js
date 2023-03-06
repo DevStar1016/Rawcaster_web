@@ -167,6 +167,9 @@ const VerifyOtp = () => {
       })
       .catch((err) => {
         toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleLoading(false));
       });
   };
 

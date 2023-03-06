@@ -151,16 +151,32 @@ const MainLayout = () => {
       </div> */}
               <div className={classes.rightSec}>
                 <ul className={classes.menu}>
-                  <li>
+                  <li
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                    }}
+                  >
                     <Link to="/termsandconditions">Terms and Conditions</Link>
                   </li>
-                  <li>
+                  <li
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                    }}
+                  >
                     <Link to="/privacypolicy">Privacy Policy</Link>
                   </li>
-                  <li>
+                  <li
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                    }}
+                  >
                     <Link to="/support">Support</Link>
                   </li>
-                  <li>
+                  <li
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                    }}
+                  >
                     <Link to="/cookiespolicy">Cookies Policy</Link>
                   </li>
                 </ul>

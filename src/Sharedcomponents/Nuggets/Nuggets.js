@@ -22,6 +22,7 @@ let isRequestCancel = false;
 
 const Nuggets = () => {
   const source = useRef(null);
+
   const dispatch = useDispatch();
   const [Progress, setProgress] = useState({
     percent: 0,
@@ -110,6 +111,7 @@ const Nuggets = () => {
   }, []);
 
   const onEndReached = () => {
+    console.log("test");
     if (Pages.page !== Pages.totalpage) {
       setisLoading(true);
 
@@ -144,6 +146,29 @@ const Nuggets = () => {
     }, []);
     return filteredArr;
   };
+
+  const setScroll = () => {
+    console.log("test");
+  };
+
+  const handleScroll = () => {
+    const bottom =
+      Math.ceil(window.innerHeight + window.scrollY) >=
+      document.documentElement.scrollHeight;
+
+    if (bottom) {
+      console.log("at the bottom");
+    }
+  };
+  React.useEffect(() => {
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>

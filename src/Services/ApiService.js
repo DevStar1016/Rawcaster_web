@@ -59,8 +59,10 @@ export const updateProfileService = (data) => {
   return axios.post("updatemyprofile", data);
 };
 
-export const searchRawcasterUsersService = (data) => {
-  return axios.post("searchrawcasterusers", data);
+export const searchRawcasterUsersService = (data, token) => {
+  return axios.post("searchrawcasterusers", data, {
+    cancelToken: token,
+  });
 };
 
 export const inviteToRawcasterService = (data) => {
@@ -190,6 +192,12 @@ export const getFaqService = (data) => {
   return axios.post("getfaq", data);
 };
 
+// Profile Config
+
+export const FollowandunfollowService = (data) => {
+  return axios.post("followandunfollow", data);
+};
+
 // Influencer
 
 export const getInfluencerCategoryService = (data) => {
@@ -210,6 +218,8 @@ export const SocialMediaLoginService = (data) => {
 
 // Global Search
 
-export const globalSearchNuggetsService = (data) => {
-  return axios.post("globalsearchnuggets", data);
+export const globalSearchNuggetsService = (data, token) => {
+  return axios.post("globalsearchnuggets", data, {
+    cancelToken: token,
+  });
 };

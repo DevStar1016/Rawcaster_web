@@ -1,0 +1,88 @@
+.controls {
+    flex-grow: 1;
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .player__button {
+    width: fit-content;
+    margin-bottom: 15px;
+    background-color: transparent;
+    border: none;
+  }
+
+  .player__button:focus {
+    outline: none;
+  }
+  .player__button:hover {
+    cursor: pointer;
+  }
+  .bar {
+    user-select: none;
+ 
+    display: flex;
+    align-items: center;
+justify-content: end;
+
+   
+  }
+  .barSec {
+    position: absolute;
+    bottom: 15px;
+    width: 95%;
+  }
+.audioSec {
+   height: 400px;
+    width: 100%;
+    background-image: url(../../Assets/Images/png/audioImg.png);
+    position: relative;
+}
+  .bar__time {
+    color: black;
+    font-size: 16px;
+  }
+
+  .bar__progress {
+    flex: 1;
+    border-radius: 5px;
+    margin: 0 20px;
+    height: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: 320px;
+    background-color: rgba(255, 255, 255, 0.4) !important;
+  
+  }
+  .bar__progress__knob {
+    position: relative;
+    height: 0px;
+    width: 0px;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    background-color: orange;
+  }
+  .pausePlayBtn {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .timeSec, .timeSec span {
+    font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 23px;
+
+color: #FFFFFF;
+  }

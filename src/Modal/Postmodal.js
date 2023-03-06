@@ -8,7 +8,6 @@ import cameraIcon from "../Assets/Images/svg/cameraicon.svg";
 import pictureIcon from "../Assets/Images/png/photoIcon.png";
 import imageIcon from "../Assets/Images/png/videoAttach.png";
 import emoji from "../Assets/Images/svg/emoji.svg";
-import TextArea from "antd/es/input/TextArea";
 import CameraModal from "./CameraModal";
 import { PostNuggetContext } from "../Shared/Context";
 import { SHARED_TYPE } from "../Shared/Constant";
@@ -16,6 +15,7 @@ import AudioRecordModal from "./AudioRecordModal";
 import EmojiPicker from "emoji-picker-react";
 import { toast } from "react-hot-toast";
 import ImageGrid from "../UIComponents/ImageGrid";
+import { detectMob } from "../Shared/Utility";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -51,7 +51,7 @@ const Postmodal = ({ visible, onClose }) => {
         toast.error(error.message);
       });
   }
-  console.log(values);
+  console.log(detectMob());
   return (
     <Modal
       footer={null}
@@ -95,22 +95,26 @@ const Postmodal = ({ visible, onClose }) => {
                 }}
               />
             </Tooltip>
-            <Tooltip title="Record Video">
-              <img
-                src={videoIcon}
-                onClick={() => {
-                  fetchData("Video");
-                }}
-              />
-            </Tooltip>
-            <Tooltip title="Capture Image">
-              <img
-                src={cameraIcon}
-                onClick={() => {
-                  fetchData("Camera");
-                }}
-              />
-            </Tooltip>
+            {!detectMob() && (
+              <Tooltip title="Record Video">
+                <img
+                  src={videoIcon}
+                  onClick={() => {
+                    fetchData("Video");
+                  }}
+                />
+              </Tooltip>
+            )}
+            {!detectMob() && (
+              <Tooltip title="Capture Image">
+                <img
+                  src={cameraIcon}
+                  onClick={() => {
+                    fetchData("Camera");
+                  }}
+                />
+              </Tooltip>
+            )}
             <Tooltip title="Upload Image">
               <img
                 src={pictureIcon}
@@ -174,7 +178,11 @@ const Postmodal = ({ visible, onClose }) => {
               console.log(e.key, "--->key");
             }}
             value={values.content}
-            onChange={handleChange("content")}
+            onChange={(e) => {
+              if (e.target.value.length <= 700) {
+                setFieldValue("content", e.target.value);
+              }
+            }}
           />
           <img
             width="24px"

@@ -9,6 +9,7 @@ const initialState = {
   dashboardMenu: "nugget",
   isVeifyEnabled: false,
   nuggetVideoPaused: false,
+  isGlobalSearch: false,
 };
 
 export const { actions, reducer } = createSlice({
@@ -39,6 +40,9 @@ export const { actions, reducer } = createSlice({
     handlenuggetVideoPaused: (state, action) => {
       state.nuggetVideoPaused = action.payload;
     },
+    handleisGlobalSearch: (state, action) => {
+      state.isGlobalSearch = action.payload;
+    },
   },
 });
 
@@ -51,6 +55,7 @@ export const {
   handletwostepVerifyModalshow,
   handleverifyEnabled,
   handlenuggetVideoPaused,
+  handleisGlobalSearch,
 } = actions;
 
 export default reducer;

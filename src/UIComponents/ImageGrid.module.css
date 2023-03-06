@@ -30,7 +30,7 @@
     cursor: pointer;
  }
 /* .imageModalsec { position: absolute;} */
- .modalSingleimage { max-width: 100%; margin: auto; height: auto; max-height: 550px; width: auto !important;}
+ .modalSingleimage { max-width: 100%; margin: auto; height: auto; max-height: 550px; width: auto !important;aspect-ratio: "5/4";}
  .SingleVideoBg {
     background-image: url(../Assets/Images/png/audioImg.png);
     /* height: 100%;
@@ -61,11 +61,24 @@
      bottom: 0px;
      left: 0px;  border-radius: 10px;
 }
-.modalContainer { position: absolute;
-   top: 0;
+.imagemodalContainer,.videomodalContainer {
+  
+
    display: flex;
    align-items: center;
-   justify-content: center; width: 100%;
-   bottom: 0; }
-
+   justify-content: center;
+   height: 100%;
+    width: 100%;
+  
+ 
+ }
+ .imagemodalContainer {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   z-index: 11;
+ }
    
+ .videomodalContainer {
+  margin: 50px 0;
+ }

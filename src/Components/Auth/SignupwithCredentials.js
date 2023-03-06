@@ -18,6 +18,7 @@ import {
 import {
   getAuthToken,
   getGeocodeData,
+  isValidData,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import dayjs from "dayjs";
@@ -250,7 +251,6 @@ const SignupwithCredentials = () => {
                   value={values.dob}
                   status={errors.dob ? "error" : ""}
                   onSelectDate={(date) => {
-                    console.log(date);
                     if (date !== "") {
                       setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
                     } else {

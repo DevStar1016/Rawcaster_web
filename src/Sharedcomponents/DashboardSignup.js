@@ -103,13 +103,14 @@ const DashboardSignup = () => {
                 controls
                 disablePictureInPicture
                 playsInline
+                preload="metadata"
                 controlsList="nodownload"
+                src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001"
+                type="video/mp4"
                 onPlayCapture={() => {
                   console.log("test");
                 }}
-              >
-                <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
-              </video>
+              />
 
               <h1>New to Rawcaster?</h1>
               <p>

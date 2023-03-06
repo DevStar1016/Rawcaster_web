@@ -1,0 +1,77 @@
+.profileContainer {
+    width: 100%;
+    border-bottom:  1px solid #ECECEC;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+}
+.profileContainer img {
+    width: 69px;
+height: 69px;
+margin:0 15px;
+}
+.leftSec img {
+  border-radius: 60px;
+}
+.profileContainer .rightSec .nameSec {
+    font-style: normal;
+font-weight: 400;
+
+line-height: 23px;
+/* identical to box height */
+color: #000000;
+
+}
+.profileContainer .rightSec .nameSec p {
+    margin-bottom: 2px !important;
+    font-weight: 700; 
+    font-size: 15px;
+
+}
+.profileContainer .rightSec .nameSec span {
+    font-size: 15px;
+}
+.profileContainer .rightSec .actionBtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+}
+.actionBtn .fanBtn,.actionBtn .fanBtn:hover {
+    border: #f2718d 1px solid;
+    border-radius: 7px;
+    color: #FFF;
+    background-color: #f2718d;
+    font-weight: 500;
+    font-size: 15px;
+    font-family: "DM Sans", sans-serif;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: row;
+    height: 45px;
+  }
+
+.actionBtn .connectBtn,.actionBtn .connectBtn:hover {
+    border: #f2718d 1px solid;
+    border-radius: 7px;
+    color: #f2718d;
+    background-color: #fff;
+    font-weight: 500;
+    font-size: 15px;
+    font-family: "DM Sans", sans-serif;
+    padding: 10px 10px;
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+  }
+  .actionBtn span {
+    margin-left: 5px;
+    font-size: 20px;
+  }
+  .bioSec {
+    padding: 10px 0;
+  }
+  .bioSec a {
+    color: #f2718d !important;
+    text-decoration: none !important;
+  }

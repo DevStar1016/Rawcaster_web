@@ -63,7 +63,8 @@ const HomeLayout = () => {
     if (params) {
       setsearchData(params.key);
     }
-  }, [params]);
+  }, []);
+
   return (
     <>
       <Layout>
@@ -85,19 +86,20 @@ const HomeLayout = () => {
                   <Form.Control
                     placeholder="Search Rawcaster"
                     aria-label="Search Rawcaster"
-                    value={searchData}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        if (e.nativeEvent.target.value !== "") {
-                          navigate(
-                            `/globalsearch/${e.nativeEvent.target.value}`
-                          );
-                        }
-                      }
-                    }}
-                    onChange={(e) => {
-                      searchData(e.target.value);
-                    }}
+                    // value={searchData}
+                    // onKeyDown={(e) => {
+                    //   if (e.key === "Enter") {
+                    //     if (e.nativeEvent.target.value !== "") {
+                    //       dispatch(handleisGlobalSearch(true));
+                    //       navigate(
+                    //         `/globalsearch/${e.nativeEvent.target.value}`
+                    //       );
+                    //     }
+                    //   }
+                    // }}
+                    // onChange={(e) => {
+                    //   setsearchData(e.target.value);
+                    // }}
                   />
                 </InputGroup>
               </div>

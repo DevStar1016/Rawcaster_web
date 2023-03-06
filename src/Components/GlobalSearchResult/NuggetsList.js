@@ -6,9 +6,13 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
 import { globalSearchNuggetsService } from "../../Services/ApiService";
+import { useDashboard } from "../../Shared/Reduxfetcher";
 import { getAuthenticated, JSONtoformdata } from "../../Shared/Utility";
 import Post from "../../Sharedcomponents/Nuggets/Post";
-import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleisGlobalSearch,
+  handleLoading,
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import { getLocalStorageData } from "../../Store/Storage";
 import classes from "./GlobalSearch.module.css";
 
@@ -18,7 +22,7 @@ const NuggetsList = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const { pathname } = useLocation();
-  console.log(params);
+  const { isGlobalSearch } = useDashboard();
   const source = useRef(null);
   const [NuggetList, setNuggetList] = useState([]);
   const [isLoading, setisLoading] = useState(false);
@@ -82,16 +86,18 @@ const NuggetsList = () => {
       .finally(() => {
         setisLoading(false);
         dispatch(handleLoading(false));
+        dispatch(handleisGlobalSearch(false));
       });
   };
 
   useEffect(() => {
-    if (NuggetList.length === 0) {
+    if (isGlobalSearch || NuggetList.length === 0) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       dispatch(handleLoading(true));
       getNuggetList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, isGlobalSearch]);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {

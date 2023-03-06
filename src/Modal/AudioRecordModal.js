@@ -1,5 +1,6 @@
 import { Modal } from "antd";
 import { MediaPermissionsErrorType, requestMediaPermissions } from "mic-check";
+import { requestAudioPermissions } from "mic-check/lib/requestMediaPermissions";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useReactMediaRecorder } from "react-media-recorder";
@@ -46,7 +47,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
   });
 
   const handleStartMic = () => {
-    requestMediaPermissions()
+    requestAudioPermissions()
       .then(() => {
         if (status === "idle" || status === "stopped") {
           startRecording();
@@ -56,6 +57,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
       })
       .catch((err) => {
         const { type, message } = err;
+        console.log(message);
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
           toast.error(
             "browser does not have permission to access camera or microphone"
@@ -84,7 +86,11 @@ const AudioRecordModal = ({ onClose, visible }) => {
       }}
     >
       {isRecording && <div>{millisecondsToMMSS(TimerValue * 1000)}</div>}
-      {isRecording ? <img src={AudioRecord} /> : <img src={AudioStop} />}
+      {isRecording ? (
+        <img src={AudioRecord} className={classes.audioplayIcon} />
+      ) : (
+        <img src={AudioStop} className={classes.audioplayIcon} />
+      )}
 
       <div
         onClick={async () => {

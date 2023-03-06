@@ -178,3 +178,6 @@ border-bottom: 0.5px solid grey;
   flex-direction: row;
   padding: 10px;
 }
+.audioplayIcon {
+  width: 100%;
+}

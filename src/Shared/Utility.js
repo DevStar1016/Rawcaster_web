@@ -9,6 +9,8 @@ import {
 import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
+import { useRef, useState } from "react";
+import Linkify from "linkify-react";
 
 // Auth
 
@@ -84,6 +86,10 @@ export const ConvertAddresstoLatLng = (address) => {
 };
 
 // Common Utility
+
+export const decodeHtml = (data) => {
+  return decode(data);
+};
 
 export const JSONtoformdata = (object) => {
   const formData = new FormData();
@@ -223,6 +229,62 @@ export const isAccountValid = () => {
   }
 };
 
-export const decodeHtml = (data) => {
-  return decode(data);
+export const ReadMore = ({
+  children,
+  CharactersLength = 150,
+  ShowTxtColor = "#e26386",
+  index,
+}) => {
+  const ref = useRef();
+  const [isReadMore, setIsReadMore] = useState(false);
+  const toggleReadMore = () => {
+    setIsReadMore(!isReadMore);
+  };
+
+  const toggledClass = isReadMore ? "expanded" : "collapsed";
+
+  const renderLink = ({ attributes, content }) => {
+    const { href, ...props } = attributes;
+    return (
+      <a
+        className="content_link"
+        onClick={() => {
+          window.open(href);
+        }}
+        {...props}
+      >
+        {decodeHtml(content)}
+      </a>
+    );
+  };
+
+  return (
+    <Linkify options={{ render: renderLink }}>
+      <div>
+        <div className={`content ${toggledClass}`}>{children}</div>
+        <span
+          onClick={() => toggleReadMore()}
+          style={{ color: ShowTxtColor, cursor: "pointer" }}
+        >
+          {isReadMore ? "View Less" : "View More"}
+        </span>
+      </div>
+    </Linkify>
+  );
 };
+
+export function detectMob() {
+  const toMatch = [
+    /Android/i,
+    /webOS/i,
+    /iPhone/i,
+    /iPad/i,
+    /iPod/i,
+    /BlackBerry/i,
+    /Windows Phone/i,
+  ];
+
+  return toMatch.some((toMatchItem) => {
+    return navigator.userAgent.match(toMatchItem);
+  });
+}
