@@ -133,7 +133,7 @@
   .proName {font-size: 14px;}
   .profilePart .proImg { width: 60px;}
   .proImg img { width: 45px; height: 45px;}
-  .viewCount { right: 5px; top: -18px;}
+  .viewCount { position: absolute; right: 5px; top: 20px;}
   .detailsRange { font-size: 12px;}
   .dropMenu { width: 30px;}
   .profilePart { width: calc(100% - 30px); }

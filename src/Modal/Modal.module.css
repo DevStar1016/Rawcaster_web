@@ -181,4 +181,7 @@ border-bottom: 0.5px solid grey;
 
 @media (max-width:768px) {
   .topProsec .rightSec { margin: 15px 0; }
+  .topProsec .rightSec img {height: 20px; padding-left: 5px;}
+  .emojiPart {  right: 23px !important; scale: 0.83; }
+
 }

@@ -84,7 +84,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
       }}
     >
       {isRecording && <div>{millisecondsToMMSS(TimerValue * 1000)}</div>}
-      {isRecording ? <img src={AudioRecord} /> : <img src={AudioStop} />}
+      {isRecording ? <img width="100%" src={AudioRecord} /> : <img width="100%" src={AudioStop} />}
 
       <div
         onClick={async () => {
