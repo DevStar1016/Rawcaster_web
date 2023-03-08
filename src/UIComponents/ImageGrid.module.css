@@ -82,3 +82,14 @@
  .videomodalContainer {
   margin: 50px 0;
  }
+ .musicIcon {
+   height: 100%;
+   background-color: #563662;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ }
+ .musicIcon span {
+   font-size: 55px;
+   color: #fff !important;
+ }

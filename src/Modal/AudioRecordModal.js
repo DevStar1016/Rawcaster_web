@@ -9,9 +9,11 @@ import AudioStop from "../Assets/Images/audio_stop.jpg";
 import { PostNuggetContext } from "../Shared/Context";
 import { millisecondsToMMSS } from "../Shared/Utility";
 import classes from "./Modal.module.css";
+import PreviewModal from "./PreviewModal";
 
 const AudioRecordModal = ({ onClose, visible }) => {
   const { setFileValues } = useContext(PostNuggetContext);
+  const [PreviewMedia, setPreviewMedia] = useState();
   const [TimerValue, setTimerValue] = useState(0);
   const [isRecording, setisRecording] = useState(false);
   let countdownInterval;
@@ -35,16 +37,15 @@ const AudioRecordModal = ({ onClose, visible }) => {
     const file = new File([blob], "RecordAudio.wav", {
       type: "audio/wav",
     });
-    console.log(file);
-    setFileValues(file);
-    onClose();
+    setPreviewMedia(file);
   };
 
-  const { status, startRecording, stopRecording } = useReactMediaRecorder({
-    audio: true,
-    onStart: onRecordStart,
-    onStop: onRecordStop,
-  });
+  const { status, startRecording, stopRecording, clearBlobUrl } =
+    useReactMediaRecorder({
+      audio: true,
+      onStart: onRecordStart,
+      onStop: onRecordStop,
+    });
 
   const handleStartMic = () => {
     requestAudioPermissions()
@@ -85,7 +86,40 @@ const AudioRecordModal = ({ onClose, visible }) => {
         onClose();
       }}
     >
-      {isRecording && <div>{millisecondsToMMSS(TimerValue * 1000)}</div>}
+      {PreviewMedia && (
+        <Modal
+          footer={null}
+          open={PreviewMedia}
+          width={"650px"}
+          className="CameraModal"
+          onCancel={() => {
+            setPreviewMedia();
+          }}
+        >
+          <PreviewModal
+            url={PreviewMedia}
+            onSuccess={(file) => {
+              setPreviewMedia();
+              setTimeout(() => {
+                setFileValues(file);
+                clearBlobUrl();
+                onClose();
+              }, 100);
+            }}
+            onClose={() => {
+              setPreviewMedia();
+            }}
+          />
+        </Modal>
+      )}
+      {isRecording && (
+        <div
+          className={classes.timeSec}
+          style={{ color: "#000", marginTop: 10 }}
+        >
+          {millisecondsToMMSS(TimerValue * 1000)}
+        </div>
+      )}
       {isRecording ? (
         <img src={AudioRecord} className={classes.audioplayIcon} />
       ) : (
@@ -96,12 +130,19 @@ const AudioRecordModal = ({ onClose, visible }) => {
         onClick={async () => {
           handleStartMic();
         }}
-        className={classes.RecordBtn}
+        className={`${classes.btnSec} mt-4`}
       >
         {isRecording ? (
-          <span class="material-symbols-outlined">stop_circle</span>
+          <button>
+            <span className={`material-symbols-outlined ${classes.recIcon}`}>
+              slideshow
+            </span>{" "}
+            Stop Recording
+          </button>
         ) : (
-          <span class="material-symbols-outlined">mic</span>
+          <button className={classes.recordSec}>
+            <span class="material-symbols-outlined">mic</span> Start Recording
+          </button>
         )}
       </div>
     </Modal>

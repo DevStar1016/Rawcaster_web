@@ -9,7 +9,7 @@ import {
 import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Linkify from "linkify-react";
 
 // Auth
@@ -229,20 +229,7 @@ export const isAccountValid = () => {
   }
 };
 
-export const ReadMore = ({
-  children,
-  CharactersLength = 150,
-  ShowTxtColor = "#e26386",
-  index,
-}) => {
-  const ref = useRef();
-  const [isReadMore, setIsReadMore] = useState(false);
-  const toggleReadMore = () => {
-    setIsReadMore(!isReadMore);
-  };
-
-  const toggledClass = isReadMore ? "expanded" : "collapsed";
-
+export const ReadMore = ({ children }) => {
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -257,18 +244,30 @@ export const ReadMore = ({
       </a>
     );
   };
-
+  const [showFullText, setShowFullText] = useState(false);
+  const [textHeight, setTextHeight] = useState(0);
+  const textRef = useRef(null);
+  const toggleShowFullText = () => setShowFullText(!showFullText);
+  useEffect(() => {
+    console.log(textRef.current.clientHeight);
+    setTextHeight(textRef.current.clientHeight);
+  }, []);
   return (
     <Linkify options={{ render: renderLink }}>
-      <div>
-        <div className={`content ${toggledClass}`}>{children}</div>
+      <p
+        ref={textRef}
+        className={`readmore_text ${showFullText ? "full_readmore" : ""}`}
+      >
+        {children}
+      </p>
+      {textHeight > 50 && (
         <span
-          onClick={() => toggleReadMore()}
-          style={{ color: ShowTxtColor, cursor: "pointer" }}
+          onClick={toggleShowFullText}
+          style={{ color: "#e26386", cursor: "pointer" }}
         >
-          {isReadMore ? "View Less" : "View More"}
+          {showFullText ? "Read Less" : "Read More"}
         </span>
-      </div>
+      )}
     </Linkify>
   );
 };

@@ -1,88 +1,76 @@
-.controls {
-    flex-grow: 1;
-    margin: 0 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .player__button {
-    width: fit-content;
-    margin-bottom: 15px;
-    background-color: transparent;
-    border: none;
-  }
-
-  .player__button:focus {
-    outline: none;
-  }
-  .player__button:hover {
-    cursor: pointer;
-  }
-  .bar {
-    user-select: none;
- 
-    display: flex;
-    align-items: center;
-justify-content: end;
-
-   
-  }
-  .barSec {
-    position: absolute;
-    bottom: 15px;
-    width: 95%;
-  }
-.audioSec {
-   height: 400px;
-    width: 100%;
-    background-image: url(../../Assets/Images/png/audioImg.png);
-    position: relative;
+.audio_player {
+width: 100%;
+height: 100%;
+min-height: 339px;
+  padding: 24px;
+  border-radius: 12px;
+  margin: auto;
+  color: red;
+  background-size: contain !important;
+  background: url(../../Assets/Images/png/audioImg.png);
 }
-  .bar__time {
-    color: black;
-    font-size: 16px;
-  }
 
-  .bar__progress {
-    flex: 1;
-    border-radius: 5px;
-    margin: 0 20px;
-    height: 8px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    width: 320px;
+/* .audio_player input[type="range"] {
+  height: 5px;
+  width: 90%;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  position: absolute;
+  background: linear-gradient(to right, #82CFD0 0%, #82CFD0 50%, #fff 50%, #fff 100%);
+  transition: background 0.2s ease;
+  cursor: pointer;
+  bottom: 10px;
+  -webkit-appearance: none;
+} */
+
+.sliderSec {
+  bottom: 10px;
+  position: absolute;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.audio_player input[type='range'] {
+
+   height: 5px;
+    overflow: hidden;
+     width: 90%;
     background-color: rgba(255, 255, 255, 0.4) !important;
-  
-  }
-  .bar__progress__knob {
-    position: relative;
-    height: 0px;
-    width: 0px;
-    border-top-right-radius: 50%;
-    border-bottom-right-radius: 50%;
-    background-color: orange;
-  }
-  .pausePlayBtn {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .timeSec, .timeSec span {
-    font-family: 'DM Sans';
-font-style: normal;
-font-weight: 500;
-font-size: 18px;
-line-height: 23px;
+    accent-color:#F2718D;
+    cursor: pointer;
+    border-radius: 30px;
+}
+input[type='range']::-webkit-slider-runnable-track {
+ background-color:rgba(255, 255, 255, 0.4) ;
+}
 
-color: #FFFFFF;
-  }
+
+.timeSec {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 13px;
+  
+  color: #FFFFFF;
+}
+
+
+
+.playSec {
+  height: 100%;
+  width: 100%;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.playSec button {
+  border-radius: 190px !important;
+  background: rgba(0, 0, 0, 0.4);
+  border: 3px solid #FFFFFF
+}
+.playSec button span {
+ padding: 7px ;
+ font-size: 35px;
+ color: #FFFFFF;
+}

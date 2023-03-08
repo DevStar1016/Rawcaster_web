@@ -16,6 +16,11 @@ import EmojiPicker from "emoji-picker-react";
 import { toast } from "react-hot-toast";
 import ImageGrid from "../UIComponents/ImageGrid";
 import { detectMob } from "../Shared/Utility";
+import {
+  MediaPermissionsErrorType,
+  requestAudioPermissions,
+} from "mic-check/lib/requestMediaPermissions";
+import Postpoll from "./Postpoll";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -26,7 +31,6 @@ const Postmodal = ({ visible, onClose }) => {
     setFieldValue,
     handleSubmit,
     values,
-    handleChange,
     NuggetData,
   } = useContext(PostNuggetContext);
   const [isAudioModal, setisAudioModal] = useState(false);
@@ -36,6 +40,7 @@ const Postmodal = ({ visible, onClose }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [showEmojis, setShowEmojis] = useState(false);
+  const [isPoll, setisPoll] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
 
@@ -51,7 +56,32 @@ const Postmodal = ({ visible, onClose }) => {
         toast.error(error.message);
       });
   }
-  console.log(detectMob());
+
+  const handleAllowMicPermission = () => {
+    requestAudioPermissions()
+      .then(() => {
+        setisAudioModal(true);
+      })
+      .catch((err) => {
+        const { type, message } = err;
+        if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
+          toast.error(
+            "browser does not have permission to access camera or microphone"
+          );
+        } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
+          toast.error("user didn't allow app to access camera or microphone");
+        } else if (
+          type === MediaPermissionsErrorType.CouldNotStartVideoSource
+        ) {
+          toast.error(
+            "camera is in use by another application (Zoom, Skype) or browser tab (Google Meet, Messenger Video)"
+          );
+        } else {
+          toast.error(message);
+        }
+      });
+  };
+
   return (
     <Modal
       footer={null}
@@ -86,12 +116,21 @@ const Postmodal = ({ visible, onClose }) => {
             </p>
           </Dropdown>
           <div className={classes.rightSec}>
-            <img src={pollIcon} />
+            {!isPoll && (
+              <Tooltip title="Post Poll">
+                <img
+                  src={pollIcon}
+                  onClick={() => {
+                    setisPoll(true);
+                  }}
+                />
+              </Tooltip>
+            )}
             <Tooltip title="Record Audio">
               <img
                 src={mikeIcon}
                 onClick={() => {
-                  setisAudioModal(true);
+                  handleAllowMicPermission();
                 }}
               />
             </Tooltip>
@@ -170,51 +209,55 @@ const Postmodal = ({ visible, onClose }) => {
             />
           </div>
         </div>
-        <div className={classes.postTextcontent}>
-          <textarea
-            className={classes.postTextarea}
-            placeholder={`What's on your mind, ${loginUserData?.name}!`}
-            onKeyDown={(e) => {
-              console.log(e.key, "--->key");
-            }}
-            value={values.content}
-            onChange={(e) => {
-              if (e.target.value.length <= 700) {
-                setFieldValue("content", e.target.value);
-              }
-            }}
-          />
-          <img
-            width="24px"
-            className={classes.emojiIcon}
-            src={emoji}
-            style={{ cursor: "pointer" }}
-            onClick={() => setShowEmojis(!showEmojis)}
-          />
-        </div>
-        {showEmojis && (
-          <div
-            className={classes.emojiPart}
-            style={{
-              position: "absolute",
-              top: "190px",
-              right: "50px",
-              zIndex: 11,
-            }}
-          >
-            <EmojiPicker
-              searchDisabled
-              suggestedEmojisMode="frequent"
-              previewConfig={{
-                showPreview: false,
-              }}
-              onEmojiClick={(e) => {
-                setFieldValue("content", values.content.concat(e.emoji));
-              }}
-            />
-          </div>
-        )}
-        {/* {showEmojis && (
+        {isPoll ? (
+          <Postpoll />
+        ) : (
+          <>
+            <div className={classes.postTextcontent}>
+              <textarea
+                className={classes.postTextarea}
+                placeholder={`What's on your mind, ${loginUserData?.name}!`}
+                onKeyDown={(e) => {
+                  console.log(e.key, "--->key");
+                }}
+                value={values.content}
+                onChange={(e) => {
+                  if (e.target.value.length <= 700) {
+                    setFieldValue("content", e.target.value);
+                  }
+                }}
+              />
+              <img
+                width="24px"
+                className={classes.emojiIcon}
+                src={emoji}
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowEmojis(!showEmojis)}
+              />
+            </div>
+            {showEmojis && (
+              <div
+                className={classes.emojiPart}
+                style={{
+                  position: "absolute",
+                  top: "190px",
+                  right: "50px",
+                  zIndex: 11,
+                }}
+              >
+                <EmojiPicker
+                  searchDisabled
+                  suggestedEmojisMode="frequent"
+                  previewConfig={{
+                    showPreview: false,
+                  }}
+                  onEmojiClick={(e) => {
+                    setFieldValue("content", values.content.concat(e.emoji));
+                  }}
+                />
+              </div>
+            )}
+            {/* {showEmojis && (
           <div>
             <Picker
               showPreview={false}
@@ -232,59 +275,61 @@ const Postmodal = ({ visible, onClose }) => {
             />
           </div>
         )} */}
-        {NuggetData.length !== 0 && (
-          <div className={classes.attachementtDisplay}>
-            {NuggetData.map((ele, index) => {
-              const getURL = () => {
-                console.log(URL.createObjectURL(ele));
-                let type = ele.type.split("/");
-                return {
-                  path: URL.createObjectURL(ele),
-                  media_type: type[0],
-                  media_file_type: type[1],
-                  media_id: ele.lastModified,
-                };
-              };
-              return (
-                <div className={classes.cardcontent}>
-                  <ImageGrid
-                    imgArray={[getURL()]}
-                    muted={false}
-                    isThumb={true}
-                  />
-                  <div
-                    className={classes.overlay}
-                    onClick={() => {
-                      let tempData = getPostValues().filter(
-                        (ele, i) => i !== index
-                      );
-                      setNuggetValues((pre) =>
-                        pre.filter((ele, i) => i !== index)
-                      );
-                    }}
-                  >
-                    {/* <img
+            {NuggetData.length !== 0 && (
+              <div className={classes.attachementtDisplay}>
+                {NuggetData.map((ele, index) => {
+                  const getURL = () => {
+                    console.log(URL.createObjectURL(ele));
+                    let type = ele.type.split("/");
+                    return {
+                      path: URL.createObjectURL(ele),
+                      media_type: type[0],
+                      media_file_type: type[1],
+                      media_id: ele.lastModified,
+                    };
+                  };
+                  return (
+                    <div className={classes.cardcontent}>
+                      <ImageGrid
+                        imgArray={[getURL()]}
+                        muted={false}
+                        isThumb={true}
+                      />
+                      <div
+                        className={classes.overlay}
+                        onClick={() => {
+                          let tempData = getPostValues().filter(
+                            (ele, i) => i !== index
+                          );
+                          setNuggetValues((pre) =>
+                            pre.filter((ele, i) => i !== index)
+                          );
+                        }}
+                      >
+                        {/* <img
                 src={require("../../../assets/delete.png")}
                 alt="more"
                 style={{ width: "20px", height: "20px" }}
               /> */}
-                    <span class="material-icons">delete</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                        <span class="material-icons">delete</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
-        <Button
-          className={classes.btnstyle}
-          onClick={() => {
-            setShowEmojis(false);
-            handleSubmit();
-          }}
-        >
-          Post Nugget
-        </Button>
+            <Button
+              className={classes.btnstyle}
+              onClick={() => {
+                setShowEmojis(false);
+                handleSubmit();
+              }}
+            >
+              Post Nugget
+            </Button>
+          </>
+        )}
       </div>
       <CameraModal
         visible={isCamera.show}

@@ -13,6 +13,9 @@
   width: 160px;
   height: 45px;
 }
+.audioRecordModal {
+  background-color:  linear-gradient(91.19deg, #E26C89 1.82%, #82456F 97.17%) !important;
+}
 .profileModal .reportBtn,.actionBtn .reportBtn {
   border: #f2718d 1px solid;
   border-radius: 7px;
@@ -59,7 +62,7 @@
 .cameraSec .btnSec {
    position: absolute; width: 100%; bottom: 20px; text-align: center; z-index: 1;  
 }
-.cameraSec button{  
+.btnSec button{  
   margin: auto;
   border:none !important ;
   padding: 10px 20px;
@@ -67,7 +70,7 @@
   background: #f2718d;
   color: #fff;     display: flex; align-items: center;
 }
-.cameraSec button span.recIcon { font-size: 18px; margin-right: 5px; }
+.btnSec button span.recIcon { font-size: 18px; margin-right: 5px; }
 .timeSec {
   z-index: 11;
   position: absolute;
@@ -75,8 +78,12 @@
   top: 20px;
   left: 48%;
 }
-.cameraSec button span {
+.btnSec button span {
   font-size: 32px;
+}
+.recordSec span{
+  font-size: 20px !important;
+  margin-right: 10px;
 }
 .thumbPlayBtn {
   position: absolute;
@@ -145,12 +152,16 @@ border-bottom: 0.5px solid grey;
   color: #fff;
 }
 .postTextarea { border: none; padding: 0; height: 90px !important; resize: none !important;  font-family:  "Noto Color Emoji";width: 100%;}
+.pollTextarea {
+  height: auto !important;
+}
 .postTextarea:focus { border: none; box-shadow: none; outline: none;}
 .postTextarea::placeholder { font-family: "Gilroy-Regular"; color: #757575; font-size: 18px; font-weight: 300; }
 .postTextcontent { position: relative; width: 100%;}
 .emojiIcon { position: absolute; right: 0; bottom: 0; background: #fff; }
 .emojiPart { position: absolute; right: 0; z-index: 11; }
 .attachementtDisplay { border: 2px dashed #ced0d4bf; border-radius: 12px; margin-top: 20px; display: flex;overflow-y: scroll; }
+.pollContainer { border: 2px dashed #ced0d4bf; border-radius: 12px; margin-top: 20px; }
 .cardcontent { background-color: #eeeeee;  min-width: 100px; border: #d9d9d900 1px solid;
   height: 90px;max-width: 20%; margin:7px;  position: relative;  border-radius: 10px;  overflow: hidden;
   position: relative;}
@@ -163,8 +174,8 @@ border-bottom: 0.5px solid grey;
 }
 .overlay:hover { transform: scale(1.1);transition: transform 0.5s ease; background-color: rgba(0, 0, 0, 0.8);
 }
-.overlay span { color: #fff;}
-
+.overlay span { color: #fff; display: none;}
+.overlay:hover span{ display: block; }
 .imageGridContainer {
   max-width: 575px;
   height: 100%;
@@ -178,8 +189,50 @@ border-bottom: 0.5px solid grey;
   flex-direction: row;
   padding: 10px;
 }
-
-
+p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-size: 15px; margin-bottom: 3px !important; }
+.textBox {
+  -webkit-text-fill-color: inherit;
+-webkit-text-fill-color: initial;
+-webkit-text-fill-color: unset;
+height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
+.textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px;  } 
+.textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
+.choicetextBox span,.choicetextBox input  {
+  height: 46px !important;
+}
+.choicetextBox {
+  padding: 2px;
+}
+.choicetextBox span {
+  background-color: #fff !important;
+  border: none !important;
+  
+}
+.closeBtn {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.closeBtn span {
+  height: auto !important;
+  cursor: pointer;
+}
+.choicetextBox input,.choicetextBox input:focus {
+  box-shadow: none !important;
+  border:transparent !important
+}
+.pollContainer {
+  padding: 15px;
+}
+.addSec {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+.addSec span {
+cursor: pointer;
+}
 @media (max-width:768px) {
   .topProsec .rightSec { margin: 15px 0; }
   .topProsec .rightSec img {height: 20px; padding-left: 5px;}

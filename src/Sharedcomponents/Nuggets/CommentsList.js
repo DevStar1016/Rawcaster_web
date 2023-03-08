@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { addNuggetCommentService } from "../../Services/ApiService";
+import {
+  addNuggetCommentService,
+  deleteNuggetCommentService,
+} from "../../Services/ApiService";
 import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import hearticon from "../../Assets/Images/svg/heart.svg";
 import replyicon from "../../Assets/Images/svg/comment.svg";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
-import { Input, Spin } from "antd";
+import { Dropdown, Input, Spin } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import dayjs from "dayjs";
 import {
@@ -23,7 +26,7 @@ const CommentsList = ({ index }) => {
     useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [CommentTxt, setCommentTxt] = useState([]);
-  // const [isReplyEnabled, setisReplyEnabled] = useState(false);
+  const [isReplyEnabled, setisReplyEnabled] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
 
   const AddCommentforAnugget = (id, comment, type = 1) => {
@@ -47,24 +50,24 @@ const CommentsList = ({ index }) => {
       });
   };
 
-  // const handleDeleteNuggetComment = (comment_id) => {
-  //   let deleteComment = {
-  //     token: loginUserData?.token,
-  //     comment_id: comment_id,
-  //   };
-  //   deleteNuggetCommentService(JSONtoformdata(deleteComment))
-  //     .then((res) => {
-  //       if (res.data.status === 1) {
-  //         getNuggetList();
-  //         getCommentList(nugget_id);
-  //       } else {
-  //         toast.error(res.data.msg);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       toast.error(err.message);
-  //     });
-  // };
+  const handleDeleteNuggetComment = (comment_id) => {
+    let deleteComment = {
+      token: loginUserData?.token,
+      comment_id: comment_id,
+    };
+    deleteNuggetCommentService(JSONtoformdata(deleteComment))
+      .then((res) => {
+        if (res.data.status === 1) {
+          getNuggetList();
+          getCommentList(nugget_id);
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
   return (
     <div className={classes.cmtSec}>
       {isCommentLoading ? (
@@ -95,7 +98,7 @@ const CommentsList = ({ index }) => {
                             <p>{decodeHtml(elem?.name)}</p>
                             <span>{decodeHtml(elem?.comment)}</span>
                           </div>
-                          {/* <Dropdown
+                          <Dropdown
                             menu={{
                               items: [
                                 {
@@ -125,7 +128,7 @@ const CommentsList = ({ index }) => {
                                 more_horiz
                               </i>
                             </div>
-                          </Dropdown> */}
+                          </Dropdown>
                         </div>
                         <div className="clearfix"></div>
                         <div className={classes.agree}>
@@ -133,13 +136,13 @@ const CommentsList = ({ index }) => {
                         </div>
                         <div
                           className={classes.agree}
-                          // onClick={() => {
-                          //   if (isReplyEnabled) {
-                          //     setisReplyEnabled("");
-                          //   } else {
-                          //     setisReplyEnabled(elem.comment_id);
-                          //   }
-                          // }}
+                          onClick={() => {
+                            if (isReplyEnabled) {
+                              setisReplyEnabled("");
+                            } else {
+                              setisReplyEnabled(elem.comment_id);
+                            }
+                          }}
                         >
                           <img src={replyicon} alt="reply_icon" /> Reply
                         </div>
@@ -151,7 +154,7 @@ const CommentsList = ({ index }) => {
 
                     <div style={{ display: "flex", justifyContent: "end" }}>
                       <ReplyList
-                        // isReplyEnabled={isReplyEnabled}
+                        isReplyEnabled={isReplyEnabled}
                         comment_id={elem.comment_id}
                         index={ind}
                       />

@@ -1,72 +1,107 @@
-import React from "react";
-import useAudioPlayer from "./useAudioPlayer";
+import React, { useEffect, useState } from "react";
 import classes from "./Audioplayer.module.css";
+
 const AudioPlayer = ({ url }) => {
-  const { curTime, duration, playing, setPlaying, setClickedTime } =
-    useAudioPlayer();
-  // const curPercentage = (curTime / duration) * 100;
+  const [audio, setAudio] = useState(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // function calcClickedTime(e) {
-  //   const clickPositionInPage = e.pageX;
-  //   const bar = document.querySelector("#bar__progress");
-  //   const barStart = bar.getBoundingClientRect().left + window.scrollX;
-  //   const barWidth = bar.offsetWidth;
-  //   const clickPositionInBar = clickPositionInPage - barStart;
-  //   const timePerPixel = duration / barWidth;
-  //   return timePerPixel * clickPositionInBar;
-  // }
+  useEffect(() => {
+    const audioElement = new Audio(url);
+    setAudio(audioElement);
 
-  // function handleTimeDrag(e) {
-  //   setClickedTime(calcClickedTime(e));
+    return () => {
+      audioElement.pause();
+      setAudio(null);
+    };
+  }, [url]);
 
-  //   const updateTimeOnMove = (eMove) => {
-  //     setClickedTime(calcClickedTime(eMove));
-  //   };
+  useEffect(() => {
+    if (audio) {
+      audio.addEventListener("timeupdate", handleTimeUpdate);
+      audio.addEventListener("durationchange", handleDurationChange);
+      audio.addEventListener("ended", handleEnded);
+      return () => {
+        audio.removeEventListener("timeupdate", handleTimeUpdate);
+        audio.removeEventListener("durationchange", handleDurationChange);
+        audio.removeEventListener("ended", handleEnded);
+      };
+    }
+  }, [audio]);
 
-  //   document.addEventListener("mousemove", updateTimeOnMove);
+  function handleTimeUpdate() {
+    setCurrentTime(audio.currentTime);
+  }
 
-  //   document.addEventListener("mouseup", () => {
-  //     document.removeEventListener("mousemove", updateTimeOnMove);
-  //   });
-  // }
+  function handleDurationChange() {
+    setDuration(audio.duration);
+  }
+
+  function handleSeek(event) {
+    if (audio) {
+      audio.currentTime = event.target.value;
+    }
+  }
+
+  function handlePlay() {
+    if (audio) {
+      audio.play();
+      setIsPlaying(true);
+    }
+  }
+
+  function handlePause() {
+    if (audio) {
+      audio.pause();
+      setIsPlaying(false);
+    }
+  }
+
+  function handleEnded() {
+    setIsPlaying(false);
+    // setCurrentTime(0);
+  }
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    const formattedSeconds =
+      remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+    return `${minutes}:${formattedSeconds}`;
+  }
 
   return (
-    <div className={classes.audioSec}>
-      <audio id="audio">
-        <source src={"http://webaudioapi.com/samples/audio-tag/chrono.mp3"} />
-        Your browser does not support the <code>audio</code> element.
-      </audio>
-      {/*
-      <div className={classes.controls}>
-        <div className={classes.pausePlayBtn}>
-          {playing ? (
-            <div onClick={() => setPlaying(false)}>pause</div>
-          ) : (
-            <div onClick={() => setPlaying(true)}>play</div>
-          )}
-        </div>
-        <div className={classes.barSec}>
-          <div className={classes.timeSec}>
-            <span className={classes.bar__time}>{curTime}</span>/
-            <span className={classes.bar__time}>{duration}</span>
-          </div>
-          <div className={classes.bar}>
-            <div
-              id="bar__progress"
-              className={classes.bar__progress}
-              style={{
-                background: `linear-gradient(to right, orange ${curPercentage}%, rgba(255, 255, 255, 0.4) 0)`,
-              }}
-              onMouseDown={(e) => handleTimeDrag(e)}
-            >
-              <span
-                className={classes.bar__progress__knob}
-                style={{ left: `${curPercentage - 2}%` }}
-              />
+    <div className={classes.audio_player}>
+      {audio && (
+        <div>
+          <div className={classes.sliderSec}>
+            <div className={classes.timeSec}>
+              <span>{formatTime(currentTime)}</span> /{" "}
+              <span>
+                {isNaN(parseInt(duration)) ? "-" : formatTime(duration)}
+              </span>
             </div>
+            <input
+              type="range"
+              min="0"
+              max={Math.round(duration)}
+              value={Math.round(currentTime)}
+              onChange={handleSeek}
+              aria-label="Audio Seekbar"
+            />
+          </div>
+          <div className={classes.playSec}>
+            <button onClick={isPlaying ? handlePause : handlePlay}>
+              {isPlaying ? (
+                <span class="material-symbols-outlined">pause</span>
+              ) : (
+                <span class="material-symbols-outlined">play_arrow</span>
+              )}
+            </button>
           </div>
         </div>
-      </div> */}
+      )}
     </div>
   );
 };

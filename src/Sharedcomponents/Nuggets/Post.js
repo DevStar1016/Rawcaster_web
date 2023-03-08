@@ -16,6 +16,7 @@ import {
   getAuthenticated,
   getDataValueById,
   isAccountValid,
+  isValidData,
   JSONtoformdata,
   ReadMore,
 } from "../../Shared/Utility";
@@ -145,7 +146,10 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
       nugget_id: id,
       like: like,
     };
-    likeAndUnlikeNuggetService(JSONtoformdata(nuggetData), source.current.token)
+    likeAndUnlikeNuggetService(
+      JSONtoformdata(nuggetData),
+      source.current?.token
+    )
       .then((res) => {
         if (res.data.status === 1) {
           getList();
@@ -218,9 +222,11 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
         <div className={classes.contentSec}>
           <div className={classes.feedsSec}>
             <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
-              <ReadMore CharactersLength={120} index={index}>
-                {decodeHtml(ele?.content)}
-              </ReadMore>
+              {ele && isValidData(ele?.content) && (
+                <ReadMore CharactersLength={120} index={index}>
+                  {decodeHtml(ele?.content)}
+                </ReadMore>
+              )}
             </p>
             <div className={classes.imgContainer}>
               <ImageGrid

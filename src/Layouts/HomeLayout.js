@@ -21,7 +21,10 @@ import { JSONtoformdata, RemoveToken } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAuthData } from "../Shared/Reduxfetcher";
-import { handledasboardTab } from "../Store/Redux/Reducer/DashboardReducer";
+import {
+  handledasboardTab,
+  handleisGlobalSearch,
+} from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
 
 const HomeLayout = () => {
@@ -86,20 +89,20 @@ const HomeLayout = () => {
                   <Form.Control
                     placeholder="Search Rawcaster"
                     aria-label="Search Rawcaster"
-                    // value={searchData}
-                    // onKeyDown={(e) => {
-                    //   if (e.key === "Enter") {
-                    //     if (e.nativeEvent.target.value !== "") {
-                    //       dispatch(handleisGlobalSearch(true));
-                    //       navigate(
-                    //         `/globalsearch/${e.nativeEvent.target.value}`
-                    //       );
-                    //     }
-                    //   }
-                    // }}
-                    // onChange={(e) => {
-                    //   setsearchData(e.target.value);
-                    // }}
+                    value={searchData}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        if (e.nativeEvent.target.value !== "") {
+                          dispatch(handleisGlobalSearch(true));
+                          navigate(
+                            `/globalsearch/${e.nativeEvent.target.value}`
+                          );
+                        }
+                      }
+                    }}
+                    onChange={(e) => {
+                      setsearchData(e.target.value);
+                    }}
                   />
                 </InputGroup>
               </div>

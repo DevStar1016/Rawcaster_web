@@ -149,7 +149,11 @@ const ImageGrid = ({
         />
       );
     } else if (data.media_file_type === "wav") {
-      return <>{/* <AudioPlayer url={data.path} /> */}</>;
+      return (
+        <>
+          <AudioPlayer url={data.path} />
+        </>
+      );
     } else if (data.media_type === "video") {
       return (
         <Fragment>
@@ -308,7 +312,12 @@ const ImageGrid = ({
         </Fragment>
       );
     } else if (data.media_file_type === "wav") {
-      return <>{/* <AudioPlayer url={data.path} /> */}</>;
+      return (
+        <>
+          {" "}
+          <AudioPlayer url={data.path} />
+        </>
+      );
     } else if (data.media_type === "video") {
       return (
         <Fragment>
@@ -678,18 +687,6 @@ const ImageGrid = ({
               )}
 
               <div className="custom-slider">
-                {/* <OwlCarousel
-                  className="owl-theme"
-                  margin={10}
-                  nav
-                  items={1}
-                  dots={false}
-                  navText={[
-                    '<span class="arrow prev">‹</span>',
-                    '<span class="arrow next">›</span>',
-                  ]}
-                  video={true}
-                > */}
                 <Carousel
                   indicators={false}
                   interval={null}
@@ -715,7 +712,6 @@ const ImageGrid = ({
                     );
                   })}
                 </Carousel>
-                {/* </OwlCarousel> */}
               </div>
             </div>
           </Modal>
