@@ -36,6 +36,71 @@
  .eventStatic .list a span { font-size: 22px;} 
 
 
+ /* Create Event */
+.eventShowBtn {
+    background: #563662;
+border-radius: 8px;
+font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 15px !important;
+line-height: 23px;
+display: flex;
+align-items: center;
+color: #FFFFFF;
+}
+.eventShowBtn:hover {
+    background: #F2718D !important;
+}
+ .talkShowBtn {
+    background: #FAA21B !important;
+border-radius: 8px !important;
+font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 15px !important;
+line-height: 23px;
+display: flex;
+align-items: center;
+color: #FFFFFF;
+ }
+ .eventBody {
+    padding: 15px;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 1;
+    overflow-y: scroll;
+    max-height: 400px;
+  }
+
+  .textbox {
+    background: #fff;
+    border: #E8EAEE 1px solid !important;
+    height: 48px !important;
+    clear: both;
+    border-radius: 4px !important;
+    color: #1d1d1d;
+    font-weight: 500 !important;
+    font-family: "DM Sans", sans-serif;
+    width: 100%;
+  }
+  .textBoxSec {
+    display: flex;
+    flex-direction: column;
+  }
+  .textBoxSec label {
+    color: rgba(0,0,0,.85) !important;
+    font-family: "DM Sans",sans-serif;
+    font-size: 14px!important;
+    color: #1d1c1c!important;
+    font-weight: 500;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
  @media (max-width:768px) {
 .eventSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
  }

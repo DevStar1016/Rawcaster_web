@@ -277,6 +277,67 @@ margin-bottom: 0px !important;
 .full_readmore {
   max-height: none;
 }
+
+/* Event Modal */
+.eventmodal .ant-modal-content {
+  padding: 0px !important;
+}
+.eventmodal .ant-modal-close {
+  top: 6px;
+}
+.eventmodal .ant-modal-close-x {
+  background-color: #faa21b !important;
+}
+.eventmodal .ant-modal-header {
+  background-color: #faa21b !important;
+  font-size: 17px !important;
+  padding: 12px 15px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  font-family: "DM Sans",sans-serif !important;
+  border-radius: 5px 5px 0 0 !important;
+  margin-bottom: 0px !important;
+}
+.eventmodal .ant-modal-footer {
+  background: #faa21b !important;
+  height: 57px !important;
+  padding: 10px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  float: left !important;
+  border-radius: 0 0 5px 5px !important;
+  width: 100% !important;
+  margin-top: -7px !important;
+}
+
+.eventmodal .ant-modal-body  {
+  border-radius: 0px !important;
+}
+.eventmodal .ant-btn-primary {
+  background: #fff;
+    color: #323e48;
+    border-radius: 30px;
+    font-weight: 700;
+    padding: 7px 26px;
+    min-height: 40px;
+    margin-left: 10px;
+    font-family: "DM Sans",sans-serif;
+}
+.eventmodal .ant-btn-primary:hover {
+  color: #40a9ff;
+  background: #fff;
+  border-color: #40a9ff;
+}
+.eventmodal .ant-btn-default,.eventmodal .ant-btn-default:hover {
+  font-weight: 700;
+  color: #fff;
+  padding-right: 10px;
+  font-family: "DM Sans",sans-serif;
+  cursor: pointer;
+  padding-top: 7px;
+  background-color: transparent;
+  border:none
+}
 @media (max-width:768px) {
   .singleImage { max-width: 300px !important; }
   .ant-modal-close-x { width: 20px; height: 20px; border-radius: 50px; }

@@ -42,3 +42,35 @@ line-height: 52px;
  .search_tab li button {
   padding: 10px !important;
  }
+ .TagSec {
+  padding: 25px 0;
+  width: 100% !important;
+  text-align: left;
+  border-bottom: 1px solid #ECECEC;
+  display: flex;
+  justify-content: space-between;
+ }
+ .TagSec p {
+  font-family: 'DM Sans';
+  font-style: normal;
+  color: #000000;
+  margin-bottom: 0px !important;
+ }
+ .trendLoc {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+ }
+ .trendTitle {
+  font-weight: 700;
+  font-size: 20px !important;
+  line-height: 33px !important;
+
+ }
+ .graphSec img{
+  width: 200px;
+ }
+ .graphSec {
+  display: flex;
+  justify-content: flex-start;
+ }

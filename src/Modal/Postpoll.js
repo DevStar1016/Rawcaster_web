@@ -2,9 +2,10 @@ import { Button, Form, Input } from "antd";
 import { useFormik } from "formik";
 import React from "react";
 import { Col, Row } from "react-bootstrap";
+import PollDateinputBox from "../Sharedcomponents/PollDateinputBox";
 import classes from "./Modal.module.css";
 
-const Postpoll = () => {
+const Postpoll = ({ setisPoll }) => {
   const { values, setFieldValue, handleSubmit } = useFormik({
     initialValues: {
       poll: [...Array(2).fill({ choiceData: "" })],
@@ -100,6 +101,23 @@ const Postpoll = () => {
                 </Form.Item>
               </Col> */}
             </Row>
+            <Row>
+              <p className={classes.label}>Poll Length </p>
+              <PollDateinputBox
+                onSelectDate={(date) => {
+                  console.log(date);
+                }}
+              />
+            </Row>
+            <div
+              className={classes.deleteSec}
+              onClick={() => {
+                setisPoll(false);
+              }}
+            >
+              <i className={classes.deleteIcon}></i>
+              <p>Remove Poll</p>
+            </div>
           </div>
         </div>
         <Button

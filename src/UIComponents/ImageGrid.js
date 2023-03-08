@@ -223,7 +223,7 @@ const ImageGrid = ({
         <video
           width="100%"
           height="100%"
-          style={{ zIndex: 500 }}
+          style={{ zIndex: 500, maxHeight: 525 }}
           controls
           preload="metadata"
           id={`modal_video_${i}`}
@@ -314,7 +314,6 @@ const ImageGrid = ({
     } else if (data.media_file_type === "wav") {
       return (
         <>
-          {" "}
           <AudioPlayer url={data.path} />
         </>
       );
