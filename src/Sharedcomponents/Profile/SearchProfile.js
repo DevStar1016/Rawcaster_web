@@ -73,7 +73,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
         <img src={ele.profile_img} />
       </div>
       <div className={classes.rightSec}>
-        <div className="d-flex flex-row">
+        <div className={classes.nameSectop}>
           <div className={classes.nameSec}>
             <p>{decodeHtml(ele.display_name)}</p>
             {/* <span>@TheTweetOfGod</span> */}

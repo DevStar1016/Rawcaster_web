@@ -25,12 +25,13 @@ color: #000000;
 .profileContainer .rightSec .nameSec p {
     margin-bottom: 2px !important;
     font-weight: 700; 
-    font-size: 15px;
+    font-size: 15px; display: flex;
 
 }
 .profileContainer .rightSec .nameSec span {
     font-size: 15px;
 }
+.profileContainer .rightSec .nameSectop { width: 100%; display: flex; justify-content: space-around;}
 .profileContainer .rightSec .actionBtn {
     display: flex;
     flex-direction: row;
