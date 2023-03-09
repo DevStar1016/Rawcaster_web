@@ -233,6 +233,36 @@ height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; m
 .addSec span {
 cursor: pointer;
 }
+.deleteSec {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin: 10px 0;
+  color: #F5323E;
+}
+.deleteIcon {
+  float: left;
+  width: 22px;
+  height: 22px;
+  background: #F5323E;
+  mask: url("../Assets/Icons/svg/trash.svg") no-repeat center / contain;
+  -webkit-mask: url("../Assets/Icons/svg/trash.svg") no-repeat center /
+    contain;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.deleteSec p {
+  margin-bottom: 0px !important;
+  font-family: 'DM Sans';
+font-style: normal;
+font-weight: 400;
+font-size: 17px;
+line-height: 29px;
+text-align: center;
+margin-top: 2px;
+cursor: pointer;
+}
 @media (max-width:768px) {
   .topProsec .rightSec { margin: 15px 0; }
   .topProsec .rightSec img {height: 20px; padding-left: 5px;}

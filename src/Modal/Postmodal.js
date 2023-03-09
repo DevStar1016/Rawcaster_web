@@ -93,7 +93,7 @@ const Postmodal = ({ visible, onClose }) => {
       }}
     >
       <div className={classes.nuggetModal}>
-        <h1>Post Nugget</h1>
+        <h1>Post {isPoll ? "Poll" : "Nugget"}</h1>
 
         <div className={classes.topProsec}>
           <img className={classes.imguser} src={loginUserData?.profile_image} />
@@ -210,7 +210,7 @@ const Postmodal = ({ visible, onClose }) => {
           </div>
         </div>
         {isPoll ? (
-          <Postpoll />
+          <Postpoll setisPoll={setisPoll} />
         ) : (
           <>
             <div className={classes.postTextcontent}>

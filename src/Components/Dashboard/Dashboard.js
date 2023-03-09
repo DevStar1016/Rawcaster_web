@@ -6,9 +6,9 @@ import {
   useDashboard,
 } from "../../Shared/Reduxfetcher";
 import DashboardSignup from "../../Sharedcomponents/DashboardSignup";
-import Events from "../../Sharedcomponents/Events";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import { removeSessionStorageData } from "../../Store/Storage";
+import Events from "../Events/Events";
 import classes from "./Dashboard.module.css";
 
 const Dashboard = () => {

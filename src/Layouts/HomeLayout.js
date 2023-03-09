@@ -1,7 +1,7 @@
 import { Dropdown, Layout, Menu, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
-import { Outlet, useNavigate, useParams } from "react-router";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import classes from "./Layout.module.css";
 import ProfileImg from "../UIComponents/ProfileImg";
 import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
@@ -29,6 +29,7 @@ import { removeSessionStorageData } from "../Store/Storage";
 
 const HomeLayout = () => {
   const params = useParams();
+  const { pathname } = useLocation();
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
@@ -68,6 +69,11 @@ const HomeLayout = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!pathname.includes("globalsearch")) {
+      setsearchData("");
+    }
+  }, [pathname]);
   return (
     <>
       <Layout>
