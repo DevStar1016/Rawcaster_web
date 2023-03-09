@@ -184,6 +184,7 @@ cursor: pointer;
 .nopad { padding: 0 !important;}
 @media (max-width:768px) {
 .loginSec { margin-top: 0 !important; }
+.altSignBtn { justify-content: left; padding-left: 20px;}
 .loginSec, .loginbg, .sliderSec, .verifybg { display: block !important; width: 100% !important; }
 .subText { font-size: 15px; line-height: 23px !important; }
 .heading_h1 {font-size: 26px !important; line-height: 26px !important; margin-top: 10px !important; margin-bottom:10px !important; }
