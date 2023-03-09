@@ -65,17 +65,9 @@ const Postmodal = ({ visible, onClose }) => {
       .catch((err) => {
         const { type, message } = err;
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
-          toast.error(
-            "browser does not have permission to access camera or microphone"
-          );
+          toast.error("browser does not have permission to access microphone");
         } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
-          toast.error("user didn't allow app to access camera or microphone");
-        } else if (
-          type === MediaPermissionsErrorType.CouldNotStartVideoSource
-        ) {
-          toast.error(
-            "camera is in use by another application (Zoom, Skype) or browser tab (Google Meet, Messenger Video)"
-          );
+          toast.error("user didn't allow app to access microphone");
         } else {
           toast.error(message);
         }

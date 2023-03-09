@@ -17,6 +17,7 @@ import { toast } from "react-hot-toast";
 import { useDashboard } from "./Shared/Reduxfetcher";
 import Spinner from "./Sharedcomponents/Spinner";
 import axios from "axios";
+import ImageCrop from "./Sharedcomponents/ImageCrop";
 
 function App() {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ function App() {
   return (
     <>
       {isLoading ? <Spinner /> : null}
+      <ImageCrop />
       <RouterProvider router={router} />
     </>
   );

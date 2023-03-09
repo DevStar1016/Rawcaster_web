@@ -1,6 +1,5 @@
 import { Modal } from "antd";
 import React, { Fragment, useEffect, useState } from "react";
-import OwlCarousel from "react-owl-carousel";
 import classes from "./ImageGrid.module.css";
 import BackgroundImg from "../Assets/Images/png/audioImg.png";
 import { useInView } from "react-hook-inview";
@@ -39,22 +38,20 @@ const ImageGrid = ({
     const length = imgArray.length;
 
     if (length === 1) {
-      return 0.89;
+      return 1.89;
     } else if (length === 2) {
       return 0.7;
     } else if (length >= 3) {
       if (index === 1) {
         return 1;
+      } else {
+        if (length === 3) {
+          return 0.8;
+        } else if (length === 4) {
+          return 0.9;
+        } else {
+        }
       }
-      return 0.8;
-      // else {
-      //   if (length === 3) {
-      //     return 0.8;
-      //   }
-      //    else if (length === 4) {
-      //     return 0.9;
-      //   }
-      // }
     }
     return 1.3;
   };
@@ -135,7 +132,7 @@ const ImageGrid = ({
     }
   };
 
-  const imageOrVideoSingle = (data) => {
+  const imageOrVideoSingle = (data, index) => {
     if (data.media_type === "image") {
       return (
         <img
@@ -145,7 +142,7 @@ const ImageGrid = ({
           className="imgGridsize"
           src={data.path}
           alt=""
-          style={{ zIndex: 0 }}
+          style={{ zIndex: 0, aspectRatio: getAspectRatio(index) }}
         />
       );
     } else if (data.media_file_type === "wav") {
@@ -398,7 +395,7 @@ const ImageGrid = ({
             {imgArray.length === 1 ? (
               <div>
                 <div className="singleImage">
-                  {imageOrVideoSingle(imgArray[0])}
+                  {imageOrVideoSingle(imgArray[0], 0)}
                 </div>
               </div>
             ) : null}
