@@ -141,6 +141,7 @@ text-transform: uppercase; color: #1D1C1C; margin-bottom: 0;
    display: flex;
    flex-direction: row;
    align-items: center;
+   justify-content: center;
 }
 .altSignBtn  img {
    height: 20px;
@@ -198,7 +199,6 @@ cursor: pointer;
 .verifyCopy img { width: 16px; margin-right: 7px !important; margin-top: -2px; display: inline-block; float: none; }
 .verifyCopy p { display: inline-block; }
 .stepOne span, .stepTwo { display: none; }
-.altSignBtn {justify-content: center;}
 .goBackBtn { display: none;}
 }
 @media (min-width:768px) {

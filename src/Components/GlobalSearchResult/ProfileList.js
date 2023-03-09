@@ -129,7 +129,7 @@ const ProfileList = () => {
   };
 
   return (
-    <div className={`mt-3 ${classes.profileSec}`} ref={scrollRef}>
+    <div className={` ${classes.profileSec}`} ref={scrollRef}>
       {getValidPeople().map((ele) => {
         return (
           <SearchProfile

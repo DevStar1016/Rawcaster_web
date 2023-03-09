@@ -1,12 +1,12 @@
 .mainContainer { height: 92vh;   max-width: 670px;margin: auto;background: #FFFFFF;
-  border: 1px solid #ECECEC;
-  border-radius: 12px; padding: 20px;margin-top: 67px !important;  }
+  border-left: 1px solid #ECECEC; border-right: 1px solid #ECECEC;
+  padding: 20px;margin-top: 67px !important;  }
 .mainContainer .searchResultName {
   font-family: 'DM Sans';
-font-style: normal;
-font-weight: 700;
-font-size: 30px;
-line-height: 52px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 35px;
 }
 .mainContainer .searchResultName span {
   color: #E26386;
@@ -32,8 +32,8 @@ line-height: 52px;
   font-family: 'DM Sans';
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
-  line-height: 27px;
+  font-size: 17px;
+  line-height: 25px;
   text-align: center;
  
   color: #000000;
