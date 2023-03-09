@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import {
   addNuggetCommentService,
   deleteNuggetCommentService,
+  editNuggetCommentService,
 } from "../../Services/ApiService";
 import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
@@ -26,8 +27,10 @@ const CommentsList = ({ index }) => {
     useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [CommentTxt, setCommentTxt] = useState([]);
+  const [EditData, seteditData] = useState([]);
   const [isReplyEnabled, setisReplyEnabled] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
+  const [isActiveEdit, setisActiveEdit] = useState("");
 
   const AddCommentforAnugget = (id, comment, type = 1) => {
     let addComment = {
@@ -41,6 +44,25 @@ const CommentsList = ({ index }) => {
         if (res.data.status === 1) {
           getNuggetList();
           getCommentList(id);
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
+  const EditCommentforAnugget = (id, comment, type = 1) => {
+    let editComment = {
+      token: loginUserData?.token,
+      comment_id: id,
+      comment: comment,
+    };
+    editNuggetCommentService(JSONtoformdata(editComment))
+      .then((res) => {
+        if (res.data.status === 1) {
+          setisActiveEdit("");
         } else {
           toast.error(res.data.msg);
         }
@@ -68,6 +90,12 @@ const CommentsList = ({ index }) => {
         toast.error(err.message);
       });
   };
+
+  const getCommentValue = (comment_id) => {
+    let findData = CommentList.find((ele) => ele.comment_id === comment_id);
+    return findData;
+  };
+
   return (
     <div className={classes.cmtSec}>
       {isCommentLoading ? (
@@ -85,72 +113,188 @@ const CommentsList = ({ index }) => {
               {CommentList.map((elem, ind) => {
                 return (
                   <>
-                    <div className={classes.item}>
-                      <div className={classes.proImg}>
-                        <img
-                          src={elem?.profile_image}
-                          alt={elem?.profile_image}
-                        />
-                      </div>
-                      <div className={classes.rightitem}>
-                        <div className="d-flex flex-row">
-                          <div className={classes.cmtText}>
-                            <p>{decodeHtml(elem?.name)}</p>
-                            <span>{decodeHtml(elem?.comment)}</span>
-                          </div>
-                          <Dropdown
-                            menu={{
-                              items: [
-                                {
-                                  label: <div>Edit</div>,
-                                  key: "0",
-                                },
-                                {
-                                  label: (
-                                    <div
-                                      onClick={() => {
-                                        handleDeleteNuggetComment(
-                                          elem.comment_id
-                                        );
-                                      }}
-                                    >
-                                      Delete
-                                    </div>
-                                  ),
-                                  key: "1",
-                                },
-                              ],
+                    {isActiveEdit === elem.comment_id ? (
+                      <div className={classes.comtArea}>
+                        <div className={classes.proImg}>
+                          <img
+                            src={loginUserData?.profile_image}
+                            alt="profile_image"
+                          />
+                        </div>
+                        <div className={classes.textBox}>
+                          <Input
+                            placeholder="Write your Comment here..."
+                            value={getCommentValue(elem.comment_id).comment}
+                            onChange={(e) => {
+                              let editData = {
+                                ...getCommentValue(elem.comment_id),
+                                comment: e.target.value,
+                              };
+                              let tempData = [...CommentList];
+                              tempData[ind].comment = e.target.value;
+                              setCommentTxt(tempData);
+
+                              if (EditData.length === 0) {
+                                seteditData([editData]);
+                              } else {
+                                seteditData((pre) => [...pre, editData]);
+                              }
                             }}
-                            trigger={["click"]}
-                          >
-                            <div className={classes.moreBtn}>
-                              <i class="material-symbols-outlined">
-                                more_horiz
-                              </i>
+                          />
+                          <img
+                            className={classes.emojiicon}
+                            alt="emoji"
+                            src={emoji}
+                            onClick={() => {
+                              if (showEmojis === elem.comment_id) {
+                                setShowEmojis("");
+                              } else {
+                                setShowEmojis(elem.comment_id);
+                              }
+                            }}
+                          />
+                          {showEmojis === elem.comment_id && (
+                            <div
+                              style={{
+                                position: "absolute",
+                                bottom: "90%",
+                                right: "50px",
+                                zIndex: 11,
+                              }}
+                            >
+                              <EmojiPicker
+                                previewConfig={{
+                                  showPreview: false,
+                                }}
+                                onEmojiClick={(e) => {
+                                  let tempData = [...CommentList];
+                                  tempData[ind].comment = tempData[
+                                    ind
+                                  ].comment.concat(e.emoji);
+                                  setCommentTxt(tempData);
+                                  let editData = {
+                                    ...getCommentValue(elem.comment_id),
+                                    comment: getCommentValue(
+                                      elem.comment_id
+                                    ).comment.concat(e.emoji),
+                                  };
+                                  let findIndex = EditData.findIndex(
+                                    (ele) => ele.comment_id === elem.comment_id
+                                  );
+                                  if (findIndex !== -1) {
+                                    let tmpData = [...EditData];
+                                    tmpData[findIndex] = editData;
+                                    seteditData(tmpData);
+                                  } else {
+                                    if (EditData.length === 0) {
+                                      seteditData([editData]);
+                                    } else {
+                                      seteditData((pre) => [...pre, editData]);
+                                    }
+                                  }
+                                }}
+                              />
                             </div>
-                          </Dropdown>
-                        </div>
-                        <div className="clearfix"></div>
-                        <div className={classes.agree}>
-                          <img src={hearticon} alt="Heart_Icon" /> Agree
-                        </div>
-                        <div
-                          className={classes.agree}
-                          onClick={() => {
-                            if (isReplyEnabled) {
-                              setisReplyEnabled("");
-                            } else {
-                              setisReplyEnabled(elem.comment_id);
-                            }
-                          }}
-                        >
-                          <img src={replyicon} alt="reply_icon" /> Reply
-                        </div>
-                        <div className={classes.time}>
-                          {dayjs(elem?.created_date).fromNow(true)} ago
+                          )}
+                          <img
+                            className={classes.sendicon}
+                            src={sendicon}
+                            alt="send_icon"
+                            onClick={() => {
+                              let findData = EditData.find(
+                                (ele) => ele.comment_id === elem.comment_id
+                              );
+                              if (findData) {
+                                if (isValidData(findData.comment)) {
+                                  EditCommentforAnugget(
+                                    elem.comment_id,
+                                    findData.comment
+                                  );
+                                  setShowEmojis("");
+                                } else {
+                                  toast.error("Please Enter Valid Comment");
+                                }
+                              }
+                            }}
+                          />
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className={classes.item}>
+                        <div className={classes.proImg}>
+                          <img
+                            src={elem?.profile_image}
+                            alt={elem?.profile_image}
+                          />
+                        </div>
+                        <div className={classes.rightitem}>
+                          <div className="d-flex flex-row">
+                            <div className={classes.cmtText}>
+                              <p>{decodeHtml(elem?.name)}</p>
+                              <span>{decodeHtml(elem?.comment)}</span>
+                            </div>
+                            <Dropdown
+                              menu={{
+                                items: [
+                                  {
+                                    label: (
+                                      <div
+                                        onClick={() => {
+                                          setisActiveEdit(elem.comment_id);
+                                        }}
+                                      >
+                                        Edit
+                                      </div>
+                                    ),
+                                    key: "0",
+                                  },
+                                  {
+                                    label: (
+                                      <div
+                                        onClick={() => {
+                                          handleDeleteNuggetComment(
+                                            elem.comment_id
+                                          );
+                                        }}
+                                      >
+                                        Delete
+                                      </div>
+                                    ),
+                                    key: "1",
+                                  },
+                                ],
+                              }}
+                              trigger={["click"]}
+                            >
+                              <div className={classes.moreBtn}>
+                                <i class="material-symbols-outlined">
+                                  more_horiz
+                                </i>
+                              </div>
+                            </Dropdown>
+                          </div>
+                          <div className="clearfix"></div>
+                          <div className={classes.agree}>
+                            <img src={hearticon} alt="Heart_Icon" /> Agree
+                          </div>
+                          <div
+                            className={classes.agree}
+                            onClick={() => {
+                              if (isReplyEnabled) {
+                                setisReplyEnabled("");
+                              } else {
+                                setisReplyEnabled(elem.comment_id);
+                              }
+                            }}
+                          >
+                            <img src={replyicon} alt="reply_icon" /> Reply
+                          </div>
+                          <div className={classes.time}>
+                            {dayjs(elem?.created_date).fromNow(true)} ago
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <div style={{ display: "flex", justifyContent: "end" }}>
                       <ReplyList

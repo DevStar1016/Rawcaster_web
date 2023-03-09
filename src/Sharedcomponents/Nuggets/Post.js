@@ -173,6 +173,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   const SingleNuggetData = {
     nugget_id: Comments,
     CommentList: CommentList,
+    setCommentList: setCommentList,
     isCommentLoading: isCommentLoading,
     setCommentList: setCommentList,
     getCommentList(id) {
