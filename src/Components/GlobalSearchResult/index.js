@@ -12,7 +12,7 @@ const GlobalSearchResult = () => {
   const params = useParams();
 
   return (
-    <div className="d-none d-sm-block">
+    <div>
       <div className={classes.mainContainer}>
         <p className={classes.searchResultName}>
           Search Results for <span>{params?.key}</span>{" "}

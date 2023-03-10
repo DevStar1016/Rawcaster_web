@@ -81,7 +81,6 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           <div className={classes.actionBtn}>
             {!ele?.follow && (
               <Button
-                style={{ marginLeft: "10px" }}
                 htmlType="Continue"
                 size="large"
                 className={classes.fanBtn}
@@ -95,16 +94,26 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
             )}
             <Button
               type="primary"
-              style={{ marginLeft: "10px" }}
               htmlType="Continue"
               size="large"
-              className={classes.connectBtn}
+              className={`d-none d-sm-block ${classes.connectBtn}`}
               onClick={() => {
                 handleFriendRequest(ele);
               }}
             >
               Request to connect{" "}
               <span class="material-symbols-outlined">arrow_forward</span>
+            </Button>
+            <Button
+              type="primary"
+              htmlType="Continue"
+              size="large"
+              className={`d-block d-sm-none ${classes.connectBtn}`}
+              onClick={() => {
+                handleFriendRequest(ele);
+              }}
+            >
+              <span class="material-symbols-outlined">add</span>
             </Button>
           </div>
         </div>

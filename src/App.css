@@ -342,4 +342,6 @@ margin-bottom: 0px !important;
   .singleImage { max-width: 300px !important; }
   .ant-modal-close-x { width: 20px; height: 20px; border-radius: 50px; }
   .anticon svg {fill: #000; font-size: 10px; margin-top: -8px; }
+  .search_tab li .nav-link  { padding: 4px 12px!important; font-size: 14px !important; }
+  .readmore_text { max-height: 40px; font-size: 13px; }
 }

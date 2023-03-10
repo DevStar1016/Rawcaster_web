@@ -38,7 +38,7 @@ color: #000000;
     justify-content: flex-end;
     width: 100%;
 }
-.actionBtn .fanBtn,.actionBtn .fanBtn:hover {
+.actionBtn .fanBtn, .actionBtn .fanBtn:hover {
     border: #f2718d 1px solid;
     border-radius: 7px;
     color: #FFF;
@@ -49,7 +49,7 @@ color: #000000;
     padding: 10px 15px;
     display: flex;
     flex-direction: row;
-    height: 45px;
+    height: 45px; margin-left: 10px;
   }
 
 .actionBtn .connectBtn,.actionBtn .connectBtn:hover {
@@ -63,7 +63,7 @@ color: #000000;
     padding: 10px 10px;
     height: 45px;
     display: flex;
-    flex-direction: row;
+    flex-direction: row; margin-left: 10px;
   }
   .actionBtn span {
     margin-left: 5px;
@@ -76,3 +76,14 @@ color: #000000;
     color: #f2718d !important;
     text-decoration: none !important;
   }
+  
+@media (max-width:768px) {
+  .profileContainer { padding: 10px 0;}
+  .profileContainer .rightSec { width: calc(100% - 60px); }
+  .profileContainer img { width: 45px; height: 45px; margin-right: 8px; }
+  .actionBtn .connectBtn { cursor: pointer; padding: 2px 0 !important; height: 24px; width: 24px; border-radius: 25px; background: #f2718d; }
+  .actionBtn .connectBtn span { margin-left: 0; color: #fff; }
+  .actionBtn .fanBtn { margin-left: 5px; border-radius: 15px; background: #AE567A; color: #fff; border: none; font-size: 10px; height: 26px; padding:4px 5px; }
+  .actionBtn .fanBtn span {display: none;}
+  .bioSec p { margin-bottom: 5px;}
+}

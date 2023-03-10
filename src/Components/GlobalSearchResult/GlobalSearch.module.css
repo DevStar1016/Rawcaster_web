@@ -74,3 +74,9 @@
   display: flex;
   justify-content: flex-start;
  }
+
+ @media (max-width:768px) {
+ .mainContainer { padding: 15px;} 
+ .searchResultName { font-size: 22px !important;}
+ .nuggetSec { padding: 0;}
+ }
