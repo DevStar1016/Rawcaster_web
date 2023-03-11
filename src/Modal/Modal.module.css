@@ -57,8 +57,10 @@
 .topProsec .rightSec { display: flex; float:right;}
 .topProsec .rightSec img:first-child { border: none; }
 .topProsec .rightSec img { margin-left: 12px; cursor: pointer; height: 21px; padding-left: 12px; border-left: 1px solid #ECECEC; }
-.btnstyle { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; margin-top: 20px; width: 100%; font-weight: 600; font-size: 16px; }
-.btnstyle:hover { background: #f2718d; color: #fff !important; }
+.btnstyle,.disabledBtn { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; margin-top: 20px; width: 100%; font-weight: 600; font-size: 16px; }
+.btnstyle:hover,.disabledBtn:hover{ background: #f2718d; color: #fff !important; }
+.disabledBtn,.disabledBtn:hover { background-color: #e8849a; cursor:auto !important;}
+
 .cameraSec .btnSec {
    position: absolute; width: 100%; bottom: 20px; text-align: center; z-index: 1;  
 }
@@ -161,7 +163,7 @@ border-bottom: 0.5px solid grey;
 .emojiIcon { position: absolute; right: 0; bottom: 0; background: #fff; }
 .emojiPart { position: absolute; right: 0; z-index: 11; }
 .attachementtDisplay { border: 2px dashed #ced0d4bf; border-radius: 12px; margin-top: 20px; display: flex;overflow-y: scroll; }
-.pollContainer { border: 2px dashed #ced0d4bf; border-radius: 12px; margin-top: 20px; }
+.pollContainer { border: 2px dashed #ced0d4bf; border-radius: 12px; }
 .cardcontent { background-color: #eeeeee;  min-width: 100px; border: #d9d9d900 1px solid;
   height: 90px;max-width: 20%; margin:7px;  position: relative;  border-radius: 10px;  overflow: hidden;
   position: relative;}

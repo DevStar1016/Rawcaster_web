@@ -1,4 +1,5 @@
 import Dashboard from "../Components/Dashboard/Dashboard";
+import Development from "../Components/Development";
 import GlobalSearchResult from "../Components/GlobalSearchResult";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
@@ -49,6 +50,10 @@ export const DashboardRoute = () => {
         {
           path: "cookiespolicy",
           element: <Cookiespolicy />,
+        },
+        {
+          path: "dev",
+          element: <Development />,
         },
       ],
     },

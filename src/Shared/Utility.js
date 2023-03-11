@@ -249,7 +249,6 @@ export const ReadMore = ({ children }) => {
   const textRef = useRef(null);
   const toggleShowFullText = () => setShowFullText(!showFullText);
   useEffect(() => {
-    console.log(textRef.current.clientHeight);
     setTextHeight(textRef.current.clientHeight);
   }, []);
   return (

@@ -223,3 +223,15 @@ export const globalSearchNuggetsService = (data, token) => {
     cancelToken: token,
   });
 };
+
+export const globalSearchEventsService = (data, token) => {
+  return axios.post("globalsearchevents", data, {
+    cancelToken: token,
+  });
+};
+
+//Polling
+
+export const pollVoteService = (data) => {
+  return axios.post("pollvote", data);
+};

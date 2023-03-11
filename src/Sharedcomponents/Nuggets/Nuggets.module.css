@@ -38,7 +38,9 @@
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
- .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left}
+ .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left; display: flex;
+  flex-direction: column;
+  justify-content: space-between;}
  .feedsSec p { white-space: pre-wrap; line-break: anywhere; }
  .nuggetsFeed { width: 100%; border-radius: 12px; }
  .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
@@ -73,10 +75,10 @@
 .cmtSec .rightitem .agree { cursor: pointer; display: flex; align-items: center; justify-content: center; float: left; margin-right: 10px; }
 .cmtSec .rightitem .agree img { height: 13px; margin-right: 4px; }
 .cmtSec .comtArea { display: flex;margin-top: 5px;}
-.cmtSec .comtArea .textBox { position: relative;}
-.cmtSec .comtArea .textBox input { border: none; height: 48px; padding-left: 15px; background: #F1F2F5; border-radius: 30px; margin-top: 3px; font-family:  "Noto Color Emoji"; }
-.cmtSec .comtArea .textBox .sendicon { cursor: pointer; position: absolute; right:15px; top:12px; height: 32px;}
-.cmtSec .comtArea .textBox .emojiicon { cursor: pointer; position: absolute; right:50px; top:12px; height: 30px;}
+.cmtSec .comtArea .textBox .inputSec { border: none; height: 48px; padding-left: 15px; background: #F1F2F5; border-radius: 30px; margin-top: 3px;display: flex; flex-direction: row;align-items: center; }
+.cmtSec .comtArea .textBox .inputSec input,.cmtSec .comtArea .textBox .inputSec input:focus { width: 80% !important; margin-right: 10px; background-color: transparent !important; border: none !important; box-shadow: none !important;}
+.cmtSec .comtArea .textBox .sendicon { cursor: pointer; right:15px; top:12px; height: 32px;}
+.cmtSec .comtArea .textBox .emojiicon { cursor: pointer; right:50px; top:12px; height: 30px;}
 
  .inactive_like_icon, .disabled_like_icon {
    float: left;

@@ -1,0 +1,66 @@
+.container {
+    color: #19181f;
+    display: flex;
+    flex-direction: column;
+  }
+  .answer {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    position: relative;
+    transition: background-color 0.3s ease-out;
+  }
+  .answer_hover:hover {
+    background-color: "#F2718D" !important;
+  }
+  .answer:hover {
+    cursor: pointer;
+ 
+  }
+  .answerInner {
+    width: 0;
+    left: 0;
+    margin: 0;
+    height: 100%;
+    border-radius: 8px;
+    text-align: left;
+
+  }
+  .answerInner p {
+    margin: 0;
+    padding:0.75rem 1rem;
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 23px;
+    white-space: nowrap;
+    overflow:visible;
+  }
+  .headingStyle {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 31px;
+    color: #000000;
+    margin-bottom: 20px !important;
+  }
+  .answer span {
+    position: absolute;
+    right: 1rem;
+    top: 25%;
+    font-size: 1.2rem;
+  }
+  .detailSec {
+    display: flex;
+    flex-direction: row;
+  }
+  .detailSec p {
+    margin: 0 5px;
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 23px;
+  }
