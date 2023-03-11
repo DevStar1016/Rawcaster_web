@@ -66,7 +66,6 @@ const Nuggets = () => {
     listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
       .then((res) => {
         if (res.data.status === 1) {
-          console.log(res.data);
           if (res.data.current_page_no === 1) {
             setNuggetList(res.data.nuggets_list);
           } else {

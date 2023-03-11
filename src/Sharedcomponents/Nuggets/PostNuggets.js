@@ -23,6 +23,7 @@ const PostNuggets = ({ getNuggetList }) => {
   const ImageRef = useRef();
   const VideoRef = useRef();
   const [NuggetData, setNuggetData] = useState([]);
+  const [PollData, setPollData] = useState();
   const [postModalShow, setpostModalShow] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const LoginUserData = useAuthData();
@@ -41,7 +42,7 @@ const PostNuggets = ({ getNuggetList }) => {
     });
 
   const uploadNugget = (val) => {
-    if (NuggetData.length === 0 && !isValidData(val.content)) {
+    if (NuggetData.length === 0 && !isValidData(val.content) && !PollData) {
       toast.error("Sorry! Nuggets content or Media can not be empty.");
       return;
     }
@@ -49,10 +50,18 @@ const PostNuggets = ({ getNuggetList }) => {
     let formData = new FormData();
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
-    formData.append("content", val.content);
+
     for (const file of NuggetData) {
       console.log(URL.createObjectURL(file));
       formData.append("nuggets_media[]", file);
+    }
+    if (PollData) {
+      let ChoiceArray = PollData.poll_option.map((ele) => ele.choiceData);
+      formData.append("poll_option", JSON.stringify(ChoiceArray));
+      formData.append("poll_duration", PollData.duration);
+      formData.append("content", PollData.content);
+    } else {
+      formData.append("content", val.content);
     }
     addNuggetsService(formData, handleProgress)
       .then((res) => {
@@ -92,6 +101,7 @@ const PostNuggets = ({ getNuggetList }) => {
     handleSubmit: handleSubmit,
     setFieldValue: setFieldValue,
     resetForm: resetForm,
+    setPollData: setPollData,
     NuggetData: NuggetData,
     values: values,
   };

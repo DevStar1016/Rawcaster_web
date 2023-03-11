@@ -63,7 +63,6 @@ const ProfileList = () => {
     )
       .then((res) => {
         if (res.data.status === 1) {
-          console.log("test");
           if (res.data.current_page_no === 1) {
             setPeopleList(res.data.users_list);
           } else {

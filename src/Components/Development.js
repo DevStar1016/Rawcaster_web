@@ -1,20 +1,35 @@
-import React from "react";
-import {
-  ReactMediaRecorder,
-  useReactMediaRecorder,
-} from "react-media-recorder";
+import React, { useState } from "react";
+import MultiplePoll from "../UIComponents/MultiplePoll/MultiplePoll";
 
 const Development = () => {
-  const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ audio: true });
+  const [VoteData, setVoteData] = useState();
+  const [Values, setValues] = useState([
+    {
+      option_id: 11,
+      option_name: "Yes",
+      option_percentage: 25.0,
+    },
+    {
+      option_id: 12,
+      option_name: "No",
+      option_percentage: 75.0,
+    },
+  ]);
 
-  console.log(mediaBlobUrl);
   return (
-    <div>
-      <p>{status}</p>
-      <button onClick={startRecording}>Start Recording</button>
-      <button onClick={stopRecording}>Stop Recording</button>
-      {/* <video src={mediaBlobUrl} controls autoPlay loop /> */}
+    <div className="w-25 mt-5 pt-5 m-auto">
+      <MultiplePoll
+        question={"What you wanna ask?"}
+        results={Values}
+        onVote={(item, results) => {
+          console.log(item, results);
+          setVoteData(item);
+          setValues(results);
+        }}
+        isVoted={false}
+        isVotedId={VoteData?.id || ""}
+        VoteTiming={"2:13:22"}
+      />
     </div>
   );
 };

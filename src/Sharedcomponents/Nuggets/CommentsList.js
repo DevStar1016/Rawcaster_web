@@ -19,7 +19,7 @@ import {
   useSingleNuggetContext,
 } from "../../Shared/Context";
 import ReplyList from "./ReplyList";
-import EmojiPicker from "emoji-picker-react";
+import EmojiPicker from "../../UIComponents/EmojiPicker";
 
 const CommentsList = ({ index }) => {
   const { getNuggetList } = useListNuggetContext();
@@ -122,61 +122,101 @@ const CommentsList = ({ index }) => {
                           />
                         </div>
                         <div className={classes.textBox}>
-                          <Input
-                            placeholder="Write your Comment here..."
-                            value={getCommentValue(elem.comment_id).comment}
-                            onChange={(e) => {
-                              let editData = {
-                                ...getCommentValue(elem.comment_id),
-                                comment: e.target.value,
-                              };
-                              let tempData = [...CommentList];
-                              tempData[ind].comment = e.target.value;
-                              setCommentTxt(tempData);
+                          <div className={classes.inputSec}>
+                            <Input.TextArea
+                              placeholder="Write your Comment here..."
+                              value={getCommentValue(elem.comment_id).comment}
+                              onChange={(e) => {
+                                let editData = {
+                                  ...getCommentValue(elem.comment_id),
+                                  comment: e.target.value,
+                                };
+                                let tempData = [...CommentList];
+                                tempData[ind].comment = e.target.value;
+                                setCommentTxt(tempData);
 
-                              if (EditData.length === 0) {
-                                seteditData([editData]);
-                              } else {
-                                seteditData((pre) => [...pre, editData]);
-                              }
-                            }}
-                          />
-                          <img
-                            className={classes.emojiicon}
-                            alt="emoji"
-                            src={emoji}
-                            onClick={() => {
-                              if (showEmojis === elem.comment_id) {
-                                setShowEmojis("");
-                              } else {
-                                setShowEmojis(elem.comment_id);
-                              }
-                            }}
-                          />
+                                if (EditData.length === 0) {
+                                  seteditData([editData]);
+                                } else {
+                                  seteditData((pre) => [...pre, editData]);
+                                }
+                              }}
+                            />
+                            <img
+                              className={classes.emojiicon}
+                              alt="emoji"
+                              src={emoji}
+                              onClick={() => {
+                                if (showEmojis === elem.comment_id) {
+                                  setShowEmojis("");
+                                } else {
+                                  setShowEmojis(elem.comment_id);
+                                }
+                              }}
+                            />
+
+                            <img
+                              className={classes.sendicon}
+                              src={sendicon}
+                              alt="send_icon"
+                              onClick={() => {
+                                let findData = EditData.find(
+                                  (ele) => ele.comment_id === elem.comment_id
+                                );
+                                if (findData) {
+                                  if (isValidData(findData.comment)) {
+                                    EditCommentforAnugget(
+                                      elem.comment_id,
+                                      findData.comment
+                                    );
+                                    setShowEmojis("");
+                                  } else {
+                                    toast.error("Please Enter Valid Comment");
+                                  }
+                                }
+                              }}
+                            />
+                          </div>
                           {showEmojis === elem.comment_id && (
                             <div
-                              style={{
-                                position: "absolute",
-                                bottom: "90%",
-                                right: "50px",
-                                zIndex: 11,
-                              }}
+                              style={
+                                {
+                                  // position: "absolute",
+                                  // bottom: "90%",
+                                  // right: "50px",
+                                  // zIndex: 11,
+                                }
+                              }
                             >
                               <EmojiPicker
-                                previewConfig={{
-                                  showPreview: false,
-                                }}
-                                onEmojiClick={(e) => {
+                                emojiButtonColors={["#364157"]}
+                                emojiButtonRadius="8px"
+                                skinTonePosition="none"
+                                previewPosition="none"
+                                // onClickOutside={() => {
+                                //   setShowEmojis(!showEmojis);
+                                // }}
+                                categories={[
+                                  "people",
+                                  "nature",
+                                  "foods",
+                                  "activity",
+                                  "places",
+                                  "objects",
+                                  "symbols",
+                                  "flags",
+                                ]}
+                                onEmojiSelect={(e) => {
                                   let tempData = [...CommentList];
                                   tempData[ind].comment = tempData[
                                     ind
-                                  ].comment.concat(e.emoji);
+                                  ].comment.concat(e.native);
                                   setCommentTxt(tempData);
                                   let editData = {
                                     ...getCommentValue(elem.comment_id),
                                     comment: getCommentValue(
                                       elem.comment_id
-                                    ).comment.concat(e.emoji),
+                                    ).comment.concat(e.native),
                                   };
                                   let findIndex = EditData.findIndex(
                                     (ele) => ele.comment_id === elem.comment_id
@@ -196,27 +236,6 @@ const CommentsList = ({ index }) => {
                               />
                             </div>
                           )}
-                          <img
-                            className={classes.sendicon}
-                            src={sendicon}
-                            alt="send_icon"
-                            onClick={() => {
-                              let findData = EditData.find(
-                                (ele) => ele.comment_id === elem.comment_id
-                              );
-                              if (findData) {
-                                if (isValidData(findData.comment)) {
-                                  EditCommentforAnugget(
-                                    elem.comment_id,
-                                    findData.comment
-                                  );
-                                  setShowEmojis("");
-                                } else {
-                                  toast.error("Please Enter Valid Comment");
-                                }
-                              }
-                            }}
-                          />
                         </div>
                       </div>
                     ) : (
@@ -319,46 +338,81 @@ const CommentsList = ({ index }) => {
           <img src={loginUserData?.profile_image} alt="profile_image" />
         </div>
         <div className={classes.textBox}>
-          <Input
-            placeholder="Write your Comment here..."
-            value={CommentTxt[index]}
-            onChange={(e) => {
-              let tempData = [...CommentTxt];
-              tempData[index] = e.target.value;
-              setCommentTxt(tempData);
-            }}
-          />
-          <img
-            className={classes.emojiicon}
-            alt="emoji"
-            src={emoji}
-            onClick={() => {
-              if (showEmojis === nugget_id) {
-                setShowEmojis("");
-              } else {
-                setShowEmojis(nugget_id);
-              }
-            }}
-          />
+          <div className={classes.inputSec}>
+            <Input
+              placeholder="Write your Comment here..."
+              value={CommentTxt[index]}
+              onChange={(e) => {
+                let tempData = [...CommentTxt];
+                tempData[index] = e.target.value;
+                setCommentTxt(tempData);
+              }}
+            />
+            <img
+              className={classes.emojiicon}
+              alt="emoji"
+              src={emoji}
+              onClick={() => {
+                console.log(showEmojis);
+                if (showEmojis === nugget_id) {
+                  setShowEmojis("");
+                } else {
+                  setShowEmojis(nugget_id);
+                }
+              }}
+            />
+
+            <img
+              className={classes.sendicon}
+              src={sendicon}
+              alt="send_icon"
+              onClick={() => {
+                if (isValidData(CommentTxt[index])) {
+                  AddCommentforAnugget(nugget_id, CommentTxt[index]);
+                  let tempData = [...CommentTxt];
+                  tempData[index] = "";
+                  setCommentTxt(tempData);
+                  setShowEmojis("");
+                } else {
+                  toast.error("Please Enter Valid Comment");
+                }
+              }}
+            />
+          </div>
           {showEmojis === nugget_id && (
             <div
-              style={{
-                position: "absolute",
-                bottom: "90%",
-                right: "50px",
-                zIndex: 11,
-              }}
+              style={
+                {
+                  // position: "absolute",
+                  // zIndex: 11,
+                }
+              }
             >
               <EmojiPicker
-                previewConfig={{
-                  showPreview: false,
-                }}
-                onEmojiClick={(e) => {
+                emojiButtonColors={["#364157"]}
+                emojiButtonRadius="8px"
+                skinTonePosition="none"
+                previewPosition="none"
+                // onClickOutside={() => {
+                //   setShowEmojis(!showEmojis);
+                // }}
+                categories={[
+                  "people",
+                  "nature",
+                  "foods",
+                  "activity",
+                  "places",
+                  "objects",
+                  "symbols",
+                  "flags",
+                ]}
+                onEmojiSelect={(e) => {
+                  // console.log(e);
                   let tempData = [...CommentTxt];
                   if (tempData[index]) {
-                    tempData[index] = tempData[index].concat(e.emoji);
+                    tempData[index] = tempData[index].concat(e.native);
                   } else {
-                    tempData[index] = e.emoji;
+                    tempData[index] = e.native;
                   }
 
                   setCommentTxt(tempData);
@@ -366,22 +420,6 @@ const CommentsList = ({ index }) => {
               />
             </div>
           )}
-          <img
-            className={classes.sendicon}
-            src={sendicon}
-            alt="send_icon"
-            onClick={() => {
-              if (isValidData(CommentTxt[index])) {
-                AddCommentforAnugget(nugget_id, CommentTxt[index]);
-                let tempData = [...CommentTxt];
-                tempData[index] = "";
-                setCommentTxt(tempData);
-                setShowEmojis("");
-              } else {
-                toast.error("Please Enter Valid Comment");
-              }
-            }}
-          />
         </div>
       </div>
     </div>

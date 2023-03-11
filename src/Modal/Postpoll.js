@@ -1,20 +1,70 @@
 import { Button, Form, Input } from "antd";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import { PostNuggetContext } from "../Shared/Context";
 import PollDateinputBox from "../Sharedcomponents/PollDateinputBox";
 import classes from "./Modal.module.css";
+import * as Yup from "yup";
+
+const schema = Yup.object().shape({
+  content: Yup.string().required("Content is required"),
+  duration: Yup.string().required("Poll Length is required"),
+  poll_option: Yup.array()
+    .of(
+      Yup.object().shape({
+        choiceData: Yup.string().optional("Choice is required"),
+      })
+    )
+    .test(
+      "has-required-users",
+      "At least two Choice are required",
+      function (value) {
+        return (
+          value.length >= 2 &&
+          value.slice(0, 2).every((user) => user.choiceData)
+        );
+      }
+    )
+    .min(2, "At least two Choice are required"),
+});
 
 const Postpoll = ({ setisPoll }) => {
-  const { values, setFieldValue, handleSubmit } = useFormik({
+  const context = useContext(PostNuggetContext);
+  const [PollData, setPollData] = useState([
+    { choiceData: "" },
+    { choiceData: "" },
+  ]);
+  const {
+    values,
+    setFieldValue,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+    isValid,
+  } = useFormik({
     initialValues: {
-      poll: [...Array(2).fill({ choiceData: "" })],
+      content: "",
+      poll_option: [],
       duration: "",
     },
+    validateOnMount: true,
+    validateOnChange: true,
+    validationSchema: schema,
     onSubmit: (value) => {
-      console.log(value);
+      context.setPollData(value);
+      context.handleSubmit();
     },
   });
+
+  const getChoiceTitle = (index) => {
+    if (index > 2) {
+      return `Choice ${index} (optional)`;
+    } else {
+      return `Choice ${index}`;
+    }
+  };
 
   return (
     <>
@@ -23,15 +73,18 @@ const Postpoll = ({ setisPoll }) => {
           className={`${classes.postTextarea} ${classes.pollTextarea}`}
           style={{ height: "auto" }}
           placeholder={`Ask a question...`}
+          value={values.content}
+          onChange={handleChange("content")}
         />
         <div className={classes.pollContainer}>
           <div className={classes.addSec}>
-            {values.poll.length !== 4 && (
+            {PollData.length !== 4 && (
               <span
                 class="material-symbols-outlined"
                 onClick={() => {
-                  let tmpData = [...values.poll, { choiceData: "" }];
-                  setFieldValue("poll", tmpData);
+                  let tmpData = [...PollData, { choiceData: "" }];
+                  setFieldValue("poll_option", tmpData);
+                  setPollData(tmpData);
                 }}
               >
                 add
@@ -40,72 +93,66 @@ const Postpoll = ({ setisPoll }) => {
           </div>
           <div>
             <Row>
-              {values.poll.map((ele, index) => {
+              {PollData.map((ele, index) => {
                 return (
                   <Col sm={6}>
-                    <p className={classes.label}>Choice {index + 1} </p>
-                    <Form.Item>
-                      <Input
-                        key={index}
-                        className={`${classes.textBox} ${
-                          values.poll.length >= 3 && classes.choicetextBox
-                        }`}
-                        placeholder={`Choice ${index + 1}`}
-                        maxLength={50}
-                        autoComplete="off"
-                        value={values.poll[index].choiceData}
-                        onChangeCapture={(e) => {
-                          let tmpData = [...values.poll];
-                          tmpData[index].choiceData = e.target.value;
-                          setFieldValue("poll", tmpData);
-                        }}
-                        addonAfter={
-                          values.poll.length >= 3 && (
-                            <div
-                              className={classes.closeBtn}
-                              onClick={() => {
-                                let tmpData = [...values.poll];
-                                tmpData = tmpData.filter((elem, ind) => {
-                                  if (ind !== index) {
-                                    return ele;
-                                  }
-                                });
-                                setFieldValue("poll", tmpData);
-                              }}
-                            >
-                              <span class="material-symbols-outlined">
-                                cancel
-                              </span>
-                            </div>
-                          )
-                        }
-                      />
-                    </Form.Item>
+                    <p className={classes.label}>
+                      {getChoiceTitle(index + 1)}{" "}
+                    </p>
+
+                    <Input
+                      key={index}
+                      className={`${classes.textBox} ${
+                        PollData.length >= 3 && classes.choicetextBox
+                      }`}
+                      placeholder={getChoiceTitle(index + 1)}
+                      maxLength={50}
+                      autoComplete="off"
+                      value={PollData[index].choiceData}
+                      onChange={(e) => {
+                        console.log(index);
+                        let tmpData = [...PollData];
+                        tmpData[index].choiceData = e.target.value;
+                        setPollData(tmpData);
+                        setFieldValue("poll_option", tmpData);
+                      }}
+                      addonAfter={
+                        PollData.length >= 3 && (
+                          <div
+                            className={classes.closeBtn}
+                            onClick={() => {
+                              let tmpData = [...PollData];
+                              tmpData = tmpData.filter((elem, ind) => {
+                                if (ind !== index) {
+                                  return ele;
+                                }
+                              });
+                              setPollData(tmpData);
+                              setFieldValue("poll_option", tmpData);
+                            }}
+                          >
+                            <span class="material-symbols-outlined">
+                              cancel
+                            </span>
+                          </div>
+                        )
+                      }
+                    />
                   </Col>
                 );
               })}
-              {/* <Col sm={6}>
-                <p className={classes.label}>Choice 4 (Optional) </p>
-                <Form.Item name="username">
-                  <Input
-                    className={`${classes.textBox} ${classes.choicetextBox}`}
-                    placeholder="Choice 4 (Optional)"
-                    maxLength={50}
-                    autoComplete="off"
-                    addonAfter={
-                      <div className={classes.closeBtn}>
-                        <span class="material-symbols-outlined">cancel</span>
-                      </div>
-                    }
-                  />
-                </Form.Item>
-              </Col> */}
             </Row>
+            {touched.touched && <p className="ErrTxt">{errors?.touched}</p>}
             <Row>
               <p className={classes.label}>Poll Length </p>
               <PollDateinputBox
                 onSelectDate={(date) => {
-                  console.log(date);
+                  if (typeof date === "object") {
+                    setFieldValue(
+                      "duration",
+                      `${date.day}:${date.hours}:${date.minutes}`
+                    );
+                  }
                 }}
               />
             </Row>
@@ -120,13 +167,16 @@ const Postpoll = ({ setisPoll }) => {
             </div>
           </div>
         </div>
+
         <Button
-          className={classes.btnstyle}
+          className={isValid ? classes.btnstyle : classes.disabledBtn}
           onClick={() => {
-            handleSubmit();
+            if (isValid) {
+              handleSubmit();
+            }
           }}
         >
-          Post poll
+          Post Poll
         </Button>
       </div>
     </>

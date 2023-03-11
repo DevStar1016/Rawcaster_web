@@ -7,6 +7,7 @@ import {
   deleteNuggetService,
   likeAndUnlikeNuggetService,
   nuggetCommentListService,
+  pollVoteService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
@@ -27,6 +28,7 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import ImageGrid from "../../UIComponents/ImageGrid";
+import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
 
@@ -38,6 +40,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   const loginUserData = useAuthData();
 
   const [Comments, setComments] = useState("");
+  const [isPollUpdated, setisPollUpdated] = useState(false);
   const [muted, setmuted] = useState(false);
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
@@ -181,6 +184,26 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
     },
   };
 
+  // const handlePoll = (item) => {
+  //   let pollData = {
+  //     token: Token,
+  //     nugget_id: nugget_id,
+  //     poll_option_id: item.option_id,
+  //   };
+  //   pollVoteService(JSONtoformdata(pollData))
+  //     .then((res) => {
+  //       if (res.data.status === 1) {
+  //         getList();
+  //         setisPollUpdated();
+  //       } else {
+  //         toast.error(res.data.msg);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       toast.error(err.message);
+  //     });
+  // };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       <div className={classes.nuggetItem}>
@@ -230,20 +253,40 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
               )}
             </p>
             <div className={classes.imgContainer}>
-              <ImageGrid
-                imgArray={ele.media_list}
-                muted={muted}
-                mutenuggetaudio={setmuted}
-                onPlay={() => {
-                  let dashboardPlayer = document.getElementById(
-                    "dashboard_signup_video"
-                  );
-                  if (dashboardPlayer) {
-                    dashboardPlayer.pause();
-                    dispatch(handlenuggetVideoPaused(false));
-                  }
-                }}
-              />
+              {ele.media_list.length !== 0 && (
+                <ImageGrid
+                  imgArray={ele.media_list}
+                  muted={muted}
+                  mutenuggetaudio={setmuted}
+                  onPlay={() => {
+                    let dashboardPlayer = document.getElementById(
+                      "dashboard_signup_video"
+                    );
+                    if (dashboardPlayer) {
+                      dashboardPlayer.pause();
+                      dispatch(handlenuggetVideoPaused(false));
+                    }
+                  }}
+                />
+              )}
+              {ele && ele.poll_option.length !== 0 && (
+                <div className={classes.pollContainer}>
+                  <MultiplePoll
+                    nugget_id={ele.nugget_id}
+                    results={ele.poll_option}
+                    // isVotedId={11}
+                    TotalVotes={ele?.total_vote}
+                    isVoted={parseInt(ele.voted) === 1}
+                    onVote={(item, results) => {
+                      // handlePoll(item, ele.nugget_id);
+                      // setVoteData(item);
+                      // setValues(results);
+                    }}
+                    isPollUpdated={isPollUpdated}
+                    VoteTiming={ele.poll_duration}
+                  />
+                </div>
+              )}
             </div>
           </div>
           <div className={classes.floattingSec}>

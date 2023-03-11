@@ -12,7 +12,7 @@ import CameraModal from "./CameraModal";
 import { PostNuggetContext } from "../Shared/Context";
 import { SHARED_TYPE } from "../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
-import EmojiPicker from "emoji-picker-react";
+
 import { toast } from "react-hot-toast";
 import ImageGrid from "../UIComponents/ImageGrid";
 import { detectMob } from "../Shared/Utility";
@@ -21,6 +21,9 @@ import {
   requestAudioPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import Postpoll from "./Postpoll";
+import data from "@emoji-mart/data";
+import { Picker } from "emoji-mart";
+import EmojiPicker from "../UIComponents/EmojiPicker";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -33,6 +36,14 @@ const Postmodal = ({ visible, onClose }) => {
     values,
     NuggetData,
   } = useContext(PostNuggetContext);
+  new Picker({
+    parent: document.querySelector("#picker"),
+    data: data,
+    emojiButtonSize: 50,
+    emojiSize: 38,
+    emojiButtonColors: ["rgba(102, 51, 153, .2)"],
+    icons: "solid",
+  });
   const [isAudioModal, setisAudioModal] = useState(false);
   const loginUserData = useAuthData();
   const ImageRef = useRef();
@@ -228,26 +239,53 @@ const Postmodal = ({ visible, onClose }) => {
               />
             </div>
             {showEmojis && (
-              <div
-                className={classes.emojiPart}
-                style={{
-                  position: "absolute",
-                  top: "190px",
-                  right: "50px",
-                  zIndex: 11,
-                }}
-              >
+              <div style={{ display: "flex", justifyContent: "end" }}>
                 <EmojiPicker
-                  searchDisabled
-                  suggestedEmojisMode="frequent"
-                  previewConfig={{
-                    showPreview: false,
-                  }}
-                  onEmojiClick={(e) => {
-                    setFieldValue("content", values.content.concat(e.emoji));
+                  emojiButtonColors={["#364157"]}
+                  emojiButtonRadius="8px"
+                  skinTonePosition="none"
+                  previewPosition="none"
+                  // onClickOutside={() => {
+                  //   setShowEmojis(!showEmojis);
+                  // }}
+                  categories={[
+                    "people",
+                    "nature",
+                    "foods",
+                    "activity",
+                    "places",
+                    "objects",
+                    "symbols",
+                    "flags",
+                  ]}
+                  onEmojiSelect={(e) => {
+                    setFieldValue("content", values.content.concat(e.native));
+                    console.log(e);
                   }}
                 />
               </div>
+              // <div
+              //   id="picker"
+              //   className={classes.emojiPart}
+              //   style={{
+              //     position: "absolute",
+              //     top: "190px",
+              //     right: "50px",
+              //     zIndex: 11,
+              //   }}
+              // >
+              //   {/* <CustomPicker /> */}
+              //   {/* <EmojiPicker
+              //     searchDisabled
+              //     suggestedEmojisMode="frequent"
+              //     previewConfig={{
+              //       showPreview: false,
+              //     }}
+              //     onEmojiClick={(e) => {
+              //       setFieldValue("content", values.content.concat(e.emoji));
+              //     }}
+              //   /> */}
+              // </div>
             )}
             {/* {showEmojis && (
           <div>
