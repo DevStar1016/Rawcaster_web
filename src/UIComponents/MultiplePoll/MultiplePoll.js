@@ -46,7 +46,7 @@ const MultiplePoll = ({
       animateAnswers(results, answerRefs, theme, undefined, 0);
       setVoted(true);
     }
-  }, [results, isPollUpdated]);
+  }, [results]);
 
   const getVotesTiming = () => {
     const [days, hours, minutes] = VoteTiming.split(":").map(Number);
@@ -75,7 +75,7 @@ const MultiplePoll = ({
     return output;
   };
 
-  const handlePoll = (item) => {
+  const handlePoll = (item, index) => {
     let pollData = {
       token: Token,
       nugget_id: nugget_id,
@@ -111,7 +111,7 @@ const MultiplePoll = ({
           }}
           onClick={() => {
             if (!voted) {
-              handlePoll(result);
+              handlePoll(result, index);
             }
           }}
         >
