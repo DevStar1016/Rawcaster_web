@@ -92,11 +92,12 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                 <span class="material-symbols-outlined">arrow_forward</span>
               </Button>
             )}
+            <div className="d-none d-sm-block">
             <Button
               type="primary"
               htmlType="Continue"
               size="large"
-              className={`d-none d-sm-block ${classes.connectBtn}`}
+              className={` ${classes.connectBtn}`}
               onClick={() => {
                 handleFriendRequest(ele);
               }}
@@ -104,6 +105,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
               Request to connect{" "}
               <span class="material-symbols-outlined">arrow_forward</span>
             </Button>
+            </div>
             <Button
               type="primary"
               htmlType="Continue"

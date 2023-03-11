@@ -6,9 +6,9 @@
     padding: 10px;
 }
 .profileContainer img {
-    width: 69px;
-height: 69px;
-margin:0 15px 0 0;
+  width: 65px;
+  height: 65px;
+  margin:0 10px 0 0;
 }
 .leftSec img {
   border-radius: 60px;
@@ -26,7 +26,6 @@ color: #000000;
     margin-bottom: 2px !important;
     font-weight: 700; 
     font-size: 15px; display: flex;
-
 }
 .profileContainer .rightSec .nameSec span {
     font-size: 15px;
