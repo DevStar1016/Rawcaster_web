@@ -97,6 +97,7 @@ const MultiplePoll = ({
   };
 
   return (
+    <>
     <article className={styles.container}>
       {results.map((result, index) => (
         <div
@@ -139,9 +140,10 @@ const MultiplePoll = ({
       ))}
 
       <div className={styles.detailSec}>
-        <p>{TotalVotes} votes</p>.<p>{getVotesTiming()}</p>
+        <p>{TotalVotes} votes . {getVotesTiming()}</p>
       </div>
     </article>
+    </>
   );
 };
 
