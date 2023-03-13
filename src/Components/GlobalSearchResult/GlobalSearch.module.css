@@ -12,13 +12,13 @@
   color: #E26386;
 }
 .fullcontainer { height: 70vh;  max-width: 670px;display: flex; justify-content: center;margin: auto; }
-.nuggetSec ,.profileSec{ 
+.nuggetSec, .profileSec{ 
     padding: 0 20px;
     height:calc(100vh - 67px);
     float: left;
     /* width: calc(100% - 640px); */
     background: #fff;
-    border-top: 20px solid #fff;
+    border-top: 2px solid #fff;
     height: 100%;
     overflow-y: scroll;
  }
@@ -65,25 +65,28 @@
   font-weight: 700;
   font-size: 20px !important;
   line-height: 33px !important;
-
  }
- .graphSec img{
-  width: 200px;
+ .nopadding { padding: 0;}
+ .graphSec img{  
   margin-left: 10px;
  }
  .graphSec {
-  display: flex;
+  display: flex; max-width: 190px;
   justify-content: flex-start;
  }
 .tagsSec {
   max-height: 250px;
 }
-.dropSec {
-  height: fit-content;
-  cursor: pointer;
+.dropSec {  
+  cursor: pointer; 
 }
+.dropSec span { font-size: 27px;}
  @media (max-width:768px) {
  .mainContainer { padding: 15px;} 
+ .TagSec { padding: 15px 0; }
  .searchResultName { font-size: 22px !important;}
- .nuggetSec { padding: 0;}
+ .nuggetSec { padding: 0; margin-top: 0;}
+ .graphSec { max-height: 60px;}
+ .trendTitle {font-size: 17px !important; line-height: 22px !important;}
+ .trendLoc, .TagSec p { font-size: 13px; }
  }
