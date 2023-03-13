@@ -116,7 +116,7 @@ const EventsList = () => {
   };
 
   const scrollRef = useBottomScrollListener(onEndReached);
-
+  console.log(EventList);
   const getValidEvent = () => {
     if (EventList && EventList.length !== 0) {
       const filteredArr = EventList.reduce((acc, current) => {

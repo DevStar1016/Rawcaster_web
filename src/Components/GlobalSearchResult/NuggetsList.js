@@ -91,7 +91,7 @@ const NuggetsList = () => {
   };
 
   useEffect(() => {
-    if (isGlobalSearch || NuggetList.length === 0) {
+    if (isGlobalSearch || (NuggetList && NuggetList.length === 0)) {
       scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       dispatch(handleLoading(true));
       getNuggetList();
@@ -110,20 +110,29 @@ const NuggetsList = () => {
   const scrollRef = useBottomScrollListener(onEndReached);
 
   const getValidNuggets = () => {
-    const filteredArr = NuggetList.reduce((acc, current) => {
-      const x = acc.find((item) => item.nugget_id === current.nugget_id);
-      if (!x) {
-        return acc.concat([current]);
+    if (NuggetList && NuggetList.length !== 0) {
+      const filteredArr = NuggetList.reduce((acc, current) => {
+        const x = acc.find((item) => item.nugget_id === current.nugget_id);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+      if (filteredArr) {
+        return filteredArr;
       } else {
-        return acc;
+        return [];
       }
-    }, []);
-    return filteredArr;
+    } else {
+      return [];
+    }
   };
 
+  console.log(getValidNuggets(), "===>");
   return (
     <>
-      {getValidNuggets().length === 0 ? (
+      {getValidNuggets()?.length === 0 ? (
         <span style={{ fontSize: 20, fontWeight: "bold" }}>
           We didn't find any results
         </span>

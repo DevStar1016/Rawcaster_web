@@ -38,9 +38,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   const Token = useAuthToken();
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
-
   const [Comments, setComments] = useState("");
-  const [isPollUpdated, setisPollUpdated] = useState(false);
   const [muted, setmuted] = useState(false);
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
@@ -174,6 +172,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   );
 
   const SingleNuggetData = {
+    Nuggets: ele,
     nugget_id: Comments,
     CommentList: CommentList,
     setCommentList: setCommentList,
@@ -269,7 +268,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                   }}
                 />
               )}
-              {ele && ele.poll_option.length !== 0 && (
+              {ele && ele.poll_option && ele.poll_option?.length !== 0 && (
                 <div className={classes.pollContainer}>
                   <MultiplePoll
                     nugget_id={ele.nugget_id}
@@ -282,7 +281,6 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                       // setVoteData(item);
                       // setValues(results);
                     }}
-                    isPollUpdated={isPollUpdated}
                     VoteTiming={ele.poll_duration}
                   />
                 </div>

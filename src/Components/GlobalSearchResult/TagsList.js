@@ -1,3 +1,4 @@
+import { Dropdown } from "antd";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Spinner } from "react-bootstrap";
@@ -5,17 +6,65 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
-import { globalSearchNuggetsService } from "../../Services/ApiService";
+import { TagsListService } from "../../Services/ApiService";
 import { useDashboard } from "../../Shared/Reduxfetcher";
-import { getAuthenticated, JSONtoformdata } from "../../Shared/Utility";
+import {
+  getAuthenticated,
+  getAuthToken,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { getLocalStorageData } from "../../Store/Storage";
+import TagsChart from "../../UIComponents/TagsChart";
 import classes from "./GlobalSearch.module.css";
 
 let isRequestCancel = false;
+
+// let testObj = [
+//   {
+//     total_nuggets: 10,
+//     hours: 10,
+//   },
+//   {
+//     total_nuggets: 30,
+//     hours: 13,
+//   },
+//   {
+//     total_nuggets: 10,
+//     hours: 16,
+//   },
+//   {
+//     total_nuggets: 5,
+//     hours: 19,
+//   },
+//   {
+//     total_nuggets: 58,
+//     hours: 23,
+//   },
+//   {
+//     total_nuggets: 18,
+//     hours: 27,
+//   },
+//   {
+//     total_nuggets: 78,
+//     hours: 37,
+//   },
+//   {
+//     total_nuggets: 88,
+//     hours: 48,
+//   },
+//   {
+//     total_nuggets: 18,
+//     hours: 58,
+//   },
+//   {
+//     total_nuggets: 8,
+//     hours: 68,
+//   },
+// ];
 
 const TagsList = () => {
   const dispatch = useDispatch();
@@ -47,20 +96,19 @@ const TagsList = () => {
     let TagsData = {
       nugget_type: 0,
       token: getToken(),
+      auth_code: getAuthToken(getToken()),
       search_key: params.key,
       page_number: page,
     };
-    globalSearchNuggetsService(JSONtoformdata(TagsData), source.current.token)
+    TagsListService(JSONtoformdata(TagsData), source.current.token)
       .then((res) => {
         if (res.data.status === 1) {
           if (res.data.current_page_no === 1) {
-            setTagsList(res.data.nuggets_list);
+            setTagsList(res.data.tags);
           } else {
             setTagsList((pre) =>
-              [...pre, ...res.data.nuggets_list].reduce((acc, current) => {
-                const x = acc.find(
-                  (item) => item.nugget_id === current.nugget_id
-                );
+              [...pre, ...res.data.tags].reduce((acc, current) => {
+                const x = acc.find((item) => item.tag === current.tag);
                 if (!x) {
                   return acc.concat([current]);
                 } else {
@@ -110,7 +158,7 @@ const TagsList = () => {
 
   const getValidTags = () => {
     const filteredArr = TagsList.reduce((acc, current) => {
-      const x = acc.find((item) => item.nugget_id === current.nugget_id);
+      const x = acc.find((item) => item.tag === current.tag);
       if (!x) {
         return acc.concat([current]);
       } else {
@@ -133,13 +181,31 @@ const TagsList = () => {
           return (
             <div className={classes.TagSec}>
               <div>
-                <p className={classes.trendLoc}>Trending in Pakistan</p>
-                <p className={classes.trendTitle}>Fifa WorldcupNeymar</p>
-                <p className="mt-1">11.2K Tweets</p>
+                <p className={classes.trendLoc}>Trending in {ele.country}</p>
+                <p className={classes.trendTitle}>{ele.tag}</p>
+                <p className="mt-1">{ele.nugget_count} Nuggets</p>
               </div>
               <div className={classes.graphSec}>
-                {/* <img src={graphImg} />
-              <span class="material-symbols-outlined">more_horiz</span> */}
+                <TagsChart Data={ele.trends} />
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        label: <div>Not interested in this</div>,
+                        key: "0",
+                      },
+                      {
+                        label: <div>This trend is harmful or spammy</div>,
+                        key: "1",
+                      },
+                    ],
+                  }}
+                  trigger={["click"]}
+                >
+                  <div className={classes.dropSec}>
+                    <span class="material-symbols-outlined">more_horiz</span>
+                  </div>
+                </Dropdown>
               </div>
             </div>
           );

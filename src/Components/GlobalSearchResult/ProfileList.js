@@ -116,15 +116,19 @@ const ProfileList = () => {
   const scrollRef = useBottomScrollListener(onEndReached);
 
   const getValidPeople = () => {
-    const filteredArr = PeopleList.reduce((acc, current) => {
-      const x = acc.find((item) => item.user_id === current.user_id);
-      if (!x) {
-        return acc.concat([current]);
-      } else {
-        return acc;
-      }
-    }, []);
-    return filteredArr;
+    if (PeopleList.length !== 0) {
+      const filteredArr = PeopleList.reduce((acc, current) => {
+        const x = acc.find((item) => item.user_id === current.user_id);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+      return filteredArr;
+    } else {
+      return [];
+    }
   };
 
   return (

@@ -53,52 +53,57 @@ const Nuggets = () => {
   };
 
   const getNuggetList = (page = 1) => {
-    if (source.current) {
-      isRequestCancel = true;
-      source.current.cancel("Request Cancelled");
-    }
-    source.current = axios.CancelToken.source();
-    let nuggetData = {
-      nugget_type: 0,
-      token: getToken(),
-      page_number: page,
-    };
-    listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
-      .then((res) => {
-        if (res.data.status === 1) {
-          if (res.data.current_page_no === 1) {
-            setNuggetList(res.data.nuggets_list);
+    let promise = new Promise((resolve, reject) => {
+      if (source.current) {
+        isRequestCancel = true;
+        source.current.cancel("Request Cancelled");
+      }
+      source.current = axios.CancelToken.source();
+      let nuggetData = {
+        nugget_type: 0,
+        token: getToken(),
+        page_number: page,
+      };
+      listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
+        .then((res) => {
+          if (res.data.status === 1) {
+            resolve(res.data);
+            if (res.data.current_page_no === 1) {
+              setNuggetList(res.data.nuggets_list);
+            } else {
+              setNuggetList((pre) =>
+                [...pre, ...res.data.nuggets_list].reduce((acc, current) => {
+                  const x = acc.find(
+                    (item) => item.nugget_id === current.nugget_id
+                  );
+                  if (!x) {
+                    return acc.concat([current]);
+                  } else {
+                    return acc;
+                  }
+                }, [])
+              );
+            }
+            setPages({
+              page: res.data.current_page_no,
+              totalpage: res.data.total_pages,
+            });
           } else {
-            setNuggetList((pre) =>
-              [...pre, ...res.data.nuggets_list].reduce((acc, current) => {
-                const x = acc.find(
-                  (item) => item.nugget_id === current.nugget_id
-                );
-                if (!x) {
-                  return acc.concat([current]);
-                } else {
-                  return acc;
-                }
-              }, [])
-            );
+            toast.error(res.data.msg);
           }
-          setPages({
-            page: res.data.current_page_no,
-            totalpage: res.data.total_pages,
-          });
-        } else {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
-          toast.error(err.message);
-        }
-      })
-      .finally(() => {
-        setisLoading(false);
-        dispatch(handleLoading(false));
-      });
+        })
+        .catch((err) => {
+          if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
+            toast.error(err.message);
+          }
+        })
+        .finally(() => {
+          setisLoading(false);
+          dispatch(handleLoading(false));
+        });
+    });
+
+    return promise;
   };
 
   useEffect(() => {
@@ -125,13 +130,16 @@ const Nuggets = () => {
     getProgress() {
       return Progress;
     },
-    getNuggetList() {
-      return getNuggetList();
+    async getNuggetList() {
+      return await getNuggetList();
     },
     handleProgress(val) {
       return handleProgress(val);
     },
     setProgress: setProgress,
+    setNuggetList: setNuggetList,
+    Pages: Pages,
+    setPages: setPages,
   };
 
   const getValidNuggets = () => {

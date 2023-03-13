@@ -230,6 +230,12 @@ export const globalSearchEventsService = (data, token) => {
   });
 };
 
+export const TagsListService = (data, token) => {
+  return axios.post("tagslist", data, {
+    cancelToken: token,
+  });
+};
+
 //Polling
 
 export const pollVoteService = (data) => {

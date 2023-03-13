@@ -1,13 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  createRef,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useRef, createRef } from "react";
 import { toast } from "react-hot-toast";
 import { pollVoteService } from "../../Services/ApiService";
-import { ListNuggetContext } from "../../Shared/Context";
+import { useListNuggetContext } from "../../Shared/Context";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
 import { JSONtoformdata } from "../../Shared/Utility";
 import styles from "./Multiplepoll.module.css";
@@ -16,17 +10,15 @@ import { animateAnswers, manageVote } from "./Utility";
 const MultiplePoll = ({
   nugget_id,
   results,
-  onVote,
   isVoted,
   isVotedId,
   VoteTiming,
   TotalVotes = 0,
-  isPollUpdated,
 }) => {
+  const { getNuggetList } = useListNuggetContext();
   const [voted, setVoted] = useState(false);
   const Token = useAuthToken();
   const answerRefs = useRef(results.map(() => createRef()));
-  const { getNuggetList } = useContext(ListNuggetContext);
   const theme = {
     textColor: "black",
     backgroundColor: "rgb(255,255,255)",
@@ -49,7 +41,25 @@ const MultiplePoll = ({
   }, [results]);
 
   const getVotesTiming = () => {
-    const [days, hours, minutes] = VoteTiming.split(":").map(Number);
+    const [daysval, hoursval, minutesval] = VoteTiming.split(":");
+
+    // Create a new Date object with the specified date/time
+    const specifiedDate = new Date();
+    specifiedDate.setDate(specifiedDate.getDate() + parseInt(daysval));
+    specifiedDate.setHours(specifiedDate.getHours() + parseInt(hoursval));
+    specifiedDate.setMinutes(specifiedDate.getMinutes() + parseInt(minutesval));
+
+    const currentDate = new Date();
+
+    const differenceInMs = specifiedDate - currentDate;
+
+    const days = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (differenceInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor(
+      (differenceInMs % (1000 * 60 * 60)) / (1000 * 60)
+    );
 
     const durationInSeconds = days * 24 * 3600 + hours * 3600 + minutes * 60;
     const dayInSeconds = 24 * 3600; // seconds in a day
@@ -84,9 +94,15 @@ const MultiplePoll = ({
     pollVoteService(JSONtoformdata(pollData))
       .then((res) => {
         if (res.data.status === 1) {
-          getNuggetList();
-          manageVote(results, index, answerRefs, theme);
-          setVoted(true);
+          getNuggetList().then((res) => {
+            let findData = res.nuggets_list.find(
+              (ele) => ele.nugget_id === nugget_id
+            );
+            if (findData) {
+              manageVote(findData.poll_option, index, answerRefs, theme);
+              setVoted(true);
+            }
+          });
         } else {
           toast.error(res.data.msg);
         }
