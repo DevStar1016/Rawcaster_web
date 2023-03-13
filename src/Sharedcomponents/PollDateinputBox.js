@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Col, Row, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { isValidData } from "../Shared/Utility";
 
@@ -39,43 +39,45 @@ const PollDateinputBox = ({ onSelectDate }) => {
   }, [pollTime]);
 
   return (
-    <div className="dateinputBox">
-      <div style={{ width: "30%" }}>
+    <div>
+      <Row gutter={15}>
+      <Col xs={24} sm={8}>
         <Select
           style={{ width: "100%" }}
           placeholder="Day"
-          className="textBox"
+          className="textBox mb-2"
           value={getSelectedVal(pollTime.day, "Days")}
           options={getValues(7, 1)}
           onChange={(val) => {
             setpollTime((pre) => ({ ...pre, day: val }));
           }}
         />
-      </div>
-      <div style={{ width: "30%" }}>
+      </Col>
+      <Col xs={24} sm={8}>
         <Select
           style={{ width: "100%" }}
           placeholder="Hours"
-          className="textBox"
+          className="textBox mb-2"
           value={getSelectedVal(pollTime.hours, "Hours")}
           options={getValues(24, 0)}
           onChange={(val) => {
             setpollTime((pre) => ({ ...pre, hours: val }));
           }}
         />
-      </div>
-      <div style={{ width: "30%" }}>
+      </Col>
+      <Col xs={24} sm={8}>
         <Select
           style={{ width: "100%" }}
           placeholder="Minutes"
-          className="textBox"
+          className="textBox mb-2"
           value={getSelectedVal(pollTime.minutes, "Minutes")}
           options={getValues(60, 0)}
           onChange={(val) => {
             setpollTime((pre) => ({ ...pre, minutes: val }));
           }}
         />
-      </div>
+      </Col>
+      </Row>
     </div>
   );
 };
