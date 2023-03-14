@@ -176,7 +176,7 @@ const TagsList = () => {
           We didn't find any results
         </span>
       ) : null}
-      <div ref={scrollRef} className={`${classes.nuggetSec} w-100`}>
+      <div ref={scrollRef} className={`${classes.nuggetSec} ${classes.nopadding} w-100`}>
         {getValidTags().map((ele, index) => {
           return (
             <div className={classes.TagSec}>
