@@ -1,10 +1,10 @@
 import { Modal } from "antd";
 import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ImageGrid.module.css";
-import BackgroundImg from "../Assets/Images/png/audioImg.png";
+import BackgroundImg from "../../Assets/Images/png/audioImg.png";
 import { useInView } from "react-hook-inview";
-import { useDashboard } from "../Shared/Reduxfetcher";
-import AudioPlayer from "../Sharedcomponents/AudioPlayer";
+import { useDashboard } from "../../Shared/Reduxfetcher";
+import AudioPlayer from "../../Sharedcomponents/AudioPlayer";
 import { Carousel } from "react-bootstrap";
 
 const ImageGrid = ({
@@ -38,7 +38,7 @@ const ImageGrid = ({
     const length = imgArray.length;
 
     if (length === 1) {
-      return 1.89;
+      return 1.5;
     } else if (length === 2) {
       return 0.7;
     } else if (length >= 3) {
@@ -198,9 +198,7 @@ const ImageGrid = ({
     } else if (data.media_type === "audio") {
       return (
         <>
-          <div className={classes.musicIcon}>
-            <span class="material-symbols-outlined">music_note</span>
-          </div>
+          <AudioPlayer url={data.path} />
         </>
       );
     }
@@ -261,9 +259,7 @@ const ImageGrid = ({
     } else if (data.media_type === "audio") {
       return (
         <>
-          <div className={classes.musicIcon}>
-            <span class="material-symbols-outlined">music_note</span>
-          </div>
+          <AudioPlayer url={data.path} />
         </>
       );
     }
@@ -318,7 +314,7 @@ const ImageGrid = ({
       return (
         <Fragment>
           <img
-            src={require("../Assets/Icons/png/fb_play_btn.png")}
+            src={require("../../Assets/Icons/png/fb_play_btn.png")}
             alt="more"
             style={{ width: "10%", position: "absolute" }}
           />

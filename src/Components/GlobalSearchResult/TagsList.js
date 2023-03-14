@@ -23,48 +23,48 @@ import classes from "./GlobalSearch.module.css";
 
 let isRequestCancel = false;
 
-// let testObj = [
-//   {
-//     total_nuggets: 10,
-//     hours: 10,
-//   },
-//   {
-//     total_nuggets: 30,
-//     hours: 13,
-//   },
-//   {
-//     total_nuggets: 10,
-//     hours: 16,
-//   },
-//   {
-//     total_nuggets: 5,
-//     hours: 19,
-//   },
-//   {
-//     total_nuggets: 58,
-//     hours: 23,
-//   },
-//   {
-//     total_nuggets: 18,
-//     hours: 27,
-//   },
-//   {
-//     total_nuggets: 78,
-//     hours: 37,
-//   },
-//   {
-//     total_nuggets: 88,
-//     hours: 48,
-//   },
-//   {
-//     total_nuggets: 18,
-//     hours: 58,
-//   },
-//   {
-//     total_nuggets: 8,
-//     hours: 68,
-//   },
-// ];
+let testObj = [
+  {
+    total_nuggets: 10,
+    hours: 10,
+  },
+  {
+    total_nuggets: 30,
+    hours: 13,
+  },
+  {
+    total_nuggets: 10,
+    hours: 16,
+  },
+  {
+    total_nuggets: 5,
+    hours: 19,
+  },
+  {
+    total_nuggets: 58,
+    hours: 23,
+  },
+  {
+    total_nuggets: 18,
+    hours: 27,
+  },
+  {
+    total_nuggets: 78,
+    hours: 37,
+  },
+  {
+    total_nuggets: 88,
+    hours: 48,
+  },
+  {
+    total_nuggets: 18,
+    hours: 58,
+  },
+  {
+    total_nuggets: 8,
+    hours: 68,
+  },
+];
 
 const TagsList = () => {
   const dispatch = useDispatch();
@@ -186,7 +186,7 @@ const TagsList = () => {
                 <p className="mt-1">{ele.nugget_count} Nuggets</p>
               </div>
               <div className={classes.graphSec}>
-                <TagsChart Data={ele.trends} />
+                <TagsChart Data={testObj} />
                 <Dropdown
                   menu={{
                     items: [

@@ -8,6 +8,7 @@ import {
   likeAndUnlikeNuggetService,
   nuggetCommentListService,
   pollVoteService,
+  saveAndUnsaveNuggetService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
@@ -27,7 +28,8 @@ import {
   handlenuggetVideoPaused,
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import ImageGrid from "../../UIComponents/ImageGrid";
+import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
+
 import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
@@ -163,9 +165,39 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
       });
   };
 
+  const HandleSave = (id, save) => {
+    let nuggetData = {
+      token: Token,
+      nugget_id: id,
+      save: save,
+    };
+    saveAndUnsaveNuggetService(
+      JSONtoformdata(nuggetData),
+      source.current?.token
+    )
+      .then((res) => {
+        if (res.data.status === 1) {
+          getList();
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
   var debounceProcess = _.debounce(
     function (nugget_id, like) {
       HandleLike(nugget_id, like);
+    },
+    1000,
+    true
+  );
+
+  var savedebounceProcess = _.debounce(
+    function (nugget_id, save) {
+      HandleSave(nugget_id, save);
     },
     1000,
     true
@@ -202,6 +234,15 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   //       toast.error(err.message);
   //     });
   // };
+
+  const isReadMore = () => {
+    if (ele.media_list !== 0) {
+      return false;
+    } else if (ele.poll_option !== 0) {
+      return false;
+    }
+    return true;
+  };
 
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
@@ -246,7 +287,11 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
           <div className={classes.feedsSec}>
             <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
               {ele && isValidData(ele?.content) && (
-                <ReadMore CharactersLength={120} index={index}>
+                <ReadMore
+                  CharactersLength={120}
+                  index={index}
+                  isReadMore={isReadMore()}
+                >
                   {decodeHtml(ele?.content)}
                 </ReadMore>
               )}
@@ -276,11 +321,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                     // isVotedId={11}
                     TotalVotes={ele?.total_vote}
                     isVoted={parseInt(ele.voted) === 1}
-                    onVote={(item, results) => {
-                      // handlePoll(item, ele.nugget_id);
-                      // setVoteData(item);
-                      // setValues(results);
-                    }}
+                    created_date={ele.created_date}
                     VoteTiming={ele.poll_duration}
                   />
                 </div>
@@ -380,6 +421,30 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                 <i className={`${classes.share_icon}`} />
               </p>
               <span>0</span>
+            </div>
+            <div className={classes.iconsec}>
+              <p
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (getAuthenticated()) {
+                    if (isAccountValid()) {
+                      let save = ele.saved ? 2 : 1;
+                      savedebounceProcess(ele.nugget_id, 1);
+                    } else {
+                      dispatch(
+                        handleprofileVerifyModalShow({
+                          show: true,
+                          msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                        })
+                      );
+                    }
+                  } else {
+                    dispatch(handleloginModalShow(true));
+                  }
+                }}
+              >
+                <i className={`${classes.saveIcon}`} />
+              </p>
             </div>
           </div>
         </div>

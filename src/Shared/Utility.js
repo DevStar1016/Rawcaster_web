@@ -229,7 +229,7 @@ export const isAccountValid = () => {
   }
 };
 
-export const ReadMore = ({ children }) => {
+export const ReadMore = ({ children, isReadMore = true }) => {
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -251,15 +251,23 @@ export const ReadMore = ({ children }) => {
   useEffect(() => {
     setTextHeight(textRef.current.clientHeight);
   }, []);
+
+  const isFullTxt = () => {
+    if (isReadMore || showFullText) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   return (
     <Linkify options={{ render: renderLink }}>
       <p
         ref={textRef}
-        className={`readmore_text ${showFullText ? "full_readmore" : ""}`}
+        className={`readmore_text ${isFullTxt() ? "full_readmore" : ""}`}
       >
         {children}
       </p>
-      {textHeight > 50 && (
+      {!isReadMore && textHeight > 55 && (
         <span
           onClick={toggleShowFullText}
           style={{ color: "#e26386", cursor: "pointer" }}

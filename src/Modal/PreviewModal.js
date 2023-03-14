@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import React from "react";
-import ImageGrid from "../UIComponents/ImageGrid";
+import ImageGrid from "../UIComponents/Imagegrid/ImageGrid";
 import classes from "./Modal.module.css";
 
 const PreviewModal = ({ url, onSuccess, onClose }) => {

@@ -12,9 +12,7 @@ import CameraModal from "./CameraModal";
 import { PostNuggetContext } from "../Shared/Context";
 import { SHARED_TYPE } from "../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
-
 import { toast } from "react-hot-toast";
-import ImageGrid from "../UIComponents/ImageGrid";
 import { detectMob } from "../Shared/Utility";
 import {
   MediaPermissionsErrorType,
@@ -24,6 +22,7 @@ import Postpoll from "./Postpoll";
 import data from "@emoji-mart/data";
 import { Picker } from "emoji-mart";
 import EmojiPicker from "../UIComponents/EmojiPicker";
+import ImageGrid from "../UIComponents/Imagegrid/ImageGrid";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -218,6 +217,7 @@ const Postmodal = ({ visible, onClose }) => {
           <>
             <div className={classes.postTextcontent}>
               <textarea
+                id="post_nugget_textarea"
                 className={classes.postTextarea}
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
                 onKeyDown={(e) => {
@@ -259,8 +259,11 @@ const Postmodal = ({ visible, onClose }) => {
                     "flags",
                   ]}
                   onEmojiSelect={(e) => {
-                    setFieldValue("content", values.content.concat(e.native));
                     console.log(e);
+
+                    // insertMyText(e.native);
+                    setFieldValue("content", values.content.concat(e.native));
+                    // console.log(e);
                   }}
                 />
               </div>

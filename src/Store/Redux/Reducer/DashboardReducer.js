@@ -10,6 +10,7 @@ const initialState = {
   isVeifyEnabled: false,
   nuggetVideoPaused: false,
   isGlobalSearch: false,
+  friendsList: [],
 };
 
 export const { actions, reducer } = createSlice({
@@ -43,6 +44,9 @@ export const { actions, reducer } = createSlice({
     handleisGlobalSearch: (state, action) => {
       state.isGlobalSearch = action.payload;
     },
+    handleFriendsList: (state, action) => {
+      state.friendsList = action.payload;
+    },
   },
 });
 
@@ -56,6 +60,7 @@ export const {
   handleverifyEnabled,
   handlenuggetVideoPaused,
   handleisGlobalSearch,
+  handleFriendsList,
 } = actions;
 
 export default reducer;

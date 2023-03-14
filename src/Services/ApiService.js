@@ -127,6 +127,10 @@ export const likeAndUnlikeNuggetService = (data) => {
   return axios.post("likeandunlikenugget", data);
 };
 
+export const saveAndUnsaveNuggetService = (data) => {
+  return axios.post("saveandunsavenugget", data);
+};
+
 export const deleteNuggetService = (data) => {
   return axios.post("deletenugget", data);
 };

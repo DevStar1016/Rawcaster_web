@@ -14,6 +14,7 @@ const MultiplePoll = ({
   isVotedId,
   VoteTiming,
   TotalVotes = 0,
+  created_date,
 }) => {
   const { getNuggetList } = useListNuggetContext();
   const [voted, setVoted] = useState(false);
@@ -40,48 +41,66 @@ const MultiplePoll = ({
     }
   }, [results]);
 
+  function calculateTimeLeft(currentTime, startTime, endTime) {
+    const differenceToEnd = endTime - currentTime;
+    const millisecondsPerMinute = 1000 * 60;
+    const millisecondsPerHour = millisecondsPerMinute * 60;
+    const millisecondsPerDay = millisecondsPerHour * 24;
+    const remainingDays = Math.floor(differenceToEnd / millisecondsPerDay);
+    const remainingHours = Math.floor(
+      (differenceToEnd % millisecondsPerDay) / millisecondsPerHour
+    );
+    const remainingMinutes = Math.floor(
+      (differenceToEnd % millisecondsPerHour) / millisecondsPerMinute
+    );
+    const remainingSeconds = Math.floor(
+      (differenceToEnd % millisecondsPerMinute) / 1000
+    );
+    return {
+      remainingDays,
+      remainingHours,
+      remainingMinutes,
+      remainingSeconds,
+    };
+  }
+
   const getVotesTiming = () => {
+    const isoString = created_date.replace(" ", "T") + "Z";
+
+    const startTime = new Date(isoString);
+    const now = new Date();
     const [daysval, hoursval, minutesval] = VoteTiming.split(":");
-
-    // Create a new Date object with the specified date/time
     const specifiedDate = new Date();
-    specifiedDate.setDate(specifiedDate.getDate() + parseInt(daysval));
-    specifiedDate.setHours(specifiedDate.getHours() + parseInt(hoursval));
-    specifiedDate.setMinutes(specifiedDate.getMinutes() + parseInt(minutesval));
+    specifiedDate.setDate(startTime.getDate() + parseInt(daysval));
+    specifiedDate.setHours(startTime.getHours() + parseInt(hoursval));
+    specifiedDate.setMinutes(startTime.getMinutes() + parseInt(minutesval));
 
-    const currentDate = new Date();
-
-    const differenceInMs = specifiedDate - currentDate;
-
-    const days = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
-    const hours = Math.floor(
-      (differenceInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    const timeLeft = calculateTimeLeft(
+      now.getTime(),
+      startTime.getTime(),
+      specifiedDate.getTime()
     );
-    const minutes = Math.floor(
-      (differenceInMs % (1000 * 60 * 60)) / (1000 * 60)
-    );
-
-    const durationInSeconds = days * 24 * 3600 + hours * 3600 + minutes * 60;
-    const dayInSeconds = 24 * 3600; // seconds in a day
-
-    const remainingDays = Math.floor(durationInSeconds / dayInSeconds);
-    const remainingSeconds = durationInSeconds % dayInSeconds;
-    const remainingHours = Math.floor(remainingSeconds / 3600);
-    const remainingMinutes = Math.floor((remainingSeconds % 3600) / 60);
+    const { remainingDays, remainingHours, remainingMinutes } = timeLeft;
 
     let output = "";
     if (remainingDays > 0) {
-      output += `${remainingDays} day${remainingDays > 1 ? "s" : ""}, `;
+      output += `${remainingDays} day${remainingDays > 1 ? "s" : ""}`;
     }
-
+    if (remainingHours > 0 && remainingDays > 0) {
+      output += `, `;
+    }
     if (remainingHours > 0) {
-      output += `${remainingHours} hour${remainingHours > 1 ? "s" : ""}, `;
+      output += `${remainingHours} hour${remainingHours > 1 ? "s" : ""}`;
     }
-
-    output += `${remainingMinutes} minute${
-      remainingMinutes > 1 ? "s" : ""
-    } left`;
-
+    if (remainingHours > 0 && remainingMinutes > 0) {
+      output += `, `;
+    }
+    if (remainingMinutes > 0) {
+      output += `${remainingMinutes} minute${remainingMinutes > 1 ? "s" : ""} `;
+    }
+    if (output !== "") {
+      output += ` left`;
+    }
     return output;
   };
 
@@ -114,51 +133,54 @@ const MultiplePoll = ({
 
   return (
     <>
-    <article className={styles.container}>
-      {results.map((result, index) => (
-        <div
-          key={result.option_id}
-          role="button"
-          id={"mulAnswer" + result.option_id}
-          className={
-            voted ? styles.answer : styles.answer_hover + " " + styles.answer
-          }
-          style={{
-            backgroundColor: voted ? "#FFFFFF" : "#F2718D",
-          }}
-          onClick={() => {
-            if (!voted) {
-              handlePoll(result, index);
-            }
-          }}
-        >
+      <article className={styles.container}>
+        {results.map((result, index) => (
           <div
-            ref={answerRefs.current[index]}
-            className={styles.answerInner}
+            key={result.option_id}
+            role="button"
+            id={"mulAnswer" + result.option_id}
+            className={
+              voted ? styles.answer : styles.answer_hover + " " + styles.answer
+            }
             style={{
-              textAlign: voted ? "start" : "center",
-              width: "100%",
+              backgroundColor: voted ? "#FFFFFF" : "#F2718D",
+            }}
+            onClick={() => {
+              if (!voted) {
+                handlePoll(result, index);
+              }
             }}
           >
-            <p
+            <div
+              ref={answerRefs.current[index]}
+              className={styles.answerInner}
               style={{
-                borderRadius: 8,
-                color: voted ? "#000" : "#FFF",
+                textAlign: voted ? "start" : "center",
+                width: "100%",
               }}
             >
-              {result.option_name}
-            </p>
+              <p
+                style={{
+                  borderRadius: 8,
+                  color: voted ? "#000" : "#FFF",
+                }}
+              >
+                {result.option_name}
+              </p>
+            </div>
+            {voted && (
+              <span style={{ color: "#000" }}>{result.option_percentage}%</span>
+            )}
           </div>
-          {voted && (
-            <span style={{ color: "#000" }}>{result.option_percentage}%</span>
-          )}
-        </div>
-      ))}
+        ))}
 
-      <div className={styles.detailSec}>
-        <p>{TotalVotes} votes . {getVotesTiming()}</p>
-      </div>
-    </article>
+        <div className={styles.detailSec}>
+          <p>
+            {TotalVotes} votes {getVotesTiming() !== "" ? "." : ""}{" "}
+            {getVotesTiming()}
+          </p>
+        </div>
+      </article>
     </>
   );
 };

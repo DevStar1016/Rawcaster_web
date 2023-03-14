@@ -32,7 +32,7 @@
 /* .imageModalsec { position: absolute;} */
  .modalSingleimage { max-width: 100%; margin: auto; height: auto; max-height: 550px; width: auto !important;aspect-ratio: "5/4";}
  .SingleVideoBg {
-    background-image: url(../Assets/Images/png/audioImg.png);
+    background-image: url(../../Assets/Images/png/audioImg.png);
     /* height: 100%;
     width: 100%; */
  }

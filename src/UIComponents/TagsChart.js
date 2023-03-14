@@ -28,22 +28,41 @@ const TagsChart = ({ Data }) => {
     responsive: true,
     scales: {
       x: {
+        border: { dash: [8, 8] },
         ticks: {
           display: false,
         },
+        color: "transparent",
         grid: {
-          display: false,
-          border: " 1px dashed #D6DADE",
+          drawOnChartArea: true,
+          drawBorder: false,
+          color: function (context) {
+            if (context.tick.value === 0) {
+              return "#D6DADE";
+            }
+
+            return "transparent";
+          }, // for the grid lines
         },
       },
 
       y: {
+        border: { dash: [8, 8] },
+        beginAtZero: true,
         ticks: {
           display: false,
         },
+        color: "transparent",
         grid: {
-          display: false,
-          border: " 1px dashed #D6DADE",
+          drawOnChartArea: true,
+          drawBorder: false,
+          color: function (context) {
+            if (context.tick.value === 0) {
+              return "#D6DADE";
+            }
+
+            return "transparent";
+          }, // for the grid lines
         },
       },
     },
@@ -58,10 +77,15 @@ const TagsChart = ({ Data }) => {
       },
       title: {
         display: false,
-        text: "Chart.js Line Chart",
       },
       labels: {
         display: false,
+      },
+      chartAreaBorder: {
+        borderColor: "red",
+        borderWidth: 2,
+        borderDash: [5, 5],
+        borderDashOffset: 2,
       },
       tooltip: {
         enabled: false,

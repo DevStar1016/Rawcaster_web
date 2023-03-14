@@ -102,6 +102,15 @@
    -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
      contain;
  }
+  .saveIcon {
+  float: left;
+   width: 18px;
+   height: 18px;
+   background: #000;
+   mask: url("../../Assets/Icons/svg/save.svg") no-repeat center / contain;
+   -webkit-mask: url("../../Assets/Icons/svg/save.svg") no-repeat center /
+     contain;
+ }
  .disabledcommentIcon {
   float: left;
    width: 18px;

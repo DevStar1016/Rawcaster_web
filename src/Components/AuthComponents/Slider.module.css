@@ -1,7 +1,0 @@
-.sliderSec { width: 50%; margin-top: 40px; background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%); justify-content: center;
-    display: flex;  flex-direction: column; align-items: center;
-    text-align: center;
-    padding:10px 20px; }
-.sliderSec .contentBox { max-width: 540px; }
-.sliderSec .contentBox h2 { color: #fff; font-family: 'Gilroy-Bold'; font-size: 28px; margin-top: 15px; }
-.sliderSec .contentBox h4 { color: #fff; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 400; }

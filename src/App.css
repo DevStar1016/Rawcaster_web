@@ -307,7 +307,7 @@ margin-bottom: 0px !important;
   float: left !important;
   border-radius: 0 0 5px 5px !important;
   width: 100% !important;
-  margin-top: -7px !important;
+  margin-top: 0px !important;
 }
 
 .eventmodal .ant-modal-body  {
@@ -337,6 +337,12 @@ margin-bottom: 0px !important;
   padding-top: 7px;
   background-color: transparent;
   border:none
+}
+.ant-picker-content ul:nth-child(3) {
+  display: none !important;
+}
+.ant-picker-footer {
+  display: none !important;
 }
 @media (max-width:768px) {
   .singleImage { max-width: 300px !important; }

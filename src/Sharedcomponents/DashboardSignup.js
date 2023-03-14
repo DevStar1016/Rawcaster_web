@@ -29,7 +29,7 @@ import {
 } from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuthData } from "../Shared/Reduxfetcher";
-import VideoPlayer from "../UIComponents/VideoPlayer";
+import Connections from "../Components/Connections/Connections";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();
@@ -215,6 +215,7 @@ const DashboardSignup = () => {
                 <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
               </video>
             </div>
+            <Connections />
           </div>
         )}
       </div>
