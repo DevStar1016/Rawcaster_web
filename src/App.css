@@ -275,7 +275,7 @@ color: #FFFFFF !important;
 margin-bottom: 0px !important;
 }
 .partial_readmore { 
-  max-height: 300px;
+  max-height: 320px;
 }
 .full_readmore {
   max-height: none;
@@ -356,4 +356,11 @@ margin-bottom: 0px !important;
   .anticon svg {fill: #000; font-size: 10px; margin-top: -8px; }
   .search_tab li .nav-link  { padding: 4px 12px!important; font-size: 14px !important; }
   .readmore_text { max-height: 40px; font-size: 13px; }
+  .partial_readmore { 
+    max-height: 210px;
+  }
+  .full_readmore {
+    max-height: none;
+  }
+  
 }

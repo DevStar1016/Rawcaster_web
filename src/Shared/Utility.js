@@ -245,12 +245,14 @@ export const ReadMore = ({ children, isReadMore = true }) => {
     );
   };
   const [showFullText, setShowFullText] = useState(false);
+  const [showpartialText, setshowpartialText] = useState(true);
   const [textHeight, setTextHeight] = useState(0);
   const textRef = useRef(null);
   const toggleShowFullText = () => setShowFullText(!showFullText);
+  const toggleShowpartialText = () => setshowpartialText(!showpartialText);
   useEffect(() => {
-    setTextHeight(textRef.current.clientHeight);
-  }, []);
+    setTextHeight(textRef.current.offsetHeight);
+  }, [textRef]);
 
   const isFullTxt = () => {
     if (isReadMore || showFullText) {
@@ -259,22 +261,53 @@ export const ReadMore = ({ children, isReadMore = true }) => {
       return false;
     }
   };
+
+  const getValidShowmoreTxt = () => {
+    if (detectMob()) {
+      return 25;
+    } else {
+      return 55;
+    }
+  };
+
+  const getValidPartialShowmoreTxt = () => {
+    if (detectMob()) {
+      return 200;
+    } else {
+      return 300;
+    }
+  };
   return (
     <Linkify options={{ render: renderLink }}>
       <p
         ref={textRef}
-        className={`readmore_text ${isFullTxt() ? "full_readmore" : ""}`}
+        className={`readmore_text ${
+          isFullTxt()
+            ? showpartialText
+              ? "partial_readmore"
+              : "full_readmore"
+            : ""
+        }`}
       >
         {children}
       </p>
-      {!isReadMore && textHeight > 55 && (
+      {!isReadMore && textHeight > getValidShowmoreTxt() ? (
+        <>
+          <span
+            onClick={toggleShowFullText}
+            style={{ color: "#e26386", cursor: "pointer" }}
+          >
+            {showFullText ? "Read Less" : "Read More"}
+          </span>
+        </>
+      ) : textHeight > getValidPartialShowmoreTxt() ? (
         <span
-          onClick={toggleShowFullText}
+          onClick={toggleShowpartialText}
           style={{ color: "#e26386", cursor: "pointer" }}
         >
-          {showFullText ? "Read Less" : "Read More"}
+          {!showpartialText ? "Read Less" : "Read More"}
         </span>
-      )}
+      ) : null}
     </Linkify>
   );
 };

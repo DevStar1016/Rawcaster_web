@@ -1,11 +1,13 @@
 import { Modal } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import classes from "./Modal.module.css";
 import { millisecondsToMMSS } from "../Shared/Utility";
 import PreviewModal from "./PreviewModal";
 import { toast } from "react-hot-toast";
 import { MediaPermissionsErrorType, requestMediaPermissions } from "mic-check";
+
+let countdownInterval;
 
 const CameraModal = ({
   visible,
@@ -17,7 +19,6 @@ const CameraModal = ({
 }) => {
   const [PreviewMedia, setPreviewMedia] = useState();
   const [TimerValue, setTimerValue] = useState(0);
-  let countdownInterval;
 
   function countdown(seconds) {
     countdownInterval = setInterval(() => {
@@ -55,16 +56,21 @@ const CameraModal = ({
     //   clearBlobUrl();
     //   return;
     // }
-    if (videoRef.current) {
-      const stream = videoRef.current.srcObject;
-      if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach((track) => track.stop());
-        videoRef.current.srcObject = null;
+
+    setTimeout(() => {
+      if (videoRef.current) {
+        const stream = videoRef.current.srcObject;
+        if (stream) {
+          const tracks = stream.getTracks();
+          tracks.forEach((track) => track.stop());
+          videoRef.current.srcObject = null;
+        }
       }
-    }
-    clearBlobUrl();
-    onClose();
+
+      clearBlobUrl();
+
+      onClose();
+    }, 100);
   };
 
   const handleVideoonly = () => {
@@ -181,8 +187,9 @@ const CameraModal = ({
       width={"650px"}
       className="CameraModal"
       onCancel={() => {
+        clearInterval(countdownInterval);
+        setTimerValue(0);
         handleCloseMedia();
-        onClose();
       }}
     >
       {PreviewMedia && (
@@ -198,6 +205,8 @@ const CameraModal = ({
           <PreviewModal
             url={PreviewMedia}
             onSuccess={(file) => {
+              clearInterval(countdownInterval);
+              setTimerValue(0);
               setPreviewMedia();
               setTimeout(() => {
                 onSuccess(file);
@@ -207,6 +216,8 @@ const CameraModal = ({
               }, 100);
             }}
             onClose={() => {
+              clearInterval(countdownInterval);
+              setTimerValue(0);
               setPreviewMedia();
               fetchData();
             }}
@@ -236,19 +247,31 @@ const CameraModal = ({
               </div>
             )}
             {type === "Camera" && (
-               <div className={classes.btnSec}>
-              <button onClick={() => captureImage()}>
-                <span class="material-symbols-outlined">photo_camera</span>
-              </button>
+              <div className={classes.btnSec}>
+                <button onClick={() => captureImage()}>
+                  <span class="material-symbols-outlined">photo_camera</span>
+                </button>
               </div>
             )}
             {type === "Video" && (
               <div className={classes.btnSec}>
                 {status === "recording" ? (
-                  <button onClick={stopRecording}><span className={`material-symbols-outlined ${classes.recIcon}`}>slideshow</span> Stop Recording</button>
+                  <button onClick={stopRecording}>
+                    <span
+                      className={`material-symbols-outlined ${classes.recIcon}`}
+                    >
+                      slideshow
+                    </span>{" "}
+                    Stop Recording
+                  </button>
                 ) : (
                   <button onClick={() => handleStartVideo()}>
-                    <span className={`material-symbols-outlined ${classes.recIcon}`}>radio_button_checked</span> Start Recording
+                    <span
+                      className={`material-symbols-outlined ${classes.recIcon}`}
+                    >
+                      radio_button_checked
+                    </span>{" "}
+                    Start Recording
                   </button>
                 )}
               </div>

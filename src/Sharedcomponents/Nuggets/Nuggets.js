@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import { useDispatch } from "react-redux";
 import { listNuggetsService } from "../../Services/ApiService";
-import { getAuthenticated, JSONtoformdata } from "../../Shared/Utility";
+import {
+  detectMob,
+  getAuthenticated,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
@@ -88,7 +92,7 @@ const Nuggets = () => {
                 }, [])
               );
             }
-            console.log("test", res.data);
+
             pageRef.current = {
               page: res.data.current_page_no,
               totalpage: res.data.total_pages,
@@ -167,7 +171,7 @@ const Nuggets = () => {
       Math.ceil(window.innerHeight + window.scrollY) >=
       document.documentElement.scrollHeight;
 
-    if (bottom) {
+    if (bottom && detectMob()) {
       onEndReached();
     }
   };

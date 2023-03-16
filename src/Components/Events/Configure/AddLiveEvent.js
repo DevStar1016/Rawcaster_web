@@ -21,7 +21,6 @@ import {
 } from "../../../Services/ApiService";
 import { filterValidObject, JSONtoformdata } from "../../../Shared/Utility";
 import { toast } from "react-hot-toast";
-import moment from "moment";
 
 const validationSchema = yup.object().shape({
   event_title: yup.string().required(`Event Title is Required !`),

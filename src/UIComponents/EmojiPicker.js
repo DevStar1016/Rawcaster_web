@@ -9,7 +9,7 @@ const EmojiPicker = (props) => {
     new Picker({ ...props, data, ref });
   }, [props]);
 
-  return <div ref={ref} style={{ height: 350, overflow: "hidden" }} />;
+  return <div ref={ref} style={{ height: 350, overflowY: "scroll" }} />;
 };
 
 export default EmojiPicker;
