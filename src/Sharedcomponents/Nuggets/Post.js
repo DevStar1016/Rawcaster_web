@@ -350,11 +350,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                 }
               }}
             >
-              <p
-                style={{
-                  cursor: "pointer",
-                }}
-              >
+              <p>
                 <i className={`${classes.inactive_like_icon}`} />
               </p>
               <span>{ele.total_likes}</span>
@@ -367,9 +363,6 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
               }
             >
               <p
-                style={{
-                  cursor: "pointer",
-                }}
                 onClick={() => {
                   if (getAuthenticated()) {
                     if (isAccountValid()) {
@@ -413,7 +406,6 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
             </div>
             <div className={classes.iconsec}>
               <p
-                style={{ cursor: "pointer" }}
                 onClick={() => {
                   HandleShare();
                 }}
@@ -450,6 +442,16 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                 }}
               >
                 <i className={`${classes.saveIcon}`} />
+              </p>
+            </div>
+            <div className={classes.iconsec}>
+              <p>
+                <i class="material-symbols-outlined">menu</i>
+              </p>
+            </div>
+            <div className={classes.iconsec}>
+              <p>
+                <i class="material-symbols-outlined">close</i>
               </p>
             </div>
           </div>

@@ -121,9 +121,9 @@ const AudioRecordModal = ({ onClose, visible }) => {
         </div>
       )}
       {isRecording ? (
-        <img src={AudioRecord} className={classes.audioplayIcon} />
+        <img width="100%" src={AudioRecord} className={classes.audioplayIcon} />
       ) : (
-        <img src={AudioStop} className={classes.audioplayIcon} />
+        <img width="100%" src={AudioStop} className={classes.audioplayIcon} />
       )}
 
       <div
