@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import classes from "./Event.module.css";
 
-const Event = ({ ele }) => {
+const Event = ({ ele, handleEdit }) => {
   return (
     <div className={classes.eventItem}>
       <img className={classes.eventImg} src={ele?.banner_image} />
@@ -14,7 +14,18 @@ const Event = ({ ele }) => {
         <span class="material-symbols-outlined">share</span>
       </div>
       <div className={classes.contentSec}>
-        <h3>{ele.event_name}</h3>
+        <div className="d-flex flex-row justify-content-between">
+          <h3>{ele.event_name}</h3>
+          <div className={classes.editSec}>
+            <i
+              className={classes.editIcon}
+              onClick={() => {
+                handleEdit(ele);
+              }}
+            ></i>
+            <i class="material-symbols-outlined">delete</i>
+          </div>
+        </div>
         <p className={classes.host}>Hosted by {ele.original_user_name}</p>
         <p className={classes.des}>{ele.message}</p>
         <p className={classes.iconsec}>

@@ -341,8 +341,11 @@ margin-bottom: 0px !important;
 .ant-picker-content ul:nth-child(3) {
   display: none !important;
 }
-.ant-picker-footer {
+/* .ant-picker-footer {
   display: none !important;
+} */
+.eventBody .ant-form-item{
+  margin-bottom: 5px !important;
 }
 @media (max-width:768px) {
   .singleImage { max-width: 300px !important; }

@@ -1,4 +1,4 @@
-.eventItem { position: relative; width: calc(50% - 20px); float: left; margin: 15px 10px; border-radius: 15px; 
+.eventItem { position: relative; width: 100%; float: left; margin: 15px 0px; border-radius: 15px; 
     border: 1px solid #ECECEC; }
 .eventImg { border-top-left-radius: 15px; border-top-right-radius: 15px; height: 150px; width: 100%; } 
 .contentSec { padding: 15px;}
@@ -14,7 +14,14 @@ p.iconsec span:last-child { margin-left: 10px;}
 .view span { font-size: 18px; padding-right: 3px;}
 .share { cursor: pointer; position: absolute; padding:5px; right: 10px; top: 10px; z-index: 1; color: #fff;}
 .share span { font-size: 20px; }
-
+.editIcon { background: url(../../Assets/Icons/svg/edit_icon.svg) no-repeat center center;  background-size: cover; width: 15px; height: 15px; display: flex; justify-content: center; align-items: center;cursor: pointer;}
+.editSec {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 50px;
+ }
 @media (max-width:768px) {
 .eventItem { margin: 10px 0; width: 100%; }
 }

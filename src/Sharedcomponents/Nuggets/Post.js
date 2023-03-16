@@ -422,7 +422,13 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
               </p>
               <span>0</span>
             </div>
-            <div className={classes.iconsec}>
+            <div
+              className={
+                parseInt(ele.saved) === 1
+                  ? classes.activeiconsec
+                  : classes.iconsec
+              }
+            >
               <p
                 style={{ cursor: "pointer" }}
                 onClick={() => {

@@ -112,27 +112,34 @@ const SelectInfluencers = () => {
   };
 
   const HandleupdateFans = (selectedFansList = SelectedInfluencersList) => {
-    let becameFanData = {
-      token: loginUserData?.token,
-      auth_code: getAuthToken(loginUserData?.token),
-      follow_userid: JSON.stringify(selectedFansList),
-    };
-    InfluencerFollowService(JSONtoformdata(becameFanData))
-      .then((res) => {
-        if (res.data.status === 1) {
-          getInfluencerList(
-            SearchValues.pageNum,
-            SearchValues.category,
-            SearchValues.search_key
-          );
-          setSelectedInfluencersList([]);
-        } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+    let promise = new Promise((resolve, reject) => {
+      let becameFanData = {
+        token: loginUserData?.token,
+        auth_code: getAuthToken(loginUserData?.token),
+        follow_userid: JSON.stringify(selectedFansList),
+      };
+      InfluencerFollowService(JSONtoformdata(becameFanData))
+        .then((res) => {
+          if (res.data.status === 1) {
+            getInfluencerList(
+              SearchValues.pageNum,
+              SearchValues.category,
+              SearchValues.search_key
+            );
+            setSelectedInfluencersList([]);
+            resolve(true);
+          } else if (res.data.status === 0) {
+            toast.error(res.data.msg);
+            reject(false);
+          }
+        })
+        .catch((err) => {
+          reject(false);
+          toast.error(err.message);
+        });
+    });
+
+    return promise;
   };
 
   return (
@@ -214,7 +221,13 @@ const SelectInfluencers = () => {
               onClick={() => {
                 if (SelectedInfluencersList.length !== 0) {
                   dispatch(handleLoading(true));
-                  HandleupdateFans();
+                  HandleupdateFans()
+                    .then((res) => {
+                      navigate("/dashboard");
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
                 }
               }}
             >

@@ -1,13 +1,13 @@
 import { Modal } from "antd";
 import React from "react";
 
-const EventModal = ({ open, onClose, onSuccess, children }) => {
+const EventModal = ({ open, onClose, onSuccess, children, isUpdate }) => {
   return (
     <Modal
-      title="Create Talk Show"
+      title={`${isUpdate ? "Update" : "Create"} Talk Show`}
       centered
       open={open}
-      okText="Create Event"
+      okText={`${isUpdate ? "Update" : "Create"} Event`}
       cancelText="Cancel"
       className="eventmodal"
       onOk={() => onSuccess()}
