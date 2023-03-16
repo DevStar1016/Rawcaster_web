@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 import { listEventsService } from "../../Services/ApiService";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { JSONtoformdata } from "../../Shared/Utility";
@@ -64,6 +65,14 @@ const Events = () => {
         <BeforeAuthEvents />
       ) : (
         <>
+          <div className={`${classes.beforelogin} mb-3`}>
+            <Link className={classes.active}>
+              <span class="material-icons">home</span> For You
+            </Link>
+            <Link aria-disabled>
+              <span class="material-icons">people</span> Following
+            </Link>
+          </div>
           <CreateEvent />
 
           {getValidEvent().map((ele) => (

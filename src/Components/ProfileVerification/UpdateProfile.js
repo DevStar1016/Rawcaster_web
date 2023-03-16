@@ -61,6 +61,34 @@ const UpdateProfile = () => {
     mobile: false,
   });
   const [ProfileImage, setProfileImage] = useState("");
+
+  console.log(loginUserData);
+
+  const validationSchema = yup.object().shape({
+    first_name: yup.string().required(`Please input your First Name!`),
+    last_name: yup.string().required(`Please input your Last Name!`),
+    gender: yup.string().required(`Please input your Gender!`),
+    name: yup.string().required(`Please input your Display Name!`),
+    dob: yup.string().required(`Please input your Date of Birth!`),
+    geo_location: yup.string().required(`Please input your Location!`),
+    mobile_no:
+      loginUserData.mobile !== ""
+        ? yup
+            .string()
+            .min(5, `Please input Valid Mobile Number!`)
+            .required(`Please input your Mobile Number!`)
+        : yup.string().min(5, `Please input Valid Mobile Number!`),
+    email_id:
+      loginUserData.email_id !== ""
+        ? yup
+            .string()
+            .email(`Please input Valid Email Id!`)
+            // .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
+            .required(`Please input your Email!`)
+        : yup.string().email(`Please input Valid Email Id!`),
+    // .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
+  });
+
   const {
     values,
     handleChange,
@@ -245,9 +273,16 @@ const UpdateProfile = () => {
     <Container>
       <Col xs={24} sm={24} md={24} lg={24} xl={16} style={{ margin: "auto" }}>
         <div className={classes.centerLogo}>
-          <Link to="/">
-            <img src={require("../../Assets/Images/png/rawcater_logo.png")} />
-          </Link>
+          <div className={classes.backBtn}>
+            <Link to="/">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </Link>
+          </div>
+          <div className={classes.linkSec}>
+            <Link to="/">
+              <img src={require("../../Assets/Images/png/rawcater_logo.png")} />
+            </Link>
+          </div>
         </div>
         <div className={classes.updatebg}>
           <Row className="mb-4">

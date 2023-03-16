@@ -1,11 +1,14 @@
 import { io } from "socket.io-client";
 import { socketURL } from "./ServiceConstants";
 
-const socket = io(socketURL);
+const socket = io(socketURL, {
+  autoConnect: true,
+  reconnection: false,
+  transports: ["websocket"],
+});
 
 const ConnectSocket = (props) => {
   if (props.user_id !== "") {
-    console.log(props);
     sendMessage({
       event: "userdata",
       userid: props.user_id,
@@ -20,5 +23,9 @@ export default ConnectSocket;
 export const socketListen = socket;
 
 export const sendMessage = (data, type = "message") => {
-  socket.emit(type, data);
+  console.log(data, type);
+
+  socket.emit("hello", "world", (val) => {
+    console.log(val);
+  });
 };

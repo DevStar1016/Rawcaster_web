@@ -98,7 +98,7 @@ const ProfileList = () => {
   };
 
   useEffect(() => {
-    if (isGlobalSearch || PeopleList.length === 0) {
+    if (isGlobalSearch || PeopleList?.length === 0) {
       dispatch(handleLoading(true));
       getPeopleList();
     }
@@ -116,7 +116,7 @@ const ProfileList = () => {
   const scrollRef = useBottomScrollListener(onEndReached);
 
   const getValidPeople = () => {
-    if (PeopleList.length !== 0) {
+    if (PeopleList && PeopleList.length !== 0) {
       const filteredArr = PeopleList.reduce((acc, current) => {
         const x = acc.find((item) => item.user_id === current.user_id);
         if (!x) {

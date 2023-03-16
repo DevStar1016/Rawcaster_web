@@ -138,7 +138,7 @@ const TagsList = () => {
   };
 
   useEffect(() => {
-    if (isGlobalSearch || TagsList.length === 0) {
+    if (isGlobalSearch || TagsList?.length === 0) {
       scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       dispatch(handleLoading(true));
       getTagsList();
@@ -157,21 +157,25 @@ const TagsList = () => {
   const scrollRef = useBottomScrollListener(onEndReached);
 
   const getValidTags = () => {
-    const filteredArr = TagsList.reduce((acc, current) => {
-      const x = acc.find((item) => item.tag === current.tag);
-      if (!x) {
-        return acc.concat([current]);
-      } else {
-        return acc;
-      }
-    }, []);
+    if (TagsList && TagsList.length !== 0) {
+      const filteredArr = TagsList.reduce((acc, current) => {
+        const x = acc.find((item) => item.tag === current.tag);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
 
-    return filteredArr;
+      return filteredArr;
+    } else {
+      return [];
+    }
   };
 
   return (
     <>
-      {getValidTags().length === 0 ? (
+      {getValidTags()?.length === 0 ? (
         <span style={{ fontSize: 20, fontWeight: "bold" }}>
           We didn't find any results
         </span>

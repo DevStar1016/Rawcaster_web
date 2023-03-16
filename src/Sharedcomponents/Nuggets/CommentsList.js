@@ -252,45 +252,47 @@ const CommentsList = ({ index }) => {
                               <p>{decodeHtml(elem?.name)}</p>
                               <span>{decodeHtml(elem?.comment)}</span>
                             </div>
-                            <Dropdown
-                              menu={{
-                                items: [
-                                  {
-                                    label: (
-                                      <div
-                                        onClick={() => {
-                                          setisActiveEdit(elem.comment_id);
-                                        }}
-                                      >
-                                        Edit
-                                      </div>
-                                    ),
-                                    key: "0",
-                                  },
-                                  {
-                                    label: (
-                                      <div
-                                        onClick={() => {
-                                          handleDeleteNuggetComment(
-                                            elem.comment_id
-                                          );
-                                        }}
-                                      >
-                                        Delete
-                                      </div>
-                                    ),
-                                    key: "1",
-                                  },
-                                ],
-                              }}
-                              trigger={["click"]}
-                            >
-                              <div className={classes.moreBtn}>
-                                <i class="material-symbols-outlined">
-                                  more_horiz
-                                </i>
-                              </div>
-                            </Dropdown>
+                            {elem.user_id === loginUserData.user_id && (
+                              <Dropdown
+                                menu={{
+                                  items: [
+                                    {
+                                      label: (
+                                        <div
+                                          onClick={() => {
+                                            setisActiveEdit(elem.comment_id);
+                                          }}
+                                        >
+                                          Edit
+                                        </div>
+                                      ),
+                                      key: "0",
+                                    },
+                                    {
+                                      label: (
+                                        <div
+                                          onClick={() => {
+                                            handleDeleteNuggetComment(
+                                              elem.comment_id
+                                            );
+                                          }}
+                                        >
+                                          Delete
+                                        </div>
+                                      ),
+                                      key: "1",
+                                    },
+                                  ],
+                                }}
+                                trigger={["click"]}
+                              >
+                                <div className={classes.moreBtn}>
+                                  <i class="material-symbols-outlined">
+                                    more_horiz
+                                  </i>
+                                </div>
+                              </Dropdown>
+                            )}
                           </div>
                           <div className="clearfix"></div>
                           <div className={classes.agree}>

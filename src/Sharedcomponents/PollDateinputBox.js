@@ -38,45 +38,53 @@ const PollDateinputBox = ({ onSelectDate }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pollTime]);
 
+  const getValidMinute = () => {
+    if (pollTime.day === 0 && pollTime.hours === 0) {
+      return 5;
+    } else {
+      return 0;
+    }
+  };
+
   return (
     <div>
       <Row gutter={15}>
-      <Col xs={24} sm={8}>
-        <Select
-          style={{ width: "100%" }}
-          placeholder="Day"
-          className="textBox mb-2"
-          value={getSelectedVal(pollTime.day, "Days")}
-          options={getValues(7, 1)}
-          onChange={(val) => {
-            setpollTime((pre) => ({ ...pre, day: val }));
-          }}
-        />
-      </Col>
-      <Col xs={24} sm={8}>
-        <Select
-          style={{ width: "100%" }}
-          placeholder="Hours"
-          className="textBox mb-2"
-          value={getSelectedVal(pollTime.hours, "Hours")}
-          options={getValues(24, 0)}
-          onChange={(val) => {
-            setpollTime((pre) => ({ ...pre, hours: val }));
-          }}
-        />
-      </Col>
-      <Col xs={24} sm={8}>
-        <Select
-          style={{ width: "100%" }}
-          placeholder="Minutes"
-          className="textBox mb-2"
-          value={getSelectedVal(pollTime.minutes, "Minutes")}
-          options={getValues(60, 0)}
-          onChange={(val) => {
-            setpollTime((pre) => ({ ...pre, minutes: val }));
-          }}
-        />
-      </Col>
+        <Col xs={24} sm={8}>
+          <Select
+            style={{ width: "100%" }}
+            placeholder="Day"
+            className="textBox mb-2"
+            value={getSelectedVal(pollTime.day, "Days")}
+            options={getValues(7, 0)}
+            onChange={(val) => {
+              setpollTime((pre) => ({ ...pre, day: val }));
+            }}
+          />
+        </Col>
+        <Col xs={24} sm={8}>
+          <Select
+            style={{ width: "100%" }}
+            placeholder="Hours"
+            className="textBox mb-2"
+            value={getSelectedVal(pollTime.hours, "Hours")}
+            options={getValues(24, 0)}
+            onChange={(val) => {
+              setpollTime((pre) => ({ ...pre, hours: val }));
+            }}
+          />
+        </Col>
+        <Col xs={24} sm={8}>
+          <Select
+            style={{ width: "100%" }}
+            placeholder="Minutes"
+            className="textBox mb-2"
+            value={getSelectedVal(pollTime.minutes, "Minutes")}
+            options={getValues(60, getValidMinute())}
+            onChange={(val) => {
+              setpollTime((pre) => ({ ...pre, minutes: val }));
+            }}
+          />
+        </Col>
       </Row>
     </div>
   );

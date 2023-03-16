@@ -172,6 +172,7 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
                                 let findData = EditData.find(
                                   (ele) => ele.comment_id === elem.comment_id
                                 );
+                                console.log(findData.comment);
                                 if (findData) {
                                   if (isValidData(findData.comment)) {
                                     EditCommentforAnugget(
@@ -258,45 +259,47 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
                               <p>{elem?.name}</p>
                               <span>{elem?.comment}</span>
                             </div>
-                            <Dropdown
-                              menu={{
-                                items: [
-                                  {
-                                    label: (
-                                      <div
-                                        onClick={() => {
-                                          setisActiveEdit(elem.comment_id);
-                                        }}
-                                      >
-                                        Edit
-                                      </div>
-                                    ),
-                                    key: "0",
-                                  },
-                                  {
-                                    label: (
-                                      <div
-                                        onClick={() => {
-                                          handleDeleteNuggetComment(
-                                            elem.comment_id
-                                          );
-                                        }}
-                                      >
-                                        Delete
-                                      </div>
-                                    ),
-                                    key: "1",
-                                  },
-                                ],
-                              }}
-                              trigger={["click"]}
-                            >
-                              <div className={classes.moreBtn}>
-                                <i class="material-symbols-outlined">
-                                  more_horiz
-                                </i>
-                              </div>
-                            </Dropdown>
+                            {elem.user_id === loginUserData.user_id && (
+                              <Dropdown
+                                menu={{
+                                  items: [
+                                    {
+                                      label: (
+                                        <div
+                                          onClick={() => {
+                                            setisActiveEdit(elem.comment_id);
+                                          }}
+                                        >
+                                          Edit
+                                        </div>
+                                      ),
+                                      key: "0",
+                                    },
+                                    {
+                                      label: (
+                                        <div
+                                          onClick={() => {
+                                            handleDeleteNuggetComment(
+                                              elem.comment_id
+                                            );
+                                          }}
+                                        >
+                                          Delete
+                                        </div>
+                                      ),
+                                      key: "1",
+                                    },
+                                  ],
+                                }}
+                                trigger={["click"]}
+                              >
+                                <div className={classes.moreBtn}>
+                                  <i class="material-symbols-outlined">
+                                    more_horiz
+                                  </i>
+                                </div>
+                              </Dropdown>
+                            )}
                           </div>
                           <div className="clearfix"></div>
                           <div className={classes.agree}>
@@ -329,29 +332,29 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
             />
           </div>
           <div className={classes.textBox}>
-          <div className={classes.inputSec}>
-            <Input
-              placeholder="Write your reply here..."
-              value={ReplyTxt[index]}
-              onChange={(e) => {
-                let tempData = [...ReplyTxt];
-                tempData[index] = e.target.value;
-                setReplyTxt(tempData);
-              }}
-            />
-            <img className={classes.emojiicon} src={emoji} alt="emoji" />
-            <img
-              className={classes.sendicon}
-              alt="Send_icon"
-              src={sendicon}
-              onClick={() => {
-                AddCommentforAnugget(nugget_id, ReplyTxt[index]);
-                let tempData = [...ReplyTxt];
-                tempData[index] = "";
-                setReplyTxt(tempData);
-              }}
-            />
-          </div>
+            <div className={classes.inputSec}>
+              <Input
+                placeholder="Write your reply here..."
+                value={ReplyTxt[index]}
+                onChange={(e) => {
+                  let tempData = [...ReplyTxt];
+                  tempData[index] = e.target.value;
+                  setReplyTxt(tempData);
+                }}
+              />
+              <img className={classes.emojiicon} src={emoji} alt="emoji" />
+              <img
+                className={classes.sendicon}
+                alt="Send_icon"
+                src={sendicon}
+                onClick={() => {
+                  AddCommentforAnugget(nugget_id, ReplyTxt[index]);
+                  let tempData = [...ReplyTxt];
+                  tempData[index] = "";
+                  setReplyTxt(tempData);
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

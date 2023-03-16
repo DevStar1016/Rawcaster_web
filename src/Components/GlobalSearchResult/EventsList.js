@@ -99,7 +99,7 @@ const EventsList = () => {
   };
 
   useEffect(() => {
-    if (isGlobalSearch || EventList.length === 0) {
+    if (isGlobalSearch || EventList?.length === 0) {
       dispatch(handleLoading(true));
       getEventList();
     }
@@ -135,7 +135,7 @@ const EventsList = () => {
 
   return (
     <div className={` ${classes.profileSec}`} ref={scrollRef}>
-      {getValidEvent().length === 0 ? (
+      {getValidEvent()?.length === 0 ? (
         <span style={{ fontSize: 20, fontWeight: "bold" }}>
           We didn't find any results
         </span>

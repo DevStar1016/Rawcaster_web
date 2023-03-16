@@ -91,7 +91,7 @@ const NuggetsList = () => {
   };
 
   useEffect(() => {
-    if (isGlobalSearch || (NuggetList && NuggetList.length === 0)) {
+    if (isGlobalSearch || (NuggetList && NuggetList?.length === 0)) {
       scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       dispatch(handleLoading(true));
       getNuggetList();

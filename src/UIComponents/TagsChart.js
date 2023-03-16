@@ -104,7 +104,7 @@ const TagsChart = ({ Data }) => {
   ];
 
   const getLabels = () => {
-    if (Data.length !== 0) {
+    if (Data && Data.length !== 0) {
       return Data.map((ele) => ele?.hours || 0);
     } else {
       return [];
@@ -112,7 +112,7 @@ const TagsChart = ({ Data }) => {
   };
 
   const getValues = () => {
-    if (Data.length !== 0) {
+    if (Data && Data.length !== 0) {
       return Data.map((ele) => ele?.total_nuggets || 0);
     } else {
       return [];
@@ -130,7 +130,9 @@ const TagsChart = ({ Data }) => {
       },
     ],
   };
-  return Data.length !== 0 ? <Line options={options} data={data} /> : null;
+  return Data && Data.length !== 0 ? (
+    <Line options={options} data={data} />
+  ) : null;
 };
 
 export default TagsChart;

@@ -1,5 +1,5 @@
 import { Button, Dropdown, Modal, Tooltip } from "antd";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import classes from "./Modal.module.css";
 import pollIcon from "../Assets/Images/svg/pollIcon.svg";
 import mikeIcon from "../Assets/Images/svg/mikeicon.svg";
@@ -23,6 +23,7 @@ import data from "@emoji-mart/data";
 import { Picker } from "emoji-mart";
 import EmojiPicker from "../UIComponents/EmojiPicker";
 import ImageGrid from "../UIComponents/Imagegrid/ImageGrid";
+import { sendMessage, socketListen } from "../Services/SocketService";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -34,6 +35,8 @@ const Postmodal = ({ visible, onClose }) => {
     handleSubmit,
     values,
     NuggetData,
+    isPoll,
+    setisPoll,
   } = useContext(PostNuggetContext);
   new Picker({
     parent: document.querySelector("#picker"),
@@ -50,7 +53,6 @@ const Postmodal = ({ visible, onClose }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [showEmojis, setShowEmojis] = useState(false);
-  const [isPoll, setisPoll] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
 
@@ -82,6 +84,44 @@ const Postmodal = ({ visible, onClose }) => {
           toast.error(message);
         }
       });
+  };
+
+  const getLinkInfo = (val) => {
+    let expression =
+      /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+    var regex = new RegExp(expression);
+    var t = val;
+    if (t.match(regex)) {
+      let url = t.match(regex);
+      let addHttp = url[url.length - 1].replace(
+        /^(?:(.*:)?\/\/)?(.*)/i,
+        (match, schemma, nonSchemmaUrl) =>
+          schemma ? match : `http://${nonSchemmaUrl}`
+      );
+      let index = addHttp.indexOf("http");
+      if (index > 0) {
+        addHttp = addHttp.substring(index, addHttp.length);
+      }
+      // if (oldUrl !== addHttp) {
+      let message = { event: "getmetadata", url: addHttp };
+      console.log(message);
+      sendMessage(message, "nuggets");
+      // }
+    }
+  };
+
+  useEffect(() => {
+    socketListen.on("nuggets", (message) => {
+      switch (message.event) {
+        case "getmetadata":
+          Getmetadata(message);
+          break;
+      }
+    });
+  }, []);
+
+  const Getmetadata = (message) => {
+    console.log(message, "===>1234");
   };
 
   return (
@@ -132,6 +172,7 @@ const Postmodal = ({ visible, onClose }) => {
               <img
                 src={mikeIcon}
                 onClick={() => {
+                  setisPoll(false);
                   handleAllowMicPermission();
                 }}
               />
@@ -141,6 +182,7 @@ const Postmodal = ({ visible, onClose }) => {
                 <img
                   src={videoIcon}
                   onClick={() => {
+                    setisPoll(false);
                     fetchData("Video");
                   }}
                 />
@@ -151,6 +193,7 @@ const Postmodal = ({ visible, onClose }) => {
                 <img
                   src={cameraIcon}
                   onClick={() => {
+                    setisPoll(false);
                     fetchData("Camera");
                   }}
                 />
@@ -161,6 +204,7 @@ const Postmodal = ({ visible, onClose }) => {
                 src={pictureIcon}
                 onClick={() => {
                   if (ImageRef.current) {
+                    setisPoll(false);
                     ImageRef.current.click();
                   }
                 }}
@@ -188,6 +232,7 @@ const Postmodal = ({ visible, onClose }) => {
                 src={imageIcon}
                 onClick={() => {
                   if (VideoRef.current) {
+                    setisPoll(false);
                     VideoRef.current.click();
                   }
                 }}
@@ -227,6 +272,7 @@ const Postmodal = ({ visible, onClose }) => {
                 onChange={(e) => {
                   if (e.target.value.length <= 700) {
                     setFieldValue("content", e.target.value);
+                    getLinkInfo(e.target.value);
                   }
                 }}
               />

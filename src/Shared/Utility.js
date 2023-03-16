@@ -277,8 +277,14 @@ export const ReadMore = ({ children, isReadMore = true }) => {
       return 300;
     }
   };
+  const linkProps = {
+    onClick: (event) => {
+      alert("Are you sure you want to leave this page?");
+    },
+  };
+
   return (
-    <Linkify options={{ render: renderLink }}>
+    <Linkify options={{ render: renderLink, attributes: linkProps }}>
       <p
         ref={textRef}
         className={`readmore_text ${

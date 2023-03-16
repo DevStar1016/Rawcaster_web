@@ -18,7 +18,7 @@ import { useDashboard } from "./Shared/Reduxfetcher";
 import Spinner from "./Sharedcomponents/Spinner";
 import axios from "axios";
 import ImageCrop from "./Sharedcomponents/ImageCrop";
-import ConnectSocket from "./Services/SocketService";
+import ConnectSocket, { socketListen } from "./Services/SocketService";
 
 function App() {
   const dispatch = useDispatch();
@@ -57,6 +57,19 @@ function App() {
         handleLoginData(JSON.parse(getLocalStorageData("rawcaster_user_token")))
       );
       dispatch(handleToken(JSON.parse(getCookieData("rawcaster_user_token"))));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (JSON.parse(getLocalStorageData("rawcaster_user_token"))) {
+      let data = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+      ConnectSocket(data);
+      socketListen.on("connect_error", (error) => {
+        console.log(error);
+      });
+      socketListen.on("connect", () => {
+        console.log(socketListen.connected); // true
+      });
     }
   }, []);
 

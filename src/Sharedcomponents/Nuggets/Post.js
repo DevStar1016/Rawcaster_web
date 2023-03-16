@@ -7,7 +7,6 @@ import {
   deleteNuggetService,
   likeAndUnlikeNuggetService,
   nuggetCommentListService,
-  pollVoteService,
   saveAndUnsaveNuggetService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
@@ -241,7 +240,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   const isReadMore = () => {
     if (ele.media_list.length !== 0) {
       return false;
-    } else if (ele.poll_option.length !== 0) {
+    } else if (ele.poll_option?.length !== 0) {
       return false;
     }
     return true;
@@ -320,7 +319,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
               )}
             </p>
             <div className={classes.imgContainer}>
-              {ele.media_list.length !== 0 && (
+              {ele && ele.media_list && ele.media_list?.length !== 0 && (
                 <ImageGrid
                   imgArray={ele.media_list}
                   muted={muted}
