@@ -329,29 +329,29 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
             />
           </div>
           <div className={classes.textBox}>
-            <div className={classes.inputSec}>
-              <Input.TextArea
-                placeholder="Write your reply here..."
-                value={ReplyTxt[index]}
-                onChange={(e) => {
-                  let tempData = [...ReplyTxt];
-                  tempData[index] = e.target.value;
-                  setReplyTxt(tempData);
-                }}
-              />
-              <img className={classes.emojiicon} src={emoji} alt="emoji" />
-              <img
-                className={classes.sendicon}
-                alt="Send_icon"
-                src={sendicon}
-                onClick={() => {
-                  AddCommentforAnugget(nugget_id, ReplyTxt[index]);
-                  let tempData = [...ReplyTxt];
-                  tempData[index] = "";
-                  setReplyTxt(tempData);
-                }}
-              />
-            </div>
+          <div className={classes.inputSec}>
+            <Input
+              placeholder="Write your reply here..."
+              value={ReplyTxt[index]}
+              onChange={(e) => {
+                let tempData = [...ReplyTxt];
+                tempData[index] = e.target.value;
+                setReplyTxt(tempData);
+              }}
+            />
+            <img className={classes.emojiicon} src={emoji} alt="emoji" />
+            <img
+              className={classes.sendicon}
+              alt="Send_icon"
+              src={sendicon}
+              onClick={() => {
+                AddCommentforAnugget(nugget_id, ReplyTxt[index]);
+                let tempData = [...ReplyTxt];
+                tempData[index] = "";
+                setReplyTxt(tempData);
+              }}
+            />
+          </div>
           </div>
         </div>
       )}
