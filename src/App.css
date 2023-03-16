@@ -274,6 +274,9 @@ color: #FFFFFF !important;
   text-overflow: ellipsis;
 margin-bottom: 0px !important;
 }
+.partial_readmore { 
+  max-height: 300px;
+}
 .full_readmore {
   max-height: none;
 }

@@ -57,7 +57,6 @@ const SignupwithCredentials = () => {
   const validationSchema = yup.object().shape({
     first_name: yup
       .string()
-
       .max(50, "Name cannot be longer than 50 characters")
       .required("Please input your Name!"),
     email_id: yup
@@ -70,10 +69,12 @@ const SignupwithCredentials = () => {
       .required(`Please input your ${getLoginType().title}!`),
     password: yup
       .string()
-      .matches(
-        PASSWORD_EXP,
-        "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-      )
+      // .matches(
+      //   PASSWORD_EXP,
+      //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
+      // )
+      .trim("The Password cannot include leading and trailing spaces")
+      .strict(true)
       .min(8, "Password must be at least 8 characters long")
       .required("Please input your Password!"),
     dob: yup.string().required("Please input your Date of Birth!"),

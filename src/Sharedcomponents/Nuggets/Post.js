@@ -1,6 +1,6 @@
 import { Dropdown, Tooltip } from "antd";
 import dayjs from "dayjs";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import {
@@ -44,6 +44,9 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   const [muted, setmuted] = useState(false);
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
+  const [iscollapse, setiscollapse] = useState(false);
+  const [ContentLength, setContentLength] = useState();
+  const ref = useRef(null);
 
   const deletenugget = (id) => {
     let formData = new FormData();
@@ -236,14 +239,31 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   // };
 
   const isReadMore = () => {
-    if (ele.media_list !== 0) {
+    if (ele.media_list.length !== 0) {
       return false;
-    } else if (ele.poll_option !== 0) {
+    } else if (ele.poll_option.length !== 0) {
       return false;
     }
     return true;
   };
 
+  const isCollapse = () => {
+    let isvalidCollapse = ele.media_list.length !== 0 ? true : false;
+    if (isvalidCollapse) {
+      return false;
+    } else if (ContentLength < 100) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    if (ref && ref.current) {
+      const { current } = ref;
+      setContentLength(current.offsetHeight);
+    }
+  }, [ref]);
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       <div className={classes.nuggetItem}>
@@ -285,7 +305,10 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
         )}
         <div className={classes.contentSec}>
           <div className={classes.feedsSec}>
-            <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
+            <p
+              style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}
+              ref={ref}
+            >
               {ele && isValidData(ele?.content) && (
                 <ReadMore
                   CharactersLength={120}
@@ -329,63 +352,18 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
             </div>
           </div>
           <div className={classes.floattingSec}>
-            <div
-              className={ele?.liked ? classes.activeiconsec : classes.iconsec}
-              onClick={() => {
-                if (getAuthenticated()) {
-                  if (isAccountValid()) {
-                    let like = ele.liked ? 2 : 1;
-                    handleLike(like);
-                    debounceProcess(ele.nugget_id, like);
-                  } else {
-                    dispatch(
-                      handleprofileVerifyModalShow({
-                        show: true,
-                        msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                      })
-                    );
+            {(iscollapse || !isCollapse()) && (
+              <>
+                <div
+                  className={
+                    ele?.liked ? classes.activeiconsec : classes.iconsec
                   }
-                } else {
-                  dispatch(handleloginModalShow(true));
-                }
-              }}
-            >
-              <p>
-                <i className={`${classes.inactive_like_icon}`} />
-              </p>
-              <span>{ele.total_likes}</span>
-            </div>
-            <div
-              className={
-                Comments === ele.nugget_id
-                  ? classes.activeiconsec
-                  : classes.iconsec
-              }
-            >
-              <p
-                onClick={() => {
-                  if (getAuthenticated()) {
-                    if (isAccountValid()) {
-                      if (Comments === ele.nugget_id) {
-                        setCommentList([]);
-                        setComments("");
-                      } else {
-                        setCommentList([]);
-                        setComments(ele.nugget_id);
-                        getCommentList(ele.nugget_id);
-                      }
-                    } else {
-                      dispatch(
-                        handleprofileVerifyModalShow({
-                          show: true,
-                          msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                        })
-                      );
-                    }
-                  } else {
+                  onClick={() => {
                     if (getAuthenticated()) {
                       if (isAccountValid()) {
-                        HandleShare("share");
+                        let like = ele.liked ? 2 : 1;
+                        handleLike(like);
+                        debounceProcess(ele.nugget_id, like);
                       } else {
                         dispatch(
                           handleprofileVerifyModalShow({
@@ -397,63 +375,131 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                     } else {
                       dispatch(handleloginModalShow(true));
                     }
+                  }}
+                >
+                  <p>
+                    <i className={`${classes.inactive_like_icon}`} />
+                  </p>
+                  <span>{ele.total_likes}</span>
+                </div>
+                <div
+                  className={
+                    Comments === ele.nugget_id
+                      ? classes.activeiconsec
+                      : classes.iconsec
                   }
-                }}
-              >
-                <i className={`${classes.commentIcon}`} />
-              </p>
-              <span>{ele.total_comments}</span>
-            </div>
-            <div className={classes.iconsec}>
-              <p
-                onClick={() => {
-                  HandleShare();
-                }}
-              >
-                <i className={`${classes.share_icon}`} />
-              </p>
-              <span>0</span>
-            </div>
-            <div
-              className={
-                parseInt(ele.saved) === 1
-                  ? classes.activeiconsec
-                  : classes.iconsec
-              }
-            >
-              <p
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  if (getAuthenticated()) {
-                    if (isAccountValid()) {
-                      let save = ele.saved ? 2 : 1;
-                      savedebounceProcess(ele.nugget_id, 1);
-                    } else {
-                      dispatch(
-                        handleprofileVerifyModalShow({
-                          show: true,
-                          msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                        })
-                      );
-                    }
-                  } else {
-                    dispatch(handleloginModalShow(true));
+                >
+                  <p
+                    onClick={() => {
+                      if (getAuthenticated()) {
+                        if (isAccountValid()) {
+                          if (Comments === ele.nugget_id) {
+                            setCommentList([]);
+                            setComments("");
+                          } else {
+                            setCommentList([]);
+                            setComments(ele.nugget_id);
+                            getCommentList(ele.nugget_id);
+                          }
+                        } else {
+                          dispatch(
+                            handleprofileVerifyModalShow({
+                              show: true,
+                              msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                            })
+                          );
+                        }
+                      } else {
+                        if (getAuthenticated()) {
+                          if (isAccountValid()) {
+                            HandleShare("share");
+                          } else {
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
+                            );
+                          }
+                        } else {
+                          dispatch(handleloginModalShow(true));
+                        }
+                      }
+                    }}
+                  >
+                    <i className={`${classes.commentIcon}`} />
+                  </p>
+                  <span>{ele.total_comments}</span>
+                </div>
+                <div className={classes.iconsec}>
+                  <p
+                    onClick={() => {
+                      HandleShare();
+                    }}
+                  >
+                    <i className={`${classes.share_icon}`} />
+                  </p>
+                  <span>0</span>
+                </div>
+                <div
+                  className={
+                    parseInt(ele.saved) === 1
+                      ? classes.activeiconsec
+                      : classes.iconsec
                   }
-                }}
-              >
-                <i className={`${classes.saveIcon}`} />
-              </p>
-            </div>
-            <div className={classes.iconsec}>
-              <p>
-                <i class="material-symbols-outlined">menu</i>
-              </p>
-            </div>
-            <div className={classes.iconsec}>
-              <p>
-                <i class="material-symbols-outlined">close</i>
-              </p>
-            </div>
+                >
+                  <p
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      if (getAuthenticated()) {
+                        if (isAccountValid()) {
+                          let save = ele.saved ? 2 : 1;
+                          savedebounceProcess(ele.nugget_id, 1);
+                        } else {
+                          dispatch(
+                            handleprofileVerifyModalShow({
+                              show: true,
+                              msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                            })
+                          );
+                        }
+                      } else {
+                        dispatch(handleloginModalShow(true));
+                      }
+                    }}
+                  >
+                    <i className={`${classes.saveIcon}`} />
+                  </p>
+                </div>
+              </>
+            )}
+            {isCollapse() && (
+              <>
+                {iscollapse ? (
+                  <div
+                    className={classes.iconsec}
+                    onClick={() => {
+                      setiscollapse(false);
+                    }}
+                  >
+                    <p>
+                      <i class="material-symbols-outlined">close</i>
+                    </p>
+                  </div>
+                ) : (
+                  <div
+                    className={classes.iconsec}
+                    onClick={() => {
+                      setiscollapse(true);
+                    }}
+                  >
+                    <p>
+                      <i class="material-symbols-outlined">menu</i>
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
 
