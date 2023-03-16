@@ -74,3 +74,8 @@ input[type='range']::-webkit-slider-runnable-track {
  font-size: 35px;
  color: #FFFFFF;
 }
+
+@media (max-width:768px) {
+.audio_player { margin: 10px; padding: 12px;  }
+.audio_player input {width: calc(100% - 45px) !important; }
+}

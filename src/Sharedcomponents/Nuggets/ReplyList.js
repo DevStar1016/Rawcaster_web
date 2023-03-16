@@ -128,6 +128,7 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
             />
           </div>
           <div className={classes.textBox}>
+          <div className={classes.inputSec}>
             <Input
               placeholder="Write your reply here..."
               value={ReplyTxt[index]}
@@ -149,6 +150,7 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
                 setReplyTxt(tempData);
               }}
             />
+          </div>
           </div>
         </div>
       )}

@@ -143,8 +143,8 @@ const Login = () => {
                   status={touched.password && errors.password ? "error" : ""}
                   onChange={handleChange("password")}
                 />
-              </Form.Item>
-              {touched.password && <p className="ErrTxt">{errors?.password}</p>}
+                {touched.password && <p className="ErrTxt">{errors?.password}</p>}
+              </Form.Item>              
               <Form.Item>
                 <div className={`fwgpsw ${classes.fwgpsw}`}>
                   <div className={classes.right}>

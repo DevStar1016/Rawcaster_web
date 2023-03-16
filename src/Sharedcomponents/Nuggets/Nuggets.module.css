@@ -15,8 +15,8 @@
  .profilePart { width: calc(100% - 70px); float: left;}
  .dropMenu { cursor: pointer; width: 70px; float: left; text-align: right;  }
  .dropMenu span {font-size: 33px; padding-top: 5px; color: #959595; cursor: pointer;}
- .proImg { position: relative; width: 72px; float: left; }
- .proImg img { width: 50px; height: 50px; border-radius: 60px; }
+ .profilePart .proImg { position: relative; width: 65px; float: left; }
+ .profilePart .proImg img { width: 40px; height: 40px; border-radius: 60px; }
  .viewCount {
     color: #fff;
     background: #e26386;
@@ -65,18 +65,20 @@
   overflow: hidden;
 }
 .cmtSec .item { display: flex; flex-direction: row; width: 100%; margin-top: 20px; }
-.cmtSec .proImg, .comtArea .proImg { width: 60px; height: 60px; border-radius: 60px; margin-right: 5px; }
+.cmtSec .proImg { position: relative; width: 55px; float: left; }
+.cmtSec .proImg img { width: 40px; height: 40px; border-radius: 60px; }
+.cmtSec .profilePart .proImg, .comtArea .profilePart .proImg { width: 60px; height: 60px; border-radius: 60px; margin-right: 5px; }
 .cmtSec .cmtText { border: 1px solid #ECECEC; padding:8px 20px; border-radius: 40px; margin-bottom:8px; float: left; max-width: 85%; min-width: 100px; }
-.cmtSec .cmtText p { font-weight: 600; font-size: 16px; color: #000; opacity: 1; margin-bottom: 0;  }
+.cmtSec .cmtText p { font-weight: 600; font-size: 15px; color: #000; opacity: 1; margin-bottom: 0;  }
 .cmtSec .cmtText span { color: rgba(0,0,0.0.7) !important; font-weight: 300; font-size: 14px;font-family:  "Noto Color Emoji" }
-.cmtSec .rightitem, .cmtSec .comtArea .textBox { width: calc(100% - 65px);}
-.cmtSec .rightitem .moreBtn { margin-left: 15px; cursor: pointer;width: fit-content;    height: fit-content;}
+.cmtSec .rightitem, .cmtSec .comtArea .textBox { width:100%;}
+.cmtSec .rightitem .moreBtn { margin-left: 15px; cursor: pointer; width: fit-content; height:20px;}
 .cmtSec .rightitem .time {color: rgba(0,0,0.0.7); }
 .cmtSec .rightitem .agree { cursor: pointer; display: flex; align-items: center; justify-content: center; float: left; margin-right: 10px; }
 .cmtSec .rightitem .agree img { height: 13px; margin-right: 4px; }
 .cmtSec .comtArea { display: flex;margin-top: 5px;}
-.cmtSec .comtArea .textBox .inputSec { border: none; height: 48px; padding-left: 15px; background: #F1F2F5; border-radius: 30px; margin-top: 3px;display: flex; flex-direction: row;align-items: center; }
-.cmtSec .comtArea .textBox .inputSec input,.cmtSec .comtArea .textBox .inputSec input:focus { width: 80% !important; margin-right: 10px; background-color: transparent !important; border: none !important; box-shadow: none !important;}
+.cmtSec .comtArea .textBox .inputSec { border: none; height: 43px; padding-left: 15px; background: #F1F2F5; border-radius: 30px; margin-top: 1px;display: flex; flex-direction: row;align-items: center; }
+.cmtSec .comtArea .textBox .inputSec input,.cmtSec .comtArea .textBox .inputSec input:focus { width: calc(100% - 75px);  background-color: transparent !important; border: none !important; box-shadow: none !important;}
 .cmtSec .comtArea .textBox .sendicon { cursor: pointer; right:15px; top:12px; height: 32px;}
 .cmtSec .comtArea .textBox .emojiicon { cursor: pointer; right:50px; top:12px; height: 30px;}
 
@@ -153,13 +155,13 @@
   .floattingSec span { height: 22px; }
   .feedsSec { width: calc(100% - 45px);}
   .cmtSec .proImg { width: 40px; }
-  .cmtSec .cmtText { max-width: 95%; padding: 5px 18px; border-radius: 30px; font-size: 13px;}
+  .cmtSec .cmtText { max-width: 95%; padding: 3px 18px; border-radius: 30px; font-size: 13px;}
   .cmtSec .cmtText p, .cmtSec .cmtText span, .cmtSec .rightitem .agree, .cmtSec .rightitem .time { font-size: 13.5px;}
   .cmtSec .proImg img { width: 35px; height: 35px; }
   .floattingSec .iconsec span { font-size: 12px; }
   .share_icon, .commentIcon, .inactive_like_icon, .disabled_like_icon { height: 15px; width: 15px; }
   .cmtSec .comtArea .textBox {width: calc(100% - 45px);}
-  .cmtSec .comtArea .textBox input { height: 40px; margin: 0;}
+  .cmtSec .comtArea .textBox input { height: 40px; margin: 0; width: calc(100% - 57px) !important; margin-right: 5px !important;}
   .cmtSec .comtArea .textBox .sendicon {  right:15px; top:10px; height: 25px;}
   .cmtSec .comtArea .textBox .emojiicon { right:42px; top:12px; height: 20px;}
 }
