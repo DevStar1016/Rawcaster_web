@@ -56,8 +56,6 @@ function App() {
       dispatch(
         handleLoginData(JSON.parse(getLocalStorageData("rawcaster_user_token")))
       );
-
-      ConnectSocket(JSON.parse(getLocalStorageData("rawcaster_user_token")));
       dispatch(handleToken(JSON.parse(getCookieData("rawcaster_user_token"))));
     }
   }, []);

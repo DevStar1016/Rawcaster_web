@@ -339,7 +339,7 @@ const CommentsList = ({ index }) => {
         </div>
         <div className={classes.textBox}>
           <div className={classes.inputSec}>
-            <Input
+            <Input.TextArea
               placeholder="Write your Comment here..."
               value={CommentTxt[index]}
               onChange={(e) => {

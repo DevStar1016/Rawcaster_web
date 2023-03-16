@@ -28,6 +28,10 @@ const Nuggets = () => {
     percent: 0,
     show: false,
   });
+  const pageRef = useRef({
+    page: 1,
+    totalpage: 1,
+  });
   const [isLoading, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);
   const [Pages, setPages] = useState({
@@ -84,6 +88,11 @@ const Nuggets = () => {
                 }, [])
               );
             }
+            console.log("test", res.data);
+            pageRef.current = {
+              page: res.data.current_page_no,
+              totalpage: res.data.total_pages,
+            };
             setPages({
               page: res.data.current_page_no,
               totalpage: res.data.total_pages,
@@ -115,11 +124,10 @@ const Nuggets = () => {
   }, []);
 
   const onEndReached = () => {
-    console.log("test");
-    if (Pages.page !== Pages.totalpage) {
+    if (pageRef.current.page !== pageRef.current.totalpage) {
       setisLoading(true);
 
-      getNuggetList(Pages.page + 1);
+      getNuggetList(pageRef.current.page + 1);
     }
   };
 
@@ -154,17 +162,13 @@ const Nuggets = () => {
     return filteredArr;
   };
 
-  const setScroll = () => {
-    console.log("test");
-  };
-
   const handleScroll = () => {
     const bottom =
       Math.ceil(window.innerHeight + window.scrollY) >=
       document.documentElement.scrollHeight;
 
     if (bottom) {
-      console.log("at the bottom");
+      onEndReached();
     }
   };
   React.useEffect(() => {

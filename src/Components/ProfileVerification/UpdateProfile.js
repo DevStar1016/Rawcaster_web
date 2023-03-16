@@ -300,7 +300,12 @@ const UpdateProfile = () => {
                     touched.first_name && errors.first_name ? "error" : ""
                   }
                   value={values.first_name}
-                  onChange={handleChange("first_name")}
+                  onChange={(e) => {
+                    setFieldValue(
+                      "first_name",
+                      e.target.value.replace(/\p{Emoji}/gu, "")
+                    );
+                  }}
                 />
                 {touched.first_name && (
                   <p className="ErrTxt">{errors?.first_name}</p>
@@ -317,7 +322,12 @@ const UpdateProfile = () => {
                   maxLength={50}
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
-                  onChange={handleChange("last_name")}
+                  onChange={(e) => {
+                    setFieldValue(
+                      "last_name",
+                      e.target.value.replace(/\p{Emoji}/gu, "")
+                    );
+                  }}
                 />
                 {touched.last_name && (
                   <p className="ErrTxt">{errors?.last_name}</p>
@@ -334,7 +344,12 @@ const UpdateProfile = () => {
                   status={touched.name && errors.name ? "error" : ""}
                   value={values.name}
                   maxLength={40}
-                  onChange={handleChange("name")}
+                  onChange={(e) => {
+                    setFieldValue(
+                      "name",
+                      e.target.value.replace(/\p{Emoji}/gu, "")
+                    );
+                  }}
                 />
                 {touched.name && <p className="ErrTxt">{errors?.name}</p>}
               </Form.Item>

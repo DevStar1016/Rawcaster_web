@@ -1,7 +1,6 @@
-import { Button, DatePicker, Form, Input, Select, TimePicker } from "antd";
+import { Button } from "antd";
 import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import EventModal from "../../Modal/EventModal";
 import AddLiveEvent from "./Configure/AddLiveEvent";
 import classes from "./Events.module.css";
 
@@ -33,17 +32,11 @@ const CreateEvent = () => {
           </Button>
         </Col>
       </Row>
-      <EventModal
-        open={isTalkshowOpen}
-        onSuccess={() => {
-          setisTalkshowOpen(false);
-        }}
-        onClose={() => {
-          setisTalkshowOpen(false);
-        }}
-      >
-        <AddLiveEvent />
-      </EventModal>
+
+      <AddLiveEvent
+        isTalkshowOpen={isTalkshowOpen}
+        setisTalkshowOpen={setisTalkshowOpen}
+      />
     </div>
   );
 };

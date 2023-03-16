@@ -184,8 +184,19 @@ export const addEventService = (data) => {
   return axios.post("addevent", data);
 };
 
+export const addLiveEventService = (data) => {
+  return axios.post("addliveevent", data);
+};
+
+export const editLiveEventService = (data) => {
+  return axios.post("editliveevent", data);
+};
+
 export const listEventsService = (data) => {
   return axios.post("listevents", data);
+};
+export const viewEventsService = (data) => {
+  return axios.post("viewevent", data);
 };
 
 export const deleteEventService = (data) => {

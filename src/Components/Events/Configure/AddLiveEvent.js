@@ -1,256 +1,276 @@
-import React, { useEffect, useState } from "react";
-import { DatePicker, Form, Input, Select, TimePicker } from "antd";
+import React, { useEffect } from "react";
+import { DatePicker, Form, Input } from "antd";
 import { Col, Row } from "react-bootstrap";
 import classes from "../Events.module.css";
-import { toast } from "react-hot-toast";
 import { useAuthToken } from "../../../Shared/Reduxfetcher";
-import { getEventType, useEventType } from "./Utility";
+import {
+  BannerComponent,
+  Connections,
+  EventTypeComponent,
+  InviteEmailComponent,
+  TimeValueComponent,
+} from "./Utility";
+import { useFormik } from "formik";
+import dayjs from "dayjs";
+import EventModal from "../../../Modal/EventModal";
+import * as yup from "yup";
+import {
+  addLiveEventService,
+  editLiveEventService,
+  viewEventsService,
+} from "../../../Services/ApiService";
+import { filterValidObject, JSONtoformdata } from "../../../Shared/Utility";
+import { toast } from "react-hot-toast";
+import moment from "moment";
 
-const AddLiveEvent = () => {
+const validationSchema = yup.object().shape({
+  event_title: yup.string().required(`Event Title is Required !`),
+  event_type: yup.string().required(`Event Type is Required !`),
+  event_start_date: yup.string().required(`Event Start Date is Required !`),
+  event_start_time: yup.string().required(`Event Start Time is Required !`),
+  event_banner: yup.string().required(`Event Banner is Required !`),
+});
+
+const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const token = useAuthToken();
-  const userData = useEventType(token);
+  const {
+    values,
+    handleChange,
+    setFieldValue,
+    handleSubmit,
+    touched,
+    errors,
+    setValues,
+    resetForm,
+  } = useFormik({
+    initialValues: {
+      event_title: "",
+      event_type: "",
+      event_start_date: "",
+      event_start_time: "",
+      event_banner: "",
+      event_invite_mails: "",
+      event_invite_friends: "",
+      event_invite_groups: "",
+    },
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+    onSubmit: (val) => {
+      if (data) {
+        HandleEditLiveEvent(val);
+      } else {
+        HandleLiveEvent(val);
+      }
+    },
+  });
 
-  const [externalMailId, setExternalMailId] = useState([]);
-  const [bannerImage, setbannerImage] = useState("");
-  const [showTimePicker, setshowTimePicker] = useState(false);
+  const HandleLiveEvent = (val) => {
+    let liveEventData = {
+      token: token,
+      ...val,
+    };
+
+    addLiveEventService(JSONtoformdata(filterValidObject(liveEventData)))
+      .then((res) => {
+        if (res.data.status === 1) {
+          toast.success(res.data.msg);
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      })
+      .finally(() => {
+        setisTalkshowOpen(false);
+        resetForm();
+      });
+  };
+
+  const HandleEditLiveEvent = (val) => {
+    let liveEventData = {
+      token: token,
+      event_id: data?.event_id,
+      ...val,
+    };
+    if (typeof liveEventData.event_banner === "string") {
+      delete liveEventData.event_banner;
+    }
+    editLiveEventService(JSONtoformdata(filterValidObject(liveEventData)))
+      .then((res) => {
+        if (res.data.status === 1) {
+          toast.success(res.data.msg);
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      })
+      .finally(() => {
+        setisTalkshowOpen(false);
+        resetForm();
+      });
+  };
 
   useEffect(() => {
-    console.log(userData);
-  }, []);
-
-  const addExtMailHandler = (data) => {
-    let maildata = data.trim();
-    let mailArr;
-    if ((maildata.match(/,/g) || []).length) {
-      mailArr = maildata.split(",");
-    } else {
-      mailArr = maildata.split(" ");
+    if (data) {
+      let eventdata = {
+        token: token,
+        event_id: data?.event_id,
+      };
+      viewEventsService(JSONtoformdata(eventdata))
+        .then((res) => {
+          let eventData = res.data.event_detail;
+          setValues({
+            event_title: eventData?.event_name,
+            event_type: eventData?.event_type_id,
+            event_start_date: dayjs(eventData?.start_date_time).format(
+              "YYYY-MM-DD"
+            ),
+            event_start_time: dayjs(eventData?.start_date_time).format("HH:mm"),
+            event_banner: eventData?.banner_image,
+            event_invite_mails: eventData?.invite_mails,
+            event_invite_friends: eventData?.invite_friends_id,
+            event_invite_groups: eventData?.invite_groups_id,
+          });
+        })
+        .catch((err) => {
+          toast.error(err.message);
+        });
     }
+  }, [data]);
 
-    let newMail = [];
-    // var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    mailArr.forEach((val) => {
-      if (
-        val.match(
-          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        )
-      ) {
-        newMail.push(val);
-      }
-    });
-    if (newMail.length > 0) {
-      document.getElementById("extmail").value = "";
-      setExternalMailId((prev) => [...prev, ...newMail]);
-    }
-  };
-
-  const validateImage = (image) => {
-    if (typeof image.type !== "undefined" && image.type.includes("image/")) {
-      setbannerImage(image);
-    } else {
-      toast.error("upload only image");
-    }
-  };
-
-  const removeExtMailHandler = (index) => {
-    let mailList = [...externalMailId];
-    if (mailList.length > index) {
-      mailList.splice(index, 1);
-    }
-    setExternalMailId(mailList);
-  };
   return (
-    <Form layout="vertical" autoComplete="off" className={classes.eventBody}>
-      <Row>
-        <Col sm={6}>
-          <Form.Item
-            label="Event Title"
-            name="event_title"
-            colon={false}
-            className={classes.textBoxSec}
-          >
-            <Input className={classes.textbox} />
-          </Form.Item>
-        </Col>
-        <Col sm={6}>
-          <Form.Item
-            label="Event Type"
-            name="event_type"
-            colon={false}
-            className={classes.textBoxSec}
-          >
-            <Select
-              className={classes.textbox}
-              options={[
-                { value: "jack", label: "Jack" },
-                { value: "lucy", label: "Lucy" },
-              ]}
-            />
-          </Form.Item>
-        </Col>
-        <Col sm={6}>
-          <Form.Item
-            label="Date"
-            name="date"
-            colon={false}
-            className={classes.textBoxSec}
-          >
-            <DatePicker
-              showToday={false}
-              className={classes.textbox}
-              onChange={(date, dateString) => {
-                console.log(date, dateString);
-              }}
-            />
-          </Form.Item>
-        </Col>
-        <Col sm={6}>
-          <div className={classes.lableTxt}>Time</div>
-          <div className={classes.timeSec}>
+    <EventModal
+      open={isTalkshowOpen}
+      isUpdate={data ? true : false}
+      onSuccess={() => {
+        handleSubmit();
+      }}
+      onClose={() => {
+        setisTalkshowOpen(false);
+      }}
+    >
+      <Form
+        layout="vertical"
+        autoComplete="off"
+        className={`${classes.eventBody} eventBody`}
+      >
+        <Row>
+          <Col sm={6}>
             <Form.Item
-              name="evttime"
-              required={false}
+              label="Event Title"
               colon={false}
-              className={`${classes.timepicker} timepicker`}
+              className={classes.textBoxSec}
+              initialValue={values.event_title}
             >
-              <TimePicker
-                className={`${classes.onlytime} ${classes.textbox}`}
-                suffixIcon={null}
-                format={"hh:mm"}
-                open-={showTimePicker}
-                use12Hours={true}
-                onSelect={(time) => {
-                  setshowTimePicker(false);
-                  console.log(time);
-                }}
-                onOpenChange={(val) => {
-                  setshowTimePicker(true);
-                  console.log(val);
-                }}
-                minuteStep={5}
-                showNow={false}
+              <Input
+                className={classes.textbox}
+                defaultValue={values.event_title}
+                value={values.event_title}
+                onChange={handleChange("event_title")}
               />
             </Form.Item>
-            <Form.Item
-              name="evttimeampm"
-              // initialValue={moment(selectedTime).format("A") == "AM" ? 1 : 2}
-              className={classes.timedropdown}
-            >
-              <Select className={`${classes.onlytime2} ${classes.textbox}`}>
-                <Select.Option key={1} value={1}>
-                  AM
-                </Select.Option>
-                <Select.Option key={2} value={2}>
-                  PM
-                </Select.Option>
-              </Select>
-            </Form.Item>
-          </div>
-        </Col>
-        <Col sm={12}>
-          <div
-            className={`${classes.uploadbanner}  pointer`}
-            onClick={() => {
-              document.getElementById("imageUpload").click();
-            }}
-          >
-            {bannerImage ? (
-              <img
-                src={URL.createObjectURL(bannerImage)}
-                alt=""
-                width="100%"
-                height="100%"
-                style={{
-                  zIndex: 0,
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  width: "auto",
-                  height: "auto",
-                }}
-              ></img>
-            ) : (
-              <div>
-                <div
-                  style={{
-                    color: "#1d1d1d",
-                    opacity: "0.5",
-                    fontSize: "18px",
-                    fontWeight: "500",
-                  }}
-                >
-                  Upload Banner Photo
-                </div>
-                <div
-                  style={{
-                    color: "#1d1d1d",
-                    fontSize: "12px",
-                    opacity: "0.5",
-                    textAlign: "center",
-                  }}
-                >
-                  Recommended size 500x300
-                </div>
-              </div>
+            {touched.event_title && (
+              <p className="ErrTxt mb-3">{errors?.event_title}</p>
             )}
-            <input
-              type="file"
-              id="imageUpload"
-              name="imageUpload"
-              style={{ display: "none" }}
-              accept="image/*"
-              onChange={(e) => {
-                validateImage(e.target.files[0]);
+          </Col>
+          <Col sm={6}>
+            <EventTypeComponent
+              value={values.event_type}
+              onResult={(val) => {
+                setFieldValue("event_type", val.id);
               }}
-            ></input>
-          </div>
-        </Col>
-        <Col sm={12}>
-          <div className={classes.lableTxt}> Invite Users</div>
-          <div
-            className={classes.extMail}
-            onClick={() => {
-              document.getElementById("extmail").focus();
-            }}
-          >
-            {externalMailId.map((m, index) => {
-              return (
-                <span
-                  key={index}
-                  className={classes.displayuser + " pointer"}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => removeExtMailHandler(index)}
-                >
-                  {m}
-                </span>
-              );
-            })}
-
-            <input
-              type="text"
-              id="extmail"
-              name="extMail"
-              placeholder={
-                externalMailId.length === 0
-                  ? "Enter email address to send event invitation"
-                  : ""
-              }
-              className={classes.ExtUser}
-              onKeyDown={(e) => {
-                const x = e.keyCode || e.which;
-                // alert(x);
-                if ((!e.shiftKey && x === 13) || x === 44 || x === 32) {
-                  e.preventDefault();
-                  addExtMailHandler(e.target.value);
+            />
+            {touched.event_type && (
+              <p className="ErrTxt mb-3">{errors?.event_type}</p>
+            )}
+          </Col>
+          <Col sm={6}>
+            <Form.Item
+              label="Date"
+              colon={false}
+              className={classes.textBoxSec}
+            >
+              <DatePicker
+                showToday={false}
+                defaultValue={
+                  values?.event_start_date
+                    ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                    : undefined
                 }
+                value={
+                  values?.event_start_date
+                    ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                    : undefined
+                }
+                className={classes.textbox}
+                format={"YYYY-MM-DD"}
+                onChange={(date, dateString) => {
+                  setFieldValue(
+                    "event_start_date",
+                    dayjs(dateString).format("YYYY-MM-DD")
+                  );
+                }}
+              />
+            </Form.Item>
+            {touched.event_start_date && (
+              <p className="ErrTxt mb-3">{errors?.event_start_date}</p>
+            )}
+          </Col>
+          <Col sm={6}>
+            <div className={classes.lableTxt}>Time</div>
+            <TimeValueComponent
+              value={values.event_start_time}
+              onResult={(res) => {
+                console.log(res);
+                setFieldValue(
+                  "event_start_time",
+                  dayjs(res, "hh:mm A").format("HH:mm")
+                );
               }}
-              onBlur={(e) => {
-                addExtMailHandler(e.target.value);
+            />
+            {touched.event_start_time && (
+              <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
+            )}
+          </Col>
+          <Col sm={12}>
+            <BannerComponent
+              value={values.event_banner}
+              onResult={(val) => {
+                setFieldValue("event_banner", val);
               }}
-            ></input>
-          </div>
-        </Col>
-      </Row>
-    </Form>
+            />
+            {touched.event_banner && (
+              <p className="ErrTxt mb-3">{errors?.event_banner}</p>
+            )}
+          </Col>
+          <Col sm={12}>
+            <InviteEmailComponent
+              onResult={(val) => {
+                setFieldValue("event_invite_mails", val.toString());
+              }}
+            />
+            {touched.event_invite_mails && (
+              <p className="ErrTxt mb-3">{errors?.event_invite_mails}</p>
+            )}
+          </Col>
+          <Col>
+            <Connections
+              values={values.event_invite_friends}
+              onResult={(val) => {
+                let finRes = val.map((ele) => ele.user_id);
+                setFieldValue("event_invite_friends", JSON.stringify(finRes));
+              }}
+            />
+            {touched.event_invite_friends && (
+              <p className="ErrTxt mb-3">{errors?.event_invite_friends}</p>
+            )}
+          </Col>
+        </Row>
+      </Form>
+    </EventModal>
   );
 };
 

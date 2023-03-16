@@ -180,6 +180,32 @@ color: #FFFFFF;
     width: 100px;
     display: inline-block;
   }
+  .search {
+    border: none !important;
+    outline: none;
+    border-bottom: 1px solid gray !important;
+  }.invite_txt {
+    font-size: 15px;
+    padding-left: 5px;
+    font-family: "DM Sans", sans-serif;
+    color: #1D1C1C;
+    cursor: pointer;
+  }
+  .friendsdiv {
+    margin: 10px 0;
+  }
+  .headerSec {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .headerSec .searchSec i  {
+font-size: 17px;
+  }
+  .headerSec .searchSec {
+    display: flex;
+    justify-content: center;
+  }
 
  @media (max-width:768px) {
 .eventSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }

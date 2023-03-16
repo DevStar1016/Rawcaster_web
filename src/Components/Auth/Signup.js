@@ -213,9 +213,15 @@ const Signup = () => {
                     client_secret={INSTAGRAM_APP_SECRET}
                     scope="user_profile"
                     fields="id,username,account_type,email"
-                    redirect_uri={REDIRECT_URI}
+                    redirect_uri={INSTA_REDIRECT_URI}
                     onResolve={({ provider, data }) => {
-                      console.log(provider, data);
+                      let resultVal = {
+                        signin_type: 4,
+                        first_name: data.username,
+                        display_name: data.username,
+                        email_id: data.username + "@gmail.com",
+                      };
+                      HandleSignup(resultVal);
                     }}
                     onReject={(err) => {
                       console.log(err);

@@ -176,7 +176,10 @@ const TagsList = () => {
           We didn't find any results
         </span>
       ) : null}
-      <div ref={scrollRef} className={`${classes.nuggetSec} ${classes.nopadding} w-100`}>
+      <div
+        ref={scrollRef}
+        className={`${classes.nuggetSec} ${classes.nopadding} w-100`}
+      >
         {getValidTags().map((ele, index) => {
           return (
             <div className={classes.TagSec}>
@@ -186,7 +189,7 @@ const TagsList = () => {
                 <p className="mt-1">{ele.nugget_count} Nuggets</p>
               </div>
               <div className={classes.graphSec}>
-                <TagsChart Data={testObj} />
+                <TagsChart Data={ele.trends} />
                 <Dropdown
                   menu={{
                     items: [
