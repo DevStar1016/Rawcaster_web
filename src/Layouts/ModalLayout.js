@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router";
-import LoginModal from "../Modal/LoginModal";
-import { VerificationModal } from "../Modal/ProfileVerificationModal";
-import ValidateTypeModal from "../Modal/ValidateTypeModal";
+import LoginModal from "../Modal/Verification/LoginModal";
+import { VerificationModal } from "../Modal/Verification/ProfileVerificationModal";
+import ValidateTypeModal from "../Modal/Verification/ValidateTypeModal";
 import { useDashboard, useProfileVerifyModal } from "../Shared/Reduxfetcher";
 import {
   handleloginModalShow,

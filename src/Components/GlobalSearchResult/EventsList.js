@@ -134,21 +134,23 @@ const EventsList = () => {
   };
 
   return (
-    <div className={` ${classes.profileSec}`} ref={scrollRef}>
+    <>
       {getValidEvent()?.length === 0 ? (
-        <span style={{ fontSize: 20, fontWeight: "bold" }}>
+        <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
           We didn't find any results
         </span>
       ) : null}
-      {getValidEvent().map((ele) => (
-        <Event ele={ele} />
-      ))}
-      {isLoading && (
-        <div className="text-center py-2">
-          <Spinner animation="border" role="status" />
-        </div>
-      )}
-    </div>
+      <div className={` ${classes.profileSec}`} ref={scrollRef}>
+        {getValidEvent().map((ele) => (
+          <Event ele={ele} />
+        ))}
+        {isLoading && (
+          <div className="text-center py-2">
+            <Spinner animation="border" role="status" />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -1,8 +1,8 @@
 import { Button } from "antd";
 import React from "react";
-import { SharedModal } from "../Sharedcomponents/Modal";
-import classes from "./Modal.module.css";
-import RawcasterLogo from "../Assets/Images/png/rawcater_logo.png";
+import { SharedModal } from "../../Sharedcomponents/Modal";
+import classes from "../Modal.module.css";
+import RawcasterLogo from "../../Assets/Images/png/rawcater_logo.png";
 const RedirectModal = ({
   open = false,
   msg = "",

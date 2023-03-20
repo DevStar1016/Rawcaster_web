@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useParams } from "react-router";
+import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import EventsList from "./EventsList";
 import classes from "./GlobalSearch.module.css";
-import NuggetsList from "./NuggetsList";
 import ProfileList from "./ProfileList";
 import TagsList from "./TagsList";
 
@@ -30,7 +30,7 @@ const GlobalSearchResult = () => {
           </Tab>
           <Tab eventKey="Nuggets" title="Nuggets">
             <div className={classes.fullcontainer}>
-              <NuggetsList />
+              <Nuggets />
             </div>
           </Tab>
           <Tab eventKey="Events" title="Events">

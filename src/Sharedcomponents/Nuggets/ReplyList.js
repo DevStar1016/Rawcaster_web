@@ -21,8 +21,13 @@ import EmojiPicker from "../../UIComponents/EmojiPicker";
 
 const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
   const { getNuggetList } = useListNuggetContext();
-  const { nugget_id, CommentList, getCommentList, isCommentLoading } =
-    useSingleNuggetContext();
+  const {
+    nugget_id,
+    CommentList,
+    getCommentList,
+    isCommentLoading,
+    handleNuggetCommentLike,
+  } = useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [ReplyTxt, setReplyTxt] = useState([]);
   const [ReplyList, setReplyList] = useState([]);
@@ -105,8 +110,45 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
     return findData;
   };
 
+  const handleAgree = (id, like, count) => {
+    let findIndex = ReplyList.findIndex((ele) => ele.comment_id === id);
+    let tempData = [...ReplyList];
+    tempData[findIndex] = {
+      ...tempData[findIndex],
+      liked: !like,
+      like_count: !like ? count + 1 : count - 1,
+    };
+    setReplyList(tempData);
+    let likeflag = like ? 2 : 1;
+    handleNuggetCommentLike(id, likeflag)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 0) {
+          let tempData = [...ReplyList];
+          tempData[findIndex] = {
+            ...tempData[findIndex],
+            liked: like,
+            like_count: count,
+          };
+          setReplyList(tempData);
+        }
+      })
+      .catch((err) => {
+        let tempData = [...ReplyList];
+        tempData[findIndex] = {
+          ...tempData[findIndex],
+          liked: like,
+          like_count: count,
+        };
+        setReplyList(tempData);
+      });
+  };
+
   return (
-    <div className={classes.cmtSec} style={{ width: "90%" }}>
+    <div
+      className={classes.cmtSec}
+      style={{ width: "90%", marginBottom: "10px" }}
+    >
       {isCommentLoading ? (
         <div className="d-flex justify-content-center align-items-center py-2">
           <Spin
@@ -302,8 +344,25 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
                             )}
                           </div>
                           <div className="clearfix"></div>
-                          <div className={classes.agree}>
-                            <img src={hearticon} alt="Agree" /> Agree
+                          <div
+                            className={classes.agree}
+                            style={{ color: elem.liked ? "#e26386" : "#000" }}
+                            onClick={() => {
+                              handleAgree(
+                                elem.comment_id,
+                                elem.liked,
+                                elem.like_count
+                              );
+                            }}
+                          >
+                            <i
+                              className={classes.agreeIcon}
+                              style={{
+                                background: elem.liked ? "#e26386" : "#000",
+                              }}
+                            />{" "}
+                            Agree{" "}
+                            {elem.like_count ? `(${elem.like_count})` : null}
                           </div>
 
                           <div className={classes.time}>
@@ -333,7 +392,7 @@ const ReplyList = ({ isReplyEnabled, comment_id, index = 0 }) => {
           </div>
           <div className={classes.textBox}>
             <div className={classes.inputSec}>
-              <Input
+              <Input.TextArea
                 placeholder="Write your reply here..."
                 value={ReplyTxt[index]}
                 onChange={(e) => {

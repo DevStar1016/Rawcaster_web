@@ -23,11 +23,11 @@ import {
 } from "../../Shared/Utility";
 import dayjs from "dayjs";
 import { signupService } from "../../Services/ApiService";
-import RedirectModal from "../../Modal/RedirectModal";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
+import RedirectModal from "../../Modal/Verification/RedirectModal";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();

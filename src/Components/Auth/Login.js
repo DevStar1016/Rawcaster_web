@@ -8,7 +8,6 @@ import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import RedirectModal from "../../Modal/RedirectModal";
 import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { loginService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
@@ -22,6 +21,7 @@ import { getProfile } from "./getProfile";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import Seo from "../SEO/Seo";
 import { LOGIN_ID } from "../../Shared/Constant";
+import RedirectModal from "../../Modal/Verification/RedirectModal";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -143,8 +143,10 @@ const Login = () => {
                   status={touched.password && errors.password ? "error" : ""}
                   onChange={handleChange("password")}
                 />
-                {touched.password && <p className="ErrTxt">{errors?.password}</p>}
-              </Form.Item>              
+                {touched.password && (
+                  <p className="ErrTxt">{errors?.password}</p>
+                )}
+              </Form.Item>
               <Form.Item>
                 <div className={`fwgpsw ${classes.fwgpsw}`}>
                   <div className={classes.right}>

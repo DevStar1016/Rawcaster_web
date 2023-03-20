@@ -2,7 +2,7 @@ import { Button, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
-import forgotImg from "../../Assets/Images/png/forgot-password.png"; 
+import forgotImg from "../../Assets/Images/png/forgot-password.png";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { useFormik } from "formik";
@@ -29,18 +29,18 @@ const validationSchema = yup.object().shape({
     .required(`Please input your OTP!`),
   new_password: yup
     .string()
-    .matches(
-      PASSWORD_EXP,
-      "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-    )
+    // .matches(
+    //   PASSWORD_EXP,
+    //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
+    // )
     .min(8, "Password must be at least 8 characters long")
     .required("Please input your Password!"),
   confirm_password: yup
     .string()
-    .matches(
-      PASSWORD_EXP,
-      "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-    )
+    // .matches(
+    //   PASSWORD_EXP,
+    //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
+    // )
     .min(8, "Password must be at least 8 characters long")
     .oneOf([yup.ref("new_password"), null], "Passwords must match")
     .required("Please input your Password!"),
@@ -181,9 +181,9 @@ const ResetPassword = () => {
   return (
     <>
       <div className={classes.loginbg}>
-      <div className={classes.mobHeader}>
+        <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite}  />
+            <img src={mainlogowhite} />
           </Link>
         </div>
         <div className={classes.loginSec}>
@@ -215,9 +215,9 @@ const ResetPassword = () => {
                     height: "50px",
                     width: "100%",
                     border: "none",
-                    borderRadius:"20px",
+                    borderRadius: "20px",
                     borderRadius: "8px",
-                    marginTop:"1px"
+                    marginTop: "1px",
                   }}
                   containerStyle={{ margin: "10px 0 0 0" }}
                   separator={<span>{""}</span>}
@@ -314,9 +314,9 @@ const ResetPassword = () => {
 
         <div className={`${classes.sliderSec} ${classes.nopad}`}>
           <div className={classes.rSec}>
-          <div className={classes.contentBox}>
-            <img src={forgotImg} />
-          </div>
+            <div className={classes.contentBox}>
+              <img src={forgotImg} />
+            </div>
           </div>
         </div>
       </div>

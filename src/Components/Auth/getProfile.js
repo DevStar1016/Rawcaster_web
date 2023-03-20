@@ -1,5 +1,6 @@
 import { toast } from "react-hot-toast";
 import { getProfileService } from "../../Services/ApiService";
+import ConnectSocket from "../../Services/SocketService";
 import { decodeHtml, getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import {
   handleLoginData,
@@ -33,6 +34,7 @@ export const getProfile = (token, dispatch, navigateHandle) => {
         if (res.data.profile.acc_verify_status === 0) {
           handleVerifyModal(res.data.profile, dispatch);
         }
+        ConnectSocket(res.data.profile);
         navigateHandle();
       } else {
         toast.error(res.data.msg);

@@ -1,5 +1,6 @@
 import { Modal } from "antd";
 import React from "react";
+import styles from "../Modal.module.css";
 
 const EventModal = ({ open, onClose, onSuccess, children, isUpdate }) => {
   return (
@@ -12,6 +13,11 @@ const EventModal = ({ open, onClose, onSuccess, children, isUpdate }) => {
       className="eventmodal"
       onOk={() => onSuccess()}
       onCancel={() => onClose()}
+      closeIcon={
+        <div className={styles.modalCloseIcon}>
+          <span class="material-symbols-outlined">close</span>
+        </div>
+      }
     >
       {children}
     </Modal>

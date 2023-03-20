@@ -31,12 +31,34 @@ const PollDateinputBox = ({ onSelectDate }) => {
       isValidData(pollTime.hours.toString()) &&
       isValidData(pollTime.minutes.toString())
     ) {
-      onSelectDate(pollTime);
+      if (
+        pollTime.day === 0 &&
+        pollTime.hours === 0 &&
+        pollTime.minutes === 0
+      ) {
+        onSelectDate("");
+      } else if (pollTime.day >= 1 || pollTime.hours >= 1) {
+        onSelectDate(pollTime);
+      } else if (
+        pollTime.day === 0 &&
+        pollTime.hours === 0 &&
+        pollTime.minutes >= 5
+      ) {
+        onSelectDate(pollTime);
+      } else {
+        onSelectDate("");
+      }
     } else {
       onSelectDate("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pollTime]);
+
+  // useEffect(() => {
+  //   if (pollTime.day === 0 && pollTime.hours === 0 && pollTime.minutes !== "") {
+  //     setpollTime((pre) => ({ ...pre, minutes: 0 }));
+  //   }
+  // }, [pollTime]);
 
   const getValidMinute = () => {
     if (pollTime.day === 0 && pollTime.hours === 0) {

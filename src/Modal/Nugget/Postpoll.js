@@ -2,9 +2,9 @@ import { Button, Form, Input } from "antd";
 import { useFormik } from "formik";
 import React, { useContext, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { PostNuggetContext } from "../Shared/Context";
-import PollDateinputBox from "../Sharedcomponents/PollDateinputBox";
-import classes from "./Modal.module.css";
+import { PostNuggetContext } from "../../Shared/Context";
+import PollDateinputBox from "../../Sharedcomponents/PollDateinputBox";
+import classes from "../Modal.module.css";
 import * as Yup from "yup";
 
 const schema = Yup.object().shape({
@@ -147,11 +147,14 @@ const Postpoll = ({ setisPoll }) => {
               <p className={classes.label}>Poll Length </p>
               <PollDateinputBox
                 onSelectDate={(date) => {
+                  console.log(date);
                   if (typeof date === "object") {
                     setFieldValue(
                       "duration",
                       `${date.day}:${date.hours}:${date.minutes}`
                     );
+                  } else {
+                    setFieldValue("duration", ``);
                   }
                 }}
               />

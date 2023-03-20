@@ -1,19 +1,19 @@
 import { Button, Dropdown, Modal, Tooltip } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import classes from "./Modal.module.css";
-import pollIcon from "../Assets/Images/svg/pollIcon.svg";
-import mikeIcon from "../Assets/Images/svg/mikeicon.svg";
-import videoIcon from "../Assets/Images/svg/videoIcon.png";
-import cameraIcon from "../Assets/Images/svg/cameraicon.svg";
-import pictureIcon from "../Assets/Images/png/photoIcon.png";
-import imageIcon from "../Assets/Images/png/videoAttach.png";
-import emoji from "../Assets/Images/svg/emoji.svg";
+import classes from "../Modal.module.css";
+import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
+import mikeIcon from "../../Assets/Images/svg/mikeicon.svg";
+import videoIcon from "../../Assets/Images/svg/videoIcon.png";
+import cameraIcon from "../../Assets/Images/svg/cameraicon.svg";
+import pictureIcon from "../../Assets/Images/png/photoIcon.png";
+import imageIcon from "../../Assets/Images/png/videoAttach.png";
+import emoji from "../../Assets/Images/svg/emoji.svg";
 import CameraModal from "./CameraModal";
-import { PostNuggetContext } from "../Shared/Context";
-import { SHARED_TYPE } from "../Shared/Constant";
+import { PostNuggetContext } from "../../Shared/Context";
+import { SHARED_TYPE } from "../../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
 import { toast } from "react-hot-toast";
-import { detectMob } from "../Shared/Utility";
+import { detectMob } from "../../Shared/Utility";
 import {
   MediaPermissionsErrorType,
   requestAudioPermissions,
@@ -21,9 +21,9 @@ import {
 import Postpoll from "./Postpoll";
 import data from "@emoji-mart/data";
 import { Picker } from "emoji-mart";
-import EmojiPicker from "../UIComponents/EmojiPicker";
-import ImageGrid from "../UIComponents/Imagegrid/ImageGrid";
-import { sendMessage, socketListen } from "../Services/SocketService";
+import EmojiPicker from "../../UIComponents/EmojiPicker";
+import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
+import { sendMessage, socketListen } from "../../Services/SocketService";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -37,6 +37,8 @@ const Postmodal = ({ visible, onClose }) => {
     NuggetData,
     isPoll,
     setisPoll,
+    MetaData,
+    setMetaData,
   } = useContext(PostNuggetContext);
   new Picker({
     parent: document.querySelector("#picker"),
@@ -55,6 +57,7 @@ const Postmodal = ({ visible, onClose }) => {
   const [showEmojis, setShowEmojis] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
+  const [oldUrl, setOldurl] = useState("");
 
   function fetchData(type) {
     navigator.mediaDevices
@@ -102,11 +105,11 @@ const Postmodal = ({ visible, onClose }) => {
       if (index > 0) {
         addHttp = addHttp.substring(index, addHttp.length);
       }
-      // if (oldUrl !== addHttp) {
-      let message = { event: "getmetadata", url: addHttp };
-      console.log(message);
-      sendMessage(message, "nuggets");
-      // }
+      if (oldUrl !== addHttp) {
+        setOldurl(addHttp);
+        let message = { event: "getmetadata", url: addHttp };
+        sendMessage(message, "nuggets");
+      }
     }
   };
 
@@ -121,7 +124,7 @@ const Postmodal = ({ visible, onClose }) => {
   }, []);
 
   const Getmetadata = (message) => {
-    console.log(message, "===>1234");
+    setMetaData(message.data);
   };
 
   return (
@@ -354,6 +357,29 @@ const Postmodal = ({ visible, onClose }) => {
             />
           </div>
         )} */}
+            {MetaData && NuggetData.length === 0 ? (
+              <div className={classes.shareLinkSec}>
+                <div
+                  className={classes.clsBtn}
+                  onClick={() => setMetaData(null)}
+                >
+                  <span class="material-icons">close</span>
+                </div>
+                <p className={classes.title}>{MetaData.title}</p>
+                {MetaData.image && MetaData.image !== "" ? (
+                  <img
+                    src={MetaData.image}
+                    width="100%"
+                    height="200px"
+                    style={{ objectFit: "cover" }}
+                  ></img>
+                ) : (
+                  <div className={classes.domainName}>{MetaData.source}</div>
+                )}
+                <p>{MetaData.description}</p>
+              </div>
+            ) : null}
+
             {NuggetData.length !== 0 && (
               <div className={classes.attachementtDisplay}>
                 {NuggetData.map((ele, index) => {

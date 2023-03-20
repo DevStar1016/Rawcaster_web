@@ -1,0 +1,52 @@
+.mainContainer {
+    width: fit-content;
+    margin: auto;
+}
+.bannerContainer {
+    width: fit-content;
+    max-height: 280px;
+    z-index: inherit;
+    position: relative;
+}
+.bannerContainer img {
+    max-height: 280px;
+    border-radius: 11px;
+}
+.bannerContainer .uploadSec,.profileContainer .uploadSec {
+    position: absolute;
+    bottom: 15px;
+    right: 12px;
+    width:35px;
+    height: 35px;
+    background: #F1F2F5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    cursor: pointer;
+}
+.uploadSec span {
+    font-size: 20px;
+}
+.profileContainer {
+    opacity: 1;
+}
+.profileContainer img {
+    width: 150px;
+    height: 150px;
+    border-radius: 90px;
+    padding: 3px;
+    background: linear-gradient(116.6deg, #F3738B 0.88%, #F99F46 99.2%); 
+}
+.profileContainer {
+    margin-top: -74px;
+    position: relative;
+    z-index: 10;
+    width: fit-content;
+}
+.profileContainer .uploadSec  {
+    bottom: 6px;
+    right: 6px; 
+   
+}
+

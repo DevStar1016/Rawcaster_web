@@ -6,13 +6,16 @@ const AudioPlayer = ({ url }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setisMuted] = useState(false);
 
   useEffect(() => {
     const audioElement = new Audio(url);
+    audioElement.muted = isMuted;
     setAudio(audioElement);
 
     return () => {
       audioElement.pause();
+
       setAudio(null);
     };
   }, [url]);
@@ -58,6 +61,19 @@ const AudioPlayer = ({ url }) => {
     }
   }
 
+  function toggleMute() {
+    if (audio) {
+      audio.muted = !audio.muted;
+      setisMuted(!audio.muted);
+    }
+  }
+
+  // useEffect(() => {
+  //   if (audio) {
+  //     audio.muted = isMuted;
+  //   }
+  // }, [audio]);
+
   function handleEnded() {
     setIsPlaying(false);
     // setCurrentTime(0);
@@ -76,11 +92,18 @@ const AudioPlayer = ({ url }) => {
       {audio && (
         <div>
           <div className={classes.sliderSec}>
-            <div className={classes.timeSec}>
-              <span>{formatTime(currentTime)}</span> /{" "}
-              <span>
-                {isNaN(parseInt(duration)) ? "-" : formatTime(duration)}
-              </span>
+            <div className={classes.controlSec}>
+              <div className={classes.timeSec}>
+                <span>{formatTime(currentTime)}</span> /{" "}
+                <span>
+                  {isNaN(parseInt(duration)) ? "-" : formatTime(duration)}
+                </span>
+              </div>
+              <div className={classes.muteSec} onClick={() => toggleMute()}>
+                <i
+                  className={isMuted ? classes.un_mute_icon : classes.mute_icon}
+                ></i>
+              </div>
             </div>
             <input
               type="range"

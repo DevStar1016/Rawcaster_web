@@ -94,10 +94,9 @@ const TagsList = () => {
     }
     source.current = axios.CancelToken.source();
     let TagsData = {
-      nugget_type: 0,
       token: getToken(),
       auth_code: getAuthToken(getToken()),
-      search_key: params.key,
+      search_tag: params.key,
       page_number: page,
     };
     TagsListService(JSONtoformdata(TagsData), source.current.token)
@@ -176,54 +175,59 @@ const TagsList = () => {
   return (
     <>
       {getValidTags()?.length === 0 ? (
-        <span style={{ fontSize: 20, fontWeight: "bold" }}>
+        <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
           We didn't find any results
         </span>
       ) : null}
-      <div
-        ref={scrollRef}
-        className={`${classes.nuggetSec} ${classes.nopadding} w-100`}
-      >
-        {getValidTags().map((ele, index) => {
-          return (
-            <div className={classes.TagSec}>
-              <div>
-                <p className={classes.trendLoc}>Trending in {ele.country}</p>
-                <p className={classes.trendTitle}>{ele.tag}</p>
-                <p className="mt-1">{ele.nugget_count} Nuggets</p>
-              </div>
-              <div className={classes.graphSec}>
-                <TagsChart Data={ele.trends} />
-                <Dropdown
-                  menu={{
-                    items: [
-                      {
-                        label: <div>Not interested in this</div>,
-                        key: "0",
-                      },
-                      {
-                        label: <div>This trend is harmful or spammy</div>,
-                        key: "1",
-                      },
-                    ],
-                  }}
-                  trigger={["click"]}
-                >
-                  <div className={classes.dropSec}>
-                    <span class="material-symbols-outlined">more_horiz</span>
-                  </div>
-                </Dropdown>
-              </div>
-            </div>
-          );
-        })}
 
-        {isLoading && (
-          <div className="text-center py-2">
-            <Spinner animation="border" role="status" />
-          </div>
-        )}
-      </div>
+      {getValidTags()?.length === 0 ? (
+        <div ref={scrollRef}></div>
+      ) : (
+        <div
+          ref={scrollRef}
+          className={`${classes.nuggetSec} ${classes.nopadding} w-100`}
+        >
+          {getValidTags().map((ele, index) => {
+            return (
+              <div className={classes.TagSec}>
+                <div>
+                  <p className={classes.trendLoc}>Trending in {ele.country}</p>
+                  <p className={classes.trendTitle}>{ele.tag}</p>
+                  <p className="mt-1">{ele.nugget_count} Nuggets</p>
+                </div>
+                <div className={classes.graphSec}>
+                  <TagsChart Data={ele.trends} />
+                  <Dropdown
+                    menu={{
+                      items: [
+                        {
+                          label: <div>Not interested in this</div>,
+                          key: "0",
+                        },
+                        {
+                          label: <div>This trend is harmful or spammy</div>,
+                          key: "1",
+                        },
+                      ],
+                    }}
+                    trigger={["click"]}
+                  >
+                    <div className={classes.dropSec}>
+                      <span class="material-symbols-outlined">more_horiz</span>
+                    </div>
+                  </Dropdown>
+                </div>
+              </div>
+            );
+          })}
+
+          {isLoading && (
+            <div className="text-center py-2">
+              <Spinner animation="border" role="status" />
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };

@@ -5,6 +5,7 @@ import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
 import TermsandConditions from "../Components/Policy/TermsandConditions";
+import Profile from "../Components/Profile";
 import HomeLayout from "../Layouts/HomeLayout";
 import { HomePrivateRoute } from "./PrivateRoute";
 
@@ -21,6 +22,10 @@ export const DashboardRoute = () => {
             {
               path: "/selectinfluencers",
               element: <SelectInfluencers />,
+            },
+            {
+              path: "/viewprofile",
+              element: <Profile />,
             },
           ],
         },

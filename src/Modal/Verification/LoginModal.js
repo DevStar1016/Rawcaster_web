@@ -1,8 +1,8 @@
 import { Button, Modal } from "antd";
 import React from "react";
 import { useNavigate } from "react-router";
-import { removeSessionStorageData } from "../Store/Storage";
-import classes from "./Modal.module.css";
+import { removeSessionStorageData } from "../../Store/Storage";
+import classes from "../Modal.module.css";
 
 const LoginModal = ({ open, close }) => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const LoginModal = ({ open, close }) => {
       <div className={classes.profileModal}>
         <img
           height="38px"
-          src={require("../Assets/Images/png/rawcater_logo.png")}
+          src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
         <p>You need to Login / Signup Rawcaster Account</p>
 

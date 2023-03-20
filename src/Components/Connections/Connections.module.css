@@ -74,14 +74,24 @@
   .greenicon,
   .redicon {
     float: right; margin-top: 10px; 
+    margin: 10px 2px;
+    
   }
   .redicon i {
-    color: #da1e28 !important;
+   background-color:  #F1F2F5;
+    color: #000000 !important;
     cursor: pointer; font-size: 20px;
+    border-radius: 50px;
+font-size: 22px;
+padding: 4px;
   }
   .greenicon i {
-    color: #18d350 !important;
+    background-color:#18d350 !important;
+    color: #fff !important;
     cursor: pointer; font-size: 20px;
+    border-radius: 50px;
+font-size: 22px;
+padding: 4px;
   }
   
   .followButton {
@@ -288,6 +298,48 @@
     align-items: center;
     justify-content: center;
   }
+  .profileListSec {
+    margin: 20px 0;
+  }
+  .inSearch,.inSearch:focus { padding-left: 15px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important;box-shadow: none !important;    z-index: 0 !important; }
+.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 1; border-radius: 50px !important; background: #563662 !important; width:45px; }
+.searchIcon span {color: #fff; }
+.profileSec {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 300px;
+  overflow: scroll;
+}
+.profileData {
+  width: 100%;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: row;
+}
+.leftSec {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.rightSec {
+  width: 10%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.rightSec span {
+  cursor: pointer;
+}
+.leftSec  img {
+  height: 50px;
+  width: 50px;
+  border-radius: 30px;
+}
+.nameSec p  {
+margin: 20px;
+}
   @media (max-width:768px) {
   .groupLists { min-height: auto !important; }
   .myconnectioin { max-height: inherit !important; }

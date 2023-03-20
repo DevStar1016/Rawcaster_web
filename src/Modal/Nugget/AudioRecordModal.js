@@ -4,11 +4,11 @@ import { requestAudioPermissions } from "mic-check/lib/requestMediaPermissions";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useReactMediaRecorder } from "react-media-recorder";
-import AudioRecord from "../Assets/Images/audio_img.gif";
-import AudioStop from "../Assets/Images/audio_stop.jpg";
-import { PostNuggetContext } from "../Shared/Context";
-import { millisecondsToMMSS } from "../Shared/Utility";
-import classes from "./Modal.module.css";
+import AudioRecord from "../../Assets/Images/audio_img.gif";
+import AudioStop from "../../Assets/Images/audio_stop.jpg";
+import { PostNuggetContext } from "../../Shared/Context";
+import { millisecondsToMMSS } from "../../Shared/Utility";
+import classes from "../Modal.module.css";
 import PreviewModal from "./PreviewModal";
 
 const AudioRecordModal = ({ onClose, visible }) => {

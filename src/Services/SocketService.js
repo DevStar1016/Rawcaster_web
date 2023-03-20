@@ -2,8 +2,6 @@ import { io } from "socket.io-client";
 import { socketURL } from "./ServiceConstants";
 
 const socket = io(socketURL, {
-  autoConnect: true,
-  reconnection: false,
   transports: ["websocket"],
 });
 
@@ -23,9 +21,7 @@ export default ConnectSocket;
 export const socketListen = socket;
 
 export const sendMessage = (data, type = "message") => {
-  console.log(data, type);
-
-  socket.emit("hello", "world", (val) => {
-    console.log(val);
+  socket.emit(type, data, (res) => {
+    console.log(res, "sendMessage");
   });
 };

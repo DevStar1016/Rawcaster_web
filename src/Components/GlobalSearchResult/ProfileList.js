@@ -132,22 +132,29 @@ const ProfileList = () => {
   };
 
   return (
-    <div className={` ${classes.profileSec}`} ref={scrollRef}>
-      {getValidPeople().map((ele) => {
-        return (
-          <SearchProfile
-            ele={ele}
-            setPeopleList={setPeopleList}
-            PeopleList={PeopleList}
-          />
-        );
-      })}
-      {isLoading && (
-        <div className="text-center py-2">
-          <Spinner animation="border" role="status" />
-        </div>
-      )}
-    </div>
+    <>
+      {getValidPeople()?.length === 0 ? (
+        <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
+          We didn't find any results
+        </span>
+      ) : null}
+      <div className={` ${classes.profileSec}`} ref={scrollRef}>
+        {getValidPeople().map((ele) => {
+          return (
+            <SearchProfile
+              ele={ele}
+              setPeopleList={setPeopleList}
+              PeopleList={PeopleList}
+            />
+          );
+        })}
+        {isLoading && (
+          <div className="text-center py-2">
+            <Spinner animation="border" role="status" />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

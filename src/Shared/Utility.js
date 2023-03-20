@@ -11,6 +11,7 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
 import { useEffect, useRef, useState } from "react";
 import Linkify from "linkify-react";
+import LinkOpenModal from "../Modal/Verification/LinkOpenModal";
 
 // Auth
 
@@ -229,19 +230,35 @@ export const isAccountValid = () => {
   }
 };
 
-export const ReadMore = ({ children, isReadMore = true }) => {
+export const ReadMore = ({
+  children,
+  isReadMore = true,
+  isLinkopenModal,
+  setisLinkopenModal,
+}) => {
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
+
     return (
-      <a
-        className="content_link"
-        onClick={() => {
-          window.open(href);
-        }}
-        {...props}
-      >
-        {decodeHtml(content)}
-      </a>
+      <>
+        <a
+          className="content_link"
+          onClick={() => {
+            setisLinkopenModal(true);
+          }}
+          {...props}
+        >
+          {decodeHtml(content)}
+        </a>
+
+        <LinkOpenModal
+          open={isLinkopenModal}
+          url={href}
+          close={() => {
+            setisLinkopenModal(false);
+          }}
+        />
+      </>
     );
   };
   const [showFullText, setShowFullText] = useState(false);
@@ -284,7 +301,7 @@ export const ReadMore = ({ children, isReadMore = true }) => {
   };
 
   return (
-    <Linkify options={{ render: renderLink, attributes: linkProps }}>
+    <Linkify options={{ render: renderLink }}>
       <p
         ref={textRef}
         className={`readmore_text ${

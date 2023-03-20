@@ -12,7 +12,6 @@ import {
 } from "./Utility";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
-import EventModal from "../../../Modal/EventModal";
 import * as yup from "yup";
 import {
   addLiveEventService,
@@ -21,6 +20,7 @@ import {
 } from "../../../Services/ApiService";
 import { filterValidObject, JSONtoformdata } from "../../../Shared/Utility";
 import { toast } from "react-hot-toast";
+import EventModal from "../../../Modal/Event/EventModal";
 
 const validationSchema = yup.object().shape({
   event_title: yup.string().required(`Event Title is Required !`),

@@ -22,7 +22,6 @@ import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 import { setCookieData, setLocalStorageData } from "../Store/Storage";
 import { useNavigate } from "react-router";
 import jwt_decode from "jwt-decode";
-import RedirectModal from "../Modal/RedirectModal";
 import {
   handleLoading,
   handlenuggetVideoPaused,
@@ -30,6 +29,7 @@ import {
 import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuthData } from "../Shared/Reduxfetcher";
 import Connections from "../Components/Connections/Connections";
+import RedirectModal from "../Modal/Verification/RedirectModal";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();

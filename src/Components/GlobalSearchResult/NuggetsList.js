@@ -5,7 +5,11 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
-import { globalSearchNuggetsService } from "../../Services/ApiService";
+import {
+  globalSearchNuggetsService,
+  listNuggetsService,
+} from "../../Services/ApiService";
+import { ListNuggetContext } from "../../Shared/Context";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import { getAuthenticated, JSONtoformdata } from "../../Shared/Utility";
 import Post from "../../Sharedcomponents/Nuggets/Post";
@@ -51,7 +55,7 @@ const NuggetsList = () => {
       search_key: params.key,
       page_number: page,
     };
-    globalSearchNuggetsService(JSONtoformdata(nuggetData), source.current.token)
+    listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
       .then((res) => {
         if (res.data.status === 1) {
           if (res.data.current_page_no === 1) {
@@ -129,11 +133,10 @@ const NuggetsList = () => {
     }
   };
 
-  console.log(getValidNuggets(), "===>");
   return (
     <>
       {getValidNuggets()?.length === 0 ? (
-        <span style={{ fontSize: 20, fontWeight: "bold" }}>
+        <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
           We didn't find any results
         </span>
       ) : null}
@@ -158,6 +161,15 @@ const NuggetsList = () => {
               }}
               HandleShare={() => {
                 console.log("share");
+              }}
+              handleSave={(save) => {
+                let findIndex = NuggetList.findIndex(
+                  (elem) => elem.nugget_id === ele.nugget_id
+                );
+                let tempData = [...NuggetList];
+                tempData[findIndex].saved = save.toString();
+
+                setNuggetList(tempData);
               }}
             />
           );

@@ -11,7 +11,7 @@
 .mainContainer .searchResultName span {
   color: #E26386;
 }
-.fullcontainer { height: 70vh;  max-width: 670px;display: flex; justify-content: center;margin: auto; }
+.fullcontainer {   height:calc(100vh - 190px);  max-width: 670px;display: flex; justify-content: center;margin: auto; }
 .nuggetSec, .profileSec{ 
     padding: 0 20px;
     height:calc(100vh - 67px);

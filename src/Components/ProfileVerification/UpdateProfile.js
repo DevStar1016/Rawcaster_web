@@ -336,10 +336,11 @@ const UpdateProfile = () => {
                   }
                   value={values.first_name}
                   onChange={(e) => {
-                    setFieldValue(
-                      "first_name",
-                      e.target.value.replace(/\p{Emoji}/gu, "")
-                    );
+                    // setFieldValue(
+                    //   "first_name",
+                    //   e.target.value.replace(/\p{Emoji}/gu, "")
+                    // );
+                    setFieldValue("first_name", e.target.value);
                   }}
                 />
                 {touched.first_name && (
@@ -358,10 +359,11 @@ const UpdateProfile = () => {
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
                   onChange={(e) => {
-                    setFieldValue(
-                      "last_name",
-                      e.target.value.replace(/\p{Emoji}/gu, "")
-                    );
+                    // setFieldValue(
+                    //   "last_name",
+                    //   e.target.value.replace(/\p{Emoji}/gu, "")
+                    // );
+                    setFieldValue("last_name", e.target.value);
                   }}
                 />
                 {touched.last_name && (
@@ -380,10 +382,11 @@ const UpdateProfile = () => {
                   value={values.name}
                   maxLength={40}
                   onChange={(e) => {
-                    setFieldValue(
-                      "name",
-                      e.target.value.replace(/\p{Emoji}/gu, "")
-                    );
+                    // setFieldValue(
+                    //   "name",
+                    //   e.target.value.replace(/\p{Emoji}/gu, "")
+                    // );
+                    setFieldValue("name", e.target.value);
                   }}
                 />
                 {touched.name && <p className="ErrTxt">{errors?.name}</p>}

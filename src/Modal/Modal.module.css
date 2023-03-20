@@ -1,3 +1,18 @@
+.modalCloseIcon {
+  background: #ECECEC;
+   width: 30px;
+   height: 30px;
+   border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.modalCloseIcon:hover {
+  transform: scale(1.1);
+  transition: all .3s ease-in-out
+}
+
 .profileModal {
     text-align: center;
     padding: 50px 0;
@@ -264,6 +279,74 @@ line-height: 29px;
 text-align: center;
 margin-top: 2px;
 cursor: pointer;
+}
+.reportModal {
+  min-height: 190px;
+}
+.reportModal p {
+  font-size: 15px;
+}
+.reportModal textarea::placeholder {
+  color: #4d4d4d;
+  opacity: 1;
+}
+.reportModal textarea:focus {
+  border: 0;
+  outline: none !important;
+}
+.reportModal .actionBtn {
+  text-align: center;
+  margin-top: 10px;
+}
+.reportModal .cancelBtn {
+  background: #fff;
+  border: #103e7c 1px solid;
+  border-radius: 4px;
+  padding: 7px 25px;
+  color: #103e7c;
+}
+.reportModal .reportBtn {
+  background: #103e7c;
+  border: #103e7c 1px solid;
+  border-radius: 4px;
+  padding: 7px 25px;
+  color: #fff;
+}
+.shareLinkSec {
+  background: #f7f7f7;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  cursor: pointer;
+  margin-top: 15px;
+
+}
+.shareLinkSec .source {
+  color: #999;
+  padding-top: 10px;
+  padding-left: 10px;
+  font-size: 13px;
+  line-height: 15px;
+  margin-bottom: 0;
+}
+.shareLinkSec .source i {
+  font-size: 15px;
+  padding-right: 2px;
+  float: left;
+}
+.shareLinkSec .title {
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 3px;
+  padding: 0 10px 10px 10px;
+}
+.shareLinkSec .dec {
+  color: #004040;
+  margin-bottom: 3px;
+  padding: 10px;
+  margin-bottom: 0;
+}
+.clsBtn {
+  float: right;
 }
 @media (max-width:768px) {
   .topProsec .rightSec { margin: 15px 0; }

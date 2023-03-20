@@ -2,15 +2,15 @@ import { Modal } from "antd";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router";
-import { resendOtpService } from "../Services/ApiService";
-import { useAuthData } from "../Shared/Reduxfetcher";
+import { resendOtpService } from "../../Services/ApiService";
+import { useAuthData } from "../../Shared/Reduxfetcher";
 import {
   getAuthToken,
   getPartialHiddenEmail,
   getPartialHiddenMobileNumber,
   JSONtoformdata,
-} from "../Shared/Utility";
-import classes from "./Modal.module.css";
+} from "../../Shared/Utility";
+import classes from "../Modal.module.css";
 
 const ValidateTypeModal = ({ open, handleClose }) => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const ValidateTypeModal = ({ open, handleClose }) => {
       >
         <img
           height="38px"
-          src={require("../Assets/Images/png/rawcater_logo.png")}
+          src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
         <h1 className={classes.heading_h1}>Choose the Verification Mode</h1>
 

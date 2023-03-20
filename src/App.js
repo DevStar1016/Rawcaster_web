@@ -64,12 +64,6 @@ function App() {
     if (JSON.parse(getLocalStorageData("rawcaster_user_token"))) {
       let data = JSON.parse(getLocalStorageData("rawcaster_user_token"));
       ConnectSocket(data);
-      socketListen.on("connect_error", (error) => {
-        console.log(error);
-      });
-      socketListen.on("connect", () => {
-        console.log(socketListen.connected); // true
-      });
     }
   }, []);
 

@@ -1,8 +1,8 @@
 import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
-import classes from "./Modal.module.css";
-import { millisecondsToMMSS } from "../Shared/Utility";
+import classes from "../Modal.module.css";
+import { millisecondsToMMSS } from "../../Shared/Utility";
 import PreviewModal from "./PreviewModal";
 import { toast } from "react-hot-toast";
 import { MediaPermissionsErrorType, requestMediaPermissions } from "mic-check";

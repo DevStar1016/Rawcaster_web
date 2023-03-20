@@ -1,8 +1,10 @@
 import { Form, Select, TimePicker } from "antd";
 import dayjs from "dayjs";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+import SelectedUsers from "../../../Modal/Event/SelectedUsers";
+import ImageCropModal from "../../../Modal/ImageCropModal";
 import { getEventTypeService } from "../../../Services/ApiService";
 import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
 import { decodeHtml, JSONtoformdata } from "../../../Shared/Utility";
@@ -51,12 +53,13 @@ export const EventTypeComponent = ({ onResult, value }) => {
 };
 
 export const BannerComponent = ({ onResult, value }) => {
+  const bannerRef = useRef();
+  const [cropImage, setcropImage] = useState("");
   const [bannerImage, setbannerImage] = useState("");
 
   const validateImage = (image) => {
     if (typeof image.type !== "undefined" && image.type.includes("image/")) {
-      setbannerImage(image);
-      onResult(image);
+      setcropImage(image);
     } else {
       toast.error("upload only image");
     }
@@ -69,65 +72,83 @@ export const BannerComponent = ({ onResult, value }) => {
   }, [value]);
 
   return (
-    <div
-      className={`${classes.uploadbanner}  pointer`}
-      onClick={() => {
-        document.getElementById("imageUpload").click();
-      }}
-    >
-      {bannerImage ? (
-        <img
-          src={
-            typeof bannerImage === "string"
-              ? bannerImage
-              : URL.createObjectURL(bannerImage)
-          }
-          alt=""
-          width="100%"
-          height="100%"
-          style={{
-            zIndex: 0,
-            maxWidth: "100%",
-            maxHeight: "100%",
-            width: "auto",
-            height: "auto",
-          }}
-        ></img>
-      ) : (
-        <div>
-          <div
-            style={{
-              color: "#1d1d1d",
-              opacity: "0.5",
-              fontSize: "18px",
-              fontWeight: "500",
-            }}
-          >
-            Upload Banner Photo
-          </div>
-          <div
-            style={{
-              color: "#1d1d1d",
-              fontSize: "12px",
-              opacity: "0.5",
-              textAlign: "center",
-            }}
-          >
-            Recommended size 500x300
-          </div>
-        </div>
-      )}
-      <input
-        type="file"
-        id="imageUpload"
-        name="imageUpload"
-        style={{ display: "none" }}
-        accept="image/*"
-        onChange={(e) => {
-          validateImage(e.target.files[0]);
+    <>
+      <div
+        className={`${classes.uploadbanner}  pointer`}
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          bannerRef.current.click();
         }}
-      ></input>
-    </div>
+      >
+        {bannerImage ? (
+          <img
+            src={
+              typeof bannerImage === "string"
+                ? bannerImage
+                : URL.createObjectURL(bannerImage)
+            }
+            alt=""
+            width="100%"
+            height="100%"
+            style={{
+              zIndex: 0,
+              maxWidth: "100%",
+              maxHeight: "100%",
+              width: "auto",
+              height: "auto",
+            }}
+          ></img>
+        ) : (
+          <div>
+            <div
+              style={{
+                color: "#1d1d1d",
+                opacity: "0.5",
+                fontSize: "18px",
+                fontWeight: "500",
+              }}
+            >
+              Upload Banner Photo
+            </div>
+            <div
+              style={{
+                color: "#1d1d1d",
+                fontSize: "12px",
+                opacity: "0.5",
+                textAlign: "center",
+              }}
+            >
+              Recommended size 500x300
+            </div>
+          </div>
+        )}
+        <input
+          type="file"
+          ref={bannerRef}
+          style={{ display: "none" }}
+          accept="image/*"
+          onChange={(e) => {
+            validateImage(e.target.files[0]);
+          }}
+        ></input>
+      </div>
+      {cropImage !== "" && (
+        <ImageCropModal
+          open={cropImage !== ""}
+          src={URL.createObjectURL(cropImage)}
+          ratio={16 / 9}
+          onSuccess={(val) => {
+            setbannerImage(val);
+            onResult(val);
+            setcropImage("");
+          }}
+          onFailure={() => {
+            setcropImage("");
+            setbannerImage("");
+          }}
+        />
+      )}
+    </>
   );
 };
 
@@ -318,9 +339,6 @@ export const Connections = ({ onResult, values }) => {
     setFilterFriendList([...filterData]);
   };
 
-  const selectedListCloseHandler = () => {
-    setSelectedListVisible(false);
-  };
   const selectedListOpenHandler = (type) => {
     setSelectedListVisible(true);
   };
@@ -374,8 +392,7 @@ export const Connections = ({ onResult, values }) => {
           <div className={classes.lableTxt}> Connections</div>
           {selectedFriendList.length > 0 ? (
             <span
-              style={{ color: "rgb(35, 71, 135)" }}
-              className="pointer"
+              style={{ color: "rgb(35, 71, 135)", cursor: "pointer" }}
               onClick={() => {
                 selectedListOpenHandler(4);
               }}
@@ -430,6 +447,18 @@ export const Connections = ({ onResult, values }) => {
           );
         })}
       </div>
+      <SelectedUsers
+        open={selectedListVisible}
+        friends={selectedFriendList}
+        setfriends={(id) => {
+          setSelectedFriendList((pre) =>
+            pre.filter((ele) => ele.user_id !== id)
+          );
+        }}
+        close={() => {
+          setSelectedListVisible(false);
+        }}
+      />
     </div>
   );
 };

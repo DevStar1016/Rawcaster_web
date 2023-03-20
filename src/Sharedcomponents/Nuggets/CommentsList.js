@@ -23,8 +23,14 @@ import EmojiPicker from "../../UIComponents/EmojiPicker";
 
 const CommentsList = ({ index }) => {
   const { getNuggetList } = useListNuggetContext();
-  const { nugget_id, CommentList, getCommentList, isCommentLoading } =
-    useSingleNuggetContext();
+  const {
+    nugget_id,
+    CommentList,
+    getCommentList,
+    isCommentLoading,
+    handleNuggetCommentLike,
+    setCommentList,
+  } = useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [CommentTxt, setCommentTxt] = useState([]);
   const [EditData, seteditData] = useState([]);
@@ -94,6 +100,38 @@ const CommentsList = ({ index }) => {
   const getCommentValue = (comment_id) => {
     let findData = CommentList.find((ele) => ele.comment_id === comment_id);
     return findData;
+  };
+
+  const handleAgree = (id, like, count) => {
+    let findIndex = CommentList.findIndex((ele) => ele.comment_id === id);
+    let tempData = [...CommentList];
+    tempData[findIndex] = {
+      ...tempData[findIndex],
+      liked: !like,
+      like_count: !like ? count + 1 : count - 1,
+    };
+    setCommentList(tempData);
+    let likeflag = like ? 2 : 1;
+    handleNuggetCommentLike(id, likeflag)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 0) {
+          let tempData = [...CommentList];
+          tempData[findIndex] = {
+            ...tempData[findIndex],
+            liked: count,
+          };
+          setCommentList(tempData);
+        }
+      })
+      .catch((err) => {
+        let tempData = [...CommentList];
+        tempData[findIndex] = {
+          ...tempData[findIndex],
+          liked: count,
+        };
+        setCommentList(tempData);
+      });
   };
 
   return (
@@ -295,8 +333,25 @@ const CommentsList = ({ index }) => {
                             )}
                           </div>
                           <div className="clearfix"></div>
-                          <div className={classes.agree}>
-                            <img src={hearticon} alt="Heart_Icon" /> Agree
+                          <div
+                            className={classes.agree}
+                            style={{ color: elem.liked ? "#e26386" : "#000" }}
+                            onClick={() => {
+                              handleAgree(
+                                elem.comment_id,
+                                elem.liked,
+                                elem.like_count
+                              );
+                            }}
+                          >
+                            <i
+                              className={classes.agreeIcon}
+                              style={{
+                                background: elem.liked ? "#e26386" : "#000",
+                              }}
+                            />{" "}
+                            Agree{" "}
+                            {elem.like_count ? `(${elem.like_count})` : null}
                           </div>
                           <div
                             className={classes.agree}

@@ -18,6 +18,7 @@ import { ListNuggetContext } from "../../Shared/Context";
 import axios from "axios";
 import PostProgress from "./PostProgress";
 import Post from "./Post";
+import { useParams } from "react-router";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -26,7 +27,7 @@ let isRequestCancel = false;
 
 const Nuggets = () => {
   const source = useRef(null);
-
+  const params = useParams();
   const dispatch = useDispatch();
   const [Progress, setProgress] = useState({
     percent: 0,
@@ -72,6 +73,13 @@ const Nuggets = () => {
         token: getToken(),
         page_number: page,
       };
+
+      if (params.key) {
+        nuggetData = {
+          ...nuggetData,
+          search_key: params.key,
+        };
+      }
       listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
         .then((res) => {
           if (res.data.status === 1) {
@@ -102,6 +110,7 @@ const Nuggets = () => {
               totalpage: res.data.total_pages,
             });
           } else {
+            setNuggetList([]);
             toast.error(res.data.msg);
           }
         })
@@ -126,6 +135,12 @@ const Nuggets = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (params.key) {
+      getNuggetList();
+    }
+  }, [params]);
 
   const onEndReached = () => {
     if (pageRef.current.page !== pageRef.current.totalpage) {
@@ -187,13 +202,20 @@ const Nuggets = () => {
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
-      <div className={classes.nuggetSec} ref={scrollRef}>
-        {getAuthenticated() && (
+      <div
+        className={params.key ? classes.resultnuggetSec : classes.nuggetSec}
+        ref={scrollRef}
+      >
+        {!params.key && (
           <>
-            {Progress.show ? (
-              <PostProgress />
-            ) : (
-              <PostNuggets getNuggetList={getNuggetList} />
+            {getAuthenticated() && (
+              <>
+                {Progress.show ? (
+                  <PostProgress />
+                ) : (
+                  <PostNuggets getNuggetList={getNuggetList} />
+                )}
+              </>
             )}
           </>
         )}
@@ -213,6 +235,15 @@ const Nuggets = () => {
                   like === 1
                     ? tempData[findIndex].total_likes + 1
                     : tempData[findIndex].total_likes - 1;
+                setNuggetList(tempData);
+              }}
+              handleSave={(save) => {
+                let findIndex = NuggetList.findIndex(
+                  (elem) => elem.nugget_id === ele.nugget_id
+                );
+                let tempData = [...NuggetList];
+                tempData[findIndex].saved = save.toString();
+
                 setNuggetList(tempData);
               }}
               HandleShare={() => {

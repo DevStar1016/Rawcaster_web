@@ -43,15 +43,14 @@ import {
   setCookieData,
   setLocalStorageData,
 } from "../../Store/Storage";
-import RedirectModal from "../../Modal/RedirectModal";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import SignupwithMobileImg from "../../Assets/Images/png/signupwithmobile-intro.png";
 import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.png";
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
-import axios from "axios";
 import Seo from "../SEO/Seo";
+import RedirectModal from "../../Modal/Verification/RedirectModal";
 
 const Signup = () => {
   const navigate = useNavigate();

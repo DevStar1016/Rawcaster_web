@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import Postmodal from "../../Modal/Postmodal";
 import classes from "./PostNuggets.module.css";
 import cameraIcon from "../../Assets/Images/svg/camera.svg";
 import imageIcon from "../../Assets/Images/svg/picture.svg";
@@ -13,10 +12,11 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
-import CameraModal from "../../Modal/CameraModal";
 import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
 import { useFormik } from "formik";
 import { isAccountValid, isValidData } from "../../Shared/Utility";
+import CameraModal from "../../Modal/Nugget/CameraModal";
+import Postmodal from "../../Modal/Nugget/Postmodal";
 
 const PostNuggets = ({ getNuggetList }) => {
   const dispatch = useDispatch();
@@ -28,6 +28,7 @@ const PostNuggets = ({ getNuggetList }) => {
   const [isPoll, setisPoll] = useState(false);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const LoginUserData = useAuthData();
+  const [MetaData, setMetaData] = useState();
 
   const { handleProgress, setProgress } = useListNuggetContext();
 
@@ -69,6 +70,9 @@ const PostNuggets = ({ getNuggetList }) => {
       }
     } else {
       formData.append("content", val.content);
+    }
+    if (MetaData && NuggetData.length === 0) {
+      formData.append("metadata", JSON.stringify(MetaData));
     }
     addNuggetsService(formData, handleProgress)
       .then((res) => {
@@ -113,6 +117,8 @@ const PostNuggets = ({ getNuggetList }) => {
     values: values,
     setisPoll: setisPoll,
     isPoll: isPoll,
+    setMetaData: setMetaData,
+    MetaData: MetaData,
   };
 
   return (

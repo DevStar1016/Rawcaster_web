@@ -8,6 +8,7 @@ import {
   likeAndUnlikeNuggetService,
   nuggetCommentListService,
   saveAndUnsaveNuggetService,
+  likeAndUnlikeNuggetCommentService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
@@ -33,7 +34,7 @@ import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
 
-const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
+const Post = ({ ele, getList, handleLike, HandleShare, handleSave, index }) => {
   var _ = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
@@ -45,6 +46,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
   const [isCommentLoading, setisCommentLoading] = useState(false);
   const [iscollapse, setiscollapse] = useState(false);
   const [ContentLength, setContentLength] = useState();
+  const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const ref = useRef(null);
 
   const deletenugget = (id) => {
@@ -205,6 +207,26 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
     true
   );
 
+  const handleNuggetCommentLike = (comment_id, like) => {
+    const promise = new Promise((resolve, reject) => {
+      let likeData = {
+        token: Token,
+        comment_id: comment_id,
+        like: like,
+      };
+      likeAndUnlikeNuggetCommentService(JSONtoformdata(likeData))
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          toast.error(err.message);
+          reject(err.message);
+        });
+    });
+
+    return promise;
+  };
+
   const SingleNuggetData = {
     Nuggets: ele,
     nugget_id: Comments,
@@ -212,6 +234,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
     setCommentList: setCommentList,
     isCommentLoading: isCommentLoading,
     setCommentList: setCommentList,
+    handleNuggetCommentLike: handleNuggetCommentLike,
     getCommentList(id) {
       return getCommentList(id);
     },
@@ -263,6 +286,24 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
       setContentLength(current.offsetHeight);
     }
   }, [ref]);
+
+  const isVoted = (ele) => {
+    // if (getAuthenticated()) {
+    //   if (isAccountValid()) {
+    if (parseInt(ele?.voted) === 1) {
+      return true;
+    }
+    //     } else {
+    //       return false;
+    //     }
+    //   } else {
+    //     return true;
+    //   }
+    // } else {
+    //   return true;
+    // }
+  };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       <div className={classes.nuggetItem}>
@@ -313,11 +354,60 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                   CharactersLength={120}
                   index={index}
                   isReadMore={isReadMore()}
+                  isLinkopenModal={isLinkopenModal}
+                  setisLinkopenModal={setisLinkopenModal}
                 >
                   {decodeHtml(ele?.content)}
                 </ReadMore>
               )}
             </p>
+            {ele.media_list && ele.media_list.length === 0 && ele.metadata ? (
+              <a
+                className={classes.metaLink}
+                onClick={() => {
+                  setisLinkopenModal(true);
+                }}
+              >
+                <div className={classes.shareLinkSec}>
+                  {JSON.parse(ele.metadata).image !== "" ? (
+                    <p className={classes.source}>
+                      <i className="material-icons">public</i>
+                      {JSON.parse(ele.metadata).source}
+                    </p>
+                  ) : null}
+                  <p
+                    className={classes.title}
+                    style={{
+                      paddingTop:
+                        JSON.parse(ele.metadata).image === "" ? "10px" : "0px",
+                    }}
+                  >
+                    {JSON.parse(ele.metadata).title}
+                  </p>
+                  {JSON.parse(ele.metadata).image &&
+                  JSON.parse(ele.metadata).image !== "" ? (
+                    <img
+                      src={JSON.parse(ele.metadata).image}
+                      height="370px"
+                      style={{
+                        objectFit: "cover",
+                        maxWidth: "100%",
+                        margin: "auto",
+                        justifyContent: "center",
+                        display: "flex",
+                      }}
+                    ></img>
+                  ) : (
+                    <div className={classes.domainName}>
+                      {JSON.parse(ele.metadata).source}
+                    </div>
+                  )}
+                  <p className={classes.dec}>
+                    {JSON.parse(ele.metadata).description}
+                  </p>
+                </div>
+              </a>
+            ) : null}
             <div className={classes.imgContainer}>
               {ele && ele.media_list && ele.media_list?.length !== 0 && (
                 <ImageGrid
@@ -342,7 +432,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                     results={ele.poll_option}
                     // isVotedId={11}
                     TotalVotes={ele?.total_vote}
-                    isVoted={parseInt(ele.voted) === 1}
+                    isVoted={isVoted(ele)}
                     created_date={ele.created_date}
                     VoteTiming={ele.poll_duration}
                   />
@@ -452,8 +542,9 @@ const Post = ({ ele, getList, handleLike, HandleShare, index }) => {
                     onClick={() => {
                       if (getAuthenticated()) {
                         if (isAccountValid()) {
-                          let save = ele.saved ? 2 : 1;
-                          savedebounceProcess(ele.nugget_id, 1);
+                          let save = parseInt(ele.saved) === 1 ? 2 : 1;
+                          handleSave(save);
+                          savedebounceProcess(ele.nugget_id, save);
                         } else {
                           dispatch(
                             handleprofileVerifyModalShow({

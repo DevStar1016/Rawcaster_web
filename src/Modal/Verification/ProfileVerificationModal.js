@@ -3,11 +3,15 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { resendOtpService } from "../Services/ApiService";
-import { useAuthData } from "../Shared/Reduxfetcher";
-import { getAuthToken, isValidData, JSONtoformdata } from "../Shared/Utility";
-import { handletwostepVerifyModalshow } from "../Store/Redux/Reducer/DashboardReducer";
-import classes from "./Modal.module.css";
+import { resendOtpService } from "../../Services/ApiService";
+import { useAuthData } from "../../Shared/Reduxfetcher";
+import {
+  getAuthToken,
+  isValidData,
+  JSONtoformdata,
+} from "../../Shared/Utility";
+import { handletwostepVerifyModalshow } from "../../Store/Redux/Reducer/DashboardReducer";
+import classes from "../Modal.module.css";
 
 export const VerificationModal = ({ open, close }) => {
   const loginUserData = useAuthData();
@@ -63,7 +67,7 @@ export const VerificationModal = ({ open, close }) => {
       <div className={classes.profileModal}>
         <img
           height="38px"
-          src={require("../Assets/Images/png/rawcater_logo.png")}
+          src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
         <p>
           You need to complete your account validation before you can do this.

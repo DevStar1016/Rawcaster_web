@@ -1,9 +1,18 @@
 import React, { useState, useEffect, useRef, createRef } from "react";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { pollVoteService } from "../../Services/ApiService";
 import { useListNuggetContext } from "../../Shared/Context";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { JSONtoformdata } from "../../Shared/Utility";
+import {
+  getAuthenticated,
+  isAccountValid,
+  JSONtoformdata,
+} from "../../Shared/Utility";
+import {
+  handleloginModalShow,
+  handleprofileVerifyModalShow,
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import styles from "./Multiplepoll.module.css";
 import { animateAnswers, manageVote } from "./Utility";
 
@@ -18,6 +27,7 @@ const MultiplePoll = ({
 }) => {
   const { getNuggetList } = useListNuggetContext();
   const [voted, setVoted] = useState(false);
+  const dispatch = useDispatch();
   const Token = useAuthToken();
   const answerRefs = useRef(results.map(() => createRef()));
   const theme = {
@@ -27,19 +37,6 @@ const MultiplePoll = ({
     inactiveBg: "linear-gradient(91.4deg, #F4A465 0.43%, #E88190 99.59%)",
     alignment: "center",
   };
-
-  useEffect(() => {
-    if (!isVoted) {
-      const findIndex = results.findIndex((ele) => ele.option_id === isVotedId);
-      if (findIndex !== -1) {
-        animateAnswers(results, answerRefs, theme, undefined, findIndex);
-        setVoted(true);
-      }
-    } else {
-      animateAnswers(results, answerRefs, theme, undefined, 0);
-      setVoted(true);
-    }
-  }, [results]);
 
   function calculateTimeLeft(currentTime, startTime, endTime) {
     const differenceToEnd = endTime - currentTime;
@@ -131,6 +128,23 @@ const MultiplePoll = ({
       });
   };
 
+  useEffect(() => {
+    if (getVotesTiming() === "") {
+      console.log(getVotesTiming());
+      animateAnswers(results, answerRefs, theme, undefined, 0);
+      setVoted(true);
+    } else if (!isVoted) {
+      const findIndex = results.findIndex((ele) => ele.option_id === isVotedId);
+      if (findIndex !== -1) {
+        animateAnswers(results, answerRefs, theme, undefined, findIndex);
+        setVoted(true);
+      }
+    } else {
+      animateAnswers(results, answerRefs, theme, undefined, 0);
+      setVoted(true);
+    }
+  }, [results]);
+
   return (
     <>
       <article className={styles.container}>
@@ -147,7 +161,20 @@ const MultiplePoll = ({
             }}
             onClick={() => {
               if (!voted) {
-                handlePoll(result, index);
+                if (getAuthenticated()) {
+                  if (isAccountValid()) {
+                    handlePoll(result, index);
+                  } else {
+                    dispatch(
+                      handleprofileVerifyModalShow({
+                        show: true,
+                        msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                      })
+                    );
+                  }
+                } else {
+                  dispatch(handleloginModalShow(true));
+                }
               }
             }}
           >
