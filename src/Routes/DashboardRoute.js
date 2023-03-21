@@ -9,58 +9,56 @@ import Profile from "../Components/Profile";
 import HomeLayout from "../Layouts/HomeLayout";
 import { HomePrivateRoute } from "./PrivateRoute";
 
-export const DashboardRoute = () => {
-  return [
-    {
-      path: "/",
-      element: <HomePrivateRoute />,
-      children: [
-        {
-          path: "/",
-          element: <HomeLayout />,
-          children: [
-            {
-              path: "/selectinfluencers",
-              element: <SelectInfluencers />,
-            },
-            {
-              path: "/viewprofile",
-              element: <Profile />,
-            },
-          ],
-        },
-      ],
-    },
+export const DashboardRoute = [
+  {
+    path: "/",
+    element: <HomePrivateRoute />,
+    children: [
+      {
+        path: "/",
+        element: <HomeLayout />,
+        children: [
+          {
+            path: "/selectinfluencers",
+            element: <SelectInfluencers />,
+          },
+          {
+            path: "/viewprofile",
+            element: <Profile />,
+          },
+        ],
+      },
+    ],
+  },
 
-    {
-      path: "/",
-      element: <HomeLayout />,
-      children: [
-        {
-          path: "/dashboard",
-          element: <Dashboard />,
-        },
-        {
-          path: "/globalsearch/:key",
-          element: <GlobalSearchResult />,
-        },
-        {
-          path: "privacypolicy",
-          element: <Privacypolicy />,
-        },
-        {
-          path: "termsandconditions",
-          element: <TermsandConditions />,
-        },
-        {
-          path: "cookiespolicy",
-          element: <Cookiespolicy />,
-        },
-        {
-          path: "dev",
-          element: <Development />,
-        },
-      ],
-    },
-  ];
-};
+  {
+    path: "/",
+    element: <HomeLayout />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "/globalsearch/:key",
+        element: <GlobalSearchResult />,
+      },
+      {
+        path: "privacypolicy",
+        element: <Privacypolicy />,
+      },
+      {
+        path: "termsandconditions",
+        element: <TermsandConditions />,
+      },
+      {
+        path: "cookiespolicy",
+        element: <Cookiespolicy />,
+      },
+      {
+        path: "dev",
+        element: <Development />,
+      },
+    ],
+  },
+];

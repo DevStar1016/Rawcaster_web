@@ -11,6 +11,8 @@ const initialState = {
   nuggetVideoPaused: false,
   isGlobalSearch: false,
   friendsList: [],
+  isNuggetMuted: false,
+  DashboardfilterType: 0,
 };
 
 export const { actions, reducer } = createSlice({
@@ -47,6 +49,12 @@ export const { actions, reducer } = createSlice({
     handleFriendsList: (state, action) => {
       state.friendsList = action.payload;
     },
+    handleisNuggetMuted: (state, action) => {
+      state.isNuggetMuted = action.payload;
+    },
+    handleDashboardFilterType: (state, action) => {
+      state.DashboardfilterType = action.payload;
+    },
   },
 });
 
@@ -61,6 +69,8 @@ export const {
   handlenuggetVideoPaused,
   handleisGlobalSearch,
   handleFriendsList,
+  handleisNuggetMuted,
+  handleDashboardFilterType,
 } = actions;
 
 export default reducer;

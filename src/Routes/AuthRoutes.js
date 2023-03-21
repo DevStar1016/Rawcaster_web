@@ -14,77 +14,75 @@ import AuthLayout from "../Layouts/AuthLayout";
 import MainLayout from "../Layouts/MainLayout";
 import { AuthPrivateRoute } from "./PrivateRoute";
 
-export const AuthRoute = () => {
-  return [
-    {
-      path: "/",
-      element: <AuthPrivateRoute />,
-      children: [
-        {
-          path: "/",
-          element: <AuthLayout />,
-          children: [
-            {
-              path: "/login",
-              element: <Login />,
-            },
-            {
-              path: "/signup",
-              element: <Signup />,
-            },
-            {
-              path: "/signupwithemail",
-              element: <SignupwithCredentials />,
-            },
-            {
-              path: "/signupwithmobile",
-              element: <SignupwithCredentials />,
-            },
-            {
-              path: "/forgotpassword",
-              element: <ForgotPassword />,
-            },
-            {
-              path: "/setpassword",
-              element: <ResetPassword />,
-            },
-          ],
-        },
-        {
-          path: "/",
-          element: <MainLayout />,
-          children: [
-            {
-              index: true,
-              element: <Homepage />,
-            },
-            {
-              path: "privacypolicy",
-              element: <Privacypolicy />,
-            },
-            {
-              path: "termsandconditions",
-              element: <TermsandConditions />,
-            },
-            {
-              path: "cookiespolicy",
-              element: <Cookiespolicy />,
-            },
-            {
-              path: "support",
-              element: <Contactus />,
-            },
-            {
-              path: "faq",
-              element: <Faq />,
-            },
-            {
-              path: "appdownloadscreen",
-              element: <AppdownloadScreen />,
-            },
-          ],
-        },
-      ],
-    },
-  ];
-};
+export const AuthRoute = [
+  {
+    path: "/",
+    element: <AuthPrivateRoute />,
+    children: [
+      {
+        path: "/",
+        element: <AuthLayout />,
+        children: [
+          {
+            path: "/login",
+            element: <Login />,
+          },
+          {
+            path: "/signup",
+            element: <Signup />,
+          },
+          {
+            path: "/signupwithemail",
+            element: <SignupwithCredentials />,
+          },
+          {
+            path: "/signupwithmobile",
+            element: <SignupwithCredentials />,
+          },
+          {
+            path: "/forgotpassword",
+            element: <ForgotPassword />,
+          },
+          {
+            path: "/setpassword",
+            element: <ResetPassword />,
+          },
+        ],
+      },
+      {
+        path: "/",
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <Homepage />,
+          },
+          {
+            path: "privacypolicy",
+            element: <Privacypolicy />,
+          },
+          {
+            path: "termsandconditions",
+            element: <TermsandConditions />,
+          },
+          {
+            path: "cookiespolicy",
+            element: <Cookiespolicy />,
+          },
+          {
+            path: "support",
+            element: <Contactus />,
+          },
+          {
+            path: "faq",
+            element: <Faq />,
+          },
+          {
+            path: "appdownloadscreen",
+            element: <AppdownloadScreen />,
+          },
+        ],
+      },
+    ],
+  },
+];

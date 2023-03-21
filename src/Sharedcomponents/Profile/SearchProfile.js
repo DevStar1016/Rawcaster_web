@@ -93,18 +93,20 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
               </Button>
             )}
             <div className="d-none d-sm-block">
-            <Button
-              type="primary"
-              htmlType="Continue"
-              size="large"
-              className={` ${classes.connectBtn}`}
-              onClick={() => {
-                handleFriendRequest(ele);
-              }}
-            >
-              Request to connect{" "}
-              <span class="material-symbols-outlined">arrow_forward</span>
-            </Button>
+              {ele.friend_request_status === "" && (
+                <Button
+                  type="primary"
+                  htmlType="Continue"
+                  size="large"
+                  className={` ${classes.connectBtn}`}
+                  onClick={() => {
+                    handleFriendRequest(ele);
+                  }}
+                >
+                  Request to connect{" "}
+                  <span class="material-symbols-outlined">arrow_forward</span>
+                </Button>
+              )}
             </div>
             <Button
               type="primary"

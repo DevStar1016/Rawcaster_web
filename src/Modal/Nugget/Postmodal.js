@@ -384,7 +384,6 @@ const Postmodal = ({ visible, onClose }) => {
               <div className={classes.attachementtDisplay}>
                 {NuggetData.map((ele, index) => {
                   const getURL = () => {
-                    console.log(URL.createObjectURL(ele));
                     let type = ele.type.split("/");
                     return {
                       path: URL.createObjectURL(ele),

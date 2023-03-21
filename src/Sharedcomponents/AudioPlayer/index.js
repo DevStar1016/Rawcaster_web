@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useDashboard } from "../../Shared/Reduxfetcher";
+import { handleisNuggetMuted } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Audioplayer.module.css";
 
-const AudioPlayer = ({ url }) => {
+const AudioPlayer = ({ url, isThumb = false, audioId }) => {
+  const { isNuggetMuted } = useDashboard();
+  const dispatch = useDispatch();
   const [audio, setAudio] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -10,15 +15,23 @@ const AudioPlayer = ({ url }) => {
 
   useEffect(() => {
     const audioElement = new Audio(url);
-    audioElement.muted = isMuted;
+    audioElement.id = audioId;
     setAudio(audioElement);
-
+    audioElement.muted = isNuggetMuted;
+    setisMuted(isNuggetMuted);
     return () => {
       audioElement.pause();
 
       setAudio(null);
     };
   }, [url]);
+
+  useEffect(() => {
+    if (audio) {
+      audio.muted = isNuggetMuted;
+      setisMuted(isNuggetMuted);
+    }
+  }, [audio, isNuggetMuted]);
 
   useEffect(() => {
     if (audio) {
@@ -63,8 +76,9 @@ const AudioPlayer = ({ url }) => {
 
   function toggleMute() {
     if (audio) {
-      audio.muted = !audio.muted;
-      setisMuted(!audio.muted);
+      audio.muted = !isNuggetMuted;
+      setisMuted(!isNuggetMuted);
+      dispatch(handleisNuggetMuted(!isNuggetMuted));
     }
   }
 
@@ -91,31 +105,13 @@ const AudioPlayer = ({ url }) => {
     <div className={classes.audio_player}>
       {audio && (
         <div>
-          <div className={classes.sliderSec}>
-            <div className={classes.controlSec}>
-              <div className={classes.timeSec}>
-                <span>{formatTime(currentTime)}</span> /{" "}
-                <span>
-                  {isNaN(parseInt(duration)) ? "-" : formatTime(duration)}
-                </span>
-              </div>
-              <div className={classes.muteSec} onClick={() => toggleMute()}>
-                <i
-                  className={isMuted ? classes.un_mute_icon : classes.mute_icon}
-                ></i>
-              </div>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max={Math.round(duration)}
-              value={Math.round(currentTime)}
-              onChange={handleSeek}
-              aria-label="Audio Seekbar"
-            />
-          </div>
-          <div className={classes.playSec}>
-            <button onClick={isPlaying ? handlePause : handlePlay}>
+          <div
+            className={`${classes.playSec} ${isThumb ? classes.thumbSec : ""}`}
+          >
+            <button
+              onClick={isPlaying ? handlePause : handlePlay}
+              disabled={isThumb}
+            >
               {isPlaying ? (
                 <span class="material-symbols-outlined">pause</span>
               ) : (
@@ -123,6 +119,33 @@ const AudioPlayer = ({ url }) => {
               )}
             </button>
           </div>
+          {!isThumb && (
+            <div className={classes.sliderSec}>
+              <div className={classes.controlSec}>
+                <div className={classes.timeSec}>
+                  <span>{formatTime(currentTime)}</span> /{" "}
+                  <span>
+                    {isNaN(parseInt(duration)) ? "-" : formatTime(duration)}
+                  </span>
+                </div>
+                <div className={classes.muteSec} onClick={() => toggleMute()}>
+                  <i
+                    className={
+                      isMuted ? classes.un_mute_icon : classes.mute_icon
+                    }
+                  ></i>
+                </div>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max={Math.round(duration)}
+                value={Math.round(currentTime)}
+                onChange={handleSeek}
+                aria-label="Audio Seekbar"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

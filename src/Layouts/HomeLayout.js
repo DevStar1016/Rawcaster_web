@@ -24,6 +24,7 @@ import { useAuthData } from "../Shared/Reduxfetcher";
 import {
   handledasboardTab,
   handleisGlobalSearch,
+  handleLoading,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
 
@@ -46,6 +47,7 @@ const HomeLayout = () => {
   };
 
   const handleLogout = () => {
+    dispatch(handleLoading(true));
     let logutData = {
       token: loginUserData?.token,
     };
@@ -53,7 +55,10 @@ const HomeLayout = () => {
       .then((res) => {
         if (res.data.status === 1) {
           RemoveToken(dispatch);
-          navigate("/");
+          dispatch(handleLoading(false));
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }

@@ -229,7 +229,13 @@ const PostNuggets = ({ getNuggetList }) => {
                 style={{ display: "none" }}
               />
             </div>
-            <div className={classes.item}>
+            <div
+              className={classes.item}
+              onClick={() => {
+                setisPoll(true);
+                setpostModalShow(true);
+              }}
+            >
               <img src={pollIcon} alt="poll_icon" /> Poll
             </div>
           </div>
@@ -252,6 +258,7 @@ const PostNuggets = ({ getNuggetList }) => {
         onClose={() => {
           resetForm();
           setNuggetData([]);
+          setisPoll(false);
           setpostModalShow(false);
         }}
       />

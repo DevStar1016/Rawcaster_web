@@ -27,6 +27,7 @@ const ImageCropModal = ({ open, src, ratio, onSuccess, onFailure }) => {
   const imgRef = useRef(null);
   const [crop, setCrop] = useState();
   const [completedCrop, setCompletedCrop] = useState();
+  const [confirmLoading, setconfirmLoading] = useState(false);
   const [scale, setScale] = useState(1);
   const [rotate, setRotate] = useState(0);
 
@@ -92,6 +93,7 @@ const ImageCropModal = ({ open, src, ratio, onSuccess, onFailure }) => {
         toast.error("Failed to create blob");
       } else {
         onSuccess(blob);
+        setconfirmLoading(false);
       }
     });
   }
@@ -100,9 +102,12 @@ const ImageCropModal = ({ open, src, ratio, onSuccess, onFailure }) => {
     <Modal
       closable={false}
       open={open}
+      confirmLoading={confirmLoading}
       onOk={() => {
+        setconfirmLoading(true);
         canvasPreview();
       }}
+      cancelButtonProps={{ disabled: confirmLoading }}
       onCancel={onFailure}
     >
       <div className={classes.main_container}>

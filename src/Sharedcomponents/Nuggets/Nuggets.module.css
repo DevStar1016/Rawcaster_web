@@ -41,7 +41,7 @@
  .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left; display: flex;
   flex-direction: column;
   justify-content: space-between;}
- .feedsSec p { white-space: pre-wrap; line-break: anywhere; }
+ /* .feedsSec p { white-space: pre-wrap; line-break: anywhere; } */
  .nuggetsFeed { width: 100%; border-radius: 12px; }
  .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }
@@ -64,7 +64,7 @@
   border-radius: 12px;
   overflow: hidden;
 }
-.cmtSec .item { display: flex; flex-direction: row; width: 100%; margin-top: 20px; }
+.cmtSec .item { display: flex; flex-direction: row; width: 100%; }
 .cmtSec .proImg { position: relative; width: 55px; float: left; }
 .cmtSec .proImg img { width: 40px; height: 40px; border-radius: 60px; }
 .cmtSec .profilePart .proImg, .comtArea .profilePart .proImg { width: 60px; height: 60px; border-radius: 60px; margin-right: 5px; }
@@ -197,6 +197,19 @@
 }
 .metaLink,.metaLink:hover {
   text-decoration: none;
+}
+.replyCmtArea {
+  width: 92%;
+}
+.replyCommentContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.replyCommentContainer .replyClose {
+margin-right: 10px;
+cursor: pointer;
 }
 @media (max-width:768px) {
   .nuggetSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }

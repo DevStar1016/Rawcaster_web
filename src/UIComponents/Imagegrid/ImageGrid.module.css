@@ -61,7 +61,7 @@
      bottom: 0px;
      left: 0px;  border-radius: 10px;
 }
-.imagemodalContainer,.videomodalContainer {
+.imagemodalContainer,.videomodalContainer,.audiomodalContainer {
   
 
    display: flex;
@@ -71,6 +71,10 @@
     width: 100%;
   
  
+ }
+ .audiomodalContainer {
+  max-width: 400px;
+  margin: auto;
  }
  .imagemodalContainer {
    position: absolute;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import { useDispatch } from "react-redux";
 import { listNuggetsService } from "../../Services/ApiService";
@@ -19,6 +19,7 @@ import axios from "axios";
 import PostProgress from "./PostProgress";
 import Post from "./Post";
 import { useParams } from "react-router";
+import { useDashboard } from "../../Shared/Reduxfetcher";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -28,6 +29,9 @@ let isRequestCancel = false;
 const Nuggets = () => {
   const source = useRef(null);
   const params = useParams();
+  const { DashboardfilterType } = useDashboard();
+  const [filterType, setfilterType] = useState(0);
+  const [muted, setmuted] = useState(false);
   const dispatch = useDispatch();
   const [Progress, setProgress] = useState({
     percent: 0,
@@ -61,7 +65,7 @@ const Nuggets = () => {
     });
   };
 
-  const getNuggetList = (page = 1) => {
+  const getNuggetList = (page = 1, filter_type) => {
     let promise = new Promise((resolve, reject) => {
       if (source.current) {
         isRequestCancel = true;
@@ -72,7 +76,9 @@ const Nuggets = () => {
         nugget_type: 0,
         token: getToken(),
         page_number: page,
+        filter_type: filter_type ? filter_type : DashboardfilterType,
       };
+      setfilterType(DashboardfilterType);
 
       if (params.key) {
         nuggetData = {
@@ -80,6 +86,7 @@ const Nuggets = () => {
           search_key: params.key,
         };
       }
+
       listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
         .then((res) => {
           if (res.data.status === 1) {
@@ -133,14 +140,17 @@ const Nuggets = () => {
       dispatch(handleLoading(true));
       getNuggetList();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (params.key) {
+      getNuggetList(1, 0);
+    } else if (DashboardfilterType !== filterType) {
       getNuggetList();
     }
-  }, [params]);
+  }, [params, DashboardfilterType]);
 
   const onEndReached = () => {
     if (pageRef.current.page !== pageRef.current.totalpage) {
@@ -225,6 +235,8 @@ const Nuggets = () => {
               ele={ele}
               index={index}
               getList={getNuggetList}
+              muted={muted}
+              setmuted={setmuted}
               handleLike={(like) => {
                 let findIndex = NuggetList.findIndex(
                   (elem) => elem.nugget_id === ele.nugget_id
@@ -242,7 +254,7 @@ const Nuggets = () => {
                   (elem) => elem.nugget_id === ele.nugget_id
                 );
                 let tempData = [...NuggetList];
-                tempData[findIndex].saved = save.toString();
+                tempData[findIndex].saved = save === 1 ? true : false;
 
                 setNuggetList(tempData);
               }}

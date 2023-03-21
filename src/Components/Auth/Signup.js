@@ -51,6 +51,7 @@ import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
 import Seo from "../SEO/Seo";
 import RedirectModal from "../../Modal/Verification/RedirectModal";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -95,6 +96,7 @@ const Signup = () => {
           setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
           setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
           const navigateHandle = () => {
+            dispatch(handleLoading(false));
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
@@ -111,6 +113,7 @@ const Signup = () => {
       })
       .catch((err) => {
         toast.error(err.message);
+        dispatch(handleLoading(false));
       });
   };
 
@@ -177,6 +180,7 @@ const Signup = () => {
                         email_id: data.email,
                       };
                       HandleSignup(resultVal);
+                      dispatch(handleLoading(true));
                     }}
                     onReject={(err) => {
                       console.log(err);

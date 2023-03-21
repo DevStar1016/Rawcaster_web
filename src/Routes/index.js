@@ -10,7 +10,7 @@ export const routerpaths = [
     children: [
       {
         path: "/",
-        children: [...AuthRoute(), ...DashboardRoute(), ...ProfileRoute()],
+        children: [...AuthRoute, ...DashboardRoute, ...ProfileRoute],
       },
     ],
   },

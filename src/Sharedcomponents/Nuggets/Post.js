@@ -34,14 +34,22 @@ import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
 
-const Post = ({ ele, getList, handleLike, HandleShare, handleSave, index }) => {
+const Post = ({
+  ele,
+  getList,
+  handleLike,
+  HandleShare,
+  handleSave,
+  index,
+  muted,
+  setmuted,
+}) => {
   var _ = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
   const [Comments, setComments] = useState("");
-  const [muted, setmuted] = useState(false);
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
   const [iscollapse, setiscollapse] = useState(false);
@@ -73,7 +81,6 @@ const Post = ({ ele, getList, handleLike, HandleShare, handleSave, index }) => {
   };
 
   const getCommentList = (id) => {
-    setisCommentLoading(true);
     let listComment = {
       token: Token,
       nugget_id: id,
@@ -270,7 +277,8 @@ const Post = ({ ele, getList, handleLike, HandleShare, handleSave, index }) => {
   };
 
   const isCollapse = () => {
-    let isvalidCollapse = ele.media_list.length !== 0 ? true : false;
+    let isvalidCollapse =
+      ele.media_list.length !== 0 || ele.metadata ? true : false;
     if (isvalidCollapse) {
       return false;
     } else if (ContentLength < 100) {
@@ -486,6 +494,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, handleSave, index }) => {
                             setCommentList([]);
                             setComments("");
                           } else {
+                            setisCommentLoading(true);
                             setCommentList([]);
                             setComments(ele.nugget_id);
                             getCommentList(ele.nugget_id);
@@ -532,9 +541,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, handleSave, index }) => {
                 </div>
                 <div
                   className={
-                    parseInt(ele.saved) === 1
-                      ? classes.activeiconsec
-                      : classes.iconsec
+                    ele.saved ? classes.activeiconsec : classes.iconsec
                   }
                 >
                   <p
@@ -542,7 +549,7 @@ const Post = ({ ele, getList, handleLike, HandleShare, handleSave, index }) => {
                     onClick={() => {
                       if (getAuthenticated()) {
                         if (isAccountValid()) {
-                          let save = parseInt(ele.saved) === 1 ? 2 : 1;
+                          let save = ele.saved ? 2 : 1;
                           handleSave(save);
                           savedebounceProcess(ele.nugget_id, save);
                         } else {

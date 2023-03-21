@@ -2,7 +2,14 @@ import { Modal } from "antd";
 import React from "react";
 import styles from "../Modal.module.css";
 
-const EventModal = ({ open, onClose, onSuccess, children, isUpdate }) => {
+const EventModal = ({
+  open,
+  onClose,
+  onSuccess,
+  children,
+  isUpdate,
+  loading,
+}) => {
   return (
     <Modal
       title={`${isUpdate ? "Update" : "Create"} Talk Show`}
@@ -13,6 +20,8 @@ const EventModal = ({ open, onClose, onSuccess, children, isUpdate }) => {
       className="eventmodal"
       onOk={() => onSuccess()}
       onCancel={() => onClose()}
+      confirmLoading={loading}
+      cancelButtonProps={{ disabled: loading }}
       closeIcon={
         <div className={styles.modalCloseIcon}>
           <span class="material-symbols-outlined">close</span>

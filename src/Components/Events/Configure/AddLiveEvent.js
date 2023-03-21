@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { DatePicker, Form, Input } from "antd";
 import { Col, Row } from "react-bootstrap";
 import classes from "../Events.module.css";
@@ -21,6 +21,7 @@ import {
 import { filterValidObject, JSONtoformdata } from "../../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import EventModal from "../../../Modal/Event/EventModal";
+import moment from "moment";
 
 const validationSchema = yup.object().shape({
   event_title: yup.string().required(`Event Title is Required !`),
@@ -31,6 +32,7 @@ const validationSchema = yup.object().shape({
 });
 
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
+  const [isCreating, setisCreating] = useState(false);
   const token = useAuthToken();
   const {
     values,
@@ -46,15 +48,15 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       event_title: "",
       event_type: "",
       event_start_date: "",
-      event_start_time: "",
+      event_start_time: dayjs(new Date()).format("HH:mm"),
       event_banner: "",
       event_invite_mails: "",
       event_invite_friends: "",
       event_invite_groups: "",
     },
-    enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: (val) => {
+      setisCreating(true);
       if (data) {
         HandleEditLiveEvent(val);
       } else {
@@ -83,6 +85,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       .finally(() => {
         setisTalkshowOpen(false);
         resetForm();
+        setisCreating(false);
       });
   };
 
@@ -109,6 +112,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       .finally(() => {
         setisTalkshowOpen(false);
         resetForm();
+        setisCreating(false);
       });
   };
 
@@ -144,6 +148,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     <EventModal
       open={isTalkshowOpen}
       isUpdate={data ? true : false}
+      loading={isCreating}
       onSuccess={() => {
         handleSubmit();
       }}
@@ -204,6 +209,10 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                     ? dayjs(values?.event_start_date, "YYYY-MM-DD")
                     : undefined
                 }
+                disabledDate={(current) => {
+                  return moment().add(-1, "days") >= current;
+                }}
+                allowClear={false}
                 className={classes.textbox}
                 format={"YYYY-MM-DD"}
                 onChange={(date, dateString) => {
@@ -247,6 +256,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           </Col>
           <Col sm={12}>
             <InviteEmailComponent
+              value={values.event_invite_mails}
               onResult={(val) => {
                 setFieldValue("event_invite_mails", val.toString());
               }}

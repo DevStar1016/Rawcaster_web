@@ -152,7 +152,7 @@ export const BannerComponent = ({ onResult, value }) => {
   );
 };
 
-export const InviteEmailComponent = ({ onResult }) => {
+export const InviteEmailComponent = ({ onResult, value }) => {
   const [externalMailId, setExternalMailId] = useState([]);
 
   const addExtMailHandler = (data) => {
@@ -190,6 +190,16 @@ export const InviteEmailComponent = ({ onResult }) => {
     externalMailId(mailList);
     onResult(mailList);
   };
+
+  useEffect(() => {
+    if (value && externalMailId.length === 0) {
+      if (value.length !== 0) {
+        setExternalMailId(value);
+      } else {
+        setExternalMailId([]);
+      }
+    }
+  }, [value]);
 
   return (
     <>
@@ -244,17 +254,15 @@ export const InviteEmailComponent = ({ onResult }) => {
 
 export const TimeValueComponent = ({ onResult, value }) => {
   const [showTimePicker, setshowTimePicker] = useState(false);
-  const [TimeValue, setTimeValue] = useState({ time: "", session: "" });
+  const [TimeValue, setTimeValue] = useState({ time: "", session: "AM" });
   const [displayTimeValue, setdisplayTimeValue] = useState("");
   useEffect(() => {
-    console.log(TimeValue);
     if (TimeValue.time !== "" && TimeValue.session !== "") {
       onResult(TimeValue.time + " " + TimeValue.session);
     }
   }, [TimeValue]);
 
   useEffect(() => {
-    console.log(value);
     if (value) {
       setTimeValue({
         time: dayjs(value, "HH:mm").format("hh:mm"),
@@ -274,6 +282,7 @@ export const TimeValueComponent = ({ onResult, value }) => {
           className={`${classes.onlytime} ${classes.textbox}`}
           suffixIcon={null}
           format={"hh:mm"}
+          allowClear={false}
           open={showTimePicker}
           value={displayTimeValue ? moment(displayTimeValue, "HH:mm") : null}
           use12Hours={true}
@@ -300,7 +309,7 @@ export const TimeValueComponent = ({ onResult, value }) => {
       >
         <Select
           className={`${classes.onlytime2} ${classes.textbox}`}
-          value={TimeValue.session === "AM" ? 1 : 2}
+          value={TimeValue.session === "PM" ? 2 : 1}
           onSelect={(val, value) => {
             setTimeValue((pre) => ({ ...pre, session: value.children }));
           }}
@@ -375,7 +384,7 @@ export const Connections = ({ onResult, values }) => {
   }, [selectedFriendList]);
 
   useEffect(() => {
-    if (values) {
+    if (values && selectedFriendList.length === 0) {
       let finResult = friendsList.filter((ele) => values.includes(ele.user_id));
       setSelectedFriendList(finResult);
       let otherData = friendsList.filter(

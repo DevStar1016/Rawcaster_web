@@ -17,7 +17,6 @@ import { toast } from "react-hot-toast";
 import { useDashboard } from "./Shared/Reduxfetcher";
 import Spinner from "./Sharedcomponents/Spinner";
 import axios from "axios";
-import ImageCrop from "./Sharedcomponents/ImageCrop";
 import ConnectSocket, { socketListen } from "./Services/SocketService";
 
 function App() {
@@ -35,6 +34,7 @@ function App() {
 
   axios.interceptors.response.use(
     function (response) {
+      console.log(response.data);
       if (response.data.status === -1) {
         RemoveToken(dispatch);
         window.location.assign("/login");
@@ -74,7 +74,7 @@ function App() {
   return (
     <>
       {isLoading ? <Spinner /> : null}
-      <ImageCrop />
+
       <RouterProvider router={router} />
     </>
   );

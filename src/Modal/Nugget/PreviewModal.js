@@ -17,7 +17,7 @@ const PreviewModal = ({ url, onSuccess, onClose }) => {
   return (
     <div style={{ width: "100%" }}>
       <div className={classes.imageGridContainer}>
-        <ImageGrid imgArray={[getURL()]} muted={false} />
+        <ImageGrid imgArray={[getURL()]} />
       </div>
       <div className={classes.actionBtn}>
         <Button

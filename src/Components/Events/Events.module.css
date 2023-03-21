@@ -21,10 +21,10 @@
     top: 74px;
     padding-bottom: 74px;
  }
- .beforelogin a { display: flex; font-size: 15.5px; align-items: center; margin-top: 18px; clear: both; text-decoration: none; color: #000;}
+ .beforelogin a { display: flex; font-size: 15.5px; align-items: center; margin-top: 18px; clear: both; text-decoration: none; color: #000;cursor: pointer;}
  .beforelogin a.active { color: #F2718D; }
  .beforelogin a span { font-size: 30px; float: left; padding-right:8px; }
- .beforelogin a:hover {color: #000 !important;cursor: auto;}
+ .beforelogin a:hover {color: #000 !important;cursor: pointer;}
  .loginSec { float: left; border-top: 1px solid #ECECEC; border-bottom: 1px solid #ECECEC; padding: 30px 0; margin-top: 25px; }
  .loginSec p { font-size: 15px; }
  .loginSec a.btn { text-decoration: none; float: left; font-weight: 500; font-size: 16px; width: 100%; padding: 12px; text-align: center; border-radius: 10px; color: #F2718D; border: 2px solid #F2718D;}

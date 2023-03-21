@@ -43,12 +43,20 @@ const SearchFriends = ({
       .then((res) => {
         if (res.data.status === 1) {
           if (res.data.current_page_no === 1) {
-            setPeopleList(res.data.users_list);
-            onResult(res.data.users_list);
+            let filterList = res.data.users_list.filter(
+              (ele) => ele.friend_request_status === ""
+            );
+
+            setPeopleList(filterList);
+            onResult(filterList);
           } else {
             let result;
-            setPeopleList((pre) =>
-              [...pre, ...res.data.users_list].reduce((acc, current) => {
+
+            setPeopleList((pre) => {
+              let filterList = res.data.users_list.filter(
+                (ele) => ele.friend_request_status === ""
+              );
+              return [...pre, ...filterList].reduce((acc, current) => {
                 const x = acc.find((item) => item.user_id === current.user_id);
                 if (!x) {
                   result = acc.concat([current]);
@@ -57,8 +65,8 @@ const SearchFriends = ({
                   result = acc;
                   return acc;
                 }
-              }, [])
-            );
+              }, []);
+            });
             onResult(result);
           }
 

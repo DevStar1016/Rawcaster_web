@@ -6,19 +6,23 @@ import { useInView } from "react-hook-inview";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import AudioPlayer from "../../Sharedcomponents/AudioPlayer";
 import { Carousel } from "react-bootstrap";
+import { handleisNuggetMuted } from "../../Store/Redux/Reducer/DashboardReducer";
+import { useDispatch } from "react-redux";
 
 const ImageGrid = ({
   imgArray,
   downloadable,
-  muted,
-  mutenuggetaudio,
+
   isThumb = false,
   onPlay,
 }) => {
+  const dispatch = useDispatch();
+  const { isNuggetMuted } = useDashboard();
   const { nuggetVideoPaused } = useDashboard();
   const [isPlaying, setisPlaying] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [ActiveModalIndex, setActiveModalIndex] = useState(0);
+
   const [ref] = useInView({
     threshold: 0.5,
     onEnter: (entry) => {
@@ -29,10 +33,28 @@ const ImageGrid = ({
     onLeave: () => {
       if (imgArray && imgArray.length > 0) {
         var v = document.getElementById(`videoSingleId${imgArray[0].media_id}`);
-        v.pause();
+        var a = document.getElementById(`audioSingleId${imgArray[0].media_id}`);
+        if (v) {
+          v.pause();
+        }
+        if (a) {
+          a.pause();
+        }
       }
     },
   });
+
+  function isValidImg(URL) {
+    var tester = new Image();
+    tester.onload = () => {
+      return true;
+    };
+    tester.onerror = () => {
+      return false;
+    };
+    tester.src = URL;
+    return true;
+  }
 
   const getAspectRatio = (index) => {
     const length = imgArray.length;
@@ -68,11 +90,7 @@ const ImageGrid = ({
   }, [nuggetVideoPaused]);
 
   const volumechanged = (event) => {
-    if (event.target.muted) {
-      mutenuggetaudio(true);
-    } else {
-      mutenuggetaudio(false);
-    }
+    dispatch(handleisNuggetMuted(event.target.muted));
   };
 
   useEffect(() => {
@@ -91,14 +109,14 @@ const ImageGrid = ({
 
   const ImageOrVideoThumb = ({ data }) => {
     if (data.media_type === "image") {
-      return (
+      return isValidImg(data.path) ? (
         <img
           className="selecedImages"
           src={data.path}
           alt=""
           style={{ width: "100%", height: "100%", borderRadius: 10 }}
         />
-      );
+      ) : null;
     } else if (data.media_type === "video") {
       return (
         <>
@@ -112,9 +130,6 @@ const ImageGrid = ({
             playsInline={false}
             controlsList="nodownload"
             style={{ width: "100%", height: "100%", borderRadius: 10 }}
-            onClickCapture={(e) => {
-              console.log(e, "===>ImageOrVideoThumb");
-            }}
           ></video>
           <span class={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
             play_circle
@@ -134,7 +149,7 @@ const ImageGrid = ({
 
   const imageOrVideoSingle = (data, index) => {
     if (data.media_type === "image") {
-      return (
+      return isValidImg(data.path) ? (
         <img
           onClick={() => {
             openGallery(0);
@@ -144,11 +159,14 @@ const ImageGrid = ({
           alt=""
           style={{ zIndex: 0, aspectRatio: getAspectRatio(index) }}
         />
-      );
+      ) : null;
     } else if (data.media_file_type === "wav") {
       return (
         <>
-          <AudioPlayer url={data.path} />
+          <AudioPlayer
+            url={data.path}
+            audioId={`audioSingleId${data.media_id}`}
+          />
         </>
       );
     } else if (data.media_type === "video") {
@@ -169,12 +187,8 @@ const ImageGrid = ({
             className={classes.SingleVideoBg}
             playsInline
             controlsList="nodownload"
-            muted={muted}
-            onClickCapture={(e) => {
-              console.log(e, "===>imageOrVideoSingle");
-            }}
+            muted={isNuggetMuted}
             onPlayCapture={(e) => {
-              console.log(e);
               setisPlaying(e.target.id);
               // if (`videoSingleId${data.media_id}` !== e.target.id) {
               //   {
@@ -198,7 +212,10 @@ const ImageGrid = ({
     } else if (data.media_type === "audio") {
       return (
         <>
-          <AudioPlayer url={data.path} />
+          <AudioPlayer
+            url={data.path}
+            audioId={`audioSingleId${data.media_id}`}
+          />
         </>
       );
     }
@@ -206,13 +223,13 @@ const ImageGrid = ({
 
   const imageOrVideoSingleGallery = (data, type = "view", i) => {
     if (data.media_type === "image") {
-      return (
+      return isValidImg(data.path) ? (
         <img
           className={`type === "fullview" ? "" : "imgGridsize" ${classes.modalSingleimage}`}
           src={data.path}
           alt=""
         />
-      );
+      ) : null;
     } else if (data.media_type === "video") {
       return (
         <video
@@ -226,10 +243,7 @@ const ImageGrid = ({
           disablePictureInPicture
           playsInline
           controlsList="nodownload"
-          muted={muted}
-          onClickCapture={(e) => {
-            console.log(e, "===>imageOrVideoSingleGallery");
-          }}
+          muted={isNuggetMuted}
           onPlayCapture={(e) => {
             let findArray = imgArray.map((ele, i) => {
               if (`modal_video_${i}` !== e.target.id) {
@@ -259,7 +273,10 @@ const ImageGrid = ({
     } else if (data.media_type === "audio") {
       return (
         <>
-          <AudioPlayer url={data.path} />
+          <AudioPlayer
+            url={data.path}
+            audioId={`audioSingleId${data.media_id}`}
+          />
         </>
       );
     }
@@ -275,7 +292,7 @@ const ImageGrid = ({
     }
   };
 
-  const imageOrVideo = (data) => {
+  const imageOrVideo = (data, isThumb) => {
     if (data.media_type === "image") {
       return (
         <Fragment>
@@ -304,10 +321,14 @@ const ImageGrid = ({
           />
         </Fragment>
       );
-    } else if (data.media_file_type === "wav") {
+    } else if (data.media_type === "audio") {
       return (
         <>
-          <AudioPlayer url={data.path} />
+          <AudioPlayer
+            url={data.path}
+            isThumb={isThumb}
+            audioId={`audioSingleId${data.media_id}`}
+          />
         </>
       );
     } else if (data.media_type === "video") {
@@ -330,16 +351,10 @@ const ImageGrid = ({
             disablePictureInPicture
             playsInline
             controlsList="nodownload"
-            muted={muted}
+            muted={isNuggetMuted}
             onVolumeChange={volumechanged.bind(this)}
             src={`${data.path}#t=0.001`}
             type="video/mp4"
-            onClickCapture={(e) => {
-              console.log(e, "===>imageOrVideo");
-            }}
-            onPlay={(e) => {
-              console.log(e);
-            }}
           ></video>
         </Fragment>
       );
@@ -376,6 +391,14 @@ const ImageGrid = ({
           </div>
         </div>
       );
+    } else if (data.media_type === "audio") {
+      return (
+        <div key={index} style={{ height: "100%" }}>
+          <div className={`${classes.audiomodalContainer}`}>
+            {imageOrVideoSingleGallery(data, "fullview", index)}
+          </div>
+        </div>
+      );
     }
   };
 
@@ -405,7 +428,7 @@ const ImageGrid = ({
                   style={{ flex: 1, position: "relative" }}
                   className="image-item borderTop  borderRight"
                 >
-                  {imageOrVideo(imgArray[0])}
+                  {imageOrVideo(imgArray[0], true)}
                 </div>
                 <div
                   onClick={() => {
@@ -414,7 +437,7 @@ const ImageGrid = ({
                   style={{ flex: 1, position: "relative" }}
                   className="image-item borderTop  borderRight"
                 >
-                  {imageOrVideo(imgArray[1])}
+                  {imageOrVideo(imgArray[1], true)}
                 </div>
               </div>
             ) : null}
@@ -428,7 +451,7 @@ const ImageGrid = ({
                   style={{ flex: 1, position: "relative" }}
                   className="image-item borderTop  borderRight"
                 >
-                  {imageOrVideo(imgArray[0])}
+                  {imageOrVideo(imgArray[0], true)}
                 </div>
 
                 <div
@@ -442,7 +465,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[1])}
+                    {imageOrVideo(imgArray[1], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -451,7 +474,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[2])}
+                    {imageOrVideo(imgArray[2], true)}
                   </div>
                 </div>
               </div>
@@ -470,7 +493,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop borderRight"
                   >
-                    {imageOrVideo(imgArray[0])}
+                    {imageOrVideo(imgArray[0], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -479,7 +502,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop borderRight"
                   >
-                    {imageOrVideo(imgArray[1])}
+                    {imageOrVideo(imgArray[1], true)}
                   </div>
                 </div>
 
@@ -494,7 +517,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop   borderRight"
                   >
-                    {imageOrVideo(imgArray[2])}
+                    {imageOrVideo(imgArray[2], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -503,7 +526,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop   borderRight"
                   >
-                    {imageOrVideo(imgArray[3])}
+                    {imageOrVideo(imgArray[3], true)}
                   </div>
                 </div>
               </div>
@@ -522,7 +545,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[0])}
+                    {imageOrVideo(imgArray[0], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -531,7 +554,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[1])}
+                    {imageOrVideo(imgArray[1], true)}
                   </div>
                 </div>
 
@@ -546,7 +569,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[2])}
+                    {imageOrVideo(imgArray[2], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -555,7 +578,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[3])}
+                    {imageOrVideo(imgArray[3], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -564,7 +587,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[4])}
+                    {imageOrVideo(imgArray[4], true)}
                   </div>
                 </div>
               </div>
@@ -583,7 +606,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[0])}
+                    {imageOrVideo(imgArray[0], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -592,7 +615,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[1])}
+                    {imageOrVideo(imgArray[1], true)}
                   </div>
                 </div>
 
@@ -607,7 +630,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[2])}
+                    {imageOrVideo(imgArray[2], true)}
                   </div>
                   <div
                     onClick={() => {
@@ -616,7 +639,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[3])}
+                    {imageOrVideo(imgArray[3], true)}
                   </div>
 
                   <div
@@ -626,7 +649,7 @@ const ImageGrid = ({
                     style={{ flex: 1, position: "relative" }}
                     className="image-item borderTop  borderRight"
                   >
-                    {imageOrVideo(imgArray[4])}
+                    {imageOrVideo(imgArray[4], true)}
 
                     <div
                       style={{

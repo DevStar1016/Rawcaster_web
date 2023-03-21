@@ -7,7 +7,6 @@ import {
 } from "../../Services/ApiService";
 import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
-import hearticon from "../../Assets/Images/svg/heart.svg";
 import replyicon from "../../Assets/Images/svg/comment.svg";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
@@ -50,6 +49,12 @@ const CommentsList = ({ index }) => {
         if (res.data.status === 1) {
           getNuggetList();
           getCommentList(id);
+          if (type === 1) {
+            setTimeout(() => {
+              const focused = document.getElementById("focus");
+              focused.scrollIntoView({ behavior: "smooth" });
+            }, 1000);
+          }
         } else {
           toast.error(res.data.msg);
         }
@@ -136,16 +141,15 @@ const CommentsList = ({ index }) => {
 
   return (
     <div className={classes.cmtSec}>
-      {isCommentLoading ? (
-        <div className="d-flex justify-content-center align-items-center py-2">
-          <Spin
-            size="large"
-            spinning={true}
-            style={{ textAlign: "center" }}
-          ></Spin>
-        </div>
-      ) : (
-        <div className={classes.commentContainer}>
+      {isCommentLoading ? null : (
+        // <div className="d-flex justify-content-center align-items-center py-2">
+        //   <Spin
+        //     size="large"
+        //     spinning={true}
+        //     style={{ textAlign: "center" }}
+        //   ></Spin>
+        // </div>
+        <div className={classes.commentContainer} style={{ marginTop: "15px" }}>
           {CommentList.length !== 0 ? (
             <>
               {CommentList.map((elem, ind) => {
@@ -277,7 +281,10 @@ const CommentsList = ({ index }) => {
                         </div>
                       </div>
                     ) : (
-                      <div className={classes.item}>
+                      <div
+                        className={classes.item}
+                        id={ind === CommentList.length - 1 ? "focus" : ""}
+                      >
                         <div className={classes.proImg}>
                           <img
                             src={elem?.profile_image}
@@ -356,11 +363,12 @@ const CommentsList = ({ index }) => {
                           <div
                             className={classes.agree}
                             onClick={() => {
-                              if (isReplyEnabled) {
-                                setisReplyEnabled("");
-                              } else {
-                                setisReplyEnabled(elem.comment_id);
-                              }
+                              setisReplyEnabled(elem.comment_id);
+                              document
+                                .getElementById(
+                                  `replytxtInput_${elem.comment_id}`
+                                )
+                                .focus();
                             }}
                           >
                             <img src={replyicon} alt="reply_icon" /> Reply
@@ -372,13 +380,12 @@ const CommentsList = ({ index }) => {
                       </div>
                     )}
 
-                    <div style={{ display: "flex", justifyContent: "end" }}>
-                      <ReplyList
-                        isReplyEnabled={isReplyEnabled}
-                        comment_id={elem.comment_id}
-                        index={ind}
-                      />
-                    </div>
+                    <ReplyList
+                      isReplyEnabled={isReplyEnabled}
+                      setisReplyEnabled={setisReplyEnabled}
+                      comment_id={elem.comment_id}
+                      index={ind}
+                    />
                   </>
                 );
               })}
