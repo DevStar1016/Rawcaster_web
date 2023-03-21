@@ -1,7 +1,7 @@
 .beforeloginSec {
     background-color: transparent;
     float: left;
-    width: 320px;
+    width: 310px;
     height: calc(100vh - 67px);
     padding-top:20px;
     overflow-y: scroll;
