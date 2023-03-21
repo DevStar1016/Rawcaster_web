@@ -1,4 +1,5 @@
 import { Modal } from "antd";
+import Compressor from "compressorjs";
 import React, { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
@@ -37,6 +38,7 @@ const ImageCropModal = ({
   const [confirmLoading, setconfirmLoading] = useState(false);
   const [scale, setScale] = useState(1);
   const [rotate, setRotate] = useState(0);
+  const [ImageError, setImageError] = useState();
 
   function onImageLoad(e) {
     if (ratio) {
@@ -99,12 +101,42 @@ const ImageCropModal = ({
       if (!blob) {
         toast.error("Failed to create blob");
       } else {
-        if (validsize) {
-          console.log("validateSize");
-        } else {
-          onSuccess(blob);
-        }
+        const file = new File(
+          [blob],
+          `testImage${Math.floor(
+            Math.random() * 10000 + 1
+          )}.${blob.type.replace("image/", "")}`,
+          { type: blob.type }
+        );
         setconfirmLoading(false);
+        if (validsize) {
+          const maxSize = validsize * 1024 * 1024;
+          if (blob.size > maxSize) {
+            new Compressor(file, {
+              quality: 0.8,
+              success: (compressedResult) => {
+                if (compressedResult > maxSize) {
+                  setImageError("Image size must be less than 5 mb");
+                } else {
+                  setImageError();
+                  const compressfile = new File(
+                    [compressedResult],
+                    `testImage${Math.floor(
+                      Math.random() * 10000 + 1
+                    )}.${compressedResult.type.replace("image/", "")}`,
+                    { type: compressedResult.type }
+                  );
+                  onSuccess(compressfile);
+                }
+              },
+            });
+          } else {
+            setImageError();
+            onSuccess(file);
+          }
+        } else {
+          onSuccess(file);
+        }
       }
     });
   }
@@ -141,6 +173,7 @@ const ImageCropModal = ({
           </ReactCrop>
         </div>
       </div>
+      {ImageError && <p className="ErrTxt">{ImageError}</p>}
       <div className={classes.controls}>
         <div className={classes.controlSec}>
           <p>Scale</p>

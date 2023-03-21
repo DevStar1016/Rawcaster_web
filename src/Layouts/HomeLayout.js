@@ -42,7 +42,7 @@ const HomeLayout = () => {
       handleLogout();
     }
     if (key == 1) {
-      navigate("/viewprofile");
+      navigate(`/viewprofile/${loginUserData?.user_id}`);
     }
   };
 

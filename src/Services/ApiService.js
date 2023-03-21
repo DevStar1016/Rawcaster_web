@@ -54,6 +54,9 @@ export const contactusService = (data) => {
 export const getProfileService = (data) => {
   return axios.post("getmyprofile", data);
 };
+export const getOthersProfileService = (data) => {
+  return axios.post("getothersprofile", data);
+};
 
 export const updateProfileService = (data) => {
   return axios.post("updatemyprofile", data);
@@ -211,6 +214,10 @@ export const getFaqService = (data) => {
 
 export const FollowandunfollowService = (data) => {
   return axios.post("followandunfollow", data);
+};
+
+export const getFollowListService = (data) => {
+  return axios.post("getfollowlist", data);
 };
 
 // Influencer

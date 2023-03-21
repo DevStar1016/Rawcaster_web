@@ -34,7 +34,6 @@ function App() {
 
   axios.interceptors.response.use(
     function (response) {
-      console.log(response.data);
       if (response.data.status === -1) {
         RemoveToken(dispatch);
         window.location.assign("/login");
