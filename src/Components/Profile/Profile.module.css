@@ -26,6 +26,11 @@
 .uploadSec span {
     font-size: 20px;
 }
+.uploadSec .loader {
+    font-size: 15px !important;
+    margin-top: 5px !important;
+    margin-left: 1px;
+}
 .profileSec {
     opacity: 1;
 }

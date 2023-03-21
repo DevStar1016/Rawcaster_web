@@ -352,3 +352,14 @@ export function detectMob() {
     return navigator.userAgent.match(toMatchItem);
   });
 }
+
+export function getAspectRatio(height, width) {
+  const gcd = (a, b) => {
+    if (b === 0) return a;
+    return gcd(b, a % b);
+  };
+  const divisor = gcd(height, width);
+  const numerator = height / divisor;
+  const denominator = width / divisor;
+  return numerator / denominator;
+}

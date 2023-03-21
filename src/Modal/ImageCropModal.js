@@ -22,7 +22,14 @@ function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
   );
 }
 
-const ImageCropModal = ({ open, src, ratio, onSuccess, onFailure }) => {
+const ImageCropModal = ({
+  open,
+  src,
+  ratio,
+  onSuccess,
+  onFailure,
+  validsize,
+}) => {
   const previewCanvasRef = useRef(null);
   const imgRef = useRef(null);
   const [crop, setCrop] = useState();
@@ -92,7 +99,11 @@ const ImageCropModal = ({ open, src, ratio, onSuccess, onFailure }) => {
       if (!blob) {
         toast.error("Failed to create blob");
       } else {
-        onSuccess(blob);
+        if (validsize) {
+          console.log("validateSize");
+        } else {
+          onSuccess(blob);
+        }
         setconfirmLoading(false);
       }
     });
@@ -109,6 +120,7 @@ const ImageCropModal = ({ open, src, ratio, onSuccess, onFailure }) => {
       }}
       cancelButtonProps={{ disabled: confirmLoading }}
       onCancel={onFailure}
+      maskClosable={false}
     >
       <div className={classes.main_container}>
         <div className={classes.crop_container}>

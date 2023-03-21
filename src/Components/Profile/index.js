@@ -1,40 +1,101 @@
 import React, { useRef, useState } from "react";
 import classes from "./Profile.module.css";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
-import { Link } from "react-router-dom";
-import { ReadMore } from "../../Shared/Utility";
+import {
+  getAspectRatio,
+  getAuthToken,
+  JSONtoformdata,
+  ReadMore,
+} from "../../Shared/Utility";
 import Events from "./Components/Events";
 import UnclaimedInfluencers from "./Components/UnclaimedInfluencers";
 import Influencers from "./Components/Influencers";
 import Fans from "./Components/Fans";
+import { updateProfileService } from "../../Services/ApiService";
+import { toast } from "react-hot-toast";
+import { getProfile } from "../Auth/getProfile";
+import { useDispatch } from "react-redux";
+import { Spin } from "antd";
 
 const Profile = () => {
+  const loginToken = useAuthToken();
+  const dispatch = useDispatch();
   const coverRef = useRef();
   const profileRef = useRef();
   const loginUserData = useAuthData();
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
+  const [isUploading, setisUploading] = useState(false);
   const [profileImg, setprofileImg] = useState({
+    type: "",
     src: "",
     ratio: "",
   });
+
+  const handleUpdateProfile = (image) => {
+    const file = new File(
+      [image],
+      `testImage${Math.floor(Math.random() * 10000 + 1)}.${image.type.replace(
+        "image/",
+        ""
+      )}`,
+      { type: image.type }
+    );
+    let profileValue = {
+      token: loginToken,
+      name: loginUserData.name.trim(),
+      auth_code: getAuthToken(loginToken + loginUserData.name.trim()),
+    };
+    if (profileImg.type === "cover") {
+      profileValue = {
+        ...profileValue,
+        cover_image: file,
+      };
+    } else if (profileImg.type === "profile") {
+      profileValue = {
+        ...profileValue,
+        profile_image: file,
+      };
+    }
+    updateProfileService(JSONtoformdata(profileValue))
+      .then((res) => {
+        if (res.data.status === 1) {
+          const modalHandle = () => {
+            setisUploading(false);
+          };
+          getProfile(loginToken, dispatch, modalHandle);
+        } else {
+          toast.error(res.data.msg);
+          setisUploading(false);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+        setisUploading(false);
+      });
+  };
+
   return (
     <div>
       <div className={`mainWrapper ${classes.profilePage}`}>
         <div className={classes.bannersec}>
           <img src={loginUserData?.cover_image} />
           <div className={classes.uploadSec}>
-            <span
-              class="material-symbols-outlined"
-              onClick={() => {
-                coverRef?.current.click();
-              }}
-            >
-              photo_camera
-            </span>
+            {isUploading === "cover" ? (
+              <Spin size="small" className={classes.loader} />
+            ) : (
+              <span
+                class="material-symbols-outlined"
+                onClick={() => {
+                  coverRef?.current.click();
+                }}
+              >
+                photo_camera
+              </span>
+            )}
           </div>
         </div>
         {loginUserData && (
@@ -42,46 +103,29 @@ const Profile = () => {
             <div className={classes.profileSec}>
               <img src={loginUserData?.profile_image} />
               <div className={classes.uploadSec}>
-                <span
-                  class="material-symbols-outlined"
-                  onClick={() => {
-                    profileRef?.current.click();
-                  }}
-                >
-                  photo_camera
-                </span>
+                {isUploading === "profile" ? (
+                  <Spin size="small" className={classes.loader} />
+                ) : (
+                  <span
+                    class="material-symbols-outlined"
+                    onClick={() => {
+                      profileRef?.current.click();
+                    }}
+                  >
+                    photo_camera
+                  </span>
+                )}
               </div>
             </div>
 
             <div className={classes.fansList}>
-              <img
-                className={classes.thumbImg}
-                src={require("../../Assets/Images/png/pro_img.png")}
-              />
-              <img
-                className={classes.thumbImg}
-                src={require("../../Assets/Images/png/pro_img.png")}
-              />
-              <img
-                className={classes.thumbImg}
-                src={require("../../Assets/Images/png/pro_img.png")}
-              />
-              <img
-                className={classes.thumbImg}
-                src={require("../../Assets/Images/png/pro_img.png")}
-              />
-              <img
-                className={classes.thumbImg}
-                src={require("../../Assets/Images/png/pro_img.png")}
-              />
-              <img
-                className={classes.thumbImg}
-                src={require("../../Assets/Images/png/pro_img.png")}
-              />
-              <img
-                className={classes.thumbImg}
-                src={require("../../Assets/Images/png/pro_img.png")}
-              />
+              {[...new Array(6)].map(() => (
+                <img
+                  className={classes.thumbImg}
+                  src={require("../../Assets/Images/png/pro_img.png")}
+                />
+              ))}
+
               <div className={classes.count}>400+</div>
             </div>
 
@@ -102,11 +146,11 @@ const Profile = () => {
             event.target.value = null;
           }}
           onChange={(e) => {
-            console.log(e.target.files[0]);
             if (e.target.files && e.target.files.length !== 0) {
               setprofileImg({
+                type: "cover",
                 src: e.target.files[0],
-                ratio: 16 / 9,
+                ratio: getAspectRatio(1170, 240),
               });
             }
           }}
@@ -126,8 +170,9 @@ const Profile = () => {
             console.log(e.target.files[0]);
             if (e.target.files && e.target.files.length !== 0) {
               setprofileImg({
+                type: "profile",
                 src: e.target.files[0],
-                ratio: 4 / 3,
+                ratio: getAspectRatio(150, 150),
               });
             }
           }}
@@ -171,13 +216,21 @@ const Profile = () => {
       {profileImg.src !== "" && (
         <ImageCropModal
           open={profileImg.src !== ""}
+          validsize={10}
           src={URL.createObjectURL(profileImg.src)}
           ratio={profileImg.ratio}
           onSuccess={(val) => {
-            console.log(val);
+            handleUpdateProfile(val);
+            setisUploading(profileImg.type);
+            setprofileImg({
+              type: "",
+              src: "",
+              ratio: "",
+            });
           }}
           onFailure={() => {
             setprofileImg({
+              type: "",
               src: "",
               ratio: "",
             });
