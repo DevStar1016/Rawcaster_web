@@ -206,9 +206,9 @@ const Profile = () => {
           </div>
 
           <Nuggets />
-          <div>
+          <div className={classes.rightProfiles}>
             <UnclaimedInfluencers />
-            <Influencers />
+            {/* <Influencers /> */}
             <Fans />
           </div>
         </div>
