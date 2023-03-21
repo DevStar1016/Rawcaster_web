@@ -359,8 +359,6 @@ const Post = ({
             >
               {ele && isValidData(ele?.content) && (
                 <ReadMore
-                  CharactersLength={120}
-                  index={index}
                   isReadMore={isReadMore()}
                   isLinkopenModal={isLinkopenModal}
                   setisLinkopenModal={setisLinkopenModal}

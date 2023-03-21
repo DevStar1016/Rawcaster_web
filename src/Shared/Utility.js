@@ -231,6 +231,7 @@ export const isAccountValid = () => {
 };
 
 export const ReadMore = ({
+  maxheight,
   children,
   isReadMore = true,
   isLinkopenModal,
@@ -304,6 +305,7 @@ export const ReadMore = ({
     <Linkify options={{ render: renderLink }}>
       <p
         ref={textRef}
+        style={{ maxHeight: maxheight ? maxheight : "" }}
         className={`readmore_text ${
           isFullTxt()
             ? showpartialText

@@ -28,7 +28,7 @@ const Events = () => {
   const getEvents = () => {
     let eventData = {
       token: token,
-      event_type: 1,
+      event_type: 3,
       page_number: 1,
     };
     listEventsService(JSONtoformdata(eventData))
