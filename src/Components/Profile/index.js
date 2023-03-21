@@ -2,6 +2,11 @@ import React, { useRef, useState } from "react";
 import classes from "./Profile.module.css";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import ImageCropModal from "../../Modal/ImageCropModal";
+import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
+import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
+import Events from "../Events/Events";
+import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const coverRef = useRef();
@@ -13,8 +18,8 @@ const Profile = () => {
   });
   return (
     <div>
-      <div className={classes.mainContainer}>
-        <div className={classes.bannerContainer}>
+      <div className={`mainWrapper ${classes.profilePage}`}>
+        <div className={classes.bannersec}>
           <img src={loginUserData?.cover_image} />
           <div className={classes.uploadSec}>
             <span
@@ -29,17 +34,37 @@ const Profile = () => {
         </div>
         {loginUserData && (
           <div className={classes.profileContainer}>
-            <img src={loginUserData?.profile_image} />
-            <div className={classes.uploadSec}>
-              <span
-                class="material-symbols-outlined"
-                onClick={() => {
-                  profileRef?.current.click();
-                }}
-              >
-                photo_camera
-              </span>
+
+            <div className={classes.profileSec}>
+              <img src={loginUserData?.profile_image} />
+              <div className={classes.uploadSec}>
+                <span
+                  class="material-symbols-outlined"
+                  onClick={() => {
+                    profileRef?.current.click();
+                  }}
+                >
+                  photo_camera
+                </span>
+              </div>
             </div>
+
+            <div className={classes.fansList}>
+              <img className={classes.thumbImg} src={require("../../Assets/Images/png/pro_img.png")} />
+              <img className={classes.thumbImg} src={require("../../Assets/Images/png/pro_img.png")} />
+              <img className={classes.thumbImg} src={require("../../Assets/Images/png/pro_img.png")} />
+              <img className={classes.thumbImg} src={require("../../Assets/Images/png/pro_img.png")} />
+              <img className={classes.thumbImg} src={require("../../Assets/Images/png/pro_img.png")} />
+              <img className={classes.thumbImg} src={require("../../Assets/Images/png/pro_img.png")} />
+              <img className={classes.thumbImg} src={require("../../Assets/Images/png/pro_img.png")} />
+              <div className={classes.count}>400+</div>
+            </div>
+
+            <div className={classes.actionIcon}>
+              <img src={msgIcon} />
+              <img src={talkshowIcon} />
+            </div>
+
           </div>
         )}
 
@@ -84,6 +109,30 @@ const Profile = () => {
           }}
           style={{ display: "none" }}
         />
+
+        <div className={classes.fullcontainer}>
+          <div className={classes.profileevent}>
+
+            <div className={classes.profileIntro}>
+              <h2>About Danii <span>Entertainer</span></h2>
+              <p>
+              The richest man in the world, Elon Musk, has created a chip (Neuralink) that will be inserted into the human brain. 
+              He said that his prime motivation for is Neuralink was the question: 'What do we do if there is a super intelligence that is much smarter than human beings much smarter
+              </p>
+              <Link>read more</Link>
+            </div>
+
+            <div className={classes.intro}>
+              <h2>Intro</h2>
+              
+            </div>
+            <Events />
+          </div>  
+         
+            <Nuggets />         
+           
+        </div>  
+
       </div>
       {profileImg.src !== "" && (
         <ImageCropModal

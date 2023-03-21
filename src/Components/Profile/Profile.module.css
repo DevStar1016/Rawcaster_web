@@ -1,18 +1,16 @@
-.mainContainer {
-    width: fit-content;
-    margin: auto;
-}
-.bannerContainer {
-    width: fit-content;
+.profilePage { margin-top:66px !important; }
+.bannersec {
+    width:100%;
     max-height: 280px;
     z-index: inherit;
     position: relative;
 }
-.bannerContainer img {
-    max-height: 280px;
-    border-radius: 11px;
+.bannersec img {
+    max-height: 240px; width: 100%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
-.bannerContainer .uploadSec,.profileContainer .uploadSec {
+.bannersec .uploadSec, .profileSec .uploadSec {
     position: absolute;
     bottom: 15px;
     right: 12px;
@@ -28,25 +26,47 @@
 .uploadSec span {
     font-size: 20px;
 }
-.profileContainer {
+.profileSec {
     opacity: 1;
-}
-.profileContainer img {
-    width: 150px;
-    height: 150px;
-    border-radius: 90px;
-    padding: 3px;
-    background: linear-gradient(116.6deg, #F3738B 0.88%, #F99F46 99.2%); 
 }
 .profileContainer {
     margin-top: -74px;
     position: relative;
     z-index: 10;
-    width: fit-content;
+    width:100%; padding-left: 50px;
 }
-.profileContainer .uploadSec  {
+.profileSec {
+    position: relative;
+    z-index: 10;
+    width:140px; 
+    float: left;
+}
+.profileSec img {
+    width: 140px;
+    height: 140px;
+    border-radius: 90px;
+    padding: 3px;
+    background: linear-gradient(116.6deg, #F3738B 0.88%, #F99F46 99.2%); 
+}
+.profileSec .uploadSec  {
     bottom: 6px;
-    right: 6px; 
-   
+    right: 6px;    
 }
+.fansList { float: left; margin-top: 85px; margin-left: 30px; }
+.fansList img { width: 45px; height:45px; border-radius:40px; float: left; z-index: 1; margin-left: -12px;  border: 1.5px solid #fff; position: relative; }
+.fansList .count { color: #fff; width: 45px; height:45px; float: left; background: linear-gradient(116.6deg, #F3738B 0.88%, #F99F46 99.2%); border: 1px solid #FFFFFF; 
+ display: flex; align-items: center; justify-content: center; border-radius: 50px; margin-left: -12px; position: relative; z-index: 1;}
 
+.actionIcon { margin-top: 94px; margin-left: 10px; float: left; }
+.actionIcon img { margin-right:8px; height: 25px; }
+
+.fullcontainer { position: relative; width: 100%; float: left; padding-top: 10px; margin: auto;  max-width: 1170px; }
+
+.profileevent {
+    width: 310px;
+    float: left;   
+    padding-top: 20px;
+    padding-right: 10px;
+}
+.profileevent h2 { font-size: 19px; font-weight: 600; }
+.profileevent h2 span { font-size: 13px; }
