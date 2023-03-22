@@ -100,7 +100,7 @@ const Postpoll = ({ setisPoll }) => {
                       {getChoiceTitle(index + 1)}{" "}
                     </p>
 
-                    <Input
+                    <Input.TextArea
                       key={index}
                       className={`${classes.textBox} ${
                         PollData.length >= 3 && classes.choicetextBox
@@ -159,14 +159,16 @@ const Postpoll = ({ setisPoll }) => {
                 }}
               />
             </Row>
-            <div
-              className={classes.deleteSec}
-              onClick={() => {
-                setisPoll(false);
-              }}
-            >
-              <i className={classes.deleteIcon}></i>
-              <p>Remove Poll</p>
+            <div className={classes.deleteSec}>
+              <div
+                className={classes.pollDeleteSec}
+                onClick={() => {
+                  setisPoll(false);
+                }}
+              >
+                <i className={classes.deleteIcon}></i>
+                <p>Remove Poll</p>
+              </div>
             </div>
           </div>
         </div>

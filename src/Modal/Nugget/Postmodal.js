@@ -1,4 +1,4 @@
-import { Button, Dropdown, Modal, Tooltip } from "antd";
+import { Button, Dropdown, Input, Modal, Tooltip } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import classes from "../Modal.module.css";
 import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
@@ -264,13 +264,10 @@ const Postmodal = ({ visible, onClose }) => {
         ) : (
           <>
             <div className={classes.postTextcontent}>
-              <textarea
+              <Input.TextArea
                 id="post_nugget_textarea"
                 className={classes.postTextarea}
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
-                onKeyDown={(e) => {
-                  console.log(e.key, "--->key");
-                }}
                 value={values.content}
                 onChange={(e) => {
                   if (e.target.value.length <= 700) {

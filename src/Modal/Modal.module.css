@@ -168,7 +168,7 @@ border-bottom: 0.5px solid grey;
   font-size: 45px;
   color: #fff;
 }
-.postTextarea { border: none; padding: 0; height: 90px !important; resize: none !important;  font-family:  "Noto Color Emoji";width: 100%;}
+.postTextarea { border: none; padding: 0; height: 90px !important; resize: none !important; ;width: 100%;}
 .pollTextarea {
   height: auto !important;
 }
@@ -205,6 +205,14 @@ border-bottom: 0.5px solid grey;
   justify-content: center;
   flex-direction: row;
   padding: 10px;
+}
+.pollDeleteSec {
+ 
+  width: 23%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-size: 15px; margin-bottom: 3px !important; }
 .textBox {
