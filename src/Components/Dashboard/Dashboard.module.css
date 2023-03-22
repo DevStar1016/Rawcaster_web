@@ -1,4 +1,4 @@
-.fullcontainer { position: relative; height: 100vh; padding-top: 67px; margin: auto;  max-width: 1170px; }
+.fullcontainer { position: relative; height: 100vh; padding-top: 67px; margin: auto;  max-width: 1190px; }
 .ribbon { color:#fff; font-size: 16px; font-weight: 300; position: fixed; top: calc(50% - 25px); background: #563662; width: 100%; z-index: 1; left: 0;}
 .ribbon span { padding-left: 5px; }
 .ribbon a, .ribbon a:hover { color: #fff; text-decoration: none;  display: flex; align-items: center; justify-content: center;  height: 50px;}

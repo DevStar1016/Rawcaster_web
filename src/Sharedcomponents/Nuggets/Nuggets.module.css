@@ -1,5 +1,5 @@
 .nuggetSec { 
-    padding: 0 20px;
+    padding: 0 30px;
     height:calc(100vh - 67px);
     float: left;
     width: calc(100% - 620px);
@@ -14,42 +14,42 @@
  .nuggetItem { margin-top: 20px; float: left; width: 100%;border-bottom: 1px solid #ECECEC; padding-bottom: 15px;  }
  .profilePart { width: calc(100% - 70px); float: left;}
  .dropMenu { cursor: pointer; width: 70px; float: left; text-align: right;  }
- .dropMenu span {font-size: 33px; padding-top: 5px; color: #959595; cursor: pointer;}
- .profilePart .proImg { position: relative; width: 65px; float: left; }
+ .dropMenu span {font-size: 30viewCountpx; padding-top: 5px; color: #959595; cursor: pointer;}
+ .profilePart .proImg { position: relative; width: 55px; float: left; }
  .profilePart .proImg img { width: 40px; height: 40px; border-radius: 60px; }
  .viewCount {
-    color: #fff;
-    background: #e26386;
-    border-radius: 15px;
-    font-size: 10px;
-    padding: 3px 2px;
-    width: 22px;
-    height: 22px;
-    float: right;
-    right: 15px;
-    position: relative;
-    font-style: normal;
-    bottom: -25px;
-    font-family: "DM Sans",sans-serif;
-    text-align: center;
-    cursor: pointer;
+  color: #fff;
+  background: #e26386;
+  border-radius: 15px;
+  font-size: 10px;
+  padding: 3px 2px;
+  width: 20px;
+  height: 20px;
+  float: right;
+  right: 8px;
+  position: absolute;
+  font-style: normal;
+  bottom: -3px;
+  font-family: "DM Sans",sans-serif;
+  text-align: center;
+  cursor: pointer;
  }
  .proName {color: #1D1C1C; font-size: 16px; margin-bottom: 0px; font-weight: 500; }
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
- .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 55px); float: left; display: flex;
+ .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 40px); float: left; display: flex;
   flex-direction: column;
   justify-content: space-between;}
  /* .feedsSec p { white-space: pre-wrap; line-break: anywhere; } */
  .nuggetsFeed { width: 100%; border-radius: 12px; }
- .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 55px; padding-left: 15px; float: left;}
+ .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 40px; padding-left: 15px; float: left;}
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }
  .floattingSec span { height: 25px; }
  .floattingSec .iconsec p, .floattingSec .activeiconsec p { cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  
  .floattingSec .activeiconsec p i { background: #FFFFFF;  }
- .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:13px 0 5px 0; text-align: center; background: #F1F2F5; width: 42px; height: 42px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:13px 0 5px 0; text-align: center; background: #F1F2F5; width: 30px; height: 30px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  .floattingSec .iconsec img,.floattingSec .activeiconsec img { height: 15px; }
  .floattingSec .iconsec span,.floattingSec .activeiconsec span { font-weight: 500; font-size: 13px; }
  .floattingSec .activeiconsec p { background: #F2718D;  }
@@ -94,12 +94,10 @@
 .resultnuggetSec::-webkit-scrollbar {
   display: none !important;
 }
-
-
  .inactive_like_icon, .disabled_like_icon {
    float: left;
-   width: 18px;
-   height: 18px;
+   width: 14px;
+   height: 14px;
    background: #000;
    mask: url("../../Assets/Images/svg/heart.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/heart.svg") no-repeat center /
@@ -111,8 +109,8 @@
 }
  .commentIcon {
   float: left;
-   width: 18px;
-   height: 18px;
+   width: 14px;
+   height: 14px;
    background: #000;
    mask: url("../../Assets/Images/svg/comment.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
@@ -130,8 +128,8 @@
  }
   .saveIcon {
   float: left;
-   width: 18px;
-   height: 18px;
+   width: 14px;
+   height: 14px;
    background: #000;
    mask: url("../../Assets/Icons/svg/save.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Icons/svg/save.svg") no-repeat center /
@@ -139,8 +137,8 @@
  }
  .disabledcommentIcon {
   float: left;
-   width: 18px;
-   height: 18px;
+   width: 14px;
+   height: 14px;
    background:grey;
    mask: url("../../Assets/Images/svg/comment.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
@@ -148,8 +146,8 @@
  }
  .share_icon {
   float: left;
-   width: 18px;
-   height: 18px;
+   width: 14px;
+   height: 14px;
    background: #000;
    mask: url("../../Assets/Images/svg/share.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/share.svg") no-repeat center /
@@ -225,7 +223,7 @@ cursor: pointer;
   .floattingSec span { height: 22px; }
   .feedsSec { width: calc(100% - 45px);}
   .cmtSec .proImg { width: 40px; }
-  .cmtSec .cmtText { max-width: 95%; padding: 3px 18px; border-radius: 30px; font-size: 13px;}
+  .cmtSec .cmtText { max-width: 95%; padding: 3px 14px; border-radius: 30px; font-size: 13px;}
   .cmtSec .cmtText p, .cmtSec .cmtText span, .cmtSec .rightitem .agree, .cmtSec .rightitem .time { font-size: 13.5px;}
   .cmtSec .proImg img { width: 35px; height: 35px; }
   .floattingSec .iconsec span { font-size: 12px; }

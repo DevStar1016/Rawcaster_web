@@ -17,13 +17,15 @@ const Event = ({ ele, handleEdit }) => {
         <div className="d-flex flex-row justify-content-between">
           <h3>{ele.event_name}</h3>
           <div className={classes.editSec}>
-            <i
-              className={classes.editIcon}
-              onClick={() => {
-                handleEdit(ele);
-              }}
-            ></i>
-            <i class="material-symbols-outlined">delete</i>
+            <div className={classes.iconBg}>
+              <i className={classes.editIcon}
+                onClick={() => {
+                  handleEdit(ele);
+                }}></i>
+            </div>
+            <div className={classes.iconBg}>
+              <i class="material-symbols-outlined">delete</i>
+            </div>
           </div>
         </div>
         <p className={classes.host}>Hosted by {ele.original_user_name}</p>

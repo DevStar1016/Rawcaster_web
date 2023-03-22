@@ -30,7 +30,7 @@
 }
 .topbar li a:hover, .topbar li:hover { border: none !important; }
 .topheader {    z-index: 11; box-shadow: 0px 4px 27px rgba(0, 0, 0, 0.06);   background: #FFFFFF; padding: 10px 0; float: left; position: fixed; width: 100%;}
-.fullcontainer { margin: auto;  max-width: 1170px; }
+.fullcontainer { margin: auto;  max-width: 1190px; }
 
 .hometopbar { 
 display: flex;
@@ -43,7 +43,8 @@ width: 100%;
 .rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 320px; }
 .topSearch {
   width: calc(100% - 640px);
-  height: 45px;
+  height: 45px; max-width: 520px;
+  margin: auto;
 }
 .topSearch span {
   background: #F1F2F5!important;
