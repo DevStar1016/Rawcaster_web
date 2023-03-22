@@ -130,7 +130,6 @@ const MultiplePoll = ({
 
   useEffect(() => {
     if (getVotesTiming() === "") {
-      console.log(getVotesTiming());
       animateAnswers(results, answerRefs, theme, undefined, 0);
       setVoted(true);
     } else if (!isVoted) {

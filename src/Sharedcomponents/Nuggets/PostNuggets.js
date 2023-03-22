@@ -241,7 +241,7 @@ const PostNuggets = ({ getNuggetList }) => {
           </div>
         </div>
       </div>
-      <CameraModal
+      {/* <CameraModal
         visible={isCamera.show}
         type={isCamera.type}
         onSuccess={(value) => {
@@ -251,7 +251,7 @@ const PostNuggets = ({ getNuggetList }) => {
         onClose={() => {
           setisCamera({ show: false, type: "" });
         }}
-      />
+      /> */}
 
       <Postmodal
         visible={postModalShow}

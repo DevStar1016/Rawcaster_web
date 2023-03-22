@@ -59,18 +59,18 @@ const Postmodal = ({ visible, onClose }) => {
   const [ShareType, setShareType] = useState("Public");
   const [oldUrl, setOldurl] = useState("");
 
-  function fetchData(type) {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-      })
-      .then((res) => {
-        setisCamera({ show: true, type: type });
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-  }
+  // function fetchData(type) {
+  //   navigator.mediaDevices
+  //     .getUserMedia({
+  //       video: true,
+  //     })
+  //     .then((res) => {
+  //       setisCamera({ show: true, type: type });
+  //     })
+  //     .catch((error) => {
+  //       toast.error(error.message);
+  //     });
+  // }
 
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
@@ -186,7 +186,7 @@ const Postmodal = ({ visible, onClose }) => {
                   src={videoIcon}
                   onClick={() => {
                     setisPoll(false);
-                    fetchData("Video");
+                    setisCamera({ show: true, type: "Video" });
                   }}
                 />
               </Tooltip>
@@ -197,7 +197,7 @@ const Postmodal = ({ visible, onClose }) => {
                   src={cameraIcon}
                   onClick={() => {
                     setisPoll(false);
-                    fetchData("Camera");
+                    setisCamera({ show: true, type: "Camera" });
                   }}
                 />
               </Tooltip>
@@ -432,18 +432,20 @@ const Postmodal = ({ visible, onClose }) => {
           </>
         )}
       </div>
-      <CameraModal
-        visible={isCamera.show}
-        videoRef={videoRef}
-        canvasRef={canvasRef}
-        type={isCamera.type}
-        onSuccess={(value) => {
-          setFileValues(value);
-        }}
-        onClose={() => {
-          setisCamera({ show: false, type: "" });
-        }}
-      />
+      {isCamera.show && (
+        <CameraModal
+          visible={isCamera.show}
+          videoRef={videoRef}
+          canvasRef={canvasRef}
+          type={isCamera.type}
+          onSuccess={(value) => {
+            setFileValues(value);
+          }}
+          onClose={() => {
+            setisCamera({ show: false, type: "" });
+          }}
+        />
+      )}
       <AudioRecordModal
         visible={isAudioModal}
         onClose={() => {
