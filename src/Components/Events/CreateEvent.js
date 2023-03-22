@@ -3,23 +3,21 @@ import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import AddLiveEvent from "./Configure/AddLiveEvent";
 import classes from "./Events.module.css";
+import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
+import eventIcon from "../../Assets/Images/svg/eventIcon.svg";
 
 const CreateEvent = () => {
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
 
   return (
-    <div>
-      <Row>
-        <Col>
+    <div>      
           <Button
             type="primary"
             size={"large"}
             className={classes.eventShowBtn}
           >
-            Create Event
+            <img src={talkshowIcon}/> Create Talkshow
           </Button>
-        </Col>
-        <Col>
           <Button
             type="primary"
             size={"large"}
@@ -28,10 +26,8 @@ const CreateEvent = () => {
               setisTalkshowOpen(true);
             }}
           >
-            Create Talkshow
+            <img src={eventIcon}/> Create Event
           </Button>
-        </Col>
-      </Row>
 
       <AddLiveEvent
         isTalkshowOpen={isTalkshowOpen}

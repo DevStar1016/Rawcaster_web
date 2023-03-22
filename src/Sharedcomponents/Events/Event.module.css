@@ -2,11 +2,11 @@
     border: 1px solid #ECECEC; }
 .eventImg { border-top-left-radius: 15px; border-top-right-radius: 15px; height: 150px; width: 100%; } 
 .contentSec { padding: 15px;}
-h3 { color: #1D1C1C; font-size: 22px !important; font-weight: 500; margin-bottom: 5px;}
-p.host {color: #1D1C1C; font-size: 13px; font-weight: 400; margin-bottom: 5px; opacity: .7;}
+.eventItem h3 { color: #1D1C1C; font-size: 22px !important; font-weight: 500; margin-bottom: 2px;}
+p.host {color: #1D1C1C; font-size: 13.5px; font-weight: 300; margin-bottom: 5px; opacity: .9;}
 p.des {color: #1D1C1C; font-size: 14px; font-weight: 400; margin-bottom: 7px;}
-p.iconsec { align-items: center; display:flex; color: #1D1C1C; font-size: 14px; font-weight: 400; opacity: .7;}
-p.iconsec span { font-size: 18px; margin-right: 5px; }
+p.iconsec { align-items: center; display:flex; color: #1d1c1cb3; font-size: 14px; font-weight: 400;}
+p.iconsec span { font-size: 18px; margin-right: 5px; color: #000; }
 p.iconsec span:last-child { margin-left: 10px;}
 .link { align-items: center; cursor: pointer; font-weight: 500; display:flex; justify-content: center; margin: auto; color: #1D1C1C; text-decoration: none; text-align: center; font-size: 13px;}
 .link span {font-size: 18px; margin-left: 8px;}
@@ -20,8 +20,9 @@ p.iconsec span:last-child { margin-left: 10px;}
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 50px;
  }
+ .iconBg { display: flex; align-items: center; justify-content: center; cursor: pointer; background: #F1F2F5; width: 30px; height: 30px; margin-left: 5px; border-radius: 30px;  }
+ .iconBg i {font-size: 17px;}
 @media (max-width:768px) {
 .eventItem { margin: 10px 0; width: 100%; }
 }

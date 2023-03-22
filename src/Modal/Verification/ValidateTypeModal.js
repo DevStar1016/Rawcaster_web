@@ -43,6 +43,7 @@ const ValidateTypeModal = ({ open, handleClose }) => {
   };
   return (
     <Modal
+    centered
       closable={true}
       open={open}
       footer={null}

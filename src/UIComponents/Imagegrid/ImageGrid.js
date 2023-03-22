@@ -672,6 +672,7 @@ const ImageGrid = ({
             ) : null}
           </div>
           <Modal
+          centered
             className={`gallery_popup ${classes.GalleryImgModal}`}
             open={isVisible}
             onCancel={() => {

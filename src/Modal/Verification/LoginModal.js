@@ -8,7 +8,7 @@ const LoginModal = ({ open, close }) => {
   const navigate = useNavigate();
 
   return (
-    <Modal open={open} closable={false} footer={null}>
+    <Modal centered open={open} closable={false} footer={null}>
       <div className={classes.profileModal}>
         <img
           height="38px"

@@ -128,7 +128,7 @@ const Postmodal = ({ visible, onClose }) => {
   };
 
   return (
-    <Modal
+    <Modal centered
       footer={null}
       open={visible}
       height={600}

@@ -4,7 +4,7 @@ import classes from "../Modal.module.css";
 
 const LinkOpenModal = ({ open, close, url }) => {
   return (
-    <Modal open={open} closable={false} footer={null} title="Warning !">
+    <Modal centered open={open} closable={false} footer={null} title="Warning !">
       <div className={classes.reportModal}>
         <p style={{ fontSize: "16px", textIndent: "10px", marginTop: "15px" }}>
           The site you have requested is not managed by Rawcaster.com, we cannot
