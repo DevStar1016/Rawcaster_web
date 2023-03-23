@@ -43,6 +43,7 @@ const Nuggets = () => {
   });
   const [isLoading, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);
+  const [isEdit, setisEdit] = useState(null);
   const [Pages, setPages] = useState({
     page: 1,
     totalpage: 1,
@@ -177,6 +178,8 @@ const Nuggets = () => {
     setNuggetList: setNuggetList,
     Pages: Pages,
     setPages: setPages,
+    setisEdit: setisEdit,
+    isEdit: isEdit,
   };
 
   const getValidNuggets = () => {
@@ -216,19 +219,18 @@ const Nuggets = () => {
         className={params.key ? classes.resultnuggetSec : classes.nuggetSec}
         ref={scrollRef}
       >
-        {!params.key && (
-          <>
-            {getAuthenticated() && (
-              <>
-                {Progress.show ? (
-                  <PostProgress />
-                ) : (
-                  <PostNuggets getNuggetList={getNuggetList} />
-                )}
-              </>
-            )}
-          </>
-        )}
+        <>
+          {getAuthenticated() && (
+            <>
+              {Progress.show ? (
+                <PostProgress />
+              ) : (
+                <PostNuggets getNuggetList={getNuggetList} />
+              )}
+            </>
+          )}
+        </>
+
         {getValidNuggets()?.map((ele, index) => {
           return (
             <Post
@@ -257,6 +259,9 @@ const Nuggets = () => {
                 tempData[findIndex].saved = save === 1 ? true : false;
 
                 setNuggetList(tempData);
+              }}
+              onEdit={(id) => {
+                setisEdit(id);
               }}
               HandleShare={() => {
                 console.log("share");

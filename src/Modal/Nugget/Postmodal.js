@@ -9,7 +9,7 @@ import pictureIcon from "../../Assets/Images/png/photoIcon.png";
 import imageIcon from "../../Assets/Images/png/videoAttach.png";
 import emoji from "../../Assets/Images/svg/emoji.svg";
 import CameraModal from "./CameraModal";
-import { PostNuggetContext } from "../../Shared/Context";
+import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
 import { toast } from "react-hot-toast";
@@ -39,7 +39,11 @@ const Postmodal = ({ visible, onClose }) => {
     setisPoll,
     MetaData,
     setMetaData,
+    previewMedia,
+    setpreviewMedia,
+    setdeletedMedia,
   } = useContext(PostNuggetContext);
+  const { isEdit } = useListNuggetContext();
   new Picker({
     parent: document.querySelector("#picker"),
     data: data,
@@ -58,19 +62,6 @@ const Postmodal = ({ visible, onClose }) => {
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
   const [oldUrl, setOldurl] = useState("");
-
-  function fetchData(type) {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-      })
-      .then((res) => {
-        setisCamera({ show: true, type: type });
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-  }
 
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
@@ -128,7 +119,8 @@ const Postmodal = ({ visible, onClose }) => {
   };
 
   return (
-    <Modal centered
+    <Modal
+      centered
       footer={null}
       open={visible}
       height={600}
@@ -138,7 +130,9 @@ const Postmodal = ({ visible, onClose }) => {
       }}
     >
       <div className={classes.nuggetModal}>
-        <h1>Post {isPoll ? "Poll" : "Nugget"}</h1>
+        <h1>
+          {isEdit ? "Edit" : "Post"} {isPoll ? "Poll" : "Nugget"}
+        </h1>
 
         <div className={classes.topProsec}>
           <img className={classes.imguser} src={loginUserData?.profile_image} />
@@ -186,7 +180,7 @@ const Postmodal = ({ visible, onClose }) => {
                   src={videoIcon}
                   onClick={() => {
                     setisPoll(false);
-                    fetchData("Video");
+                    setisCamera({ show: true, type: "Video" });
                   }}
                 />
               </Tooltip>
@@ -197,7 +191,7 @@ const Postmodal = ({ visible, onClose }) => {
                   src={cameraIcon}
                   onClick={() => {
                     setisPoll(false);
-                    fetchData("Camera");
+                    setisCamera({ show: true, type: "Camera" });
                   }}
                 />
               </Tooltip>
@@ -377,9 +371,36 @@ const Postmodal = ({ visible, onClose }) => {
               </div>
             ) : null}
 
-            {NuggetData.length !== 0 && (
+            {(NuggetData.length !== 0 || previewMedia.length !== 0) && (
               <div className={classes.attachementtDisplay}>
-                {NuggetData.map((ele, index) => {
+                {previewMedia?.map((ele, index) => {
+                  return (
+                    <div className={classes.cardcontent}>
+                      <ImageGrid
+                        imgArray={[ele]}
+                        muted={false}
+                        isThumb={true}
+                      />
+                      <div
+                        className={classes.overlay}
+                        onClick={() => {
+                          setpreviewMedia((pre) =>
+                            pre.filter((elem) => elem.media_id !== ele.media_id)
+                          );
+                          setdeletedMedia((pre) => [...pre, ele.media_id]);
+                        }}
+                      >
+                        {/* <img
+                src={require("../../../assets/delete.png")}
+                alt="more"
+                style={{ width: "20px", height: "20px" }}
+              /> */}
+                        <span class="material-icons">delete</span>
+                      </div>
+                    </div>
+                  );
+                })}
+                {NuggetData?.map((ele, index) => {
                   const getURL = () => {
                     let type = ele.type.split("/");
                     return {
@@ -399,9 +420,6 @@ const Postmodal = ({ visible, onClose }) => {
                       <div
                         className={classes.overlay}
                         onClick={() => {
-                          let tempData = getPostValues().filter(
-                            (ele, i) => i !== index
-                          );
                           setNuggetValues((pre) =>
                             pre.filter((ele, i) => i !== index)
                           );
@@ -427,23 +445,25 @@ const Postmodal = ({ visible, onClose }) => {
                 handleSubmit();
               }}
             >
-              Post Nugget
+              {isEdit ? "Edit Nugget" : "Post Nugget"}
             </Button>
           </>
         )}
       </div>
-      <CameraModal
-        visible={isCamera.show}
-        videoRef={videoRef}
-        canvasRef={canvasRef}
-        type={isCamera.type}
-        onSuccess={(value) => {
-          setFileValues(value);
-        }}
-        onClose={() => {
-          setisCamera({ show: false, type: "" });
-        }}
-      />
+      {isCamera.show && (
+        <CameraModal
+          visible={isCamera.show}
+          videoRef={videoRef}
+          canvasRef={canvasRef}
+          type={isCamera.type}
+          onSuccess={(value) => {
+            setFileValues(value);
+          }}
+          onClose={() => {
+            setisCamera({ show: false, type: "" });
+          }}
+        />
+      )}
       <AudioRecordModal
         visible={isAudioModal}
         onClose={() => {

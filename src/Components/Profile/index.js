@@ -148,7 +148,7 @@ const Profile = () => {
               )}
             </div>
 
-            <FansThumb />
+            <FansThumb isLoginUser={isLoginUser} />
 
             <div className={classes.actionIcon}>
               <img src={msgIcon} />

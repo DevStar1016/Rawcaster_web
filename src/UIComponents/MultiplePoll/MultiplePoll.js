@@ -130,7 +130,6 @@ const MultiplePoll = ({
 
   useEffect(() => {
     if (getVotesTiming() === "") {
-      console.log(getVotesTiming());
       animateAnswers(results, answerRefs, theme, undefined, 0);
       setVoted(true);
     } else if (!isVoted) {
@@ -179,7 +178,7 @@ const MultiplePoll = ({
             }}
           >
             <div
-              ref={answerRefs.current[index]}
+              ref={answerRefs?.current[index]}
               className={styles.answerInner}
               style={{
                 textAlign: voted ? "start" : "center",

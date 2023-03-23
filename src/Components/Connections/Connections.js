@@ -24,10 +24,10 @@ const Connections = () => {
 
   useEffect(() => {
     socketListen.on("connect", () => {
-      console.log(socketListen.connected, "tes");
+      console.log(socketListen.connected, "socket status");
     });
     socketListen.on("disconnect", () => {
-      console.log("disconnect", "tes");
+      console.log("disconnect", "socket status");
     });
 
     socketListen.on(

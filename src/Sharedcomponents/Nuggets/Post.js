@@ -43,6 +43,7 @@ const Post = ({
   index,
   muted,
   setmuted,
+  onEdit,
 }) => {
   var _ = require("lodash");
   const source = useRef(null);
@@ -101,15 +102,6 @@ const Post = ({
       });
   };
 
-  const handleDelete = () => {
-    // setDeleteData(ele.nugget_id);
-    deletenugget(ele.nugget_id);
-  };
-
-  const handleEdit = () => {
-    console.log("edit");
-  };
-
   const handleBlock = () => {
     console.log("Block");
   };
@@ -123,15 +115,23 @@ const Post = ({
   };
 
   const getMoreValues = (ele) => {
-    if (ele.user_id === loginUserData?.user_id) {
+    if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
+      let resultData = [
+        {
+          key: 2,
+          label: <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>,
+        },
+      ];
+      return resultData;
+    } else if (ele.user_id === loginUserData?.user_id) {
       let resultData = [
         {
           key: 1,
-          label: <div onClick={() => handleEdit()}>Edit</div>,
+          label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
         },
         {
           key: 2,
-          label: <div onClick={() => handleDelete()}>Delete</div>,
+          label: <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>,
         },
       ];
       return resultData;
@@ -296,20 +296,9 @@ const Post = ({
   }, [ref]);
 
   const isVoted = (ele) => {
-    // if (getAuthenticated()) {
-    //   if (isAccountValid()) {
     if (parseInt(ele?.voted) === 1) {
       return true;
     }
-    //     } else {
-    //       return false;
-    //     }
-    //   } else {
-    //     return true;
-    //   }
-    // } else {
-    //   return true;
-    // }
   };
 
   return (
@@ -353,11 +342,11 @@ const Post = ({
         )}
         <div className={classes.contentSec}>
           <div className={classes.feedsSec}>
-            <p
-              style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}
-              ref={ref}
-            >
-              {ele && isValidData(ele?.content) && (
+            {ele && isValidData(ele?.content) && (
+              <p
+                style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}
+                ref={ref}
+              >
                 <ReadMore
                   isReadMore={isReadMore()}
                   isLinkopenModal={isLinkopenModal}
@@ -365,8 +354,8 @@ const Post = ({
                 >
                   {decodeHtml(ele?.content)}
                 </ReadMore>
-              )}
-            </p>
+              </p>
+            )}
             {ele.media_list && ele.media_list.length === 0 && ele.metadata ? (
               <a
                 className={classes.metaLink}
@@ -431,7 +420,7 @@ const Post = ({
                   }}
                 />
               )}
-              {ele && ele.poll_option && ele.poll_option?.length !== 0 && (
+              {ele && ele?.poll_option && ele.poll_option?.length !== 0 && (
                 <div className={classes.pollContainer}>
                   <MultiplePoll
                     nugget_id={ele.nugget_id}
