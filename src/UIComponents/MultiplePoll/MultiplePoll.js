@@ -178,7 +178,7 @@ const MultiplePoll = ({
             }}
           >
             <div
-              ref={answerRefs.current[index]}
+              ref={answerRefs?.current[index]}
               className={styles.answerInner}
               style={{
                 textAlign: voted ? "start" : "center",

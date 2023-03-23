@@ -1,11 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./PostNuggets.module.css";
 import cameraIcon from "../../Assets/Images/svg/camera.svg";
 import imageIcon from "../../Assets/Images/svg/picture.svg";
 import pollIcon from "../../Assets/Images/svg/thumb.svg";
 import { Input } from "antd";
-import { useAuthData } from "../../Shared/Reduxfetcher";
-import { addNuggetsService } from "../../Services/ApiService";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  addNuggetsService,
+  editNuggetService,
+  getNuggetDetailService,
+} from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import {
   handleLoading,
@@ -14,34 +18,89 @@ import {
 import { useDispatch } from "react-redux";
 import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
 import { useFormik } from "formik";
-import { isAccountValid, isValidData } from "../../Shared/Utility";
-import CameraModal from "../../Modal/Nugget/CameraModal";
+import {
+  isAccountValid,
+  isValidData,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import Postmodal from "../../Modal/Nugget/Postmodal";
+import { useParams } from "react-router";
 
 const PostNuggets = ({ getNuggetList }) => {
   const dispatch = useDispatch();
+  const Token = useAuthToken();
+  const params = useParams();
   const ImageRef = useRef();
   const VideoRef = useRef();
   const [NuggetData, setNuggetData] = useState([]);
   const [PollData, setPollData] = useState();
   const [postModalShow, setpostModalShow] = useState(false);
+  const [previewMedia, setpreviewMedia] = useState([]);
+  const [deletedMedia, setdeletedMedia] = useState([]);
   const [isPoll, setisPoll] = useState(false);
-  const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const LoginUserData = useAuthData();
   const [MetaData, setMetaData] = useState();
 
-  const { handleProgress, setProgress } = useListNuggetContext();
+  const { handleProgress, setProgress, isEdit, setisEdit } =
+    useListNuggetContext();
 
-  const { values, setFieldValue, handleSubmit, handleChange, resetForm } =
-    useFormik({
-      initialValues: {
-        content: "",
-        share_type: 1,
-      },
-      onSubmit: (val) => {
+  const {
+    values,
+    setFieldValue,
+    handleSubmit,
+    handleChange,
+    resetForm,
+    setValues,
+  } = useFormik({
+    initialValues: {
+      content: "",
+      share_type: 1,
+    },
+    onSubmit: (val) => {
+      if (isEdit) {
+        EditNugget(val);
+      } else {
         uploadNugget(val);
-      },
-    });
+      }
+    },
+  });
+
+  const EditNugget = (val) => {
+    setpostModalShow(false);
+    dispatch(handleLoading(true));
+    let formData = new FormData();
+    formData.append("token", LoginUserData?.token);
+    formData.append("share_type", val.share_type);
+    formData.append("nugget_id", isEdit);
+    formData.append("content", val.content);
+    if (deletedMedia.length !== 0) {
+      formData.append("delete_media_id", JSON.stringify(deletedMedia));
+    }
+    if (NuggetData.length !== 0) {
+      for (const file of NuggetData) {
+        formData.append("nuggets_media[]", file);
+      }
+    }
+    editNuggetService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          resetForm();
+          setNuggetData([]);
+          getNuggetList();
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleLoading(false));
+        setdeletedMedia([]);
+        setpreviewMedia([]);
+        setisEdit();
+      });
+  };
 
   const uploadNugget = (val) => {
     if (NuggetData.length === 0 && !isValidData(val.content) && !PollData) {
@@ -54,7 +113,6 @@ const PostNuggets = ({ getNuggetList }) => {
     formData.append("share_type", val.share_type);
     if (!PollData) {
       for (const file of NuggetData) {
-        console.log(URL.createObjectURL(file));
         formData.append("nuggets_media[]", file);
       }
     }
@@ -119,11 +177,46 @@ const PostNuggets = ({ getNuggetList }) => {
     isPoll: isPoll,
     setMetaData: setMetaData,
     MetaData: MetaData,
+    previewMedia: previewMedia,
+    setpreviewMedia: setpreviewMedia,
+    deletedMedia: deletedMedia,
+    setdeletedMedia: setdeletedMedia,
   };
+
+  const getNuggetDetail = () => {
+    let nuggetDetailData = {
+      token: Token,
+      nugget_id: isEdit,
+    };
+    getNuggetDetailService(JSONtoformdata(nuggetDetailData))
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.status === 1) {
+          setValues({
+            content: res.data.nugget_detail.content,
+            share_type: res.data.nugget_detail.share_type,
+          });
+          setpostModalShow(true);
+          setpreviewMedia(res.data.nugget_detail.media_list);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
+  useEffect(() => {
+    if (isEdit) {
+      getNuggetDetail();
+    }
+  }, [isEdit]);
 
   return (
     <PostNuggetContext.Provider value={PostNuggetValues}>
-      <div className={classes.postNuggets}>
+      <div
+        className={classes.postNuggets}
+        style={{ display: params.key ? "none" : "block" }}
+      >
         <div className={classes.searchUser}>
           <div className="d-flex flex-row ">
             <img
@@ -241,17 +334,6 @@ const PostNuggets = ({ getNuggetList }) => {
           </div>
         </div>
       </div>
-      {/* <CameraModal
-        visible={isCamera.show}
-        type={isCamera.type}
-        onSuccess={(value) => {
-          PostNuggetValues.setFileValues(value);
-          setpostModalShow(true);
-        }}
-        onClose={() => {
-          setisCamera({ show: false, type: "" });
-        }}
-      /> */}
 
       <Postmodal
         visible={postModalShow}

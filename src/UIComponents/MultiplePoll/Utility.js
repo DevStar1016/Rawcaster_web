@@ -15,7 +15,7 @@ function animateAnswers(results, refs, theme, index) {
     const findIndex = results.findIndex(
       (ele) => ele.option_id === result.option_id
     );
-    const answerBuffer = refs.current[findIndex].current;
+    const answerBuffer = refs?.current[findIndex].current;
     answerBuffer && answers.push(answerBuffer);
   }
 

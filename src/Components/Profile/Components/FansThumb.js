@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { getFollowListService } from "../../../Services/ApiService";
 import { useAuthToken } from "../../../Shared/Reduxfetcher";
 import { JSONtoformdata } from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
 
-const FansThumb = () => {
+const FansThumb = ({ isLoginUser }) => {
   const navigate = useNavigate();
   const loginToken = useAuthToken();
+  const params = useParams();
   const [FansList, setFansList] = useState({
     fans: [],
     count: 0,
@@ -19,6 +20,12 @@ const FansThumb = () => {
       token: loginToken,
       type: 2,
     };
+    if (!isLoginUser) {
+      fansList = {
+        ...fansList,
+        user_id: params.id,
+      };
+    }
     getFollowListService(JSONtoformdata(fansList))
       .then((res) => {
         if (res.data.status === 1) {
@@ -43,8 +50,10 @@ const FansThumb = () => {
   useEffect(() => {
     if (FansList.fans.length === 0 && loginToken) {
       getFollowers();
+    } else {
+      getFollowers();
     }
-  }, [loginToken]);
+  }, [loginToken, params]);
 
   return (
     <div className={classes.fansList}>

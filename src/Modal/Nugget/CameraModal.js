@@ -16,8 +16,9 @@ const CameraModal = ({
   videoRef,
   canvasRef,
 }) => {
-  const { seconds, minutes, hours, days, isRunning, start, pause, reset } =
-    useStopwatch({ autoStart: false });
+  const { seconds, minutes, isRunning, start, pause } = useStopwatch({
+    autoStart: false,
+  });
   const [PreviewMedia, setPreviewMedia] = useState();
   const [error, setError] = useState(null);
 
@@ -25,8 +26,7 @@ const CameraModal = ({
     start();
   };
 
-  console.log(seconds, minutes, isRunning);
-  const onRecordStop = (url, blob) => {
+  const onRecordStop = (_, blob) => {
     const file = new File([blob], "myVideo.mp4", {
       type: "video/mp4",
     });
@@ -46,7 +46,7 @@ const CameraModal = ({
   const handleVideoonly = () => {
     navigator.mediaDevices
       .getUserMedia({ video: { width: 300 } })
-      .then((stream) => {
+      .then(() => {
         startRecording();
       })
       .catch((err) => {
@@ -60,7 +60,7 @@ const CameraModal = ({
         startRecording();
       })
       .catch((err) => {
-        const { type, name, message } = err;
+        const { type, message } = err;
 
         handleVideoonly();
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
@@ -126,13 +126,14 @@ const CameraModal = ({
     const file = new File([blob], "testimg", {
       type: type,
     });
-
+    handleToggleWebcam(false);
     setPreviewMedia(file);
   };
 
   const captureImage = () => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
+
     if (canvas && video) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -178,6 +179,7 @@ const CameraModal = ({
           className="CameraModal"
           onCancel={() => {
             setPreviewMedia();
+            handleToggleWebcam(false);
           }}
         >
           <PreviewModal

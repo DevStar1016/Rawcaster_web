@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { MediaPermissionsErrorType, requestMediaPermissions } from "mic-check";
+import { MediaPermissionsErrorType } from "mic-check";
 import { requestAudioPermissions } from "mic-check/lib/requestMediaPermissions";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -40,12 +40,18 @@ const AudioRecordModal = ({ onClose, visible }) => {
     setPreviewMedia(file);
   };
 
-  const { status, startRecording, stopRecording, clearBlobUrl } =
-    useReactMediaRecorder({
-      audio: true,
-      onStart: onRecordStart,
-      onStop: onRecordStop,
-    });
+  const {
+    status,
+    startRecording,
+    stopRecording,
+    clearBlobUrl,
+    pauseRecording,
+  } = useReactMediaRecorder({
+    audio: true,
+
+    onStart: onRecordStart,
+    onStop: onRecordStop,
+  });
 
   const handleStartMic = () => {
     requestAudioPermissions()
@@ -77,6 +83,9 @@ const AudioRecordModal = ({ onClose, visible }) => {
       });
   };
 
+  const handlePause = () => {
+    pauseRecording();
+  };
   return (
     <Modal
       footer={null}
@@ -126,21 +135,37 @@ const AudioRecordModal = ({ onClose, visible }) => {
         <img width="100%" src={AudioStop} className={classes.audioplayIcon} />
       )}
 
-      <div
-        onClick={async () => {
-          handleStartMic();
-        }}
-        className={`${classes.btnSec} mt-4`}
-      >
+      <div className={`${classes.btnSec} mt-4`}>
         {isRecording ? (
-          <button>
-            <span className={`material-symbols-outlined ${classes.recIcon}`}>
-              slideshow
-            </span>{" "}
-            Stop Recording
-          </button>
+          <>
+            <button
+              onClick={() => {
+                handlePause();
+              }}
+            >
+              <span className={`material-symbols-outlined ${classes.recIcon}`}>
+                slideshow
+              </span>{" "}
+              Pause Recording
+            </button>
+            <button
+              onClick={async () => {
+                handleStartMic();
+              }}
+            >
+              <span className={`material-symbols-outlined ${classes.recIcon}`}>
+                slideshow
+              </span>{" "}
+              Stop Recording
+            </button>
+          </>
         ) : (
-          <button className={classes.recordSec}>
+          <button
+            className={classes.recordSec}
+            onClick={async () => {
+              handleStartMic();
+            }}
+          >
             <span class="material-symbols-outlined">mic</span> Start Recording
           </button>
         )}

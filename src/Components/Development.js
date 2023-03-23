@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Camera from "../Sharedcomponents/Camera";
 
 const Development = () => {
   const [isCameraon, setisCameraon] = useState(true);
