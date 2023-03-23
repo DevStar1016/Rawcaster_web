@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
 import { useFormik } from "formik";
 import {
+  decodeHtml,
   isAccountValid,
   isValidData,
   JSONtoformdata,
@@ -193,7 +194,7 @@ const PostNuggets = ({ getNuggetList }) => {
         console.log(res.data);
         if (res.data.status === 1) {
           setValues({
-            content: res.data.nugget_detail.content,
+            content: decodeHtml(res.data.nugget_detail.content),
             share_type: res.data.nugget_detail.share_type,
           });
           setpostModalShow(true);
@@ -340,8 +341,11 @@ const PostNuggets = ({ getNuggetList }) => {
         onClose={() => {
           resetForm();
           setNuggetData([]);
+          setpreviewMedia([]);
+          setdeletedMedia([]);
           setisPoll(false);
           setpostModalShow(false);
+          setisEdit(null);
         }}
       />
     </PostNuggetContext.Provider>
