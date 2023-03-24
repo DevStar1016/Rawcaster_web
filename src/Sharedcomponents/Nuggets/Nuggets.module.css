@@ -40,7 +40,7 @@
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
  .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 40px); float: left; display: flex;
   flex-direction: column;
-  justify-content: space-between;}
+  justify-content:flex-start; }
  /* .feedsSec p { white-space: pre-wrap; line-break: anywhere; } */
  .nuggetsFeed { width: 100%; border-radius: 12px; }
  .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 40px; padding-left: 15px; float: left;}
@@ -49,7 +49,7 @@
  .floattingSec .iconsec p, .floattingSec .activeiconsec p { cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  
  .floattingSec .activeiconsec p i { background: #FFFFFF;  }
- .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:13px 0 5px 0; text-align: center; background: #F1F2F5; width: 30px; height: 30px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:13px 0 2px 0; text-align: center; background: #F1F2F5; width: 30px; height: 30px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  .floattingSec .iconsec img,.floattingSec .activeiconsec img { height: 15px; }
  .floattingSec .iconsec span,.floattingSec .activeiconsec span { font-weight: 500; font-size: 13px; }
  .floattingSec .activeiconsec p { background: #F2718D;  }

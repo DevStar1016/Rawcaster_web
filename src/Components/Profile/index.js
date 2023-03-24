@@ -218,7 +218,7 @@ const Profile = () => {
           <div className={classes.profileevent}>
             <div className={classes.profileIntro}>
               <h2>
-                About {profileData?.first_name} <span>Entertainer</span>
+                About {profileData?.first_name} <i class="material-icons">fiber_manual_record</i> <span>Entertainer</span>
               </h2>
               <ReadMore
                 maxheight={"64px"}
