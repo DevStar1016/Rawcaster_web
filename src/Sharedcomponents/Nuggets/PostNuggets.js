@@ -153,8 +153,12 @@ const PostNuggets = ({ getNuggetList }) => {
   };
 
   const PostNuggetValues = {
-    setFileValues(value) {
-      if (NuggetData === 0) {
+    setFileValues(value, index) {
+      if (index !== undefined) {
+        let tempData = [...NuggetData];
+        tempData[index] = value;
+        setNuggetData(tempData);
+      } else if (NuggetData === 0) {
         setNuggetData([value]);
       } else {
         setNuggetData((pre) => [...pre, value]);

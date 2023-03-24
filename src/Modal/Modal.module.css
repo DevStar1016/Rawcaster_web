@@ -178,6 +178,22 @@ border-bottom: 0.5px solid grey;
 .emojiIcon { position: absolute; right: 0; bottom: 0; background: #fff; }
 .emojiPart { position: absolute; right: 0; z-index: 11; }
 .attachementtDisplay { border: 2px dashed #ced0d4bf; border-radius: 12px; margin-top: 20px; display: flex;overflow-y: scroll; }
+.attachementtDisplay .editSec {
+  height: 22px;width: 22px;  background: #f2718d; ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  margin-left: -20px;
+  z-index: 22;
+  cursor: pointer;
+}
+.attachementtDisplay .editSec span {
+  font-size: 17px;
+  color: #fff;
+  padding: 2px;
+  
+}
 .pollContainer { border: 2px dashed #ced0d4bf; border-radius: 12px; }
 .cardcontent { background-color: #eeeeee;  min-width: 100px; border: #d9d9d900 1px solid;
   height: 90px;max-width: 20%; margin:7px;  position: relative;  border-radius: 10px;  overflow: hidden;

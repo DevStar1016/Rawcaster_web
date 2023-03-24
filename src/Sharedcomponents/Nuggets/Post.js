@@ -563,6 +563,8 @@ const Post = ({
                   <div
                     className={classes.iconsec}
                     onClick={() => {
+                      setCommentList([]);
+                      setComments("");
                       setiscollapse(false);
                     }}
                   >

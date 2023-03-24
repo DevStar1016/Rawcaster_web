@@ -33,6 +33,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           let tempData = [...PeopleList];
           tempData[findIndex].follow = true;
           setPeopleList(tempData);
+          toast.success(res.data.msg);
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }
@@ -46,18 +47,19 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
     let becameFanData = {
       token: token,
       auth_code: getAuthToken(token),
-      user_ids: JSON.stringify([ele.user_id]),
+      user_ids: JSON.stringify([ele.user_ref_id]),
     };
     sendFriendRequestsService(JSONtoformdata(becameFanData))
       .then((res) => {
+        console.log(res.data);
         if (res.data.status === 1) {
           let findIndex = PeopleList.findIndex(
             (elem) => elem.user_id === ele.user_id
           );
           let tempData = [...PeopleList];
-
-          // tempData[findIndex].follow = true;
-          // setPeopleList(tempData);
+          tempData[findIndex].friend_request_status = "0";
+          setPeopleList(tempData);
+          toast.success(res.data.msg);
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }

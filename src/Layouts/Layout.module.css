@@ -72,6 +72,7 @@ border-radius: 38px !important;
 border: transparent !important;
 color:  #000 !important;
 width: fit-content;
+padding: 2px 1px;
 }
 .profileimg {
   height: 35px;

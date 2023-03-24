@@ -18,18 +18,14 @@ import {
   editLiveEventService,
   viewEventsService,
 } from "../../../Services/ApiService";
-import { filterValidObject, JSONtoformdata } from "../../../Shared/Utility";
+import {
+  decodeHtml,
+  filterValidObject,
+  JSONtoformdata,
+} from "../../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import EventModal from "../../../Modal/Event/EventModal";
 import moment from "moment";
-
-const validationSchema = yup.object().shape({
-  event_title: yup.string().required(`Event Title is Required !`),
-  event_type: yup.string().required(`Event Type is Required !`),
-  event_start_date: yup.string().required(`Event Start Date is Required !`),
-  event_start_time: yup.string().required(`Event Start Time is Required !`),
-  event_banner: yup.string().required(`Event Banner is Required !`),
-});
 
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const [isCreating, setisCreating] = useState(false);
@@ -47,14 +43,49 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     initialValues: {
       event_title: "",
       event_type: "",
-      event_start_date: "",
-      event_start_time: dayjs(new Date()).format("HH:mm"),
+      event_start_date: dayjs(new Date()).format("YYYY-MM-DD"),
+      event_start_time: moment().add(10, "minutes").format("HH:mm"),
       event_banner: "",
       event_invite_mails: "",
       event_invite_friends: "",
       event_invite_groups: "",
     },
-    validationSchema: validationSchema,
+    validationSchema: yup.object().shape({
+      event_title: yup.string().required(`Event Title is Required !`),
+      event_type: yup.string().required(`Event Type is Required !`),
+      event_start_date: yup.string().required(`Event Start Date is Required !`),
+      event_start_time: yup
+        .string()
+        .required(`Valid Event Start Time is Required !`),
+      // event_banner: yup.string().required(`Event Banner is Required !`),
+      event_invite_friends: yup
+        .string()
+        .test(
+          "Invite Friends Test",
+          "Please Select Connections",
+          function (value) {
+            const { event_type, event_invite_mails } = this.parent;
+            if (parseInt(event_type) === 2) {
+              if (!event_invite_mails) {
+                return value;
+              }
+            }
+
+            return true;
+          }
+        ),
+      event_invite_mails: yup
+        .string()
+        .test("Mail Test", "Please Enter Invite Users", function (value) {
+          const { event_type, event_invite_friends } = this.parent;
+          if (parseInt(event_type) === 2) {
+            if (!event_invite_friends) {
+              return value;
+            }
+          }
+          return true;
+        }),
+    }),
     onSubmit: (val) => {
       setisCreating(true);
       if (data) {
@@ -68,6 +99,12 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const HandleLiveEvent = (val) => {
     let liveEventData = {
       token: token,
+      event_start_date: moment(val.event_start_date, "YYYY-MM-DD")
+        .utc()
+        .format("YYYY-MM-DD"),
+      event_start_time: moment(val.event_start_date, "HH:mm")
+        .utc()
+        .format("HH:mm"),
       ...val,
     };
 
@@ -93,6 +130,12 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     let liveEventData = {
       token: token,
       event_id: data?.event_id,
+      event_start_date: moment(val.event_start_date, "YYYY-MM-DD")
+        .utc()
+        .format("YYYY-MM-DD"),
+      event_start_time: moment(val.event_start_date, "HH:mm")
+        .utc()
+        .format("HH:mm"),
       ...val,
     };
     if (typeof liveEventData.event_banner === "string") {
@@ -125,8 +168,12 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       viewEventsService(JSONtoformdata(eventdata))
         .then((res) => {
           let eventData = res.data.event_detail;
+          console.log(eventData?.invite_friends_id);
+          const isValidFriends =
+            eventData?.invite_friends_id &&
+            JSON.parse(eventData?.invite_friends_id).length !== 0;
           setValues({
-            event_title: eventData?.event_name,
+            event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
             event_start_date: dayjs(eventData?.start_date_time).format(
               "YYYY-MM-DD"
@@ -134,7 +181,9 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
             event_start_time: dayjs(eventData?.start_date_time).format("HH:mm"),
             event_banner: eventData?.banner_image,
             event_invite_mails: eventData?.invite_mails,
-            event_invite_friends: eventData?.invite_friends_id,
+            event_invite_friends: isValidFriends
+              ? eventData?.invite_friends_id
+              : "",
             event_invite_groups: eventData?.invite_groups_id,
           });
         })
@@ -173,6 +222,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 className={classes.textbox}
                 defaultValue={values.event_title}
                 value={values.event_title}
+                maxLength={80}
                 onChange={handleChange("event_title")}
               />
             </Form.Item>
@@ -233,10 +283,29 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
               value={values.event_start_time}
               onResult={(res) => {
                 console.log(res);
-                setFieldValue(
-                  "event_start_time",
-                  dayjs(res, "hh:mm A").format("HH:mm")
-                );
+                if (
+                  moment().format("DD:MM:YYYY") ==
+                  moment(values.event_start_date, "YYYY-MM-DD").format(
+                    "DD:MM:YYYY"
+                  )
+                ) {
+                  if (
+                    moment().add(10, "minutes").format("HH:mm") <
+                    moment(res, "hh:mm A").format("HH:mm")
+                  ) {
+                    setFieldValue(
+                      "event_start_time",
+                      moment(res, "hh:mm A").format("HH:mm")
+                    );
+                  } else {
+                    setFieldValue("event_start_time", "");
+                  }
+                } else {
+                  setFieldValue(
+                    "event_start_time",
+                    moment(res, "hh:mm A").format("HH:mm")
+                  );
+                }
               }}
             />
             {touched.event_start_time && (
@@ -254,29 +323,41 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
               <p className="ErrTxt mb-3">{errors?.event_banner}</p>
             )}
           </Col>
-          <Col sm={12}>
-            <InviteEmailComponent
-              value={values.event_invite_mails}
-              onResult={(val) => {
-                setFieldValue("event_invite_mails", val.toString());
-              }}
-            />
-            {touched.event_invite_mails && (
-              <p className="ErrTxt mb-3">{errors?.event_invite_mails}</p>
-            )}
-          </Col>
-          <Col>
-            <Connections
-              values={values.event_invite_friends}
-              onResult={(val) => {
-                let finRes = val.map((ele) => ele.user_id);
-                setFieldValue("event_invite_friends", JSON.stringify(finRes));
-              }}
-            />
-            {touched.event_invite_friends && (
-              <p className="ErrTxt mb-3">{errors?.event_invite_friends}</p>
-            )}
-          </Col>
+          {parseInt(values.event_type) !== 3 && (
+            <>
+              <Col sm={12}>
+                <InviteEmailComponent
+                  value={values.event_invite_mails}
+                  onResult={(val) => {
+                    setFieldValue("event_invite_mails", val.toString());
+                  }}
+                />
+                {touched.event_invite_mails && (
+                  <p className="ErrTxt mb-3">{errors?.event_invite_mails}</p>
+                )}
+              </Col>
+              <Col>
+                <Connections
+                  values={values.event_invite_friends}
+                  onResult={(val) => {
+                    console.log("Val");
+                    let finRes = val.map((ele) => ele.user_id);
+                    if (finRes.length !== 0) {
+                      setFieldValue(
+                        "event_invite_friends",
+                        JSON.stringify(finRes)
+                      );
+                    } else {
+                      setFieldValue("event_invite_friends", "");
+                    }
+                  }}
+                />
+                {touched.event_invite_friends && (
+                  <p className="ErrTxt mb-3">{errors?.event_invite_friends}</p>
+                )}
+              </Col>
+            </>
+          )}
         </Row>
       </Form>
     </EventModal>

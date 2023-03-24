@@ -4,7 +4,7 @@ import { useDashboard } from "../../Shared/Reduxfetcher";
 import { handleisNuggetMuted } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Audioplayer.module.css";
 
-const AudioPlayer = ({ url, isThumb = false, audioId }) => {
+const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   const { isNuggetMuted } = useDashboard();
   const dispatch = useDispatch();
   const [audio, setAudio] = useState(null);
@@ -17,8 +17,10 @@ const AudioPlayer = ({ url, isThumb = false, audioId }) => {
     const audioElement = new Audio(url);
     audioElement.id = audioId;
     setAudio(audioElement);
-    audioElement.muted = isNuggetMuted;
-    setisMuted(isNuggetMuted);
+    if (!isPreview) {
+      audioElement.muted = isNuggetMuted;
+      setisMuted(isNuggetMuted);
+    }
     return () => {
       audioElement.pause();
 
@@ -28,8 +30,10 @@ const AudioPlayer = ({ url, isThumb = false, audioId }) => {
 
   useEffect(() => {
     if (audio) {
-      audio.muted = isNuggetMuted;
-      setisMuted(isNuggetMuted);
+      if (!isPreview) {
+        audio.muted = isNuggetMuted;
+        setisMuted(isNuggetMuted);
+      }
     }
   }, [audio, isNuggetMuted]);
 
@@ -76,9 +80,14 @@ const AudioPlayer = ({ url, isThumb = false, audioId }) => {
 
   function toggleMute() {
     if (audio) {
-      audio.muted = !isNuggetMuted;
-      setisMuted(!isNuggetMuted);
-      dispatch(handleisNuggetMuted(!isNuggetMuted));
+      if (!isPreview) {
+        audio.muted = !isNuggetMuted;
+        setisMuted(!isNuggetMuted);
+        dispatch(handleisNuggetMuted(!isNuggetMuted));
+      } else {
+        audio.muted = !isMuted;
+        setisMuted(!isMuted);
+      }
     }
   }
 

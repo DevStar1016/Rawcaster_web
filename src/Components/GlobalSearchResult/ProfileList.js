@@ -30,6 +30,7 @@ const ProfileList = () => {
   const source = useRef(null);
   const [PeopleList, setPeopleList] = useState([]);
   const [isLoading, setisLoading] = useState(false);
+  const [isFetching, setisFetching] = useState(true);
   const [Pages, setPages] = useState({
     page: 1,
     totalpage: 1,
@@ -94,12 +95,14 @@ const ProfileList = () => {
         setisLoading(false);
         dispatch(handleLoading(false));
         dispatch(handleisGlobalSearch(false));
+        setisFetching(false);
       });
   };
 
   useEffect(() => {
     if (isGlobalSearch || PeopleList?.length === 0) {
       dispatch(handleLoading(true));
+      setisFetching(true);
       getPeopleList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,20 +137,44 @@ const ProfileList = () => {
   return (
     <>
       {getValidPeople()?.length === 0 ? (
-        <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
-          We didn't find any results
-        </span>
+        <>
+          {isFetching ? (
+            <div className="mt-5">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+          ) : (
+            <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
+              We didn't find any results
+            </span>
+          )}
+        </>
       ) : null}
       <div className={` ${classes.profileSec}`} ref={scrollRef}>
-        {getValidPeople().map((ele) => {
-          return (
-            <SearchProfile
-              ele={ele}
-              setPeopleList={setPeopleList}
-              PeopleList={PeopleList}
-            />
-          );
-        })}
+        {getValidPeople()?.length !== 0 && (
+          <>
+            {isFetching ? (
+              <div className="mt-5">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              <>
+                {getValidPeople().map((ele) => {
+                  return (
+                    <SearchProfile
+                      ele={ele}
+                      setPeopleList={setPeopleList}
+                      PeopleList={PeopleList}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </>
+        )}
         {isLoading && (
           <div className="text-center py-2">
             <Spinner animation="border" role="status" />

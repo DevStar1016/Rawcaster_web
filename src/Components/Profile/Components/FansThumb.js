@@ -3,13 +3,18 @@ import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { getFollowListService } from "../../../Services/ApiService";
 import { useAuthToken } from "../../../Shared/Reduxfetcher";
-import { JSONtoformdata } from "../../../Shared/Utility";
+import {
+  DecryptionString,
+  EncryptionString,
+  JSONtoformdata,
+} from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
 
 const FansThumb = ({ isLoginUser }) => {
   const navigate = useNavigate();
   const loginToken = useAuthToken();
   const params = useParams();
+  const display_user_id = DecryptionString(params.user_id);
   const [FansList, setFansList] = useState({
     fans: [],
     count: 0,
@@ -23,7 +28,7 @@ const FansThumb = ({ isLoginUser }) => {
     if (!isLoginUser) {
       fansList = {
         ...fansList,
-        user_id: params.id,
+        user_id: display_user_id,
       };
     }
     getFollowListService(JSONtoformdata(fansList))
@@ -62,7 +67,7 @@ const FansThumb = ({ isLoginUser }) => {
           className={classes.thumbImg}
           src={ele.profile_img}
           onClick={() => {
-            navigate(`/viewprofile/${ele.user_id}`);
+            navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
           }}
         />
       ))}

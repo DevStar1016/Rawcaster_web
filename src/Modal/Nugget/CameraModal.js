@@ -26,11 +26,11 @@ const CameraModal = ({
     start();
   };
 
-  const onRecordStop = (_, blob) => {
+  const onRecordStop = (url, blob) => {
     const file = new File([blob], "myVideo.mp4", {
       type: "video/mp4",
     });
-    setPreviewMedia(file);
+    setPreviewMedia({ file: file, url: url });
     pause();
     handleToggleWebcam(false);
   };
@@ -127,7 +127,7 @@ const CameraModal = ({
       type: type,
     });
     handleToggleWebcam(false);
-    setPreviewMedia(file);
+    setPreviewMedia({ file: file, url: URL.createObjectURL(file) });
   };
 
   const captureImage = () => {
@@ -150,10 +150,11 @@ const CameraModal = ({
       handleToggleWebcam(false);
     }
   }, [visible]);
-
-  if (error) {
-    return <div>{error.message}</div>;
-  }
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+  }, [error]);
 
   const getValidNumber = (num) => {
     return num.toString().length == 1
@@ -183,7 +184,8 @@ const CameraModal = ({
           }}
         >
           <PreviewModal
-            url={PreviewMedia}
+            url={PreviewMedia.file}
+            previewurl={PreviewMedia.url}
             onSuccess={(file) => {
               setPreviewMedia();
               setTimeout(() => {

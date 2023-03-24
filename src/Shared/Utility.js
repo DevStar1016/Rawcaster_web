@@ -1,6 +1,6 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
-import { GECODE_API_KEY } from "./Constant";
+import { ENCRIPTION_STRING, GECODE_API_KEY } from "./Constant";
 import {
   getLocalStorageData,
   removeCookieData,
@@ -12,12 +12,28 @@ import { decode } from "html-entities";
 import { useEffect, useRef, useState } from "react";
 import Linkify from "linkify-react";
 import LinkOpenModal from "../Modal/Verification/LinkOpenModal";
+import moment from "moment";
+import momentTZ from "moment-timezone";
+import { getTimezone } from "countries-and-timezones";
 
 // Auth
 
 export const getAuthToken = (value) => {
   var sha1 = require("sha1");
   return sha1(SALT_KEY + value);
+};
+
+export const EncryptionString = (str) => {
+  return window.btoa(str + ENCRIPTION_STRING);
+};
+
+export const DecryptionString = (str) => {
+  try {
+    let data = window.atob(str);
+    return data.substr(0, data.length - ENCRIPTION_STRING.length);
+  } catch (error) {
+    return 0;
+  }
 };
 
 export const RemoveToken = (dispatch) => {
@@ -363,3 +379,81 @@ export function getAspectRatio(height, width) {
   const denominator = width / divisor;
   return numerator / denominator;
 }
+
+export function isValidImageFile(file) {
+  if (!file.type.startsWith("image/")) {
+    return false;
+  }
+
+  const reader = new FileReader();
+
+  reader.readAsDataURL(file);
+
+  return new Promise((resolve, reject) => {
+    reader.onload = () => {
+      const img = new Image();
+      img.src = reader.result;
+
+      img.onload = () => {
+        resolve(true);
+      };
+
+      img.onerror = () => {
+        reject(false);
+      };
+    };
+  });
+}
+
+// Timezone
+
+export const getTimezoneName = (str) => {
+  let index;
+  try {
+    index = str.indexOf("(");
+  } catch (error) {}
+  if (index > -1) return str.substr(0, index - 1).trim();
+  else return str;
+};
+
+export const utcToUserTimezone = (time, zonename) => {
+  let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
+  let displayCutoff = momentTZ(utcCutoff)
+    .tz(getTimezoneName(zonename))
+    .format("YYYY-MM-DD HH:mm:ss");
+  return moment(displayCutoff);
+};
+
+export const { utcOffsetStr } = getTimezone(moment.tz.guess());
+
+export const utctoUserTimezone = (time, zonename) => {
+  let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
+  let displayCutoff = momentTZ(utcCutoff)
+    .tz(getTimezoneName(zonename))
+    .format("YYYY-MM-DD HH:mm:ss");
+  return moment(displayCutoff);
+};
+
+export const getDisplayEventTime = (time) => {
+  if (time) {
+    return moment(time, "YYYY-MM-DD hh:mm:ss").format("hh:mm A");
+  }
+  return "";
+};
+
+export const getDisplayEventDate = (
+  receivedDate,
+  dateFormat = "MM/DD/YYYY"
+) => {
+  if (receivedDate) {
+    let todaysDate;
+    if (utcOffsetStr) {
+      todaysDate = utctoUserTimezone(
+        receivedDate,
+        moment.tz.guess() + " (+" + utcOffsetStr + ")"
+      ).format(dateFormat);
+    }
+    return utcOffsetStr ? todaysDate : "";
+  }
+  return "";
+};

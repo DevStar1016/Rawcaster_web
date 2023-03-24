@@ -13,10 +13,11 @@ import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
 import { toast } from "react-hot-toast";
-import { detectMob } from "../../Shared/Utility";
+import { detectMob, getAspectRatio } from "../../Shared/Utility";
 import {
   MediaPermissionsErrorType,
   requestAudioPermissions,
+  requestVideoPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import Postpoll from "./Postpoll";
 import data from "@emoji-mart/data";
@@ -24,6 +25,7 @@ import { Picker } from "emoji-mart";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 import { sendMessage, socketListen } from "../../Services/SocketService";
+import ImageCropModal from "../ImageCropModal";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -35,6 +37,7 @@ const Postmodal = ({ visible, onClose }) => {
     handleSubmit,
     values,
     NuggetData,
+
     isPoll,
     setisPoll,
     MetaData,
@@ -59,9 +62,28 @@ const Postmodal = ({ visible, onClose }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [showEmojis, setShowEmojis] = useState(false);
+  const [NuggetImg, setNuggetImg] = useState();
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
   const [oldUrl, setOldurl] = useState("");
+
+  const handleCameraPermission = (type) => {
+    requestVideoPermissions()
+      .then(() => {
+        setisPoll(false);
+        setisCamera({ show: true, type: type });
+      })
+      .catch((err) => {
+        const { type, message } = err;
+        if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
+          toast.error("browser does not have permission to access microphone");
+        } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
+          toast.error("user didn't allow app to access microphone");
+        } else {
+          toast.error(message);
+        }
+      });
+  };
 
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
@@ -179,8 +201,7 @@ const Postmodal = ({ visible, onClose }) => {
                 <img
                   src={videoIcon}
                   onClick={() => {
-                    setisPoll(false);
-                    setisCamera({ show: true, type: "Video" });
+                    handleCameraPermission("Video");
                   }}
                 />
               </Tooltip>
@@ -190,8 +211,7 @@ const Postmodal = ({ visible, onClose }) => {
                 <img
                   src={cameraIcon}
                   onClick={() => {
-                    setisPoll(false);
-                    setisCamera({ show: true, type: "Camera" });
+                    handleCameraPermission("Camera");
                   }}
                 />
               </Tooltip>
@@ -411,28 +431,35 @@ const Postmodal = ({ visible, onClose }) => {
                     };
                   };
                   return (
-                    <div className={classes.cardcontent}>
-                      <ImageGrid
-                        imgArray={[getURL()]}
-                        muted={false}
-                        isThumb={true}
-                      />
-                      <div
-                        className={classes.overlay}
-                        onClick={() => {
-                          setNuggetValues((pre) =>
-                            pre.filter((ele, i) => i !== index)
-                          );
-                        }}
-                      >
-                        {/* <img
-                src={require("../../../assets/delete.png")}
-                alt="more"
-                style={{ width: "20px", height: "20px" }}
-              /> */}
-                        <span class="material-icons">delete</span>
+                    <>
+                      <div className={classes.cardcontent}>
+                        <ImageGrid
+                          imgArray={[getURL()]}
+                          muted={false}
+                          isThumb={true}
+                        />
+                        <div
+                          className={classes.overlay}
+                          onClick={() => {
+                            setNuggetValues((pre) =>
+                              pre.filter((ele, i) => i !== index)
+                            );
+                          }}
+                        >
+                          <span class="material-icons">delete</span>
+                        </div>
                       </div>
-                    </div>
+                      {getURL().media_type.includes("image") && (
+                        <div
+                          className={classes.editSec}
+                          onClick={() => {
+                            setNuggetImg({ ele: ele, index: index });
+                          }}
+                        >
+                          <span class="material-symbols-outlined">edit</span>
+                        </div>
+                      )}
+                    </>
                   );
                 })}
               </div>
@@ -470,6 +497,21 @@ const Postmodal = ({ visible, onClose }) => {
           setisAudioModal(false);
         }}
       />
+      {NuggetImg && (
+        <ImageCropModal
+          open={NuggetImg}
+          validsize={5}
+          src={URL.createObjectURL(NuggetImg.ele)}
+          ratio={getAspectRatio(150, 150)}
+          onSuccess={(val) => {
+            setFileValues(val, NuggetImg.index);
+            setNuggetImg();
+          }}
+          onFailure={() => {
+            setNuggetImg();
+          }}
+        />
+      )}
     </Modal>
   );
 };

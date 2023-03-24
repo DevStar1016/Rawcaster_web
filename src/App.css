@@ -372,6 +372,20 @@ margin-bottom: 0px !important;
  max-height: 500px;
 width: fit-content;
 }
+
+
+ /* Toast UI image Editor */
+
+
+ .tui-image-editor-container .tui-image-editor-help-menu.top ,.tui-image-editor-header ,.tui-image-editor-menu{
+  display: none !important;
+ }
+ /* .tui-image-editor-canvas-container {
+  position: absolute !important;
+ } */
+ /* .upper-canvas  {
+  
+ } */
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .ant-modal-close-x { width: 20px; height: 20px; border-radius: 50px; display: flex; align-items: center; line-height: 16px !important; }

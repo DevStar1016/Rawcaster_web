@@ -3,11 +3,11 @@ import React from "react";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 import classes from "../Modal.module.css";
 
-const PreviewModal = ({ url, onSuccess, onClose }) => {
+const PreviewModal = ({ url, onSuccess, onClose, previewurl }) => {
   const getURL = () => {
     let type = url.type.split("/");
     return {
-      path: URL.createObjectURL(url),
+      path: previewurl,
       media_type: type[0],
       media_file_type: type[1],
       media_id: url.lastModified,
@@ -17,7 +17,7 @@ const PreviewModal = ({ url, onSuccess, onClose }) => {
   return (
     <div style={{ width: "100%" }}>
       <div className={classes.imageGridContainer}>
-        <ImageGrid imgArray={[getURL()]} />
+        <ImageGrid imgArray={[getURL()]} isPreview={true} />
       </div>
       <div className={classes.actionBtn}>
         <Button

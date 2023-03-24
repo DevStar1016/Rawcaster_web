@@ -33,6 +33,7 @@ const EventsList = () => {
   const source = useRef(null);
   const [EventList, setEventList] = useState([]);
   const [isLoading, setisLoading] = useState(false);
+  const [isFetching, setisFetching] = useState(true);
   const [Pages, setPages] = useState({
     page: 1,
     totalpage: 1,
@@ -95,12 +96,14 @@ const EventsList = () => {
         setisLoading(false);
         dispatch(handleLoading(false));
         dispatch(handleisGlobalSearch(false));
+        setisFetching(false);
       });
   };
 
   useEffect(() => {
     if (isGlobalSearch || EventList?.length === 0) {
       dispatch(handleLoading(true));
+      setisFetching(true);
       getEventList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,14 +139,38 @@ const EventsList = () => {
   return (
     <>
       {getValidEvent()?.length === 0 ? (
-        <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
-          We didn't find any results
-        </span>
+        <>
+          {isFetching ? (
+            <div className="mt-5">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+          ) : (
+            <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
+              We didn't find any results
+            </span>
+          )}
+        </>
       ) : null}
       <div className={` ${classes.profileSec}`} ref={scrollRef}>
-        {getValidEvent().map((ele) => (
-          <Event ele={ele} />
-        ))}
+        {getValidEvent()?.length !== 0 && (
+          <>
+            {isFetching ? (
+              <div className="mt-5">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              <>
+                {getValidEvent().map((ele) => (
+                  <Event ele={ele} />
+                ))}
+              </>
+            )}
+          </>
+        )}
         {isLoading && (
           <div className="text-center py-2">
             <Spinner animation="border" role="status" />

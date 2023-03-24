@@ -6,8 +6,10 @@ import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import {
+  DecryptionString,
   getAspectRatio,
   getAuthToken,
+  isValidImageFile,
   JSONtoformdata,
   ReadMore,
 } from "../../Shared/Utility";
@@ -27,6 +29,7 @@ import { useParams } from "react-router";
 
 const Profile = () => {
   const params = useParams();
+  const display_user_id = DecryptionString(params.user_id);
   const loginToken = useAuthToken();
   const dispatch = useDispatch();
   const coverRef = useRef();
@@ -40,7 +43,9 @@ const Profile = () => {
     src: "",
     ratio: "",
   });
-  const isLoginUser = parseInt(params.id) === parseInt(loginUserData?.user_id);
+  const getisLoginUser = () => {
+    return parseInt(display_user_id) === parseInt(loginUserData?.user_id);
+  };
 
   const handleUpdateProfile = (image) => {
     let profileValue = {
@@ -95,21 +100,23 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (isLoginUser) {
-      if (loginUserData) {
-        setprofileData(loginUserData);
+    if (loginUserData) {
+      if (getisLoginUser()) {
+        if (loginUserData) {
+          setprofileData(loginUserData);
+        }
+      } else {
+        getuserprofile(display_user_id);
       }
-    } else {
-      getuserprofile(params.id);
     }
-  }, [params, loginUserData]);
+  }, [display_user_id, loginUserData]);
 
   return (
     <div>
       <div className={`mainWrapper ${classes.profilePage}`}>
         <div className={classes.bannersec}>
           <img src={profileData?.cover_image} />
-          {isLoginUser && (
+          {getisLoginUser() && (
             <div className={classes.uploadSec}>
               {isUploading === "cover" ? (
                 <Spin size="small" className={classes.loader} />
@@ -130,7 +137,7 @@ const Profile = () => {
           <div className={classes.profileContainer}>
             <div className={classes.profileSec}>
               <img src={profileData?.profile_image} />
-              {isLoginUser && (
+              {getisLoginUser() && (
                 <div className={classes.uploadSec}>
                   {isUploading === "profile" ? (
                     <Spin size="small" className={classes.loader} />
@@ -148,7 +155,7 @@ const Profile = () => {
               )}
             </div>
 
-            <FansThumb isLoginUser={isLoginUser} />
+            {loginUserData && <FansThumb isLoginUser={getisLoginUser()} />}
 
             <div className={classes.actionIcon}>
               <img src={msgIcon} />
@@ -168,11 +175,15 @@ const Profile = () => {
           }}
           onChange={(e) => {
             if (e.target.files && e.target.files.length !== 0) {
-              setprofileImg({
-                type: "cover",
-                src: e.target.files[0],
-                ratio: getAspectRatio(1170, 240),
-              });
+              if (isValidImageFile(e.target.files[0])) {
+                setprofileImg({
+                  type: "cover",
+                  src: e.target.files[0],
+                  ratio: getAspectRatio(1170, 240),
+                });
+              } else {
+                toast.error("Please Select Valid Image");
+              }
             }
           }}
           style={{ display: "none" }}
@@ -188,13 +199,16 @@ const Profile = () => {
             event.target.value = null;
           }}
           onChange={(e) => {
-            console.log(e.target.files[0]);
             if (e.target.files && e.target.files.length !== 0) {
-              setprofileImg({
-                type: "profile",
-                src: e.target.files[0],
-                ratio: getAspectRatio(150, 150),
-              });
+              if (isValidImageFile(e.target.files[0])) {
+                setprofileImg({
+                  type: "profile",
+                  src: e.target.files[0],
+                  ratio: getAspectRatio(150, 150),
+                });
+              } else {
+                toast.error("Please Select Valid Image");
+              }
             }
           }}
           style={{ display: "none" }}
@@ -227,6 +241,7 @@ const Profile = () => {
           </div>
 
           <Nuggets />
+
           <div className={classes.rightProfiles}>
             <UnclaimedInfluencers />
             {/* <Influencers /> */}

@@ -4,40 +4,43 @@ import { requestAudioPermissions } from "mic-check/lib/requestMediaPermissions";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useReactMediaRecorder } from "react-media-recorder";
+import { useStopwatch } from "react-timer-hook";
 import AudioRecord from "../../Assets/Images/audio_img.gif";
 import AudioStop from "../../Assets/Images/audio_stop.jpg";
 import { PostNuggetContext } from "../../Shared/Context";
-import { millisecondsToMMSS } from "../../Shared/Utility";
 import classes from "../Modal.module.css";
 import PreviewModal from "./PreviewModal";
 
 const AudioRecordModal = ({ onClose, visible }) => {
+  const { seconds, minutes, start, pause, reset } = useStopwatch({
+    autoStart: false,
+  });
   const { setFileValues } = useContext(PostNuggetContext);
   const [PreviewMedia, setPreviewMedia] = useState();
-  const [TimerValue, setTimerValue] = useState(0);
-  const [isRecording, setisRecording] = useState(false);
-  let countdownInterval;
 
-  function countdown(seconds) {
-    countdownInterval = setInterval(() => {
-      setTimerValue(seconds);
-      seconds++;
-    }, 1000);
-  }
+  const handleClose = () => {
+    pause();
+    setPreviewMedia();
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.stop();
+        clearBlobUrl();
+        console.log("recorder stopped, data available");
+      })
+      .catch((error) => console.log(error));
+  };
 
   const onRecordStart = () => {
-    setisRecording(true);
-    const seconds = parseInt(0);
-    countdown(seconds);
+    reset();
   };
   const onRecordStop = (url, blob) => {
-    setisRecording(false);
-    clearInterval(countdownInterval);
-    setTimerValue(0);
+    console.log(blob);
     const file = new File([blob], "RecordAudio.wav", {
-      type: "audio/wav",
+      type: blob.type,
     });
-    setPreviewMedia(file);
+    setPreviewMedia({ file: file, url: url });
   };
 
   const {
@@ -46,9 +49,10 @@ const AudioRecordModal = ({ onClose, visible }) => {
     stopRecording,
     clearBlobUrl,
     pauseRecording,
+    resumeRecording,
   } = useReactMediaRecorder({
     audio: true,
-
+    stopStreamsOnStop: true,
     onStart: onRecordStart,
     onStop: onRecordStop,
   });
@@ -58,7 +62,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
       .then(() => {
         if (status === "idle" || status === "stopped") {
           startRecording();
-        } else if (status === "recording") {
+        } else {
           stopRecording();
         }
       })
@@ -84,15 +88,40 @@ const AudioRecordModal = ({ onClose, visible }) => {
   };
 
   const handlePause = () => {
-    pauseRecording();
+    if (status === "paused") {
+      start();
+      resumeRecording();
+    } else {
+      pauseRecording();
+      pause();
+    }
   };
+
+  const getValidNumber = (num) => {
+    return num.toString().length == 1
+      ? num.toString().padStart(2, "0")
+      : num.toString();
+  };
+
+  const isValidRecordDisplay = () => {
+    if (status === "recording") {
+      return true;
+    } else if (status === "paused") {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Modal
       footer={null}
       open={visible}
       width={"650px"}
       onCancel={() => {
-        onClose();
+        handleClose();
+        setTimeout(() => {
+          onClose();
+        }, 1000);
       }}
     >
       {PreviewMedia && (
@@ -106,8 +135,11 @@ const AudioRecordModal = ({ onClose, visible }) => {
           }}
         >
           <PreviewModal
-            url={PreviewMedia}
+            url={PreviewMedia.file}
+            previewurl={PreviewMedia.url}
             onSuccess={(file) => {
+              reset();
+              pause();
               setPreviewMedia();
               setTimeout(() => {
                 setFileValues(file);
@@ -121,23 +153,23 @@ const AudioRecordModal = ({ onClose, visible }) => {
           />
         </Modal>
       )}
-      {isRecording && (
+      {isValidRecordDisplay() && (
         <div
           className={classes.timeSec}
           style={{ color: "#000", marginTop: 10 }}
         >
-          {millisecondsToMMSS(TimerValue * 1000)}
+          {getValidNumber(minutes) + `:` + getValidNumber(seconds)}
         </div>
       )}
-      {isRecording ? (
+      {status === "recording" ? (
         <img width="100%" src={AudioRecord} className={classes.audioplayIcon} />
       ) : (
         <img width="100%" src={AudioStop} className={classes.audioplayIcon} />
       )}
 
       <div className={`${classes.btnSec} mt-4`}>
-        {isRecording ? (
-          <>
+        {isValidRecordDisplay() ? (
+          <div className="d-flex flex-row">
             <button
               onClick={() => {
                 handlePause();
@@ -146,7 +178,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
               <span className={`material-symbols-outlined ${classes.recIcon}`}>
                 slideshow
               </span>{" "}
-              Pause Recording
+              {status === "paused" ? "Resume Recording" : "Pause Recording"}
             </button>
             <button
               onClick={async () => {
@@ -158,7 +190,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
               </span>{" "}
               Stop Recording
             </button>
-          </>
+          </div>
         ) : (
           <button
             className={classes.recordSec}

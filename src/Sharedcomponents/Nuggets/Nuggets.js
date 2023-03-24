@@ -3,6 +3,7 @@ import classes from "./Nuggets.module.css";
 import { useDispatch } from "react-redux";
 import { listNuggetsService } from "../../Services/ApiService";
 import {
+  DecryptionString,
   detectMob,
   getAuthenticated,
   JSONtoformdata,
@@ -29,6 +30,10 @@ let isRequestCancel = false;
 const Nuggets = () => {
   const source = useRef(null);
   const params = useParams();
+  const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+  const display_user_id = params?.user_id
+    ? DecryptionString(params?.user_id)
+    : null;
   const { DashboardfilterType } = useDashboard();
   const [filterType, setfilterType] = useState(0);
   const [muted, setmuted] = useState(false);
@@ -41,6 +46,7 @@ const Nuggets = () => {
     page: 1,
     totalpage: 1,
   });
+  const [isFetching, setisFetching] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);
   const [isEdit, setisEdit] = useState(null);
@@ -51,7 +57,6 @@ const Nuggets = () => {
 
   const getToken = () => {
     if (getAuthenticated()) {
-      const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
       return userData?.token;
     } else {
       return "RAWCAST";
@@ -68,6 +73,7 @@ const Nuggets = () => {
 
   const getNuggetList = (page = 1, filter_type) => {
     let promise = new Promise((resolve, reject) => {
+      setisFetching(true);
       if (source.current) {
         isRequestCancel = true;
         source.current.cancel("Request Cancelled");
@@ -85,6 +91,12 @@ const Nuggets = () => {
         nuggetData = {
           ...nuggetData,
           search_key: params.key,
+        };
+      }
+      if (display_user_id) {
+        nuggetData = {
+          ...nuggetData,
+          user_id: display_user_id,
         };
       }
 
@@ -119,7 +131,9 @@ const Nuggets = () => {
             });
           } else {
             setNuggetList([]);
-            toast.error(res.data.msg);
+            if (!params.key) {
+              toast.error(res.data.msg);
+            }
           }
         })
         .catch((err) => {
@@ -130,6 +144,7 @@ const Nuggets = () => {
         .finally(() => {
           setisLoading(false);
           dispatch(handleLoading(false));
+          setisFetching(false);
         });
     });
 
@@ -150,8 +165,10 @@ const Nuggets = () => {
       getNuggetList(1, 0);
     } else if (DashboardfilterType !== filterType) {
       getNuggetList();
+    } else if (display_user_id) {
+      getNuggetList();
     }
-  }, [params, DashboardfilterType]);
+  }, [params, DashboardfilterType, display_user_id]);
 
   const onEndReached = () => {
     if (pageRef.current.page !== pageRef.current.totalpage) {
@@ -213,6 +230,18 @@ const Nuggets = () => {
     };
   }, []);
 
+  const isDisplayPost = () => {
+    if (getAuthenticated()) {
+      if (parseInt(display_user_id) === parseInt(userData?.user_id)) {
+        return true;
+      } else if (!display_user_id) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  };
+
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <div
@@ -220,7 +249,7 @@ const Nuggets = () => {
         ref={scrollRef}
       >
         <>
-          {getAuthenticated() && (
+          {isDisplayPost() && (
             <>
               {Progress.show ? (
                 <PostProgress />
@@ -230,45 +259,86 @@ const Nuggets = () => {
             </>
           )}
         </>
+        {params.key ? (
+          <>
+            {getValidNuggets()?.length === 0 ? (
+              <>
+                {isFetching ? (
+                  <div className="mt-5">
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  </div>
+                ) : (
+                  <span
+                    style={{ fontSize: 20, fontWeight: "bold" }}
+                    className="mt-3"
+                  >
+                    {params.key
+                      ? "We didn't find any results"
+                      : isDisplayPost()
+                      ? "No Posts Available"
+                      : "Share Your First Nugget"}
+                  </span>
+                )}
+              </>
+            ) : null}
+          </>
+        ) : null}
 
-        {getValidNuggets()?.map((ele, index) => {
-          return (
-            <Post
-              ele={ele}
-              index={index}
-              getList={getNuggetList}
-              muted={muted}
-              setmuted={setmuted}
-              handleLike={(like) => {
-                let findIndex = NuggetList.findIndex(
-                  (elem) => elem.nugget_id === ele.nugget_id
-                );
-                let tempData = [...NuggetList];
-                tempData[findIndex].liked = like === 1 ? true : false;
-                tempData[findIndex].total_likes =
-                  like === 1
-                    ? tempData[findIndex].total_likes + 1
-                    : tempData[findIndex].total_likes - 1;
-                setNuggetList(tempData);
-              }}
-              handleSave={(save) => {
-                let findIndex = NuggetList.findIndex(
-                  (elem) => elem.nugget_id === ele.nugget_id
-                );
-                let tempData = [...NuggetList];
-                tempData[findIndex].saved = save === 1 ? true : false;
+        {getValidNuggets()?.length !== 0 && (
+          <>
+            {isFetching ? (
+              <div className="mt-5">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              <>
+                {getValidNuggets()?.map((ele, index) => {
+                  return (
+                    <Post
+                      ele={ele}
+                      index={index}
+                      getList={getNuggetList}
+                      muted={muted}
+                      setmuted={setmuted}
+                      handleLike={(like) => {
+                        let findIndex = NuggetList.findIndex(
+                          (elem) => elem.nugget_id === ele.nugget_id
+                        );
+                        let tempData = [...NuggetList];
+                        tempData[findIndex].liked = like === 1 ? true : false;
+                        tempData[findIndex].total_likes =
+                          like === 1
+                            ? tempData[findIndex].total_likes + 1
+                            : tempData[findIndex].total_likes - 1;
+                        setNuggetList(tempData);
+                      }}
+                      handleSave={(save) => {
+                        let findIndex = NuggetList.findIndex(
+                          (elem) => elem.nugget_id === ele.nugget_id
+                        );
+                        let tempData = [...NuggetList];
+                        tempData[findIndex].saved = save === 1 ? true : false;
 
-                setNuggetList(tempData);
-              }}
-              onEdit={(id) => {
-                setisEdit(id);
-              }}
-              HandleShare={() => {
-                console.log("share");
-              }}
-            />
-          );
-        })}
+                        setNuggetList(tempData);
+                      }}
+                      onEdit={(id) => {
+                        setisEdit(id);
+                      }}
+                      HandleShare={() => {
+                        console.log("share");
+                      }}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </>
+        )}
+
         {isLoading && (
           <div className="text-center py-2">
             <Spinner animation="border" role="status" />

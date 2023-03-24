@@ -35,7 +35,9 @@
     font-size: 18px;
     line-height: 23px;
     white-space: nowrap;
-    overflow:visible;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 350px;
   }
   .headingStyle {
     font-family: 'DM Sans';

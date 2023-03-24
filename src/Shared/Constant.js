@@ -1,6 +1,7 @@
 // PRIMARY CONSTANTS
 
 export const GECODE_API_KEY = "AIzaSyBOEl17DNwCcE0sR9LGJh72rBGF_vDfk1c";
+export const ENCRIPTION_STRING = "rawcaster@!@#$QWERTxcvbn";
 
 export const GOOGLE_CLIENT_ID =
   "749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com";

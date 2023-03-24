@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 const ImageGrid = ({
   imgArray,
   downloadable,
-
+  isPreview = false,
   isThumb = false,
   onPlay,
 }) => {
@@ -90,7 +90,9 @@ const ImageGrid = ({
   }, [nuggetVideoPaused]);
 
   const volumechanged = (event) => {
-    dispatch(handleisNuggetMuted(event.target.muted));
+    if (!isPreview) {
+      dispatch(handleisNuggetMuted(event.target.muted));
+    }
   };
 
   useEffect(() => {
@@ -166,6 +168,7 @@ const ImageGrid = ({
           <AudioPlayer
             url={data.path}
             audioId={`audioSingleId${data.media_id}`}
+            isPreview={isPreview}
           />
         </>
       );
@@ -187,7 +190,7 @@ const ImageGrid = ({
             className={classes.SingleVideoBg}
             playsInline
             controlsList="nodownload"
-            muted={isNuggetMuted}
+            muted={!isPreview && isNuggetMuted}
             onPlayCapture={(e) => {
               setisPlaying(e.target.id);
               // if (`videoSingleId${data.media_id}` !== e.target.id) {
@@ -215,6 +218,7 @@ const ImageGrid = ({
           <AudioPlayer
             url={data.path}
             audioId={`audioSingleId${data.media_id}`}
+            isPreview={isPreview}
           />
         </>
       );
@@ -672,7 +676,7 @@ const ImageGrid = ({
             ) : null}
           </div>
           <Modal
-          centered
+            centered
             className={`gallery_popup ${classes.GalleryImgModal}`}
             open={isVisible}
             onCancel={() => {

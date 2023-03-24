@@ -7,10 +7,9 @@ import {
 } from "../../Services/ApiService";
 import { isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
-import hearticon from "../../Assets/Images/svg/heart.svg";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
-import { Dropdown, Input, Spin } from "antd";
+import { Dropdown, Input } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import dayjs from "dayjs";
 import {
@@ -193,12 +192,20 @@ const ReplyList = ({
                                   };
                                   let tempData = [...ReplyList];
                                   tempData[ind].comment = e.target.value;
-                                  setReplyTxt(tempData);
-
-                                  if (EditData.length === 0) {
-                                    seteditData([editData]);
+                                  setReplyList(tempData);
+                                  let findData = EditData.findIndex(
+                                    (ele) => ele.comment_id === elem.comment_id
+                                  );
+                                  if (findData !== -1) {
+                                    let tempEdit = [...EditData];
+                                    tempEdit[findData] = editData;
+                                    seteditData(tempEdit);
                                   } else {
-                                    seteditData((pre) => [...pre, editData]);
+                                    if (EditData.length === 0) {
+                                      seteditData([editData]);
+                                    } else {
+                                      seteditData((pre) => [...pre, editData]);
+                                    }
                                   }
                                 }}
                               />
@@ -223,7 +230,7 @@ const ReplyList = ({
                                   let findData = EditData.find(
                                     (ele) => ele.comment_id === elem.comment_id
                                   );
-                                  console.log(findData.comment);
+
                                   if (findData) {
                                     if (isValidData(findData.comment)) {
                                       EditCommentforAnugget(
@@ -234,20 +241,20 @@ const ReplyList = ({
                                     } else {
                                       toast.error("Please Enter Valid Comment");
                                     }
+                                  } else {
+                                    setisActiveEdit("");
                                   }
                                 }}
                               />
                             </div>
                             {showEmojis === elem.comment_id && (
                               <div
-                                style={
-                                  {
-                                    // position: "absolute",
-                                    // bottom: "90%",
-                                    // right: "50px",
-                                    // zIndex: 11,
-                                  }
-                                }
+                                style={{
+                                  position: "absolute",
+                                  // bottom: "90%",
+                                  // right: "50px",
+                                  // zIndex: 11,
+                                }}
                               >
                                 <EmojiPicker
                                   emojiButtonColors={["#364157"]}
@@ -272,7 +279,7 @@ const ReplyList = ({
                                     tempData[ind].comment = tempData[
                                       ind
                                     ].comment.concat(e.native);
-                                    setReplyTxt(tempData);
+                                    setReplyList(tempData);
                                     let editData = {
                                       ...getCommentValue(elem.comment_id),
                                       comment: getCommentValue(
@@ -416,16 +423,31 @@ const ReplyList = ({
                       setReplyTxt(tempData);
                     }}
                   />
-                  <img className={classes.emojiicon} src={emoji} alt="emoji" />
+                  <img
+                    className={classes.emojiicon}
+                    src={emoji}
+                    alt="emoji"
+                    onClick={() => {
+                      if (showEmojis === comment_id) {
+                        setShowEmojis("");
+                      } else {
+                        setShowEmojis(comment_id);
+                      }
+                    }}
+                  />
                   <img
                     className={classes.sendicon}
                     alt="Send_icon"
                     src={sendicon}
                     onClick={() => {
-                      AddCommentforAnugget(nugget_id, ReplyTxt[index]);
-                      let tempData = [...ReplyTxt];
-                      tempData[index] = "";
-                      setReplyTxt(tempData);
+                      if (isValidData(ReplyTxt[index])) {
+                        AddCommentforAnugget(nugget_id, ReplyTxt[index]);
+                        let tempData = [...ReplyTxt];
+                        tempData[index] = "";
+                        setReplyTxt(tempData);
+                      } else {
+                        toast.error("Please Enter Valid Comment");
+                      }
                     }}
                   />
                 </div>
@@ -439,6 +461,40 @@ const ReplyList = ({
             >
               close
             </span>
+          </div>
+        )}
+        {showEmojis === comment_id && (
+          <div
+            style={
+              {
+                // position: "absolute",
+                // zIndex: 11,
+              }
+            }
+          >
+            <EmojiPicker
+              emojiButtonColors={["#364157"]}
+              emojiButtonRadius="8px"
+              skinTonePosition="none"
+              previewPosition="none"
+              // onClickOutside={() => {
+              //   setShowEmojis(!showEmojis);
+              // }}
+              categories={[
+                "people",
+                "nature",
+                "foods",
+                "activity",
+                "places",
+                "objects",
+                "symbols",
+                "flags",
+              ]}
+              onEmojiSelect={(e) => {
+                // console.log(e);
+                console.log(e.native);
+              }}
+            />
           </div>
         )}
       </div>

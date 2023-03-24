@@ -23,7 +23,7 @@ export const DashboardRoute = [
             element: <SelectInfluencers />,
           },
           {
-            path: "/viewprofile/:id",
+            path: "/viewprofile/:user_id",
             element: <Profile />,
           },
         ],

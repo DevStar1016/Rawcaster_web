@@ -100,13 +100,13 @@ const Postpoll = ({ setisPoll }) => {
                       {getChoiceTitle(index + 1)}{" "}
                     </p>
 
-                    <Input.TextArea
+                    <Input
                       key={index}
                       className={`${classes.textBox} ${
                         PollData.length >= 3 && classes.choicetextBox
                       }`}
                       placeholder={getChoiceTitle(index + 1)}
-                      maxLength={50}
+                      maxLength={25}
                       autoComplete="off"
                       value={PollData[index].choiceData}
                       onChange={(e) => {

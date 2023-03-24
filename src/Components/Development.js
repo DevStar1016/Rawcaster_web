@@ -1,67 +1,78 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import FilerobotImageEditor, {
+  TABS,
+  TOOLS,
+} from "react-filerobot-image-editor";
 
 const Development = () => {
-  const [isCameraon, setisCameraon] = useState(true);
-  const [stream, setStream] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function enableStream() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        setStream(stream);
-      } catch (error) {
-        setError(error);
-      }
-    }
-    enableStream();
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-        setStream(null);
-      }
-    };
-  }, []);
-
-  const handleToggleWebcam = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null);
-    } else {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => setStream(stream))
-        .catch((error) => setError(error));
-    }
-  };
-
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
   return (
     <div className="d-flex justify-content-center align-items-center h-100 pt-5 mt-5">
-      <div>
-        {stream && (
-          <video
-            autoPlay
-            style={{ width: "100%", maxWidth: "500px" }}
-            ref={(video) => (video ? (video.srcObject = stream) : null)}
-          />
-        )}
-        <button onClick={handleToggleWebcam}>
-          {stream ? "Turn off webcam" : "Turn on webcam"}
-        </button>
-      </div>
-      <button
-        onClick={() => {
-          setisCameraon(!isCameraon);
+      <FilerobotImageEditor
+        source="https://scaleflex.airstore.io/demo/stephen-walker-unsplash.jpg"
+        onSave={(editedImageObject, designState) =>
+          console.log("saved", editedImageObject, designState)
+        }
+        annotationsCommon={{
+          fill: "#ff0000",
         }}
-      >
-        {isCameraon ? "Disable" : "Enable"}
-      </button>
+        avoidChangesNotSavedAlertOnLeave={true}
+        Text={{ text: "Filerobot..." }}
+        Rotate={{ angle: 90, componentType: "slider" }}
+        Crop={{
+          presetsItems: [
+            {
+              titleKey: "classicTv",
+              descriptionKey: "4:3",
+              ratio: 4 / 3,
+            },
+            {
+              titleKey: "cinemascope",
+              descriptionKey: "21:9",
+              ratio: 21 / 9,
+            },
+          ],
+          presetsFolders: [
+            {
+              titleKey: "socialMedia",
+
+              groups: [
+                {
+                  titleKey: "facebook",
+                  items: [
+                    {
+                      titleKey: "profile",
+                      width: 180,
+                      height: 180,
+                      descriptionKey: "fbProfileSize",
+                    },
+                    {
+                      titleKey: "coverPhoto",
+                      width: 820,
+                      height: 312,
+                      descriptionKey: "fbCoverPhotoSize",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        }}
+        tabsIds={[TABS.ADJUST, TABS.ANNOTATE, TABS.FILTERS, TABS.RESIZE]}
+        defaultTabId={TABS.ANNOTATE}
+        defaultToolId={TOOLS.TEXT}
+        onBeforeSave={(imageFileInfo) => {
+          console.log(imageFileInfo);
+        }}
+        moreSaveOptions={[
+          {
+            label: "Save as new file",
+            onClick: (triggerSaveModal, triggerSave) =>
+              triggerSave((...args) => {
+                console.log("saved", args);
+              }), // Required to pass the callback function
+          },
+        ]}
+      />
     </div>
   );
 };

@@ -175,12 +175,20 @@ const CommentsList = ({ index }) => {
                                 };
                                 let tempData = [...CommentList];
                                 tempData[ind].comment = e.target.value;
-                                setCommentTxt(tempData);
-
-                                if (EditData.length === 0) {
-                                  seteditData([editData]);
+                                setCommentList(tempData);
+                                let findData = EditData.findIndex(
+                                  (ele) => ele.comment_id === elem.comment_id
+                                );
+                                if (findData !== -1) {
+                                  let tempEdit = [...EditData];
+                                  tempEdit[findData] = editData;
+                                  seteditData(tempEdit);
                                 } else {
-                                  seteditData((pre) => [...pre, editData]);
+                                  if (EditData.length === 0) {
+                                    seteditData([editData]);
+                                  } else {
+                                    seteditData((pre) => [...pre, editData]);
+                                  }
                                 }
                               }}
                             />
@@ -205,6 +213,7 @@ const CommentsList = ({ index }) => {
                                 let findData = EditData.find(
                                   (ele) => ele.comment_id === elem.comment_id
                                 );
+                                console.log(findData);
                                 if (findData) {
                                   if (isValidData(findData.comment)) {
                                     EditCommentforAnugget(
@@ -215,6 +224,8 @@ const CommentsList = ({ index }) => {
                                   } else {
                                     toast.error("Please Enter Valid Comment");
                                   }
+                                } else {
+                                  setisActiveEdit("");
                                 }
                               }}
                             />
@@ -253,7 +264,7 @@ const CommentsList = ({ index }) => {
                                   tempData[ind].comment = tempData[
                                     ind
                                   ].comment.concat(e.native);
-                                  setCommentTxt(tempData);
+                                  setCommentList(tempData);
                                   let editData = {
                                     ...getCommentValue(elem.comment_id),
                                     comment: getCommentValue(

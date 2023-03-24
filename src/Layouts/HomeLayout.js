@@ -1,5 +1,5 @@
 import { Dropdown, Layout, Menu, Tooltip } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import classes from "./Layout.module.css";
@@ -17,7 +17,11 @@ import btmhome from "../Assets/Images/svg/btmhome.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
 import { useDispatch } from "react-redux";
 import { logoutService } from "../Services/ApiService";
-import { JSONtoformdata, RemoveToken } from "../Shared/Utility";
+import {
+  EncryptionString,
+  JSONtoformdata,
+  RemoveToken,
+} from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useAuthData } from "../Shared/Reduxfetcher";
@@ -30,6 +34,7 @@ import { removeSessionStorageData } from "../Store/Storage";
 
 const HomeLayout = () => {
   const params = useParams();
+  const inputRef = useRef();
   const { pathname } = useLocation();
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
@@ -42,7 +47,7 @@ const HomeLayout = () => {
       handleLogout();
     }
     if (key == 1) {
-      navigate(`/viewprofile/${loginUserData?.user_id}`);
+      navigate(`/viewprofile/${EncryptionString(loginUserData?.user_id)}`);
     }
   };
 
@@ -84,7 +89,7 @@ const HomeLayout = () => {
       <Layout>
         <div className={`${classes.topheader}`}>
           <div className={classes.fullcontainer}>
-            <Menu mode="horizontal">
+            <div mode="horizontal" className="d-flex flex-row">
               <Link className={classes.logopart} to="/dashboard">
                 <img className="d-none d-sm-block" src={RawcasterLogo} />
                 <img
@@ -100,10 +105,11 @@ const HomeLayout = () => {
                   <Form.Control
                     placeholder="Search Rawcaster"
                     aria-label="Search Rawcaster"
+                    ref={inputRef}
                     value={searchData}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        if (e.nativeEvent.target.value !== "") {
+                        if (e.nativeEvent.target.value.trim() !== "") {
                           dispatch(handleisGlobalSearch(true));
                           navigate(
                             `/globalsearch/${e.nativeEvent.target.value}`
@@ -117,6 +123,7 @@ const HomeLayout = () => {
                   />
                 </InputGroup>
               </div>
+
               <div className={classes.rightMenus}>
                 {loginUserData && (
                   <div>
@@ -238,7 +245,7 @@ const HomeLayout = () => {
                   </Dropdown.Menu>
                 </Dropdown> */}
               </div>
-            </Menu>
+            </div>
           </div>
         </div>
         <div className={classes.bottomMenu}>

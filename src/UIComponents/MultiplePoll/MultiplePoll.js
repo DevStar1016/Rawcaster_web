@@ -32,7 +32,7 @@ const MultiplePoll = ({
   const answerRefs = useRef(results.map(() => createRef()));
   const theme = {
     textColor: "black",
-    backgroundColor: "rgb(255,255,255)",
+    backgroundColor: "rgb(241 240 240)",
     activeBg: "linear-gradient(91.4deg, #F4A465 0.43%, #E88190 99.59%)",
     inactiveBg: "linear-gradient(91.4deg, #F4A465 0.43%, #E88190 99.59%)",
     alignment: "center",
@@ -156,7 +156,7 @@ const MultiplePoll = ({
               voted ? styles.answer : styles.answer_hover + " " + styles.answer
             }
             style={{
-              backgroundColor: voted ? "#FFFFFF" : "#F2718D",
+              backgroundColor: voted ? "rgb(241 240 240)" : "#F2718D",
             }}
             onClick={() => {
               if (!voted) {
@@ -188,7 +188,7 @@ const MultiplePoll = ({
               <p
                 style={{
                   borderRadius: 8,
-                  color: voted ? "#fff" : "#FFF",
+                  color: voted ? "#000" : "#FFF",
                 }}
               >
                 {result.option_name}

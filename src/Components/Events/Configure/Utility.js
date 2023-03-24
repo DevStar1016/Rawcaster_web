@@ -7,7 +7,11 @@ import SelectedUsers from "../../../Modal/Event/SelectedUsers";
 import ImageCropModal from "../../../Modal/ImageCropModal";
 import { getEventTypeService } from "../../../Services/ApiService";
 import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
-import { decodeHtml, JSONtoformdata } from "../../../Shared/Utility";
+import {
+  decodeHtml,
+  getAspectRatio,
+  JSONtoformdata,
+} from "../../../Shared/Utility";
 import classes from "../Events.module.css";
 
 export const EventTypeComponent = ({ onResult, value }) => {
@@ -136,7 +140,7 @@ export const BannerComponent = ({ onResult, value }) => {
         <ImageCropModal
           open={cropImage !== ""}
           src={URL.createObjectURL(cropImage)}
-          ratio={16 / 9}
+          ratio={getAspectRatio(500, 300)}
           onSuccess={(val) => {
             setbannerImage(val);
             onResult(val);

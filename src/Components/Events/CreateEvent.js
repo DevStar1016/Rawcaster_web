@@ -10,24 +10,20 @@ const CreateEvent = () => {
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
 
   return (
-    <div>      
-          <Button
-            type="primary"
-            size={"large"}
-            className={classes.eventShowBtn}
-          >
-            <img src={talkshowIcon}/> Create Talkshow
-          </Button>
-          <Button
-            type="primary"
-            size={"large"}
-            className={classes.talkShowBtn}
-            onClickCapture={() => {
-              setisTalkshowOpen(true);
-            }}
-          >
-            <img src={eventIcon}/> Create Event
-          </Button>
+    <div>
+      <Button
+        type="primary"
+        size={"large"}
+        className={classes.eventShowBtn}
+        onClickCapture={() => {
+          setisTalkshowOpen(true);
+        }}
+      >
+        <img src={talkshowIcon} /> Create Talkshow
+      </Button>
+      <Button type="primary" size={"large"} className={classes.talkShowBtn}>
+        <img src={eventIcon} /> Create Event
+      </Button>
 
       <AddLiveEvent
         isTalkshowOpen={isTalkshowOpen}
