@@ -34,7 +34,7 @@
   text-align: center;
   cursor: pointer;
  }
- .proName {color: #1D1C1C; font-size: 12px; margin-bottom: 0px; font-weight: 500; }
+ .proName {color: #1D1C1C; font-size: 13.5px; margin-bottom: 0px; font-weight: 600; }
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 12px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
@@ -45,7 +45,7 @@
  .nuggetsFeed { width: 100%; border-radius: 12px; }
  .floattingSec { display: flex; justify-content: flex-end; align-items: center; flex-direction: column; width: 40px; padding-left: 15px; float: left;}
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }
- .floattingSec span { height: 25px; }
+ .floattingSec span { height: 16px; }
  .floattingSec .iconsec p, .floattingSec .activeiconsec p { cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  
  .floattingSec .activeiconsec p i { background: #FFFFFF;  }
@@ -68,7 +68,7 @@
 .cmtSec .proImg img { width: 40px; height: 40px; border-radius: 60px; }
 .cmtSec .profilePart .proImg, .comtArea .profilePart .proImg { width: 60px; height: 60px; border-radius: 60px; margin-right: 5px; }
 .cmtSec .cmtText { border: 1px solid #ECECEC; padding:8px 20px; border-radius: 40px; margin-bottom:8px; float: left; max-width: 85%; min-width: 100px; }
-.cmtSec .cmtText p { font-weight: 600; font-size: 15px; color: #000; opacity: 1; margin-bottom: 0;  }
+.cmtSec .cmtText p { font-weight: 600; font-size: 14px; color: #000; opacity: 1; margin-bottom: 0;  }
 .cmtSec .cmtText span { color: rgba(0,0,0.0.7) !important; font-weight: 300; font-size: 14px; }
 .cmtSec .rightitem, .cmtSec .comtArea .textBox { width:100%;}
 .cmtSec .rightitem .moreBtn { margin-left: 15px; cursor: pointer; width: fit-content; height:20px;}

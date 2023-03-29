@@ -17,15 +17,14 @@
   font-style: normal;
   font-weight: 400;
   line-height: 23px;
-  /* identical to box height */
   color: #000000;
+  width: 100%;
+    max-width: 235px;
 }
 .profileContainer .rightSec .nameSec p {
   margin-bottom: 2px !important;
   font-weight: 700;
   font-size: 14.5px;
-  display: flex;
-  max-width: 118px;
   max-height: 38px;
   overflow: hidden;
   line-height: 19px;

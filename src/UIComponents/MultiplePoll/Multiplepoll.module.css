@@ -6,7 +6,7 @@
   .answer {
     width: 100%;
     margin-bottom: 1rem;
-    /* border-radius: 0.5rem; */
+    border-radius: 5px;
     position: relative;
     transition: background-color 0.3s ease-out;
   }
