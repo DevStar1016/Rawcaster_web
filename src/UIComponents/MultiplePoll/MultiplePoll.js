@@ -187,7 +187,7 @@ const MultiplePoll = ({
             >
               <p
                 style={{
-                  borderRadius: 8,
+                  // borderRadius: 8,
                   color: voted ? "#000" : "#FFF",
                 }}
               >
