@@ -174,21 +174,19 @@ padding: 4px;
   .connectionsLists:hover {
     mask-position: left top;
     -webkit-mask-position: left top;
-  }
-  
+  }  
   .userlogedin_icon {
     float: right;
     margin-top: 7px;
     margin-right: 0px;
     color: #e26386; text-align: right;
     width: 38px;
-  }
-  
+  }  
   .myconnectioin {
     background: #fff;
     margin: 10px 0;
     border-radius: 10px;
-    padding: 20px 20px 10px 0;
+    padding: 0px 20px 10px 0;
     float: left;
     width: 100%;
     max-height: calc(100vh - 530px);
@@ -228,7 +226,7 @@ padding: 4px;
     position: relative;
     font-family: "DM Sans", sans-serif;
     color: #1d1c1c;
-    font-size: 15px;
+    font-size: 14.5px;
     float: left;
     display: flex;
     align-items: center; width: 100%;

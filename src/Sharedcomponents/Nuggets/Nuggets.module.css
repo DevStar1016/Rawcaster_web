@@ -1,5 +1,5 @@
 .nuggetSec { 
-    padding: 0 30px;
+    padding: 0 35px;
     height:calc(100vh - 67px);
     float: left;
     width: calc(100% - 620px);
@@ -34,8 +34,8 @@
   text-align: center;
   cursor: pointer;
  }
- .proName {color: #1D1C1C; font-size: 16px; margin-bottom: 0px; font-weight: 500; }
- .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
+ .proName {color: #1D1C1C; font-size: 12px; margin-bottom: 0px; font-weight: 500; }
+ .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 12px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
  .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 40px); float: left; display: flex;
@@ -59,7 +59,6 @@
   max-height: 250px; overflow-y: scroll;
 }
 .imgContainer {
-
   object-fit: cover;
   border-radius: 12px;
   overflow: hidden;
