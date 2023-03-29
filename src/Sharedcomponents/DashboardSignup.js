@@ -30,6 +30,7 @@ import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuthData } from "../Shared/Reduxfetcher";
 import Connections from "../Components/Connections/Connections";
 import RedirectModal from "../Modal/Verification/RedirectModal";
+import Groups from "../Components/Groups/Groups";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();
@@ -215,6 +216,7 @@ const DashboardSignup = () => {
                 <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
               </video>
             </div>
+            <Groups />
             <Connections />
           </div>
         )}

@@ -21,6 +21,7 @@ import PostProgress from "./PostProgress";
 import Post from "./Post";
 import { useParams } from "react-router";
 import { useDashboard } from "../../Shared/Reduxfetcher";
+import { Skeleton } from "antd";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -73,7 +74,6 @@ const Nuggets = () => {
 
   const getNuggetList = (page = 1, filter_type) => {
     let promise = new Promise((resolve, reject) => {
-      setisFetching(true);
       if (source.current) {
         isRequestCancel = true;
         source.current.cancel("Request Cancelled");
@@ -131,9 +131,6 @@ const Nuggets = () => {
             });
           } else {
             setNuggetList([]);
-            if (!params.key) {
-              toast.error(res.data.msg);
-            }
           }
         })
         .catch((err) => {
@@ -153,7 +150,6 @@ const Nuggets = () => {
 
   useEffect(() => {
     if (NuggetList.length === 0) {
-      dispatch(handleLoading(true));
       getNuggetList();
     }
 
@@ -172,8 +168,6 @@ const Nuggets = () => {
 
   const onEndReached = () => {
     if (pageRef.current.page !== pageRef.current.totalpage) {
-      setisLoading(true);
-
       getNuggetList(pageRef.current.page + 1);
     }
   };
@@ -181,7 +175,14 @@ const Nuggets = () => {
   const scrollRef = useBottomScrollListener(onEndReached);
 
   const ListNuggetData = {
-    NuggetList: NuggetList,
+    NuggetList,
+
+    setProgress,
+    setNuggetList,
+    Pages,
+    setPages,
+    setisEdit,
+    isEdit,
     getProgress() {
       return Progress;
     },
@@ -191,12 +192,6 @@ const Nuggets = () => {
     handleProgress(val) {
       return handleProgress(val);
     },
-    setProgress: setProgress,
-    setNuggetList: setNuggetList,
-    Pages: Pages,
-    setPages: setPages,
-    setisEdit: setisEdit,
-    isEdit: isEdit,
   };
 
   const getValidNuggets = () => {
@@ -259,40 +254,34 @@ const Nuggets = () => {
             </>
           )}
         </>
-        {params.key ? (
-          <>
-            {getValidNuggets()?.length === 0 ? (
-              <>
-                {isFetching ? (
-                  <div className="mt-5">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                  </div>
-                ) : (
-                  <span
-                    style={{ fontSize: 20, fontWeight: "bold" }}
-                    className="mt-3"
-                  >
-                    {params.key
-                      ? "We didn't find any results"
-                      : isDisplayPost()
-                      ? "No Posts Available"
-                      : "Share Your First Nugget"}
-                  </span>
-                )}
-              </>
-            ) : null}
-          </>
-        ) : null}
 
+        {getValidNuggets()?.length === 0 && (
+          <div className="mt-3">
+            {isFetching ? (
+              <>
+                {[...Array(6)].map(() => (
+                  <Skeleton loading={isFetching} active avatar />
+                ))}{" "}
+              </>
+            ) : (
+              <span
+                style={{ fontSize: 20, fontWeight: "bold" }}
+                className="mt-3"
+              >
+                {params.key
+                  ? "We didn't find any results"
+                  : isDisplayPost()
+                  ? "No Posts Available"
+                  : "Share Your First Nugget"}
+              </span>
+            )}
+          </div>
+        )}
         {getValidNuggets()?.length !== 0 && (
           <>
             {isFetching ? (
               <div className="mt-5">
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
+                <Skeleton loading={isFetching} active avatar />
               </div>
             ) : (
               <>

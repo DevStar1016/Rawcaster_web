@@ -222,7 +222,7 @@ padding: 4px;
     width: 22px;
   cursor: pointer;
   }
-  .myconnectioin .list {
+ .list {
     padding: 5px 2px;
     margin-bottom: 3px;
     position: relative;
@@ -233,8 +233,8 @@ padding: 4px;
     display: flex;
     align-items: center; width: 100%;
   }
-  .myconnectioin .list:hover {background-color:#F6F6F6; border-radius: 8px; }
-  .myconnectioin .list span.disName {
+ .list:hover {background-color:#F6F6F6; border-radius: 8px; }
+ .list span.disName {
     width: 170px;
     overflow: hidden;
     float: left;
@@ -242,20 +242,20 @@ padding: 4px;
     text-transform: capitalize;
     font-family: "DM Sans", sans-serif;
    }
-  .myconnectioin .list .grpName {
+.list .grpName {
     width: 155px;
     overflow: hidden; line-height: 18px;
     font-family: "DM Sans", sans-serif; font-weight: 500;
     float: left;
     text-transform: capitalize;
    }
-   .myconnectioin .list .grpName span {
+ .list .grpName span {
     font-size: 12px; font-weight: 400;
     float: left;
     max-height: 24px; line-height: 18px;
     opacity: 0.7;
    }
-  .myconnectioin .list img {
+.list img {
     width: 45px;
     height: 45px;
     float: left;
@@ -264,7 +264,7 @@ padding: 4px;
     margin-right: 10px;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px 1px;
   }
-  .myconnectioin .list .online {
+.list .online {
     width: 10px;
     height: 10px;  
     background: #5aca93;
@@ -273,7 +273,7 @@ padding: 4px;
     left: 35px;
     top: 6px;
   }
-  .myconnectioin .list .offline {
+.list .offline {
     width: 10px;
     height: 10px;
     background: #e74f79;

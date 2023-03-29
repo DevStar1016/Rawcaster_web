@@ -1,20 +1,26 @@
 import { Dropdown, Tooltip } from "antd";
 import dayjs from "dayjs";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import SpecificConnectionorGroup from "../../Modal/Nugget/SpecificConnectionorGroup";
+import RedirectModal from "../../Modal/Verification/RedirectModal";
+import WarningModal from "../../Modal/Verification/WarningModal";
 import {
   deleteNuggetService,
   likeAndUnlikeNuggetService,
   nuggetCommentListService,
   saveAndUnsaveNuggetService,
   likeAndUnlikeNuggetCommentService,
+  shareNuggetService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   decodeHtml,
+  EncryptionString,
   getAuthenticated,
   getDataValueById,
   isAccountValid,
@@ -45,14 +51,28 @@ const Post = ({
   setmuted,
   onEdit,
 }) => {
-  var _ = require("lodash");
+  const lodash = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
   const [Comments, setComments] = useState("");
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
+  const [ShareModal, setShareModal] = useState({
+    show: false,
+    msg: "",
+    Btnname: "",
+    data: {},
+    type: "",
+  });
+  const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
+    show: false,
+    type: "",
+    id: "",
+  });
+  const [shareWithData, setshareWithData] = useState([]);
   const [iscollapse, setiscollapse] = useState(false);
   const [ContentLength, setContentLength] = useState();
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
@@ -62,23 +82,13 @@ const Post = ({
     let formData = new FormData();
     formData.append("token", Token);
     formData.append("nugget_id", id);
-
-    deleteNuggetService(formData)
-      .then((res) => {
-        if (res.data.status === 1) {
-          toast.success(res.data.msg);
-          getList(1);
-        } else {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      })
-      .finally(() => {
-        // setDeleteData("");
-        dispatch(handleLoading(false));
-      });
+    setShareModal({
+      show: true,
+      msg: "Do you want to delete this nugget?",
+      Btnname: "Yes",
+      data: formData,
+      type: "delete",
+    });
   };
 
   const getCommentList = (id) => {
@@ -164,16 +174,8 @@ const Post = ({
       JSONtoformdata(nuggetData),
       source.current?.token
     )
-      .then((res) => {
-        if (res.data.status === 1) {
-          getList();
-        } else {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .then((res) => {})
+      .catch((err) => {});
   };
 
   const HandleSave = (id, save) => {
@@ -186,32 +188,22 @@ const Post = ({
       JSONtoformdata(nuggetData),
       source.current?.token
     )
-      .then((res) => {
-        if (res.data.status === 1) {
-          getList();
-        } else {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .then((res) => {})
+      .catch((err) => {});
   };
 
-  var debounceProcess = _.debounce(
-    function (nugget_id, like) {
+  const LikeProcess = useCallback(
+    lodash.debounce(function (nugget_id, like) {
       HandleLike(nugget_id, like);
-    },
-    1000,
-    true
+    }, 1000),
+    []
   );
 
-  var savedebounceProcess = _.debounce(
-    function (nugget_id, save) {
-      HandleSave(nugget_id, save);
-    },
-    1000,
-    true
+  const SaveProcess = useCallback(
+    lodash.debounce(function (nugget_id, like) {
+      HandleSave(nugget_id, like);
+    }, 1000),
+    []
   );
 
   const handleNuggetCommentLike = (comment_id, like) => {
@@ -237,11 +229,11 @@ const Post = ({
   const SingleNuggetData = {
     Nuggets: ele,
     nugget_id: Comments,
-    CommentList: CommentList,
-    setCommentList: setCommentList,
-    isCommentLoading: isCommentLoading,
-    setCommentList: setCommentList,
-    handleNuggetCommentLike: handleNuggetCommentLike,
+    CommentList,
+    setCommentList,
+    isCommentLoading,
+    setCommentList,
+    handleNuggetCommentLike,
     getCommentList(id) {
       return getCommentList(id);
     },
@@ -301,19 +293,71 @@ const Post = ({
     }
   };
 
+  const handlesharepost = (id, key, values = null) => {
+    let shareData = {
+      token: Token,
+      share_type: key,
+      nugget_id: id,
+    };
+    if (values) {
+      if (key === 3) {
+        shareData = {
+          ...shareData,
+          groups: values,
+        };
+      } else {
+        shareData = {
+          ...shareData,
+          friends: values,
+        };
+      }
+    }
+    setShareModal({
+      show: true,
+      msg: "Do you want to share this nugget?",
+      Btnname: "Yes",
+      data: shareData,
+      type: "share",
+    });
+
+    HandleShare();
+  };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       <div className={classes.nuggetItem}>
         <div className={classes.profilePart}>
           <div className={classes.proImg}>
-            <img src={ele?.original_user_image} alt="original_user_image" />
+            <img src={ele?.user_image} alt="original_user_image" />
             <Tooltip title="Became A Fan" color="#e26386">
               <i className={classes.viewCount}>{ele?.follow_count}</i>
             </Tooltip>
           </div>
-          <p className={classes.proName}>
-            {decodeHtml(ele?.original_user_name)}
-          </p>
+          <div className={classes.proName}>
+            <p
+              onClick={() => {
+                navigate(`/viewprofile/${EncryptionString(ele?.user_id)}`);
+              }}
+            >
+              {decodeHtml(ele?.user_name)}{" "}
+            </p>
+            {ele?.is_nugget_owner === 1 && (
+              <span>
+                shared{" "}
+                <span
+                  className={classes.sharedUserName}
+                  onClick={() => {
+                    navigate(
+                      `/viewprofile/${EncryptionString(ele?.original_user_id)}`
+                    );
+                  }}
+                >
+                  {ele?.original_user_name}
+                </span>
+                ′s nugget
+              </span>
+            )}
+          </div>
           <p className={classes.detailsRange}>
             <Tooltip
               title={dayjs(ele?.created_date).format("DD MMM YYYY - hh:mm  A")}
@@ -447,7 +491,7 @@ const Post = ({
                       if (isAccountValid()) {
                         let like = ele.liked ? 2 : 1;
                         handleLike(like);
-                        debounceProcess(ele.nugget_id, like);
+                        LikeProcess(ele.nugget_id, like);
                       } else {
                         dispatch(
                           handleprofileVerifyModalShow({
@@ -495,9 +539,43 @@ const Post = ({
                           );
                         }
                       } else {
+                        dispatch(handleloginModalShow(true));
+                      }
+                    }}
+                  >
+                    <i className={`${classes.commentIcon}`} />
+                  </p>
+                  <span>{ele.total_comments}</span>
+                </div>
+
+                <div
+                  className={classes.iconsec}
+                  style={{ display: ele?.is_nugget_owner === 1 ? "none" : "" }}
+                >
+                  <Dropdown
+                    disabled={!isAccountValid()}
+                    menu={{
+                      items: SHARED_TYPE,
+                      onClick: ({ key }) => {
+                        if (parseInt(key) === 3 || parseInt(key) === 4) {
+                          setGrouporConnectionModal({
+                            show: true,
+                            id: ele.nugget_id,
+                            type:
+                              parseInt(key) === 3
+                                ? "group"
+                                : parseInt(key) === 4 && "connections",
+                          });
+                        } else {
+                          handlesharepost(ele.nugget_id, key);
+                        }
+                      },
+                    }}
+                  >
+                    <p
+                      onClick={() => {
                         if (getAuthenticated()) {
                           if (isAccountValid()) {
-                            HandleShare("share");
                           } else {
                             dispatch(
                               handleprofileVerifyModalShow({
@@ -509,23 +587,14 @@ const Post = ({
                         } else {
                           dispatch(handleloginModalShow(true));
                         }
-                      }
-                    }}
-                  >
-                    <i className={`${classes.commentIcon}`} />
-                  </p>
-                  <span>{ele.total_comments}</span>
+                      }}
+                    >
+                      <i className={`${classes.share_icon}`} />
+                    </p>
+                  </Dropdown>
+                  {/* <span>0</span> */}
                 </div>
-                <div className={classes.iconsec}>
-                  <p
-                    onClick={() => {
-                      HandleShare();
-                    }}
-                  >
-                    <i className={`${classes.share_icon}`} />
-                  </p>
-                  <span>0</span>
-                </div>
+
                 <div
                   className={
                     ele.saved ? classes.activeiconsec : classes.iconsec
@@ -538,7 +607,7 @@ const Post = ({
                         if (isAccountValid()) {
                           let save = ele.saved ? 2 : 1;
                           handleSave(save);
-                          savedebounceProcess(ele.nugget_id, save);
+                          SaveProcess(ele.nugget_id, save);
                         } else {
                           dispatch(
                             handleprofileVerifyModalShow({
@@ -588,6 +657,32 @@ const Post = ({
             )}
           </div>
         </div>
+        <SpecificConnectionorGroup
+          open={GrouporConnectionModal.show}
+          type={GrouporConnectionModal.type}
+          shareWithData={[]}
+          share_type={
+            GrouporConnectionModal.type === "group"
+              ? 3
+              : GrouporConnectionModal.type === "connections"
+              ? 4
+              : ""
+          }
+          onSuccess={(val) => {
+            setshareWithData(val);
+            if (GrouporConnectionModal.type === "group") {
+              handlesharepost(GrouporConnectionModal.id, 3, val);
+            } else if (GrouporConnectionModal.type === "connections") {
+              handlesharepost(GrouporConnectionModal.id, 4, val);
+            }
+          }}
+          onClose={() => {
+            setGrouporConnectionModal({
+              show: false,
+              type: "",
+            });
+          }}
+        />
 
         {Comments === ele.nugget_id && (
           <CommentsList
@@ -596,6 +691,66 @@ const Post = ({
             CommentList={CommentList}
           />
         )}
+        <WarningModal
+          open={ShareModal.show}
+          msg={ShareModal.msg}
+          Btnname={"Yes"}
+          onSuccess={() => {
+            if (ShareModal.type === "share") {
+              shareNuggetService(JSONtoformdata(ShareModal.data))
+                .then((res) => {
+                  if (res.data.status === 1) {
+                    getList();
+                    setShareModal({
+                      show: false,
+                      msg: "",
+                      Btnname: "",
+                      data: {},
+                      type: "",
+                    });
+                  } else {
+                    toast.error(res.data.msg);
+                  }
+                })
+                .catch((err) => {
+                  toast.error(err.message);
+                });
+            } else if (ShareModal.type === "delete") {
+              deleteNuggetService(ShareModal.data)
+                .then((res) => {
+                  if (res.data.status === 1) {
+                    toast.success(res.data.msg);
+                    getList(1);
+                    setShareModal({
+                      show: false,
+                      msg: "",
+                      Btnname: "",
+                      data: {},
+                      type: "",
+                    });
+                  } else {
+                    toast.error(res.data.msg);
+                  }
+                })
+                .catch((err) => {
+                  toast.error(err.message);
+                })
+                .finally(() => {
+                  // setDeleteData("");
+                  dispatch(handleLoading(false));
+                });
+            }
+          }}
+          onClose={() => {
+            setShareModal({
+              show: false,
+              msg: "",
+              Btnname: "",
+              data: {},
+              type: "",
+            });
+          }}
+        />
       </div>
     </SingleNuggetContext.Provider>
   );

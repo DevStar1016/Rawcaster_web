@@ -34,7 +34,9 @@
   text-align: center;
   cursor: pointer;
  }
- .proName {color: #1D1C1C; font-size: 16px; margin-bottom: 0px; font-weight: 500; }
+ .proName p{color: #1D1C1C; font-size: 16px; margin-bottom: 0px; font-weight: 500; cursor: pointer;}
+ .proName span{color: #1D1C1C; font-size: 13px; margin-bottom: 2px; font-weight: 400;margin-left:5px ; }
+ .proName  .sharedUserName{ cursor: pointer;margin-left:0px !important;}
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
@@ -209,9 +211,15 @@
 margin-right: 10px;
 cursor: pointer;
 }
+.proName {
+  display: flex;
+  flex-direction: row;
+  align-items:end;
+ 
+}
 @media (max-width:768px) {
   .nuggetSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
-  .proName {font-size: 14px;}
+  .proName p{font-size: 14px;}
   .profilePart .proImg { width: 60px;}
   .proImg img { width: 45px; height: 45px;}
   .viewCount { position: absolute; right: 5px; top: 20px;}

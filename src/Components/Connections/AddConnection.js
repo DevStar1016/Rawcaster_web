@@ -8,7 +8,7 @@ import { decodeHtml, getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import SearchFriends from "./Components/SearchFriends";
 import classes from "./Connections.module.css";
 
-const AddConnection = ({ open, close, setfriends, friends }) => {
+const AddConnection = ({ open, close }) => {
   const token = useAuthToken();
   const profileData = useAuthData();
   const [isLoading, setisLoading] = useState(false);

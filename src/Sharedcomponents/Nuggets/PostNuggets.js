@@ -41,7 +41,7 @@ const PostNuggets = ({ getNuggetList }) => {
   const [isPoll, setisPoll] = useState(false);
   const LoginUserData = useAuthData();
   const [MetaData, setMetaData] = useState();
-
+  const [shareWithData, setshareWithData] = useState([]);
   const { handleProgress, setProgress, isEdit, setisEdit } =
     useListNuggetContext();
 
@@ -80,6 +80,18 @@ const PostNuggets = ({ getNuggetList }) => {
     if (NuggetData.length !== 0) {
       for (const file of NuggetData) {
         formData.append("nuggets_media[]", file);
+      }
+    }
+    if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {
+      if (shareWithData) {
+        const getShareTypeData = () => {
+          if (parseInt(val.share_type) === 3) {
+            return { groups: shareWithData };
+          } else if (parseInt(val.share_type) === 4) {
+            return { friends: shareWithData };
+          }
+        };
+        formData.append("share_with", getShareTypeData());
       }
     }
     editNuggetService(formData)
@@ -133,6 +145,18 @@ const PostNuggets = ({ getNuggetList }) => {
     if (MetaData && NuggetData.length === 0) {
       formData.append("metadata", JSON.stringify(MetaData));
     }
+    if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {
+      if (shareWithData) {
+        const getShareTypeData = () => {
+          if (parseInt(val.share_type) === 3) {
+            return { groups: shareWithData };
+          } else if (parseInt(val.share_type) === 4) {
+            return { friends: shareWithData };
+          }
+        };
+        formData.append("share_with", getShareTypeData());
+      }
+    }
     addNuggetsService(formData, handleProgress)
       .then((res) => {
         if (res.data.status === 1) {
@@ -170,22 +194,24 @@ const PostNuggets = ({ getNuggetList }) => {
     setNuggetValues(value) {
       return setNuggetData(value);
     },
-    useAuthData: useAuthData,
-    handleChange: handleChange,
-    handleSubmit: handleSubmit,
-    setFieldValue: setFieldValue,
-    resetForm: resetForm,
-    setPollData: setPollData,
-    NuggetData: NuggetData,
-    values: values,
-    setisPoll: setisPoll,
-    isPoll: isPoll,
-    setMetaData: setMetaData,
-    MetaData: MetaData,
-    previewMedia: previewMedia,
-    setpreviewMedia: setpreviewMedia,
-    deletedMedia: deletedMedia,
-    setdeletedMedia: setdeletedMedia,
+    useAuthData,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    resetForm,
+    setPollData,
+    NuggetData,
+    values,
+    setisPoll,
+    isPoll,
+    setMetaData,
+    MetaData,
+    shareWithData,
+    setshareWithData,
+    previewMedia,
+    setpreviewMedia,
+    deletedMedia,
+    setdeletedMedia,
   };
 
   const getNuggetDetail = () => {

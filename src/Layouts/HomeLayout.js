@@ -19,6 +19,8 @@ import { useDispatch } from "react-redux";
 import { logoutService } from "../Services/ApiService";
 import {
   EncryptionString,
+  getAuthenticated,
+  isAccountValid,
   JSONtoformdata,
   RemoveToken,
 } from "../Shared/Utility";
@@ -29,6 +31,8 @@ import {
   handledasboardTab,
   handleisGlobalSearch,
   handleLoading,
+  handleloginModalShow,
+  handleprofileVerifyModalShow,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
 
@@ -109,11 +113,15 @@ const HomeLayout = () => {
                     value={searchData}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        if (e.nativeEvent.target.value.trim() !== "") {
-                          dispatch(handleisGlobalSearch(true));
-                          navigate(
-                            `/globalsearch/${e.nativeEvent.target.value}`
-                          );
+                        if (getAuthenticated()) {
+                          if (e.nativeEvent.target.value.trim() !== "") {
+                            dispatch(handleisGlobalSearch(true));
+                            navigate(
+                              `/globalsearch/${e.nativeEvent.target.value}`
+                            );
+                          }
+                        } else {
+                          dispatch(handleloginModalShow(true));
                         }
                       }
                     }}

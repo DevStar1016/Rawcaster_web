@@ -35,6 +35,8 @@ const validationSchema = yup.object().shape({
     //   PASSWORD_EXP,
     //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
     // )
+    .trim("The Password cannot include leading and trailing spaces")
+    .strict(true)
     .min(8, "Password must be at least 8 characters long")
     .required("Please input your Password!"),
 });

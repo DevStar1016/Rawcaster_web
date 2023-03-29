@@ -8,3 +8,7 @@ export const useListNuggetContext = () => useContext(ListNuggetContext);
 
 export const SingleNuggetContext = createContext();
 export const useSingleNuggetContext = () => useContext(SingleNuggetContext);
+
+export const SpecificConnectionNugget = createContext();
+export const useSpecificConnectionNugget = () =>
+  useContext(SpecificConnectionNugget);

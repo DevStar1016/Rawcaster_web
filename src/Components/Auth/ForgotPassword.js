@@ -10,7 +10,6 @@ import * as yup from "yup";
 import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { forgotPasswordService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
-import { LOGIN_ID } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   username: yup

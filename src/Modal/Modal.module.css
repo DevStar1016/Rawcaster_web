@@ -372,6 +372,11 @@ cursor: pointer;
 .clsBtn {
   float: right;
 }
+
+.posteditSec span {
+  cursor: pointer;
+  font-size: 17px;
+}
 @media (max-width:768px) {
   .topProsec .rightSec { margin: 15px 0; }
   .topProsec .rightSec img {height: 20px; padding-left: 5px;}

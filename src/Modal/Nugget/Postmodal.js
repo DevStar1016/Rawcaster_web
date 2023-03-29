@@ -26,6 +26,8 @@ import EmojiPicker from "../../UIComponents/EmojiPicker";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 import { sendMessage, socketListen } from "../../Services/SocketService";
 import ImageCropModal from "../ImageCropModal";
+import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
+import { parseInt } from "lodash";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -37,13 +39,14 @@ const Postmodal = ({ visible, onClose }) => {
     handleSubmit,
     values,
     NuggetData,
-
+    setshareWithData,
     isPoll,
     setisPoll,
     MetaData,
     setMetaData,
     previewMedia,
     setpreviewMedia,
+    shareWithData,
     setdeletedMedia,
   } = useContext(PostNuggetContext);
   const { isEdit } = useListNuggetContext();
@@ -65,7 +68,12 @@ const Postmodal = ({ visible, onClose }) => {
   const [NuggetImg, setNuggetImg] = useState();
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
+
   const [oldUrl, setOldurl] = useState("");
+  const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
+    show: false,
+    type: "",
+  });
 
   const handleCameraPermission = (type) => {
     requestVideoPermissions()
@@ -153,7 +161,7 @@ const Postmodal = ({ visible, onClose }) => {
     >
       <div className={classes.nuggetModal}>
         <h1>
-          {isEdit ? "Edit" : "Post"} {isPoll ? "Poll" : "Nugget"}
+          {isEdit ? "Update" : "Post"} {isPoll ? "Poll" : "Nugget"}
         </h1>
 
         <div className={classes.topProsec}>
@@ -163,11 +171,22 @@ const Postmodal = ({ visible, onClose }) => {
             menu={{
               items: SHARED_TYPE,
               onClick: ({ key }) => {
-                let findData = SHARED_TYPE.find(
-                  (ele) => ele.key === parseInt(key)
-                );
-                setShareType(findData.Value);
-                setFieldValue("share_type", parseInt(key));
+                if (parseInt(key) === 3 || parseInt(key) === 4) {
+                  setGrouporConnectionModal({
+                    show: true,
+                    type:
+                      parseInt(key) === 3
+                        ? "group"
+                        : parseInt(key) === 4 && "connections",
+                  });
+                } else {
+                  let findData = SHARED_TYPE.find(
+                    (ele) => ele.key === parseInt(key)
+                  );
+                  setShareType(findData.Value);
+                  setFieldValue("share_type", parseInt(key));
+                  setshareWithData([]);
+                }
               },
             }}
           >
@@ -176,6 +195,31 @@ const Postmodal = ({ visible, onClose }) => {
               <span class="material-icons">arrow_drop_down</span>
             </p>
           </Dropdown>
+          <div
+            className={classes.posteditSec}
+            style={{
+              display:
+                parseInt(values.share_type) === 3 ||
+                parseInt(values.share_type) === 4
+                  ? ""
+                  : "none",
+            }}
+          >
+            <span
+              class="material-symbols-outlined mx-2"
+              onClick={() => {
+                setGrouporConnectionModal({
+                  show: true,
+                  type:
+                    parseInt(values.share_type) === 3
+                      ? "group"
+                      : parseInt(values.share_type) === 4 && "connections",
+                });
+              }}
+            >
+              edit
+            </span>
+          </div>
           <div className={classes.rightSec}>
             {!isPoll && (
               <Tooltip title="Post Poll">
@@ -495,6 +539,43 @@ const Postmodal = ({ visible, onClose }) => {
         visible={isAudioModal}
         onClose={() => {
           setisAudioModal(false);
+        }}
+      />
+      <SpecificConnectionorGroup
+        open={GrouporConnectionModal.show}
+        type={GrouporConnectionModal.type}
+        shareWithData={shareWithData}
+        share_type={
+          GrouporConnectionModal.type === "group"
+            ? 3
+            : GrouporConnectionModal.type === "connections"
+            ? 4
+            : ""
+        }
+        onSuccess={(val) => {
+          if (GrouporConnectionModal.type === "group") {
+            let findData = SHARED_TYPE.find((ele) => ele.key === 3);
+            setShareType(findData.Value);
+            setFieldValue("share_type", 3);
+            let finalVal = val.map((ele) => ele.group_id);
+            setshareWithData(finalVal);
+          } else if (GrouporConnectionModal.type === "connections") {
+            let findData = SHARED_TYPE.find((ele) => ele.key === 4);
+            setShareType(findData.Value);
+            setFieldValue("share_type", 4);
+            let finalVal = val.map((ele) => ele.user_id);
+            setshareWithData(finalVal);
+          }
+          setGrouporConnectionModal({
+            show: false,
+            type: "",
+          });
+        }}
+        onClose={() => {
+          setGrouporConnectionModal({
+            show: false,
+            type: "",
+          });
         }}
       />
       {NuggetImg && (

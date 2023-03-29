@@ -70,8 +70,8 @@ export const VerificationModal = ({ open, close }) => {
           src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
         <p>
-          You need to complete your account validation before you can do this.
-          Do you want to validate it now?
+          Your account needs to be validated before you can do any action in
+          Rawcaster. Do you want to validate it now?
         </p>
 
         <div className={classes.actionBtn}>

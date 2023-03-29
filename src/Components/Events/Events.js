@@ -1,4 +1,4 @@
-import { Dropdown } from "antd";
+import { Dropdown, Skeleton } from "antd";
 import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { toast } from "react-hot-toast";
@@ -154,9 +154,7 @@ const Events = () => {
 
           {isFetching ? (
             <div className="mt-5 d-flex flex-row justify-content-center">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
+              <Skeleton loading={true} active avatar />
             </div>
           ) : (
             <>

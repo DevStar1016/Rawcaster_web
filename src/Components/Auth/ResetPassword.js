@@ -33,6 +33,8 @@ const validationSchema = yup.object().shape({
     //   PASSWORD_EXP,
     //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
     // )
+    .trim("The Password cannot include leading and trailing spaces")
+    .strict(true)
     .min(8, "Password must be at least 8 characters long")
     .required("Please input your Password!"),
   confirm_password: yup
@@ -41,6 +43,8 @@ const validationSchema = yup.object().shape({
     //   PASSWORD_EXP,
     //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
     // )
+    .trim("The Password cannot include leading and trailing spaces")
+    .strict(true)
     .min(8, "Password must be at least 8 characters long")
     .oneOf([yup.ref("new_password"), null], "Passwords must match")
     .required("Please input your Password!"),
@@ -287,7 +291,7 @@ const ResetPassword = () => {
 
               <Form.Item className="mt-2">
                 <Button block htmlType="submit" className={classes.btn}>
-                  Send
+                  Submit
                 </Button>
               </Form.Item>
               <p className={classes.dntacc}>
