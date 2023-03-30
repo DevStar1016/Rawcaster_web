@@ -638,7 +638,7 @@ const Post = ({
                     }}
                   >
                     <p>
-                      <i class="material-symbols-outlined">close</i>
+                      <i class="material-symbols-outlined">expand_more</i>
                     </p>
                   </div>
                 ) : (
@@ -649,7 +649,7 @@ const Post = ({
                     }}
                   >
                     <p>
-                      <i class="material-symbols-outlined">menu</i>
+                      <i class="material-symbols-outlined">expand_less</i>
                     </p>
                   </div>
                 )}

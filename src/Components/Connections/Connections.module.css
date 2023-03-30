@@ -170,6 +170,7 @@ padding: 4px;
     -webkit-mask-position: left bottom;
     transition: mask-position 0.3s, -webkit-mask-position 0.3s;
   }
+  .connectionsLists { max-height: 240px; overflow: auto;}
   .groupLists:hover,
   .connectionsLists:hover {
     mask-position: left top;
@@ -186,11 +187,9 @@ padding: 4px;
     background: #fff;
     margin: 10px 0;
     border-radius: 10px;
-    padding: 0px 20px 10px 0;
+    padding:3px 0 0 0;
     float: left;
     width: 100%;
-    max-height: calc(100vh - 530px);
-    overflow: auto;
   }
   .myconnectioin .textBox {
     margin-bottom: 10px;
@@ -198,16 +197,12 @@ padding: 4px;
     color: #1d1c1c;
     padding-left: 20px;
     border-radius: 30px;
-    height: 45px;
+    height: 35px;
     width: 100%;
     background-color: #F1F2F5 !important;
   }
   .myconnectioin .textBox:focus { outline: none; box-shadow: none; }
-  .myconnectioin .textBox::placeholder {
-    color: #1d1c1c;
-    font-family: "DM Sans", sans-serif;
-    font-size: 16px;
-  }
+
   .myconnectioin h2 {
     font-size: 18px;
     margin-top: 5px;
@@ -254,31 +249,29 @@ padding: 4px;
     opacity: 0.7;
    }
 .list img {
-    width: 45px;
-    height: 45px;
+    width: 35px;
+    height: 35px;
     float: left;
-    border: 2px solid #fff;
     border-radius: 50%;
     margin-right: 10px;
-    box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px 1px;
   }
 .list .online {
-    width: 10px;
-    height: 10px;  
+    width: 9px;
+    height: 9px;  
     background: #5aca93;
     position: absolute;
     border-radius: 50%;
-    left: 35px;
-    top: 6px;
-  }
+    left: 28px;
+    top: 6px; border: .5px solid #fff;
+}
 .list .offline {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     background: #e74f79;
     position: absolute;
     border-radius: 50%;
-    left: 35px;
-    top: 6px;
+    left: 28px;
+    top: 6px; border: .5px solid #fff;
   }
   .selectBox input { border: 1px solid #E8EAEE; border-radius: 8px;  margin-bottom: 5px; float: left; width: 100%; }
   .createBtn, .createBtn:hover { color: #fff; background: #F2718D; border: 1px solid #F2718D !important; border-radius: 8px; width: 100px; }

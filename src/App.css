@@ -30,7 +30,7 @@ body {
 -webkit-text-fill-color: initial;
 -webkit-text-fill-color: unset;
 height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
-.textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px;  } 
+/* .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px; font-family: "DM Sans", sans-serif !important; }  */
 .textBox:focus, .textBox::selection, .textBox:hover,.textBox:active { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
 .ant-select-selector {
   border: none !important; height: 42px !important;
@@ -52,7 +52,7 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
 .ant-form-item { margin-bottom: 20px !important;}
 .mainWrapper { max-width: 1190px; margin: auto;}
 .ant-menu { border-bottom: none;}
-::placeholder { font-weight: 300; font-size: 15.5px; color: #1D1C1C; opacity: 1;}
+::placeholder { font-weight: 300; font-size: 15px; color: #1D1C1C; opacity: .7; font-family: "DM Sans", sans-serif !important;}
 .influencerSelect .ant-select-selector{
   border: 1px solid #E8EAEE !important;
   border-radius: 126px !important;
@@ -145,7 +145,7 @@ opacity: 1 !important;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  width: 100%;
+  width: 100%; border: 1px solid #fff;
   height: 100%;
 }
 .singleImage {
