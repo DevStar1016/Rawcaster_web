@@ -28,6 +28,7 @@
  .nuggetSec::-webkit-scrollbar {
    display: none !important;
  }
+
  .search_tab li {
   font-family: 'DM Sans';
   font-style: normal;

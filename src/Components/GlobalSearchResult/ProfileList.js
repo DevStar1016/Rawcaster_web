@@ -19,6 +19,7 @@ import {
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
+import { Skeleton } from "antd";
 
 let isRequestCancel = false;
 
@@ -95,7 +96,9 @@ const ProfileList = () => {
         setisLoading(false);
         dispatch(handleLoading(false));
         dispatch(handleisGlobalSearch(false));
-        setisFetching(false);
+        setTimeout(() => {
+          setisFetching(false);
+        }, 1000);
       });
   };
 
@@ -139,10 +142,10 @@ const ProfileList = () => {
       {getValidPeople()?.length === 0 ? (
         <>
           {isFetching ? (
-            <div className="mt-5">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
+            <div className="mt-5 w-100">
+              {[...Array(6)].map((ele) => (
+                <Skeleton active />
+              ))}
             </div>
           ) : (
             <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
@@ -155,10 +158,10 @@ const ProfileList = () => {
         {getValidPeople()?.length !== 0 && (
           <>
             {isFetching ? (
-              <div className="mt-5">
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
+              <div className="mt-5 w-100">
+                {[...Array(6)].map((ele) => (
+                  <Skeleton active />
+                ))}
               </div>
             ) : (
               <>

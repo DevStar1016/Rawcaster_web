@@ -1,4 +1,4 @@
-import { Dropdown } from "antd";
+import { Dropdown, Skeleton } from "antd";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Spinner } from "react-bootstrap";
@@ -180,10 +180,10 @@ const TagsList = () => {
       {getValidTags()?.length === 0 ? (
         <>
           {isFetching ? (
-            <div className="mt-5">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
+            <div className="mt-5 w-100">
+              {[...Array(6)].map((ele) => (
+                <Skeleton active />
+              ))}
             </div>
           ) : (
             <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
@@ -203,10 +203,10 @@ const TagsList = () => {
           {getValidTags()?.length !== 0 && (
             <>
               {isFetching ? (
-                <div className="mt-5">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
+                <div className="mt-5 w-100">
+                  {[...Array(6)].map((ele) => (
+                    <Skeleton active />
+                  ))}
                 </div>
               ) : (
                 <>

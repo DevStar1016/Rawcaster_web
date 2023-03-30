@@ -19,9 +19,10 @@ import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import { Spinner } from "react-bootstrap";
+import { Col, Row, Spinner } from "react-bootstrap";
 import Event from "../../Sharedcomponents/Events/Event";
 import classes from "./GlobalSearch.module.css";
+import { Skeleton } from "antd";
 
 let isRequestCancel = false;
 
@@ -141,10 +142,8 @@ const EventsList = () => {
       {getValidEvent()?.length === 0 ? (
         <>
           {isFetching ? (
-            <div className="mt-5">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
+            <div className="mt-5 W-100">
+              <Skeleton active />
             </div>
           ) : (
             <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
@@ -153,21 +152,24 @@ const EventsList = () => {
           )}
         </>
       ) : null}
-      <div className={` ${classes.profileSec}`} ref={scrollRef}>
+      <div
+        className={` ${classes.profileSec} ${classes.eventSec}`}
+        ref={scrollRef}
+      >
         {getValidEvent()?.length !== 0 && (
           <>
             {isFetching ? (
-              <div className="mt-5">
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
+              <div className="mt-5 W-100">
+                <Skeleton active />
               </div>
             ) : (
-              <>
+              <Row>
                 {getValidEvent().map((ele) => (
-                  <Event ele={ele} />
+                  <Col sm={6}>
+                    <Event ele={ele} />
+                  </Col>
                 ))}
-              </>
+              </Row>
             )}
           </>
         )}

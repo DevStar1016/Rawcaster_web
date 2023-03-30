@@ -1,4 +1,4 @@
-import { Col, Row, Select, Spin } from "antd";
+import { Col, Row, Select, Spin, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Influencers.module.css";
@@ -283,12 +283,14 @@ const SelectInfluencers = () => {
                       }}
                     ></img>
                   </div>
-                  <p className={classes.name}>
-                    {ele.display_name}
-                    <span className={classes.author}>
-                      {ele.category.toString()}
-                    </span>
-                  </p>
+                  <Tooltip placement="topLeft" title={ele.display_name}>
+                    <p className={classes.name}>
+                      {ele.display_name}
+                      <span className={classes.author}>
+                        {ele.category.toString()}
+                      </span>
+                    </p>
+                  </Tooltip>
                   <p className={classes.desc}>
                     Lorem ipsum dolor sit amet, consectetur ipsum adipiscing
                     elit. Donec suscipit ex condim entum ante egestas suscipit
