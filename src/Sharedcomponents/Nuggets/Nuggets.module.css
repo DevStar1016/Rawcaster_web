@@ -15,8 +15,8 @@
  .profilePart { width: calc(100% - 70px); float: left;}
  .dropMenu { cursor: pointer; width: 70px; float: left; text-align: right;  }
  .dropMenu span {font-size: 30viewCountpx; padding-top: 5px; color: #959595; cursor: pointer;}
- .profilePart .proImg { position: relative; width: 55px; float: left; }
- .profilePart .proImg img { width: 40px; height: 40px; border-radius: 60px; }
+ .profilePart .proImg { position: relative; width: 55px; float: left; margin-right: 7px; }
+ /* .profilePart .proImg img { width: 40px; height: 40px; border-radius: 60px; } */
  .viewCount {
   color: #fff;
   background: #e26386;
@@ -46,9 +46,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
  }
+ .profileimg {
+  height: 45px;
+  width: 45px;
+  margin-right: 20px;
+  border-radius: 190px;
+ }
+ .badgeImg {
+  position: absolute;
+  height: 20px;
+  left: 33px;
+bottom: 0;
+ }
  .proName p{color: #1D1C1C; font-size:  13.5px; margin-bottom: 0px; font-weight: 600; cursor: pointer;}
- .proName span{color: #1D1C1C; font-size: 11px; margin-bottom: 2px; font-weight: 400;margin-left:5px ; }
- .proName  .sharedUserName{ cursor: pointer;margin-left:0px !important;}
+ .proName span{color: #1D1C1C; font-size: 11px; font-weight: 400;margin-left:5px ; }
+ .proName  .sharedUserName{ cursor: pointer;margin-left:0px !important;  font-weight: 600;font-size: 12px;}
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 12px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}

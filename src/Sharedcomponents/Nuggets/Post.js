@@ -39,6 +39,7 @@ import {
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 
 import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
+import ProfileImg from "../../UIComponents/ProfileImg";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
 
@@ -359,10 +360,17 @@ const Post = ({
       <div className={classes.nuggetItem}>
         <div className={classes.profilePart}>
           <div className={classes.proImg}>
-            <img src={ele?.user_image} alt="original_user_image" />
-            <Tooltip title="Became A Fan" color="#e26386">
-              <i className={classes.viewCount}>{ele?.follow_count}</i>
-            </Tooltip>
+            <ProfileImg
+              isLoggedIn={loginUserData}
+              src={ele?.user_image}
+              imgClassName={classes.profileimg}
+              badgeClassName={classes.badgeImg}
+              Badgetype={loginUserData?.user_status_id}
+              BadgeTitle={loginUserData?.user_status}
+            />
+            {/* <img src={ele?.user_image} alt="original_user_image" />
+
+            <i className={classes.viewCount}>{ele?.follow_count}</i> */}
           </div>
           <div className={classes.proName}>
             <p
@@ -372,7 +380,7 @@ const Post = ({
             >
               {decodeHtml(ele?.user_name)}{" "}
             </p>
-            {ele?.type === 2 && ele?.is_nugget_owner === 1 && (
+            {ele?.type === 2 && (
               <span>
                 shared{" "}
                 <span
@@ -421,6 +429,8 @@ const Post = ({
                 {getDataValueById(SHARED_TYPE, ele?.share_type)}
               </>
             )}
+            <i class="material-icons">fiber_manual_record</i>
+            {ele?.follow_count} Fans
           </p>
         </div>
         {getAuthenticated() && (

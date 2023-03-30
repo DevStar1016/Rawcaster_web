@@ -100,6 +100,8 @@ const Signup = () => {
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
+            } else if (res.data.first_time === 1) {
+              navigate("/selectinfluencers");
             } else {
               navigate("/dashboard");
             }

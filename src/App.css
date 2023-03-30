@@ -281,7 +281,7 @@ color: #FFFFFF !important;
 margin-bottom: 0px !important;
 }
 .partial_readmore { 
-  max-height: 320px !important;
+  max-height: 300px !important;
 }
 .full_readmore {
   max-height: none;
