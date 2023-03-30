@@ -178,7 +178,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
               <span className={`material-symbols-outlined ${classes.recIcon}`}>
                 slideshow
               </span>{" "}
-              {status === "paused" ? "Resume Recording" : "Pause Recording"}
+              {status === "paused" ? "Resume" : "Pause"}
             </button>
             <button
               onClick={async () => {
@@ -188,7 +188,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
               <span className={`material-symbols-outlined ${classes.recIcon}`}>
                 slideshow
               </span>{" "}
-              Stop Recording
+              Stop
             </button>
           </div>
         ) : (
@@ -198,7 +198,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
               handleStartMic();
             }}
           >
-            <span class="material-symbols-outlined">mic</span> Start Recording
+            <span class="material-symbols-outlined">mic</span> Start
           </button>
         )}
       </div>

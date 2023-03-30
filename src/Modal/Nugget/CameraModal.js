@@ -252,7 +252,7 @@ const CameraModal = ({
                     >
                       slideshow
                     </span>
-                    Stop Recording
+                    Stop
                   </button>
                 ) : (
                   <button onClick={() => handleStartVideo()}>
@@ -261,7 +261,7 @@ const CameraModal = ({
                     >
                       radio_button_checked
                     </span>
-                    Start Recording
+                    Start 
                   </button>
                 )}
               </div>

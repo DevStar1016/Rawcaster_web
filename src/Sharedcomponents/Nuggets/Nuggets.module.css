@@ -49,10 +49,10 @@
  .proName p{color: #1D1C1C; font-size:  13.5px; margin-bottom: 0px; font-weight: 600; cursor: pointer;}
  .proName span{color: #1D1C1C; font-size: 11px; margin-bottom: 2px; font-weight: 400;margin-left:5px ; }
  .proName  .sharedUserName{ cursor: pointer;margin-left:0px !important;}
- .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 14px;}
+ .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 12px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
- .feedsSec { word-wrap: break-word; font-size: 15.5px; line-height: 23px; width: calc(100% - 40px); float: left; display: flex;
+ .feedsSec { word-wrap: break-word; font-size: 14.5px; line-height: 22px; width: calc(100% - 40px); float: left; display: flex;
   flex-direction: column;
   justify-content:flex-start; }
  /* .feedsSec p { white-space: pre-wrap; line-break: anywhere; } */
@@ -63,7 +63,7 @@
  .floattingSec .iconsec p, .floattingSec .activeiconsec p { cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  
  .floattingSec .activeiconsec p i { background: #FFFFFF;  }
- .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:13px 0 2px 0; text-align: center; background: #F1F2F5; width: 30px; height: 30px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:10px 0 2px 0; text-align: center; background: #F1F2F5; width: 30px; height: 30px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
  .floattingSec .iconsec img,.floattingSec .activeiconsec img { height: 15px; }
  .floattingSec .iconsec span,.floattingSec .activeiconsec span { font-weight: 500; font-size: 13px; }
  .floattingSec .activeiconsec p { background: #F2718D;  }
@@ -78,22 +78,22 @@
   overflow: hidden;
 }
 .cmtSec .item { display: flex; flex-direction: row; width: 100%; }
-.cmtSec .proImg { position: relative; width: 55px; float: left; }
-.cmtSec .proImg img { width: 40px; height: 40px; border-radius: 60px; }
+.cmtSec .proImg { position: relative; width: 45px; float: left; }
+.cmtSec .proImg img { width:35px; height: 35px; border-radius: 60px; }
 .cmtSec .profilePart .proImg, .comtArea .profilePart .proImg { width: 60px; height: 60px; border-radius: 60px; margin-right: 5px; }
-.cmtSec .cmtText { border: 1px solid #ECECEC; padding:8px 20px; border-radius: 40px; margin-bottom:8px; float: left; max-width: 85%; min-width: 100px; }
-.cmtSec .cmtText p { font-weight: 600; font-size: 14px; color: #000; opacity: 1; margin-bottom: 0;  }
+.cmtSec .cmtText { border: 1px solid #ECECEC; padding:3px 16px; border-radius: 30px; margin-bottom:8px; float: left; max-width: 85%; min-width: 100px; }
+.cmtSec .cmtText p { font-weight: 600; font-size: 13px; color: #000; opacity: 1; margin-bottom: 0;  }
 .cmtSec .cmtText span { color: rgba(0,0,0.0.7) !important; font-weight: 300; font-size: 14px; }
 .cmtSec .rightitem, .cmtSec .comtArea .textBox { width:100%;}
 .cmtSec .rightitem .moreBtn { margin-left: 15px; cursor: pointer; width: fit-content; height:20px;}
-.cmtSec .rightitem .time {color: rgba(0,0,0.0.7); }
-.cmtSec .rightitem .agree { cursor: pointer; display: flex; align-items: center; justify-content: center; float: left; margin-right: 10px; }
-.cmtSec .rightitem .agree img { height: 13px; margin-right: 4px; }
+.cmtSec .rightitem .time {color: rgba(0,0,0.0.7); font-size: 12px; }
+.cmtSec .rightitem .agree { cursor: pointer; display: flex; align-items: center; justify-content: center; float: left; margin-right: 10px;font-size: 12px; }
+.cmtSec .rightitem .agree img { height: 11px; margin-right: 4px; }
 .cmtSec .comtArea { display: flex;margin-top: 5px;}
-.cmtSec .comtArea .textBox .inputSec { border: none; height: 43px; padding-left: 15px; background: #F1F2F5; border-radius: 30px; margin-top: 1px;display: flex; flex-direction: row;align-items: center; }
-.cmtSec .comtArea .textBox .inputSec textarea,.cmtSec .comtArea .textBox .inputSec textarea:focus { width: calc(100% - 75px);  background-color: transparent !important; border: none !important; box-shadow: none !important;height: 20px;   resize: none;}
-.cmtSec .comtArea .textBox .sendicon { cursor: pointer; right:15px; top:12px; height: 32px;}
-.cmtSec .comtArea .textBox .emojiicon { cursor: pointer; right:50px; top:12px; height: 30px;}
+.cmtSec .comtArea .textBox .inputSec { border: none; height: 40px; padding-left: 10px; background: #F1F2F5; border-radius: 30px; margin-top: 1px;display: flex; flex-direction: row;align-items: center; }
+.cmtSec .comtArea .textBox .inputSec textarea,.cmtSec .comtArea .textBox .inputSec textarea:focus { width: calc(100% - 70px);  background-color: transparent !important; border: none !important; box-shadow: none !important;height: 20px;   resize: none;}
+.cmtSec .comtArea .textBox .sendicon { cursor: pointer; right:12px; top:12px; height: 26px;}
+.cmtSec .comtArea .textBox .emojiicon { cursor: pointer; right:47px; top:12px; height: 25px;}
 .resultnuggetSec {
   padding: 0 20px;
   height:calc(100vh - 67px);
@@ -122,8 +122,8 @@
 }
  .commentIcon {
   float: left;
-   width: 14px;
-   height: 14px;
+   width: 12px;
+   height: 12px;
    background: #000;
    mask: url("../../Assets/Images/svg/comment.svg") no-repeat center / contain;
    -webkit-mask: url("../../Assets/Images/svg/comment.svg") no-repeat center /
@@ -131,8 +131,8 @@
  }
  .agreeIcon {
   float: left;
-   width: 14px;
-   height: 14px;
+   width: 12px;
+   height: 12px;
    background: #000;
    margin-right: 3px;
    mask: url("../../Assets/Images/svg/heart.svg") no-repeat center / contain;
@@ -212,6 +212,7 @@
 .replyCmtArea {
   width: 92%;
 }
+.commentContainer .proImg img { width: 35px; height: 35px; }
 .replyCommentContainer {
   display: flex;
   flex-direction: row;
@@ -238,7 +239,7 @@ cursor: pointer;
   .dropMenu { width: 30px;}
   .profilePart { width: calc(100% - 30px); }
   .floattingSec { width: 45px; padding-left: 10px;  }
-  .floattingSec .iconsec p, .floattingSec .activeiconsec p { width: 30px; height: 30px; margin: 12px 0 5px 0; }
+  .floattingSec .iconsec p, .floattingSec .activeiconsec p { width: 30px; height: 30px; margin: 10px 0 3px 0; }
   .floattingSec span { height: 22px; }
   .feedsSec { width: calc(100% - 45px);}
   .cmtSec .proImg { width: 40px; }

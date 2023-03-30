@@ -10,7 +10,7 @@ const CreateEvent = () => {
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
 
   return (
-    <div>
+    <div className={classes.eventActionSec}>
       <Button
         type="primary"
         size={"large"}

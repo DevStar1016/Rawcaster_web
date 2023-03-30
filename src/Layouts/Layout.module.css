@@ -57,7 +57,7 @@ width: 100%;
   border: transparent !important;
   background: #F1F2F5!important;
   border-top-right-radius: 91px !important;
-  border-bottom-right-radius: 91px !important;  height: 45px;
+  border-bottom-right-radius: 91px !important;  height: 45px; padding-left: 0;
 }
 .topSearch input:focus {
   border-color: transparent !important;
