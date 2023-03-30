@@ -33,24 +33,6 @@ import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../../Store/Storage";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
-const validationSchema = yup.object().shape({
-  first_name: yup.string().required(`Please input your First Name!`),
-  last_name: yup.string().required(`Please input your Last Name!`),
-  gender: yup.string().required(`Please input your Gender!`),
-  name: yup.string().required(`Please input your Display Name!`),
-  dob: yup.string().required(`Please input your Date of Birth!`),
-  geo_location: yup.string().required(`Please input your Location!`),
-  mobile_no: yup
-    .string()
-    .min(5, `Please input Valid Mobile Number!`)
-    .required(`Please input your Mobile Number!`),
-  email_id: yup
-    .string()
-    .email(`Please input Valid Email Id!`)
-    // .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
-    .required(`Please input your Email!`),
-});
-
 const UpdateProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -72,14 +54,14 @@ const UpdateProfile = () => {
     dob: yup.string().required(`Please input your Date of Birth!`),
     geo_location: yup.string().required(`Please input your Location!`),
     mobile_no:
-      loginUserData.mobile !== ""
+      loginUserData?.mobile !== ""
         ? yup
             .string()
             .min(5, `Please input Valid Mobile Number!`)
             .required(`Please input your Mobile Number!`)
         : yup.string().min(5, `Please input Valid Mobile Number!`),
     email_id:
-      loginUserData.email_id !== ""
+      loginUserData?.email_id !== ""
         ? yup
             .string()
             .email(`Please input Valid Email Id!`)

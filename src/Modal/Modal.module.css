@@ -378,7 +378,7 @@ cursor: pointer;
   font-size: 17px;
 }
 @media (max-width:768px) {
-  .topProsec .rightSec { margin: 15px 0; }
+  .topProsec .rightSec { margin-bottom: 15px; }
   .topProsec .rightSec img {height: 20px; padding-left: 5px;}
   .emojiPart {  right: 23px !important; scale: 0.83; }
 }

@@ -186,13 +186,13 @@ const ResetPassword = () => {
     <>
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
-          <Link to="/home">
+          <Link to="/">
             <img src={mainlogowhite} />
           </Link>
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
-            <Link>
+            <Link to="/">
               <img
                 className={classes.hideMob}
                 src={require("../../Assets/Images/png/rawcater_logo.png")}
@@ -249,7 +249,7 @@ const ResetPassword = () => {
               {touched.otp && <p className="ErrTxt mb-1">{errors?.otp}</p>}
               <p className={classes.label}>Password </p>
               <Form.Item>
-                <Input
+                <Input.Password
                   className={classes.textBox}
                   placeholder="Enter your password"
                   value={values.new_password}
@@ -258,7 +258,7 @@ const ResetPassword = () => {
                     touched.new_password && errors.new_password ? "error" : ""
                   }
                   maxLength={50}
-                  autoComplete="off"
+                  autoComplete="new_password"
                 />
                 {touched.new_password && (
                   <p className="ErrTxt">{errors?.new_password}</p>
@@ -266,7 +266,7 @@ const ResetPassword = () => {
               </Form.Item>
               <p className={classes.label}>Confirm your password</p>
               <Form.Item>
-                <Input
+                <Input.Password
                   className={classes.textBox}
                   placeholder="Enter your  password"
                   value={values.confirm_password}
@@ -277,7 +277,7 @@ const ResetPassword = () => {
                       : ""
                   }
                   maxLength={50}
-                  autoComplete="off"
+                  autoComplete="new_password"
                 />
                 {touched.confirm_password && (
                   <p className="ErrTxt">{errors?.confirm_password}</p>

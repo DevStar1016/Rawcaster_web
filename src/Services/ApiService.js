@@ -126,6 +126,10 @@ export const listNuggetsService = (data, token) => {
   });
 };
 
+export const addNuggetViewService = (data) => {
+  return axios.post("addnuggetview", data);
+};
+
 export const likeAndUnlikeNuggetService = (data) => {
   return axios.post("likeandunlikenugget", data);
 };

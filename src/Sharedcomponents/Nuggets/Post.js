@@ -1,6 +1,7 @@
 import { Dropdown, Tooltip } from "antd";
 import dayjs from "dayjs";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useInView } from "react-hook-inview";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -14,6 +15,7 @@ import {
   saveAndUnsaveNuggetService,
   likeAndUnlikeNuggetCommentService,
   shareNuggetService,
+  addNuggetViewService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
@@ -46,6 +48,7 @@ const Post = ({
   handleLike,
   HandleShare,
   handleSave,
+  handleView,
   index,
   muted,
   setmuted,
@@ -72,11 +75,33 @@ const Post = ({
     type: "",
     id: "",
   });
-  const [shareWithData, setshareWithData] = useState([]);
   const [iscollapse, setiscollapse] = useState(false);
   const [ContentLength, setContentLength] = useState();
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
-  const ref = useRef(null);
+  const textref = useRef(null);
+
+  const [ref] = useInView({
+    threshold: 0,
+    onEnter: () => {
+      if (Token) {
+        viewHandler();
+      }
+    },
+  });
+
+  const viewHandler = () => {
+    if (ele.viewed === 0) {
+      let viewNugget = {
+        token: Token,
+        nugget_id: ele.nugget_id,
+      };
+      addNuggetViewService(JSONtoformdata(viewNugget))
+        .then((res) => {
+          handleView();
+        })
+        .catch((err) => {});
+    }
+  };
 
   const deletenugget = (id) => {
     let formData = new FormData();
@@ -281,11 +306,11 @@ const Post = ({
   };
 
   useEffect(() => {
-    if (ref && ref.current) {
-      const { current } = ref;
+    if (textref && textref.current) {
+      const { current } = textref;
       setContentLength(current.offsetHeight);
     }
-  }, [ref]);
+  }, [textref]);
 
   const isVoted = (ele) => {
     if (parseInt(ele?.voted) === 1) {
@@ -384,12 +409,12 @@ const Post = ({
             </div>
           </Dropdown>
         )}
-        <div className={classes.contentSec}>
+        <div className={classes.contentSec} ref={ref}>
           <div className={classes.feedsSec}>
             {ele && isValidData(ele?.content) && (
               <p
                 style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}
-                ref={ref}
+                ref={textref}
               >
                 <ReadMore
                   isReadMore={isReadMore()}
@@ -447,7 +472,15 @@ const Post = ({
                 </div>
               </a>
             ) : null}
-            <div className={classes.imgContainer}>
+            <div
+              className={classes.imgContainer}
+              style={{
+                borderRadius:
+                  ele && ele?.poll_option && ele.poll_option?.length !== 0
+                    ? "0px"
+                    : "12px",
+              }}
+            >
               {ele && ele.media_list && ele.media_list?.length !== 0 && (
                 <ImageGrid
                   imgArray={ele.media_list}
@@ -550,7 +583,12 @@ const Post = ({
 
                 <div
                   className={classes.iconsec}
-                  style={{ display: ele?.is_nugget_owner === 1 ? "none" : "" }}
+                  style={{
+                    display:
+                      ele?.is_nugget_owner === 1 || ele?.is_nugget_owner
+                        ? "none"
+                        : "",
+                  }}
                 >
                   <Dropdown
                     disabled={!isAccountValid()}
@@ -657,6 +695,7 @@ const Post = ({
             )}
           </div>
         </div>
+
         <SpecificConnectionorGroup
           open={GrouporConnectionModal.show}
           type={GrouporConnectionModal.type}
@@ -669,7 +708,6 @@ const Post = ({
               : ""
           }
           onSuccess={(val) => {
-            setshareWithData(val);
             if (GrouporConnectionModal.type === "group") {
               handlesharepost(GrouporConnectionModal.id, 3, val);
             } else if (GrouporConnectionModal.type === "connections") {

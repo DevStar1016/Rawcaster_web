@@ -239,7 +239,7 @@ export const isValidData = (data) => {
 
 export const isAccountValid = () => {
   let userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
-  if (userData.acc_verify_status === 1) {
+  if (userData && userData?.acc_verify_status === 1) {
     return true;
   } else {
     return false;

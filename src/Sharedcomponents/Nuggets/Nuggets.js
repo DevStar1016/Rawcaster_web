@@ -293,6 +293,18 @@ const Nuggets = () => {
                       getList={getNuggetList}
                       muted={muted}
                       setmuted={setmuted}
+                      handleView={() => {
+                        let findIndex = NuggetList.findIndex(
+                          (elem) => elem.nugget_id === ele.nugget_id
+                        );
+                        let tempData = [...NuggetList];
+                        if (tempData[findIndex].viewed !== 1) {
+                          tempData[findIndex].total_views =
+                            tempData[findIndex].total_views + 1;
+                        }
+                        tempData[findIndex].viewed = 1;
+                        setNuggetList(tempData);
+                      }}
                       handleLike={(like) => {
                         let findIndex = NuggetList.findIndex(
                           (elem) => elem.nugget_id === ele.nugget_id
