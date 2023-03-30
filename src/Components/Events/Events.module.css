@@ -139,7 +139,7 @@ opacity: 0.7;
   line-height: 23px; height: 38px !important;
   display: flex; padding: 9px !important;
   align-items: center; margin-right: 12px !important;
-  color: #FFFFFF; float: left; font-size: 14.5px !important;
+  color: #FFFFFF; float: left; font-size: 14px !important;
 }
 .eventShowBtn:hover {
     background: #F2718D !important;

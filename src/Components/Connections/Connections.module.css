@@ -74,23 +74,23 @@
   .greenicon,
   .redicon {
     float: right; margin-top: 10px; 
-    margin: 10px 2px;
+    margin:2px 4px;
     
   }
   .redicon i {
    background-color:  #F1F2F5;
     color: #000000 !important;
-    cursor: pointer; font-size: 20px;
+    cursor: pointer; 
     border-radius: 50px;
-font-size: 22px;
+font-size: 15px;
 padding: 4px;
   }
   .greenicon i {
     background-color:#18d350 !important;
     color: #fff !important;
-    cursor: pointer; font-size: 20px;
+    cursor: pointer; 
     border-radius: 50px;
-font-size: 22px;
+font-size: 15px;
 padding: 4px;
   }
   
@@ -221,7 +221,7 @@ padding: 4px;
     position: relative;
     font-family: "DM Sans", sans-serif;
     color: #1d1c1c;
-    font-size: 14.5px;
+    font-size: 13.5px;
     float: left;
     display: flex;
     align-items: center; width: 100%;
