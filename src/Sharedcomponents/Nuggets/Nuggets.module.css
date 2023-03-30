@@ -64,7 +64,7 @@ bottom: 0;
  .detailsRange  {  display: flex; align-items: center; color: #000000b0; font-size: 12px;}
  .detailsRange i { color: #6C8C8C; padding: 0 5px 0 5px; font-size: 11px; }
  .contentSec { display: flex; flex-direction: row; float: left; width: 100%;}
- .feedsSec { word-wrap: break-word; font-size: 14.5px; line-height: 22px; width: calc(100% - 40px); float: left; display: flex;
+ .feedsSec { word-wrap: break-word; font-size: 13.5px; line-height: 22px; width: calc(100% - 40px); float: left; display: flex;
   flex-direction: column;
   justify-content:flex-start; }
  /* .feedsSec p { white-space: pre-wrap; line-break: anywhere; } */
@@ -73,6 +73,7 @@ bottom: 0;
  .floattingSec .iconsec,.floattingSec .activeiconsec {  display: flex; flex-direction: column; align-items: center;  }
  .floattingSec span { height: 16px; }
  .floattingSec .iconsec p, .floattingSec .activeiconsec p { cursor: pointer; margin:20px 0 5px 0; text-align: center; background: #F1F2F5; width: 50px; height: 50px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }
+ .floattingSec .iconsec:first-child p { margin-top: 0 !important; }
  
  .floattingSec .activeiconsec p i { background: #FFFFFF;  }
  .floattingSec .iconsec p,.floattingSec .activeiconsec p {cursor: pointer; margin:10px 0 2px 0; text-align: center; background: #F1F2F5; width: 30px; height: 30px; border-radius: 60px; display: flex; justify-content: center; align-items: center; }

@@ -4,6 +4,11 @@ import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
+import profile_work from "../../Assets/Images/svg/profile_work.svg";
+import profile_edu from "../../Assets/Images/svg/profile_edu.svg";
+import profile_location from "../../Assets/Images/svg/profile_location.svg";
+import profile_bdy from "../../Assets/Images/svg/profile_bdy.svg";
+import profile_join from "../../Assets/Images/svg/profile_join.svg";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import {
   DecryptionString,
@@ -26,6 +31,7 @@ import { useDispatch } from "react-redux";
 import { Skeleton, Spin } from "antd";
 import FansThumb from "./Components/FansThumb";
 import { useParams } from "react-router";
+import Connections from "../Connections/Connections";
 
 const Profile = () => {
   const params = useParams();
@@ -242,6 +248,11 @@ const Profile = () => {
 
             <div className={classes.intro}>
               <h2>Intro</h2>
+              <div className={classes.item}><p><img src={profile_work}/></p> Work at Rawcaster</div>
+              <div className={classes.item}><p><img src={profile_edu}/></p> Studied at ABCD</div>
+              <div className={classes.item}><p><img src={profile_location}/></p> Alpharetta, Georgia, United State</div>
+              <div className={classes.item}><p><img src={profile_bdy}/></p> Date of Birth 02/03/1992</div>
+              <div className={classes.item}><p><img src={profile_join}/></p> Joined RAWCASTER on 03 Jan 2020</div>
             </div>
             <Events />
           </div>
@@ -252,6 +263,8 @@ const Profile = () => {
             <UnclaimedInfluencers />
             {/* <Influencers /> */}
             <Fans />
+            <Connections />
+            
           </div>
         </div>
       </div>
