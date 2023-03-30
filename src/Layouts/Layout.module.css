@@ -244,5 +244,7 @@ padding: 2px 1px;
 
 @media (min-width:769px) {
   .searchIconmob, .searchmobSec .clsIcon, .beforeSearchicon { display: none; }
+ }
+@media (max-width:769px) {
   .fullcontainer { width: 100%; }
  }
