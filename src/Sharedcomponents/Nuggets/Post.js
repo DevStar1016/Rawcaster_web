@@ -326,17 +326,23 @@ const Post = ({
     };
     if (values) {
       if (key === 3) {
+        let groupIds = values.map((ele) => ele.group_id);
         shareData = {
           ...shareData,
-          groups: values,
+          share_with: JSON.stringify({ groups: groupIds }),
         };
       } else {
+        let friendIds = values.map((ele) => ele.user_id);
         shareData = {
           ...shareData,
-          friends: values,
+          share_with: JSON.stringify({ friends: friendIds }),
         };
       }
     }
+    setGrouporConnectionModal({
+      show: false,
+      type: "",
+    });
     setShareModal({
       show: true,
       msg: "Do you want to share this nugget?",
@@ -366,7 +372,7 @@ const Post = ({
             >
               {decodeHtml(ele?.user_name)}{" "}
             </p>
-            {ele?.is_nugget_owner === 1 && (
+            {ele?.type === 2 && ele?.is_nugget_owner === 1 && (
               <span>
                 shared{" "}
                 <span
@@ -392,8 +398,29 @@ const Post = ({
             </Tooltip>
             <i class="material-icons">fiber_manual_record</i>
             {ele?.total_views} Views{" "}
-            <i class="material-icons">fiber_manual_record</i>
-            {getDataValueById(SHARED_TYPE, ele?.share_type)}
+            {ele?.share_type === 3 || ele?.share_type === 4 ? (
+              <Tooltip
+                placement="right"
+                color={"#fff"}
+                title={() => {
+                  return (
+                    <div className={classes.TooltipSec}>
+                      {ele.shared_detail.map((elem) => (
+                        <p>{elem.name}</p>
+                      ))}
+                    </div>
+                  );
+                }}
+              >
+                <i class="material-icons">fiber_manual_record</i>
+                {getDataValueById(SHARED_TYPE, ele?.share_type)}
+              </Tooltip>
+            ) : (
+              <>
+                <i class="material-icons">fiber_manual_record</i>
+                {getDataValueById(SHARED_TYPE, ele?.share_type)}
+              </>
+            )}
           </p>
         </div>
         {getAuthenticated() && (
@@ -585,7 +612,9 @@ const Post = ({
                   className={classes.iconsec}
                   style={{
                     display:
-                      ele?.is_nugget_owner === 1 || ele?.is_nugget_owner
+                      ele?.is_nugget_owner === 1 ||
+                      ele?.is_nugget_owner ||
+                      ele.share_type !== 1
                         ? "none"
                         : "",
                   }}

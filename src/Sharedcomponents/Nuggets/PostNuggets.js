@@ -83,6 +83,7 @@ const PostNuggets = ({ getNuggetList }) => {
       }
     }
     if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {
+      console.log(shareWithData);
       if (shareWithData) {
         const getShareTypeData = () => {
           if (parseInt(val.share_type) === 3) {
@@ -146,12 +147,13 @@ const PostNuggets = ({ getNuggetList }) => {
       formData.append("metadata", JSON.stringify(MetaData));
     }
     if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {
+      console.log(shareWithData);
       if (shareWithData) {
         const getShareTypeData = () => {
           if (parseInt(val.share_type) === 3) {
-            return { groups: shareWithData };
+            return JSON.stringify({ groups: shareWithData });
           } else if (parseInt(val.share_type) === 4) {
-            return { friends: shareWithData };
+            return JSON.stringify({ friends: shareWithData });
           }
         };
         formData.append("share_with", getShareTypeData());

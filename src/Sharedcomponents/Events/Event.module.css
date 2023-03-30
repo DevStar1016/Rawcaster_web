@@ -2,7 +2,7 @@
     border: 1px solid #ECECEC; }
 .eventImg { border-top-left-radius: 15px; border-top-right-radius: 15px; height: 150px; width: 100%; } 
 .contentSec { padding: 15px;}
-.eventItem h3 { color: #1D1C1C; font-size: 18px !important; font-weight: 500; margin-bottom: 2px;max-width: 180px; overflow-wrap: break-word;
+.eventItem h3 { color: #1D1C1C; font-size: 18px !important; font-weight: 500; margin-bottom: 2px;overflow-wrap: break-word;
       overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* number of lines to show */

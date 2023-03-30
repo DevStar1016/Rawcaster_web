@@ -7,7 +7,6 @@ import classes from "./Event.module.css";
 
 const Event = ({ ele, handleEdit }) => {
   const loginUserData = useAuthData();
-  console.log(ele);
 
   const isCreatedUser = () => {
     if (loginUserData?.user_id === ele?.original_user_id) {
@@ -28,7 +27,9 @@ const Event = ({ ele, handleEdit }) => {
       <div className={classes.contentSec}>
         <div className="d-flex flex-row justify-content-between">
           <Tooltip title={decodeHtml(ele.event_name)}>
-            <h3>{decodeHtml(ele.event_name)}</h3>
+            <h3 style={{ maxWidth: isCreatedUser() ? "180px" : "" }}>
+              {decodeHtml(ele.event_name)}
+            </h3>
           </Tooltip>
           {isCreatedUser() && (
             <div className={classes.editSec}>

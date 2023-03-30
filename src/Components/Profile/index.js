@@ -23,7 +23,7 @@ import {
 import { toast } from "react-hot-toast";
 import { getProfile } from "../Auth/getProfile";
 import { useDispatch } from "react-redux";
-import { Spin } from "antd";
+import { Skeleton, Spin } from "antd";
 import FansThumb from "./Components/FansThumb";
 import { useParams } from "react-router";
 
@@ -35,6 +35,7 @@ const Profile = () => {
   const coverRef = useRef();
   const profileRef = useRef();
   const loginUserData = useAuthData();
+
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const [profileData, setprofileData] = useState([]);
   const [isUploading, setisUploading] = useState(false);
@@ -115,7 +116,10 @@ const Profile = () => {
     <div>
       <div className={`mainWrapper ${classes.profilePage}`}>
         <div className={classes.bannersec}>
-          <img src={profileData?.cover_image} />
+          <Skeleton.Node active={true} className={classes.bannerImg}>
+            <img src={profileData?.cover_image} />
+          </Skeleton.Node>
+
           {getisLoginUser() && (
             <div className={classes.uploadSec}>
               {isUploading === "cover" ? (
@@ -218,7 +222,9 @@ const Profile = () => {
           <div className={classes.profileevent}>
             <div className={classes.profileIntro}>
               <h2>
-                About {profileData?.first_name} <i class="material-icons">fiber_manual_record</i> <span>Entertainer</span>
+                About {profileData?.first_name}{" "}
+                <i class="material-icons">fiber_manual_record</i>{" "}
+                <span>Entertainer</span>
               </h2>
               <ReadMore
                 maxheight={"64px"}

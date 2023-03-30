@@ -23,6 +23,10 @@
     border-radius: 50px;
     cursor: pointer;
 }
+.bannerImg {
+    width: 1200px !important;
+    height: 200px !important
+}
 .uploadSec span {
     font-size: 20px;
 }
