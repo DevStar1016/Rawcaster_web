@@ -31,6 +31,7 @@ const PollDateinputBox = ({ onSelectDate }) => {
       isValidData(pollTime.hours.toString()) &&
       isValidData(pollTime.minutes.toString())
     ) {
+      console.log(pollTime);
       if (
         pollTime.day === 0 &&
         pollTime.hours === 0 &&

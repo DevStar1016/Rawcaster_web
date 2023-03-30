@@ -72,6 +72,8 @@ export const BannerComponent = ({ onResult, value }) => {
   useEffect(() => {
     if (value) {
       setbannerImage(value);
+    } else {
+      setbannerImage("");
     }
   }, [value]);
 

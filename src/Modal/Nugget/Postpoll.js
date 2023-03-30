@@ -154,7 +154,7 @@ const Postpoll = ({ setisPoll }) => {
                       `${date.day}:${date.hours}:${date.minutes}`
                     );
                   } else {
-                    setFieldValue("duration", ``);
+                    setFieldValue("duration", "");
                   }
                 }}
               />

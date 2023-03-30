@@ -29,6 +29,9 @@ import moment from "moment";
 
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const [isCreating, setisCreating] = useState(false);
+  const [SelectedTime, setSelectedTime] = useState(
+    moment().add(10, "minutes").format("HH:mm")
+  );
   const token = useAuthToken();
   const {
     values,
@@ -168,10 +171,10 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       viewEventsService(JSONtoformdata(eventdata))
         .then((res) => {
           let eventData = res.data.event_detail;
-          console.log(eventData?.invite_friends_id);
+
           const isValidFriends =
             eventData?.invite_friends_id &&
-            JSON.parse(eventData?.invite_friends_id).length !== 0;
+            eventData?.invite_friends_id.length !== 0;
           setValues({
             event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
@@ -202,6 +205,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         handleSubmit();
       }}
       onClose={() => {
+        resetForm();
         setisTalkshowOpen(false);
       }}
     >
@@ -270,6 +274,21 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                     "event_start_date",
                     dayjs(dateString).format("YYYY-MM-DD")
                   );
+                  if (
+                    moment(new Date()).format("DD:MM:YYYY") ==
+                    moment(dateString).format("DD:MM:YYYY")
+                  ) {
+                    if (
+                      !(
+                        moment().format("HH:mm") <
+                        moment(values.event_start_time, "HH:mm").format("HH:mm")
+                      )
+                    ) {
+                      setFieldValue("event_start_time", "");
+                    }
+                  } else {
+                    setFieldValue("event_start_time", SelectedTime);
+                  }
                 }}
               />
             </Form.Item>
@@ -282,7 +301,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
             <TimeValueComponent
               value={values.event_start_time}
               onResult={(res) => {
-                console.log(res);
+                setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                 if (
                   moment().format("DD:MM:YYYY") ==
                   moment(values.event_start_date, "YYYY-MM-DD").format(
@@ -290,7 +309,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                   )
                 ) {
                   if (
-                    moment().add(10, "minutes").format("HH:mm") <
+                    moment().add(10, "minutes").format("HH:mm") <=
                     moment(res, "hh:mm A").format("HH:mm")
                   ) {
                     setFieldValue(
