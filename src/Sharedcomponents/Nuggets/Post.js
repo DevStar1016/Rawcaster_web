@@ -396,7 +396,7 @@ const Post = ({
               }}
             >
               {decodeHtml(ele?.user_name)}{" "}
-            </p>
+           
             {ele?.type === 2 && (
               <span>
                 shared{" "}
@@ -412,7 +412,9 @@ const Post = ({
                 </span>
                 ′s nugget
               </span>
+              
             )}
+             </p>
           </div>
           <p className={classes.detailsRange}>
             <Tooltip

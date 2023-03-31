@@ -1,13 +1,10 @@
 .eventSec { 
     width: 310px;
     float: left;
-    height:calc(100vh - 67px);
-    position: sticky;
-    /* overflow-y: scroll; */
-    /* padding-top: 20px; */
+    position: sticky; 
     padding-right: 10px;
     padding-bottom: 74px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 70px);
     position: -webkit-sticky;
     position: sticky;
     overflow-y: scroll;

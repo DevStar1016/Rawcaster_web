@@ -17,6 +17,7 @@
     /* -webkit-mask-size: 100% 20000px; */
     -webkit-mask-position: left bottom;
     transition: mask-position .3s,-webkit-mask-position .3s;
+    overflow-x: hidden;
  }
  /* .inpad { padding: 0 10px 0 15px; } */
  .signupbtn {
