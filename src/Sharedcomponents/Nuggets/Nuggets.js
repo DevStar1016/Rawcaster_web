@@ -20,7 +20,7 @@ import axios from "axios";
 import PostProgress from "./PostProgress";
 import Post from "./Post";
 import { useParams } from "react-router";
-import { useDashboard } from "../../Shared/Reduxfetcher";
+import { useAuthData, useDashboard } from "../../Shared/Reduxfetcher";
 import { Skeleton } from "antd";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
@@ -32,6 +32,7 @@ const Nuggets = () => {
   const source = useRef(null);
   const params = useParams();
   const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+  const loginUserData = useAuthData();
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
@@ -57,8 +58,8 @@ const Nuggets = () => {
   });
 
   const getToken = () => {
-    if (getAuthenticated()) {
-      return userData?.token;
+    if (getAuthenticated() && loginUserData) {
+      return loginUserData?.token;
     } else {
       return "RAWCAST";
     }
@@ -120,7 +121,6 @@ const Nuggets = () => {
                 }, [])
               );
             }
-
             pageRef.current = {
               page: res.data.current_page_no,
               totalpage: res.data.total_pages,
@@ -176,7 +176,6 @@ const Nuggets = () => {
 
   const ListNuggetData = {
     NuggetList,
-
     setProgress,
     setNuggetList,
     Pages,
@@ -285,7 +284,7 @@ const Nuggets = () => {
               </div>
             ) : (
               <>
-                {getValidNuggets()?.map((ele, index) => {
+                {NuggetList?.map((ele, index) => {
                   return (
                     <Post
                       ele={ele}

@@ -237,6 +237,9 @@ const Profile = () => {
                 isReadMore={false}
                 isLinkopenModal={isLinkopenModal}
                 setisLinkopenModal={setisLinkopenModal}
+                isReadMoreValid={() => {
+                  console.log("valid");
+                }}
               >
                 The richest man in the world, Elon Musk, has created a chip
                 (Neuralink) that will be inserted into the human brain. He said
@@ -248,11 +251,36 @@ const Profile = () => {
 
             <div className={classes.intro}>
               <h2>Intro</h2>
-              <div className={classes.item}><p><img src={profile_work}/></p> Work at Rawcaster</div>
-              <div className={classes.item}><p><img src={profile_edu}/></p> Studied at ABCD</div>
-              <div className={classes.item}><p><img src={profile_location}/></p> Alpharetta, Georgia, United State</div>
-              <div className={classes.item}><p><img src={profile_bdy}/></p> Date of Birth 02/03/1992</div>
-              <div className={classes.item}><p><img src={profile_join}/></p> Joined RAWCASTER on 03 Jan 2020</div>
+              <div className={classes.item}>
+                <p>
+                  <img src={profile_work} />
+                </p>{" "}
+                Work at Rawcaster
+              </div>
+              <div className={classes.item}>
+                <p>
+                  <img src={profile_edu} />
+                </p>{" "}
+                Studied at ABCD
+              </div>
+              <div className={classes.item}>
+                <p>
+                  <img src={profile_location} />
+                </p>{" "}
+                Alpharetta, Georgia, United State
+              </div>
+              <div className={classes.item}>
+                <p>
+                  <img src={profile_bdy} />
+                </p>{" "}
+                Date of Birth 02/03/1992
+              </div>
+              <div className={classes.item}>
+                <p>
+                  <img src={profile_join} />
+                </p>{" "}
+                Joined RAWCASTER on 03 Jan 2020
+              </div>
             </div>
             <Events />
           </div>
@@ -264,7 +292,6 @@ const Profile = () => {
             {/* <Influencers /> */}
             <Fans />
             <Connections />
-            
           </div>
         </div>
       </div>

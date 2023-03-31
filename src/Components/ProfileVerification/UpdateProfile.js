@@ -44,8 +44,6 @@ const UpdateProfile = () => {
   });
   const [ProfileImage, setProfileImage] = useState("");
 
-  console.log(loginUserData);
-
   const validationSchema = yup.object().shape({
     first_name: yup.string().required(`Please input your First Name!`),
     last_name: yup.string().required(`Please input your Last Name!`),

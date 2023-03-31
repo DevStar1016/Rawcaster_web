@@ -12,8 +12,10 @@
    display: none !important;
  }
  .nuggetItem { margin-top: 20px; float: left; width: 100%;border-bottom: 1px solid #ECECEC; padding-bottom: 15px;  }
- .profilePart { width: calc(100% - 70px); float: left;}
- .dropMenu { cursor: pointer; width: 70px; float: left; text-align: right;  }
+ .profilePart {
+  width: calc(100% - 25px);
+float: left;}
+ .dropMenu { cursor: pointer; float: left; text-align: right;  }
  .dropMenu span {font-size: 30viewCountpx; padding-top: 5px; color: #959595; cursor: pointer;}
  .profilePart .proImg { position: relative; width: 55px; float: left; margin-right: 7px; }
  /* .profilePart .proImg img { width: 40px; height: 40px; border-radius: 60px; } */

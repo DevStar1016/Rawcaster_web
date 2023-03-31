@@ -228,6 +228,11 @@ padding: 4px;
   }
  .list:hover {background-color:#F6F6F6; border-radius: 8px; }
  .list span.disName {
+
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+          line-clamp: 1; 
+  -webkit-box-orient: vertical;
     width: 170px;
     overflow: hidden;
     float: left;

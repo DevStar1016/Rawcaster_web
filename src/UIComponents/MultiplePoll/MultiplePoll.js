@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useState, useEffect, useRef, createRef } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -14,22 +15,50 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import styles from "./Multiplepoll.module.css";
-import { animateAnswers, manageVote } from "./Utility";
 
 const MultiplePoll = ({
   nugget_id,
   results,
-  isVoted,
+  isVoted = false,
   isVotedId,
   VoteTiming,
   TotalVotes = 0,
   created_date,
 }) => {
-  const { getNuggetList } = useListNuggetContext();
-  const [voted, setVoted] = useState(false);
+  const [pollVotedData, setpollVotedData] = useState({
+    isVoted: false,
+    votedOptionID: "",
+  });
   const dispatch = useDispatch();
   const Token = useAuthToken();
-  const answerRefs = useRef(results.map(() => createRef()));
+
+  const getTotalVotes = (votedId = pollVotedData.votedOptionID) => {
+    return votedId ? parseInt(TotalVotes) + 1 : TotalVotes;
+  };
+
+  const getPollOptions = (votedId = pollVotedData.votedOptionID) => {
+    let tempPollOptions = [...results].map((item) => {
+      let votes = item.votes;
+      if (votedId === item.option_id) {
+        votes = parseInt(item.votes) + 1;
+      }
+      let tempdata = parseInt(votes) / parseInt(getTotalVotes(votedId));
+      let calculateVotes = tempdata * 100;
+
+      return {
+        ...item,
+        votes,
+        option_percentage:
+          votes && parseInt(getTotalVotes(votedId))
+            ? parseFloat(calculateVotes.toString()).toFixed(2)
+            : "0.00",
+      };
+    });
+    return [...tempPollOptions];
+  };
+
+  const answerRefs = useRef(getPollOptions().map(() => createRef()));
+
   const theme = {
     textColor: "black",
     backgroundColor: "rgb(241 240 240)",
@@ -82,86 +111,166 @@ const MultiplePoll = ({
     let output = "";
     if (remainingDays > 0) {
       output += `${remainingDays} day${remainingDays > 1 ? "s" : ""}`;
+      if (remainingMinutes > 0 && remainingHours === 0) {
+        output += `, `;
+      }
     }
-    if (remainingHours > 0 && remainingDays > 0) {
-      output += `, `;
-    }
+
     if (remainingHours > 0) {
+      if (remainingDays > 0) {
+        output += `, `;
+      }
       output += `${remainingHours} hour${remainingHours > 1 ? "s" : ""}`;
+      if (remainingMinutes > 0) {
+        output += `, `;
+      }
     }
-    if (remainingHours > 0 && remainingMinutes > 0) {
-      output += `, `;
-    }
+
     if (remainingMinutes > 0) {
       output += `${remainingMinutes} minute${remainingMinutes > 1 ? "s" : ""} `;
     }
     if (output !== "") {
       output += ` left`;
     }
-    return output;
+    return output ? output : null;
   };
 
-  const handlePoll = (item, index) => {
+  const handlePoll = (item) => {
     let pollData = {
       token: Token,
       nugget_id: nugget_id,
       poll_option_id: item.option_id,
     };
     pollVoteService(JSONtoformdata(pollData))
-      .then((res) => {
-        if (res.data.status === 1) {
-          getNuggetList().then((res) => {
-            let findData = res.nuggets_list.find(
-              (ele) => ele.nugget_id === nugget_id
-            );
-            if (findData) {
-              manageVote(findData.poll_option, index, answerRefs, theme);
-              setVoted(true);
-            }
-          });
-        } else {
-          toast.error(res.data.msg);
-        }
-      })
+      .then((res) => {})
       .catch((err) => {
         toast.error(err.message);
       });
   };
 
   useEffect(() => {
-    if (getVotesTiming() === "") {
-      animateAnswers(results, answerRefs, theme, undefined, 0);
-      setVoted(true);
-    } else if (!isVoted) {
-      const findIndex = results.findIndex((ele) => ele.option_id === isVotedId);
-      if (findIndex !== -1) {
-        animateAnswers(results, answerRefs, theme, undefined, findIndex);
-        setVoted(true);
-      }
+    if (moment(created_date).isBefore()) {
+      animateAnswers(-1);
+      setpollVotedData({
+        isVoted: true,
+        votedOptionID: "",
+      });
+    } else if (isVoted) {
+      animateAnswers(-1);
+      setpollVotedData({
+        isVoted: true,
+        votedOptionID: "",
+      });
+    } else if (!Token) {
+      setpollVotedData({
+        isVoted: true,
+        votedOptionID: "",
+      });
     } else {
-      animateAnswers(results, answerRefs, theme, undefined, 0);
-      setVoted(true);
+      setpollVotedData({
+        isVoted: false,
+        votedOptionID: "",
+      });
     }
   }, [results]);
+
+  function animateAnswers(index, id) {
+    const getValidPercentage = (val) => {
+      if (parseInt(val) > 100) {
+        return 100;
+      } else {
+        return parseInt(val);
+      }
+    };
+    const answers = [];
+    let restOfAnswers = [];
+
+    for (const result of getPollOptions(id)) {
+      if (index !== undefined) {
+        result.option_id !== index && restOfAnswers.push(result);
+      } else {
+        restOfAnswers = getPollOptions(id);
+      }
+      const findIndex = getPollOptions(id).findIndex(
+        (ele) => ele.option_id === result.option_id
+      );
+      const answerBuffer = answerRefs?.current[findIndex]?.current;
+      answerBuffer && answers.push(answerBuffer);
+    }
+
+    if (index !== undefined) {
+      if (answers[index]) {
+        answers[index]?.animate(
+          [
+            { width: 0, easing: "ease-out", backgroundColor: "white" },
+            {
+              width: `${parseInt(
+                getPollOptions(id)[index].option_percentage
+              )}%`,
+              easing: "ease-out",
+              background: `${theme?.activeBg}`,
+            },
+          ],
+          500
+        );
+        answers[index].style.width = `${parseInt(
+          getPollOptions(id)[index].option_percentage
+        )}%`;
+        if (theme?.mainColor) answers[index].style.background = theme?.activeBg;
+      }
+    }
+
+    // animate rest of answers (not clicked)
+    restOfAnswers.map((ele, index) => {
+      if (answers[index]) {
+        answers[index]?.animate(
+          [
+            { width: 0, easing: "ease-out", backgroundColor: "white" },
+            {
+              width: `${getValidPercentage(ele.option_percentage)}%`,
+              easing: "ease-out",
+              background: theme?.activeBg,
+            },
+          ],
+          500
+        );
+        answers[index].style.width = `${getValidPercentage(
+          ele.option_percentage
+        )}%`;
+        answers[index].style.background = theme?.activeBg;
+      }
+    });
+  }
 
   return (
     <>
       <article className={styles.container}>
-        {results.map((result, index) => (
+        {getPollOptions().map((result, index) => (
           <div
             key={result.option_id}
             role="button"
             id={"mulAnswer" + result.option_id}
             className={
-              voted ? styles.answer : styles.answer_hover + " " + styles.answer
+              pollVotedData.isVoted
+                ? styles.answer
+                : styles.answer_hover + " " + styles.answer
             }
             style={{
-              backgroundColor: voted ? "rgb(241 240 240)" : "#F2718D",
+              backgroundColor: pollVotedData.isVoted
+                ? "rgb(241 240 240)"
+                : "#F2718D",
             }}
             onClick={() => {
-              if (!voted) {
+              if (!pollVotedData.isVoted) {
                 if (getAuthenticated()) {
                   if (isAccountValid()) {
+                    setTimeout(() => {
+                      animateAnswers(-1, result.option_id);
+                    }, 1000);
+                    setpollVotedData({
+                      isVoted: true,
+                      votedOptionID: result.option_id,
+                    });
                     handlePoll(result, index);
                   } else {
                     dispatch(
@@ -181,20 +290,20 @@ const MultiplePoll = ({
               ref={answerRefs?.current[index]}
               className={styles.answerInner}
               style={{
-                textAlign: voted ? "start" : "center",
+                textAlign: pollVotedData.isVoted ? "start" : "center",
                 width: "100%",
               }}
             >
               <p
                 style={{
                   // borderRadius: 8,
-                  color: voted ? "#000" : "#FFF",
+                  color: pollVotedData.isVoted ? "#000" : "#FFF",
                 }}
               >
                 {result.option_name}
               </p>
             </div>
-            {voted && (
+            {pollVotedData.isVoted && (
               <span style={{ color: "#000" }}>{result.option_percentage}%</span>
             )}
           </div>
@@ -202,7 +311,7 @@ const MultiplePoll = ({
 
         <div className={styles.detailSec}>
           <p>
-            {TotalVotes} votes {getVotesTiming() !== "" ? "." : ""}{" "}
+            {getTotalVotes()} votes {getVotesTiming() ? "." : ""}{" "}
             {getVotesTiming()}
           </p>
         </div>

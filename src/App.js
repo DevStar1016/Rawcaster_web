@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router";
+import { RouterProvider, useNavigate } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -23,6 +23,17 @@ function App() {
   const dispatch = useDispatch();
   const { isLoading } = useDashboard();
 
+  // const History = {
+  //   navigate: null,
+  //   push: (page, ...rest) => History?.navigate(page, ...rest),
+  // };
+
+  // const NavigateSetter = () => {
+  //   History.navigate = useNavigate();
+
+  //   return null;
+  // };
+
   useEffect(() => {
     if (window.location.pathname !== "/setpassword") {
       removeSessionStorageData("CountDown");
@@ -36,9 +47,12 @@ function App() {
     function (response) {
       if (response.data.status === -1) {
         RemoveToken(dispatch);
-        window.location.assign("/login");
-        toast.dismiss();
-        toast.error(response.data.msg);
+        window.location.reload();
+        // if (History) {
+        //   // History?.navigate("/dashboard");
+        // }
+        // toast.dismiss();
+        // toast.error(response.data.msg);
       }
       return response;
     },

@@ -162,6 +162,20 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       });
   };
 
+  const getValidarrayData = (data) => {
+    if (data) {
+      let finalData = "";
+      try {
+        finalData = JSON.stringify(data);
+      } catch (error) {
+        finalData = data;
+      }
+      return finalData;
+    } else {
+      return "";
+    }
+  };
+
   useEffect(() => {
     if (data) {
       let eventdata = {
@@ -183,11 +197,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
             ),
             event_start_time: dayjs(eventData?.start_date_time).format("HH:mm"),
             event_banner: eventData?.banner_image,
-            event_invite_mails: eventData?.invite_mails,
-            event_invite_friends: isValidFriends
-              ? eventData?.invite_friends_id
-              : "",
-            event_invite_groups: eventData?.invite_groups_id,
+            event_invite_mails: getValidarrayData(eventData?.invite_mails),
+            event_invite_friends: getValidarrayData(
+              eventData?.invite_friends_id
+            ),
+            event_invite_groups: getValidarrayData(eventData?.invite_groups_id),
           });
         })
         .catch((err) => {

@@ -125,7 +125,11 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
         </div>
         <div className={classes.bioSec}>
           <p>
-            <ReadMore>
+            <ReadMore
+              isReadMoreValid={() => {
+                console.log("test");
+              }}
+            >
               I’ve left Muskville. Come join Me at
               @TheTweetOfGod@universeodon.com. Still can’t help plugging My book
               “The Book of Pslam” out now: tinyurl.com/yckjn828

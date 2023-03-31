@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import classes from "./PostNuggets.module.css";
 import cameraIcon from "../../Assets/Images/svg/camera.svg";
 import imageIcon from "../../Assets/Images/svg/picture.svg";
-import pollIcon from "../../Assets/Images/svg/thumb.svg";
+import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
 import { Input } from "antd";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {

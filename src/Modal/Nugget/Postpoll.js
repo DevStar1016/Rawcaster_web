@@ -8,7 +8,9 @@ import classes from "../Modal.module.css";
 import * as Yup from "yup";
 
 const schema = Yup.object().shape({
-  content: Yup.string().required("Content is required"),
+  content: Yup.string()
+    .max(150, "Question cannot be longer than 150 characters")
+    .required("Content is required"),
   duration: Yup.string().required("Poll Length is required"),
   poll_option: Yup.array()
     .of(
@@ -74,6 +76,7 @@ const Postpoll = ({ setisPoll }) => {
           style={{ height: "auto" }}
           placeholder={`Ask a question...`}
           value={values.content}
+          maxLength={150}
           onChange={handleChange("content")}
         />
         <div className={classes.pollContainer}>
@@ -110,7 +113,6 @@ const Postpoll = ({ setisPoll }) => {
                       autoComplete="off"
                       value={PollData[index].choiceData}
                       onChange={(e) => {
-                        console.log(index);
                         let tmpData = [...PollData];
                         tmpData[index].choiceData = e.target.value;
                         setPollData(tmpData);

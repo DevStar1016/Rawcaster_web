@@ -24,7 +24,7 @@
     cursor: pointer;
 }
 .bannerImg {
-    width: 1200px !important;
+    width: 100% !important;
     height: 200px !important
 }
 .uploadSec span {

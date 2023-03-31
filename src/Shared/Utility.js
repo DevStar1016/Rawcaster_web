@@ -6,7 +6,10 @@ import {
   removeCookieData,
   removeLocalStorageData,
 } from "../Store/Storage";
-import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
+import {
+  handleLoginData,
+  handleToken,
+} from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +18,7 @@ import LinkOpenModal from "../Modal/Verification/LinkOpenModal";
 import moment from "moment";
 import momentTZ from "moment-timezone";
 import { getTimezone } from "countries-and-timezones";
+import { useLayoutEffect } from "react";
 
 // Auth
 
@@ -38,6 +42,7 @@ export const DecryptionString = (str) => {
 
 export const RemoveToken = (dispatch) => {
   dispatch(handleLoginData(null));
+  dispatch(handleToken(null));
   removeCookieData("rawcaster_user_token");
   removeLocalStorageData("rawcaster_user_token");
 };
@@ -247,11 +252,12 @@ export const isAccountValid = () => {
 };
 
 export const ReadMore = ({
-  maxheight,
+  partialShowLines = 3,
   children,
   isReadMore = true,
   isLinkopenModal,
   setisLinkopenModal,
+  isReadMoreValid,
 }) => {
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
@@ -278,77 +284,46 @@ export const ReadMore = ({
       </>
     );
   };
-  const [showFullText, setShowFullText] = useState(false);
-  const [showpartialText, setshowpartialText] = useState(true);
-  const [textHeight, setTextHeight] = useState(0);
-  const textRef = useRef(null);
-  const toggleShowFullText = () => setShowFullText(!showFullText);
-  const toggleShowpartialText = () => setshowpartialText(!showpartialText);
-  useEffect(() => {
-    setTextHeight(textRef.current.offsetHeight);
-  }, [textRef]);
 
-  const isFullTxt = () => {
-    if (isReadMore || showFullText) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const [showLink, setShowLink] = useState(false);
 
-  const getValidShowmoreTxt = () => {
-    if (detectMob()) {
-      return 25;
-    } else {
-      return 55;
+  useLayoutEffect(() => {
+    if (
+      ref.current &&
+      ref.current.clientHeight < ref.current.scrollHeight &&
+      !isReadMore
+    ) {
+      isReadMoreValid();
+      setShowLink(true);
+    } else if (isReadMore) {
+      setOpen(true);
     }
-  };
+  }, [ref]);
 
-  const getValidPartialShowmoreTxt = () => {
-    if (detectMob()) {
-      return 200;
-    } else {
-      return 300;
-    }
-  };
-  const linkProps = {
-    onClick: (event) => {
-      alert("Are you sure you want to leave this page?");
-    },
-  };
+  let textClass = `text${partialShowLines}lines`;
+  if (open) {
+    textClass += " open";
+  }
 
   return (
     <Linkify options={{ render: renderLink }}>
-      <p
-        ref={textRef}
-        style={{ maxHeight: maxheight ? maxheight : "" }}
-        className={`readmore_text ${
-          isFullTxt()
-            ? showpartialText
-              ? "partial_readmore"
-              : "full_readmore"
-            : ""
-        }`}
-      >
-        {children}
-      </p>
-      {!isReadMore && textHeight > getValidShowmoreTxt() ? (
-        <>
-          <span
-            onClick={toggleShowFullText}
-            style={{ color: "#e26386", cursor: "pointer" }}
-          >
-            {showFullText ? "Read Less" : "Read More"}
-          </span>
-        </>
-      ) : textHeight > getValidPartialShowmoreTxt() ? (
-        <span
-          onClick={toggleShowpartialText}
-          style={{ color: "#e26386", cursor: "pointer" }}
-        >
-          {!showpartialText ? "Read Less" : "Read More"}
+      <div>
+        <span class={textClass} ref={ref}>
+          {children}
         </span>
-      ) : null}
+        {showLink && (
+          <>
+            <span
+              onClick={() => setOpen(!open)}
+              style={{ color: "#e26386", cursor: "pointer" }}
+            >
+              {open ? "Read Less" : "Read More"}
+            </span>
+          </>
+        )}
+      </div>
     </Linkify>
   );
 };

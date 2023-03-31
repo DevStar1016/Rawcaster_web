@@ -6,7 +6,6 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import SpecificConnectionorGroup from "../../Modal/Nugget/SpecificConnectionorGroup";
-import RedirectModal from "../../Modal/Verification/RedirectModal";
 import WarningModal from "../../Modal/Verification/WarningModal";
 import {
   deleteNuggetService,
@@ -37,7 +36,6 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
-
 import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import ProfileImg from "../../UIComponents/ProfileImg";
 import CommentsList from "./CommentsList";
@@ -77,6 +75,7 @@ const Post = ({
     id: "",
   });
   const [iscollapse, setiscollapse] = useState(false);
+  const [isvalidContent, setisvalidContent] = useState(false);
   const [ContentLength, setContentLength] = useState();
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const textref = useRef(null);
@@ -91,7 +90,7 @@ const Post = ({
   });
 
   const viewHandler = () => {
-    if (ele.viewed === 0) {
+    if (ele.viewed === 0 && Token) {
       let viewNugget = {
         token: Token,
         nugget_id: ele.nugget_id,
@@ -151,26 +150,32 @@ const Post = ({
   };
 
   const getMoreValues = (ele) => {
-    if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
-      let resultData = [
-        {
-          key: 2,
-          label: <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>,
-        },
-      ];
-      return resultData;
-    } else if (ele.user_id === loginUserData?.user_id) {
-      let resultData = [
-        {
-          key: 1,
-          label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
-        },
-        {
-          key: 2,
-          label: <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>,
-        },
-      ];
-      return resultData;
+    if (ele.user_id === loginUserData?.user_id) {
+      if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
+        let resultData = [
+          {
+            key: 2,
+            label: (
+              <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>
+            ),
+          },
+        ];
+        return resultData;
+      } else {
+        let resultData = [
+          {
+            key: 1,
+            label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
+          },
+          {
+            key: 2,
+            label: (
+              <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>
+            ),
+          },
+        ];
+        return resultData;
+      }
     } else {
       let resultData = [
         {
@@ -299,7 +304,7 @@ const Post = ({
       ele.media_list.length !== 0 || ele.metadata ? true : false;
     if (isvalidCollapse) {
       return false;
-    } else if (ContentLength < 100) {
+    } else if (!isvalidContent) {
       return true;
     } else {
       return false;
@@ -353,6 +358,18 @@ const Post = ({
     });
 
     HandleShare();
+  };
+
+  const getNumberofLines = () => {
+    if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
+      if (ele.poll_option?.length === 4) {
+        return 3;
+      } else if (ele.poll_option?.length === 3) {
+        return 4;
+      } else if (ele.poll_option?.length === 2) {
+        return 5;
+      }
+    }
   };
 
   return (
@@ -457,6 +474,10 @@ const Post = ({
                   isReadMore={isReadMore()}
                   isLinkopenModal={isLinkopenModal}
                   setisLinkopenModal={setisLinkopenModal}
+                  partialShowLines={getNumberofLines()}
+                  isReadMoreValid={() => {
+                    setisvalidContent(true);
+                  }}
                 >
                   {decodeHtml(ele?.content)}
                 </ReadMore>
@@ -541,7 +562,7 @@ const Post = ({
                     results={ele.poll_option}
                     // isVotedId={11}
                     TotalVotes={ele?.total_vote}
-                    isVoted={isVoted(ele)}
+                    isVoted={parseInt(ele?.voted) === 1}
                     created_date={ele.created_date}
                     VoteTiming={ele.poll_duration}
                   />
@@ -618,59 +639,56 @@ const Post = ({
                   <span>{ele.total_comments}</span>
                 </div>
 
-                <div
-                  className={classes.iconsec}
-                  style={{
-                    display:
-                      ele?.is_nugget_owner === 1 ||
-                      ele?.is_nugget_owner ||
-                      ele.share_type !== 1
-                        ? "none"
-                        : "",
-                  }}
-                >
-                  <Dropdown
-                    disabled={!isAccountValid()}
-                    menu={{
-                      items: SHARED_TYPE,
-                      onClick: ({ key }) => {
-                        if (parseInt(key) === 3 || parseInt(key) === 4) {
-                          setGrouporConnectionModal({
-                            show: true,
-                            id: ele.nugget_id,
-                            type:
-                              parseInt(key) === 3
-                                ? "group"
-                                : parseInt(key) === 4 && "connections",
-                          });
-                        } else {
-                          handlesharepost(ele.nugget_id, key);
-                        }
-                      },
+                {ele?.poll_option?.length === 0 && (
+                  <div
+                    className={classes.iconsec}
+                    style={{
+                      display: ele.share_type !== 1 ? "none" : "",
                     }}
                   >
-                    <p
-                      onClick={() => {
-                        if (getAuthenticated()) {
-                          if (isAccountValid()) {
+                    <Dropdown
+                      disabled={!isAccountValid()}
+                      menu={{
+                        items: SHARED_TYPE,
+                        onClick: ({ key }) => {
+                          if (parseInt(key) === 3 || parseInt(key) === 4) {
+                            setGrouporConnectionModal({
+                              show: true,
+                              id: ele.nugget_id,
+                              type:
+                                parseInt(key) === 3
+                                  ? "group"
+                                  : parseInt(key) === 4 && "connections",
+                            });
                           } else {
-                            dispatch(
-                              handleprofileVerifyModalShow({
-                                show: true,
-                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                              })
-                            );
+                            handlesharepost(ele.nugget_id, key);
                           }
-                        } else {
-                          dispatch(handleloginModalShow(true));
-                        }
+                        },
                       }}
                     >
-                      <i className={`${classes.share_icon}`} />
-                    </p>
-                  </Dropdown>
-                  {/* <span>0</span> */}
-                </div>
+                      <p
+                        onClick={() => {
+                          if (getAuthenticated()) {
+                            if (isAccountValid()) {
+                            } else {
+                              dispatch(
+                                handleprofileVerifyModalShow({
+                                  show: true,
+                                  msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                                })
+                              );
+                            }
+                          } else {
+                            dispatch(handleloginModalShow(true));
+                          }
+                        }}
+                      >
+                        <i className={`${classes.share_icon}`} />
+                      </p>
+                    </Dropdown>
+                    {/* <span>0</span> */}
+                  </div>
+                )}
 
                 <div
                   className={

@@ -45,7 +45,6 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
-  const { loginModalShow } = useDashboard();
   const { values, handleChange, handleSubmit, errors, touched, setFieldError } =
     useFormik({
       initialValues: {

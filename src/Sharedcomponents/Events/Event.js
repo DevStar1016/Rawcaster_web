@@ -17,10 +17,10 @@ const Event = ({ ele, handleEdit }) => {
   return (
     <div className={classes.eventItem}>
       <img className={classes.eventImg} src={ele?.banner_image} />
-      <div className={classes.view}>
+      {/* <div className={classes.view}>
         <span class="material-symbols-outlined">visibility</span>{" "}
         {ele.no_of_participants}
-      </div>
+      </div> */}
       <div className={classes.share}>
         <span class="material-symbols-outlined">share</span>
       </div>

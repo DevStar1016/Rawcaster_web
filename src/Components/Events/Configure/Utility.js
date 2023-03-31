@@ -199,10 +199,19 @@ export const InviteEmailComponent = ({ onResult, value }) => {
 
   useEffect(() => {
     if (value && externalMailId.length === 0) {
-      if (value.length !== 0) {
-        setExternalMailId(value);
-      } else {
-        setExternalMailId([]);
+      try {
+        let finalValue = JSON.parse(value);
+        if (finalValue.length !== 0) {
+          setExternalMailId(finalValue);
+        } else {
+          setExternalMailId([]);
+        }
+      } catch (err) {
+        if (value.length !== 0) {
+          setExternalMailId(value);
+        } else {
+          setExternalMailId([]);
+        }
       }
     }
   }, [value]);
