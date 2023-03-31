@@ -6,4 +6,7 @@
 
 @media (max-width:768px) {
     .fullcontainer { width: 100%; }
+    .ribbon a { font-size: 12px;}
+    .smlogo { height: 19px; }
 }
+
