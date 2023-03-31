@@ -245,10 +245,12 @@ cursor: pointer;
 @media (max-width:768px) {
   .nuggetSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
   .proName p{font-size: 14px;}
-  .profilePart .proImg { width: 60px;}
+  .profilePart .proImg { width: 50px;}
   .proImg img { width: 45px; height: 45px;}
+  .badgeImg { width: 20px !important; height: 20px !important; }
   .viewCount { position: absolute; right: 5px; top: 20px;}
-  .detailsRange { font-size: 12px;}
+  .detailsRange  { font-size: 11px; }
+  .detailsRange i { font-size: 9px; padding: 0 2px;}
   .dropMenu { width: 30px;}
   .profilePart { width: calc(100% - 30px); }
   .floattingSec { width: 45px; padding-left: 10px;  }
