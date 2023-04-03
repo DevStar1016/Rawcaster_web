@@ -28,9 +28,10 @@ import {
 } from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuthData } from "../Shared/Reduxfetcher";
-import Connections from "../Components/Connections/Connections";
+
 import RedirectModal from "../Modal/Verification/RedirectModal";
-import Groups from "../Components/Groups/Groups";
+import Connections from "../Components/Connections/Friends/Connections";
+import Groups from "../Components/Connections/Groups/Groups";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();

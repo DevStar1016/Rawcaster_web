@@ -46,7 +46,7 @@ const Grouplist = () => {
         setFilteredList={setFilteredList}
         setConnectionData={setConnectionData}
         type={"group"}
-        list={groupsList}
+        list={ConnectionData}
         ConnectionData={ConnectionData}
         handleClose={(ele) => {
           setFilteredList((pre) =>

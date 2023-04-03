@@ -16,7 +16,6 @@ import {
   getAuthToken,
   isValidImageFile,
   JSONtoformdata,
-  ReadMore,
 } from "../../Shared/Utility";
 import Events from "./Components/Events";
 import UnclaimedInfluencers from "./Components/UnclaimedInfluencers";
@@ -30,15 +29,16 @@ import { getProfile } from "../Auth/getProfile";
 import { useDispatch } from "react-redux";
 import { Skeleton, Spin } from "antd";
 import FansThumb from "./Components/FansThumb";
-import { useParams } from "react-router";
-import Connections from "../Connections/Connections";
-import { replaceBiodataHandler } from "./Utility";
+import { useNavigate, useParams } from "react-router";
+import Connections from "../Connections/Friends/Connections";
 import moment from "moment";
 import { ProfileContext } from "../../Shared/Context";
+import BioContainer from "./Components/BioContainer";
 
 const Profile = () => {
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
+  const navigate = useNavigate();
   const { isSuccess } = useAuth();
   const loginToken = useAuthToken();
   const dispatch = useDispatch();
@@ -49,6 +49,7 @@ const Profile = () => {
   const [FansList, setFansList] = useState({
     fans: [],
     count: 0,
+    isLoaded: false,
   });
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const [profileData, setprofileData] = useState();
@@ -128,6 +129,9 @@ const Profile = () => {
   const profileValue = {
     FansList,
     setFansList,
+    profileData,
+    isLinkopenModal,
+    setisLinkopenModal,
   };
 
   return (
@@ -247,33 +251,21 @@ const Profile = () => {
 
           <div className={classes.fullcontainer}>
             <div className={classes.profileevent}>
-              <div className={classes.profileIntro}>
-                <h2>
-                  About {profileData?.first_name}{" "}
-                  <i class="material-icons">fiber_manual_record</i>{" "}
-                  <span>Entertainer</span>
-                </h2>
-                {isSuccess && profileData ? (
-                  <ReadMore
-                    maxheight={"64px"}
-                    isReadMore={false}
-                    isLinkopenModal={isLinkopenModal}
-                    setisLinkopenModal={setisLinkopenModal}
-                    isReadMoreValid={() => {
-                      console.log("valid");
-                    }}
-                  >
-                    {replaceBiodataHandler(loginUserData)}
-                  </ReadMore>
-                ) : (
-                  <Skeleton active />
-                )}
-              </div>
+              <BioContainer />
 
               {isSuccess ? (
                 <div className={classes.intro}>
                   <div className={classes.headingSec}>
                     <h2>Intro</h2>
+                    <div
+                      className={classes.editSec}
+                      onClick={() => {
+                        window.scrollTo(0, 0);
+                        navigate("/profile");
+                      }}
+                    >
+                      <i className={classes.editIcon}></i>
+                    </div>
                   </div>
                   {/* <div className={classes.item}>
                 <p>

@@ -17,6 +17,7 @@ export const replaceBiodataHandler = (data, type = "display") => {
         defaultBioDataformat +
         "<first_name> <last_name> is  <age> years old, was born in <dob>. ";
     }
+
     if (data.geo_location !== "") {
       defaultBioDataformat =
         defaultBioDataformat +

@@ -16,7 +16,10 @@ import {
   addNuggetViewService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
-import { SingleNuggetContext } from "../../Shared/Context";
+import {
+  SingleNuggetContext,
+  useListNuggetContext,
+} from "../../Shared/Context";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   dateToShortDate,
@@ -55,6 +58,7 @@ const Post = ({
   setmuted,
   onEdit,
 }) => {
+  const { NuggetList } = useListNuggetContext();
   const lodash = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
@@ -98,7 +102,7 @@ const Post = ({
       };
       addNuggetViewService(JSONtoformdata(viewNugget))
         .then((res) => {
-          handleView();
+          handleView(NuggetList);
         })
         .catch((err) => {});
     }
@@ -411,21 +415,23 @@ const Post = ({
             </p>
           </div>
           <p className={classes.detailsRange}>
-            <Tooltip
-              title={
-                userSettings
-                  ? datetoString(
-                      utctoUserTimezone(
-                        ele.created_date,
-                        userSettings.time_zone
+            {ele && (
+              <Tooltip
+                title={
+                  userSettings
+                    ? datetoString(
+                        utctoUserTimezone(
+                          ele.created_date,
+                          userSettings.time_zone
+                        )
                       )
-                    )
-                  : null
-              }
-              color="rgb(250, 162, 27)"
-            >
-              {dateToShortDate(ele?.created_date)}
-            </Tooltip>
+                    : null
+                }
+                color="rgb(250, 162, 27)"
+              >
+                {dateToShortDate(ele?.created_date)}
+              </Tooltip>
+            )}
             <i class="material-icons">fiber_manual_record</i>
             {ele?.total_views} Views{" "}
             {ele?.share_type === 3 || ele?.share_type === 4 ? (

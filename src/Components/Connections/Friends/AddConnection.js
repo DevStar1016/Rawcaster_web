@@ -1,12 +1,16 @@
 import { Modal, Spin } from "antd";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { sendFriendRequestsService } from "../../Services/ApiService";
-import { friendRequestSocket } from "../../Services/SocketList";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
-import { decodeHtml, getAuthToken, JSONtoformdata } from "../../Shared/Utility";
-import SearchFriends from "./Components/SearchFriends";
-import classes from "./Connections.module.css";
+import { sendFriendRequestsService } from "../../../Services/ApiService";
+import { friendRequestSocket } from "../../../Services/SocketList";
+import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
+import {
+  decodeHtml,
+  getAuthToken,
+  JSONtoformdata,
+} from "../../../Shared/Utility";
+import classes from "../Connections.module.css";
+import SearchFriends from "../Components/SearchFriends";
 
 const AddConnection = ({ open, close }) => {
   const token = useAuthToken();

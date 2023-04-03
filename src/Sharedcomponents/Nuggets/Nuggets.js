@@ -13,7 +13,10 @@ import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import PostNuggets from "./PostNuggets";
-import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleLoading,
+  handleNuggetList,
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { ListNuggetContext } from "../../Shared/Context";
 import axios from "axios";
@@ -37,7 +40,7 @@ const Nuggets = () => {
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
-  const { DashboardfilterType } = useDashboard();
+  const { DashboardfilterType, Nuggets } = useDashboard();
   const [filterType, setfilterType] = useState(0);
   const [muted, setmuted] = useState(false);
   const dispatch = useDispatch();
@@ -101,7 +104,6 @@ const Nuggets = () => {
           user_id: display_user_id,
         };
       }
-
       listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
         .then((res) => {
           if (res.data.status === 1) {
@@ -159,6 +161,10 @@ const Nuggets = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginUserData, isSuccess]);
+
+  // useEffect(() => {
+  //   dispatch(handleNuggetList(NuggetList));
+  // }, [NuggetList]);
 
   useEffect(() => {
     if (params.key) {
@@ -297,16 +303,18 @@ const Nuggets = () => {
                       muted={muted}
                       setmuted={setmuted}
                       handleView={() => {
-                        let findIndex = NuggetList.findIndex(
-                          (elem) => elem.nugget_id === ele.nugget_id
-                        );
-                        let tempData = [...NuggetList];
-                        if (tempData[findIndex].viewed !== 1) {
-                          tempData[findIndex].total_views =
-                            tempData[findIndex].total_views + 1;
-                        }
-                        tempData[findIndex].viewed = 1;
-                        setNuggetList(tempData);
+                        console.log(Nuggets, "===>Nuggets");
+                        // let findIndex = getValidNuggets().findIndex(
+                        //   (elem) => elem.nugget_id === ele.nugget_id
+                        // );
+                        // let tempData = [...getValidNuggets()];
+                        // if (tempData[findIndex].viewed !== 1) {
+                        //   tempData[findIndex].total_views =
+                        //     tempData[findIndex].total_views + 1;
+                        // }
+                        // tempData[findIndex].viewed = 1;
+                        // console.log(tempData);
+                        // setNuggetList(tempData);
                       }}
                       handleLike={(like) => {
                         let findIndex = NuggetList.findIndex(

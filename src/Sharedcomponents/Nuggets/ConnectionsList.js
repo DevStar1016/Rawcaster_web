@@ -52,7 +52,7 @@ const ConnectionsList = () => {
         displayData={FilteredList}
         setFilteredList={setFilteredList}
         setConnectionData={setConnectionData}
-        list={friendsList}
+        list={ConnectionData}
         type={"connection"}
         ConnectionData={ConnectionData}
         handleClose={(ele) => {

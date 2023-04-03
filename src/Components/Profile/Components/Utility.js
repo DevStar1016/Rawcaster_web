@@ -16,11 +16,22 @@ export const getfollowerfollowingService = (fansList) => {
           resolve({
             fans: res.data.follow_list.slice(0, 8),
             count: getFansCount(),
+            isLoaded: true,
+          });
+        } else {
+          resolve({
+            fans: [],
+            count: 0,
+            isLoaded: true,
           });
         }
       })
       .catch((err) => {
-        reject(err.message);
+        resolve({
+          fans: [],
+          count: 0,
+          isLoaded: true,
+        });
       });
   });
   return promise;

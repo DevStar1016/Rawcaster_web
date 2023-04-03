@@ -12,6 +12,7 @@ const initialState = {
   isGlobalSearch: false,
   friendsList: [],
   groupsList: [],
+  Nuggets: [],
   isNuggetMuted: false,
   DashboardfilterType: 0,
 };
@@ -59,6 +60,9 @@ export const { actions, reducer } = createSlice({
     handleDashboardFilterType: (state, action) => {
       state.DashboardfilterType = action.payload;
     },
+    handleNuggetList: (state, action) => {
+      state.Nuggets = action.payload;
+    },
   },
 });
 
@@ -76,6 +80,7 @@ export const {
   handleGroupsList,
   handleisNuggetMuted,
   handleDashboardFilterType,
+  handleNuggetList,
 } = actions;
 
 export default reducer;

@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { listEventsService } from "../../Services/ApiService";
 import {
+  useAuth,
   useAuthData,
   useAuthToken,
   useDashboard,
@@ -21,6 +22,7 @@ import classes from "./Events.module.css";
 const Events = () => {
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
+  const { isSuccess } = useAuth();
   const token = useAuthToken();
   const { DashboardfilterType } = useDashboard();
   const [EventListData, setEventListData] = useState();
@@ -38,7 +40,6 @@ const Events = () => {
       event_type: event_type,
       page_number: 1,
     };
-    console.log(eventData, "==>Events");
     listEventsService(JSONtoformdata(eventData))
       .then((res) => {
         if (res.data.status === 1) {
@@ -61,23 +62,7 @@ const Events = () => {
         getEvents(ActiveEvent.key);
       }
     }
-  }, [token, isTalkshowOpen]);
-
-  // const getValidEvent = () => {
-  //   if (EventListData && EventListData.length !== 0) {
-  //     const filteredArr = EventListData.reduce((acc, current) => {
-  //       const x = acc.find((item) => item.event_id === current.event_id);
-  //       if (!x) {
-  //         return acc.concat([current]);
-  //       } else {
-  //         return acc;
-  //       }
-  //     }, []);
-  //     return filteredArr;
-  //   } else {
-  //     return [];
-  //   }
-  // };
+  }, [token, isTalkshowOpen, isSuccess]);
 
   return (
     <div className={classes.eventSec}>
@@ -133,6 +118,23 @@ const Events = () => {
                       <div
                         onClick={() => {
                           setisFetching(true);
+                          getEvents(2);
+                          setActiveEvent({ value: "Invited Events", key: 2 });
+                        }}
+                      >
+                        Invited Events
+                      </div>
+                    ),
+                    key: "1",
+                  },
+                  {
+                    type: "divider",
+                  },
+                  {
+                    label: (
+                      <div
+                        onClick={() => {
+                          setisFetching(true);
                           getEvents(1);
                           setActiveEvent({ value: "My Events", key: 1 });
                         }}
@@ -140,7 +142,7 @@ const Events = () => {
                         My Events
                       </div>
                     ),
-                    key: "1",
+                    key: "2",
                   },
                 ],
               }}

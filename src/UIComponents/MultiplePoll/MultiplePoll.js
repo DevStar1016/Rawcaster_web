@@ -149,8 +149,12 @@ const MultiplePoll = ({
   };
 
   useEffect(() => {
-    if (moment(created_date).isBefore()) {
-      console.log(moment(created_date, "YYYY-MM-DD HH:mm:ss").isBefore());
+    const [daysval, hoursval, minutesval] = VoteTiming.split(":");
+    if (
+      moment(created_date)
+        .add({ days: daysval, hours: hoursval, minutes: minutesval })
+        .isBefore()
+    ) {
       animateAnswers(-1);
       setpollVotedData({
         isVoted: true,

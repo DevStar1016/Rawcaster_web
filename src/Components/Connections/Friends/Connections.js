@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { socketListen } from "../../Services/SocketService";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
-import classes from "./Connections.module.css";
+import { socketListen } from "../../../Services/SocketService";
+import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import classes from "../Connections.module.css";
 import {
   listAllFriendRequestsService,
   listAllFriendsService,
-} from "../../Services/ApiService";
+} from "../../../Services/ApiService";
 import { useDispatch } from "react-redux";
-import { handleFriendsList } from "../../Store/Redux/Reducer/DashboardReducer";
+import { handleFriendsList } from "../../../Store/Redux/Reducer/DashboardReducer";
 import AddConnection from "./AddConnection";
-import Request from "./Components/Request";
-import Friends from "./Components/Friends";
+
 import { toast } from "react-hot-toast";
+import Request from "../Components/Request";
+import Friends from "../Components/Friends";
 
 const Connections = () => {
   const dispatch = useDispatch();

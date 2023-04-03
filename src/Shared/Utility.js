@@ -398,10 +398,10 @@ export const { utcOffsetStr } = getTimezone(moment.tz.guess());
 
 export const utctoUserTimezone = (time, zonename) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
-  let displayCutoff = moment1(utcCutoff)
-    .tz(getTimezoneName(zonename))
-    .format("YYYY-MM-DD HH:mm:ss");
-  return moment(displayCutoff);
+  // let displayCutoff = moment1(utcCutoff)
+  //   .tz(getTimezoneName(zonename))
+  //   .format("YYYY-MM-DD HH:mm:ss");
+  return moment(utcCutoff);
 };
 
 export const getDisplayEventTime = (time) => {
