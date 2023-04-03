@@ -11,13 +11,17 @@ import {
 } from "../../Services/ApiService";
 import { ListNuggetContext } from "../../Shared/Context";
 import { useDashboard } from "../../Shared/Reduxfetcher";
-import { getAuthenticated, JSONtoformdata } from "../../Shared/Utility";
+import {
+  getAuthenticated,
+  getRawcaserToken,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import Post from "../../Sharedcomponents/Nuggets/Post";
 import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import { getLocalStorageData } from "../../Store/Storage";
+import { getCookieData } from "../../Store/Storage";
 import classes from "./GlobalSearch.module.css";
 
 let isRequestCancel = false;
@@ -37,7 +41,7 @@ const NuggetsList = () => {
 
   const getToken = () => {
     if (getAuthenticated()) {
-      const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+      const userData = getRawcaserToken();
       return userData?.token;
     } else {
       return "RAWCAST";

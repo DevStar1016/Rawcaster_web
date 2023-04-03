@@ -12,3 +12,6 @@ export const useSingleNuggetContext = () => useContext(SingleNuggetContext);
 export const SpecificConnectionNugget = createContext();
 export const useSpecificConnectionNugget = () =>
   useContext(SpecificConnectionNugget);
+
+export const ProfileContext = createContext();
+export const useProfileContext = () => useContext(ProfileContext);

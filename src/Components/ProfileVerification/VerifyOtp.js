@@ -155,12 +155,11 @@ const VerifyOtp = () => {
     signupVerifyService(JSONtoformdata(ResetPasswordValue))
       .then((res) => {
         if (res.data.status === 1) {
-          const navigateHandle = () => {
+          getProfile(loginToken, dispatch).then(() => {
             navigate("/dashboard");
             dispatch(handleLoading(false));
             toast.success(res.data.msg);
-          };
-          getProfile(loginToken, dispatch, navigateHandle);
+          });
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }

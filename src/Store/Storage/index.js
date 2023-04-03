@@ -1,7 +1,7 @@
 import { getCookie, setCookie } from "./Cookie";
 
-export const setCookieData = (key, value) => {
-  return setCookie(key, value);
+export const setCookieData = (key, value, exdays = 30) => {
+  return setCookie(key, value, exdays);
 };
 
 export const setLocalStorageData = (key, value) => {

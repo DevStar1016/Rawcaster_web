@@ -150,6 +150,7 @@ const MultiplePoll = ({
 
   useEffect(() => {
     if (moment(created_date).isBefore()) {
+      console.log(moment(created_date, "YYYY-MM-DD HH:mm:ss").isBefore());
       animateAnswers(-1);
       setpollVotedData({
         isVoted: true,

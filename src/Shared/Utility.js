@@ -1,11 +1,7 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
 import { ENCRIPTION_STRING, GECODE_API_KEY } from "./Constant";
-import {
-  getLocalStorageData,
-  removeCookieData,
-  removeLocalStorageData,
-} from "../Store/Storage";
+import { getCookieData, removeCookieData } from "../Store/Storage";
 import {
   handleLoginData,
   handleToken,
@@ -16,11 +12,19 @@ import { useEffect, useRef, useState } from "react";
 import Linkify from "linkify-react";
 import LinkOpenModal from "../Modal/Verification/LinkOpenModal";
 import moment from "moment";
-import momentTZ from "moment-timezone";
+import moment1 from "moment-timezone";
 import { getTimezone } from "countries-and-timezones";
 import { useLayoutEffect } from "react";
 
 // Auth
+
+export const getRawcaserToken = () => {
+  try {
+    return JSON.parse(getCookieData("rawcaster_user_token"));
+  } catch (error) {
+    return null;
+  }
+};
 
 export const getAuthToken = (value) => {
   var sha1 = require("sha1");
@@ -44,7 +48,6 @@ export const RemoveToken = (dispatch) => {
   dispatch(handleLoginData(null));
   dispatch(handleToken(null));
   removeCookieData("rawcaster_user_token");
-  removeLocalStorageData("rawcaster_user_token");
 };
 
 //GEO_CODE_CONFIGURE
@@ -156,7 +159,7 @@ export const getDataValueById = (data, id) => {
 };
 
 export const getAuthenticated = () => {
-  if (getLocalStorageData("rawcaster_user_token")) {
+  if (getRawcaserToken()) {
     return true;
   } else {
     return false;
@@ -243,7 +246,7 @@ export const isValidData = (data) => {
 };
 
 export const isAccountValid = () => {
-  let userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+  let userData = getRawcaserToken();
   if (userData && userData?.acc_verify_status === 1) {
     return true;
   } else {
@@ -391,19 +394,11 @@ export const getTimezoneName = (str) => {
   else return str;
 };
 
-export const utcToUserTimezone = (time, zonename) => {
-  let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
-  let displayCutoff = momentTZ(utcCutoff)
-    .tz(getTimezoneName(zonename))
-    .format("YYYY-MM-DD HH:mm:ss");
-  return moment(displayCutoff);
-};
-
 export const { utcOffsetStr } = getTimezone(moment.tz.guess());
 
 export const utctoUserTimezone = (time, zonename) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
-  let displayCutoff = momentTZ(utcCutoff)
+  let displayCutoff = moment1(utcCutoff)
     .tz(getTimezoneName(zonename))
     .format("YYYY-MM-DD HH:mm:ss");
   return moment(displayCutoff);
@@ -431,4 +426,14 @@ export const getDisplayEventDate = (
     return utcOffsetStr ? todaysDate : "";
   }
   return "";
+};
+
+export const dateToShortDate = (time) => {
+  let date = new Date();
+  var utcCutoff = moment.utc(date);
+  return moment(moment.utc(time)).from(utcCutoff) + "";
+};
+
+export const datetoString = (t) => {
+  return moment(t).format("D MMM YYYY [ • ] h:mm A ");
 };

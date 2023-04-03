@@ -54,6 +54,9 @@ export const contactusService = (data) => {
 export const getProfileService = (data) => {
   return axios.post("getmyprofile", data);
 };
+export const getUserSettingsService = (data) => {
+  return axios.post("getusersettings", data);
+};
 export const getOthersProfileService = (data) => {
   return axios.post("getothersprofile", data);
 };

@@ -1,41 +1,66 @@
 import { toast } from "react-hot-toast";
-import { getProfileService } from "../../Services/ApiService";
+import {
+  getProfileService,
+  getUserSettingsService,
+} from "../../Services/ApiService";
 import ConnectSocket from "../../Services/SocketService";
 import { decodeHtml, getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import {
   handleLoginData,
   handleToken,
+  handleisSuccess,
+  handleuserSettings,
 } from "../../Store/Redux/Reducer/AuthReducer";
 import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
-import { setCookieData, setLocalStorageData } from "../../Store/Storage";
 
-export const getProfile = (token, dispatch, navigateHandle) => {
+export const getProfile = (token, dispatch) => {
+  let promise = new Promise((resolve, reject) => {
+    let profileData = {
+      token: token,
+      auth_code: getAuthToken(token),
+    };
+    getProfileService(JSONtoformdata(profileData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          getUserSettings(token, dispatch);
+          let profileData = {
+            ...res.data.profile,
+            first_name: decodeHtml(res.data.profile.first_name),
+            last_name: decodeHtml(res.data.profile.last_name),
+            name: decodeHtml(res.data.profile.name),
+          };
+          dispatch(handleLoginData({ token: token, ...profileData }));
+          dispatch(handleToken(token));
+          if (res.data.profile.acc_verify_status === 0) {
+            handleVerifyModal(res.data.profile, dispatch);
+          }
+          ConnectSocket(res.data.profile);
+          resolve(res.data.profile);
+        } else {
+          reject();
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        reject();
+        toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleisSuccess(true));
+      });
+  });
+  return promise;
+};
+
+export const getUserSettings = (token, dispatch) => {
   let profileData = {
     token: token,
     auth_code: getAuthToken(token),
   };
-  getProfileService(JSONtoformdata(profileData))
+  getUserSettingsService(JSONtoformdata(profileData))
     .then((res) => {
       if (res.data.status === 1) {
-        let profileData = {
-          ...res.data.profile,
-          first_name: decodeHtml(res.data.profile.first_name),
-          last_name: decodeHtml(res.data.profile.last_name),
-          name: decodeHtml(res.data.profile.name),
-        };
-        dispatch(handleLoginData({ token: token, ...profileData }));
-        dispatch(handleToken(token));
-        setCookieData("rawcaster_user_token", token);
-        setLocalStorageData(
-          "rawcaster_user_token",
-          JSON.stringify({ token: token, ...profileData })
-        );
-
-        if (res.data.profile.acc_verify_status === 0) {
-          handleVerifyModal(res.data.profile, dispatch);
-        }
-        ConnectSocket(res.data.profile);
-        navigateHandle();
+        dispatch(handleuserSettings(res.data.settings));
       } else {
         toast.error(res.data.msg);
       }

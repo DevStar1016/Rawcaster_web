@@ -10,9 +10,10 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import {
   getAuthenticated,
   getAuthToken,
+  getRawcaserToken,
   JSONtoformdata,
 } from "../../Shared/Utility";
-import { getLocalStorageData } from "../../Store/Storage";
+import { getCookieData } from "../../Store/Storage";
 import { toast } from "react-hot-toast";
 import {
   handleisGlobalSearch,
@@ -39,7 +40,7 @@ const ProfileList = () => {
 
   const getToken = () => {
     if (getAuthenticated()) {
-      const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+      const userData = getRawcaserToken();
       return userData?.token;
     } else {
       return "RAWCAST";

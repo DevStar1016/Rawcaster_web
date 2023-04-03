@@ -26,13 +26,12 @@ import {
 } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { useAuthData } from "../Shared/Reduxfetcher";
+import { useAuth, useAuthData } from "../Shared/Reduxfetcher";
 import {
   handledasboardTab,
   handleisGlobalSearch,
   handleLoading,
   handleloginModalShow,
-  handleprofileVerifyModalShow,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
 
@@ -40,6 +39,7 @@ const HomeLayout = () => {
   const params = useParams();
   const inputRef = useRef();
   const { pathname } = useLocation();
+  const { isSuccess } = useAuth();
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
@@ -229,8 +229,10 @@ const HomeLayout = () => {
                             removeSessionStorageData("influencerData");
                           }}
                         >
-                          {loginUserData
+                          {loginUserData && isSuccess
                             ? loginUserData?.name
+                            : !isSuccess
+                            ? "Hello User"
                             : "Log in/Sign up"}
                         </span>
                       </Tooltip>

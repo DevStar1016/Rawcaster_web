@@ -9,16 +9,15 @@ import {
   JSONtoformdata,
 } from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
+import { useProfileContext } from "../../../Shared/Context";
+import { getfollowerfollowingService } from "./Utility";
 
 const FansThumb = ({ isLoginUser }) => {
+  const { FansList, setFansList } = useProfileContext();
   const navigate = useNavigate();
   const loginToken = useAuthToken();
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
-  const [FansList, setFansList] = useState({
-    fans: [],
-    count: 0,
-  });
 
   const getFollowers = () => {
     let fansList = {
@@ -31,21 +30,9 @@ const FansThumb = ({ isLoginUser }) => {
         user_id: display_user_id,
       };
     }
-    getFollowListService(JSONtoformdata(fansList))
+    getfollowerfollowingService(fansList)
       .then((res) => {
-        if (res.data.status === 1) {
-          const getFansCount = () => {
-            if (parseInt(res.data.follow_count) > 8) {
-              return parseInt(res.data.follow_count) - 8;
-            } else {
-              return 0;
-            }
-          };
-          setFansList({
-            fans: res.data.follow_list.slice(0, 8),
-            count: getFansCount(),
-          });
-        }
+        setFansList(res);
       })
       .catch((err) => {
         toast.error(err.message);
@@ -55,7 +42,7 @@ const FansThumb = ({ isLoginUser }) => {
   useEffect(() => {
     if (FansList.fans.length === 0 && loginToken) {
       getFollowers();
-    } else {
+    } else if (params?.user_id) {
       getFollowers();
     }
   }, [loginToken, params]);

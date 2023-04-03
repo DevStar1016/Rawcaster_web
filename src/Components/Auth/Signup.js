@@ -92,11 +92,8 @@ const Signup = () => {
     SocialMediaLoginService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          dispatch(handleLoginData(res.data));
-          setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
-          setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
-          const navigateHandle = () => {
-            dispatch(handleLoading(false));
+          getProfile(res.data.token, dispatch).then(() => {
+            setCookieData("rawcaster_user_token", JSON.stringify(res.data));
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
@@ -105,8 +102,7 @@ const Signup = () => {
             } else {
               navigate("/dashboard");
             }
-          };
-          getProfile(res.data.token, dispatch, navigateHandle);
+          });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {

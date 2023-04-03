@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./Profile.module.css";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
@@ -32,18 +32,26 @@ import { Skeleton, Spin } from "antd";
 import FansThumb from "./Components/FansThumb";
 import { useParams } from "react-router";
 import Connections from "../Connections/Connections";
+import { replaceBiodataHandler } from "./Utility";
+import moment from "moment";
+import { ProfileContext } from "../../Shared/Context";
 
 const Profile = () => {
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
+  const { isSuccess } = useAuth();
   const loginToken = useAuthToken();
   const dispatch = useDispatch();
   const coverRef = useRef();
   const profileRef = useRef();
   const loginUserData = useAuthData();
-
+  const [isCoverLoading, setisCoverLoading] = useState(true);
+  const [FansList, setFansList] = useState({
+    fans: [],
+    count: 0,
+  });
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
-  const [profileData, setprofileData] = useState([]);
+  const [profileData, setprofileData] = useState();
   const [isUploading, setisUploading] = useState(false);
   const [profileImg, setprofileImg] = useState({
     type: "",
@@ -74,10 +82,9 @@ const Profile = () => {
     updateProfileService(JSONtoformdata(profileValue))
       .then((res) => {
         if (res.data.status === 1) {
-          const modalHandle = () => {
+          getProfile(loginToken, dispatch).then(() => {
             setisUploading(false);
-          };
-          getProfile(loginToken, dispatch, modalHandle);
+          });
         } else {
           toast.error(res.data.msg);
           setisUploading(false);
@@ -118,140 +125,157 @@ const Profile = () => {
     }
   }, [display_user_id, loginUserData]);
 
-  return (
-    <div>
-      <div className={`mainWrapper ${classes.profilePage}`}>
-        <div className={classes.bannersec}>
-          <Skeleton.Node active={true} className={classes.bannerImg}>
-            <img src={profileData?.cover_image} />
-          </Skeleton.Node>
+  const profileValue = {
+    FansList,
+    setFansList,
+  };
 
-          {getisLoginUser() && (
-            <div className={classes.uploadSec}>
-              {isUploading === "cover" ? (
-                <Spin size="small" className={classes.loader} />
-              ) : (
-                <span
-                  class="material-symbols-outlined"
-                  onClick={() => {
-                    coverRef?.current.click();
-                  }}
-                >
-                  photo_camera
-                </span>
-              )}
+  return (
+    <ProfileContext.Provider value={profileValue}>
+      <div>
+        <div className={`mainWrapper ${classes.profilePage}`}>
+          <div className={classes.bannersec}>
+            <Skeleton.Node
+              active={isCoverLoading}
+              className={classes.bannerImg}
+            >
+              <img
+                src={profileData?.cover_image}
+                onLoad={() => {
+                  setisCoverLoading(false);
+                }}
+              />
+            </Skeleton.Node>
+
+            {getisLoginUser() && (
+              <div className={classes.uploadSec}>
+                {isUploading === "cover" ? (
+                  <Spin size="small" className={classes.loader} />
+                ) : (
+                  <span
+                    class="material-symbols-outlined"
+                    onClick={() => {
+                      coverRef?.current.click();
+                    }}
+                  >
+                    photo_camera
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+          {profileData && (
+            <div className={classes.profileContainer}>
+              <div className={classes.profileSec}>
+                <img src={profileData?.profile_image} />
+                {getisLoginUser() && (
+                  <div className={classes.uploadSec}>
+                    {isUploading === "profile" ? (
+                      <Spin size="small" className={classes.loader} />
+                    ) : (
+                      <span
+                        class="material-symbols-outlined"
+                        onClick={() => {
+                          profileRef?.current.click();
+                        }}
+                      >
+                        photo_camera
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {loginUserData && <FansThumb isLoginUser={getisLoginUser()} />}
+
+              <div className={classes.actionIcon}>
+                <img src={msgIcon} />
+                <img src={talkshowIcon} />
+              </div>
             </div>
           )}
-        </div>
-        {profileData && (
-          <div className={classes.profileContainer}>
-            <div className={classes.profileSec}>
-              <img src={profileData?.profile_image} />
-              {getisLoginUser() && (
-                <div className={classes.uploadSec}>
-                  {isUploading === "profile" ? (
-                    <Spin size="small" className={classes.loader} />
-                  ) : (
-                    <span
-                      class="material-symbols-outlined"
-                      onClick={() => {
-                        profileRef?.current.click();
-                      }}
-                    >
-                      photo_camera
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
 
-            {loginUserData && <FansThumb isLoginUser={getisLoginUser()} />}
-
-            <div className={classes.actionIcon}>
-              <img src={msgIcon} />
-              <img src={talkshowIcon} />
-            </div>
-          </div>
-        )}
-
-        <input
-          ref={coverRef}
-          type="file"
-          name="file"
-          id="post_nugget_image"
-          accept="image/png, image/jpeg"
-          onClick={(event) => {
-            event.target.value = null;
-          }}
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length !== 0) {
-              if (isValidImageFile(e.target.files[0])) {
-                setprofileImg({
-                  type: "cover",
-                  src: e.target.files[0],
-                  ratio: getAspectRatio(1170, 240),
-                });
-              } else {
-                toast.error("Please Select Valid Image");
+          <input
+            ref={coverRef}
+            type="file"
+            name="file"
+            id="post_nugget_image"
+            accept="image/png, image/jpeg"
+            onClick={(event) => {
+              event.target.value = null;
+            }}
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length !== 0) {
+                if (isValidImageFile(e.target.files[0])) {
+                  setprofileImg({
+                    type: "cover",
+                    src: e.target.files[0],
+                    ratio: getAspectRatio(1170, 240),
+                  });
+                } else {
+                  toast.error("Please Select Valid Image");
+                }
               }
-            }
-          }}
-          style={{ display: "none" }}
-        />
+            }}
+            style={{ display: "none" }}
+          />
 
-        <input
-          ref={profileRef}
-          type="file"
-          name="file"
-          id="post_nugget_image"
-          accept="image/png, image/jpeg"
-          onClick={(event) => {
-            event.target.value = null;
-          }}
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length !== 0) {
-              if (isValidImageFile(e.target.files[0])) {
-                setprofileImg({
-                  type: "profile",
-                  src: e.target.files[0],
-                  ratio: getAspectRatio(150, 150),
-                });
-              } else {
-                toast.error("Please Select Valid Image");
+          <input
+            ref={profileRef}
+            type="file"
+            name="file"
+            id="post_nugget_image"
+            accept="image/png, image/jpeg"
+            onClick={(event) => {
+              event.target.value = null;
+            }}
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length !== 0) {
+                if (isValidImageFile(e.target.files[0])) {
+                  setprofileImg({
+                    type: "profile",
+                    src: e.target.files[0],
+                    ratio: getAspectRatio(150, 150),
+                  });
+                } else {
+                  toast.error("Please Select Valid Image");
+                }
               }
-            }
-          }}
-          style={{ display: "none" }}
-        />
+            }}
+            style={{ display: "none" }}
+          />
 
-        <div className={classes.fullcontainer}>
-          <div className={classes.profileevent}>
-            <div className={classes.profileIntro}>
-              <h2>
-                About {profileData?.first_name}{" "}
-                <i class="material-icons">fiber_manual_record</i>{" "}
-                <span>Entertainer</span>
-              </h2>
-              <ReadMore
-                maxheight={"64px"}
-                isReadMore={false}
-                isLinkopenModal={isLinkopenModal}
-                setisLinkopenModal={setisLinkopenModal}
-                isReadMoreValid={() => {
-                  console.log("valid");
-                }}
-              >
-                The richest man in the world, Elon Musk, has created a chip
-                (Neuralink) that will be inserted into the human brain. He said
-                that his prime motivation for is Neuralink was the question:
-                'What do we do if there is a super intelligence that is much
-                smarter than human beings much smarter The richest man in the
-              </ReadMore>
-            </div>
+          <div className={classes.fullcontainer}>
+            <div className={classes.profileevent}>
+              <div className={classes.profileIntro}>
+                <h2>
+                  About {profileData?.first_name}{" "}
+                  <i class="material-icons">fiber_manual_record</i>{" "}
+                  <span>Entertainer</span>
+                </h2>
+                {isSuccess && profileData ? (
+                  <ReadMore
+                    maxheight={"64px"}
+                    isReadMore={false}
+                    isLinkopenModal={isLinkopenModal}
+                    setisLinkopenModal={setisLinkopenModal}
+                    isReadMoreValid={() => {
+                      console.log("valid");
+                    }}
+                  >
+                    {replaceBiodataHandler(loginUserData)}
+                  </ReadMore>
+                ) : (
+                  <Skeleton active />
+                )}
+              </div>
 
-            <div className={classes.intro}>
-              <h2>Intro</h2>
-              <div className={classes.item}>
+              {isSuccess ? (
+                <div className={classes.intro}>
+                  <div className={classes.headingSec}>
+                    <h2>Intro</h2>
+                  </div>
+                  {/* <div className={classes.item}>
                 <p>
                   <img src={profile_work} />
                 </p>{" "}
@@ -262,64 +286,78 @@ const Profile = () => {
                   <img src={profile_edu} />
                 </p>{" "}
                 Studied at ABCD
-              </div>
-              <div className={classes.item}>
-                <p>
-                  <img src={profile_location} />
-                </p>{" "}
-                Alpharetta, Georgia, United State
-              </div>
-              <div className={classes.item}>
-                <p>
-                  <img src={profile_bdy} />
-                </p>{" "}
-                Date of Birth 02/03/1992
-              </div>
-              <div className={classes.item}>
-                <p>
-                  <img src={profile_join} />
-                </p>{" "}
-                Joined RAWCASTER on 03 Jan 2020
-              </div>
+              </div> */}
+                  {profileData?.geo_location && (
+                    <div className={classes.item}>
+                      <p>
+                        <img src={profile_location} />
+                      </p>
+                      {profileData?.geo_location}
+                    </div>
+                  )}
+                  {profileData?.dob && profileData?.dob !== "" && (
+                    <div className={classes.item}>
+                      <p>
+                        <img src={profile_bdy} />
+                      </p>
+                      Date of Birth
+                      {moment(profileData?.dob, "YYYY-MM-DD").format(
+                        " DD/MM/YYYY"
+                      )}
+                    </div>
+                  )}
+                  <div className={classes.item}>
+                    <p>
+                      <img src={profile_join} />
+                    </p>
+                    Joined RAWCASTER on
+                    {moment(profileData?.date_of_join).format(" DD-MM-YYYY")}
+                  </div>
+                </div>
+              ) : (
+                <Skeleton active />
+              )}
+              {isSuccess && <Events />}
             </div>
-            <Events />
-          </div>
 
-          <Nuggets />
+            <Nuggets />
 
-          <div className={classes.rightProfiles}>
-            <UnclaimedInfluencers />
-            {/* <Influencers /> */}
-            <Fans />
-            <Connections />
+            {isSuccess && (
+              <div className={classes.rightProfiles}>
+                <UnclaimedInfluencers isLoginUser={getisLoginUser()} />
+                {/* <Influencers /> */}
+                <Fans />
+                <Connections />
+              </div>
+            )}
           </div>
         </div>
+        {profileImg.src !== "" && (
+          <ImageCropModal
+            open={profileImg.src !== ""}
+            validsize={5}
+            src={URL.createObjectURL(profileImg.src)}
+            ratio={profileImg.ratio}
+            onSuccess={(val) => {
+              handleUpdateProfile(val);
+              setisUploading(profileImg.type);
+              setprofileImg({
+                type: "",
+                src: "",
+                ratio: "",
+              });
+            }}
+            onFailure={() => {
+              setprofileImg({
+                type: "",
+                src: "",
+                ratio: "",
+              });
+            }}
+          />
+        )}
       </div>
-      {profileImg.src !== "" && (
-        <ImageCropModal
-          open={profileImg.src !== ""}
-          validsize={5}
-          src={URL.createObjectURL(profileImg.src)}
-          ratio={profileImg.ratio}
-          onSuccess={(val) => {
-            handleUpdateProfile(val);
-            setisUploading(profileImg.type);
-            setprofileImg({
-              type: "",
-              src: "",
-              ratio: "",
-            });
-          }}
-          onFailure={() => {
-            setprofileImg({
-              type: "",
-              src: "",
-              ratio: "",
-            });
-          }}
-        />
-      )}
-    </div>
+    </ProfileContext.Provider>
   );
 };
 

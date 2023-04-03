@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { listEventsService } from "../../../Services/ApiService";
-import {
-  useAuthData,
-  useAuthToken,
-  useDashboard,
-} from "../../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { JSONtoformdata } from "../../../Shared/Utility";
 import Event from "../../../Sharedcomponents/Events/Event";
 import AddLiveEvent from "../../Events/Configure/AddLiveEvent";
 import CreateEvent from "../../Events/CreateEvent";
 
 const Events = () => {
-  const dispatch = useDispatch();
   const loginUserData = useAuthData();
   const token = useAuthToken();
-  const { DashboardfilterType } = useDashboard();
   const [EventListData, setEventListData] = useState();
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
   const [TalkShowData, setTalkShowData] = useState();
@@ -27,6 +20,7 @@ const Events = () => {
       event_type: 1,
       page_number: 1,
     };
+    console.log(eventData, "==>Profile");
     listEventsService(JSONtoformdata(eventData))
       .then((res) => {
         if (res.data.status === 1) {

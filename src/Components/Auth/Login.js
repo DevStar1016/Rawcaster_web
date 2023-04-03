@@ -15,12 +15,11 @@ import { useDispatch } from "react-redux";
 import {
   getSessionStorageData,
   removeSessionStorageData,
+  setCookieData,
 } from "../../Store/Storage";
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
-import { useDashboard } from "../../Shared/Reduxfetcher";
 import Seo from "../SEO/Seo";
-import { LOGIN_ID } from "../../Shared/Constant";
 import RedirectModal from "../../Modal/Verification/RedirectModal";
 
 const validationSchema = yup.object().shape({
@@ -65,15 +64,15 @@ const Login = () => {
     loginService(JSONtoformdata(loginData))
       .then((res) => {
         if (res.data.status === 1) {
-          const navigateHandle = () => {
+          getProfile(res.data.token, dispatch).then(() => {
+            setCookieData("rawcaster_user_token", res.data);
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
             } else {
               navigate("/dashboard");
             }
-          };
-          getProfile(res.data.token, dispatch, navigateHandle);
+          });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {

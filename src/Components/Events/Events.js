@@ -38,6 +38,7 @@ const Events = () => {
       event_type: event_type,
       page_number: 1,
     };
+    console.log(eventData, "==>Events");
     listEventsService(JSONtoformdata(eventData))
       .then((res) => {
         if (res.data.status === 1) {

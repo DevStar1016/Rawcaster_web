@@ -74,8 +74,7 @@ const DashboardSignup = () => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
           dispatch(handleLoginData(res.data));
-          setCookieData("rawcaster_user_token", JSON.stringify(res.data.token));
-          setLocalStorageData("rawcaster_user_token", JSON.stringify(res.data));
+          setCookieData("rawcaster_user_token", JSON.stringify(res.data));
           navigate("/dashboard");
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });

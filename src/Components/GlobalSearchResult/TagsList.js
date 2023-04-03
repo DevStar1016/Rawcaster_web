@@ -11,13 +11,14 @@ import { useDashboard } from "../../Shared/Reduxfetcher";
 import {
   getAuthenticated,
   getAuthToken,
+  getRawcaserToken,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import { getLocalStorageData } from "../../Store/Storage";
+import { getCookieData } from "../../Store/Storage";
 import TagsChart from "../../UIComponents/TagsChart";
 import classes from "./GlobalSearch.module.css";
 
@@ -82,7 +83,7 @@ const TagsList = () => {
 
   const getToken = () => {
     if (getAuthenticated()) {
-      const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+      const userData = getRawcaserToken();
       return userData?.token;
     } else {
       return "RAWCAST";

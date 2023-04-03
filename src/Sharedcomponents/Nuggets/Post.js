@@ -1,6 +1,5 @@
 import { Dropdown, Tooltip } from "antd";
-import dayjs from "dayjs";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useInView } from "react-hook-inview";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -18,8 +17,10 @@ import {
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
+  dateToShortDate,
+  datetoString,
   decodeHtml,
   EncryptionString,
   getAuthenticated,
@@ -28,6 +29,7 @@ import {
   isValidData,
   JSONtoformdata,
   ReadMore,
+  utctoUserTimezone,
 } from "../../Shared/Utility";
 import {
   handleLoading,
@@ -58,6 +60,7 @@ const Post = ({
   const Token = useAuthToken();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userSettings } = useAuth();
   const loginUserData = useAuthData();
   const [Comments, setComments] = useState("");
   const [CommentList, setCommentList] = useState([]);
@@ -76,9 +79,7 @@ const Post = ({
   });
   const [iscollapse, setiscollapse] = useState(false);
   const [isvalidContent, setisvalidContent] = useState(false);
-  const [ContentLength, setContentLength] = useState();
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
-  const textref = useRef(null);
 
   const [ref] = useInView({
     threshold: 0,
@@ -311,13 +312,6 @@ const Post = ({
     }
   };
 
-  useEffect(() => {
-    if (textref && textref.current) {
-      const { current } = textref;
-      setContentLength(current.offsetHeight);
-    }
-  }, [textref]);
-
   const isVoted = (ele) => {
     if (parseInt(ele?.voted) === 1) {
       return true;
@@ -396,32 +390,41 @@ const Post = ({
               }}
             >
               {decodeHtml(ele?.user_name)}{" "}
-           
-            {ele?.type === 2 && (
-              <span>
-                shared{" "}
-                <span
-                  className={classes.sharedUserName}
-                  onClick={() => {
-                    navigate(
-                      `/viewprofile/${EncryptionString(ele?.original_user_id)}`
-                    );
-                  }}
-                >
-                  {ele?.original_user_name}
+              {ele?.type === 2 && (
+                <span>
+                  shared{" "}
+                  <span
+                    className={classes.sharedUserName}
+                    onClick={() => {
+                      navigate(
+                        `/viewprofile/${EncryptionString(
+                          ele?.original_user_id
+                        )}`
+                      );
+                    }}
+                  >
+                    {ele?.original_user_name}
+                  </span>
+                  ′s nugget
                 </span>
-                ′s nugget
-              </span>
-              
-            )}
-             </p>
+              )}
+            </p>
           </div>
           <p className={classes.detailsRange}>
             <Tooltip
-              title={dayjs(ele?.created_date).format("DD MMM YYYY - hh:mm  A")}
+              title={
+                userSettings
+                  ? datetoString(
+                      utctoUserTimezone(
+                        ele.created_date,
+                        userSettings.time_zone
+                      )
+                    )
+                  : null
+              }
               color="rgb(250, 162, 27)"
             >
-              {dayjs(ele?.created_date).fromNow(true)} ago{" "}
+              {dateToShortDate(ele?.created_date)}
             </Tooltip>
             <i class="material-icons">fiber_manual_record</i>
             {ele?.total_views} Views{" "}
@@ -468,10 +471,7 @@ const Post = ({
         <div className={classes.contentSec} ref={ref}>
           <div className={classes.feedsSec}>
             {ele && isValidData(ele?.content) && (
-              <p
-                style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}
-                ref={textref}
-              >
+              <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
                 <ReadMore
                   isReadMore={isReadMore()}
                   isLinkopenModal={isLinkopenModal}

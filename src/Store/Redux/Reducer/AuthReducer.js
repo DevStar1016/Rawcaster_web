@@ -1,8 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getCookieData } from "../../Storage";
+
+const getRawcaserToken = () => {
+  try {
+    return JSON.parse(getCookieData("rawcaster_user_token"));
+  } catch (error) {
+    return null;
+  }
+};
 
 const initialState = {
+  isLoading: false,
+  isSuccess: false,
   loginUserData: null,
-  loginToken: null,
+  loginToken: getRawcaserToken(),
+  userSettings: null,
 };
 
 export const { actions, reducer } = createSlice({
@@ -12,12 +24,23 @@ export const { actions, reducer } = createSlice({
     handleLoginData: (state, action) => {
       state.loginUserData = action.payload;
     },
+    handleisSuccess: (state, action) => {
+      state.isSuccess = action.payload;
+    },
     handleToken: (state, action) => {
       state.loginToken = action.payload;
+    },
+    handleuserSettings: (state, action) => {
+      state.userSettings = action.payload;
     },
   },
 });
 
-export const { handleLoginData, handleToken } = actions;
+export const {
+  handleLoginData,
+  handleToken,
+  handleuserSettings,
+  handleisSuccess,
+} = actions;
 
 export default reducer;

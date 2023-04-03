@@ -3,8 +3,12 @@ import React, { useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { searchRawcasterUsersService } from "../../../Services/ApiService";
-import { getAuthToken, JSONtoformdata } from "../../../Shared/Utility";
-import { getLocalStorageData } from "../../../Store/Storage";
+import {
+  getAuthToken,
+  getRawcaserToken,
+  JSONtoformdata,
+} from "../../../Shared/Utility";
+
 import classes from "../Connections.module.css";
 
 let isRequestCancel = false;
@@ -19,7 +23,7 @@ const SearchFriends = ({
   const [PeopleList, setPeopleList] = useState([]);
   const source = useRef(null);
   const getToken = () => {
-    const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+    const userData = getRawcaserToken();
     return userData?.token;
   };
 

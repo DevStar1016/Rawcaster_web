@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import { useDispatch } from "react-redux";
 import { listNuggetsService } from "../../Services/ApiService";
@@ -6,13 +6,13 @@ import {
   DecryptionString,
   detectMob,
   getAuthenticated,
+  getRawcaserToken,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import PostNuggets from "./PostNuggets";
-import { getLocalStorageData } from "../../Store/Storage";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { ListNuggetContext } from "../../Shared/Context";
@@ -20,7 +20,7 @@ import axios from "axios";
 import PostProgress from "./PostProgress";
 import Post from "./Post";
 import { useParams } from "react-router";
-import { useAuthData, useDashboard } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useDashboard } from "../../Shared/Reduxfetcher";
 import { Skeleton } from "antd";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
@@ -31,7 +31,8 @@ let isRequestCancel = false;
 const Nuggets = () => {
   const source = useRef(null);
   const params = useParams();
-  const userData = JSON.parse(getLocalStorageData("rawcaster_user_token"));
+  const { isSuccess } = useAuth();
+  const userData = getRawcaserToken();
   const loginUserData = useAuthData();
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
@@ -49,7 +50,7 @@ const Nuggets = () => {
     totalpage: 1,
   });
   const [isFetching, setisFetching] = useState(true);
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoad, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);
   const [isEdit, setisEdit] = useState(null);
   const [Pages, setPages] = useState({
@@ -149,12 +150,15 @@ const Nuggets = () => {
   };
 
   useEffect(() => {
-    if (NuggetList.length === 0) {
-      getNuggetList();
+    if (isSuccess) {
+      if (NuggetList.length === 0) {
+        getNuggetList();
+      } else if (loginUserData) {
+        getNuggetList(1);
+      }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loginUserData, isSuccess]);
 
   useEffect(() => {
     if (params.key) {
@@ -256,7 +260,7 @@ const Nuggets = () => {
 
         {getValidNuggets()?.length === 0 && (
           <div className="mt-3">
-            {isFetching ? (
+            {isSuccess || isFetching ? (
               <>
                 {[...Array(6)].map(() => (
                   <Skeleton loading={isFetching} active avatar />
@@ -339,7 +343,7 @@ const Nuggets = () => {
           </>
         )}
 
-        {isLoading && (
+        {isLoad && (
           <div className="text-center py-2">
             <Spinner animation="border" role="status" />
           </div>

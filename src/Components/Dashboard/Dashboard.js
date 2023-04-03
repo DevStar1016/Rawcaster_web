@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
+  useAuth,
   useAuthData,
   useAuthToken,
   useDashboard,
@@ -13,6 +14,7 @@ import classes from "./Dashboard.module.css";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
+  const { isSuccess } = useAuth();
   const loginToken = useAuthToken();
   const { pathname } = useLocation();
   const { dashboardMenu } = useDashboard();
@@ -24,7 +26,7 @@ const Dashboard = () => {
   }, [pathname]);
   return (
     <div>
-      {loginUserData === null && (
+      {isSuccess && loginUserData === null && (
         <div className={classes.ribbon}>
           <Link
             to="/login"
