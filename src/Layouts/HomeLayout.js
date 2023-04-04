@@ -136,7 +136,13 @@ const HomeLayout = () => {
                 {loginUserData && (
                   <div>
                     <img src={LiveIcon} className={classes.liveIcon} />
-                    <img src={HomeIcon} className={classes.menuIcon} />
+                    <img
+                      src={HomeIcon}
+                      className={classes.menuIcon}
+                      onClick={() => {
+                        navigate("/setting");
+                      }}
+                    />
                     <img
                       src={SettingsIcon}
                       className={`${classes.onlydes} ${classes.menuIcon}`}

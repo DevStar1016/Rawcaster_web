@@ -2,10 +2,12 @@ import Dashboard from "../Components/Dashboard/Dashboard";
 import Development from "../Components/Development";
 import GlobalSearchResult from "../Components/GlobalSearchResult";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
+import Membership from "../Components/Membership";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
 import TermsandConditions from "../Components/Policy/TermsandConditions";
 import Profile from "../Components/Profile";
+import Settings from "../Components/Settings";
 import HomeLayout from "../Layouts/HomeLayout";
 import { HomePrivateRoute } from "./PrivateRoute";
 
@@ -25,6 +27,14 @@ export const DashboardRoute = [
           {
             path: "/viewprofile/:user_id",
             element: <Profile />,
+          },
+          {
+            path: "/setting",
+            element: <Settings />,
+          },
+          {
+            path: "/membership",
+            element: <Membership />,
           },
         ],
       },

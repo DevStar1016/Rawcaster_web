@@ -1,0 +1,401 @@
+.settingSec {
+    width: 100%;
+    float: left;
+    padding-top: 66px;
+  }
+  .sidebar {
+    width: 206px;
+    background: #222222 !important;
+       height: 100%;
+    padding: 25px 0;
+
+  }
+  .sidebar h2 {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 25px;
+    font-family: "DM Sans", sans-serif;
+    float: none;
+    background: transparent;
+    margin-top: 0;
+    border: none;
+    margin-bottom: 5px;
+  }
+  .sidebar ul {
+    padding: 0;
+  }
+  .sidebar  a,.sidebar  a:hover {
+    color: #fff;
+    list-style: none;
+    padding: 12px 25px;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+  }
+
+  .contentSec {
+    background: #fff !important;
+    margin:0 20px;
+    height: calc(100% - 40px);
+    float: left;
+    padding: 20px 25px;
+
+    font-family: "DM Sans", sans-serif;
+  }
+  .contentSec h1 {
+    color: #1a1a1a !important;
+    font-weight: bold;
+    font-size: 18px !important;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 14px;
+    margin-bottom: 20px !important;
+    text-align: left;
+    margin-top: 0px;
+    font-family: "DM Sans", sans-serif;
+  }
+  .contentSec .smallheading {
+    color: #1a1a1a;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 0;
+    margin-top: 18px;
+    font-family: "DM Sans", sans-serif;
+  }
+  .contentSec p.text {
+    color: #1a1a1a;
+    font-size: 13px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    clear: both;
+  }
+  .ant-radio-wrapper {
+    margin-right: 35px;
+  }
+  .grp_switch {
+    display: inline-block;
+    margin-right: 30px;
+    color: #1a1a1a;
+    font-size: 14px;
+  }
+  .contentSec .item {
+    margin-bottom: 35px;
+  }
+  .mb0 {
+    margin-bottom: 0 !important;
+  }
+  .chkboxSec {
+    margin-bottom: 25px;
+    font-family: "DM Sans", sans-serif;
+  }
+  label {
+    font-size: 16px !important;
+  }
+  .passcodeBox .smallheading {
+    font-size: 16px;
+  }
+  .passcodeText {
+    width: 252px;
+    height: 48px;
+    border: 1px solid #afafaf;
+    border-radius: 4px;
+    color: #0e425a;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .audioSetting {
+    margin: 30px 0 10px 0;
+    color: #0e425a;
+    font-size: 16px;
+  }
+  .audiosetting_btn {
+    margin-left: 25px;
+    display: inline-block;
+  }
+  .audiosetting_btn .Greenbtn {
+    margin-right: 10px !important;
+  }
+  .melodyBox p.smallheading {
+    color: #0e425a;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px !important;
+  }
+  .melodySelect {
+    border: #afafaf 1px solid !important;
+    border-radius: 4px;
+    color: #0e425a !important;
+    font-weight: bold;
+  }
+  
+  .uploadbanner {
+    width: 35%;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    /* background: #f8f8f8 0% 0% no-repeat padding-box; */
+    border: 2px dashed #c1c1c1;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    margin-top: 20px;
+  }
+  .radio_active {
+    background: #f7f7f7;
+    margin-right: 30px;
+    color: #1a1a1a;
+    font-size: 14px;
+  }
+  .radio_inactive {
+    margin-right: 30px;
+  }
+  .online_status .ant-radio-wrapper {
+    margin-right: 15px !important;
+  }
+  .online_status {
+    margin-top: 15px;
+  }
+  .switchGreen {
+    background: #5dbc3a;
+  }
+  .blockSearch {
+    /* padding-left: 25px; */
+    width: 433px;
+    float: left;
+    margin-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: #adadad 1px solid;
+    height: 40px;
+    border-radius: 4px;
+  }
+  .blockBtn {
+    background: #103e7c;
+    border-radius: 4px;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    font-size: 15px;
+    height: 40px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+  .blockedList {
+    background: #eeeeee;
+    width: 509px;
+    border-radius: 4px;
+    height: 40px;
+    margin-top: 6px;
+    color: #464646;
+    font-weight: normal;
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 15px;
+    clear: both;
+  }
+  .blockedList .userimg {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+  }
+  .blockedList .display_name {
+    margin-left: 10px;
+    color: #464646;
+  }
+  .unblkBtn {
+    background: #e35656 !important;
+    color: #fff !important;
+    border: none;
+    height: 25px;
+    border-radius: 5px;
+    line-height: 19px;
+  }
+  .blockeduserSearch {
+    border: #707070 1px solid;
+    width: 506px;
+    height: 41px;
+    margin-bottom: 5px;
+  }
+  /* .blockeduserSearch::placeholder {
+    color: #818181;
+    opacity: 1;
+    font-weight: bold;
+    font-size: 13px;
+    background: url(../../assets/icons/sm_search.png) no-repeat 80px;
+  } */
+  .acttionTxt {
+    position: relative;
+    margin-top: 8px;
+    color: #818181;
+    font-weight: bold;
+    float: right;
+    width: 95px;
+  }
+  .blkuserDiv {
+    width: 510px;
+    height: 41px;
+  }
+  p.uname {
+    font-size: 12px;
+    color: #818181;
+    float: left;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 13px;
+    max-width: 120px;
+  }
+  .searchicon {
+    font-size: 15px;
+    margin-top: 12px;
+    margin-bottom: -5px;
+    cursor: pointer;
+  }
+  .w500 {
+    width: 510px;
+  }
+  
+  .searchdropdown {
+    padding: 10px;
+  }
+  .searchdropdown .textbox {
+    border: #eeeeee 1px solid;
+    width: 280px;
+    height: 40px;
+    margin-right: 5px;
+    border-radius: 4px;
+  }
+  .searchdropdown .searchbtn {
+    width: 100px;
+    height: 40px;
+    margin-right: 5px;
+    border-radius: 4px;
+    float: right;
+  }
+  .searchdropdown .resetbtn {
+    width: 100px;
+    background: #103e7c;
+    color: #fff;
+    font-size: 15px;
+    height: 40px;
+    border-radius: 4px;
+    float: right;
+  }
+  
+  .personaldata {
+    padding-left: 20px;
+  }
+  .searchbtn { float: left; color: #818181; font-size: 13px; }
+  .searchbtn i { margin-top: 5px; float: right; margin-left: 5px; }
+  .savebutton {
+    background-color: #f4c117 !important;
+    margin-left: 10px !important;
+  }
+  .mob_menu {
+    background: #fafafa;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: solid 1px #e4e4e4;
+  }
+  .mob_menu .list {
+    width: 25%;
+    float: left;
+    text-align: center;
+    padding: 6px 0 3px 0;
+    font-size: 12px;
+    color: #53284f;
+  }
+  .mob_menu .list img {
+    height: 22px;
+  }
+  .icons {
+    margin: 0px 10px;
+    background-color: #53284f; color: #53284f;
+    cursor: pointer;
+  }
+  .active .icons {
+    background-color: #F2718D
+  }
+  .mob_menu .list.active {
+    color: #F2718D !important;
+  }
+  /* .eventIcon {
+    height: 22px;
+    margin: auto;
+    mask: url("../../assets/calendar.png") no-repeat center / contain;
+    -webkit-mask: url("../../assets/calendar.png") no-repeat center / contain;
+  }
+  .nuggetsIcon {
+    height: 22px;
+    margin: auto;
+    mask: url("../../assets/icons/nuggets.png") no-repeat center / contain;
+    -webkit-mask: url("../../assets/icons/nuggets.png") no-repeat center / contain;
+  }
+  .contactsIcon {
+    height: 22px;
+    margin: auto;
+    mask: url("../../assets/icons/contact.png") no-repeat center / contain;
+    -webkit-mask: url("../../assets/icons/contact.png") no-repeat center / contain;
+  }
+  .setting {
+    width: 22px;
+    height: 20px;
+    margin: auto;
+    mask: url("../../assets/setting.svg") no-repeat center / contain;
+    -webkit-mask: url("../../assets/setting.svg") no-repeat center / contain;
+  }
+   */
+  .mt18 {
+    margin-top: 18px;
+  }
+  .selectBox { border: 1px solid #E8EAEE; border-radius: 8px; min-width:280px; margin-top: 5px; }
+  .uplBtn { background: rgba(0, 0, 0, 0.04) !important; padding: 5px 15px !important; }
+  @media (min-width: 768px) {
+    .mob_menu {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .searchdropdown .textbox, 
+    .searchdropdown .resetbtn,
+    .searchdropdown .searchbtn { width: inherit; }  
+    .contentSec {
+      width: calc(100% - 30px) !important;
+      margin-left: 15px !important;
+      margin-bottom: 50px;
+    }
+    .radio_inactive {
+      width: 100% !important;
+    }
+    .settingmobMenu {
+      width: 100%;
+      float: left;
+      margin-bottom: -10px;
+      color: #563763;
+      font-size: 19px;
+      padding: 10px;
+    }
+    .settingmobMenu span {
+      float: right;
+      padding-top: 5px;
+      cursor: pointer;
+    }
+    .hideSlidebar {
+      display: none;
+    }
+    .blockSearch,
+    .w500,
+    .blockeduserSearch,
+    .blockedList {
+      width: 100% !important;
+    }
+    .blockSearch {
+      width: calc(100% - 77px) !important;
+    }
+    .unblkBtn {
+      padding: 3px 5px;
+    }
+  }
+  
