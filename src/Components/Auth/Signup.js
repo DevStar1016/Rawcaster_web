@@ -92,8 +92,9 @@ const Signup = () => {
     SocialMediaLoginService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
+          console.log(res.data);
+          setCookieData("rawcaster_user_token", res.data);
           getProfile(res.data.token, dispatch).then(() => {
-            setCookieData("rawcaster_user_token", JSON.stringify(res.data));
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
@@ -102,6 +103,7 @@ const Signup = () => {
             } else {
               navigate("/dashboard");
             }
+            window.location.reload();
           });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
@@ -111,6 +113,8 @@ const Signup = () => {
       })
       .catch((err) => {
         toast.error(err.message);
+      })
+      .finally(() => {
         dispatch(handleLoading(false));
       });
   };

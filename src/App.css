@@ -214,6 +214,11 @@ line-height: 23px;
 .settingsBar .active{
   background: #4d4d4d !important;
 }
+.settingsBar .ant-select-selector {
+  border: 1px solid #d9d9d9 !important;
+  height: 47px !important;
+
+}
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -398,7 +403,7 @@ margin-bottom: 0px !important;
 .imgCrop img {
 
  max-height: 500px;
-width: fit-content;
+ width: fit-content;
 }
 
 

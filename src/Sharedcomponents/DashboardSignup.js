@@ -19,7 +19,12 @@ import {
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
-import { setCookieData, setLocalStorageData } from "../Store/Storage";
+import {
+  getSessionStorageData,
+  removeSessionStorageData,
+  setCookieData,
+  setLocalStorageData,
+} from "../Store/Storage";
 import { useNavigate } from "react-router";
 import jwt_decode from "jwt-decode";
 import {
@@ -32,6 +37,7 @@ import { useAuthData } from "../Shared/Reduxfetcher";
 import RedirectModal from "../Modal/Verification/RedirectModal";
 import Connections from "../Components/Connections/Friends/Connections";
 import Groups from "../Components/Connections/Groups/Groups";
+import { getProfile } from "../Components/Auth/getProfile";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();
@@ -73,10 +79,15 @@ const DashboardSignup = () => {
     SocialMediaLoginService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
-          dispatch(handleLoginData(res.data));
-          setCookieData("rawcaster_user_token", JSON.stringify(res.data));
-          navigate("/dashboard");
+          getProfile(res.data.token, dispatch).then(() => {
+            setCookieData("rawcaster_user_token", res.data);
+            if (getSessionStorageData("influencerData")) {
+              navigate("/selectinfluencers");
+              removeSessionStorageData("influencerData");
+            } else {
+              navigate("/dashboard");
+            }
+          });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {

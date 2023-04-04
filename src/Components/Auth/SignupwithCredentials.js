@@ -28,7 +28,11 @@ import { useDispatch } from "react-redux";
 import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
 import RedirectModal from "../../Modal/Verification/RedirectModal";
-import { setCookieData } from "../../Store/Storage";
+import {
+  getSessionStorageData,
+  removeSessionStorageData,
+  setCookieData,
+} from "../../Store/Storage";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();
@@ -137,8 +141,13 @@ const SignupwithCredentials = () => {
       .then((res) => {
         if (res.data.status === 1) {
           getProfile(res.data.token, dispatch).then(() => {
-            setCookieData("rawcaster_user_token", JSON.stringify(res.data));
-            navigate("/selectinfluencers");
+            setCookieData("rawcaster_user_token", res.data);
+            if (getSessionStorageData("influencerData")) {
+              navigate("/selectinfluencers");
+              removeSessionStorageData("influencerData");
+            } else {
+              navigate("/dashboard");
+            }
           });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });

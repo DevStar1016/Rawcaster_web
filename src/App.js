@@ -43,6 +43,7 @@ function App() {
   );
 
   useEffect(() => {
+    console.log(getRawcaserToken());
     if (getRawcaserToken()) {
       let userData = getRawcaserToken();
       dispatch(handleToken(userData.token));
@@ -53,6 +54,8 @@ function App() {
         .finally(() => {
           dispatch(handleisSuccess(true));
         });
+    } else {
+      dispatch(handleisSuccess(true));
     }
   }, []);
 
