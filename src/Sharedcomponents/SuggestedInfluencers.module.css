@@ -2,7 +2,7 @@
     background-color: transparent;
     float: left;
     width: 310px;
-    height: calc(100vh - 67px);
+    max-height: 260px;
     padding-top:20px;
     overflow-y: scroll;
     /* height: 100vh; */
