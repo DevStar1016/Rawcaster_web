@@ -167,8 +167,6 @@ const Settings = () => {
           defaultActiveKey="general"
           className="mt-5"
         >
-          <Row>
-            <Col sm={2}>
               <div className={`${classes.sidebar} settingsBar`}>
                 <Nav variant="pills" className="flex-column">
                   <h2>Settings</h2>
@@ -191,8 +189,8 @@ const Settings = () => {
                   </Nav.Item>
                 </Nav>
               </div>
-            </Col>
-            <Col sm={9}>
+            
+              <div className={`${classes.contentSec}`}>
               <Tab.Content>
                 <Tab.Pane eventKey="general">
                   <General />
@@ -210,8 +208,8 @@ const Settings = () => {
                   <Event />
                 </Tab.Pane>
               </Tab.Content>
-            </Col>
-          </Row>
+              </div>
+        
         </Tab.Container>
       </div>
     </SettingsContext.Provider>

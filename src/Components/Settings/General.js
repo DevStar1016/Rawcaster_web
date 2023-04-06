@@ -51,7 +51,7 @@ const General = () => {
   };
 
   return (
-    <div className={classes.contentSec} style={{ display: "block" }}>
+    <div >
       <h1>General</h1>
 
       {loginUserData && (

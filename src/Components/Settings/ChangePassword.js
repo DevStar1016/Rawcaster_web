@@ -4,7 +4,7 @@ import classes from "./Settings.module.css";
 
 const Changepassword = () => {
   return (
-    <div className={classes.contentSec} style={{ display: "block" }}>
+    <div>
       <h1>Change Password</h1>
       <div className={`${classes.item} ${classes.mb0}`}>
         <p className={classes.smallheading}>Create a new password</p>

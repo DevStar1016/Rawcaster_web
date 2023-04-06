@@ -35,7 +35,7 @@ const Blockuser = () => {
   );
 
   return (
-    <div className={`${classes.contentSec} frndDetails blockusermain`}>
+    <div className={`frndDetails blockusermain`}>
       <div>
         <div className={`${classes.item} ${classes.mb0}`}>
           <p className={classes.smallheading}>Users Management</p>

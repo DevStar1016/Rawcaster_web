@@ -23,7 +23,7 @@ const Event = () => {
 
   return (
     <div
-      className={`settingSec ${classes.contentSec}`}
+      className={`settingSec`}
       style={{ display: "block" }}
     >
       <h1>Event Settings</h1>

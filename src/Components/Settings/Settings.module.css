@@ -1,14 +1,16 @@
 .settingSec {
     width: 100%;
     float: left;
-    padding-top: 66px;
+    padding-top: 66px; background: #eef0f3;
   }
   .sidebar {
-    width: 100%;
-    background: #222222 !important;
-       height: 100%;
+    width: 206px;
+    background: #563662;
+    height: 100%;
     padding: 25px 0;
-
+    float: left;
+    position: fixed;
+    z-index: 1;
   }
   .sidebar h2 {
     color: #fff;
@@ -36,12 +38,12 @@
     width: 0px !important;
   }
   .contentSec {
-    background: #fff !important;
-    margin:0 20px;
-    height: calc(100vh - 73px);
+    background: #fff;
+    width: calc(100% - 246px);
+    height: calc(100% - 40px);
     float: left;
     padding: 20px 25px;
-    overflow-y: scroll;
+    margin: 20px 20px 0 226px;
     font-family: "DM Sans", sans-serif;
   }
   .contentSec h1 {
@@ -129,7 +131,6 @@
     color: #0e425a !important;
     font-weight: bold;
   }
-  
   .uploadbanner {
     width: 35%;
     height: 100px;

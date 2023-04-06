@@ -96,7 +96,7 @@ const Notifications = () => {
   };
 
   return (
-    <div className={classes.contentSec} style={{ display: "block" }}>
+    <div>
       <h1>Notifications</h1>
       {formikvalues && (
         <>
