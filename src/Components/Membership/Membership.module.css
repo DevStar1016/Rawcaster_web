@@ -1,0 +1,20 @@
+.memberSec { padding-top:100px; padding-bottom: 30px; }
+.memberSec h1 { text-align: center; color: #231D4F; font-weight: 600; font-size: 38px; font-family: "DM Sans", sans-serif; }
+.memberSec h2 { text-align: center; color: #848199;  font-size: 23px; font-weight: 300; max-width: 650px; margin: auto; font-family: "DM Sans", sans-serif; }
+.packageSec { border: 1px solid #E8E8EC; padding: 20px; border-radius: 20px; margin-top: 20px; float: left; }
+.packageSec .top { float: left; width: 100%; }
+.packageSec .top img { float: right; width: 95px; }
+.packageSec .leftText { float: left;}
+.packageSec .top h5 {  font-weight: 600; color: #212529; font-size: 21px;}
+.packageSec .top h3 { font-weight: 600; color: #000; font-size: 35px;}
+.packageSec .top p { font-weight: 600; color: #848199; font-size: 19px;}
+.packageSec ul { width: 100%; border-top: 1px dashed #A9A9AA; float: left; padding-left: 0; padding-top: 20px; padding-bottom: 20px;  border-bottom: 1px dashed #A9A9AA; }
+.packageSec ul li { margin-bottom: 13px; background: no-repeat top left url(../../Assets/Images/svg/checkIcon.svg); line-height: 23px; vertical-align: middle; list-style: none; padding-left: 34px; }
+.upgradeBtn { color: #fff; background: #E26386; border-radius: 12px; font-size: 17px; font-weight: 500; height: 45px; border-radius: 8px; text-align: center; padding-top: 10px; float: left; width: 100%; text-decoration: none; }
+
+@media(max-width:768px) {
+.memberSec { padding-bottom: 100px; }    
+.memberSec h1 { font-size: 28px; }
+.packageSec .top h3 { font-size: 28px;}
+.memberSec h2, .packageSec .top p, .packageSec .top h5 { font-size: 17px;}
+}
