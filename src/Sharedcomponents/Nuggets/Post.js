@@ -229,16 +229,20 @@ const Post = ({
   };
 
   const LikeProcess = useCallback(
-    lodash.debounce(function (nugget_id, like) {
-      HandleLike(nugget_id, like);
-    }, 1000),
+    () =>
+      lodash.debounce(function (nugget_id, like) {
+        HandleLike(nugget_id, like);
+      }, 1000),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
   const SaveProcess = useCallback(
-    lodash.debounce(function (nugget_id, like) {
-      HandleSave(nugget_id, like);
-    }, 1000),
+    () =>
+      lodash.debounce(function (nugget_id, like) {
+        HandleSave(nugget_id, like);
+      }, 1000),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -266,7 +270,6 @@ const Post = ({
     Nuggets: ele,
     nugget_id: Comments,
     CommentList,
-    setCommentList,
     isCommentLoading,
     setCommentList,
     handleNuggetCommentLike,
@@ -274,26 +277,6 @@ const Post = ({
       return getCommentList(id);
     },
   };
-
-  // const handlePoll = (item) => {
-  //   let pollData = {
-  //     token: Token,
-  //     nugget_id: nugget_id,
-  //     poll_option_id: item.option_id,
-  //   };
-  //   pollVoteService(JSONtoformdata(pollData))
-  //     .then((res) => {
-  //       if (res.data.status === 1) {
-  //         getList();
-  //         setisPollUpdated();
-  //       } else {
-  //         toast.error(res.data.msg);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       toast.error(err.message);
-  //     });
-  // };
 
   const isReadMore = () => {
     if (ele.media_list.length !== 0) {
@@ -313,12 +296,6 @@ const Post = ({
       return true;
     } else {
       return false;
-    }
-  };
-
-  const isVoted = (ele) => {
-    if (parseInt(ele?.voted) === 1) {
-      return true;
     }
   };
 
@@ -492,7 +469,7 @@ const Post = ({
               </p>
             )}
             {ele.media_list && ele.media_list.length === 0 && ele.metadata ? (
-              <a
+              <div
                 className={classes.metaLink}
                 onClick={() => {
                   setisLinkopenModal(true);
@@ -519,6 +496,7 @@ const Post = ({
                     <img
                       src={JSON.parse(ele.metadata).image}
                       height="370px"
+                      alt="meta_img"
                       style={{
                         objectFit: "cover",
                         maxWidth: "100%",
@@ -536,7 +514,7 @@ const Post = ({
                     {JSON.parse(ele.metadata).description}
                   </p>
                 </div>
-              </a>
+              </div>
             ) : null}
             <div
               className={classes.imgContainer}

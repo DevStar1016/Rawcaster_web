@@ -61,6 +61,7 @@ const Events = () => {
         getEvents(ActiveEvent.key);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, isTalkshowOpen, isSuccess]);
 
   return (

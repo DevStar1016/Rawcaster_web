@@ -5,13 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import SelectedUsers from "../../../Modal/Event/SelectedUsers";
 import ImageCropModal from "../../../Modal/ImageCropModal";
-import { getEventTypeService } from "../../../Services/ApiService";
 import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
-import {
-  decodeHtml,
-  getAspectRatio,
-  JSONtoformdata,
-} from "../../../Shared/Utility";
+import { decodeHtml, getAspectRatio } from "../../../Shared/Utility";
 import classes from "../Events.module.css";
 import { getEventType } from "../../../Shared/CommonApis";
 
@@ -29,6 +24,7 @@ export const EventTypeComponent = ({
     getEventType(token).then((res) => {
       setEventData(res);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getDisplayName = () => {
@@ -229,6 +225,7 @@ export const InviteEmailComponent = ({ onResult, value }) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
@@ -290,6 +287,7 @@ export const TimeValueComponent = ({ onResult, value }) => {
     if (TimeValue.time !== "" && TimeValue.session !== "") {
       onResult(TimeValue.time + " " + TimeValue.session);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [TimeValue]);
 
   useEffect(() => {
@@ -411,6 +409,7 @@ export const Connections = ({ onResult, values }) => {
 
   useEffect(() => {
     onResult(selectedFriendList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFriendList]);
 
   useEffect(() => {
@@ -422,6 +421,7 @@ export const Connections = ({ onResult, values }) => {
       );
       setFilterFriendList([...otherData]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
 
   return (

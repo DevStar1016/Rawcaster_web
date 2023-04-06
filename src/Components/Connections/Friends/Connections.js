@@ -35,6 +35,8 @@ const Connections = () => {
           case SOCKET_EVENTS.FRIEND_STATUS:
             friendStatusHandler(message);
             break;
+          default:
+            break;
         }
       },
       []
@@ -42,6 +44,7 @@ const Connections = () => {
     return () => {
       socketListen.off("call");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getValidData = (data) => {
@@ -61,18 +64,20 @@ const Connections = () => {
   };
 
   useEffect(() => {
-    var formData = new FormData();
-    formData.append("token", Token);
-    listAllFriendRequestsService(formData)
-      .then((res) => {
-        if (res.data.status === 1) {
-          setrequests(res.data.pending_requests);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
-  }, []);
+    if (Token) {
+      var formData = new FormData();
+      formData.append("token", Token);
+      listAllFriendRequestsService(formData)
+        .then((res) => {
+          if (res.data.status === 1) {
+            setrequests(res.data.pending_requests);
+          }
+        })
+        .catch((err) => {
+          toast.error(err.message);
+        });
+    }
+  }, [Token]);
 
   useEffect(() => {
     if (friendsList.length !== 0) {

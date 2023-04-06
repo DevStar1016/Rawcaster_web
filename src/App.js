@@ -5,7 +5,7 @@ import { removeSessionStorageData } from "./Store/Storage";
 import { useDispatch } from "react-redux";
 import { routerpaths } from "./Routes";
 import { handleisSuccess } from "./Store/Redux/Reducer/AuthReducer";
-import { getRawcaserToken } from "./Shared/Utility";
+import { RemoveToken, getRawcaserToken } from "./Shared/Utility";
 import { useDashboard } from "./Shared/Reduxfetcher";
 import Spinner from "./Sharedcomponents/Spinner";
 import axios from "axios";
@@ -24,13 +24,14 @@ function App() {
     if (window.location.pathname !== "/verifyotp") {
       removeSessionStorageData("verifyCountDown");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location]);
 
   axios.interceptors.response.use(
     function (response) {
       if (response.data.status === -1) {
-        // RemoveToken(dispatch);
-        // window.location.reload();
+        RemoveToken(dispatch);
+        window.location.reload();
       }
       return response;
     },
@@ -56,6 +57,7 @@ function App() {
     } else {
       dispatch(handleisSuccess(true));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Router

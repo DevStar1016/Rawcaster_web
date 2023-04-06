@@ -108,6 +108,7 @@ const Settings = () => {
         friend_request: userSettings?.friend_request,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSettings]);
 
   const handleupdate = (objValue) => {
@@ -163,6 +164,8 @@ const Settings = () => {
         case "delete":
           setFieldValue(key, "");
           return setupdateValue((pre) => pre.filter((ele) => ele !== key));
+        default:
+          return;
       }
     },
     updateValue,

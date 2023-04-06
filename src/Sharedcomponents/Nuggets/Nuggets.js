@@ -13,10 +13,7 @@ import { toast } from "react-hot-toast";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import PostNuggets from "./PostNuggets";
-import {
-  handleLoading,
-  handleNuggetList,
-} from "../../Store/Redux/Reducer/DashboardReducer";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { ListNuggetContext } from "../../Shared/Context";
 import axios from "axios";
@@ -33,6 +30,7 @@ let isRequestCancel = false;
 
 const Nuggets = () => {
   const source = useRef(null);
+  const nuggetsRef = useRef(null);
   const params = useParams();
   const { isSuccess } = useAuth();
   const userData = getRawcaserToken();
@@ -40,7 +38,7 @@ const Nuggets = () => {
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
-  const { DashboardfilterType, Nuggets } = useDashboard();
+  const { DashboardfilterType } = useDashboard();
   const [filterType, setfilterType] = useState(0);
   const [muted, setmuted] = useState(false);
   const dispatch = useDispatch();
@@ -110,7 +108,21 @@ const Nuggets = () => {
             resolve(res.data);
             if (res.data.current_page_no === 1) {
               setNuggetList(res.data.nuggets_list);
+              nuggetsRef.current = res.data.nuggets_list;
             } else {
+              nuggetsRef.current = [
+                ...nuggetsRef.current,
+                ...res.data.nuggets_list,
+              ].reduce((acc, current) => {
+                const x = acc.find(
+                  (item) => item.nugget_id === current.nugget_id
+                );
+                if (!x) {
+                  return acc.concat([current]);
+                } else {
+                  return acc;
+                }
+              }, []);
               setNuggetList((pre) =>
                 [...pre, ...res.data.nuggets_list].reduce((acc, current) => {
                   const x = acc.find(
@@ -162,18 +174,17 @@ const Nuggets = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginUserData, isSuccess]);
 
-  // useEffect(() => {
-  //   dispatch(handleNuggetList(NuggetList));
-  // }, [NuggetList]);
-
   useEffect(() => {
     if (params.key) {
       getNuggetList(1, 0);
     } else if (DashboardfilterType !== filterType) {
+      setisFetching(true);
       getNuggetList();
     } else if (display_user_id) {
+      setisFetching(true);
       getNuggetList();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, DashboardfilterType, display_user_id]);
 
   const onEndReached = () => {
@@ -232,13 +243,34 @@ const Nuggets = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isDisplayPost = () => {
+  const isValidPage = () => {
     if (getAuthenticated()) {
       if (parseInt(display_user_id) === parseInt(userData?.user_id)) {
         return true;
       } else if (!display_user_id) {
+        return true;
+      }
+
+      return false;
+    }
+    return false;
+  };
+
+  const isDisplayPost = () => {
+    if (isValidPage()) {
+      return "Share Your First Nugget";
+    } else if (parseInt(display_user_id) !== parseInt(userData?.user_id)) {
+      return "No Posts Available";
+    }
+    return "No Posts Available";
+  };
+
+  const loadingStatus = () => {
+    if (isSuccess) {
+      if (isFetching) {
         return true;
       }
       return false;
@@ -253,7 +285,7 @@ const Nuggets = () => {
         ref={scrollRef}
       >
         <>
-          {isDisplayPost() && (
+          {isValidPage() && (
             <>
               {Progress.show ? (
                 <PostProgress />
@@ -266,7 +298,7 @@ const Nuggets = () => {
 
         {getValidNuggets()?.length === 0 && (
           <div className="mt-3">
-            {isSuccess || isFetching ? (
+            {loadingStatus() ? (
               <>
                 {[...Array(6)].map(() => (
                   <Skeleton loading={isFetching} active avatar />
@@ -277,11 +309,7 @@ const Nuggets = () => {
                 style={{ fontSize: 20, fontWeight: "bold" }}
                 className="mt-3"
               >
-                {params.key
-                  ? "We didn't find any results"
-                  : isDisplayPost()
-                  ? "No Posts Available"
-                  : "Share Your First Nugget"}
+                {params.key ? "We didn't find any results" : isDisplayPost()}
               </span>
             )}
           </div>
@@ -303,38 +331,38 @@ const Nuggets = () => {
                       muted={muted}
                       setmuted={setmuted}
                       handleView={() => {
-                        console.log(Nuggets, "===>Nuggets");
-                        // let findIndex = getValidNuggets().findIndex(
-                        //   (elem) => elem.nugget_id === ele.nugget_id
-                        // );
-                        // let tempData = [...getValidNuggets()];
-                        // if (tempData[findIndex].viewed !== 1) {
-                        //   tempData[findIndex].total_views =
-                        //     tempData[findIndex].total_views + 1;
-                        // }
-                        // tempData[findIndex].viewed = 1;
-                        // console.log(tempData);
-                        // setNuggetList(tempData);
-                      }}
-                      handleLike={(like) => {
-                        let findIndex = NuggetList.findIndex(
+                        let findIndex = nuggetsRef.current.findIndex(
                           (elem) => elem.nugget_id === ele.nugget_id
                         );
-                        let tempData = [...NuggetList];
+                        let tempData = [...nuggetsRef.current];
+                        if (tempData[findIndex].viewed !== 1) {
+                          tempData[findIndex].total_views =
+                            tempData[findIndex].total_views + 1;
+                        }
+                        tempData[findIndex].viewed = 1;
+                        nuggetsRef.current = tempData;
+                        setNuggetList(tempData);
+                      }}
+                      handleLike={(like) => {
+                        let findIndex = nuggetsRef.current.findIndex(
+                          (elem) => elem.nugget_id === ele.nugget_id
+                        );
+                        let tempData = [...nuggetsRef.current];
                         tempData[findIndex].liked = like === 1 ? true : false;
                         tempData[findIndex].total_likes =
                           like === 1
                             ? tempData[findIndex].total_likes + 1
                             : tempData[findIndex].total_likes - 1;
+                        nuggetsRef.current = tempData;
                         setNuggetList(tempData);
                       }}
                       handleSave={(save) => {
-                        let findIndex = NuggetList.findIndex(
+                        let findIndex = nuggetsRef.current.findIndex(
                           (elem) => elem.nugget_id === ele.nugget_id
                         );
-                        let tempData = [...NuggetList];
+                        let tempData = [...nuggetsRef.current];
                         tempData[findIndex].saved = save === 1 ? true : false;
-
+                        nuggetsRef.current = tempData;
                         setNuggetList(tempData);
                       }}
                       onEdit={(id) => {

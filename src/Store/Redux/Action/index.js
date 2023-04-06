@@ -39,7 +39,6 @@ export const fetchFrindsbyId = createAsyncThunk(
 export const fetchgroupsbyId = createAsyncThunk(
   "dashboard/fetchgroupsbyId",
   async (res) => {
-    console.log(res);
     let listData = {
       token: res.token,
       auth_code: getAuthToken(res.token),

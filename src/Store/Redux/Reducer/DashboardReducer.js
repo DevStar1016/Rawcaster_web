@@ -16,6 +16,7 @@ const initialState = {
   groupsList: [],
   isGroupLoading: true,
   Nuggets: [],
+  isNuggetsLoading: true,
   isNuggetMuted: false,
   DashboardfilterType: 0,
 };
