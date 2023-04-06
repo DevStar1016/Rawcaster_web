@@ -1,47 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { socketListen } from "../../../Services/SocketService";
-import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
 import classes from "../Connections.module.css";
-import {
-  listAllFriendRequestsService,
-  listAllFriendsService,
-} from "../../../Services/ApiService";
+import { listAllFriendRequestsService } from "../../../Services/ApiService";
 import { useDispatch } from "react-redux";
 import { handleFriendsList } from "../../../Store/Redux/Reducer/DashboardReducer";
 import AddConnection from "./AddConnection";
-
 import { toast } from "react-hot-toast";
 import Request from "../Components/Request";
 import Friends from "../Components/Friends";
+import { SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { Skeleton } from "antd";
 
 const Connections = () => {
   const dispatch = useDispatch();
   const Token = useAuthToken();
+  const { friendsList, isFriendsLoading } = useDashboard();
   const [searchInput, setsearchInput] = useState("");
   const [isAddFriend, setisAddFriend] = useState(false);
   const [friends, setfriends] = useState([]);
   const [requests, setrequests] = useState([]);
-  const [loading, setloading] = useState(false);
 
   useEffect(() => {
-    socketListen.on("connect", () => {
-      console.log(socketListen.connected, "socket status");
-    });
-    socketListen.on("disconnect", () => {
-      console.log("disconnect", "socket status");
-    });
-
     socketListen.on(
       "message",
       (message) => {
         switch (message.event) {
-          case "friendrequest":
+          case SOCKET_EVENTS.FRIEND_REQUEST:
             FriendRequest(message);
             break;
-          case "friendresponse":
+          case SOCKET_EVENTS.FRIEND_RESPONSE:
             FriendResponse(message);
             break;
-          case "friendstatus":
+          case SOCKET_EVENTS.FRIEND_STATUS:
             friendStatusHandler(message);
             break;
         }
@@ -51,20 +42,6 @@ const Connections = () => {
     return () => {
       socketListen.off("call");
     };
-  }, []);
-
-  useEffect(() => {
-    var formData = new FormData();
-    formData.append("token", Token);
-    listAllFriendRequestsService(formData)
-      .then((res) => {
-        if (res.data.status === 1) {
-          setrequests(res.data.pending_requests);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
   }, []);
 
   const getValidData = (data) => {
@@ -86,31 +63,22 @@ const Connections = () => {
   useEffect(() => {
     var formData = new FormData();
     formData.append("token", Token);
-    formData.append("allfriends", 1);
-    setloading(true);
-    listAllFriendsService(formData)
-      .then((response) => {
-        if (response.data.status === 1) {
-          let contactlist = response.data.friends_list;
-          contactlist.sort((a, b) => {
-            return b.online - a.online;
-          });
-
-          contactlist.sort((a, b) => {
-            return (
-              new Date(b.last_msg_datetime).getTime() -
-              new Date(a.last_msg_datetime).getTime()
-            );
-          });
-          setfriends(getValidData(contactlist));
-          dispatch(handleFriendsList(getValidData(contactlist)));
+    listAllFriendRequestsService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          setrequests(res.data.pending_requests);
         }
       })
-      .catch((error) => {})
-      .finally(() => {
-        setloading(false);
+      .catch((err) => {
+        toast.error(err.message);
       });
   }, []);
+
+  useEffect(() => {
+    if (friendsList.length !== 0) {
+      setfriends(getValidData(friendsList));
+    }
+  }, [friendsList]);
 
   const FriendRequest = (message) => {
     setrequests((p) => getValidData([...p, message.data]));
@@ -181,7 +149,7 @@ const Connections = () => {
 
       <h2>
         My Connections <span>({friends.length})</span>
-        {friends.length !== 0 && !loading ? (
+        {friends.length !== 0 && !isFriendsLoading ? (
           <i
             class="material-symbols-outlined"
             onClick={() => {
@@ -195,12 +163,12 @@ const Connections = () => {
 
       <div
         className={
-          requests.length === 0 && friends.length === 0 && !loading
+          requests.length === 0 && friends.length === 0 && !isFriendsLoading
             ? classes.connectionsEmpty
             : classes.connectionsLists
         }
       >
-        {requests.length === 0 && friends.length === 0 && !loading ? (
+        {requests.length === 0 && friends.length === 0 && !isFriendsLoading ? (
           <div
             strong
             onClick={() => {
@@ -210,7 +178,6 @@ const Connections = () => {
             Start Inviting New Connections
           </div>
         ) : null}
-
         {requests.map((request) => {
           return (
             <Request
@@ -230,10 +197,16 @@ const Connections = () => {
             />
           );
         })}
-
         {friends?.map((friend, index) => {
           return <Friends friend={friend} searchInput={searchInput} />;
         })}
+        {isFriendsLoading && (
+          <>
+            {[...Array(4)].map((ele) => (
+              <Skeleton avatar paragraph={{ rows: 0 }} />
+            ))}
+          </>
+        )}
       </div>
       <AddConnection
         open={isAddFriend}

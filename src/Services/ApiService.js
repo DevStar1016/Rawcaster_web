@@ -227,6 +227,10 @@ export const deleteEventService = (data) => {
   return axios.post("deleteevent", data);
 };
 
+export const geteventMelodyService = (data) => {
+  return axios.post("geteventmelody", data);
+};
+
 export const getFaqService = (data) => {
   return axios.post("getfaq", data);
 };

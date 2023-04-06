@@ -3,7 +3,12 @@ import { getCookieData } from "../../Storage";
 
 const getRawcaserToken = () => {
   try {
-    return JSON.parse(getCookieData("rawcaster_user_token"));
+    let userData = JSON.parse(getCookieData("rawcaster_user_token"));
+    if (userData) {
+      return userData.token;
+    } else {
+      return null;
+    }
   } catch (error) {
     return null;
   }

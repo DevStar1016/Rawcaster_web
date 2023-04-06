@@ -141,6 +141,7 @@
     border-radius: 4px;
     margin-bottom: 15px;
     margin-top: 20px;
+    cursor: pointer;
   }
   .radio_active {
     background: #f7f7f7;

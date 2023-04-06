@@ -47,7 +47,9 @@ const Event = ({ ele, handleEdit }) => {
             </div>
           )}
         </div>
-        <p className={classes.host}>Hosted by {ele.original_user_name}</p>
+        <p className={classes.host}>
+          Hosted by {decodeHtml(ele.original_user_name)}
+        </p>
         <p className={classes.des}>{ele.message}</p>
         <p className={classes.iconsec}>
           <span class="material-symbols-outlined">calendar_today</span>{" "}

@@ -59,7 +59,7 @@ export const EventTypeComponent = ({
   );
 };
 
-export const BannerComponent = ({ onResult, value }) => {
+export const BannerComponent = ({ onResult, value, size = null }) => {
   const bannerRef = useRef();
   const [cropImage, setcropImage] = useState("");
   const [bannerImage, setbannerImage] = useState("");
@@ -146,10 +146,22 @@ export const BannerComponent = ({ onResult, value }) => {
           open={cropImage !== ""}
           src={URL.createObjectURL(cropImage)}
           ratio={getAspectRatio(500, 300)}
-          onSuccess={(val) => {
-            setbannerImage(val);
-            onResult(val);
-            setcropImage("");
+          onSuccess={(image) => {
+            if (size) {
+              if (image.size > size * 1024 * 1024) {
+                toast.error("Image size is too big (max 10MB)");
+              } else if (image.type.match("image")) {
+                setbannerImage(image);
+                onResult(image);
+                setcropImage("");
+              } else {
+                toast.error("Upload only image");
+              }
+            } else {
+              setbannerImage(image);
+              onResult(image);
+              setcropImage("");
+            }
           }}
           onFailure={() => {
             setcropImage("");
