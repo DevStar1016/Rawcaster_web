@@ -4,9 +4,10 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { pollVoteService } from "../../Services/ApiService";
 import { useListNuggetContext } from "../../Shared/Context";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   getAuthenticated,
+  getRawcaserToken,
   isAccountValid,
   JSONtoformdata,
 } from "../../Shared/Utility";
@@ -29,6 +30,7 @@ const MultiplePoll = ({
     isVoted: false,
     votedOptionID: "",
   });
+  const LoginUserData = useAuthData();
   const dispatch = useDispatch();
   const Token = useAuthToken();
 
@@ -267,8 +269,9 @@ const MultiplePoll = ({
             }}
             onClick={() => {
               if (!pollVotedData.isVoted) {
-                if (getAuthenticated()) {
-                  if (isAccountValid()) {
+                console.log(getRawcaserToken());
+                if (getRawcaserToken()) {
+                  if (isAccountValid(LoginUserData)) {
                     setTimeout(() => {
                       animateAnswers(-1, result.option_id);
                     }, 1000);

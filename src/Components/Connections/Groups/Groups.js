@@ -57,8 +57,6 @@ const Groups = () => {
     }
   }, [userToken, dispatch, profileData]);
 
-  console.log(groups);
-
   return (
     <div className={classes.myconnectioin}>
       <h2>

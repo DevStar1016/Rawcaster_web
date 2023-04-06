@@ -587,7 +587,7 @@ const Post = ({
                   }
                   onClick={() => {
                     if (getAuthenticated()) {
-                      if (isAccountValid()) {
+                      if (isAccountValid(loginUserData)) {
                         let like = ele.liked ? 2 : 1;
                         handleLike(like);
                         LikeProcess(ele.nugget_id, like);
@@ -619,7 +619,7 @@ const Post = ({
                   <p
                     onClick={() => {
                       if (getAuthenticated()) {
-                        if (isAccountValid()) {
+                        if (isAccountValid(loginUserData)) {
                           if (Comments === ele.nugget_id) {
                             setCommentList([]);
                             setComments("");
@@ -655,7 +655,7 @@ const Post = ({
                     }}
                   >
                     <Dropdown
-                      disabled={!isAccountValid()}
+                      disabled={!isAccountValid(loginUserData)}
                       menu={{
                         items: SHARED_TYPE,
                         onClick: ({ key }) => {
@@ -677,7 +677,7 @@ const Post = ({
                       <p
                         onClick={() => {
                           if (getAuthenticated()) {
-                            if (isAccountValid()) {
+                            if (isAccountValid(loginUserData)) {
                             } else {
                               dispatch(
                                 handleprofileVerifyModalShow({
@@ -707,7 +707,7 @@ const Post = ({
                     style={{ cursor: "pointer" }}
                     onClick={() => {
                       if (getAuthenticated()) {
-                        if (isAccountValid()) {
+                        if (isAccountValid(loginUserData)) {
                           let save = ele.saved ? 2 : 1;
                           handleSave(save);
                           SaveProcess(ele.nugget_id, save);

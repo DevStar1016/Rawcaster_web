@@ -4,7 +4,7 @@
     padding-top: 66px;
   }
   .sidebar {
-    width: 206px;
+    width: 100%;
     background: #222222 !important;
        height: 100%;
     padding: 25px 0;
@@ -32,14 +32,16 @@
     cursor: pointer;
     font-family: "DM Sans", sans-serif;
   }
-
+  .contentSec::-webkit-scrollbar {
+    width: 0px !important;
+  }
   .contentSec {
     background: #fff !important;
     margin:0 20px;
-    height: calc(100% - 40px);
+    height: calc(100vh - 73px);
     float: left;
     padding: 20px 25px;
-
+    overflow-y: scroll;
     font-family: "DM Sans", sans-serif;
   }
   .contentSec h1 {
@@ -351,6 +353,9 @@
   }
   .selectBox { border: 1px solid #E8EAEE; border-radius: 8px; min-width:280px; margin-top: 5px; }
   .uplBtn { background: rgba(0, 0, 0, 0.04) !important; padding: 5px 15px !important; }
+  .textBoxSec {
+    max-width: 300px;
+  }
   @media (min-width: 768px) {
     .mob_menu {
       display: none;

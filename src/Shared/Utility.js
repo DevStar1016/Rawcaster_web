@@ -8,22 +8,25 @@ import {
 } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Linkify from "linkify-react";
 import LinkOpenModal from "../Modal/Verification/LinkOpenModal";
 import moment from "moment";
-import moment1 from "moment-timezone";
 import { getTimezone } from "countries-and-timezones";
 import { useLayoutEffect } from "react";
 
 // Auth
 
 export const getRawcaserToken = () => {
-  try {
-    return JSON.parse(getCookieData("rawcaster_user_token"));
-  } catch (error) {
-    return null;
+  if (getCookieData("rawcaster_user_token")) {
+    try {
+      return JSON.parse(getCookieData("rawcaster_user_token"));
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
+  return null;
 };
 
 export const getAuthToken = (value) => {
@@ -245,8 +248,7 @@ export const isValidData = (data) => {
   }
 };
 
-export const isAccountValid = () => {
-  let userData = getRawcaserToken();
+export const isAccountValid = (userData) => {
   if (userData && userData?.acc_verify_status === 1) {
     return true;
   } else {
@@ -394,7 +396,7 @@ export const getTimezoneName = (str) => {
   else return str;
 };
 
-export const { utcOffsetStr } = getTimezone(moment.tz.guess());
+export const utcoffset = getTimezone(moment.tz?.guess()) ?? null;
 
 export const utctoUserTimezone = (time, zonename) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
@@ -417,13 +419,13 @@ export const getDisplayEventDate = (
 ) => {
   if (receivedDate) {
     let todaysDate;
-    if (utcOffsetStr) {
+    if (utcoffset?.utcOffsetStr) {
       todaysDate = utctoUserTimezone(
         receivedDate,
-        moment.tz.guess() + " (+" + utcOffsetStr + ")"
+        moment.tz.guess() + " (+" + utcoffset?.utcOffsetStr + ")"
       ).format(dateFormat);
     }
-    return utcOffsetStr ? todaysDate : "";
+    return utcoffset?.utcOffsetStr ? todaysDate : "";
   }
   return "";
 };

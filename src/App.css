@@ -33,7 +33,8 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
 /* .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px; font-family: "DM Sans", sans-serif !important; }  */
 .textBox:focus, .textBox::selection, .textBox:hover,.textBox:active { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
 .ant-select-selector {
-  border: none !important; height: 42px !important;
+  border: none !important; 
+  height: 42px !important;
 }
 ::selection { background: #F2718D !important;}
 .dateinputBox .ant-select-selector {
@@ -427,10 +428,13 @@ margin-bottom: 0px !important;
 .ant-switch {
   background: #4d4d4d;
 }
+.ant-radio-checked .ant-radio-inner:after {
+  transform: scale(0.575) !important;
+}
 .ant-radio-checked .ant-radio-inner:after,
 .ant-switch-checked {
-  background-color: #f4c117;
-  transform: scale(0.575) !important;
+  background-color: #f4c117 !important;
+ 
 }
 .switchGreen .ant-radio-checked .ant-radio-inner:after,
 .eventModal .ant-radio-checked .ant-radio-inner:after,
@@ -450,6 +454,8 @@ margin-bottom: 0px !important;
   width: 10px;
   height: 10px;
 }
+
+
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .ant-modal-close-x { width: 20px; height: 20px; border-radius: 50px; display: flex; align-items: center; line-height: 16px !important; }

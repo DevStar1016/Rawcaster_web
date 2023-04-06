@@ -7,6 +7,7 @@ const RedirectModal = ({
   open = false,
   msg = "",
   Btnname,
+  closeBtnName = "Cancel",
   onSuccess,
   onClose,
 }) => {
@@ -27,7 +28,7 @@ const RedirectModal = ({
               onClose();
             }}
           >
-            Cancel
+            {closeBtnName}
           </Button>
           <Button
             type="primary"

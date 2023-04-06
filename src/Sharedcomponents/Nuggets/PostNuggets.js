@@ -261,7 +261,7 @@ const PostNuggets = ({ getNuggetList }) => {
               className="w-100"
               onClick={() => {
                 console.log("Click");
-                if (isAccountValid()) {
+                if (isAccountValid(LoginUserData)) {
                   setpostModalShow(true);
                 } else {
                   dispatch(
@@ -284,7 +284,7 @@ const PostNuggets = ({ getNuggetList }) => {
             <div
               className={classes.item}
               onClick={() => {
-                if (isAccountValid()) {
+                if (isAccountValid(LoginUserData)) {
                   if (VideoRef.current) {
                     VideoRef.current.click();
                   }
@@ -322,7 +322,7 @@ const PostNuggets = ({ getNuggetList }) => {
             <div
               className={classes.item}
               onClick={() => {
-                if (isAccountValid()) {
+                if (isAccountValid(LoginUserData)) {
                   if (ImageRef.current) {
                     ImageRef.current.click();
                   }

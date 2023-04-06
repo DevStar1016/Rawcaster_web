@@ -65,7 +65,11 @@ const Login = () => {
       .then((res) => {
         if (res.data.status === 1) {
           getProfile(res.data.token, dispatch).then(() => {
-            setCookieData("rawcaster_user_token", res.data);
+            let finalVal = {
+              ...res.data,
+            };
+            delete finalVal["name"];
+            setCookieData("rawcaster_user_token", finalVal);
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");

@@ -13,25 +13,16 @@ import {
   JSONtoformdata,
 } from "../../../Shared/Utility";
 import classes from "../Events.module.css";
+import { getEventType } from "../../../Shared/CommonApis";
 
 export const EventTypeComponent = ({ onResult, value }) => {
   const token = useAuthToken();
   const [EventData, setEventData] = useState([]);
 
   useEffect(() => {
-    let eventData = {
-      token: token,
-    };
-    getEventTypeService(JSONtoformdata(eventData))
-      .then((res) => {
-        let filterData = res.data.event_types.map((ele) => {
-          return { ...ele, label: ele.type, value: ele.type };
-        });
-        if (filterData.length !== 0) {
-          setEventData(filterData);
-        }
-      })
-      .catch((err) => {});
+    getEventType(token).then((res) => {
+      setEventData(res);
+    });
   }, []);
 
   const getDisplayName = () => {

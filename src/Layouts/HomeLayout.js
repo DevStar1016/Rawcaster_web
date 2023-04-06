@@ -20,7 +20,6 @@ import { logoutService } from "../Services/ApiService";
 import {
   EncryptionString,
   getAuthenticated,
-  isAccountValid,
   JSONtoformdata,
   RemoveToken,
 } from "../Shared/Utility";

@@ -64,6 +64,12 @@ export const getOthersProfileService = (data) => {
 export const updateProfileService = (data) => {
   return axios.post("updatemyprofile", data);
 };
+export const updateUserSettingsService = (data) => {
+  return axios.post("updateusersettings", data);
+};
+export const grouplistupdateService = (data) => {
+  return axios.post("grouplistupdate", data);
+};
 
 export const searchRawcasterUsersService = (data, token) => {
   return axios.post("searchrawcasterusers", data, {
@@ -184,6 +190,14 @@ export const getNuggetDetailService = (data) => {
 
 export const getEventTypeService = (data) => {
   return axios.post("geteventtype", data);
+};
+
+export const getTimeZoneService = (data) => {
+  return axios.post("gettimezone", data);
+};
+
+export const getLanguageListService = (data) => {
+  return axios.post("getlanguagelist", data);
 };
 
 export const getEventLayoutService = (data) => {
