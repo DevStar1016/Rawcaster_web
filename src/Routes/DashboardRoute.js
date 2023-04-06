@@ -7,6 +7,7 @@ import Cookiespolicy from "../Components/Policy/CookiePolicy";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
 import TermsandConditions from "../Components/Policy/TermsandConditions";
 import Profile from "../Components/Profile";
+import Referel from "../Components/Referel";
 import Settings from "../Components/Settings";
 import HomeLayout from "../Layouts/HomeLayout";
 import { HomePrivateRoute } from "./PrivateRoute";
@@ -35,6 +36,10 @@ export const DashboardRoute = [
           {
             path: "/membership",
             element: <Membership />,
+          },
+          {
+            path: "/referel",
+            element: <Referel />,
           },
         ],
       },

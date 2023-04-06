@@ -4,7 +4,7 @@ import { Button, Checkbox, Switch } from "antd";
 import { useAuth } from "../../Shared/Reduxfetcher";
 import { useSettingsContext } from "../../Shared/Context";
 import { EventSettings } from "./Constants";
-import { EventTypeComponent } from "./Utility";
+import { EventTypeComponent } from "../Events/Configure/Utility";
 
 const Event = () => {
   const { userSettings, loginUserData } = useAuth();
@@ -53,12 +53,17 @@ const Event = () => {
 
           <div>
             <p className={`${classes.smallheading} mb-2`}>Default Event Type</p>
-            <EventTypeComponent
-              value={formikvalues.event_type}
-              onResult={({ id }) => {
-                setupdateValue("event_type", id);
-              }}
-            />
+            <div className="w-25">
+              <EventTypeComponent
+                isEnabledLabel={false}
+                value={formikvalues.event_type}
+                onResult={({ id }) => {
+                  setupdateValue("event_type", id);
+                }}
+                disabled={updateValue.includes("event_type")}
+                isLoading={updateValue.includes("event_type")}
+              />
+            </div>
             {/* {eventType && settingData && (
         <Antselect
           defaultValue={settingData.event_type}

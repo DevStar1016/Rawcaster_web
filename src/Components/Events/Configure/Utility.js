@@ -15,7 +15,13 @@ import {
 import classes from "../Events.module.css";
 import { getEventType } from "../../../Shared/CommonApis";
 
-export const EventTypeComponent = ({ onResult, value }) => {
+export const EventTypeComponent = ({
+  onResult,
+  value,
+  disabled,
+  isLoading,
+  isEnabledLabel = true,
+}) => {
   const token = useAuthToken();
   const [EventData, setEventData] = useState([]);
 
@@ -34,11 +40,17 @@ export const EventTypeComponent = ({ onResult, value }) => {
     }
   };
   return (
-    <Form.Item label="Event Type" colon={false} className={classes.textBoxSec}>
+    <Form.Item
+      label={isEnabledLabel ? "Event Type" : ""}
+      colon={false}
+      className={classes.textBoxSec}
+    >
       <Select
         className={classes.textbox}
         options={EventData}
         value={getDisplayName()}
+        disabled={disabled}
+        loading={isLoading}
         onSelect={(val, value) => {
           onResult(value);
         }}
