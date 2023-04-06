@@ -1,4 +1,4 @@
-import { Dropdown, Layout, Menu, Tooltip } from "antd";
+import { Dropdown, Layout, Tooltip } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
@@ -20,6 +20,7 @@ import { logoutService } from "../Services/ApiService";
 import {
   EncryptionString,
   getAuthenticated,
+  isAccountValid,
   JSONtoformdata,
   RemoveToken,
 } from "../Shared/Utility";
@@ -31,6 +32,7 @@ import {
   handleisGlobalSearch,
   handleLoading,
   handleloginModalShow,
+  handleprofileVerifyModalShow,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
 
@@ -46,10 +48,10 @@ const HomeLayout = () => {
   const navigate = useNavigate();
   const { Content } = Layout;
   const onClick = ({ key }) => {
-    if (key == 2) {
+    if (parseInt(key) === 2) {
       handleLogout();
     }
-    if (key == 1) {
+    if (parseInt(key) === 1) {
       navigate(`/viewprofile/${EncryptionString(loginUserData?.user_id)}`);
     }
   };
@@ -80,6 +82,7 @@ const HomeLayout = () => {
     if (params) {
       setsearchData(params.key);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -94,10 +97,15 @@ const HomeLayout = () => {
           <div className={classes.fullcontainer}>
             <div mode="horizontal" className="d-flex flex-row">
               <Link className={classes.logopart} to="/dashboard">
-                <img className="d-none d-sm-block" src={RawcasterLogo} />
+                <img
+                  className="d-none d-sm-block"
+                  src={RawcasterLogo}
+                  alt="rawcaster_logo"
+                />
                 <img
                   className={`d-block d-sm-none ${classes.smLogo}`}
                   src={smLogo}
+                  alt="rawcaster_sm_logo"
                 />
               </Link>
               <div className={`d-none d-sm-block ${classes.topSearch}`}>
@@ -113,10 +121,19 @@ const HomeLayout = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         if (getAuthenticated()) {
-                          if (e.nativeEvent.target.value.trim() !== "") {
-                            dispatch(handleisGlobalSearch(true));
-                            navigate(
-                              `/globalsearch/${e.nativeEvent.target.value}`
+                          if (isAccountValid(loginUserData)) {
+                            if (e.nativeEvent.target.value.trim() !== "") {
+                              dispatch(handleisGlobalSearch(true));
+                              navigate(
+                                `/globalsearch/${e.nativeEvent.target.value}`
+                              );
+                            }
+                          } else {
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
                             );
                           }
                         } else {
@@ -134,10 +151,15 @@ const HomeLayout = () => {
               <div className={classes.rightMenus}>
                 {loginUserData && (
                   <div>
-                    <img src={LiveIcon} className={classes.liveIcon} />
+                    <img
+                      src={LiveIcon}
+                      className={classes.liveIcon}
+                      alt="live_icon"
+                    />
                     <img
                       src={HomeIcon}
                       className={classes.menuIcon}
+                      alt="Home_logo"
                       onClick={() => {
                         navigate("/setting");
                       }}
@@ -145,9 +167,14 @@ const HomeLayout = () => {
                     <img
                       src={SettingsIcon}
                       className={`${classes.onlydes} ${classes.menuIcon}`}
+                      alt="Settings_logo"
+                      onClick={() => {
+                        navigate("/dashboard");
+                      }}
                     />
                     <img
                       src={NotificationIcon}
+                      alt="Notification_logo"
                       className={`${classes.onlydes} ${classes.menuIcon}`}
                     />
                   </div>
@@ -266,21 +293,24 @@ const HomeLayout = () => {
         <div className={classes.bottomMenu}>
           <img
             src={btmevent}
+            alt="event_logo"
             onClick={() => {
               dispatch(handledasboardTab("event"));
             }}
           />
-          <img src={btmbell} />
+          <img src={btmbell} alt="notification_logo" />
           <img
             className={classes.btmhome}
+            alt="home_logo"
             src={btmhome}
             onClick={() => {
               dispatch(handledasboardTab("nugget"));
             }}
           />
-          <img src={btmtv} />
+          <img src={btmtv} alt="talkshow_logo" />
           <img
             src={btmuser}
+            alt="user_logo"
             onClick={() => {
               dispatch(handledasboardTab("usermenu"));
             }}

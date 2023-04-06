@@ -108,6 +108,7 @@ const Settings = () => {
         friend_request: userSettings?.friend_request,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSettings]);
 
   const handleupdate = (objValue) => {
@@ -118,7 +119,7 @@ const Settings = () => {
     updateUserSettingsService(JSONtoformdata(finalObj))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.success("Successfully Updated");
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         } else {
@@ -140,7 +141,17 @@ const Settings = () => {
     setupdateValue(key, value, type = "add") {
       switch (type) {
         case "add":
-          setFieldValue([key], parseInt(value));
+          if (typeof value === "string") {
+            if (!isNaN(parseInt(value))) {
+              setFieldValue([key], parseInt(value));
+            } else {
+              setFieldValue([key], value);
+            }
+          } else if (typeof value === "object") {
+            setFieldValue([key], URL.createObjectURL(value));
+          } else {
+            setFieldValue([key], value);
+          }
           let updateObj = {
             [key]: value,
           };
@@ -153,6 +164,8 @@ const Settings = () => {
         case "delete":
           setFieldValue(key, "");
           return setupdateValue((pre) => pre.filter((ele) => ele !== key));
+        default:
+          return;
       }
     },
     updateValue,

@@ -5,17 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import SelectedUsers from "../../../Modal/Event/SelectedUsers";
 import ImageCropModal from "../../../Modal/ImageCropModal";
-import { getEventTypeService } from "../../../Services/ApiService";
 import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
-import {
-  decodeHtml,
-  getAspectRatio,
-  JSONtoformdata,
-} from "../../../Shared/Utility";
+import { decodeHtml, getAspectRatio } from "../../../Shared/Utility";
 import classes from "../Events.module.css";
 import { getEventType } from "../../../Shared/CommonApis";
 
-export const EventTypeComponent = ({ onResult, value }) => {
+export const EventTypeComponent = ({
+  onResult,
+  value,
+  disabled,
+  isLoading,
+  isEnabledLabel = true,
+}) => {
   const token = useAuthToken();
   const [EventData, setEventData] = useState([]);
 
@@ -23,6 +24,7 @@ export const EventTypeComponent = ({ onResult, value }) => {
     getEventType(token).then((res) => {
       setEventData(res);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getDisplayName = () => {
@@ -34,11 +36,17 @@ export const EventTypeComponent = ({ onResult, value }) => {
     }
   };
   return (
-    <Form.Item label="Event Type" colon={false} className={classes.textBoxSec}>
+    <Form.Item
+      label={isEnabledLabel ? "Event Type" : ""}
+      colon={false}
+      className={classes.textBoxSec}
+    >
       <Select
         className={classes.textbox}
         options={EventData}
         value={getDisplayName()}
+        disabled={disabled}
+        loading={isLoading}
         onSelect={(val, value) => {
           onResult(value);
         }}
@@ -47,7 +55,7 @@ export const EventTypeComponent = ({ onResult, value }) => {
   );
 };
 
-export const BannerComponent = ({ onResult, value }) => {
+export const BannerComponent = ({ onResult, value, size = null }) => {
   const bannerRef = useRef();
   const [cropImage, setcropImage] = useState("");
   const [bannerImage, setbannerImage] = useState("");
@@ -134,10 +142,22 @@ export const BannerComponent = ({ onResult, value }) => {
           open={cropImage !== ""}
           src={URL.createObjectURL(cropImage)}
           ratio={getAspectRatio(500, 300)}
-          onSuccess={(val) => {
-            setbannerImage(val);
-            onResult(val);
-            setcropImage("");
+          onSuccess={(image) => {
+            if (size) {
+              if (image.size > size * 1024 * 1024) {
+                toast.error("Image size is too big (max 10MB)");
+              } else if (image.type.match("image")) {
+                setbannerImage(image);
+                onResult(image);
+                setcropImage("");
+              } else {
+                toast.error("Upload only image");
+              }
+            } else {
+              setbannerImage(image);
+              onResult(image);
+              setcropImage("");
+            }
           }}
           onFailure={() => {
             setcropImage("");
@@ -205,6 +225,7 @@ export const InviteEmailComponent = ({ onResult, value }) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
@@ -266,6 +287,7 @@ export const TimeValueComponent = ({ onResult, value }) => {
     if (TimeValue.time !== "" && TimeValue.session !== "") {
       onResult(TimeValue.time + " " + TimeValue.session);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [TimeValue]);
 
   useEffect(() => {
@@ -387,6 +409,7 @@ export const Connections = ({ onResult, values }) => {
 
   useEffect(() => {
     onResult(selectedFriendList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFriendList]);
 
   useEffect(() => {
@@ -398,6 +421,7 @@ export const Connections = ({ onResult, values }) => {
       );
       setFilterFriendList([...otherData]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
 
   return (

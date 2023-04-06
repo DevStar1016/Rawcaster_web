@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
-import { Button, Checkbox, Switch } from "antd";
-import { useAuth } from "../../Shared/Reduxfetcher";
+import { Button, Checkbox, Select, Spin, Switch } from "antd";
+import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { useSettingsContext } from "../../Shared/Context";
 import { EventSettings } from "./Constants";
-import { EventTypeComponent } from "./Utility";
+import { EventTypeComponent } from "../Events/Configure/Utility";
+import { getMelodyData } from "./Utility";
+import { toast } from "react-hot-toast";
+import { BannerComponent } from "../Events/Configure/Utility";
 
 const Event = () => {
-  const { userSettings, loginUserData } = useAuth();
-
-  const [melodyData, setmelodyData] = useState();
+  const { loginUserData } = useAuth();
+  const token = useAuthToken();
+  const [melodyData, setmelodyData] = useState(null);
+  const [audioPlay, setaudioPlay] = useState(false);
   const { formikvalues, setupdateValue, updateValue } = useSettingsContext();
 
   const handlePrimaryDisabled = (type, isprimary) => {
@@ -19,6 +23,38 @@ const Event = () => {
       return true;
     }
     return false;
+  };
+
+  useEffect(() => {
+    if (token) {
+      getMelodyData(token).then((res) => {
+        setmelodyData(res);
+      });
+    }
+  }, [token]);
+
+  const onChangeMelody = (imageFile) => {
+    // var allowedFiles = [".ppt", ".pptx"];
+    if (!imageFile) {
+      toast.error("Please select file.");
+    } else if (imageFile.size > 25 * 1024 * 1024) {
+      toast.error("Image size is too big (max 25MB)");
+    } else if (
+      imageFile.type.match("image") ||
+      imageFile.type.match("audio") ||
+      imageFile.type.match("video")
+    ) {
+      setupdateValue("default_melody", imageFile);
+    } else {
+      toast.error("Upload only image,video or audio");
+    }
+  };
+
+  const audioHandler = () => {
+    if (audioPlay) document.getElementById("audioDivID").pause();
+    else document.getElementById("audioDivID").play();
+
+    setaudioPlay((p) => !p);
   };
 
   return (
@@ -53,44 +89,17 @@ const Event = () => {
 
           <div>
             <p className={`${classes.smallheading} mb-2`}>Default Event Type</p>
-            <EventTypeComponent
-              value={formikvalues.event_type}
-              onResult={({ id }) => {
-                setupdateValue("event_type", id);
-              }}
-            />
-            {/* {eventType && settingData && (
-        <Antselect
-          defaultValue={settingData.event_type}
-          showSearch
-          className={classes.selectBox}
-          placeholder="Select Group"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            option.children
-              .toLowerCase()
-              .indexOf(input.toLowerCase()) >= 0
-          }
-          filterSort={(optionA, optionB) =>
-            optionA.children
-              .toLowerCase()
-              .localeCompare(optionB.children.toLowerCase())
-          }
-          onChange={(val) => {
-            onChangeNotificationHandler(28, val);
-          }}
-          loading={loadingArr.includes(28)}
-          disabled={loadingArr.includes(28)}
-        >
-          {eventType.map(function (opt) {
-            return (
-              <Option key={"eventtype" + opt.id} value={opt.id}>
-                {opt.type}
-              </Option>
-            );
-          })}
-        </Antselect>
-      )} */}
+            <div className="w-25">
+              <EventTypeComponent
+                isEnabledLabel={false}
+                value={formikvalues.event_type}
+                onResult={({ id }) => {
+                  setupdateValue("event_type", id);
+                }}
+                disabled={updateValue.includes("event_type")}
+                isLoading={updateValue.includes("event_type")}
+              />
+            </div>
           </div>
 
           <div className={classes.audioSetting}>
@@ -178,11 +187,11 @@ const Event = () => {
                   {formikvalues.default_melody.type === 3 ? (
                     <React.Fragment>
                       <img
-                        // src={
-                        //   audioPlay
-                        //     ? require("../../assets/audio_img.gif")
-                        //     : require("../../assets/audio_stop.jpg")
-                        // }
+                        src={
+                          audioPlay
+                            ? require("../../Assets/Images/audio_img.gif")
+                            : require("../../Assets/Images/audio_stop.jpg")
+                        }
                         alt="audio"
                         width="500px"
                       />
@@ -194,19 +203,19 @@ const Event = () => {
                           cursor: "pointer",
                         }}
                       >
-                        {/* {audioPlay ? (
-                    <img
-                      onClick={audioHandler}
-                      src={require("../../assets/music_stop.png")}
-                      alt="more"
-                    ></img>
-                  ) : (
-                    <img
-                      onClick={audioHandler}
-                      src={require("../../assets/music_play.png")}
-                      alt="more"
-                    ></img>
-                  )} */}
+                        {audioPlay ? (
+                          <img
+                            onClick={audioHandler}
+                            src={require("../../Assets/Icons/png/music_stop.png")}
+                            alt="more"
+                          ></img>
+                        ) : (
+                          <img
+                            onClick={audioHandler}
+                            src={require("../../Assets/Icons/png/music_play.png")}
+                            alt="more"
+                          ></img>
+                        )}
                       </div>
                       <video
                         id="audioDivID"
@@ -247,22 +256,25 @@ const Event = () => {
                 id="UploaddefaultMelody"
                 name="UploaddefaultMelody"
                 style={{ display: "none" }}
-                // onChange={(event) => {
-                //   onChangeMelody(event.target.files[0]);
-                // }}
+                onChange={(event) => {
+                  onChangeMelody(event.target.files[0]);
+                }}
               ></input>
-              {/* <Antselect
-          value={settingData.melody}
-          className={classes.melodySelect}
-          placeholder="Select Melody"
-          onChange={(value) => {
-            onChangeNotificationHandler(6, value, "melody");
-          }}
-        >
-          {melodyData.map(function (melody) {
-            return <Option value={melody.id}>{melody.title}</Option>;
-          })}
-        </Antselect> */}
+              <Select
+                value={formikvalues.melody}
+                onChange={(val) => {
+                  setupdateValue("melody", val);
+                }}
+                loading={updateValue.includes("melody")}
+              >
+                {melodyData.map(function (melody) {
+                  return (
+                    <Select.Option value={melody.id}>
+                      {melody.title}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
             </div>
           ) : null}
 
@@ -272,60 +284,34 @@ const Event = () => {
               Choose or upload an image that depicts this event. Leave blank to
               use Rawcaster default.
             </p>
-            {/* {eventDefaultBannerObject.loading ? (
-        <p>
-          <Spin></Spin>
-        </p>
-      ) : null} */}
-
-            <div
-              className={classes.uploadbanner + " " + "pointer"}
-              onClick={() => {
-                document.getElementById("imageUploadSetting").click();
-              }}
-            >
-              {formikvalues?.meeting_header_image !== "" ? (
-                <img
-                  src={formikvalues?.meeting_header_image}
-                  alt=""
-                  width="100%"
-                  height="100%"
-                  style={{
-                    zIndex: 0,
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    width: "auto",
-                    height: "auto",
-                  }}
-                ></img>
-              ) : (
-                <div>
-                  <div
-                    style={{
-                      color: "#0E425A",
-                      opacity: "0.29",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Upload Banner Photo
-                  </div>
-                  <div
-                    style={{
-                      color: "#0E425A",
-                      fontSize: "12px",
-                      opacity: "0.15",
-                      textAlign: "center",
-                    }}
-                  >
-                    Recommended size 500x300
-                  </div>
-                </div>
-              )}
+            {updateValue.includes("meeting_header_image") ? (
+              <p>
+                <Spin></Spin>
+              </p>
+            ) : null}
+            <div className="w-50">
+              <BannerComponent
+                value={formikvalues?.meeting_header_image}
+                size={10}
+                onResult={(val) => {
+                  setupdateValue("meeting_header_image", val);
+                }}
+              />
             </div>
           </div>
         </>
       )}
+
+      <input
+        type="file"
+        id="imageUploadSetting"
+        name="imageUploadSetting"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          console.log(e.target.files[0]);
+        }}
+        accept="image/*"
+      ></input>
     </div>
   );
 };

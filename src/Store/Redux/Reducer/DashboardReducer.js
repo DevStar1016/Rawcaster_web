@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { fetchFrindsbyId, fetchgroupsbyId } from "../Action";
 
 const initialState = {
   isLoading: false,
@@ -11,8 +12,11 @@ const initialState = {
   nuggetVideoPaused: false,
   isGlobalSearch: false,
   friendsList: [],
+  isFriendsLoading: true,
   groupsList: [],
+  isGroupLoading: true,
   Nuggets: [],
+  isNuggetsLoading: true,
   isNuggetMuted: false,
   DashboardfilterType: 0,
 };
@@ -63,6 +67,22 @@ export const { actions, reducer } = createSlice({
     handleNuggetList: (state, action) => {
       state.Nuggets = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchFrindsbyId.fulfilled, (state, action) => {
+      state.friendsList = action.payload;
+      state.isFriendsLoading = false;
+    });
+    builder.addCase(fetchFrindsbyId.rejected, (state, action) => {
+      state.isFriendsLoading = false;
+    });
+    builder.addCase(fetchgroupsbyId.fulfilled, (state, action) => {
+      state.groupsList = action.payload;
+      state.isGroupLoading = false;
+    });
+    builder.addCase(fetchgroupsbyId.rejected, (state, action) => {
+      state.isGroupLoading = false;
+    });
   },
 });
 

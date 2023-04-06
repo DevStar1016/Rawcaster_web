@@ -8,19 +8,19 @@ import {
   getSessionStorageData,
   removeSessionStorageData,
   setSessionStorageData,
-} from "../../Store/Storage";
+} from "../../../Store/Storage";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
 import { toast } from "react-hot-toast";
 import {
   resendOtpService,
   signupVerifyService,
-} from "../../Services/ApiService";
-import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+} from "../../../Services/ApiService";
+import { getAuthToken, JSONtoformdata } from "../../../Shared/Utility";
+import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { handleLoading } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
-import { getProfile } from "../../Components/Auth/getProfile";
+import { getProfile } from "../../../Components/Auth/getProfile";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -177,7 +177,9 @@ const VerifyOtp = () => {
       <div className="d-flex flex-column align-content-center justify-content-center">
         <div className={classes.centerLogo}>
           <Link to="/">
-            <img src={require("../../Assets/Images/png/rawcater_logo.png")} />
+            <img
+              src={require("../../../Assets/Images/png/rawcater_logo.png")}
+            />
           </Link>
         </div>
 
@@ -248,7 +250,7 @@ const VerifyOtp = () => {
 
           <div className={`${classes.copyright} ${classes.verifyCopy}`}>
             <p>
-              <img src={require("../../Assets/Images/png/r_logo.png")} />
+              <img src={require("../../../Assets/Images/png/r_logo.png")} />
               © Copyright Rawcaster 2021
               <br />
               <Link to="/termsandconditions">Terms and Conditions</Link> |{" "}

@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { getEventType } from "../../Shared/CommonApis";
-import { Form, Select } from "antd";
-import classes from "./Settings.module.css";
+import { geteventMelodyService } from "../../Services/ApiService";
+import { JSONtoformdata } from "../../Shared/Utility";
 
 export const getValidDisplayData = (Data, val, idType = "value") => {
   let findValue = Data.find((ele) => parseInt(ele[idType]) === val);
@@ -13,34 +10,26 @@ export const getValidDisplayData = (Data, val, idType = "value") => {
   }
 };
 
-export const EventTypeComponent = ({ onResult, value }) => {
-  const token = useAuthToken();
-  const [EventData, setEventData] = useState([]);
-
-  useEffect(() => {
-    getEventType(token).then((res) => {
-      setEventData(res);
-    });
-  }, []);
-
-  const getDisplayName = () => {
-    let findEvent = EventData.find((ele) => ele.id === parseInt(value));
-    if (findEvent) {
-      return findEvent;
-    } else {
-      return null;
-    }
-  };
-  return (
-    <Form.Item colon={false} className={classes.textBoxSec}>
-      <Select
-        options={EventData}
-        className={classes.textbox}
-        value={getDisplayName()}
-        onSelect={(val, value) => {
-          onResult(value);
-        }}
-      />
-    </Form.Item>
-  );
+export const getMelodyData = (token) => {
+  let promise = new Promise((resolve, reject) => {
+    let JSONData = {
+      token: token,
+    };
+    console.log(JSONData);
+    geteventMelodyService(JSONtoformdata(JSONData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          let result = res.data.melody.map((ele) => ({
+            ...ele,
+            value: ele.title,
+            label: ele.title,
+          }));
+          resolve(result);
+        } else {
+          resolve(null);
+        }
+      })
+      .catch((err) => {});
+  });
+  return promise;
 };

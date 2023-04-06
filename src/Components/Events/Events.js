@@ -1,6 +1,5 @@
 import { Dropdown, Skeleton } from "antd";
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -62,12 +61,13 @@ const Events = () => {
         getEvents(ActiveEvent.key);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, isTalkshowOpen, isSuccess]);
 
   return (
     <div className={classes.eventSec}>
       {/* BEFORE LOGIN START */}
-      {loginUserData === null ? (
+      {loginUserData === null && isSuccess ? (
         <BeforeAuthEvents />
       ) : (
         <>

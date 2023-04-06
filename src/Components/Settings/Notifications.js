@@ -1,5 +1,5 @@
 import { Switch } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import classes from "./Settings.module.css";
 import { NotificationTypes, switchTypes } from "./Constants";
 import { useSettingsContext } from "../../Shared/Context";
@@ -8,10 +8,16 @@ import { JSONtoformdata, getAuthToken } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { resendOtpService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
+import RedirectModal from "../../Modal/Verification/RedirectModal";
 
 const Notifications = () => {
   const { loginUserData } = useAuth();
   const navigate = useNavigate();
+  const [redirectModal, setredirectModal] = useState({
+    show: false,
+    msg: "",
+    type: "",
+  });
   const { formikvalues, setupdateValue, updateValue } = useSettingsContext();
 
   const getValidData = (type) => {
@@ -28,20 +34,26 @@ const Notifications = () => {
   };
 
   const handleNotification = (type, index, status) => {
-    if (index === 1) {
+    if (index === 0) {
       if (loginUserData?.is_email_id_verified === 0) {
         if (loginUserData?.email_id && loginUserData?.email_id !== "") {
-          console.log("email not validated");
-          // handleSendOTP("email");
+          setredirectModal({
+            show: true,
+            msg: "Email id is not validated,Do you want to validate now?",
+            type: "email",
+          });
+
           return;
         }
       }
-    } else if (index === 2) {
+    } else if (index === 1) {
       if (loginUserData?.is_mobile_no_verified === 0) {
         if (loginUserData?.mobile && loginUserData?.mobile !== "") {
-          console.log("mobile number not validated");
-          // handleSendOTP("sms");
-
+          setredirectModal({
+            show: true,
+            msg: "Mobile Number is not validated,Do you want to validate now?",
+            type: "sms",
+          });
           return;
         }
       }
@@ -126,6 +138,19 @@ const Notifications = () => {
           })}
         </>
       )}
+      <RedirectModal
+        open={redirectModal.show}
+        msg={redirectModal.msg}
+        closeBtnName="Later"
+        Btnname={"Verify"}
+        onSuccess={() => {
+          handleSendOTP(redirectModal.type);
+          setredirectModal({ show: false, msg: "", type: "" });
+        }}
+        onClose={() => {
+          setredirectModal({ show: false, msg: "", type: "" });
+        }}
+      />
     </div>
   );
 };

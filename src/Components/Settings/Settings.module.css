@@ -142,6 +142,7 @@
     border-radius: 4px;
     margin-bottom: 15px;
     margin-top: 20px;
+    cursor: pointer;
   }
   .radio_active {
     background: #f7f7f7;
@@ -354,9 +355,7 @@
   }
   .selectBox { border: 1px solid #E8EAEE; border-radius: 8px; min-width:280px; margin-top: 5px; }
   .uplBtn { background: rgba(0, 0, 0, 0.04) !important; padding: 5px 15px !important; }
-  .textBoxSec {
-    max-width: 300px;
-  }
+ 
   @media (min-width: 768px) {
     .mob_menu {
       display: none;

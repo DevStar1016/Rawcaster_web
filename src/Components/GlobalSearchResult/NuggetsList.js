@@ -5,11 +5,7 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
-import {
-  globalSearchNuggetsService,
-  listNuggetsService,
-} from "../../Services/ApiService";
-import { ListNuggetContext } from "../../Shared/Context";
+import { listNuggetsService } from "../../Services/ApiService";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import {
   getAuthenticated,
@@ -21,7 +17,6 @@ import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import { getCookieData } from "../../Store/Storage";
 import classes from "./GlobalSearch.module.css";
 
 let isRequestCancel = false;

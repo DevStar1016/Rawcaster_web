@@ -12,6 +12,7 @@ import {
   handleuserSettings,
 } from "../../Store/Redux/Reducer/AuthReducer";
 import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
+import { fetchFrindsbyId, fetchgroupsbyId } from "../../Store/Redux/Action";
 
 export const getProfile = (token, dispatch) => {
   let promise = new Promise((resolve, reject) => {
@@ -29,6 +30,10 @@ export const getProfile = (token, dispatch) => {
             last_name: decodeHtml(res.data.profile.last_name),
             name: decodeHtml(res.data.profile.name),
           };
+          dispatch(fetchFrindsbyId(token));
+          dispatch(
+            fetchgroupsbyId({ token: token, user_id: profileData.user_id })
+          );
           dispatch(handleLoginData({ token: token, ...profileData }));
           dispatch(handleToken(token));
           if (res.data.profile.acc_verify_status === 0) {

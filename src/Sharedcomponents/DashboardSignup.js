@@ -18,12 +18,10 @@ import {
 } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { handleLoginData } from "../Store/Redux/Reducer/AuthReducer";
 import {
   getSessionStorageData,
   removeSessionStorageData,
   setCookieData,
-  setLocalStorageData,
 } from "../Store/Storage";
 import { useNavigate } from "react-router";
 import jwt_decode from "jwt-decode";
@@ -32,8 +30,7 @@ import {
   handlenuggetVideoPaused,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
-import { useAuthData } from "../Shared/Reduxfetcher";
-
+import { useAuth, useAuthData } from "../Shared/Reduxfetcher";
 import RedirectModal from "../Modal/Verification/RedirectModal";
 import Connections from "../Components/Connections/Friends/Connections";
 import Groups from "../Components/Connections/Groups/Groups";
@@ -41,6 +38,7 @@ import { getProfile } from "../Components/Auth/getProfile";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();
+  const { isSuccess } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
@@ -109,7 +107,7 @@ const DashboardSignup = () => {
   return (
     <>
       <div className={classes.beforeloginSec}>
-        {loginUserData === null ? (
+        {loginUserData === null && isSuccess ? (
           <div className={classes.inpad}>
             <div className={classes.advideoSec}>
               <video
