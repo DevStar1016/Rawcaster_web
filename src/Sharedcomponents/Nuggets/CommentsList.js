@@ -308,7 +308,7 @@ const CommentsList = ({ index }) => {
                               <p>{decodeHtml(elem?.name)}</p>
                               <span>{decodeHtml(elem?.comment)}</span>
                             </div>
-                            {elem.user_id === loginUserData.user_id && (
+                            {elem.user_id === loginUserData?.user_id && (
                               <Dropdown
                                 menu={{
                                   items: [

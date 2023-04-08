@@ -240,6 +240,85 @@ font-size: 17px;
     justify-content: center;
   }
 .eventActionSec { border-bottom: 1px solid #ECECEC; padding-bottom:14px;}
+
+.textBox {
+  margin-bottom: 10px;
+  border: 1px solid #e8eaee;
+  color: #1d1c1c;
+  padding-left: 20px;
+  border-radius: 30px;
+  height: 35px;
+  width: 100%;
+  background-color: #F1F2F5 !important;
+}
+.textBox:focus { outline: none; box-shadow: none; }
+.chkboxSec {
+
+  font-family: "DM Sans", sans-serif;
+  display: flex;
+  align-items: center;
+margin: 12px 0;
+
+}
+.chkboxSec span {
+  font-family: "DM Sans",sans-serif;
+  font-size: 14px!important;
+  color: #1d1c1c!important;
+}
+.audioSetting {
+  line-height: 32px!important;
+  font-size: 14px;
+  font-family: "DM Sans",sans-serif;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px 0;
+
+}
+.audiosetting_btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  margin-left: 25px;
+}
+.headingSec {
+  display: flex;
+  align-items: center;
+  color: #FFFFFF;
+  font-size: 17px;
+
+    font-weight: 700;
+ 
+    font-family: "DM Sans",sans-serif;
+}
+.headingSec span {
+  cursor: pointer;
+  margin-right: 10px;
+}
+.audiosetting_btn p {
+  line-height: 32px!important;
+  font-size: 14px;
+  font-family: "DM Sans",sans-serif;
+  margin-right: 15px;
+  margin-left: 10px;
+  margin-bottom: 0px !important;
+}
+.audiosetting_btn .Greenbtn {
+  margin-right: 10px !important;
+}
+.maxparticipantInput {
+  background: #fff;
+  border: #E8EAEE 1px solid !important;
+  height: 48px !important;
+  clear: both;
+  border-radius: 4px !important;
+  color: #1d1d1d;
+  font-weight: 500 !important;
+  font-family: "DM Sans", sans-serif;
+  width: 100%;
+}
  @media (max-width:768px) {
 .eventSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
  }

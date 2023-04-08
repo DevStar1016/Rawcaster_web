@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { DatePicker, Form, Input } from "antd";
 import { Col, Row } from "react-bootstrap";
 import classes from "../Events.module.css";
-import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { useAuth, useAuthToken } from "../../../Shared/Reduxfetcher";
 import {
   BannerComponent,
   Connections,
   EventTypeComponent,
   InviteEmailComponent,
   TimeValueComponent,
+  getValidarrayData,
 } from "./Utility";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
@@ -26,8 +27,11 @@ import {
 import { toast } from "react-hot-toast";
 import EventModal from "../../../Modal/Event/EventModal";
 import moment from "moment";
+import { useEventContext } from "../../../Shared/Context";
 
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
+  const { getEvents, ActiveEvent } = useEventContext();
+  const { userSettings } = useAuth();
   const [isCreating, setisCreating] = useState(false);
   const [SelectedTime, setSelectedTime] = useState(
     moment().add(10, "minutes").format("HH:mm")
@@ -44,10 +48,10 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     resetForm,
   } = useFormik({
     initialValues: {
-      event_title: "",
+      event_title: "Rawcaster Talk Show",
       event_type: "",
       event_start_date: dayjs(new Date()).format("YYYY-MM-DD"),
-      event_start_time: moment().add(10, "minutes").format("HH:mm"),
+      event_start_time: moment().add(15, "minutes").format("HH:mm"),
       event_banner: "",
       event_invite_mails: "",
       event_invite_friends: "",
@@ -99,6 +103,27 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     },
   });
 
+  const handleCloseEvent = () => {
+    setisTalkshowOpen(false);
+    resetForm();
+    setisCreating(false);
+    setValues((pre) => ({
+      ...pre,
+      event_type: userSettings?.event_type,
+      event_banner: userSettings?.meeting_header_image,
+    }));
+  };
+
+  useEffect(() => {
+    if (userSettings) {
+      setValues((pre) => ({
+        ...pre,
+        event_type: userSettings?.event_type,
+        event_banner: userSettings?.meeting_header_image,
+      }));
+    }
+  }, [userSettings]);
+
   const HandleLiveEvent = (val) => {
     let liveEventData = {
       token: token,
@@ -114,6 +139,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     addLiveEventService(JSONtoformdata(filterValidObject(liveEventData)))
       .then((res) => {
         if (res.data.status === 1) {
+          getEvents(ActiveEvent.key);
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
@@ -123,9 +149,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         toast.error(err.message);
       })
       .finally(() => {
-        setisTalkshowOpen(false);
-        resetForm();
-        setisCreating(false);
+        handleCloseEvent();
       });
   };
 
@@ -147,6 +171,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     editLiveEventService(JSONtoformdata(filterValidObject(liveEventData)))
       .then((res) => {
         if (res.data.status === 1) {
+          getEvents(ActiveEvent.key);
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
@@ -156,24 +181,8 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         toast.error(err.message);
       })
       .finally(() => {
-        setisTalkshowOpen(false);
-        resetForm();
-        setisCreating(false);
+        handleCloseEvent();
       });
-  };
-
-  const getValidarrayData = (data) => {
-    if (data) {
-      let finalData = "";
-      try {
-        finalData = JSON.stringify(data);
-      } catch (error) {
-        finalData = data;
-      }
-      return finalData;
-    } else {
-      return "";
-    }
   };
 
   useEffect(() => {
@@ -186,9 +195,6 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         .then((res) => {
           let eventData = res.data.event_detail;
 
-          const isValidFriends =
-            eventData?.invite_friends_id &&
-            eventData?.invite_friends_id.length !== 0;
           setValues({
             event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
@@ -219,8 +225,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         handleSubmit();
       }}
       onClose={() => {
-        resetForm();
-        setisTalkshowOpen(false);
+        handleCloseEvent();
       }}
     >
       <Form

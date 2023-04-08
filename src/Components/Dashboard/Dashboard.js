@@ -9,8 +9,8 @@ import {
 import DashboardSignup from "../../Sharedcomponents/DashboardSignup";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import { removeSessionStorageData } from "../../Store/Storage";
-import Events from "../Events/Events";
 import classes from "./Dashboard.module.css";
+import Events from "../Events";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();

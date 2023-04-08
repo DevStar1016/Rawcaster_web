@@ -4,17 +4,14 @@ import { useDispatch } from "react-redux";
 import { listNuggetsService } from "../../Services/ApiService";
 import {
   DecryptionString,
-  detectMob,
   getAuthenticated,
   getRawcaserToken,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import dayjs from "dayjs";
 import PostNuggets from "./PostNuggets";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
-import { Spinner } from "react-bootstrap";
 import { ListNuggetContext } from "../../Shared/Context";
 import axios from "axios";
 import PostProgress from "./PostProgress";
@@ -22,6 +19,7 @@ import Post from "./Post";
 import { useParams } from "react-router";
 import { useAuth, useAuthData, useDashboard } from "../../Shared/Reduxfetcher";
 import { Skeleton } from "antd";
+import InfiniteScroll from "react-infinite-scroller";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -51,7 +49,6 @@ const Nuggets = () => {
     totalpage: 1,
   });
   const [isFetching, setisFetching] = useState(true);
-  const [isLoad, setisLoading] = useState(false);
   const [NuggetList, setNuggetList] = useState([]);
   const [isEdit, setisEdit] = useState(null);
   const [Pages, setPages] = useState({
@@ -154,7 +151,6 @@ const Nuggets = () => {
           }
         })
         .finally(() => {
-          setisLoading(false);
           dispatch(handleLoading(false));
           setisFetching(false);
         });
@@ -187,13 +183,11 @@ const Nuggets = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, DashboardfilterType, display_user_id]);
 
-  const onEndReached = () => {
-    if (pageRef.current.page !== pageRef.current.totalpage) {
-      getNuggetList(pageRef.current.page + 1);
+  const onEndReached = (page) => {
+    if (page !== pageRef.current.totalpage) {
+      getNuggetList(page);
     }
   };
-
-  const scrollRef = useBottomScrollListener(onEndReached);
 
   const ListNuggetData = {
     NuggetList,
@@ -225,26 +219,6 @@ const Nuggets = () => {
     }, []);
     return filteredArr;
   };
-
-  const handleScroll = () => {
-    const bottom =
-      Math.ceil(window.innerHeight + window.scrollY) >=
-      document.documentElement.scrollHeight;
-
-    if (bottom && detectMob()) {
-      onEndReached();
-    }
-  };
-  React.useEffect(() => {
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const isValidPage = () => {
     if (getAuthenticated()) {
@@ -280,111 +254,112 @@ const Nuggets = () => {
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
-      <div
-        className={params.key ? classes.resultnuggetSec : classes.nuggetSec}
-        ref={scrollRef}
+      <InfiniteScroll
+        pageStart={0}
+        initialLoad={false}
+        loadMore={onEndReached}
+        hasMore={pageRef.current.page !== pageRef.current.totalpage}
+        useWindow={true}
       >
-        <>
-          {isValidPage() && (
-            <>
-              {Progress.show ? (
-                <PostProgress />
-              ) : (
-                <PostNuggets getNuggetList={getNuggetList} />
-              )}
-            </>
-          )}
-        </>
-
-        {getValidNuggets()?.length === 0 && (
-          <div className="mt-3">
-            {loadingStatus() ? (
-              <>
-                {[...Array(6)].map(() => (
-                  <Skeleton loading={isFetching} active avatar />
-                ))}{" "}
-              </>
-            ) : (
-              <span
-                style={{ fontSize: 20, fontWeight: "bold" }}
-                className="mt-3"
-              >
-                {params.key ? "We didn't find any results" : isDisplayPost()}
-              </span>
-            )}
-          </div>
-        )}
-        {getValidNuggets()?.length !== 0 && (
+        <div
+          className={params.key ? classes.resultnuggetSec : classes.nuggetSec}
+        >
           <>
-            {isFetching ? (
-              <div className="mt-5">
-                <Skeleton loading={isFetching} active avatar />
-              </div>
-            ) : (
+            {isValidPage() && (
               <>
-                {NuggetList?.map((ele, index) => {
-                  return (
-                    <Post
-                      ele={ele}
-                      index={index}
-                      getList={getNuggetList}
-                      muted={muted}
-                      setmuted={setmuted}
-                      handleView={() => {
-                        let findIndex = nuggetsRef.current.findIndex(
-                          (elem) => elem.nugget_id === ele.nugget_id
-                        );
-                        let tempData = [...nuggetsRef.current];
-                        if (tempData[findIndex].viewed !== 1) {
-                          tempData[findIndex].total_views =
-                            tempData[findIndex].total_views + 1;
-                        }
-                        tempData[findIndex].viewed = 1;
-                        nuggetsRef.current = tempData;
-                        setNuggetList(tempData);
-                      }}
-                      handleLike={(like) => {
-                        let findIndex = nuggetsRef.current.findIndex(
-                          (elem) => elem.nugget_id === ele.nugget_id
-                        );
-                        let tempData = [...nuggetsRef.current];
-                        tempData[findIndex].liked = like === 1 ? true : false;
-                        tempData[findIndex].total_likes =
-                          like === 1
-                            ? tempData[findIndex].total_likes + 1
-                            : tempData[findIndex].total_likes - 1;
-                        nuggetsRef.current = tempData;
-                        setNuggetList(tempData);
-                      }}
-                      handleSave={(save) => {
-                        let findIndex = nuggetsRef.current.findIndex(
-                          (elem) => elem.nugget_id === ele.nugget_id
-                        );
-                        let tempData = [...nuggetsRef.current];
-                        tempData[findIndex].saved = save === 1 ? true : false;
-                        nuggetsRef.current = tempData;
-                        setNuggetList(tempData);
-                      }}
-                      onEdit={(id) => {
-                        setisEdit(id);
-                      }}
-                      HandleShare={() => {
-                        console.log("share");
-                      }}
-                    />
-                  );
-                })}
+                {Progress.show ? (
+                  <PostProgress />
+                ) : (
+                  <PostNuggets getNuggetList={getNuggetList} />
+                )}
               </>
             )}
           </>
-        )}
 
-        {isLoad && (
-          <div className="text-center py-2">
-            <Spinner animation="border" role="status" />
-          </div>
-        )}
-      </div>
+          {getValidNuggets()?.length === 0 && (
+            <div className="mt-3">
+              {loadingStatus() ? (
+                <>
+                  {[...Array(6)].map(() => (
+                    <Skeleton loading={isFetching} active avatar />
+                  ))}{" "}
+                </>
+              ) : (
+                <span
+                  style={{ fontSize: 20, fontWeight: "bold" }}
+                  className="mt-3"
+                >
+                  {params.key ? "We didn't find any results" : isDisplayPost()}
+                </span>
+              )}
+            </div>
+          )}
+          {getValidNuggets()?.length !== 0 && (
+            <>
+              {isFetching ? (
+                <div className="mt-5">
+                  <Skeleton loading={isFetching} active avatar />
+                </div>
+              ) : (
+                <>
+                  {NuggetList?.map((ele, index) => {
+                    return (
+                      <Post
+                        ele={ele}
+                        index={index}
+                        getList={getNuggetList}
+                        muted={muted}
+                        setmuted={setmuted}
+                        handleView={() => {
+                          let findIndex = nuggetsRef.current.findIndex(
+                            (elem) => elem.nugget_id === ele.nugget_id
+                          );
+                          let tempData = [...nuggetsRef.current];
+                          if (tempData[findIndex].viewed !== 1) {
+                            tempData[findIndex].total_views =
+                              tempData[findIndex].total_views + 1;
+                          }
+                          tempData[findIndex].viewed = 1;
+                          nuggetsRef.current = tempData;
+                          setNuggetList(tempData);
+                        }}
+                        handleLike={(like) => {
+                          let findIndex = nuggetsRef.current.findIndex(
+                            (elem) => elem.nugget_id === ele.nugget_id
+                          );
+                          let tempData = [...nuggetsRef.current];
+                          tempData[findIndex].liked = like === 1 ? true : false;
+                          tempData[findIndex].total_likes =
+                            like === 1
+                              ? tempData[findIndex].total_likes + 1
+                              : tempData[findIndex].total_likes - 1;
+                          nuggetsRef.current = tempData;
+                          setNuggetList(tempData);
+                        }}
+                        handleSave={(save) => {
+                          let findIndex = nuggetsRef.current.findIndex(
+                            (elem) => elem.nugget_id === ele.nugget_id
+                          );
+                          let tempData = [...nuggetsRef.current];
+                          tempData[findIndex].saved = save === 1 ? true : false;
+                          nuggetsRef.current = tempData;
+                          setNuggetList(tempData);
+                        }}
+                        onEdit={(id) => {
+                          setisEdit(id);
+                        }}
+                        HandleShare={() => {
+                          console.log("share");
+                        }}
+                      />
+                    );
+                  })}
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </InfiniteScroll>
     </ListNuggetContext.Provider>
   );
 };

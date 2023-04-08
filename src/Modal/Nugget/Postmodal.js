@@ -50,6 +50,7 @@ const Postmodal = ({ visible, onClose }) => {
     setdeletedMedia,
   } = useContext(PostNuggetContext);
   const { isEdit } = useListNuggetContext();
+  const textinputRef = useRef(null);
   new Picker({
     parent: document.querySelector("#picker"),
     data: data,
@@ -324,6 +325,7 @@ const Postmodal = ({ visible, onClose }) => {
             <div className={classes.postTextcontent}>
               <Input.TextArea
                 id="post_nugget_textarea"
+                ref={textinputRef}
                 className={classes.postTextarea}
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
                 value={values.content}
@@ -362,12 +364,13 @@ const Postmodal = ({ visible, onClose }) => {
                     "symbols",
                     "flags",
                   ]}
-                  onEmojiSelect={(e) => {
-                    console.log(e);
+                  onEmojiSelect={(event, emojiObject) => {
+                    console.log(event);
 
-                    // insertMyText(e.native);
-                    setFieldValue("content", values.content.concat(e.native));
-                    // console.log(e);
+                    setFieldValue(
+                      "content",
+                      values.content.concat(event.native)
+                    );
                   }}
                 />
               </div>

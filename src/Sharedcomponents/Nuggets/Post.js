@@ -1,11 +1,10 @@
-import { Dropdown, Tooltip } from "antd";
+import { Dropdown, Modal, Tooltip } from "antd";
 import React, { useCallback, useRef, useState } from "react";
 import { useInView } from "react-hook-inview";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import SpecificConnectionorGroup from "../../Modal/Nugget/SpecificConnectionorGroup";
-import WarningModal from "../../Modal/Verification/WarningModal";
 import {
   deleteNuggetService,
   likeAndUnlikeNuggetService,
@@ -69,13 +68,6 @@ const Post = ({
   const [Comments, setComments] = useState("");
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
-  const [ShareModal, setShareModal] = useState({
-    show: false,
-    msg: "",
-    Btnname: "",
-    data: {},
-    type: "",
-  });
   const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
     show: false,
     type: "",
@@ -109,16 +101,25 @@ const Post = ({
   };
 
   const deletenugget = (id) => {
-    let formData = new FormData();
-    formData.append("token", Token);
-    formData.append("nugget_id", id);
-    setShareModal({
-      show: true,
-      msg: "Do you want to delete this nugget?",
-      Btnname: "Yes",
-      data: formData,
-      type: "delete",
-    });
+    let deleteData = {
+      token: Token,
+      nugget_id: id,
+    };
+    deleteNuggetService(JSONtoformdata(deleteData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          toast.success(res.data.msg);
+          getList(1);
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleLoading(false));
+      });
   };
 
   const getCommentList = (id) => {
@@ -161,7 +162,24 @@ const Post = ({
           {
             key: 2,
             label: (
-              <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>
+              <div
+                onClick={() => {
+                  Modal.confirm({
+                    title: "Confirmation",
+                    okText: "Yes",
+                    cancelText: "No",
+                    cancelButtonProps: {
+                      danger: true,
+                    },
+                    content: <div>Do you want to delete this nugget? </div>,
+                    onOk: () => {
+                      deletenugget(ele.nugget_id);
+                    },
+                  });
+                }}
+              >
+                Delete
+              </div>
             ),
           },
         ];
@@ -175,7 +193,24 @@ const Post = ({
           {
             key: 2,
             label: (
-              <div onClick={() => deletenugget(ele.nugget_id)}>Delete</div>
+              <div
+                onClick={() => {
+                  Modal.confirm({
+                    title: "Confirmation",
+                    okText: "Yes",
+                    cancelText: "No",
+                    cancelButtonProps: {
+                      danger: true,
+                    },
+                    content: <div>Do you want to delete this nugget ? </div>,
+                    onOk: () => {
+                      deletenugget(ele.nugget_id);
+                    },
+                  });
+                }}
+              >
+                Delete
+              </div>
             ),
           },
         ];
@@ -299,7 +334,22 @@ const Post = ({
     }
   };
 
-  const handlesharepost = (id, key, values = null) => {
+  const Handleshare = (id, key, values = null) => {
+    Modal.confirm({
+      title: "Confirmation",
+      okText: "Yes",
+      cancelText: "No",
+      cancelButtonProps: {
+        danger: true,
+      },
+      content: <div>Do you want to share this nugget ? </div>,
+      onOk: () => {
+        handlesharepost(id, key, values);
+      },
+    });
+  };
+
+  const handlesharepost = (id, key, values) => {
     let shareData = {
       token: Token,
       share_type: key,
@@ -320,19 +370,23 @@ const Post = ({
         };
       }
     }
-    setGrouporConnectionModal({
-      show: false,
-      type: "",
-    });
-    setShareModal({
-      show: true,
-      msg: "Do you want to share this nugget?",
-      Btnname: "Yes",
-      data: shareData,
-      type: "share",
-    });
 
-    HandleShare();
+    shareNuggetService(JSONtoformdata(shareData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          getList();
+          setGrouporConnectionModal({
+            show: false,
+            type: "",
+          });
+          HandleShare();
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
   };
 
   const getNumberofLines = () => {
@@ -647,7 +701,7 @@ const Post = ({
                                   : parseInt(key) === 4 && "connections",
                             });
                           } else {
-                            handlesharepost(ele.nugget_id, key);
+                            Handleshare(ele.nugget_id, key);
                           }
                         },
                       }}
@@ -752,9 +806,9 @@ const Post = ({
           }
           onSuccess={(val) => {
             if (GrouporConnectionModal.type === "group") {
-              handlesharepost(GrouporConnectionModal.id, 3, val);
+              Handleshare(GrouporConnectionModal.id, 3, val);
             } else if (GrouporConnectionModal.type === "connections") {
-              handlesharepost(GrouporConnectionModal.id, 4, val);
+              Handleshare(GrouporConnectionModal.id, 4, val);
             }
           }}
           onClose={() => {
@@ -772,66 +826,6 @@ const Post = ({
             CommentList={CommentList}
           />
         )}
-        <WarningModal
-          open={ShareModal.show}
-          msg={ShareModal.msg}
-          Btnname={"Yes"}
-          onSuccess={() => {
-            if (ShareModal.type === "share") {
-              shareNuggetService(JSONtoformdata(ShareModal.data))
-                .then((res) => {
-                  if (res.data.status === 1) {
-                    getList();
-                    setShareModal({
-                      show: false,
-                      msg: "",
-                      Btnname: "",
-                      data: {},
-                      type: "",
-                    });
-                  } else {
-                    toast.error(res.data.msg);
-                  }
-                })
-                .catch((err) => {
-                  toast.error(err.message);
-                });
-            } else if (ShareModal.type === "delete") {
-              deleteNuggetService(ShareModal.data)
-                .then((res) => {
-                  if (res.data.status === 1) {
-                    toast.success(res.data.msg);
-                    getList(1);
-                    setShareModal({
-                      show: false,
-                      msg: "",
-                      Btnname: "",
-                      data: {},
-                      type: "",
-                    });
-                  } else {
-                    toast.error(res.data.msg);
-                  }
-                })
-                .catch((err) => {
-                  toast.error(err.message);
-                })
-                .finally(() => {
-                  // setDeleteData("");
-                  dispatch(handleLoading(false));
-                });
-            }
-          }}
-          onClose={() => {
-            setShareModal({
-              show: false,
-              msg: "",
-              Btnname: "",
-              data: {},
-              type: "",
-            });
-          }}
-        />
       </div>
     </SingleNuggetContext.Provider>
   );

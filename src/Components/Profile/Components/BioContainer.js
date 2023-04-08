@@ -17,15 +17,14 @@ const BioContainer = () => {
   const loginToken = useAuthToken();
   const { isSuccess, loginUserData } = useAuth();
 
-  const { values, handleSubmit, handleChange, resetForm, setFieldValue } =
-    useFormik({
-      initialValues: {
-        bio_data: "",
-      },
-      onSubmit: (values) => {
-        updateBioDataHandler(values);
-      },
-    });
+  const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
+    initialValues: {
+      bio_data: "",
+    },
+    onSubmit: (values) => {
+      updateBioDataHandler(values);
+    },
+  });
 
   const getBioData = () => {
     if (values?.bio_data !== "") {
@@ -45,7 +44,6 @@ const BioContainer = () => {
       .then((response) => {
         if (response.data.status === 1) {
           setisAboutEdit(false);
-          setFieldValue("bio_data", response.data.profile.bio_data);
           toast.success("Bio data updated sucessfully");
         } else {
           toast.error(response.data.msg);

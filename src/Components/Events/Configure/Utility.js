@@ -1,4 +1,4 @@
-import { Form, Select, TimePicker } from "antd";
+import { Form, Select, Switch, TimePicker } from "antd";
 import dayjs from "dayjs";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
@@ -8,7 +8,11 @@ import ImageCropModal from "../../../Modal/ImageCropModal";
 import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
 import { decodeHtml, getAspectRatio } from "../../../Shared/Utility";
 import classes from "../Events.module.css";
-import { getEventType } from "../../../Shared/CommonApis";
+import {
+  getEventType,
+  getLayoutData,
+  getMelodyData,
+} from "../../../Shared/DropdownApis";
 
 export const EventTypeComponent = ({
   onResult,
@@ -23,6 +27,7 @@ export const EventTypeComponent = ({
   useEffect(() => {
     getEventType(token).then((res) => {
       setEventData(res);
+      onResult(res[0]);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -32,12 +37,113 @@ export const EventTypeComponent = ({
     if (findEvent) {
       return findEvent;
     } else {
-      return null;
+      return EventData[0];
     }
   };
   return (
     <Form.Item
       label={isEnabledLabel ? "Event Type" : ""}
+      colon={false}
+      className={classes.textBoxSec}
+    >
+      <Select
+        className={classes.textbox}
+        options={EventData}
+        value={getDisplayName()}
+        disabled={disabled}
+        loading={isLoading}
+        onSelect={(val, value) => {
+          onResult(value);
+        }}
+      />
+    </Form.Item>
+  );
+};
+
+export const EventLayoutComponent = ({
+  onResult,
+  value,
+  disabled,
+  isLoading,
+  isEnabledLabel = true,
+}) => {
+  const token = useAuthToken();
+  const [EventData, setEventData] = useState([]);
+
+  useEffect(() => {
+    getLayoutData(token).then((res) => {
+      setEventData(res);
+      onResult(res[0]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getDisplayName = () => {
+    let findEvent = EventData.find((ele) => ele.id === parseInt(value));
+    if (findEvent) {
+      return findEvent;
+    } else {
+      return EventData[0];
+    }
+  };
+  return (
+    <Form.Item
+      label={isEnabledLabel ? "Layout" : ""}
+      colon={false}
+      className={classes.textBoxSec}
+    >
+      <Select
+        className={classes.textbox}
+        options={EventData}
+        value={getDisplayName()}
+        disabled={disabled}
+        loading={isLoading}
+        onSelect={(val, value) => {
+          onResult(value);
+        }}
+      />
+    </Form.Item>
+  );
+};
+
+export const EventMelodyComponent = ({
+  onResult,
+  value,
+  disabled,
+  isLoading,
+  isEnabledLabel = true,
+  isCustomize = false,
+}) => {
+  const token = useAuthToken();
+  const [EventData, setEventData] = useState([]);
+
+  useEffect(() => {
+    getMelodyData(token).then((res) => {
+      let finalData = [...res];
+      if (isCustomize) {
+        finalData = [
+          ...finalData,
+          { id: 0, value: "Customize", label: "Customize" },
+        ];
+      }
+      setEventData(finalData);
+      onResult(finalData[0]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getDisplayName = () => {
+    let findEvent = EventData.find((ele) => ele.id === parseInt(value));
+    if (findEvent) {
+      return findEvent;
+    } else {
+      return EventData[0];
+    }
+  };
+
+  return (
+    <Form.Item
+      label={isEnabledLabel ? "Media" : ""}
       colon={false}
       className={classes.textBoxSec}
     >
@@ -501,3 +607,88 @@ export const Connections = ({ onResult, values }) => {
     </div>
   );
 };
+
+export const getValidarrayData = (data) => {
+  if (data) {
+    let finalData = "";
+    try {
+      finalData = JSON.stringify(data);
+    } catch (error) {
+      finalData = data;
+    }
+    return finalData;
+  } else {
+    return "";
+  }
+};
+
+export const AudioVideoSettings = ({ values, setFieldValue }) => {
+  return (
+    <div className="mt-2">
+      <div className={classes.audioSetting}>
+        Default Audio Settings
+        <div className={classes.audiosetting_btn}>
+          <Switch
+            className="Greenbtn"
+            checkedChildren="On"
+            unCheckedChildren="Off"
+            checked={values.event_host_audio}
+            onChange={(val) => {
+              setFieldValue("event_host_audio", val ? 1 : 0);
+            }}
+          />
+          <p>Host</p>
+        </div>
+        <div className={classes.audiosetting_btn}>
+          <Switch
+            className="Greenbtn"
+            checkedChildren="On"
+            unCheckedChildren="Off"
+            checked={values.event_guest_audio}
+            onChange={(val) => {
+              setFieldValue("event_guest_audio", val ? 1 : 0);
+            }}
+          />
+          <p>Guest</p>
+        </div>
+      </div>
+
+      <div className={classes.audioSetting}>
+        Default Video Settings
+        <div className={classes.audiosetting_btn}>
+          <Switch
+            checkedChildren="On"
+            className="Greenbtn"
+            unCheckedChildren="Off"
+            checked={values.event_host_video}
+            onChange={(val) => {
+              setFieldValue("event_host_video", val ? 1 : 0);
+            }}
+          />
+          <p>Host</p>
+        </div>
+        <div className={classes.audiosetting_btn}>
+          <Switch
+            className="Greenbtn"
+            checkedChildren="On"
+            unCheckedChildren="Off"
+            checked={values.event_guest_video}
+            onChange={(val) => {
+              setFieldValue("event_guest_video", val ? 1 : 0);
+            }}
+          />
+          <p>Guest</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export function compareArrays(arr1, arr2) {
+  for (let key in arr1) {
+    if (!arr2.includes(key)) {
+      return true;
+    }
+  }
+  return false;
+}

@@ -18,3 +18,6 @@ export const useProfileContext = () => useContext(ProfileContext);
 
 export const SettingsContext = createContext();
 export const useSettingsContext = () => useContext(SettingsContext);
+
+export const EventContext = createContext();
+export const useEventContext = () => useContext(EventContext);

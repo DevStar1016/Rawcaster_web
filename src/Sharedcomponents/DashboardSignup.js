@@ -138,7 +138,7 @@ const DashboardSignup = () => {
               scope="openid profile email"
               discoveryDocs="claims_supported"
               access_type="offline"
-              onResolve={({ provider, data }) => {
+              onResolve={({ _, data }) => {
                 dispatch(handleLoading(true));
                 let resultVal = {
                   signin_type: 5,

@@ -330,6 +330,10 @@ margin-bottom: 0px !important;
 .eventmodal .ant-modal-close-x {
   background-color: #faa21b !important;
 }
+.eventmodal  .ant-modal-content {
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
 .eventmodal .ant-modal-header {
   background-color: #faa21b !important;
   font-size: 17px !important;
@@ -453,6 +457,23 @@ margin-bottom: 0px !important;
   width: 10px;
   height: 10px;
 }
+
+
+/* Checkbox */
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #f4c117 !important;
+  border-color: #f4c117 !important;
+}
+.ant-checkbox-wrapper:hover span::after {
+  border-color: none !important;
+}
+.ant-checkbox {
+  border-color: #4d4d4d !important;
+}
+.ant-checkbox-checked::after {
+  border: none !important;
+} 
 
 
 @media (max-width:768px) {

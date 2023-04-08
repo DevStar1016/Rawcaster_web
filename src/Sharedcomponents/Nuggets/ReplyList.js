@@ -126,7 +126,6 @@ const ReplyList = ({
     let likeflag = like ? 2 : 1;
     handleNuggetCommentLike(id, likeflag)
       .then((res) => {
-        console.log(res);
         if (res.status === 0) {
           let tempData = [...ReplyList];
           tempData[findIndex] = {

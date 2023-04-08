@@ -1,13 +1,15 @@
 import { Button } from "antd";
 import React, { useState } from "react";
-import { Col, Row } from "react-bootstrap";
 import AddLiveEvent from "./Configure/AddLiveEvent";
 import classes from "./Events.module.css";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import eventIcon from "../../Assets/Images/svg/eventIcon.svg";
+import AddEvent from "./Configure/AddEvent";
 
-const CreateEvent = () => {
+const CreateEvent = ({ isSearch, onSearchEnter }) => {
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
+  const [isEventOpen, setisEventOpen] = useState(false);
+  const [searchInput, setsearchInput] = useState("");
 
   return (
     <div className={classes.eventActionSec}>
@@ -21,9 +23,30 @@ const CreateEvent = () => {
       >
         <img src={talkshowIcon} /> Create Talkshow
       </Button>
-      <Button type="primary" size={"large"} className={classes.talkShowBtn}>
+      <Button
+        type="primary"
+        size={"large"}
+        className={classes.talkShowBtn}
+        onClickCapture={() => {
+          setisEventOpen(true);
+        }}
+      >
         <img src={eventIcon} /> Create Event
       </Button>
+
+      {isSearch && (
+        <input
+          className={`${classes.textBox} mt-3`}
+          onChange={(e) => {
+            setsearchInput(e.target.value);
+            onSearchEnter(e.target.value);
+          }}
+          value={searchInput}
+          placeholder="Search event or talkshow"
+          autoComplete="off"
+        />
+      )}
+      <AddEvent isEventOpen={isEventOpen} setisEventOpen={setisEventOpen} />
 
       <AddLiveEvent
         isTalkshowOpen={isTalkshowOpen}

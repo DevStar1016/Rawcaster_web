@@ -83,7 +83,6 @@ const PostNuggets = ({ getNuggetList }) => {
       }
     }
     if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {
-      console.log(shareWithData);
       if (shareWithData) {
         const getShareTypeData = () => {
           if (parseInt(val.share_type) === 3) {
@@ -147,7 +146,6 @@ const PostNuggets = ({ getNuggetList }) => {
       formData.append("metadata", JSON.stringify(MetaData));
     }
     if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {
-      console.log(shareWithData);
       if (shareWithData) {
         const getShareTypeData = () => {
           if (parseInt(val.share_type) === 3) {
@@ -310,7 +308,6 @@ const PostNuggets = ({ getNuggetList }) => {
                   event.target.value = null;
                 }}
                 onChange={(e) => {
-                  console.log(e.target.files);
                   if (e.target.files && e.target.files.length !== 0) {
                     PostNuggetValues.setFileValues(e.target.files[0]);
                     setpostModalShow(true);

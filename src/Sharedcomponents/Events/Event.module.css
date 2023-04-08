@@ -21,6 +21,21 @@ p.iconsec span:last-child { margin-left: 10px;}
 .view span { font-size: 18px; padding-right: 3px;}
 .share { cursor: pointer; position: absolute; padding:5px; right: 10px; top: 10px; z-index: 1; color: #fff;}
 .share span { font-size: 20px; }
+.talkshow {cursor: pointer; position: absolute; padding:5px; left: 10px; top: 10px; z-index: 1; color: #fff;}
+.talkshowIcon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    background: #f2718d;
+    padding: 4px 4px;
+    border-radius: 5px;
+}
+.talkshow span {
+    font-size: 15px;
+    margin-right: 3px;
+    margin-bottom: 1px;
+}
 .editIcon { background: url(../../Assets/Icons/svg/edit_icon.svg) no-repeat center center;  background-size: cover; width: 15px; height: 15px; display: flex; justify-content: center; align-items: center;cursor: pointer;}
 .editSec {
     display: flex;

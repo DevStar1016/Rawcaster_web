@@ -7,6 +7,7 @@ import { useAuthToken } from "../../../Shared/Reduxfetcher";
 import { DecryptionString, EncryptionString } from "../../../Shared/Utility";
 import { useNavigate, useParams } from "react-router";
 import { Skeleton } from "antd";
+import EmptyImg from "../../../Assets/Images/svg/empty_connections.svg";
 
 const UnclaimedInfluencers = ({ isLoginUser }) => {
   const [InfluencerList, setInfluencerList] = useState({
@@ -53,22 +54,34 @@ const UnclaimedInfluencers = ({ isLoginUser }) => {
       </h2>
 
       {InfluencerList.isLoaded ? (
-        <div className={classes.listSec}>
-          {InfluencerList.fans.map((ele) => {
-            return (
-              <div
-                className={classes.list}
-                onClick={() => {
-                  navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
-                }}
-              >
-                <img src={ele.profile_img} />
+        <>
+          {InfluencerList.fans.length !== 0 ? (
+            <div className={classes.listSec}>
+              {InfluencerList.fans.map((ele) => {
+                return (
+                  <div
+                    className={classes.list}
+                    onClick={() => {
+                      navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+                    }}
+                  >
+                    <img src={ele.profile_img} />
 
-                <p>{ele?.display_name}</p>
-              </div>
-            );
-          })}
-        </div>
+                    <p>{ele?.display_name}</p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <>
+              {InfluencerList.fans.length === 0 && (
+                <div className={classes.emptySec}>
+                  <img src={EmptyImg} />
+                </div>
+              )}
+            </>
+          )}
+        </>
       ) : (
         <div className={classes.listSec}>
           {[...Array(8)].map((ele) => {
