@@ -269,7 +269,6 @@ const MultiplePoll = ({
             }}
             onClick={() => {
               if (!pollVotedData.isVoted) {
-                console.log(getRawcaserToken());
                 if (getRawcaserToken()) {
                   if (isAccountValid(LoginUserData)) {
                     setTimeout(() => {

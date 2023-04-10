@@ -1,7 +1,9 @@
 import {
+  getEventLayoutService,
   getEventTypeService,
   getLanguageListService,
   getTimeZoneService,
+  geteventMelodyService,
 } from "../Services/ApiService";
 import { JSONtoformdata } from "./Utility";
 
@@ -64,6 +66,53 @@ export const getlanguagelist = () => {
       .catch((err) => {
         resolve([]);
       });
+  });
+  return promise;
+};
+
+export const getLayoutData = (token) => {
+  let promise = new Promise((resolve, reject) => {
+    let JSONData = {
+      token: token,
+    };
+    getEventLayoutService(JSONtoformdata(JSONData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          let result = res.data.event_layouts.map((ele) => ({
+            ...ele,
+            value: ele.name,
+            label: ele.name,
+          }));
+          resolve(result);
+        } else {
+          resolve(null);
+        }
+      })
+      .catch((err) => {});
+  });
+  return promise;
+};
+
+export const getMelodyData = (token) => {
+  let promise = new Promise((resolve, reject) => {
+    let JSONData = {
+      token: token,
+    };
+    geteventMelodyService(JSONtoformdata(JSONData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          let result = res.data.melody.map((ele) => ({
+            ...ele,
+            value: ele.title,
+            label: ele.title,
+          }));
+          console.log(result, "==>result");
+          resolve(result);
+        } else {
+          resolve(null);
+        }
+      })
+      .catch((err) => {});
   });
   return promise;
 };

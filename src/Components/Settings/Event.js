@@ -5,9 +5,9 @@ import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { useSettingsContext } from "../../Shared/Context";
 import { EventSettings } from "./Constants";
 import { EventTypeComponent } from "../Events/Configure/Utility";
-import { getMelodyData } from "./Utility";
 import { toast } from "react-hot-toast";
 import { BannerComponent } from "../Events/Configure/Utility";
+import { getMelodyData } from "../../Shared/DropdownApis";
 
 const Event = () => {
   const { loginUserData } = useAuth();
@@ -58,10 +58,7 @@ const Event = () => {
   };
 
   return (
-    <div
-      className={`settingSec`}
-      style={{ display: "block" }}
-    >
+    <div className={`settingSec`} style={{ display: "block" }}>
       <h1>Event Settings</h1>
       {formikvalues && (
         <>
@@ -94,7 +91,9 @@ const Event = () => {
                 isEnabledLabel={false}
                 value={formikvalues.event_type}
                 onResult={({ id }) => {
-                  setupdateValue("event_type", id);
+                  if (formikvalues.event_type !== id) {
+                    setupdateValue("event_type", id);
+                  }
                 }}
                 disabled={updateValue.includes("event_type")}
                 isLoading={updateValue.includes("event_type")}

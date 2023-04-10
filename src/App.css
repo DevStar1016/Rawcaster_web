@@ -329,6 +329,10 @@ margin-bottom: 0px !important;
 .eventmodal .ant-modal-close-x {
   background-color: #faa21b !important;
 }
+.eventmodal  .ant-modal-content {
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
 .eventmodal .ant-modal-header {
   background-color: #faa21b !important;
   font-size: 17px !important;
@@ -454,6 +458,23 @@ margin-bottom: 0px !important;
   height: 10px;
 }
 .nav-pills .nav-link.active { background:  #492e53 !important; border-radius: 0; }
+
+/* Checkbox */
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #f4c117 !important;
+  border-color: #f4c117 !important;
+}
+.ant-checkbox-wrapper:hover span::after {
+  border-color: none !important;
+}
+.ant-checkbox {
+  border-color: #4d4d4d !important;
+}
+.ant-checkbox-checked::after {
+  border: none !important;
+} 
+
 
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }

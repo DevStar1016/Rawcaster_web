@@ -1,9 +1,8 @@
-import { Button, Radio, Select } from "antd";
+import { Button, Modal, Radio, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
 import { useAuth, useAuthToken, useDashboard } from "../../Shared/Reduxfetcher";
-import { getTimeZone, getlanguagelist } from "../../Shared/CommonApis";
-import RedirectModal from "../../Modal/Verification/RedirectModal";
+import { getTimeZone, getlanguagelist } from "../../Shared/DropdownApis";
 import { useSettingsContext } from "../../Shared/Context";
 import {
   AccountStatus,
@@ -23,7 +22,6 @@ const General = () => {
   const { loginUserData } = useAuth();
   const { groupsList, friendsList } = useDashboard();
   const [TimeZones, setTimeZones] = useState([]);
-  const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const [LanguagesList, setLanguagesList] = useState([]);
 
   useEffect(() => {
@@ -51,7 +49,7 @@ const General = () => {
   };
 
   return (
-    <div >
+    <div>
       <h1>General</h1>
 
       {loginUserData && (
@@ -83,7 +81,7 @@ const General = () => {
                 formikvalues.mobile_default_page
               )}
               style={{ width: 200 }}
-              placeholder="Search to Select"
+              placeholder="Search Default Rawcaster page"
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label ?? "").includes(input)
@@ -275,7 +273,7 @@ const General = () => {
             <Select
               showSearch
               style={{ width: 200 }}
-              placeholder="Search to Select"
+              placeholder="Search Preference Language"
               optionFilterProp="children"
               value={getValidDisplayData(
                 LanguagesList,
@@ -303,7 +301,7 @@ const General = () => {
             <Select
               showSearch
               style={{ width: 200 }}
-              placeholder="Search to Select"
+              placeholder="Search Timezone"
               optionFilterProp="children"
               className="my-2"
               value={formikvalues.time_zone}
@@ -356,9 +354,22 @@ const General = () => {
               className={classes.online_status}
               onChange={(e) => {
                 if (e.target.value === 0) {
-                  setredirectModal({
-                    show: true,
-                    msg: "Are you sure you want to inactivate your Rawcaster Account?",
+                  Modal.confirm({
+                    title: "Confirmation",
+                    okText: "Yes",
+                    cancelText: "No",
+                    cancelButtonProps: {
+                      danger: true,
+                    },
+                    content: (
+                      <div>
+                        Are you sure you want to inactivate your Rawcaster
+                        Account?
+                      </div>
+                    ),
+                    onOk: () => {
+                      setupdateValue("account_active_inactive", 0);
+                    },
                   });
                 } else {
                   setupdateValue("account_active_inactive", e.target.value);
@@ -385,20 +396,6 @@ const General = () => {
           </div>
         </>
       )}
-
-      <RedirectModal
-        open={redirectModal.show}
-        msg={redirectModal.msg}
-        Btnname={"Yes"}
-        closeBtnName="No"
-        onSuccess={() => {
-          setupdateValue("account_active_inactive", 0);
-          setredirectModal({ show: false, msg: "" });
-        }}
-        onClose={() => {
-          setredirectModal({ show: false, msg: "" });
-        }}
-      />
     </div>
   );
 };

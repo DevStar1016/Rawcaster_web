@@ -20,6 +20,7 @@
   color: #000000;
   width: 100%;
     max-width: 225px;
+    cursor: pointer;
 }
 .profileContainer .rightSec .nameSec p {
   margin-bottom: 2px !important;

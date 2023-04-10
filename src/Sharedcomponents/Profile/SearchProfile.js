@@ -4,6 +4,7 @@ import { Button } from "react-bootstrap";
 
 import {
   decodeHtml,
+  EncryptionString,
   getAuthToken,
   JSONtoformdata,
   ReadMore,
@@ -14,8 +15,10 @@ import {
   sendFriendRequestsService,
 } from "../../Services/ApiService";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { useNavigate } from "react-router";
 
 const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
+  const navigate = useNavigate();
   const token = useAuthToken();
   const handleBecomeFan = (ele) => {
     let becameFanData = {
@@ -51,7 +54,6 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
     };
     sendFriendRequestsService(JSONtoformdata(becameFanData))
       .then((res) => {
-        console.log(res.data);
         if (res.data.status === 1) {
           let findIndex = PeopleList.findIndex(
             (elem) => elem.user_id === ele.user_id
@@ -71,11 +73,21 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
 
   return (
     <div className={classes.profileContainer}>
-      <div className={classes.leftSec}>
+      <div
+        className={classes.leftSec}
+        onClick={() => {
+          navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+        }}
+      >
         <img src={ele.profile_img} />
       </div>
       <div className={classes.rightSec}>
-        <div className={classes.nameSectop}>
+        <div
+          className={classes.nameSectop}
+          onClick={() => {
+            navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+          }}
+        >
           <div className={classes.nameSec}>
             <p>{decodeHtml(ele.display_name)}</p>
             {/* <span>@TheTweetOfGod</span> */}
@@ -123,7 +135,12 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
             </Button>
           </div>
         </div>
-        <div className={classes.bioSec}>
+        <div
+          className={classes.bioSec}
+          onClick={() => {
+            navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+          }}
+        >
           <p>
             <ReadMore
               isReadMoreValid={() => {

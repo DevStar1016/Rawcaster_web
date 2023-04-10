@@ -3,6 +3,9 @@ import React from "react";
 import styles from "../Modal.module.css";
 
 const EventModal = ({
+  Type = "Talk Show",
+  okBtnTitle = "",
+  title,
   open,
   onClose,
   onSuccess,
@@ -10,12 +13,22 @@ const EventModal = ({
   isUpdate,
   loading,
 }) => {
+  const getTitle = () => {
+    if (title) {
+      return title;
+    } else {
+      return `${isUpdate ? "Update" : "Create"} ` + Type;
+    }
+  };
   return (
     <Modal
-      title={`${isUpdate ? "Update" : "Create"} Talk Show`}
+      title={getTitle()}
       centered
+      width={700}
       open={open}
-      okText={`${isUpdate ? "Update" : "Create"} Event`}
+      okText={
+        okBtnTitle ? okBtnTitle : `${isUpdate ? "Update" : "Create"} Event`
+      }
       cancelText="Cancel"
       className="eventmodal"
       onOk={() => onSuccess()}

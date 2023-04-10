@@ -17,7 +17,6 @@ import {
   isValidImageFile,
   JSONtoformdata,
 } from "../../Shared/Utility";
-import Events from "./Components/Events";
 import UnclaimedInfluencers from "./Components/UnclaimedInfluencers";
 import Fans from "./Components/Fans";
 import {
@@ -34,6 +33,7 @@ import Connections from "../Connections/Friends/Connections";
 import moment from "moment";
 import { ProfileContext } from "../../Shared/Context";
 import BioContainer from "./Components/BioContainer";
+import Eventslisting from "../Events/Eventslisting";
 
 const Profile = () => {
   const params = useParams();
@@ -309,7 +309,13 @@ const Profile = () => {
               ) : (
                 <Skeleton active />
               )}
-              {isSuccess && <Events />}
+              {isSuccess && (
+                <Eventslisting
+                  isSearchEnabled={true}
+                  isUser={true}
+                  userData={profileData}
+                />
+              )}
             </div>
 
             <Nuggets />

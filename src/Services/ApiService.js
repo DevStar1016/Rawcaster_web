@@ -208,6 +208,9 @@ export const addEventService = (data) => {
   return axios.post("addevent", data);
 };
 
+export const editEventService = (data) => {
+  return axios.post("editevent", data);
+};
 export const addLiveEventService = (data) => {
   return axios.post("addliveevent", data);
 };
