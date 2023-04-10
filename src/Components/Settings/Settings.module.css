@@ -61,14 +61,14 @@
   .contentSec .smallheading {
     color: #1a1a1a;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 15px;
     margin-bottom: 0;
     margin-top: 18px;
     font-family: "DM Sans", sans-serif;
   }
   .contentSec p.text {
     color: #1a1a1a;
-    font-size: 13px;
+    font-size: 14px;
     margin-bottom: 10px;
     margin-top: 5px;
     clear: both;
@@ -145,7 +145,7 @@
     cursor: pointer;
   }
   .radio_active {
-    background: #f7f7f7;
+    /* background: #f7f7f7; */
     margin-right: 30px;
     color: #1a1a1a;
     font-size: 14px;
@@ -355,7 +355,8 @@
   }
   .selectBox { border: 1px solid #E8EAEE; border-radius: 8px; min-width:280px; margin-top: 5px; }
   .uplBtn { background: rgba(0, 0, 0, 0.04) !important; padding: 5px 15px !important; }
- 
+  .settingmobMenu { display: none ; }
+
   @media (min-width: 768px) {
     .mob_menu {
       display: none;
