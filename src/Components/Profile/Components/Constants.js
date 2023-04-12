@@ -18,3 +18,21 @@ export const DropdownItems = [
     key: "4",
   },
 ];
+
+export const ConnectionsType = [
+  {
+    id: 1,
+    title: "Influencers",
+    type: "influencers",
+  },
+  {
+    id: 2,
+    title: "Fans",
+    type: "fans",
+  },
+  {
+    id: 3,
+    title: "Connections",
+    type: "connections",
+  },
+];

@@ -25,16 +25,14 @@ import {
 } from "../Store/Storage";
 import { useNavigate } from "react-router";
 import jwt_decode from "jwt-decode";
-import {
-  handleLoading,
-  handlenuggetVideoPaused,
-} from "../Store/Redux/Reducer/DashboardReducer";
+import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuth, useAuthData } from "../Shared/Reduxfetcher";
 import RedirectModal from "../Modal/Verification/RedirectModal";
 import Connections from "../Components/Connections/Friends/Connections";
 import Groups from "../Components/Connections/Groups/Groups";
 import { getProfile } from "../Components/Auth/getProfile";
+import { handlenuggetVideoPaused } from "../Store/Redux/Reducer/NuggetsReducer";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();

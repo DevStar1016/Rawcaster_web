@@ -12,6 +12,10 @@ export const useDashboard = () => {
   return useSelector((state) => state.dashboard);
 };
 
+export const useNuggets = () => {
+  return useSelector((state) => state.nuggets);
+};
+
 export const useAuth = () => {
   return useSelector((state) => state.auth);
 };

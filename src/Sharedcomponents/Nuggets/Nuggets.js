@@ -1,68 +1,52 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import classes from "./Nuggets.module.css";
-import { useDispatch } from "react-redux";
-import { listNuggetsService } from "../../Services/ApiService";
 import {
   DecryptionString,
   getAuthenticated,
   getRawcaserToken,
-  JSONtoformdata,
 } from "../../Shared/Utility";
-import { toast } from "react-hot-toast";
 import dayjs from "dayjs";
 import PostNuggets from "./PostNuggets";
-import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { ListNuggetContext } from "../../Shared/Context";
-import axios from "axios";
 import PostProgress from "./PostProgress";
 import Post from "./Post";
 import { useParams } from "react-router";
-import { useAuth, useAuthData, useDashboard } from "../../Shared/Reduxfetcher";
+import { useNuggets } from "../../Shared/Reduxfetcher";
 import { Skeleton } from "antd";
-import InfiniteScroll from "react-infinite-scroller";
+import { fetchNuggetsbyId } from "../../Store/Redux/Action";
+import { useDispatch } from "react-redux";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { handleNuggetList } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
-let isRequestCancel = false;
-
 const Nuggets = () => {
-  const source = useRef(null);
-  const nuggetsRef = useRef(null);
+  const dispatch = useDispatch();
   const params = useParams();
-  const { isSuccess } = useAuth();
+  const {
+    Nuggets,
+    isNuggetsLoading,
+    totalpages,
+    currentpage,
+    nuggetFormData,
+    isNextPageLoading,
+  } = useNuggets();
+  const isLoading = currentpage === 1 ? isNuggetsLoading : isNextPageLoading;
   const userData = getRawcaserToken();
-  const loginUserData = useAuthData();
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
-  const { DashboardfilterType } = useDashboard();
-  const [filterType, setfilterType] = useState(0);
   const [muted, setmuted] = useState(false);
-  const dispatch = useDispatch();
   const [Progress, setProgress] = useState({
     percent: 0,
     show: false,
   });
-  const pageRef = useRef({
-    page: 1,
-    totalpage: 1,
-  });
-  const [isFetching, setisFetching] = useState(true);
-  const [NuggetList, setNuggetList] = useState([]);
   const [isEdit, setisEdit] = useState(null);
   const [Pages, setPages] = useState({
     page: 1,
     totalpage: 1,
   });
-
-  const getToken = () => {
-    if (getAuthenticated() && loginUserData) {
-      return loginUserData?.token;
-    } else {
-      return "RAWCAST";
-    }
-  };
 
   const handleProgress = (progress) => {
     let val = (progress.loaded / progress.total) * 100;
@@ -72,144 +56,40 @@ const Nuggets = () => {
     });
   };
 
-  const getNuggetList = (page = 1, filter_type) => {
-    let promise = new Promise((resolve, reject) => {
-      if (source.current) {
-        isRequestCancel = true;
-        source.current.cancel("Request Cancelled");
-      }
-      source.current = axios.CancelToken.source();
-      let nuggetData = {
-        nugget_type: 0,
-        token: getToken(),
-        page_number: page,
-        filter_type: filter_type ? filter_type : DashboardfilterType,
-      };
-      setfilterType(DashboardfilterType);
+  const GetNuggetList = (page = 1) => {
+    let finalData = { ...nuggetFormData };
+    finalData.formData = {
+      ...finalData.formData,
+      page_number: page,
+    };
 
-      if (params.key) {
-        nuggetData = {
-          ...nuggetData,
-          search_key: params.key,
-        };
-      }
-      if (display_user_id) {
-        nuggetData = {
-          ...nuggetData,
-          user_id: display_user_id,
-        };
-      }
-      listNuggetsService(JSONtoformdata(nuggetData), source.current.token)
-        .then((res) => {
-          if (res.data.status === 1) {
-            resolve(res.data);
-            if (res.data.current_page_no === 1) {
-              setNuggetList(res.data.nuggets_list);
-              nuggetsRef.current = res.data.nuggets_list;
-            } else {
-              nuggetsRef.current = [
-                ...nuggetsRef.current,
-                ...res.data.nuggets_list,
-              ].reduce((acc, current) => {
-                const x = acc.find(
-                  (item) => item.nugget_id === current.nugget_id
-                );
-                if (!x) {
-                  return acc.concat([current]);
-                } else {
-                  return acc;
-                }
-              }, []);
-              setNuggetList((pre) =>
-                [...pre, ...res.data.nuggets_list].reduce((acc, current) => {
-                  const x = acc.find(
-                    (item) => item.nugget_id === current.nugget_id
-                  );
-                  if (!x) {
-                    return acc.concat([current]);
-                  } else {
-                    return acc;
-                  }
-                }, [])
-              );
-            }
-            pageRef.current = {
-              page: res.data.current_page_no,
-              totalpage: res.data.total_pages,
-            };
-            setPages({
-              page: res.data.current_page_no,
-              totalpage: res.data.total_pages,
-            });
-          } else {
-            setNuggetList([]);
-          }
-        })
-        .catch((err) => {
-          if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
-            toast.error(err.message);
-          }
-        })
-        .finally(() => {
-          dispatch(handleLoading(false));
-          setisFetching(false);
-        });
-    });
-
-    return promise;
+    dispatch(fetchNuggetsbyId(finalData));
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      if (NuggetList.length === 0) {
-        getNuggetList();
-      } else if (loginUserData) {
-        getNuggetList(1);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loginUserData, isSuccess]);
-
-  useEffect(() => {
-    if (params.key) {
-      getNuggetList(1, 0);
-    } else if (DashboardfilterType !== filterType) {
-      setisFetching(true);
-      getNuggetList();
-    } else if (display_user_id) {
-      setisFetching(true);
-      getNuggetList();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, DashboardfilterType, display_user_id]);
-
-  const onEndReached = (page) => {
-    if (page !== pageRef.current.totalpage) {
-      getNuggetList(page);
+  const onEndReached = () => {
+    if (totalpages !== currentpage && !isLoading) {
+      GetNuggetList(currentpage + 1);
     }
   };
 
   const ListNuggetData = {
-    NuggetList,
     setProgress,
-    setNuggetList,
     Pages,
     setPages,
     setisEdit,
     isEdit,
+    GetNuggetList,
     getProgress() {
       return Progress;
     },
-    async getNuggetList() {
-      return await getNuggetList();
-    },
+
     handleProgress(val) {
       return handleProgress(val);
     },
   };
 
   const getValidNuggets = () => {
-    const filteredArr = NuggetList.reduce((acc, current) => {
+    const filteredArr = Nuggets.reduce((acc, current) => {
       const x = acc.find((item) => item.nugget_id === current.nugget_id);
       if (!x) {
         return acc.concat([current]);
@@ -242,124 +122,110 @@ const Nuggets = () => {
     return "No Posts Available";
   };
 
-  const loadingStatus = () => {
-    if (isSuccess) {
-      if (isFetching) {
-        return true;
-      }
-      return false;
-    }
-    return false;
-  };
-
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <InfiniteScroll
-        pageStart={0}
-        initialLoad={false}
-        loadMore={onEndReached}
-        hasMore={pageRef.current.page !== pageRef.current.totalpage}
-        useWindow={true}
+        dataLength={getValidNuggets().length} //This is important field to render the next data
+        next={onEndReached}
+        loader={
+          <div className="mt-3">
+            <Skeleton loading={true} active avatar />
+          </div>
+        }
+        hasMore={totalpages !== currentpage && !isLoading}
+        className={params?.key ? classes.resultnuggetSec : classes.nuggetSec}
       >
-        <div
-          className={params.key ? classes.resultnuggetSec : classes.nuggetSec}
-        >
-          <>
-            {isValidPage() && (
-              <>
-                {Progress.show ? (
-                  <PostProgress />
-                ) : (
-                  <PostNuggets getNuggetList={getNuggetList} />
-                )}
-              </>
-            )}
-          </>
+        <>
+          {isValidPage() && (
+            <>{Progress.show ? <PostProgress /> : <PostNuggets />}</>
+          )}
+        </>
 
-          {getValidNuggets()?.length === 0 && (
-            <div className="mt-3">
-              {loadingStatus() ? (
-                <>
-                  {[...Array(6)].map(() => (
-                    <Skeleton loading={isFetching} active avatar />
-                  ))}{" "}
-                </>
-              ) : (
+        {isNuggetsLoading ? (
+          <div className="mt-3">
+            {[...Array(6)].map(() => (
+              <Skeleton loading={true} active avatar />
+            ))}
+          </div>
+        ) : (
+          <>
+            {getValidNuggets()?.length === 0 ? (
+              <div className="mt-3">
                 <span
                   style={{ fontSize: 20, fontWeight: "bold" }}
                   className="mt-3"
                 >
                   {params.key ? "We didn't find any results" : isDisplayPost()}
                 </span>
-              )}
-            </div>
-          )}
-          {getValidNuggets()?.length !== 0 && (
-            <>
-              {isFetching ? (
-                <div className="mt-5">
-                  <Skeleton loading={isFetching} active avatar />
-                </div>
-              ) : (
-                <>
-                  {NuggetList?.map((ele, index) => {
-                    return (
-                      <Post
-                        ele={ele}
-                        index={index}
-                        getList={getNuggetList}
-                        muted={muted}
-                        setmuted={setmuted}
-                        handleView={() => {
-                          let findIndex = nuggetsRef.current.findIndex(
-                            (elem) => elem.nugget_id === ele.nugget_id
-                          );
-                          let tempData = [...nuggetsRef.current];
-                          if (tempData[findIndex].viewed !== 1) {
-                            tempData[findIndex].total_views =
-                              tempData[findIndex].total_views + 1;
-                          }
-                          tempData[findIndex].viewed = 1;
-                          nuggetsRef.current = tempData;
-                          setNuggetList(tempData);
-                        }}
-                        handleLike={(like) => {
-                          let findIndex = nuggetsRef.current.findIndex(
-                            (elem) => elem.nugget_id === ele.nugget_id
-                          );
-                          let tempData = [...nuggetsRef.current];
-                          tempData[findIndex].liked = like === 1 ? true : false;
-                          tempData[findIndex].total_likes =
+              </div>
+            ) : (
+              <>
+                {getValidNuggets()?.map((ele, index) => {
+                  return (
+                    <Post
+                      ele={ele}
+                      index={index}
+                      muted={muted}
+                      setmuted={setmuted}
+                      handleView={() => {
+                        let findIndex = Nuggets.findIndex(
+                          (elem) => elem.nugget_id === ele.nugget_id
+                        );
+                        let tempData = [...Nuggets];
+                        if (tempData[findIndex].viewed !== 1) {
+                          tempData[findIndex] = {
+                            ...tempData[findIndex],
+                            total_views: tempData[findIndex].total_views + 1,
+                          };
+                        }
+                        tempData[findIndex] = {
+                          ...tempData[findIndex],
+                          viewed: 1,
+                        };
+                        dispatch(handleNuggetList(tempData));
+                      }}
+                      handleLike={(like) => {
+                        let findIndex = Nuggets.findIndex(
+                          (elem) => elem.nugget_id === ele.nugget_id
+                        );
+                        let tempData = [...Nuggets];
+                        tempData[findIndex] = {
+                          ...tempData[findIndex],
+                          liked: like === 1 ? true : false,
+                          total_likes:
                             like === 1
                               ? tempData[findIndex].total_likes + 1
-                              : tempData[findIndex].total_likes - 1;
-                          nuggetsRef.current = tempData;
-                          setNuggetList(tempData);
-                        }}
-                        handleSave={(save) => {
-                          let findIndex = nuggetsRef.current.findIndex(
-                            (elem) => elem.nugget_id === ele.nugget_id
-                          );
-                          let tempData = [...nuggetsRef.current];
-                          tempData[findIndex].saved = save === 1 ? true : false;
-                          nuggetsRef.current = tempData;
-                          setNuggetList(tempData);
-                        }}
-                        onEdit={(id) => {
-                          setisEdit(id);
-                        }}
-                        HandleShare={() => {
-                          console.log("share");
-                        }}
-                      />
-                    );
-                  })}
-                </>
-              )}
-            </>
-          )}
-        </div>
+                              : tempData[findIndex].total_likes - 1,
+                        };
+                        dispatch(handleNuggetList(tempData));
+                      }}
+                      handleSave={(save) => {
+                        let findIndex = Nuggets.findIndex(
+                          (elem) => elem.nugget_id === ele.nugget_id
+                        );
+                        let tempData = [...Nuggets];
+                        tempData[findIndex] = {
+                          ...tempData[findIndex],
+                          saved: save === 1 ? true : false,
+                        };
+
+                        dispatch(handleNuggetList(tempData));
+                      }}
+                      onEdit={(id) => {
+                        setisEdit(id);
+                      }}
+                      HandleShare={() => {
+                        GetNuggetList();
+                      }}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </>
+        )}
       </InfiniteScroll>
+      {/* </InfiniteScroll> */}
     </ListNuggetContext.Provider>
   );
 };

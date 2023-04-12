@@ -13,20 +13,26 @@ import {
   likeAndUnlikeNuggetCommentService,
   shareNuggetService,
   addNuggetViewService,
+  getNuggetDetailService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import {
   SingleNuggetContext,
   useListNuggetContext,
 } from "../../Shared/Context";
-import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  useAuth,
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../Shared/Reduxfetcher";
 import {
   dateToShortDate,
   datetoString,
   decodeHtml,
-  EncryptionString,
   getAuthenticated,
   getDataValueById,
+  handleProfileNavigate,
   isAccountValid,
   isValidData,
   JSONtoformdata,
@@ -36,7 +42,6 @@ import {
 import {
   handleLoading,
   handleloginModalShow,
-  handlenuggetVideoPaused,
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
@@ -44,10 +49,14 @@ import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import ProfileImg from "../../UIComponents/ProfileImg";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
+import {
+  handleNuggetList,
+  handlenuggetVideoPaused,
+} from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const Post = ({
   ele,
-  getList,
+
   handleLike,
   HandleShare,
   handleSave,
@@ -57,7 +66,8 @@ const Post = ({
   setmuted,
   onEdit,
 }) => {
-  const { NuggetList } = useListNuggetContext();
+  const { GetNuggetList } = useListNuggetContext();
+
   const lodash = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
@@ -65,6 +75,7 @@ const Post = ({
   const dispatch = useDispatch();
   const { userSettings } = useAuth();
   const loginUserData = useAuthData();
+  const { nuggetFormData, Nuggets } = useNuggets();
   const [Comments, setComments] = useState("");
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
@@ -86,6 +97,28 @@ const Post = ({
     },
   });
 
+  const getNuggetDetail = () => {
+    let nuggetDetailData = {
+      token: Token,
+      nugget_id: ele.nugget_id,
+    };
+    getNuggetDetailService(JSONtoformdata(nuggetDetailData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          let findIndex = Nuggets.findIndex(
+            (elem) => elem.nugget_id === ele.nugget_id
+          );
+          let updateData = [...Nuggets];
+          updateData[findIndex] = {
+            ...updateData[findIndex],
+            total_comments: res.data.nugget_detail.total_comments,
+          };
+          dispatch(handleNuggetList(updateData));
+        }
+      })
+      .catch((err) => {});
+  };
+
   const viewHandler = () => {
     if (ele.viewed === 0 && Token) {
       let viewNugget = {
@@ -94,7 +127,7 @@ const Post = ({
       };
       addNuggetViewService(JSONtoformdata(viewNugget))
         .then((res) => {
-          handleView(NuggetList);
+          handleView();
         })
         .catch((err) => {});
     }
@@ -108,8 +141,8 @@ const Post = ({
     deleteNuggetService(JSONtoformdata(deleteData))
       .then((res) => {
         if (res.data.status === 1) {
+          GetNuggetList();
           toast.success(res.data.msg);
-          getList(1);
         } else {
           toast.error(res.data.msg);
         }
@@ -123,24 +156,28 @@ const Post = ({
   };
 
   const getCommentList = (id) => {
-    let listComment = {
-      token: Token,
-      nugget_id: id,
-    };
-    nuggetCommentListService(JSONtoformdata(listComment))
-      .then((res) => {
-        if (res.data.status === 1) {
-          setCommentList(res.data.comments);
-        } else {
-          setCommentList([]);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      })
-      .finally(() => {
-        setisCommentLoading(false);
-      });
+    let promise = new Promise((resolve, reject) => {
+      let listComment = {
+        token: Token,
+        nugget_id: id,
+      };
+      nuggetCommentListService(JSONtoformdata(listComment))
+        .then((res) => {
+          if (res.data.status === 1) {
+            setCommentList(res.data.comments);
+          } else {
+            setCommentList([]);
+          }
+          resolve();
+        })
+        .catch((err) => {
+          toast.error(err.message);
+        })
+        .finally(() => {
+          setisCommentLoading(false);
+        });
+    });
+    return promise;
   };
 
   const handleBlock = () => {
@@ -308,6 +345,7 @@ const Post = ({
     isCommentLoading,
     setCommentList,
     handleNuggetCommentLike,
+    getNuggetDetail,
     getCommentList(id) {
       return getCommentList(id);
     },
@@ -374,7 +412,6 @@ const Post = ({
     shareNuggetService(JSONtoformdata(shareData))
       .then((res) => {
         if (res.data.status === 1) {
-          getList();
           setGrouporConnectionModal({
             show: false,
             type: "",
@@ -421,7 +458,13 @@ const Post = ({
           <div className={classes.proName}>
             <p
               onClick={() => {
-                navigate(`/viewprofile/${EncryptionString(ele?.user_id)}`);
+                let finalData = {
+                  dispatch,
+                  navigate,
+                  nuggetFormData,
+                  user_id: ele?.user_id,
+                };
+                handleProfileNavigate(finalData);
               }}
             >
               {decodeHtml(ele?.user_name)}{" "}
@@ -431,11 +474,13 @@ const Post = ({
                   <span
                     className={classes.sharedUserName}
                     onClick={() => {
-                      navigate(
-                        `/viewprofile/${EncryptionString(
-                          ele?.original_user_id
-                        )}`
-                      );
+                      let finalData = {
+                        dispatch,
+                        navigate,
+                        nuggetFormData,
+                        user_id: ele?.original_user_id,
+                      };
+                      handleProfileNavigate(finalData);
                     }}
                   >
                     {ele?.original_user_name}

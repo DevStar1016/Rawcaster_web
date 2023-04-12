@@ -16,6 +16,7 @@ const Eventslisting = ({
   isSearchEnabled = false,
   isUser = false,
   userData,
+  isCreateEnabled = true,
 }) => {
   const loginUserData = useAuthData();
   const { isSuccess } = useAuth();
@@ -77,6 +78,7 @@ const Eventslisting = ({
       value={{
         getEvents,
         ActiveEvent,
+        isCreateEnabled,
       }}
     >
       <>

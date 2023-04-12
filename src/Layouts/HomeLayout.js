@@ -1,4 +1,4 @@
-import { Dropdown, Layout, Tooltip } from "antd";
+import { Dropdown, Layout, Popover, Tooltip } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
@@ -18,15 +18,16 @@ import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
 import { useDispatch } from "react-redux";
 import { logoutService } from "../Services/ApiService";
 import {
-  EncryptionString,
+  filterValidObject,
   getAuthenticated,
+  handleProfileNavigate,
   isAccountValid,
   JSONtoformdata,
   RemoveToken,
 } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { useAuth, useAuthData } from "../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useNuggets } from "../Shared/Reduxfetcher";
 import {
   handledasboardTab,
   handleisGlobalSearch,
@@ -35,12 +36,20 @@ import {
   handleprofileVerifyModalShow,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
+import { fetchNuggetsbyId } from "../Store/Redux/Action";
+import {
+  handleNuggetFormData,
+  handleResetNuggets,
+} from "../Store/Redux/Reducer/NuggetsReducer";
+import Header from "../Components/Notifications/Header";
+import ContentLayout from "../Components/Notifications/Content";
 
 const HomeLayout = () => {
   const params = useParams();
   const inputRef = useRef();
   const { pathname } = useLocation();
   const { isSuccess } = useAuth();
+  const { nuggetFormData } = useNuggets();
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
@@ -49,10 +58,17 @@ const HomeLayout = () => {
   const { Content } = Layout;
   const onClick = ({ key }) => {
     if (parseInt(key) === 2) {
+      dispatch(handleResetNuggets());
       handleLogout();
     }
     if (parseInt(key) === 1) {
-      navigate(`/viewprofile/${EncryptionString(loginUserData?.user_id)}`);
+      let finalData = {
+        dispatch,
+        navigate,
+        nuggetFormData,
+        user_id: loginUserData?.user_id,
+      };
+      handleProfileNavigate(finalData);
     }
   };
 
@@ -90,6 +106,13 @@ const HomeLayout = () => {
       setsearchData("");
     }
   }, [pathname]);
+
+  const Notification = (
+    <div>
+      <p>Content</p>
+      <p>Content</p>
+    </div>
+  );
   return (
     <>
       <Layout>
@@ -124,6 +147,25 @@ const HomeLayout = () => {
                           if (isAccountValid(loginUserData)) {
                             if (e.nativeEvent.target.value.trim() !== "") {
                               dispatch(handleisGlobalSearch(true));
+                              let filterData = { ...nuggetFormData };
+                              filterData.formData = {
+                                ...filterData.formData,
+                                search_key: e.nativeEvent.target.value,
+                                user_id: null,
+                                page_number: 1,
+                              };
+                              filterData.formData = filterValidObject(
+                                filterData.formData
+                              );
+                              dispatch(handleResetNuggets());
+                              dispatch(
+                                handleNuggetFormData(
+                                  filterValidObject(filterData)
+                                )
+                              );
+                              dispatch(
+                                fetchNuggetsbyId(filterValidObject(filterData))
+                              );
                               navigate(
                                 `/globalsearch/${e.nativeEvent.target.value}`
                               );
@@ -172,17 +214,22 @@ const HomeLayout = () => {
                         navigate("/dashboard");
                       }}
                     />
-                    <img
-                      src={NotificationIcon}
-                      alt="Notification_logo"
-                      className={`${classes.onlydes} ${classes.menuIcon}`}
-                    />
+                    <Popover
+                      placement="bottom"
+                      title={Header}
+                      content={ContentLayout}
+                      showArrow={false}
+                      // open={NotificationOpen}
+                      trigger="click"
+                    >
+                      <img
+                        src={NotificationIcon}
+                        alt="Notification_logo"
+                        className={`${classes.onlydes} ${classes.menuIcon}`}
+                      />
+                    </Popover>
                   </div>
                 )}
-                {/* <Dropdown menu={{ items }} placement="topRight" arrow>
-              <Button>topRight</Button>
-            </Dropdown> */}
-
                 <div
                   className={
                     loginUserData
@@ -271,21 +318,6 @@ const HomeLayout = () => {
                     </div>
                   </div>
                 </Dropdown>
-                {/* <Dropdown className={classes.DropMenu}>
-                  <Dropdown.Toggle className={classes.dropMenuSec}>
-               
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">
-                      Another action
-                    </Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">
-                      Something else
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown> */}
               </div>
             </div>
           </div>
@@ -298,7 +330,17 @@ const HomeLayout = () => {
               dispatch(handledasboardTab("event"));
             }}
           />
-          <img src={btmbell} alt="notification_logo" />
+          <Popover
+            placement="bottom"
+            title={<span>Title</span>}
+            content={Notification}
+            arrow={false}
+            // open={NotificationOpen}
+            trigger="click"
+          >
+            <img src={btmbell} alt="notification_logo" />
+          </Popover>
+
           <img
             className={classes.btmhome}
             alt="home_logo"

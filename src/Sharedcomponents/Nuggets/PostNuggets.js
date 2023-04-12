@@ -26,8 +26,10 @@ import {
 } from "../../Shared/Utility";
 import Postmodal from "../../Modal/Nugget/Postmodal";
 import { useParams } from "react-router";
+import profileImg from "../../Assets/Images/svg/userImg.svg";
 
-const PostNuggets = ({ getNuggetList }) => {
+const PostNuggets = () => {
+  const { GetNuggetList } = useListNuggetContext();
   const dispatch = useDispatch();
   const Token = useAuthToken();
   const params = useParams();
@@ -98,8 +100,8 @@ const PostNuggets = ({ getNuggetList }) => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
+          GetNuggetList();
           setNuggetData([]);
-          getNuggetList();
         } else {
           toast.error(res.data.msg);
         }
@@ -162,7 +164,6 @@ const PostNuggets = ({ getNuggetList }) => {
         if (res.data.status === 1) {
           resetForm();
           setNuggetData([]);
-          getNuggetList();
         } else {
           toast.error(res.data.msg);
         }
@@ -249,16 +250,19 @@ const PostNuggets = ({ getNuggetList }) => {
         style={{ display: params.key ? "none" : "block" }}
       >
         <div className={classes.searchUser}>
-          <div className="d-flex flex-row ">
+          <div className="d-flex flex-row">
             <img
-              src={LoginUserData?.profile_image}
+              src={LoginUserData?.profile_image || profileImg}
               className={classes.profileImg}
               alt="Post_profileimg"
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = profileImg;
+              }}
             />
             <div
               className="w-100"
               onClick={() => {
-                console.log("Click");
                 if (isAccountValid(LoginUserData)) {
                   setpostModalShow(true);
                 } else {

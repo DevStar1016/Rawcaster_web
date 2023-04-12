@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
-import { getFollowListService } from "../../../Services/ApiService";
-import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthToken,
+  useDashboard,
+  useNuggets,
+} from "../../../Shared/Reduxfetcher";
 import {
   DecryptionString,
-  EncryptionString,
-  JSONtoformdata,
+  handleProfileNavigate,
 } from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
 import { useProfileContext } from "../../../Shared/Context";
 import { getfollowerfollowingService } from "./Utility";
+import { useDispatch } from "react-redux";
 
 const FansThumb = ({ isLoginUser }) => {
   const { FansList, setFansList } = useProfileContext();
+  const { nuggetFormData } = useNuggets();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const loginToken = useAuthToken();
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
@@ -40,7 +45,7 @@ const FansThumb = ({ isLoginUser }) => {
   };
 
   useEffect(() => {
-    if (FansList.fans.length === 0 && loginToken) {
+    if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
       getFollowers();
     } else if (params?.user_id) {
       getFollowers();
@@ -49,17 +54,23 @@ const FansThumb = ({ isLoginUser }) => {
 
   return (
     <div className={classes.fansList}>
-      {FansList.fans?.map((ele) => (
+      {FansList.connections?.map((ele) => (
         <img
           className={classes.thumbImg}
           src={ele.profile_img}
           onClick={() => {
-            navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+            let finalData = {
+              dispatch,
+              navigate,
+              nuggetFormData,
+              user_id: ele.user_id,
+            };
+            handleProfileNavigate(finalData);
           }}
         />
       ))}
-      {FansList.count !== 0 && (
-        <div className={classes.count}>{FansList.count}</div>
+      {FansList.connectionscount !== 0 && (
+        <div className={classes.count}>{FansList.connectionscount}</div>
       )}
     </div>
   );

@@ -1,23 +1,43 @@
 import React from "react";
-import { useAuth, useAuthData, useDashboard } from "../../Shared/Reduxfetcher";
+import { useAuth, useNuggets } from "../../Shared/Reduxfetcher";
 import Eventslisting from "./Eventslisting";
 import classes from "./Events.module.css";
 import BeforeAuthEvents from "./BeforeAuthEvents";
-import { handleDashboardFilterType } from "../../Store/Redux/Reducer/DashboardReducer";
+
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { fetchNuggetsbyId } from "../../Store/Redux/Action";
+import {
+  handleDashboardFilterType,
+  handleNuggetFormData,
+  handleResetNuggets,
+} from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const Events = () => {
   const dispatch = useDispatch();
   const { isSuccess, loginUserData } = useAuth();
-  const { DashboardfilterType } = useDashboard();
+  const { DashboardfilterType, nuggetFormData } = useNuggets();
+
+  const handleFilterType = (type) => {
+    let filterData = { ...nuggetFormData };
+
+    filterData.formData = {
+      page_number: 1,
+      nugget_type: 0,
+      filter_type: type,
+    };
+    dispatch(handleResetNuggets());
+    dispatch(handleDashboardFilterType(type));
+    dispatch(handleNuggetFormData(filterData));
+    dispatch(fetchNuggetsbyId(filterData));
+  };
   return (
     <div className={classes.eventSec}>
       <div className={`${classes.beforelogin} mb-3`}>
         <Link
           className={DashboardfilterType === 0 ? classes.active : ""}
           onClick={() => {
-            dispatch(handleDashboardFilterType(0));
+            handleFilterType(0);
           }}
         >
           <span class="material-icons">home</span> For You
@@ -25,7 +45,7 @@ const Events = () => {
         <Link
           className={DashboardfilterType === 1 ? classes.active : ""}
           onClick={() => {
-            dispatch(handleDashboardFilterType(1));
+            handleFilterType(1);
           }}
         >
           <span class="material-icons">people</span> Following

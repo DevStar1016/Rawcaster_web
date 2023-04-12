@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useDashboard } from "../../Shared/Reduxfetcher";
-import { handleisNuggetMuted } from "../../Store/Redux/Reducer/DashboardReducer";
+
 import classes from "./Audioplayer.module.css";
+import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   const { isNuggetMuted } = useDashboard();

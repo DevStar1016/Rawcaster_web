@@ -215,11 +215,25 @@
     line-height: 19px;
   }
   .blockeduserSearch {
-    border: #707070 1px solid;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     width: 506px;
     height: 41px;
+    margin-top: 10px;
     margin-bottom: 5px;
   }
+  .blockeduserSearch input:focus {
+    box-shadow: none !important;
+  }
+  .blockeduserSearch .resetSec {
+    margin-bottom: 8px;
+    margin-left: 10px;
+  }
+  .blockeduserSearch .resetSec span {
+    cursor: pointer;
+  }
+  .inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
   /* .blockeduserSearch::placeholder {
     color: #818181;
     opacity: 1;
@@ -227,6 +241,24 @@
     font-size: 13px;
     background: url(../../assets/icons/sm_search.png) no-repeat 80px;
   } */
+  .searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important;z-index: 6; border-radius: 50px !important; background: #563662 !important; width:45px; }
+.searchIcon span {color: #fff; }
+.blockuserSec {
+  width: 420px !important;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  background: #F1F2F5 !important;
+ 
+ 
+}
+.blockuserSec div:first-child {
+  background: #F1F2F5 !important;
+  height: 70px !important;
+ 
+  overflow-y: scroll;
+ 
+  
+}
   .acttionTxt {
     position: relative;
     margin-top: 8px;

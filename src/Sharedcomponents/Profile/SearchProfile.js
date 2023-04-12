@@ -6,6 +6,7 @@ import {
   decodeHtml,
   EncryptionString,
   getAuthToken,
+  handleProfileNavigate,
   JSONtoformdata,
   ReadMore,
 } from "../../Shared/Utility";
@@ -14,12 +15,19 @@ import {
   FollowandunfollowService,
   sendFriendRequestsService,
 } from "../../Services/ApiService";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  useAuthToken,
+  useDashboard,
+  useNuggets,
+} from "../../Shared/Reduxfetcher";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 
 const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
   const navigate = useNavigate();
   const token = useAuthToken();
+  const dispatch = useDispatch();
+  const { nuggetFormData } = useNuggets();
   const handleBecomeFan = (ele) => {
     let becameFanData = {
       token: token,
@@ -76,7 +84,13 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
       <div
         className={classes.leftSec}
         onClick={() => {
-          navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+          let finalData = {
+            dispatch,
+            navigate,
+            nuggetFormData,
+            user_id: ele.user_id,
+          };
+          handleProfileNavigate(finalData);
         }}
       >
         <img src={ele.profile_img} />
@@ -85,7 +99,13 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
         <div
           className={classes.nameSectop}
           onClick={() => {
-            navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+            let finalData = {
+              dispatch,
+              navigate,
+              nuggetFormData,
+              user_id: ele.user_id,
+            };
+            handleProfileNavigate(finalData);
           }}
         >
           <div className={classes.nameSec}>
@@ -138,7 +158,13 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
         <div
           className={classes.bioSec}
           onClick={() => {
-            navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+            let finalData = {
+              dispatch,
+              navigate,
+              nuggetFormData,
+              user_id: ele.user_id,
+            };
+            handleProfileNavigate(finalData);
           }}
         >
           <p>

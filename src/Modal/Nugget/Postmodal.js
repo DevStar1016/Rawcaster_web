@@ -31,7 +31,6 @@ import { parseInt } from "lodash";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
-    getPostValues,
     setFileValues,
     setNuggetValues,
     useAuthData,

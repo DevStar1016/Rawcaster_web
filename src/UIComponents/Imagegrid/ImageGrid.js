@@ -3,11 +3,11 @@ import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ImageGrid.module.css";
 import BackgroundImg from "../../Assets/Images/png/audioImg.png";
 import { useInView } from "react-hook-inview";
-import { useDashboard } from "../../Shared/Reduxfetcher";
+import { useDashboard, useNuggets } from "../../Shared/Reduxfetcher";
 import AudioPlayer from "../../Sharedcomponents/AudioPlayer";
 import { Carousel } from "react-bootstrap";
-import { handleisNuggetMuted } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
+import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const ImageGrid = ({
   imgArray,
@@ -17,8 +17,8 @@ const ImageGrid = ({
   onPlay,
 }) => {
   const dispatch = useDispatch();
-  const { isNuggetMuted } = useDashboard();
-  const { nuggetVideoPaused } = useDashboard();
+  const { nuggetVideoPaused, isNuggetMuted } = useNuggets();
+
   const [isPlaying, setisPlaying] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [ActiveModalIndex, setActiveModalIndex] = useState(0);
@@ -117,6 +117,10 @@ const ImageGrid = ({
           src={data.path}
           alt=""
           style={{ width: "100%", height: "100%", borderRadius: 10 }}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = BackgroundImg;
+          }}
         />
       ) : null;
     } else if (data.media_type === "video") {
@@ -160,6 +164,10 @@ const ImageGrid = ({
           src={data.path}
           alt=""
           style={{ zIndex: 0, aspectRatio: getAspectRatio(index) }}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = BackgroundImg;
+          }}
         />
       ) : null;
     } else if (data.media_file_type === "wav") {
@@ -232,6 +240,10 @@ const ImageGrid = ({
           className={`type === "fullview" ? "" : "imgGridsize" ${classes.modalSingleimage}`}
           src={data.path}
           alt=""
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = BackgroundImg;
+          }}
         />
       ) : null;
     } else if (data.media_type === "video") {
@@ -322,6 +334,10 @@ const ImageGrid = ({
             style={{
               zIndex: 0,
             }}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src = BackgroundImg;
+            }}
           />
         </Fragment>
       );
@@ -342,6 +358,10 @@ const ImageGrid = ({
             src={require("../../Assets/Icons/png/fb_play_btn.png")}
             alt="more"
             style={{ width: "10%", position: "absolute" }}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src = BackgroundImg;
+            }}
           />
 
           <video

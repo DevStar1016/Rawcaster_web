@@ -21,7 +21,6 @@ import ReplyList from "./ReplyList";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 
 const CommentsList = ({ index }) => {
-  const { getNuggetList } = useListNuggetContext();
   const {
     nugget_id,
     CommentList,
@@ -29,6 +28,7 @@ const CommentsList = ({ index }) => {
     isCommentLoading,
     handleNuggetCommentLike,
     setCommentList,
+    getNuggetDetail,
   } = useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [CommentTxt, setCommentTxt] = useState([]);
@@ -47,14 +47,9 @@ const CommentsList = ({ index }) => {
     addNuggetCommentService(JSONtoformdata(addComment))
       .then((res) => {
         if (res.data.status === 1) {
-          getNuggetList();
-          getCommentList(id);
-          if (type === 1) {
-            setTimeout(() => {
-              const focused = document.getElementById("focus");
-              focused.scrollIntoView({ behavior: "smooth" });
-            }, 1000);
-          }
+          getCommentList(id).then(() => {
+            getNuggetDetail();
+          });
         } else {
           toast.error(res.data.msg);
         }
@@ -91,8 +86,9 @@ const CommentsList = ({ index }) => {
     deleteNuggetCommentService(JSONtoformdata(deleteComment))
       .then((res) => {
         if (res.data.status === 1) {
-          getNuggetList();
-          getCommentList(nugget_id);
+          getCommentList(nugget_id).then(() => {
+            getNuggetDetail();
+          });
         } else {
           toast.error(res.data.msg);
         }

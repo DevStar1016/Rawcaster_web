@@ -29,9 +29,9 @@ const GlobalSearchResult = () => {
             </div>
           </Tab>
           <Tab eventKey="Nuggets" title="Nuggets">
-            <div className={classes.fullcontainer}>
-              <Nuggets />
-            </div>
+            {/* <div className={classes.fullcontainer}> */}
+            <Nuggets />
+            {/* </div> */}
           </Tab>
           <Tab eventKey="Events" title="Events">
             <div className={classes.fullcontainer}>

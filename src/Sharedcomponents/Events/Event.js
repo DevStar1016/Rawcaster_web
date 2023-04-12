@@ -7,6 +7,7 @@ import classes from "./Event.module.css";
 import eventList from "../../Assets/Images/png/eventList.png";
 import { deleteEventService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
+
 const Event = ({ ele, handleEdit, setList }) => {
   const loginUserData = useAuthData();
   const token = useAuthToken();
@@ -47,6 +48,10 @@ const Event = ({ ele, handleEdit, setList }) => {
         className={classes.eventImg}
         src={ele?.banner_image !== "" ? ele?.banner_image : eventList}
         alt="Banner_img"
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null; // prevents looping
+          currentTarget.src = eventList;
+        }}
       />
 
       <div

@@ -1,38 +1,82 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./Settings.module.css";
-import { Button, Dropdown, Menu, Select } from "antd";
+import { Button, Select } from "antd";
 import InfiniteScroll from "react-infinite-scroller";
-import { useDashboard } from "../../Shared/Reduxfetcher";
-import { decodeHtml } from "../../Shared/Utility";
+import { useAuthToken, useDashboard } from "../../Shared/Reduxfetcher";
+import {
+  JSONtoformdata,
+  decodeHtml,
+  filterValidObject,
+} from "../../Shared/Utility";
 import { useState } from "react";
+import { Form, InputGroup } from "react-bootstrap";
+import {
+  blockmultipleuserService,
+  blockunblockuserService,
+  listallblockedusersService,
+} from "../../Services/ApiService";
 
 const Blockuser = () => {
   const { friendsList } = useDashboard();
+  const token = useAuthToken();
   const [blockUserList, setblockUserList] = useState([]);
-  const [query, setQuery] = useState("");
+  const [blockuser, setblockuser] = useState([]);
+  const [query, setQuery] = useState(null);
 
-  const searchContent = (
-    <Menu className={classes.searchdropdown}>
-      <input
-        className={classes.textbox}
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-        }}
-      ></input>
-      <Button
-        className={classes.resetbtn}
-        onClick={() => {
-          setQuery("");
-        }}
-      >
-        Reset
-      </Button>
-      <Button className={classes.searchbtn} onClick={() => {}}>
-        Search
-      </Button>
-    </Menu>
-  );
+  const getBlockedUserData = (search_key = null) => {
+    let blockuserData = {
+      token: token,
+      search_key: search_key,
+    };
+    listallblockedusersService(JSONtoformdata(filterValidObject(blockuserData)))
+      .then((res) => {
+        if (res.data.status === 1) {
+          setblockUserList(res.data.blocked_list);
+        } else {
+          setblockUserList([]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getBlockedUserData();
+  }, []);
+
+  const handleBlockMultipleuser = (user_id) => {
+    let blockData = {
+      token: token,
+      user_id,
+    };
+    blockmultipleuserService(JSONtoformdata(blockData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          getBlockedUserData();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleunblockuser = (user_id) => {
+    let unblockData = {
+      token: token,
+      user_id,
+      action: 2,
+    };
+    blockunblockuserService(JSONtoformdata(unblockData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          getBlockedUserData();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className={`frndDetails blockusermain`}>
@@ -46,10 +90,19 @@ const Blockuser = () => {
         <div className={classes.w500}>
           <Select
             mode="multiple"
-            style={{ width: "20%", minWidth: "200px" }}
+            className={classes.blockuserSec}
+            style={{
+              width: "20%",
+              minWidth: "200px",
+              backgroundColor: "#F1F2F5",
+            }}
+            dropdownStyle={{ backgroundColor: "#F1F2F5" }}
             placeholder="Search to Connection"
             optionLabelProp="label"
             optionFilterProp="label"
+            onChange={(val) => {
+              setblockuser(val);
+            }}
           >
             {friendsList.map(function (opt) {
               return (
@@ -92,6 +145,9 @@ const Blockuser = () => {
             htmlType="submit"
             size="large"
             className={classes.blockBtn}
+            onClick={() => {
+              handleBlockMultipleuser(JSON.stringify(blockuser));
+            }}
           >
             Block
           </Button>
@@ -99,16 +155,40 @@ const Blockuser = () => {
       </div>
 
       <div className={classes.blockeduserSearch}>
-        <p className={classes.uname}>
-          <Dropdown trigger={["click"]} overlay={searchContent}>
-            <p className={classes.searchbtn}>
-              User Name{" "}
-              <i className={`material-icons ${classes.searchicon}`}>search</i>
-            </p>
-          </Dropdown>
-        </p>
-
-        <p className={classes.acttionTxt}>Action</p>
+        <InputGroup className="mb-3">
+          <Form.Control
+            className={classes.inSearch}
+            placeholder="User name"
+            aria-label="User name"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+            }}
+          />
+          <InputGroup.Text
+            className={classes.searchIcon}
+            onClick={() => {
+              if (query !== "") {
+                getBlockedUserData(query);
+              }
+            }}
+          >
+            <span class="material-icons">search</span>
+          </InputGroup.Text>
+        </InputGroup>
+        {query && (
+          <div className={classes.resetSec}>
+            <span
+              class="material-symbols-outlined"
+              onClick={() => {
+                setQuery(null);
+                getBlockedUserData();
+              }}
+            >
+              close
+            </span>
+          </div>
+        )}
       </div>
 
       <div>
@@ -127,7 +207,14 @@ const Blockuser = () => {
                   </span>
                 </div>
 
-                <Button className={classes.unblkBtn} ghost type="primary">
+                <Button
+                  className={classes.unblkBtn}
+                  ghost
+                  type="primary"
+                  onClick={() => {
+                    handleunblockuser(friend.user_id);
+                  }}
+                >
                   UnBlock
                 </Button>
               </div>

@@ -4,7 +4,12 @@ import {
   getUserSettingsService,
 } from "../../Services/ApiService";
 import ConnectSocket from "../../Services/SocketService";
-import { decodeHtml, getAuthToken, JSONtoformdata } from "../../Shared/Utility";
+import {
+  decodeHtml,
+  DecryptionString,
+  getAuthToken,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import {
   handleLoginData,
   handleToken,
@@ -12,7 +17,12 @@ import {
   handleuserSettings,
 } from "../../Store/Redux/Reducer/AuthReducer";
 import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
-import { fetchFrindsbyId, fetchgroupsbyId } from "../../Store/Redux/Action";
+import {
+  fetchFrindsbyId,
+  fetchNuggetsbyId,
+  fetchgroupsbyId,
+} from "../../Store/Redux/Action";
+import { handleNuggetFormData } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 export const getProfile = (token, dispatch) => {
   let promise = new Promise((resolve, reject) => {
@@ -34,11 +44,41 @@ export const getProfile = (token, dispatch) => {
           dispatch(
             fetchgroupsbyId({ token: token, user_id: profileData.user_id })
           );
+          let finalData = {
+            token: token,
+            formData: { page_number: 1, nugget_type: 0 },
+          };
+          if (window.location.pathname.includes("globalsearch")) {
+            let splitData = window.location.pathname.split("/");
+            finalData = {
+              ...finalData,
+              formData: {
+                ...finalData.formData,
+                search_key: splitData[2],
+              },
+            };
+          } else if (window.location.pathname.includes("viewprofile")) {
+            let splitData = window.location.pathname.split("/");
+            finalData = {
+              ...finalData,
+              formData: {
+                ...finalData.formData,
+                user_id:
+                  splitData[2] && splitData[2] !== ""
+                    ? DecryptionString(splitData[2])
+                    : null,
+              },
+            };
+          }
+          dispatch(handleNuggetFormData(finalData));
+          dispatch(fetchNuggetsbyId(finalData));
           dispatch(handleLoginData({ token: token, ...profileData }));
+
           dispatch(handleToken(token));
           if (res.data.profile.acc_verify_status === 0) {
             handleVerifyModal(res.data.profile, dispatch);
           }
+
           ConnectSocket(res.data.profile);
           resolve(res.data.profile);
         } else {

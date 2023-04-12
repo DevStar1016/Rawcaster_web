@@ -17,8 +17,6 @@ import {
   isValidImageFile,
   JSONtoformdata,
 } from "../../Shared/Utility";
-import UnclaimedInfluencers from "./Components/UnclaimedInfluencers";
-import Fans from "./Components/Fans";
 import {
   getOthersProfileService,
   updateProfileService,
@@ -34,6 +32,8 @@ import moment from "moment";
 import { ProfileContext } from "../../Shared/Context";
 import BioContainer from "./Components/BioContainer";
 import Eventslisting from "../Events/Eventslisting";
+import ConnectionsList from "./Components/Connections";
+import { ConnectionsType } from "./Components/Constants";
 
 const Profile = () => {
   const params = useParams();
@@ -47,9 +47,11 @@ const Profile = () => {
   const loginUserData = useAuthData();
   const [isCoverLoading, setisCoverLoading] = useState(true);
   const [FansList, setFansList] = useState({
-    fans: [],
-    count: 0,
-    isLoaded: false,
+    connections: [],
+    allconnections: [],
+    connectionscount: 0,
+    allconnectionscount: 0,
+    isLoaded: true,
   });
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const [profileData, setprofileData] = useState();
@@ -132,6 +134,7 @@ const Profile = () => {
     profileData,
     isLinkopenModal,
     setisLinkopenModal,
+    isLoginUser: getisLoginUser(),
   };
 
   return (
@@ -145,6 +148,9 @@ const Profile = () => {
             >
               <img
                 src={profileData?.cover_image}
+                onLoadStart={() => {
+                  setisCoverLoading(true);
+                }}
                 onLoad={() => {
                   setisCoverLoading(false);
                 }}
@@ -251,7 +257,7 @@ const Profile = () => {
 
           <div className={classes.fullcontainer}>
             <div className={classes.profileevent}>
-              <BioContainer />
+              <BioContainer isLoginuser={getisLoginUser()} />
 
               {isSuccess ? (
                 <div className={classes.intro}>
@@ -259,6 +265,7 @@ const Profile = () => {
                     <h2>Intro</h2>
                     <div
                       className={classes.editSec}
+                      style={{ display: getisLoginUser() ? "block" : "none" }}
                       onClick={() => {
                         window.scrollTo(0, 0);
                         navigate("/profile");
@@ -311,6 +318,7 @@ const Profile = () => {
               )}
               {isSuccess && (
                 <Eventslisting
+                  isCreateEnabled={getisLoginUser()}
                   isSearchEnabled={true}
                   isUser={true}
                   userData={profileData}
@@ -322,10 +330,13 @@ const Profile = () => {
 
             {isSuccess && (
               <div className={classes.rightProfiles}>
-                <UnclaimedInfluencers isLoginUser={getisLoginUser()} />
-                {/* <Influencers /> */}
-                <Fans />
-                <Connections />
+                {ConnectionsType.map((ele) => {
+                  return ele.id === 3 && getisLoginUser() ? (
+                    <Connections />
+                  ) : (
+                    <ConnectionsList {...ele} />
+                  );
+                })}
               </div>
             )}
           </div>

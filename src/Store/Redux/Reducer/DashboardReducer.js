@@ -9,15 +9,11 @@ const initialState = {
   twostepVerifyModalshow: false,
   dashboardMenu: "nugget",
   isVeifyEnabled: false,
-  nuggetVideoPaused: false,
   isGlobalSearch: false,
   friendsList: [],
   isFriendsLoading: true,
   groupsList: [],
   isGroupLoading: true,
-  Nuggets: [],
-  isNuggetsLoading: true,
-  isNuggetMuted: false,
   DashboardfilterType: 0,
 };
 
@@ -46,9 +42,6 @@ export const { actions, reducer } = createSlice({
     handleverifyEnabled: (state, action) => {
       state.isVeifyEnabled = action.payload;
     },
-    handlenuggetVideoPaused: (state, action) => {
-      state.nuggetVideoPaused = action.payload;
-    },
     handleisGlobalSearch: (state, action) => {
       state.isGlobalSearch = action.payload;
     },
@@ -57,15 +50,6 @@ export const { actions, reducer } = createSlice({
     },
     handleGroupsList: (state, action) => {
       state.groupsList = action.payload;
-    },
-    handleisNuggetMuted: (state, action) => {
-      state.isNuggetMuted = action.payload;
-    },
-    handleDashboardFilterType: (state, action) => {
-      state.DashboardfilterType = action.payload;
-    },
-    handleNuggetList: (state, action) => {
-      state.Nuggets = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -94,13 +78,9 @@ export const {
   handleloginModalShow,
   handletwostepVerifyModalshow,
   handleverifyEnabled,
-  handlenuggetVideoPaused,
   handleisGlobalSearch,
   handleFriendsList,
   handleGroupsList,
-  handleisNuggetMuted,
-  handleDashboardFilterType,
-  handleNuggetList,
 } = actions;
 
 export default reducer;

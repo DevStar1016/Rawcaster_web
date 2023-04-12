@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import { updateProfileService } from "../../../Services/ApiService";
 import { toast } from "react-hot-toast";
 
-const BioContainer = () => {
+const BioContainer = ({ isLoginuser }) => {
   const [isAboutEdit, setisAboutEdit] = useState(false);
   const { profileData, isLinkopenModal, setisLinkopenModal } =
     useProfileContext();
@@ -73,6 +73,7 @@ const BioContainer = () => {
         ) : (
           <div
             className={classes.editSec}
+            style={{ display: isLoginuser ? "block" : "none" }}
             onClick={() => {
               setisAboutEdit(true);
               let tempData = replaceBiodataHandler(profileData);

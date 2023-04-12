@@ -24,12 +24,12 @@ const ReplyList = ({
   index = 0,
   setisReplyEnabled,
 }) => {
-  const { getNuggetList } = useListNuggetContext();
   const {
     nugget_id,
     CommentList,
     getCommentList,
     isCommentLoading,
+    getNuggetDetail,
     handleNuggetCommentLike,
   } = useSingleNuggetContext();
   const loginUserData = useAuthData();
@@ -60,8 +60,8 @@ const ReplyList = ({
     addNuggetCommentService(JSONtoformdata(addComment))
       .then((res) => {
         if (res.data.status === 1) {
-          getNuggetList();
           getCommentList(id);
+          getNuggetDetail();
         } else {
           toast.error(res.data.msg);
         }
@@ -98,8 +98,8 @@ const ReplyList = ({
     deleteNuggetCommentService(JSONtoformdata(deleteComment))
       .then((res) => {
         if (res.data.status === 1) {
-          getNuggetList();
           getCommentList(nugget_id);
+          getNuggetDetail();
         } else {
           toast.error(res.data.msg);
         }

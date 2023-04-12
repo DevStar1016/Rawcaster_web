@@ -15,6 +15,12 @@ import moment from "moment";
 import { getTimezone } from "countries-and-timezones";
 import { useLayoutEffect } from "react";
 
+import { fetchNuggetsbyId } from "../Store/Redux/Action";
+import {
+  handleNuggetFormData,
+  handleResetNuggets,
+} from "../Store/Redux/Reducer/NuggetsReducer";
+
 // Auth
 
 export const getRawcaserToken = () => {
@@ -438,4 +444,20 @@ export const dateToShortDate = (time) => {
 
 export const datetoString = (t) => {
   return moment(t).format("D MMM YYYY [ • ] h:mm A ");
+};
+
+export const handleProfileNavigate = (userData) => {
+  const { navigate, dispatch, nuggetFormData, user_id } = userData;
+  let filterData = { ...nuggetFormData };
+  filterData.formData = {
+    ...filterData.formData,
+    search_key: null,
+    user_id: user_id,
+    page_number: 1,
+  };
+  filterData.formData = filterValidObject(filterData.formData);
+  dispatch(handleResetNuggets());
+  dispatch(handleNuggetFormData(filterValidObject(filterData)));
+  dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
+  navigate(`/viewprofile/${EncryptionString(user_id)}`);
 };

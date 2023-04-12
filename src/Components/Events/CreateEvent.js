@@ -5,38 +5,43 @@ import classes from "./Events.module.css";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import eventIcon from "../../Assets/Images/svg/eventIcon.svg";
 import AddEvent from "./Configure/AddEvent";
+import { useEventContext } from "../../Shared/Context";
 
 const CreateEvent = ({ isSearch, onSearchEnter }) => {
+  const { isCreateEnabled } = useEventContext();
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
   const [isEventOpen, setisEventOpen] = useState(false);
   const [searchInput, setsearchInput] = useState("");
 
   return (
     <div className={classes.eventActionSec}>
-      <Button
-        type="primary"
-        size={"large"}
-        className={classes.eventShowBtn}
-        onClickCapture={() => {
-          setisTalkshowOpen(true);
-        }}
-      >
-        <img src={talkshowIcon} /> Create Talkshow
-      </Button>
-      <Button
-        type="primary"
-        size={"large"}
-        className={classes.talkShowBtn}
-        onClickCapture={() => {
-          setisEventOpen(true);
-        }}
-      >
-        <img src={eventIcon} /> Create Event
-      </Button>
-
+      {isCreateEnabled && (
+        <div className="mb-3">
+          <Button
+            type="primary"
+            size={"large"}
+            className={classes.eventShowBtn}
+            onClickCapture={() => {
+              setisTalkshowOpen(true);
+            }}
+          >
+            <img src={talkshowIcon} /> Create Talkshow
+          </Button>
+          <Button
+            type="primary"
+            size={"large"}
+            className={classes.talkShowBtn}
+            onClickCapture={() => {
+              setisEventOpen(true);
+            }}
+          >
+            <img src={eventIcon} /> Create Event
+          </Button>
+        </div>
+      )}
       {isSearch && (
         <input
-          className={`${classes.textBox} mt-3`}
+          className={`${classes.textBox} `}
           onChange={(e) => {
             setsearchInput(e.target.value);
             onSearchEnter(e.target.value);

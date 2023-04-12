@@ -97,6 +97,18 @@ export const listAllFriendGroupsService = (data) => {
   return axios.post("listallfriendgroups", data);
 };
 
+export const listallblockedusersService = (data) => {
+  return axios.post("listallblockedusers", data);
+};
+
+export const blockunblockuserService = (data) => {
+  return axios.post("blockunblockuser", data);
+};
+
+export const blockmultipleuserService = (data) => {
+  return axios.post("blockmultipleuser", data);
+};
+
 export const listAllFriendsService = (data) => {
   return axios.post("listallfriends", data);
 };
