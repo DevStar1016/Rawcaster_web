@@ -133,6 +133,8 @@ const Settings = () => {
         toast.error(err.message);
       });
   };
+  const [visibleSideBar, setvisibleSideBar] = useState(false); 
+  const [activeTab, setActiveTab] = useState(0);
 
   const settingsValues = {
     formikvalues: values,
@@ -175,33 +177,73 @@ const Settings = () => {
   return (
     <SettingsContext.Provider value={settingsValues}>
       <div className={classes.settingSec}>
+      <div className={classes.settingmobMenu}>
+          <span
+            class="material-icons"
+            onClick={() => setvisibleSideBar((p) => !p)}
+          >
+            menu
+          </span>
+        </div>
+
         <Tab.Container
           id="left-tabs-example"
           defaultActiveKey="general"
           className="mt-5"
         >
-              <div className={`${classes.sidebar} settingsBar`}>
+              <div className={`${classes.sidebar}  ${
+                !visibleSideBar ? classes.hideSlidebar : null
+              }`}>
                 <Nav variant="pills" className="flex-column">
                   <h2>Settings</h2>
                   <Nav.Item>
-                    <Nav.Link eventKey="general">General</Nav.Link>
+                    <Nav.Link className={activeTab === 1 ? classes.active : ""}
+                      onClick={() => {
+                        setActiveTab(1);
+                        setvisibleSideBar(false);
+                      }}
+                    eventKey="general">General</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="notifications">Notifications</Nav.Link>
+                    <Nav.Link
+                    className={activeTab === 2 ? classes.active : ""}
+                    onClick={() => {
+                      setActiveTab(2);
+                      setvisibleSideBar(false);
+                    }}
+                     eventKey="notifications">Notifications</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="blocking">Blocking</Nav.Link>
+                    <Nav.Link 
+                    className={activeTab === 3 ? classes.active : ""}
+                    onClick={() => {
+                      setActiveTab(3);
+                      setvisibleSideBar(false);
+                    }}
+                    eventKey="blocking">Blocking</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="change_password">
+                    <Nav.Link
+                    className={activeTab === 4 ? classes.active : ""}
+                    onClick={() => {
+                      setActiveTab(4);
+                      setvisibleSideBar(false);
+                    }}
+                     eventKey="change_password">
                       Change Password
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="event_setting">Event Settings</Nav.Link>
+                    <Nav.Link 
+                    className={activeTab === 5 ? classes.active : ""}
+                    onClick={() => {
+                      setActiveTab(5);
+                      setvisibleSideBar(false);
+                    }}
+                    eventKey="event_setting">Event Settings</Nav.Link>
                   </Nav.Item>
                 </Nav>
-              </div>
+              </div>             
             
               <div className={`${classes.contentSec}`}>
               <Tab.Content>

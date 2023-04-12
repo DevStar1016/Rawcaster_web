@@ -5,7 +5,7 @@
     max-height: 100vh;
     padding-top:20px;
     overflow-y: scroll;
-    /* height: 100vh; */
+    height: calc(100vh - 70px);
     position: sticky !important;
     position: -webkit-sticky;
     top: 74px;

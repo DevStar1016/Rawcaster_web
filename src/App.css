@@ -205,7 +205,6 @@ opacity: 1 !important;
     display: none;
   }
 
-
 .ant-tooltip-inner {
   font-weight: 500;
 font-size: 13px;
@@ -214,7 +213,7 @@ line-height: 23px;
 
 }
 .settingsBar .active{
-  background: #4d4d4d !important;
+  background: #3e2646 !important;
 }
 .settingsBar .ant-select-selector {
   border: 1px solid #d9d9d9 !important;
@@ -412,10 +411,7 @@ margin-bottom: 0px !important;
  width: fit-content;
 }
 
-
  /* Toast UI image Editor */
-
-
  .tui-image-editor-container .tui-image-editor-help-menu.top ,.tui-image-editor-header ,.tui-image-editor-menu{
   display: none !important;
  }
@@ -429,6 +425,10 @@ margin-bottom: 0px !important;
  .ant-radio-checked .ant-radio-inner {
   border-color: #404040 !important ;
   background-color: #fff !important;
+}
+.ant-switch-small {
+  min-width: 33px;
+  margin-right: 5px;
 }
 .ant-switch {
   background: #4d4d4d;
@@ -459,7 +459,7 @@ margin-bottom: 0px !important;
   width: 10px;
   height: 10px;
 }
-
+.nav-pills .nav-link.active { background:  #492e53 !important; border-radius: 0; }
 
 /* Checkbox */
 
@@ -511,5 +511,4 @@ line-height: 16px;
   .full_readmore {
     max-height: none;
   }
-  
 }
