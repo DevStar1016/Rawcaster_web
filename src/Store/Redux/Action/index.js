@@ -76,7 +76,7 @@ export const fetchNuggetsbyId = createAsyncThunk(
     };
     try {
       const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
-
+      console.log(data.status === 1);
       if (data.status === 1) {
         if (data.current_page_no === 1) {
           let resultData = {
@@ -88,6 +88,7 @@ export const fetchNuggetsbyId = createAsyncThunk(
           return resultData;
           // return data.nugget_list;
         } else {
+          console.log("test");
           let resultData = {
             current_page_no: data.current_page_no,
             data: [...Nuggets, ...data.nuggets_list].reduce((acc, current) => {

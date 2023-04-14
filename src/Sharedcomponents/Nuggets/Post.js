@@ -56,7 +56,6 @@ import {
 
 const Post = ({
   ele,
-
   handleLike,
   HandleShare,
   handleSave,
@@ -67,7 +66,6 @@ const Post = ({
   onEdit,
 }) => {
   const { GetNuggetList } = useListNuggetContext();
-
   const lodash = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
@@ -89,9 +87,8 @@ const Post = ({
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
 
   const [ref] = useInView({
-    threshold: 0,
     onEnter: () => {
-      if (Token) {
+      if (Token && ele.viewed === 0) {
         viewHandler();
       }
     },
@@ -127,7 +124,7 @@ const Post = ({
       };
       addNuggetViewService(JSONtoformdata(viewNugget))
         .then((res) => {
-          handleView();
+          handleView(index);
         })
         .catch((err) => {});
     }

@@ -33,7 +33,7 @@ const Eventslisting = ({
   });
   const [isFetching, setisFetching] = useState(true);
 
-  const getEvents = (event_type = 3) => {
+  const getEvents = (event_type = 0) => {
     let eventData = {
       token: token,
       event_type: event_type,
@@ -130,7 +130,7 @@ const Eventslisting = ({
             <Skeleton loading={true} active avatar />
           </div>
         ) : (
-          <>
+          <div className={classes.EventListSec}>
             {EventListData?.map((ele) => (
               <div
                 style={{
@@ -158,7 +158,7 @@ const Eventslisting = ({
             {(EventListData?.length === 0 || isEmptyEvents) && (
               <div className="text-center">No event found</div>
             )}
-          </>
+          </div>
         )}
 
         <AddEvent

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import {
   DecryptionString,
@@ -22,17 +22,18 @@ var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 const Nuggets = () => {
+  const NuggetsList = useRef([]);
   const dispatch = useDispatch();
   const params = useParams();
+  const [ViewedList, setViewedList] = useState([]);
   const {
     Nuggets,
     isNuggetsLoading,
-    totalpages,
     currentpage,
     nuggetFormData,
-    isNextPageLoading,
+    totalNuggets,
   } = useNuggets();
-  const isLoading = currentpage === 1 ? isNuggetsLoading : isNextPageLoading;
+
   const userData = getRawcaserToken();
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
@@ -67,7 +68,7 @@ const Nuggets = () => {
   };
 
   const onEndReached = () => {
-    if (totalpages !== currentpage && !isLoading) {
+    if (parseInt(totalNuggets) !== Nuggets.length) {
       GetNuggetList(currentpage + 1);
     }
   };
@@ -79,25 +80,14 @@ const Nuggets = () => {
     setisEdit,
     isEdit,
     GetNuggetList,
+    ViewedList,
+    setViewedList,
     getProgress() {
       return Progress;
     },
-
     handleProgress(val) {
       return handleProgress(val);
     },
-  };
-
-  const getValidNuggets = () => {
-    const filteredArr = Nuggets.reduce((acc, current) => {
-      const x = acc.find((item) => item.nugget_id === current.nugget_id);
-      if (!x) {
-        return acc.concat([current]);
-      } else {
-        return acc;
-      }
-    }, []);
-    return filteredArr;
   };
 
   const isValidPage = () => {
@@ -107,7 +97,6 @@ const Nuggets = () => {
       } else if (!display_user_id) {
         return true;
       }
-
       return false;
     }
     return false;
@@ -125,14 +114,14 @@ const Nuggets = () => {
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <InfiniteScroll
-        dataLength={getValidNuggets().length} //This is important field to render the next data
+        dataLength={Nuggets.length} //This is important field to render the next data
         next={onEndReached}
         loader={
           <div className="mt-3">
             <Skeleton loading={true} active avatar />
           </div>
         }
-        hasMore={totalpages !== currentpage && !isLoading}
+        hasMore={Nuggets && parseInt(totalNuggets) !== Nuggets?.length}
         className={params?.key ? classes.resultnuggetSec : classes.nuggetSec}
       >
         <>
@@ -149,7 +138,7 @@ const Nuggets = () => {
           </div>
         ) : (
           <>
-            {getValidNuggets()?.length === 0 ? (
+            {Nuggets?.length === 0 ? (
               <div className="mt-3">
                 <span
                   style={{ fontSize: 20, fontWeight: "bold" }}
@@ -160,29 +149,24 @@ const Nuggets = () => {
               </div>
             ) : (
               <>
-                {getValidNuggets()?.map((ele, index) => {
+                {Nuggets?.map((ele, index) => {
                   return (
                     <Post
                       ele={ele}
                       index={index}
                       muted={muted}
                       setmuted={setmuted}
-                      handleView={() => {
-                        let findIndex = Nuggets.findIndex(
-                          (elem) => elem.nugget_id === ele.nugget_id
-                        );
-                        let tempData = [...Nuggets];
-                        if (tempData[findIndex].viewed !== 1) {
-                          tempData[findIndex] = {
-                            ...tempData[findIndex],
-                            total_views: tempData[findIndex].total_views + 1,
+                      handleView={(index) => {
+                        let tempData = [...NuggetsList.current];
+                        if (tempData[index].viewed !== 1) {
+                          tempData[index] = {
+                            ...tempData[index],
+                            total_views: tempData[index].total_views + 1,
+                            viewed: 1,
                           };
+                          NuggetsList.current = tempData;
+                          dispatch(handleNuggetList(tempData));
                         }
-                        tempData[findIndex] = {
-                          ...tempData[findIndex],
-                          viewed: 1,
-                        };
-                        dispatch(handleNuggetList(tempData));
                       }}
                       handleLike={(like) => {
                         let findIndex = Nuggets.findIndex(
@@ -208,7 +192,6 @@ const Nuggets = () => {
                           ...tempData[findIndex],
                           saved: save === 1 ? true : false,
                         };
-
                         dispatch(handleNuggetList(tempData));
                       }}
                       onEdit={(id) => {
@@ -225,7 +208,6 @@ const Nuggets = () => {
           </>
         )}
       </InfiniteScroll>
-      {/* </InfiniteScroll> */}
     </ListNuggetContext.Provider>
   );
 };

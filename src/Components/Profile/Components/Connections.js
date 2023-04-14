@@ -10,21 +10,22 @@ import EmptyImg from "../../../Assets/Images/svg/empty_connections.svg";
 import ConnectionModal from "../../../Modal/Connections/Connection";
 import { getConnectionData, getfollowerfollowingService } from "./Utility";
 import { toast } from "react-hot-toast";
-import {
-  useAuthToken,
-  useDashboard,
-  useNuggets,
-} from "../../../Shared/Reduxfetcher";
+import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
 import msgIcon from "../../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
 import { useDispatch } from "react-redux";
+import InfluencerSend from "../../../Modal/InfluencerSend";
 
 const ConnectionsList = ({ title = "", type = "" }) => {
   const { isLoginUser, FansList } = useProfileContext();
   const params = useParams();
   const dispatch = useDispatch();
   const display_user_id = DecryptionString(params.user_id);
+  const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
+    user: "",
+    show: false,
+  });
   const loginToken = useAuthToken();
   const { nuggetFormData } = useNuggets();
   const [ConnectionsList, setConnectionsList] = useState({
@@ -105,18 +106,7 @@ const ConnectionsList = ({ title = "", type = "" }) => {
             <div className={classes.listSec}>
               {ConnectionsList.connections.map((ele) => {
                 return (
-                  <div
-                    className={classes.list}
-                    onClick={() => {
-                      let finalData = {
-                        dispatch,
-                        navigate,
-                        nuggetFormData,
-                        user_id: ele.user_id,
-                      };
-                      handleProfileNavigate(finalData);
-                    }}
-                  >
+                  <div className={classes.list}>
                     <Skeleton.Node
                       active={false}
                       style={{
@@ -125,9 +115,45 @@ const ConnectionsList = ({ title = "", type = "" }) => {
                         borderRadius: 50,
                       }}
                     >
-                      <img src={ele.profile_img} />
+                      <div className={classes.iconSec}>
+                        {type === "influencers" && isLoginUser ? (
+                          <i
+                            className={classes.messageIcon}
+                            onClick={() => {
+                              setisInfluencerChatModalOpen({
+                                user: ele,
+                                show: true,
+                              });
+                            }}
+                          />
+                        ) : null}
+                      </div>
+                      <img
+                        src={ele.profile_img}
+                        onClick={() => {
+                          let finalData = {
+                            dispatch,
+                            navigate,
+                            nuggetFormData,
+                            user_id: ele.user_id,
+                          };
+                          handleProfileNavigate(finalData);
+                        }}
+                      />
                     </Skeleton.Node>
-                    <p>{ele?.display_name}</p>
+                    <p
+                      onClick={() => {
+                        let finalData = {
+                          dispatch,
+                          navigate,
+                          nuggetFormData,
+                          user_id: ele.user_id,
+                        };
+                        handleProfileNavigate(finalData);
+                      }}
+                    >
+                      {ele?.display_name}
+                    </p>
                   </div>
                 );
               })}
@@ -162,11 +188,19 @@ const ConnectionsList = ({ title = "", type = "" }) => {
         type={title}
         open={isSeeMore}
         value={ConnectionsList}
+        setisInfluencerChatModalOpen={setisInfluencerChatModalOpen}
         onSuccess={() => {
           setisSeeMore(false);
         }}
         onClose={() => {
           setisSeeMore(false);
+        }}
+      />
+      <InfluencerSend
+        open={isInfluencerChatModalOpen.show}
+        user={isInfluencerChatModalOpen.user}
+        close={() => {
+          setisInfluencerChatModalOpen({ user: "", show: false });
         }}
       />
     </div>

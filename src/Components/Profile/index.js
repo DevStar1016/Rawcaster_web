@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./Profile.module.css";
-import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  useAuth,
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../Shared/Reduxfetcher";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
@@ -34,12 +39,19 @@ import BioContainer from "./Components/BioContainer";
 import Eventslisting from "../Events/Eventslisting";
 import ConnectionsList from "./Components/Connections";
 import { ConnectionsType } from "./Components/Constants";
+import OthersEventListing from "../Events/OthersEventListing";
+import {
+  handleNuggetFormData,
+  handleResetNuggets,
+} from "../../Store/Redux/Reducer/NuggetsReducer";
+import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 
 const Profile = () => {
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
   const navigate = useNavigate();
   const { isSuccess } = useAuth();
+  const { nuggetFormData } = useNuggets();
   const loginToken = useAuthToken();
   const dispatch = useDispatch();
   const coverRef = useRef();
@@ -116,8 +128,23 @@ const Profile = () => {
       });
   };
 
+  const getprofile = () => {
+    let filterData = { ...nuggetFormData };
+    if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
+      filterData.formData = {
+        user_id: display_user_id,
+        page_number: 1,
+        nugget_type: 0,
+      };
+      dispatch(handleResetNuggets());
+      dispatch(handleNuggetFormData(filterData));
+      dispatch(fetchNuggetsbyId(filterData));
+    }
+  };
+
   useEffect(() => {
     if (loginUserData) {
+      getprofile();
       if (getisLoginUser()) {
         if (loginUserData) {
           setprofileData(loginUserData);
@@ -256,25 +283,47 @@ const Profile = () => {
           />
 
           <div className={classes.fullcontainer}>
-            <div className={classes.profileevent}>
+            <div
+              className={
+                // getisLoginUser() ?
+                classes.profileevent
+                // : classes.othersprofileEvent
+              }
+            >
               <BioContainer isLoginuser={getisLoginUser()} />
 
-              {isSuccess ? (
-                <div className={classes.intro}>
-                  <div className={classes.headingSec}>
-                    <h2>Intro</h2>
-                    <div
-                      className={classes.editSec}
-                      style={{ display: getisLoginUser() ? "block" : "none" }}
-                      onClick={() => {
-                        window.scrollTo(0, 0);
-                        navigate("/profile");
-                      }}
-                    >
-                      <i className={classes.editIcon}></i>
-                    </div>
-                  </div>
-                  {/* <div className={classes.item}>
+              {!getisLoginUser() && isSuccess && (
+                <div className={classes.rightProfiles}>
+                  {ConnectionsType.map((ele) => {
+                    return ele.id === 3 && getisLoginUser() ? (
+                      <Connections />
+                    ) : (
+                      <ConnectionsList {...ele} />
+                    );
+                  })}
+                </div>
+              )}
+              {!getisLoginUser() && <OthersEventListing />}
+              {getisLoginUser() && (
+                <>
+                  {isSuccess ? (
+                    <div className={classes.intro}>
+                      <div className={classes.headingSec}>
+                        <h2>Intro</h2>
+                        <div
+                          className={classes.editSec}
+                          style={{
+                            display: getisLoginUser() ? "block" : "none",
+                          }}
+                          onClick={() => {
+                            window.scrollTo(0, 0);
+                            navigate("/profile");
+                          }}
+                        >
+                          <i className={classes.editIcon}></i>
+                        </div>
+                      </div>
+                      {/* <div className={classes.item}>
                 <p>
                   <img src={profile_work} />
                 </p>{" "}
@@ -286,59 +335,65 @@ const Profile = () => {
                 </p>{" "}
                 Studied at ABCD
               </div> */}
-                  {profileData?.geo_location && (
-                    <div className={classes.item}>
-                      <p>
-                        <img src={profile_location} />
-                      </p>
-                      {profileData?.geo_location}
-                    </div>
-                  )}
-                  {profileData?.dob && profileData?.dob !== "" && (
-                    <div className={classes.item}>
-                      <p>
-                        <img src={profile_bdy} />
-                      </p>
-                      Date of Birth
-                      {moment(profileData?.dob, "YYYY-MM-DD").format(
-                        " DD/MM/YYYY"
+                      {profileData?.geo_location && (
+                        <div className={classes.item}>
+                          <p>
+                            <img src={profile_location} />
+                          </p>
+                          {profileData?.geo_location}
+                        </div>
                       )}
+                      {profileData?.dob && profileData?.dob !== "" && (
+                        <div className={classes.item}>
+                          <p>
+                            <img src={profile_bdy} />
+                          </p>
+                          Date of Birth
+                          {moment(profileData?.dob, "YYYY-MM-DD").format(
+                            " DD/MM/YYYY"
+                          )}
+                        </div>
+                      )}
+                      <div className={classes.item}>
+                        <p>
+                          <img src={profile_join} />
+                        </p>
+                        Joined RAWCASTER on
+                        {moment(profileData?.date_of_join).format(
+                          " DD-MM-YYYY"
+                        )}
+                      </div>
                     </div>
+                  ) : (
+                    <Skeleton active />
                   )}
-                  <div className={classes.item}>
-                    <p>
-                      <img src={profile_join} />
-                    </p>
-                    Joined RAWCASTER on
-                    {moment(profileData?.date_of_join).format(" DD-MM-YYYY")}
-                  </div>
-                </div>
-              ) : (
-                <Skeleton active />
-              )}
-              {isSuccess && (
-                <Eventslisting
-                  isCreateEnabled={getisLoginUser()}
-                  isSearchEnabled={true}
-                  isUser={true}
-                  userData={profileData}
-                />
+                  {isSuccess && (
+                    <Eventslisting
+                      isCreateEnabled={getisLoginUser()}
+                      isSearchEnabled={true}
+                      isUser={true}
+                      userData={profileData}
+                    />
+                  )}
+                </>
               )}
             </div>
 
-            <Nuggets />
+            <Nuggets isLoginuser={getisLoginUser()} />
 
-            {isSuccess && (
-              <div className={classes.rightProfiles}>
-                {ConnectionsType.map((ele) => {
-                  return ele.id === 3 && getisLoginUser() ? (
-                    <Connections />
-                  ) : (
-                    <ConnectionsList {...ele} />
-                  );
-                })}
-              </div>
-            )}
+            <>
+              {getisLoginUser() && isSuccess && (
+                <div className={classes.rightProfiles}>
+                  {ConnectionsType.map((ele) => {
+                    return ele.id === 3 ? (
+                      <Connections />
+                    ) : (
+                      <ConnectionsList {...ele} />
+                    );
+                  })}
+                </div>
+              )}
+            </>
           </div>
         </div>
         {profileImg.src !== "" && (

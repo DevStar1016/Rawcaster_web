@@ -5,7 +5,7 @@ import {
   deleteNuggetCommentService,
   editNuggetCommentService,
 } from "../../Services/ApiService";
-import { isValidData, JSONtoformdata } from "../../Shared/Utility";
+import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
@@ -183,7 +183,9 @@ const ReplyList = ({
                             <div className={classes.inputSec}>
                               <Input.TextArea
                                 placeholder="Write your Comment here..."
-                                value={getCommentValue(elem.comment_id).comment}
+                                value={decodeHtml(
+                                  getCommentValue(elem.comment_id).comment
+                                )}
                                 onChange={(e) => {
                                   let editData = {
                                     ...getCommentValue(elem.comment_id),
@@ -318,7 +320,7 @@ const ReplyList = ({
                             <div className="d-flex flex-row">
                               <div className={classes.cmtText}>
                                 <p>{elem?.name}</p>
-                                <span>{elem?.comment}</span>
+                                <span>{decodeHtml(elem?.comment)}</span>
                               </div>
                               {elem.user_id === loginUserData.user_id && (
                                 <Dropdown
@@ -444,6 +446,7 @@ const ReplyList = ({
                         let tempData = [...ReplyTxt];
                         tempData[index] = "";
                         setReplyTxt(tempData);
+                        setShowEmojis(false);
                       } else {
                         toast.error("Please Enter Valid Comment");
                       }
@@ -455,6 +458,7 @@ const ReplyList = ({
             <span
               class={`material-symbols-outlined ${classes.replyClose}`}
               onClick={() => {
+                setShowEmojis(false);
                 setisReplyEnabled("");
               }}
             >
@@ -491,7 +495,14 @@ const ReplyList = ({
               ]}
               onEmojiSelect={(e) => {
                 // console.log(e);
-                console.log(e.native);
+                let tempData = [...ReplyTxt];
+                if (tempData[index]) {
+                  tempData[index] = tempData[index].concat(e.native);
+                } else {
+                  tempData[index] = e.native;
+                }
+
+                setReplyTxt(tempData);
               }}
             />
           </div>

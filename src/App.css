@@ -45,11 +45,15 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
   margin-top: 8px !important;
 }
 .ant-select-selection-placeholder{ margin-top: 0px !important; }
+.settingsSelect .ant-select-selection-item {
+  margin-top: 1px !important;
+}
 .ErrTxt {
   font-size: 12px;
     color: red;
     margin-bottom: 0px !important;
 }
+
 .innerContent { padding-top: 60px; }
 .ant-form-item { margin-bottom: 20px !important;}
 .mainWrapper { max-width: 1350px; width: 95%; margin: auto; }

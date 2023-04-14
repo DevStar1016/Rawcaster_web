@@ -14,7 +14,13 @@ const Event = () => {
   const token = useAuthToken();
   const [melodyData, setmelodyData] = useState(null);
   const [audioPlay, setaudioPlay] = useState(false);
-  const { formikvalues, setupdateValue, updateValue } = useSettingsContext();
+  const {
+    formikvalues,
+    setupdateValue,
+    updateValue,
+    isMelodyUploading,
+    setisMelodyUploading,
+  } = useSettingsContext();
 
   const handlePrimaryDisabled = (type, isprimary) => {
     if (loginUserData?.user_status_id === 1 && isprimary) {
@@ -44,6 +50,7 @@ const Event = () => {
       imageFile.type.match("audio") ||
       imageFile.type.match("video")
     ) {
+      setisMelodyUploading(true);
       setupdateValue("default_melody", imageFile);
     } else {
       toast.error("Upload only image,video or audio");
@@ -230,7 +237,11 @@ const Event = () => {
                       </video>
                     </React.Fragment>
                   ) : null}
-
+                  {isMelodyUploading && (
+                    <div className="m-2">
+                      <Spin />
+                    </div>
+                  )}
                   {formikvalues.default_melody?.type === 1 ? (
                     <img
                       src={formikvalues.default_melody.path}

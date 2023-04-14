@@ -1,15 +1,23 @@
 import React, { useEffect, useRef } from "react";
-import data from "@emoji-mart/data";
 import { Picker } from "emoji-mart";
 
 const EmojiPicker = (props) => {
-  const ref = useRef();
+  const ref = useRef(null);
+  const instance = useRef(null);
+
+  if (instance.current) {
+    instance.current.update(props);
+  }
 
   useEffect(() => {
-    new Picker({ ...props, data, ref });
-  }, [props]);
+    instance.current = new Picker({ ...props, ref });
 
-  return <div ref={ref} style={{ height: 350, overflowY: "scroll" }} />;
+    return () => {
+      instance.current = null;
+    };
+  }, []);
+
+  return React.createElement("div", { ref });
 };
 
 export default EmojiPicker;

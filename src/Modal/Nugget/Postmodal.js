@@ -344,12 +344,18 @@ const Postmodal = ({ visible, onClose }) => {
               />
             </div>
             {showEmojis && (
-              <div style={{ display: "flex", justifyContent: "end" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "end",
+                }}
+              >
                 <EmojiPicker
                   emojiButtonColors={["#364157"]}
                   emojiButtonRadius="8px"
                   skinTonePosition="none"
                   previewPosition="none"
+                  perLine={detectMob() ? 8 : 9}
                   // onClickOutside={() => {
                   //   setShowEmojis(!showEmojis);
                   // }}
@@ -364,8 +370,6 @@ const Postmodal = ({ visible, onClose }) => {
                     "flags",
                   ]}
                   onEmojiSelect={(event, emojiObject) => {
-                    console.log(event);
-
                     setFieldValue(
                       "content",
                       values.content.concat(event.native)

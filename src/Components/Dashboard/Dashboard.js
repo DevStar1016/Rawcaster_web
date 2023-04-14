@@ -73,7 +73,7 @@ const Dashboard = () => {
       <div className="d-block d-sm-none">
         <div className={classes.fullcontainer}>
           {dashboardMenu === "event" && <Events />}
-          {dashboardMenu === "nugget" && <Nuggets />}
+          {/* {dashboardMenu === "nugget" && <Nuggets />} */}
           {dashboardMenu === "usermenu" && <DashboardSignup />}
         </div>
       </div>

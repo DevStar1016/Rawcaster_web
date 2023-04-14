@@ -75,7 +75,7 @@ const General = () => {
             <p className={classes.smallheading}>Default Rawcaster page</p>
             <Select
               showSearch
-              className="my-2"
+              className={`my-2 ${classes.SelectSec} settingsSelect`}
               value={getValidDisplayData(
                 DefaultRawcasterPage,
                 formikvalues.mobile_default_page
@@ -273,6 +273,7 @@ const General = () => {
             <Select
               showSearch
               style={{ width: 200 }}
+              className={`my-2 ${classes.SelectSec} settingsSelect`}
               placeholder="Search Preference Language"
               optionFilterProp="children"
               value={getValidDisplayData(
@@ -280,7 +281,6 @@ const General = () => {
                 formikvalues.language_id,
                 "id"
               )}
-              className="my-2"
               filterOption={(input, option) =>
                 (option?.label ?? "").includes(input)
               }
@@ -301,9 +301,9 @@ const General = () => {
             <Select
               showSearch
               style={{ width: 200 }}
+              className={`my-2 ${classes.SelectSec} settingsSelect`}
               placeholder="Search Timezone"
               optionFilterProp="children"
-              className="my-2"
               value={formikvalues.time_zone}
               filterOption={(input, option) =>
                 (option?.label ?? "").includes(input)
@@ -327,7 +327,7 @@ const General = () => {
               showSearch
               style={{ width: 200 }}
               placeholder="Search to Select"
-              className="my-2"
+              className={`my-2 ${classes.SelectSec} settingsSelect`}
               optionFilterProp="children"
               value={formikvalues.date_format}
               filterOption={(input, option) =>

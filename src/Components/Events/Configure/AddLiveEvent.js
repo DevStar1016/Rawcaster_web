@@ -75,6 +75,8 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
             if (parseInt(event_type) === 2) {
               if (!event_invite_mails) {
                 return value;
+              } else if (JSON.parse(event_invite_mails).length === 0) {
+                return value;
               }
             }
 
@@ -87,6 +89,8 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           const { event_type, event_invite_friends } = this.parent;
           if (parseInt(event_type) === 2) {
             if (!event_invite_friends) {
+              return value;
+            } else if (JSON.parse(event_invite_friends).length === 0) {
               return value;
             }
           }
@@ -378,7 +382,6 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 <Connections
                   values={values.event_invite_friends}
                   onResult={(val) => {
-                    console.log("Val");
                     let finRes = val.map((ele) => ele.user_id);
                     if (finRes.length !== 0) {
                       setFieldValue(
@@ -386,7 +389,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                         JSON.stringify(finRes)
                       );
                     } else {
-                      setFieldValue("event_invite_friends", "");
+                      setFieldValue("event_invite_friends", "[]");
                     }
                   }}
                 />
