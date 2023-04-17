@@ -4,25 +4,16 @@ import {
   getUserSettingsService,
 } from "../../Services/ApiService";
 import ConnectSocket from "../../Services/SocketService";
+import { decodeHtml, getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import {
-  decodeHtml,
-  DecryptionString,
-  getAuthToken,
-  JSONtoformdata,
-} from "../../Shared/Utility";
-import {
+  handleAccountActive,
   handleLoginData,
   handleToken,
   handleisSuccess,
   handleuserSettings,
 } from "../../Store/Redux/Reducer/AuthReducer";
 import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
-import {
-  fetchFrindsbyId,
-  fetchNuggetsbyId,
-  fetchgroupsbyId,
-} from "../../Store/Redux/Action";
-import { handleNuggetFormData } from "../../Store/Redux/Reducer/NuggetsReducer";
+import { fetchFrindsbyId, fetchgroupsbyId } from "../../Store/Redux/Action";
 
 export const getProfile = (token, dispatch) => {
   let promise = new Promise((resolve, reject) => {
@@ -44,34 +35,7 @@ export const getProfile = (token, dispatch) => {
           dispatch(
             fetchgroupsbyId({ token: token, user_id: profileData.user_id })
           );
-          let finalData = {
-            token: token,
-            formData: { page_number: 1, nugget_type: 0 },
-          };
-          if (window.location.pathname.includes("globalsearch")) {
-            let splitData = window.location.pathname.split("/");
-            finalData = {
-              ...finalData,
-              formData: {
-                ...finalData.formData,
-                search_key: splitData[2],
-              },
-            };
-          } else if (window.location.pathname.includes("viewprofile")) {
-            let splitData = window.location.pathname.split("/");
-            finalData = {
-              ...finalData,
-              formData: {
-                ...finalData.formData,
-                user_id:
-                  splitData[2] && splitData[2] !== ""
-                    ? DecryptionString(splitData[2])
-                    : null,
-              },
-            };
-          }
-          dispatch(handleNuggetFormData(finalData));
-          dispatch(fetchNuggetsbyId(finalData));
+
           dispatch(handleLoginData({ token: token, ...profileData }));
 
           dispatch(handleToken(token));
@@ -98,21 +62,30 @@ export const getProfile = (token, dispatch) => {
 };
 
 export const getUserSettings = (token, dispatch) => {
-  let profileData = {
-    token: token,
-    auth_code: getAuthToken(token),
-  };
-  getUserSettingsService(JSONtoformdata(profileData))
-    .then((res) => {
-      if (res.data.status === 1) {
-        dispatch(handleuserSettings(res.data.settings));
-      } else {
-        toast.error(res.data.msg);
-      }
-    })
-    .catch((err) => {
-      toast.error(err.message);
-    });
+  let promise = new Promise((resolve, reject) => {
+    let profileData = {
+      token: token,
+      auth_code: getAuthToken(token),
+    };
+    getUserSettingsService(JSONtoformdata(profileData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          if (window.location.pathname !== "/setting") {
+            if (res.data.settings.account_active_inactive === 0) {
+              dispatch(handleAccountActive(true));
+            }
+          }
+          dispatch(handleuserSettings(res.data.settings));
+          resolve(res.data.settings);
+        } else {
+          toast.error(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  });
+  return promise;
 };
 
 export const handleVerifyModal = (res, dispatch) => {

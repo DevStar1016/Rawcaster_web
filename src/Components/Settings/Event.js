@@ -180,6 +180,7 @@ const Event = () => {
               </p>
               <Button
                 className={classes.uplBtn}
+                disabled={isMelodyUploading}
                 onClick={() => {
                   document.getElementById("UploaddefaultMelody").click();
                 }}
@@ -189,7 +190,7 @@ const Event = () => {
 
               {formikvalues.default_melody &&
               formikvalues.default_melody !== "" ? (
-                <div style={{ position: "relative" }}>
+                <div style={{ position: "relative" }} className="mt-3">
                   {formikvalues.default_melody.type === 3 ? (
                     <React.Fragment>
                       <img
@@ -238,8 +239,8 @@ const Event = () => {
                     </React.Fragment>
                   ) : null}
                   {isMelodyUploading && (
-                    <div className="m-2">
-                      <Spin />
+                    <div className="m-2 d-flex flex-row">
+                      <Spin /> <div className="mx-3">Uploading</div>
                     </div>
                   )}
                   {formikvalues.default_melody?.type === 1 ? (
@@ -270,7 +271,7 @@ const Event = () => {
                   onChangeMelody(event.target.files[0]);
                 }}
               ></input>
-              <Select
+              {/* <Select
                 value={formikvalues.melody}
                 onChange={(val) => {
                   setupdateValue("melody", val);
@@ -284,7 +285,7 @@ const Event = () => {
                     </Select.Option>
                   );
                 })}
-              </Select>
+              </Select> */}
             </div>
           ) : null}
 

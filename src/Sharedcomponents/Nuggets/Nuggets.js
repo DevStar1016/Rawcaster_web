@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import {
   DecryptionString,
@@ -11,12 +11,15 @@ import { ListNuggetContext } from "../../Shared/Context";
 import PostProgress from "./PostProgress";
 import Post from "./Post";
 import { useParams } from "react-router";
-import { useNuggets } from "../../Shared/Reduxfetcher";
+import { useAuthToken, useNuggets } from "../../Shared/Reduxfetcher";
 import { Skeleton } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { handleNuggetList } from "../../Store/Redux/Reducer/NuggetsReducer";
+import {
+  handleNuggetFormData,
+  handleNuggetList,
+} from "../../Store/Redux/Reducer/NuggetsReducer";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -35,6 +38,7 @@ const Nuggets = () => {
   } = useNuggets();
 
   const userData = getRawcaserToken();
+  const token = useAuthToken();
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
@@ -57,7 +61,11 @@ const Nuggets = () => {
     });
   };
 
-  const GetNuggetList = (page = 1) => {
+  const GetNuggetList = (page = 1, formData = null) => {
+    if (formData) {
+      dispatch(fetchNuggetsbyId(formData));
+      return;
+    }
     let finalData = { ...nuggetFormData };
     finalData.formData = {
       ...finalData.formData,
@@ -66,6 +74,39 @@ const Nuggets = () => {
 
     dispatch(fetchNuggetsbyId(finalData));
   };
+
+  useEffect(() => {
+    if (Nuggets?.length === 0) {
+      let finalData = {
+        token: token ? token : "RAWCAST",
+        formData: { page_number: 1, nugget_type: 0 },
+      };
+      if (window.location.pathname.includes("globalsearch")) {
+        let splitData = window.location.pathname.split("/");
+        finalData = {
+          ...finalData,
+          formData: {
+            ...finalData.formData,
+            search_key: splitData[2],
+          },
+        };
+      } else if (window.location.pathname.includes("viewprofile")) {
+        let splitData = window.location.pathname.split("/");
+        finalData = {
+          ...finalData,
+          formData: {
+            ...finalData.formData,
+            user_id:
+              splitData[2] && splitData[2] !== ""
+                ? DecryptionString(splitData[2])
+                : null,
+          },
+        };
+      }
+      dispatch(handleNuggetFormData(finalData));
+      GetNuggetList(1, finalData);
+    }
+  }, [token]);
 
   const onEndReached = () => {
     if (parseInt(totalNuggets) !== Nuggets.length) {

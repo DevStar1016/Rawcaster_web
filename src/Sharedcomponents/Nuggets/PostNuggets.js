@@ -163,6 +163,7 @@ const PostNuggets = () => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
+          GetNuggetList();
           setNuggetData([]);
         } else {
           toast.error(res.data.msg);

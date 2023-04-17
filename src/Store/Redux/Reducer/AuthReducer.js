@@ -20,6 +20,7 @@ const initialState = {
   loginUserData: null,
   loginToken: getRawcaserToken(),
   userSettings: null,
+  isAccountActive: false,
 };
 
 export const { actions, reducer } = createSlice({
@@ -38,6 +39,9 @@ export const { actions, reducer } = createSlice({
     handleuserSettings: (state, action) => {
       state.userSettings = action.payload;
     },
+    handleAccountActive: (state, action) => {
+      state.isAccountActive = action.payload;
+    },
   },
 });
 
@@ -46,6 +50,7 @@ export const {
   handleToken,
   handleuserSettings,
   handleisSuccess,
+  handleAccountActive,
 } = actions;
 
 export default reducer;

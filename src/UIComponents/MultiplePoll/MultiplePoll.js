@@ -4,12 +4,13 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { pollVoteService } from "../../Services/ApiService";
 import { useListNuggetContext } from "../../Shared/Context";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   getAuthenticated,
   getRawcaserToken,
   isAccountValid,
   JSONtoformdata,
+  utctoUserTimezone,
 } from "../../Shared/Utility";
 import {
   handleloginModalShow,
@@ -30,6 +31,7 @@ const MultiplePoll = ({
     isVoted: false,
     votedOptionID: "",
   });
+  const { userSettings } = useAuth();
   const LoginUserData = useAuthData();
   const dispatch = useDispatch();
   const Token = useAuthToken();
@@ -152,34 +154,41 @@ const MultiplePoll = ({
 
   useEffect(() => {
     const [daysval, hoursval, minutesval] = VoteTiming.split(":");
-    if (
-      moment(created_date)
-        .add({ days: daysval, hours: hoursval, minutes: minutesval })
-        .isBefore()
-    ) {
-      animateAnswers(-1);
-      setpollVotedData({
-        isVoted: true,
-        votedOptionID: "",
-      });
-    } else if (isVoted) {
-      animateAnswers(-1);
-      setpollVotedData({
-        isVoted: true,
-        votedOptionID: "",
-      });
+    if (userSettings) {
+      const createdTime = utctoUserTimezone(
+        created_date,
+        userSettings.time_zone
+      );
+
+      if (
+        moment(createdTime)
+          .add({ days: daysval, hours: hoursval, minutes: minutesval })
+          .isBefore()
+      ) {
+        animateAnswers(-1);
+        setpollVotedData({
+          isVoted: true,
+          votedOptionID: "",
+        });
+      } else if (isVoted) {
+        animateAnswers(-1);
+        setpollVotedData({
+          isVoted: true,
+          votedOptionID: "",
+        });
+      } else {
+        setpollVotedData({
+          isVoted: false,
+          votedOptionID: "",
+        });
+      }
     } else if (!Token) {
       setpollVotedData({
         isVoted: true,
         votedOptionID: "",
       });
-    } else {
-      setpollVotedData({
-        isVoted: false,
-        votedOptionID: "",
-      });
     }
-  }, [results]);
+  }, [results, userSettings, isVoted]);
 
   function animateAnswers(index, id) {
     const getValidPercentage = (val) => {

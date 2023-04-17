@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import { SettingsContext } from "../../Shared/Context";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { updateUserSettingsService } from "../../Services/ApiService";
-import { JSONtoformdata } from "../../Shared/Utility";
+import { JSONtoformdata, RemoveToken } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { getUserSettings } from "../Auth/getProfile";
@@ -14,6 +14,7 @@ import Notifications from "./Notifications";
 import Changepassword from "./ChangePassword";
 import Blockuser from "./Blockuser";
 import Event from "./Event";
+import { handleAccountActive } from "../../Store/Redux/Reducer/AuthReducer";
 
 const Settings = () => {
   const { userSettings } = useAuth();
@@ -113,29 +114,34 @@ const Settings = () => {
   }, [userSettings]);
 
   const handleupdate = (objValue) => {
-    let finalObj = {
-      ...objValue,
-      token: token,
-    };
-    updateUserSettingsService(JSONtoformdata(finalObj))
-      .then((res) => {
-        if (res.data.status === 1) {
-          toast.success("Successfully Updated");
-        } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
-        } else {
-          return;
-        }
-        let keys = Object.keys(objValue);
-        setupdateValue((pre) => pre.filter((ele) => ele !== keys[0]));
-        getUserSettings(token, dispatch);
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      })
-      .finally(() => {
-        setisMelodyUploading(false);
-      });
+    let promise = new Promise((resolve, reject) => {
+      let finalObj = {
+        ...objValue,
+        token: token,
+      };
+      updateUserSettingsService(JSONtoformdata(finalObj))
+        .then((res) => {
+          if (res.data.status === 1) {
+            toast.success("Successfully Updated");
+          } else if (res.data.status === 0) {
+            toast.error(res.data.msg);
+          } else {
+            return;
+          }
+          let keys = Object.keys(objValue);
+          setupdateValue((pre) => pre.filter((ele) => ele !== keys[0]));
+          getUserSettings(token, dispatch).then((response) => {
+            resolve(response);
+          });
+        })
+        .catch((err) => {
+          toast.error(err.message);
+        })
+        .finally(() => {
+          setisMelodyUploading(false);
+        });
+    });
+    return promise;
   };
   const [visibleSideBar, setvisibleSideBar] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -161,7 +167,14 @@ const Settings = () => {
           let updateObj = {
             [key]: value,
           };
-          handleupdate(updateObj);
+          handleupdate(updateObj).then((response) => {
+            if (response.account_active_inactive === 0) {
+              console.log("res");
+              dispatch(handleAccountActive(false));
+              RemoveToken(dispatch);
+              window.location.reload();
+            }
+          });
           if (updateValue.length !== 0) {
             return setupdateValue((pre) => [...pre, key]);
           } else {
@@ -223,6 +236,7 @@ const Settings = () => {
                     setActiveTab(2);
                     setvisibleSideBar(false);
                   }}
+                  disabled={userSettings?.account_active_inactive === 0}
                   eventKey="notifications"
                 >
                   Notifications
@@ -231,6 +245,7 @@ const Settings = () => {
               <Nav.Item>
                 <Nav.Link
                   className={activeTab === 3 ? classes.active : ""}
+                  disabled={userSettings?.account_active_inactive === 0}
                   onClick={() => {
                     setActiveTab(3);
                     setvisibleSideBar(false);
@@ -243,6 +258,7 @@ const Settings = () => {
               <Nav.Item>
                 <Nav.Link
                   className={activeTab === 4 ? classes.active : ""}
+                  disabled={userSettings?.account_active_inactive === 0}
                   onClick={() => {
                     setActiveTab(4);
                     setvisibleSideBar(false);
@@ -255,6 +271,7 @@ const Settings = () => {
               <Nav.Item>
                 <Nav.Link
                   className={activeTab === 5 ? classes.active : ""}
+                  disabled={userSettings?.account_active_inactive === 0}
                   onClick={() => {
                     setActiveTab(5);
                     setvisibleSideBar(false);

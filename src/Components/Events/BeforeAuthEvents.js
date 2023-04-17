@@ -11,14 +11,6 @@ const BeforeAuthEvents = () => {
       {/* BEFORE LOGIN START */}
 
       <>
-        <div className={classes.beforelogin}>
-          <Link className={classes.active}>
-            <span class="material-icons">home</span> For You
-          </Link>
-          <Link aria-disabled>
-            <span class="material-icons">people</span> Following
-          </Link>
-        </div>
         {loginUserData === null && (
           <>
             <div className={classes.loginSec}>

@@ -5,6 +5,7 @@ import { getCookieData, removeCookieData } from "../Store/Storage";
 import {
   handleLoginData,
   handleToken,
+  handleuserSettings,
 } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
@@ -56,6 +57,7 @@ export const DecryptionString = (str) => {
 export const RemoveToken = (dispatch) => {
   dispatch(handleLoginData(null));
   dispatch(handleToken(null));
+  dispatch(handleuserSettings(null));
   removeCookieData("rawcaster_user_token");
 };
 

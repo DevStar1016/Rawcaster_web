@@ -19,7 +19,7 @@ const General = () => {
   const { formikvalues, setFieldValue, setupdateValue, updateValue } =
     useSettingsContext();
   const token = useAuthToken();
-  const { loginUserData } = useAuth();
+  const { loginUserData, userSettings } = useAuth();
   const { groupsList, friendsList } = useDashboard();
   const [TimeZones, setTimeZones] = useState([]);
   const [LanguagesList, setLanguagesList] = useState([]);
@@ -95,7 +95,10 @@ const General = () => {
               onChange={(val) => {
                 setupdateValue("mobile_default_page", parseInt(val));
               }}
-              disabled={updateValue.includes("mobile_default_page")}
+              disabled={
+                updateValue.includes("mobile_default_page") ||
+                userSettings?.account_active_inactive === 0
+              }
             />
           </div>
           {SettingsList.map((ele) => {
@@ -117,7 +120,10 @@ const General = () => {
                         setupdateValue(ele.keyword, e.target.value);
                       }
                     }}
-                    disabled={updateValue.includes(ele.keyword)}
+                    disabled={
+                      updateValue.includes(ele.keyword) ||
+                      userSettings?.account_active_inactive === 0
+                    }
                   >
                     {ele.radioValue.map((elem, index) => {
                       return (
@@ -293,7 +299,10 @@ const General = () => {
               onChange={(_, { id }) => {
                 setupdateValue("language_id", id);
               }}
-              disabled={updateValue.includes("language_id")}
+              disabled={
+                updateValue.includes("language_id") ||
+                userSettings?.account_active_inactive === 0
+              }
             />
           </div>
           <div>
@@ -317,7 +326,10 @@ const General = () => {
               onChange={(_, { value }) => {
                 setupdateValue("time_zone", value);
               }}
-              disabled={updateValue.includes("time_zone")}
+              disabled={
+                updateValue.includes("time_zone") ||
+                userSettings?.account_active_inactive === 0
+              }
             />
           </div>
 
@@ -342,7 +354,10 @@ const General = () => {
               onChange={(_, { label }) => {
                 setupdateValue("date_format", label);
               }}
-              disabled={updateValue.includes("date_format")}
+              disabled={
+                updateValue.includes("date_format") ||
+                userSettings?.account_active_inactive === 0
+              }
             />
           </div>
 

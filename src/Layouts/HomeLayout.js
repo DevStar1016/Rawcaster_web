@@ -82,9 +82,7 @@ const HomeLayout = () => {
         if (res.data.status === 1) {
           RemoveToken(dispatch);
           dispatch(handleLoading(false));
-          setTimeout(() => {
-            navigate("/");
-          }, 1000);
+          window.location.assign("/");
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }
@@ -107,12 +105,6 @@ const HomeLayout = () => {
     }
   }, [pathname]);
 
-  const Notification = (
-    <div>
-      <p>Content</p>
-      <p>Content</p>
-    </div>
-  );
   return (
     <>
       <Layout>
@@ -330,16 +322,8 @@ const HomeLayout = () => {
               dispatch(handledasboardTab("event"));
             }}
           />
-          <Popover
-            placement="bottom"
-            title={<span>Title</span>}
-            content={Notification}
-            arrow={false}
-            // open={NotificationOpen}
-            trigger="click"
-          >
-            <img src={btmbell} alt="notification_logo" />
-          </Popover>
+
+          <img src={btmbell} alt="notification_logo" />
 
           <img
             className={classes.btmhome}
