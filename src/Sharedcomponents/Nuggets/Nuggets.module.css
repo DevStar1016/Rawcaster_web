@@ -241,9 +241,9 @@ cursor: pointer;
 .proName {
   display: flex;
   flex-direction: row;
-  align-items:flex-end;
- 
+  align-items:flex-end; 
 }
+.othersnuggetSec { width: 65%;}
 @media (max-width:768px) {
   .nuggetSec { width: 100%; padding: 0 15px 100px 15px; height: auto; border: 0; }
   .proName p{font-size: 14px;}

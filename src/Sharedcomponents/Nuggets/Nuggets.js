@@ -142,6 +142,8 @@ const Nuggets = () => {
     }
     return false;
   };
+  
+  const isuserConnection = display_user_id&& parseInt(display_user_id) !== parseInt(userData?.user_id)
 
   const isDisplayPost = () => {
     if (isValidPage()) {
@@ -163,7 +165,7 @@ const Nuggets = () => {
           </div>
         }
         hasMore={Nuggets && parseInt(totalNuggets) !== Nuggets?.length}
-        className={params?.key ? classes.resultnuggetSec : classes.nuggetSec}
+        className={` ${params?.key ? classes.resultnuggetSec : classes.nuggetSec} ${isuserConnection ? classes.othersnuggetSec :""}`}
       >
         <>
           {isValidPage() && (
