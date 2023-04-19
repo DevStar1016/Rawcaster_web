@@ -2,9 +2,10 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    min-width: 300px;
+    min-width: 350px;
     padding-bottom: 8px;
     border-bottom: 1px solid #ECECEC;
+   
 }
 .headingSec h2 {
     font-family: 'DM Sans';
@@ -40,4 +41,56 @@
     color: #1D1C1C;
     opacity: 0.7;
     cursor: pointer;
+}
+.listSec {
+    max-height: 300px;
+    overflow: scroll;
+}
+.fansList {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+.fansList .leftsec {
+display: flex;
+flex-direction: row;
+width: 80%;
+}
+.fansList .leftsec img {
+    width: 53px;
+    height: 53px;
+}
+.fansList .leftsec p {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 25px;
+    color: #1D1C1C;
+    margin-bottom: 0px !important;
+    margin-left: 10px;
+}
+.fansList .leftsec span {
+    font-family: 'DM Sans';
+font-style: normal;
+font-weight: 400;
+font-size: 13px;
+line-height: 22px;
+
+color: #1D1C1C;
+
+opacity: 0.7;
+margin-left: 10px;
+}
+.fansList .rightsec {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    
+    color: #1D1C1C;
+    text-align:right;
+    opacity: 0.7;
 }

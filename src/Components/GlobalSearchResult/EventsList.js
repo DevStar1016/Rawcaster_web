@@ -112,10 +112,8 @@ const EventsList = () => {
   }, [pathname, isGlobalSearch]);
 
   const onEndReached = () => {
-    console.log("test");
     if (Pages.page !== Pages.totalpage) {
       setisLoading(true);
-
       getEventList(Pages.page + 1);
     }
   };
@@ -140,27 +138,26 @@ const EventsList = () => {
 
   return (
     <>
-      {getValidEvent()?.length === 0 ? (
-        <>
-          {isFetching ? (
-            <div className="mt-5 W-100">
-              <Skeleton active />
+      {isFetching ? (
+        <div className="mt-5 W-100">
+          <Skeleton active />
+        </div>
+      ) : (
+        <div className={` ${classes.profileSec} w-100`} ref={scrollRef}>
+          {getValidEvent()?.length === 0 ? (
+            <div className="mt-3" style={{ textAlign: "center" }}>
+              <span
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                }}
+                className="mt-3"
+              >
+                We didn't find any results
+              </span>
             </div>
           ) : (
-            <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
-              We didn't find any results
-            </span>
-          )}
-        </>
-      ) : null}
-      <div className={` ${classes.profileSec} w-100`} ref={scrollRef}>
-        {getValidEvent()?.length !== 0 && (
-          <>
-            {isFetching ? (
-              <div className="mt-5 W-100">
-                <Skeleton active />
-              </div>
-            ) : (
+            <>
               <Row>
                 {getValidEvent().map((ele) => (
                   <Col sm={6}>
@@ -168,15 +165,15 @@ const EventsList = () => {
                   </Col>
                 ))}
               </Row>
-            )}
-          </>
-        )}
-        {isLoading && (
-          <div className="text-center py-2">
-            <Spinner animation="border" role="status" />
-          </div>
-        )}
-      </div>
+              {isLoading && (
+                <div className="text-center py-2">
+                  <Spinner animation="border" role="status" />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </>
   );
 };

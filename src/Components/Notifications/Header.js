@@ -6,7 +6,7 @@ const Header = () => {
     <div className={classes.headingSec}>
       <div className={classes.leftSec}>
         <h2>Notifications</h2>
-        <p>20</p>
+        <p>18</p>
       </div>
       <div className={classes.markSec}>Mark as read</div>
     </div>

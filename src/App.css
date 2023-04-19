@@ -416,9 +416,7 @@ margin-bottom: 0px !important;
 }
 
  /* Toast UI image Editor */
- .tui-image-editor-container .tui-image-editor-help-menu.top ,.tui-image-editor-header ,.tui-image-editor-menu{
-  display: none !important;
- }
+
  /* .tui-image-editor-canvas-container {
   position: absolute !important;
  } */
@@ -426,6 +424,31 @@ margin-bottom: 0px !important;
   
  } */
 
+/* .tui-image-editor-disabled {
+  display: none !important;
+} */
+.tui-image-editor-newline label {
+  display: inline-block;
+  cursor: pointer;
+  padding-top: 5px;
+  font-family: "Noto Sans",sans-serif;
+  font-size: 11px !important;
+}
+.tui-image-editor-help-menu.top {
+  width: fit-content !important;
+}
+.tui-image-editor-header-logo,.tui-image-editor-header-buttons {
+  display: none !important;
+}
+.tui-image-editor-header, .tie-btn-delete, .tie-btn-deleteAll, .tui-image-editor-icpartition:has(li) {
+  display: none !important;
+}
+.imageEditorModal .ant-modal-content {
+  background-color: #1e1e1e !important;
+}
+.imageEditorModal .ant-btn-primary {
+  background-color: #F3738B !important;
+}
  .ant-radio-checked .ant-radio-inner {
   border-color: #404040 !important ;
   background-color: #fff !important;
@@ -502,6 +525,7 @@ line-height: 16px;
   opacity: 1 !important;
   
 }
+
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .ant-modal-close-x { width: 20px; height: 20px; border-radius: 50px; display: flex; align-items: center; line-height: 16px !important; }

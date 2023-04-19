@@ -24,6 +24,7 @@
  }
  .profileSec {
   padding: 0;
+  text-align: center;
  }
  .nuggetSec::-webkit-scrollbar {
    display: none !important;
