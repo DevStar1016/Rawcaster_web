@@ -28,6 +28,7 @@ import { sendMessage, socketListen } from "../../Services/SocketService";
 import ImageCropModal from "../ImageCropModal";
 import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
 import { parseInt } from "lodash";
+import ImageEditModal from "../ImageEditModal";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -47,6 +48,7 @@ const Postmodal = ({ visible, onClose }) => {
     setpreviewMedia,
     shareWithData,
     setdeletedMedia,
+    handleChange,
   } = useContext(PostNuggetContext);
   const { isEdit } = useListNuggetContext();
   const textinputRef = useRef(null);
@@ -281,7 +283,6 @@ const Postmodal = ({ visible, onClose }) => {
                 event.target.value = null;
               }}
               onChange={(e) => {
-                console.log(e.target.files);
                 if (e.target.files && e.target.files.length !== 0) {
                   setFileValues(e.target.files[0]);
                 }
@@ -356,9 +357,6 @@ const Postmodal = ({ visible, onClose }) => {
                   skinTonePosition="none"
                   previewPosition="none"
                   perLine={detectMob() ? 8 : 9}
-                  // onClickOutside={() => {
-                  //   setShowEmojis(!showEmojis);
-                  // }}
                   categories={[
                     "people",
                     "nature",
@@ -377,47 +375,8 @@ const Postmodal = ({ visible, onClose }) => {
                   }}
                 />
               </div>
-              // <div
-              //   id="picker"
-              //   className={classes.emojiPart}
-              //   style={{
-              //     position: "absolute",
-              //     top: "190px",
-              //     right: "50px",
-              //     zIndex: 11,
-              //   }}
-              // >
-              //   {/* <CustomPicker /> */}
-              //   {/* <EmojiPicker
-              //     searchDisabled
-              //     suggestedEmojisMode="frequent"
-              //     previewConfig={{
-              //       showPreview: false,
-              //     }}
-              //     onEmojiClick={(e) => {
-              //       setFieldValue("content", values.content.concat(e.emoji));
-              //     }}
-              //   /> */}
-              // </div>
             )}
-            {/* {showEmojis && (
-          <div>
-            <Picker
-              showPreview={false}
-              showSkinTones={false}
-              className={classes.emojiPart}
-              style={{
-                position: "absolute",
-                bottom: "100px",
-                right: "50px",
-                zIndex: 11,
-              }}
-              onSelect={(e) => {
-                setFieldValue("content", values.content.concat(e.native));
-              }}
-            />
-          </div>
-        )} */}
+
             {MetaData && NuggetData.length === 0 ? (
               <div className={classes.shareLinkSec}>
                 <div
@@ -584,7 +543,7 @@ const Postmodal = ({ visible, onClose }) => {
           });
         }}
       />
-      {NuggetImg && (
+      {/* {NuggetImg && (
         <ImageCropModal
           open={NuggetImg}
           validsize={5}
@@ -592,6 +551,22 @@ const Postmodal = ({ visible, onClose }) => {
           ratio={getAspectRatio(150, 150)}
           onSuccess={(val) => {
             setFileValues(val, NuggetImg.index);
+            setNuggetImg();
+          }}
+          onFailure={() => {
+            setNuggetImg();
+          }}
+        />
+      )} */}
+      {NuggetImg && (
+        <ImageEditModal
+          open={NuggetImg}
+          initialFile={NuggetImg.ele}
+          onSuccess={(url) => {
+            var file = new File([url.Blob], "edited_img.jpeg", {
+              type: url.Blob.type,
+            });
+            setFileValues(file, NuggetImg.index);
             setNuggetImg();
           }}
           onFailure={() => {

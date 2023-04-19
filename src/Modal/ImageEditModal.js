@@ -27,15 +27,10 @@ const ImageEditModal = ({ open, initialFile, onSuccess, onFailure }) => {
       setInitialValue("");
     };
   }
-  console.log(getBase64(initialFile));
 
   useEffect(() => {
     if (initialFile) {
       getBase64(initialFile);
-      // const instance = editorRef.current.getInstance();
-      // instance.loadImageFromFile(initialFile).then((result) => {
-      //   console.log(result);
-      // });
     }
   }, [initialFile]);
   return (

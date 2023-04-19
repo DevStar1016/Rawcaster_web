@@ -10,6 +10,7 @@ import Profile from "../Components/Profile";
 import Referel from "../Components/Referel";
 import Settings from "../Components/Settings";
 import HomeLayout from "../Layouts/HomeLayout";
+import ViewNugget from "../Sharedcomponents/Nuggets/ViewNugget";
 import { HomePrivateRoute } from "./PrivateRoute";
 
 export const DashboardRoute = [
@@ -40,6 +41,10 @@ export const DashboardRoute = [
           {
             path: "/referel",
             element: <Referel />,
+          },
+          {
+            path: "/view/:nugID",
+            element: <ViewNugget />,
           },
         ],
       },

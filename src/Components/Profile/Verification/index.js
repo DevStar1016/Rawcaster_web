@@ -14,7 +14,6 @@ const ProfileVerification = () => {
   const loginUserData = useAuthData();
 
   useEffect(() => {
-    console.log(eventKey);
     seteventKey(pathname);
   }, [pathname]);
 
