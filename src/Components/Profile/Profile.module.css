@@ -101,6 +101,7 @@
 .profileevent .intro .item { width: 100%; float: left; display: flex;  padding: 7px 0; align-items: center; }
 .profileevent .intro .item p { float: left; width: 35px; margin: 0; }
 .profileevent .intro .item p img { height: 20px; }
+.othersprofileEvent { width: 40% !important; }  
 
 @media (max-width:768px) {
 .profileContainer { padding-left: 10px; margin-top: -40px; }
@@ -111,3 +112,4 @@
 .actionIcon { margin-top: 55px; }
 .profileevent { width: 100%; padding: 10px 15px; }
 }
+ 

@@ -284,10 +284,8 @@ const Profile = () => {
 
           <div className={classes.fullcontainer}>
             <div
-              className={
-                // getisLoginUser() ?
-                classes.profileevent
-                // : classes.othersprofileEvent
+              className={`${classes.profileevent} ${getisLoginUser()?classes.othersprofileEvent:""}` 
+               
               }
             >
               <BioContainer isLoginuser={getisLoginUser()} />
