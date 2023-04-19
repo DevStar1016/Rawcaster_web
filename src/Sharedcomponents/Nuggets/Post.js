@@ -1,5 +1,5 @@
 import { Dropdown, Modal, Tooltip } from "antd";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-hook-inview";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -53,6 +53,7 @@ import {
   handleNuggetList,
   handlenuggetVideoPaused,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import _debounce from "lodash/debounce";
 
 const Post = ({
   ele,
@@ -64,8 +65,9 @@ const Post = ({
   muted,
   setmuted,
   onEdit,
+  isCommentShow = false,
 }) => {
-  const { GetNuggetList } = useListNuggetContext();
+  // const { GetNuggetList } = useListNuggetContext();
   const lodash = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
@@ -138,7 +140,7 @@ const Post = ({
     deleteNuggetService(JSONtoformdata(deleteData))
       .then((res) => {
         if (res.data.status === 1) {
-          GetNuggetList();
+          // GetNuggetList();
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
@@ -151,6 +153,15 @@ const Post = ({
         dispatch(handleLoading(false));
       });
   };
+
+  useEffect(() => {
+    if (isCommentShow) {
+      setisCommentLoading(true);
+      setCommentList([]);
+      setComments(ele.nugget_id);
+      getCommentList(ele.nugget_id);
+    }
+  }, [isCommentShow]);
 
   const getCommentList = (id) => {
     let promise = new Promise((resolve, reject) => {
@@ -298,19 +309,13 @@ const Post = ({
   };
 
   const LikeProcess = useCallback(
-    () =>
-      lodash.debounce(function (nugget_id, like) {
-        HandleLike(nugget_id, like);
-      }, 1000),
+    _debounce(HandleLike, 1000),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
   const SaveProcess = useCallback(
-    () =>
-      lodash.debounce(function (nugget_id, like) {
-        HandleSave(nugget_id, like);
-      }, 1000),
+    _debounce(HandleSave, 1000),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -664,7 +669,11 @@ const Post = ({
                       if (isAccountValid(loginUserData)) {
                         let like = ele.liked ? 2 : 1;
                         handleLike(like);
-                        LikeProcess(ele.nugget_id, like);
+                        try {
+                          LikeProcess(ele.nugget_id, like);
+                        } catch (error) {
+                          console.log(error);
+                        }
                       } else {
                         dispatch(
                           handleprofileVerifyModalShow({
@@ -692,27 +701,29 @@ const Post = ({
                 >
                   <p
                     onClick={() => {
-                      if (getAuthenticated()) {
-                        if (isAccountValid(loginUserData)) {
-                          if (Comments === ele.nugget_id) {
-                            setCommentList([]);
-                            setComments("");
+                      if (!isCommentShow) {
+                        if (getAuthenticated()) {
+                          if (isAccountValid(loginUserData)) {
+                            if (Comments === ele.nugget_id) {
+                              setCommentList([]);
+                              setComments("");
+                            } else {
+                              setisCommentLoading(true);
+                              setCommentList([]);
+                              setComments(ele.nugget_id);
+                              getCommentList(ele.nugget_id);
+                            }
                           } else {
-                            setisCommentLoading(true);
-                            setCommentList([]);
-                            setComments(ele.nugget_id);
-                            getCommentList(ele.nugget_id);
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
+                            );
                           }
                         } else {
-                          dispatch(
-                            handleprofileVerifyModalShow({
-                              show: true,
-                              msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                            })
-                          );
+                          dispatch(handleloginModalShow(true));
                         }
-                      } else {
-                        dispatch(handleloginModalShow(true));
                       }
                     }}
                   >

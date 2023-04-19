@@ -1,5 +1,8 @@
 import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
+import Fans from "./Fans";
+import Groups from "./Groups";
+import Connections from "./Connections";
 
 const ContentLayout = () => {
   return (
@@ -10,13 +13,13 @@ const ContentLayout = () => {
       className="mb-3 notficationContainer"
     >
       <Tab eventKey="home" title="Fans">
-        <div>1234</div>
+        <Fans />
       </Tab>
       <Tab eventKey="profile" title="Groups">
-        <div>1234</div>
+        <Groups />
       </Tab>
       <Tab eventKey="contact" title="Connections">
-        <div>1234</div>
+        <Connections />
       </Tab>
     </Tabs>
   );

@@ -25,10 +25,10 @@ var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 const Nuggets = () => {
-  const NuggetsList = useRef([]);
   const dispatch = useDispatch();
   const params = useParams();
   const [ViewedList, setViewedList] = useState([]);
+  const [NuggetsData, setNuggetsData] = useState([]);
   const {
     Nuggets,
     isNuggetsLoading,
@@ -109,7 +109,7 @@ const Nuggets = () => {
   }, [token]);
 
   const onEndReached = () => {
-    if (parseInt(totalNuggets) !== Nuggets.length) {
+    if (parseInt(totalNuggets) !== Nuggets?.length) {
       GetNuggetList(currentpage + 1);
     }
   };
@@ -154,10 +154,14 @@ const Nuggets = () => {
     return "No Posts Available";
   };
 
+  useEffect(() => {
+    setNuggetsData(Nuggets);
+  }, [Nuggets]);
+
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       <InfiniteScroll
-        dataLength={Nuggets.length} //This is important field to render the next data
+        dataLength={Nuggets?.length || 0} //This is important field to render the next data
         next={onEndReached}
         loader={
           <div className="mt-3">
@@ -192,7 +196,7 @@ const Nuggets = () => {
               </div>
             ) : (
               <>
-                {Nuggets?.map((ele, index) => {
+                {NuggetsData?.map((ele, index) => {
                   return (
                     <Post
                       ele={ele}
@@ -200,14 +204,14 @@ const Nuggets = () => {
                       muted={muted}
                       setmuted={setmuted}
                       handleView={(index) => {
-                        let tempData = [...NuggetsList.current];
+                        let tempData = [...NuggetsData];
                         if (tempData[index].viewed !== 1) {
                           tempData[index] = {
                             ...tempData[index],
                             total_views: tempData[index].total_views + 1,
                             viewed: 1,
                           };
-                          NuggetsList.current = tempData;
+                          setNuggetsData(tempData);
                           dispatch(handleNuggetList(tempData));
                         }
                       }}

@@ -43,6 +43,7 @@ import {
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import Header from "../Components/Notifications/Header";
 import ContentLayout from "../Components/Notifications/Content";
+import Notification from "../Components/Notifications";
 
 const HomeLayout = () => {
   const params = useParams();
@@ -206,20 +207,10 @@ const HomeLayout = () => {
                         navigate("/dashboard");
                       }}
                     />
-                    <Popover
-                      placement="bottom"
-                      title={Header}
-                      content={ContentLayout}
-                      showArrow={false}
-                      // open={NotificationOpen}
-                      trigger="click"
-                    >
-                      <img
-                        src={NotificationIcon}
-                        alt="Notification_logo"
-                        className={`${classes.onlydes} ${classes.menuIcon}`}
-                      />
-                    </Popover>
+                    <Notification
+                      src={NotificationIcon}
+                      className={`${classes.onlydes} ${classes.menuIcon}`}
+                    />
                   </div>
                 )}
                 <div
