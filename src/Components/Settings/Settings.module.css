@@ -174,7 +174,7 @@
     border-radius: 4px;
   }
   .blockBtn {
-    background: #103e7c;
+    background: #FAA21B;
     border-radius: 4px;
     color: #fff;
     border: none;
@@ -267,7 +267,7 @@
 }
 .blockuserSec div:first-child {
   background: #F1F2F5 !important;
-  height: 70px !important;
+  /* height: 70px !important; */
  
   overflow-y: scroll;
  
