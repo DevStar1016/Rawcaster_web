@@ -17,7 +17,12 @@ import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
 import { useDispatch } from "react-redux";
 import InfluencerSend from "../../../Modal/InfluencerSend";
 
-const ConnectionsList = ({ title = "", type = "" }) => {
+const ConnectionsList = ({
+  title = "",
+  type = "",
+  isLocked = false,
+  isMyProfile,
+}) => {
   const { isLoginUser, FansList } = useProfileContext();
   const params = useParams();
   const dispatch = useDispatch();
@@ -78,131 +83,173 @@ const ConnectionsList = ({ title = "", type = "" }) => {
     }
   }, [FansList]);
 
+  const PrivacySkeleton = ({ isActive = false }) => {
+    return [...Array(8)].map((ele) => {
+      return (
+        <div className={classes.list}>
+          <Skeleton.Node
+            active={false}
+            style={{
+              height: "60px",
+              width: "60px",
+              borderRadius: 50,
+            }}
+          >
+            <img src={""} />
+          </Skeleton.Node>
+          <Skeleton.Node
+            active={false}
+            style={{
+              height: "10px",
+              width: "fit-content",
+              borderRadius: 50,
+              marginTop: "5px",
+            }}
+          >
+            <p>{"User"}</p>
+          </Skeleton.Node>
+        </div>
+      );
+    });
+  };
+
   return (
-    <div className={classes.profileThumb}>
+    <div
+      className={`${classes.profileThumb} ${
+        !isMyProfile ? classes.othersProfileThumb : ""
+      }`}
+    >
       <h2>
-        {title} ({ConnectionsList.allconnectionscount})
-        {type === "fans" && (
+        {title} {!isLocked ? `(${ConnectionsList.allconnectionscount})` : ""}
+        {!isLocked && type === "fans" && (
           <>
             <img className={classes.actionIcon} src={msgIcon} />
             <img className={classes.actionIcon} src={talkshowIcon} />
           </>
         )}
-        {ConnectionsList.connections.length <
-          ConnectionsList.allconnectionscount && (
-          <span
-            onClick={() => {
-              setisSeeMore(true);
-            }}
-          >
-            See All
-          </span>
-        )}
+        {!isLocked &&
+          ConnectionsList.connections.length <
+            ConnectionsList.allconnectionscount && (
+            <span
+              onClick={() => {
+                setisSeeMore(true);
+              }}
+            >
+              See All
+            </span>
+          )}
       </h2>
-
-      {ConnectionsList.isLoaded ? (
+      {isLocked ? (
+        <div className={classes.lockedConnections}>
+          <div className={classes.lockedoverLay}>
+            <div className={classes.lockBtn}>
+              <i className={classes.lock_icon}></i>
+            </div>
+          </div>
+          <div className={classes.listSec}>
+            <PrivacySkeleton />
+          </div>
+        </div>
+      ) : (
         <>
-          {ConnectionsList.allconnectionscount !== 0 ? (
-            <div className={classes.listSec}>
-              {ConnectionsList.connections.map((ele) => {
-                return (
-                  <div className={classes.list}>
-                    <Skeleton.Node
-                      active={false}
-                      style={{
-                        height: "60px",
-                        width: "60px",
-                        borderRadius: 50,
-                      }}
-                    >
-                      <div className={classes.iconSec}>
-                        {type === "influencers" && isLoginUser ? (
-                          <i
-                            className={classes.messageIcon}
+          {ConnectionsList.isLoaded ? (
+            <>
+              {ConnectionsList.allconnectionscount !== 0 ? (
+                <div className={`${classes.listSec} `}>
+                  {ConnectionsList.connections.map((ele) => {
+                    return (
+                      <div className={classes.list}>
+                        <Skeleton.Node
+                          active={false}
+                          style={{
+                            height: "60px",
+                            width: "60px",
+                            borderRadius: 50,
+                          }}
+                        >
+                          <div className={classes.iconSec}>
+                            {type === "influencers" && isLoginUser ? (
+                              <i
+                                className={classes.messageIcon}
+                                onClick={() => {
+                                  setisInfluencerChatModalOpen({
+                                    user: ele,
+                                    show: true,
+                                  });
+                                }}
+                              />
+                            ) : null}
+                          </div>
+                          <img
+                            src={ele.profile_img}
                             onClick={() => {
-                              setisInfluencerChatModalOpen({
-                                user: ele,
-                                show: true,
-                              });
+                              let finalData = {
+                                dispatch,
+                                navigate,
+                                nuggetFormData,
+                                user_id: ele.user_id,
+                              };
+                              handleProfileNavigate(finalData);
                             }}
                           />
-                        ) : null}
+                        </Skeleton.Node>
+                        <p
+                          onClick={() => {
+                            let finalData = {
+                              dispatch,
+                              navigate,
+                              nuggetFormData,
+                              user_id: ele.user_id,
+                            };
+                            handleProfileNavigate(finalData);
+                          }}
+                        >
+                          {ele?.display_name}
+                        </p>
                       </div>
-                      <img
-                        src={ele.profile_img}
-                        onClick={() => {
-                          let finalData = {
-                            dispatch,
-                            navigate,
-                            nuggetFormData,
-                            user_id: ele.user_id,
-                          };
-                          handleProfileNavigate(finalData);
-                        }}
-                      />
-                    </Skeleton.Node>
-                    <p
-                      onClick={() => {
-                        let finalData = {
-                          dispatch,
-                          navigate,
-                          nuggetFormData,
-                          user_id: ele.user_id,
-                        };
-                        handleProfileNavigate(finalData);
-                      }}
-                    >
-                      {ele?.display_name}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <>
-              {ConnectionsList.allconnectionscount === 0 && (
-                <div className={classes.emptySec}>
-                  <img src={EmptyImg} />
+                    );
+                  })}
                 </div>
+              ) : (
+                <>
+                  {ConnectionsList.allconnectionscount === 0 && (
+                    <div className={classes.emptySec}>
+                      <img src={EmptyImg} />
+                    </div>
+                  )}
+                </>
               )}
             </>
+          ) : (
+            <div className={classes.listSec}>
+              <PrivacySkeleton isActive={true} />
+            </div>
           )}
         </>
-      ) : (
-        <div className={classes.listSec}>
-          {[...Array(8)].map((ele) => {
-            return (
-              <div className={classes.list}>
-                <Skeleton.Node
-                  active={true}
-                  style={{ height: "70px", width: "70px", borderRadius: 50 }}
-                >
-                  <img src={""} />
-                </Skeleton.Node>
-              </div>
-            );
-          })}
-        </div>
       )}
-      <ConnectionModal
-        type={title}
-        open={isSeeMore}
-        value={ConnectionsList}
-        setisInfluencerChatModalOpen={setisInfluencerChatModalOpen}
-        onSuccess={() => {
-          setisSeeMore(false);
-        }}
-        onClose={() => {
-          setisSeeMore(false);
-        }}
-      />
-      <InfluencerSend
-        open={isInfluencerChatModalOpen.show}
-        user={isInfluencerChatModalOpen.user}
-        close={() => {
-          setisInfluencerChatModalOpen({ user: "", show: false });
-        }}
-      />
+      {isSeeMore && (
+        <ConnectionModal
+          type={title}
+          open={isSeeMore}
+          value={ConnectionsList}
+          setisInfluencerChatModalOpen={setisInfluencerChatModalOpen}
+          onSuccess={() => {
+            setisSeeMore(false);
+          }}
+          onClose={() => {
+            setisSeeMore(false);
+          }}
+        />
+      )}
+      {isInfluencerChatModalOpen.show && (
+        <InfluencerSend
+          open={isInfluencerChatModalOpen.show}
+          user={isInfluencerChatModalOpen.user}
+          close={() => {
+            setisInfluencerChatModalOpen({ user: "", show: false });
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -117,6 +117,13 @@ export const switchTypes = [
   { title: "Push", id: 0, value: "101" },
 ];
 
+export const ProfileswitchTypes = [
+  { title: "Nugget", type: "lock_nugget" },
+  { title: "Fans", type: "lock_fans" },
+  { title: "My Connection", type: "lock_my_connection" },
+  { title: "My Influencer", type: "lock_my_influencer" },
+];
+
 export const NotificationTypes = [
   {
     title: "Connection Requests",

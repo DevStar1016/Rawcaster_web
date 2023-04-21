@@ -63,6 +63,10 @@ const Settings = () => {
     nugget_display_list: "",
     event_display_list: "",
     friend_request: "",
+    lock_nugget: 0,
+    lock_fans: 0,
+    lock_my_connection: 0,
+    lock_my_influencer: 0,
   });
 
   useEffect(() => {
@@ -108,6 +112,10 @@ const Settings = () => {
         nugget_display_list: userSettings?.nugget_display_list,
         event_display_list: userSettings?.event_display_list,
         friend_request: userSettings?.friend_request,
+        lock_nugget: userSettings?.lock.lock_nugget,
+        lock_fans: userSettings?.lock.lock_fans,
+        lock_my_connection: userSettings?.lock.lock_my_connection,
+        lock_my_influencer: userSettings?.lock.lock_my_influencer,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

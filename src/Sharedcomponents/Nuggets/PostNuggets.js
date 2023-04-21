@@ -29,7 +29,7 @@ import { useParams } from "react-router";
 import profileImg from "../../Assets/Images/svg/userImg.svg";
 
 const PostNuggets = () => {
-  const { GetNuggetList } = useListNuggetContext();
+  const { GetNuggetList, setisNuggetModify } = useListNuggetContext();
   const dispatch = useDispatch();
   const Token = useAuthToken();
   const params = useParams();
@@ -70,7 +70,7 @@ const PostNuggets = () => {
 
   const EditNugget = (val) => {
     setpostModalShow(false);
-    dispatch(handleLoading(true));
+
     let formData = new FormData();
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
@@ -100,6 +100,7 @@ const PostNuggets = () => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
+          setisNuggetModify({ type: "edit", id: isEdit });
           GetNuggetList();
           setNuggetData([]);
         } else {
@@ -110,7 +111,6 @@ const PostNuggets = () => {
         toast.error(err.message);
       })
       .finally(() => {
-        dispatch(handleLoading(false));
         setdeletedMedia([]);
         setpreviewMedia([]);
         setisEdit();
@@ -163,6 +163,7 @@ const PostNuggets = () => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
+          setisNuggetModify({ type: "add", id: null });
           GetNuggetList();
           setNuggetData([]);
         } else {

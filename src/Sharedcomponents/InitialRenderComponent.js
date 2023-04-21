@@ -13,8 +13,8 @@ const InitialRenderComponent = () => {
   axios.interceptors.response.use(
     function (response) {
       if (response.data.status === -1) {
-        // RemoveToken(dispatch);
-        // window.location.reload();
+        RemoveToken(dispatch);
+        window.location.reload();
       }
       return response;
     },

@@ -1,15 +1,22 @@
 import { Modal, Tooltip } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
-import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
+import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  JSONtoformdata,
+  datetoString,
+  decodeHtml,
+  utctoUserTimezone,
+  utctoUserTimezonewithAbbr,
+} from "../../Shared/Utility";
 import classes from "./Event.module.css";
 import eventList from "../../Assets/Images/png/eventList.png";
 import { deleteEventService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
+import moment from "moment";
 
 const Event = ({ ele, handleEdit, setList }) => {
-  const loginUserData = useAuthData();
+  const { userSettings, loginUserData } = useAuth();
   const token = useAuthToken();
 
   const isCreatedUser = () => {
@@ -42,6 +49,17 @@ const Event = ({ ele, handleEdit, setList }) => {
       });
   };
 
+  const isNotExpired = () => {
+    const createdTime = utctoUserTimezone(
+      ele.start_date_time,
+      userSettings.time_zone
+    );
+    if (moment(createdTime).isBefore()) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <div className={classes.eventItem}>
       <img
@@ -49,7 +67,7 @@ const Event = ({ ele, handleEdit, setList }) => {
         src={ele?.banner_image !== "" ? ele?.banner_image : eventList}
         alt="Banner_img"
         onError={({ currentTarget }) => {
-          currentTarget.onerror = null; // prevents looping
+          currentTarget.onerror = null;
           currentTarget.src = eventList;
         }}
       />
@@ -75,7 +93,7 @@ const Event = ({ ele, handleEdit, setList }) => {
               {decodeHtml(ele.event_name)}
             </h3>
           </Tooltip>
-          {isCreatedUser() && (
+          {isNotExpired() && isCreatedUser() && (
             <div className={classes.editSec}>
               <div className={classes.iconBg}>
                 <i
@@ -113,14 +131,26 @@ const Event = ({ ele, handleEdit, setList }) => {
         <p className={classes.des}>{ele.message}</p>
         <p className={classes.iconsec}>
           <span class="material-symbols-outlined">calendar_today</span>{" "}
-          {ele.start_date}
+          {moment(
+            utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+          ).format("DD MMM YYYY")}
           <span class="material-symbols-outlined">schedule</span>{" "}
-          {ele.start_time}
+          {moment(
+            utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+          ).format("hh:mm A") +
+            " - (" +
+            utctoUserTimezonewithAbbr(
+              ele.start_date_time,
+              userSettings.time_zone
+            ) +
+            ")"}
         </p>
-        <Link className={classes.link}>
-          {isCreatedUser() ? "Start Hosting" : "Join Event"}
-          <span class="material-symbols-outlined">arrow_right_alt</span>
-        </Link>
+        {isNotExpired() && (
+          <Link className={classes.link}>
+            {isCreatedUser() ? "Start Hosting" : "Join Event"}
+            <span class="material-symbols-outlined">arrow_right_alt</span>
+          </Link>
+        )}
       </div>
     </div>
   );

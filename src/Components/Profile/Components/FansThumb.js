@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
-import {
-  useAuthToken,
-  useDashboard,
-  useNuggets,
-} from "../../../Shared/Reduxfetcher";
+import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
 import {
   DecryptionString,
   handleProfileNavigate,
@@ -15,8 +11,8 @@ import { useProfileContext } from "../../../Shared/Context";
 import { getfollowerfollowingService } from "./Utility";
 import { useDispatch } from "react-redux";
 
-const FansThumb = ({ isLoginUser }) => {
-  const { FansList, setFansList } = useProfileContext();
+const FansThumb = () => {
+  const { FansList, setFansList, isLoginUser } = useProfileContext();
   const { nuggetFormData } = useNuggets();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,10 +43,8 @@ const FansThumb = ({ isLoginUser }) => {
   useEffect(() => {
     if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
       getFollowers();
-    } else if (params?.user_id) {
-      getFollowers();
     }
-  }, [loginToken, params]);
+  }, [loginToken]);
 
   return (
     <div className={classes.fansList}>

@@ -64,7 +64,6 @@ const EventsList = () => {
     globalSearchEventsService(JSONtoformdata(nuggetData), source.current.token)
       .then((res) => {
         if (res.data.status === 1) {
-          console.log("test");
           if (res.data.current_page_no === 1) {
             setEventList(res.data.events_list);
           } else {
@@ -97,19 +96,20 @@ const EventsList = () => {
       .finally(() => {
         setisLoading(false);
         dispatch(handleLoading(false));
-        dispatch(handleisGlobalSearch(false));
+        // dispatch(handleisGlobalSearch(false));
         setisFetching(false);
       });
   };
 
   useEffect(() => {
     if (isGlobalSearch || EventList?.length === 0) {
+      console.log("testttttt");
       dispatch(handleLoading(true));
       setisFetching(true);
       getEventList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, isGlobalSearch]);
+  }, [pathname]);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {

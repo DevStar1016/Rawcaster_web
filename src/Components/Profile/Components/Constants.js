@@ -24,15 +24,18 @@ export const ConnectionsType = [
     id: 1,
     title: "Influencers",
     type: "influencers",
+    lockedName: "lock_my_influencer",
   },
   {
     id: 2,
     title: "Fans",
     type: "fans",
+    lockedName: "lock_fans",
   },
   {
     id: 3,
     title: "Connections",
     type: "connections",
+    lockedName: "lock_my_connection",
   },
 ];

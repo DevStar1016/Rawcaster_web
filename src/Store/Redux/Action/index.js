@@ -5,6 +5,9 @@ import {
   listNuggetsService,
 } from "../../../Services/ApiService";
 import { JSONtoformdata, getAuthToken } from "../../../Shared/Utility";
+import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
+
+// Connections
 
 export const fetchFrindsbyId = createAsyncThunk(
   "dashboard/fetchFrindsbyId",
@@ -63,12 +66,33 @@ export const fetchgroupsbyId = createAsyncThunk(
   }
 );
 
+export const fetchgfollowerfollowingList = createAsyncThunk(
+  "dashboard/fetchgfollowerfollowingList",
+  async (listData) => {
+    try {
+      const data = await getfollowerfollowingService(JSONtoformdata(listData));
+      return {
+        type: 0,
+        ...data,
+      };
+    } catch (error) {
+      return {
+        type: 0,
+        connections: [],
+        allconnections: [],
+        allconnectionscount: 0,
+        connectionscount: 0,
+        isLoaded: true,
+      };
+    }
+  }
+);
+
+// Nuggets
+
 export const fetchNuggetsbyId = createAsyncThunk(
   "dashboard/fetchNuggetsbyId",
-  async (listData, { getState }) => {
-    const { nuggets } = getState();
-    const { Nuggets } = nuggets;
-
+  async (listData) => {
     const { token, formData } = listData;
     let nuggetData = {
       ...formData,
@@ -76,36 +100,14 @@ export const fetchNuggetsbyId = createAsyncThunk(
     };
     try {
       const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
-      console.log(data.status === 1);
       if (data.status === 1) {
-        if (data.current_page_no === 1) {
-          let resultData = {
-            current_page_no: data.current_page_no,
-            data: data.nuggets_list,
-            total_count: data.nuggets_count,
-            total_pages: data.total_pages,
-          };
-          return resultData;
-          // return data.nugget_list;
-        } else {
-          console.log("test");
-          let resultData = {
-            current_page_no: data.current_page_no,
-            data: [...Nuggets, ...data.nuggets_list].reduce((acc, current) => {
-              const x = acc.find(
-                (item) => item.nugget_id === current.nugget_id
-              );
-              if (!x) {
-                return acc.concat([current]);
-              } else {
-                return acc;
-              }
-            }, []),
-            total_count: data.nuggets_count,
-            total_pages: data.total_pages,
-          };
-          return resultData;
-        }
+        let resultData = {
+          current_page_no: data.current_page_no,
+          data: data.nuggets_list,
+          total_count: data.nuggets_count,
+          total_pages: data.total_pages,
+        };
+        return resultData;
       } else {
         return [];
       }

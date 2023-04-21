@@ -56,7 +56,37 @@
     border-radius: 40px;
     padding: 4px;
 }
+.lockedConnections {
+    position: relative;
+}
+.lockedConnections .lockedoverLay {
+position: absolute;
+height: 100%;
+width: 100%;
+background: rgba(255, 255, 255, .1);
+display: flex;
+align-items: center;
+justify-content: center;
+backdrop-filter: blur(19.5px);
+}
+.lockedConnections .listSec .list p{
+    color: transparent !important;
 
+}
 .list:hover .iconSec{
 display: block;
 }
+.lockBtn {
+    padding: 15px;
+    background-color: #AE567A;
+    border-radius: 30px;
+}
+.lock_icon {
+    float: left;
+    width: 25px;
+    height: 25px;
+    background: #FFFFFF;
+    mask: url("../../../Assets/Icons/svg/lock_icon.svg") no-repeat center / contain;
+    -webkit-mask: url("../../../Assets/Icons/svg/lock_icon.svg") no-repeat center /
+      contain;
+  }

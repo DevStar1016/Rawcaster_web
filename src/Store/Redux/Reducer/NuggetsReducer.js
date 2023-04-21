@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchNuggetsbyId } from "../Action";
+import { fetchNuggetsbyId, handleNuggetView } from "../Action";
+import { addNuggetView } from "../../../Shared/SharedAPIs";
 
 const initialState = {
+  token: null,
   nuggetVideoPaused: false,
   nuggetFormData: {},
   Nuggets: [],
@@ -18,6 +20,9 @@ export const { actions, reducer } = createSlice({
   name: "nuggets",
   initialState,
   reducers: {
+    handlenuggetToken: (state, action) => {
+      state.token = action.payload;
+    },
     handlenuggetVideoPaused: (state, action) => {
       state.nuggetVideoPaused = action.payload;
     },
@@ -29,6 +34,31 @@ export const { actions, reducer } = createSlice({
     },
     handleNuggetList: (state, action) => {
       state.Nuggets = action.payload;
+    },
+    handleDeleteNuggetList: (state, action) => {
+      let filterData = [...state.Nuggets].filter(
+        (ele) => ele.nugget_id !== action.payload
+      );
+      state.Nuggets = filterData;
+    },
+    handleNuggetViewUpdate: (state, action) => {
+      const index = action.payload;
+      if (state.Nuggets[index].viewed === 0 && state.token) {
+        let apiData = {
+          token: state.token,
+          nugget_id: state.Nuggets[index].nugget_id,
+        };
+        addNuggetView(apiData);
+        state.Nuggets = [
+          ...state.Nuggets.slice(0, index),
+          {
+            ...state.Nuggets[index],
+            total_views: state.Nuggets[index].total_views + 1,
+            viewed: 1,
+          },
+          ...state.Nuggets.slice(index + 1, state.length),
+        ];
+      }
     },
     handleNuggetFormData: (state, action) => {
       state.nuggetFormData = action.payload;
@@ -51,14 +81,25 @@ export const { actions, reducer } = createSlice({
       }
     });
     builder.addCase(fetchNuggetsbyId.fulfilled, (state, action) => {
-      state.Nuggets = action.payload.data;
+      if (action.payload.current_page_no === 1) {
+        state.Nuggets = action.payload.data;
+      } else {
+        let filterData = [...state.Nuggets, ...action.payload.data].reduce(
+          (acc, current) => {
+            const x = acc.find((item) => item.nugget_id === current.nugget_id);
+            if (!x) {
+              return acc.concat([current]);
+            } else {
+              return acc;
+            }
+          },
+          []
+        );
+        state.Nuggets = filterData;
+      }
       state.totalpages = action.payload.total_count;
       state.currentpage = action.payload.current_page_no;
       state.totalNuggets = action.payload.total_count;
-      state.isNuggetsLoading = false;
-      state.isNextPageLoading = false;
-    });
-    builder.addCase(fetchNuggetsbyId.rejected, (state, action) => {
       state.isNuggetsLoading = false;
       state.isNextPageLoading = false;
     });
@@ -72,6 +113,9 @@ export const {
   handleNuggetList,
   handleNuggetFormData,
   handleResetNuggets,
+  handleNuggetViewUpdate,
+  handleDeleteNuggetList,
+  handlenuggetToken,
 } = actions;
 
 export default reducer;

@@ -14,6 +14,7 @@ import {
 } from "../../Store/Redux/Reducer/AuthReducer";
 import { handleprofileVerifyModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 import { fetchFrindsbyId, fetchgroupsbyId } from "../../Store/Redux/Action";
+import { handlenuggetToken } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 export const getProfile = (token, dispatch) => {
   let promise = new Promise((resolve, reject) => {
@@ -35,7 +36,7 @@ export const getProfile = (token, dispatch) => {
           dispatch(
             fetchgroupsbyId({ token: token, user_id: profileData.user_id })
           );
-
+          dispatch(handlenuggetToken(token));
           dispatch(handleLoginData({ token: token, ...profileData }));
 
           dispatch(handleToken(token));

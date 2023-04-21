@@ -12,14 +12,10 @@ import {
   saveAndUnsaveNuggetService,
   likeAndUnlikeNuggetCommentService,
   shareNuggetService,
-  addNuggetViewService,
   getNuggetDetailService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
-import {
-  SingleNuggetContext,
-  useListNuggetContext,
-} from "../../Shared/Context";
+import { SingleNuggetContext } from "../../Shared/Context";
 import {
   useAuth,
   useAuthData,
@@ -51,6 +47,7 @@ import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
 import {
   handleNuggetList,
+  handleNuggetViewUpdate,
   handlenuggetVideoPaused,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import _debounce from "lodash/debounce";
@@ -66,9 +63,8 @@ const Post = ({
   setmuted,
   onEdit,
   isCommentShow = false,
+  onDelete,
 }) => {
-  // const { GetNuggetList } = useListNuggetContext();
-  const lodash = require("lodash");
   const source = useRef(null);
   const Token = useAuthToken();
   const navigate = useNavigate();
@@ -90,8 +86,9 @@ const Post = ({
 
   const [ref] = useInView({
     onEnter: () => {
-      if (Token && ele.viewed === 0) {
-        viewHandler();
+      dispatch(handleNuggetViewUpdate(index));
+      if (handleView) {
+        handleView(index);
       }
     },
   });
@@ -120,15 +117,16 @@ const Post = ({
 
   const viewHandler = () => {
     if (ele.viewed === 0 && Token) {
-      let viewNugget = {
-        token: Token,
-        nugget_id: ele.nugget_id,
-      };
-      addNuggetViewService(JSONtoformdata(viewNugget))
-        .then((res) => {
-          handleView(index);
-        })
-        .catch((err) => {});
+      //   let viewNugget = {
+      //     token: Token,
+      //     nugget_id: ele.nugget_id,
+      //   };
+      //   addNuggetViewService(JSONtoformdata(viewNugget))
+      //     .then((res) => {
+      //       handleView(index);
+      //     })
+      //     .catch((err) => {});
+      // }
     }
   };
 
@@ -140,7 +138,10 @@ const Post = ({
     deleteNuggetService(JSONtoformdata(deleteData))
       .then((res) => {
         if (res.data.status === 1) {
-          // GetNuggetList();
+          if (onDelete) {
+            onDelete();
+          }
+
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);

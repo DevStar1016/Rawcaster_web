@@ -18,54 +18,10 @@ import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import { getCookieData } from "../../Store/Storage";
 import TagsChart from "../../UIComponents/TagsChart";
 import classes from "./GlobalSearch.module.css";
 
 let isRequestCancel = false;
-
-let testObj = [
-  {
-    total_nuggets: 10,
-    hours: 10,
-  },
-  {
-    total_nuggets: 30,
-    hours: 13,
-  },
-  {
-    total_nuggets: 10,
-    hours: 16,
-  },
-  {
-    total_nuggets: 5,
-    hours: 19,
-  },
-  {
-    total_nuggets: 58,
-    hours: 23,
-  },
-  {
-    total_nuggets: 18,
-    hours: 27,
-  },
-  {
-    total_nuggets: 78,
-    hours: 37,
-  },
-  {
-    total_nuggets: 88,
-    hours: 48,
-  },
-  {
-    total_nuggets: 18,
-    hours: 58,
-  },
-  {
-    total_nuggets: 8,
-    hours: 68,
-  },
-];
 
 const TagsList = () => {
   const dispatch = useDispatch();
@@ -147,12 +103,11 @@ const TagsList = () => {
       setisFetching(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, isGlobalSearch]);
+  }, [pathname]);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {
       setisLoading(true);
-
       getTagsList(Pages.page + 1);
     }
   };

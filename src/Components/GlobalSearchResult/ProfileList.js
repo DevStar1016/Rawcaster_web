@@ -110,7 +110,7 @@ const ProfileList = () => {
       getPeopleList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, isGlobalSearch]);
+  }, [pathname]);
 
   const onEndReached = () => {
     if (Pages.page !== Pages.totalpage) {

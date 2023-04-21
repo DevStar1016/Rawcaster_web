@@ -1,4 +1,4 @@
-import { Button, Modal, Radio, Select } from "antd";
+import { Button, Modal, Radio, Select, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
 import { useAuth, useAuthToken, useDashboard } from "../../Shared/Reduxfetcher";
@@ -8,6 +8,7 @@ import {
   AccountStatus,
   DateTypeFormats,
   DefaultRawcasterPage,
+  ProfileswitchTypes,
   SettingsList,
 } from "./Constants";
 import { getValidDisplayData } from "./Utility";
@@ -273,6 +274,35 @@ const General = () => {
               </>
             );
           })}
+
+          <div>
+            <p className={classes.smallheading}>Profile Privacy</p>
+            <p className={classes.text}>
+              Choose if you want to lock your Nuggets, Fans, Connections and
+              Influencers list from other users
+            </p>
+            <div className="mt-2">
+              {ProfileswitchTypes.map((elem, i) => {
+                return (
+                  <div className={classes.grp_switch}>
+                    <Switch
+                      size="small"
+                      checked={formikvalues[elem.type] === 1}
+                      disabled={
+                        updateValue.includes(elem.type) ||
+                        userSettings?.account_active_inactive === 0
+                      }
+                      loading={updateValue.includes(elem.type)}
+                      onChange={(e) => {
+                        setupdateValue(elem.type, e ? 1 : 0);
+                      }}
+                    />
+                    {elem?.title}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
           <div>
             <p className={classes.smallheading}>Preference Language</p>

@@ -45,6 +45,7 @@ import {
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
+import LockedConnections from "./Privacy/Connections";
 
 const Profile = () => {
   const params = useParams();
@@ -290,16 +291,26 @@ const Profile = () => {
             >
               <BioContainer isLoginuser={getisLoginUser()} />
 
-              {!getisLoginUser() && isSuccess && (
-                <div className={classes.rightProfiles}>
-                  {ConnectionsType.map((ele) => {
-                    return ele.id === 3 && getisLoginUser() ? (
-                      <Connections />
-                    ) : (
-                      <ConnectionsList {...ele} />
-                    );
-                  })}
-                </div>
+              {!getisLoginUser() && (
+                <>
+                  {isSuccess && (
+                    <div className={classes.rightProfiles}>
+                      {ConnectionsType.map((ele) => {
+                        return ele.id === 3 && getisLoginUser() ? (
+                          <Connections />
+                        ) : (
+                          <ConnectionsList
+                            {...ele}
+                            isMyProfile={false}
+                            isLocked={
+                              profileData && profileData[ele.lockedName] === 1
+                            }
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
               )}
               {!getisLoginUser() && <OthersEventListing />}
               {getisLoginUser() && (
@@ -377,7 +388,10 @@ const Profile = () => {
               )}
             </div>
 
-            <Nuggets isLoginuser={getisLoginUser()} />
+            <Nuggets
+              isLoginuser={getisLoginUser()}
+              isLocked={profileData && profileData.lock_nugget === 1}
+            />
 
             <>
               {getisLoginUser() && isSuccess && (
@@ -386,7 +400,7 @@ const Profile = () => {
                     return ele.id === 3 ? (
                       <Connections />
                     ) : (
-                      <ConnectionsList {...ele} />
+                      <ConnectionsList {...ele} isMyProfile={true} />
                     );
                   })}
                 </div>

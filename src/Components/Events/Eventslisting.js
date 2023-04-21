@@ -127,7 +127,9 @@ const Eventslisting = ({
 
         {isFetching ? (
           <div className="mt-5 d-flex flex-row justify-content-center">
-            <Skeleton loading={true} active avatar />
+            {[...new Array(6)].map((ele) => {
+              return <Skeleton loading={true} active avatar />;
+            })}
           </div>
         ) : (
           <div className={classes.EventListSec}>
