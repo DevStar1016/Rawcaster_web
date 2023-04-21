@@ -91,6 +91,8 @@ const UpdateProfile = () => {
       geo_location: "",
       latitude: "",
       longitude: "",
+      work_at: "",
+      studied_at: "",
     },
     validationSchema,
     onSubmit: (values) => {
@@ -128,6 +130,8 @@ const UpdateProfile = () => {
             mobile_no: profileData.mobile,
             profile_image: profileData.profile_image,
             geo_location: profileData.geo_location || "",
+            work_at: profileData.work_at,
+            studied_at: profileData.studied_at,
           }));
           const isTwoStepVerified =
             profileData.is_email_id_verified === 1 &&
@@ -228,6 +232,8 @@ const UpdateProfile = () => {
         ...profileValue,
         profile_image: ProfileImage,
       };
+    } else if (typeof profileValue.profile_image === "string") {
+      delete profileValue.profile_image;
     }
     updateProfileService(JSONtoformdata(filterValidObject(profileValue)))
       .then((res) => {
@@ -318,10 +324,6 @@ const UpdateProfile = () => {
                   }
                   value={values.first_name}
                   onChange={(e) => {
-                    // setFieldValue(
-                    //   "first_name",
-                    //   e.target.value.replace(/\p{Emoji}/gu, "")
-                    // );
                     setFieldValue("first_name", e.target.value);
                   }}
                 />
@@ -499,6 +501,44 @@ const UpdateProfile = () => {
                 {touched.geo_location && (
                   <p className="ErrTxt">{errors?.geo_location}</p>
                 )}
+              </Form.Item>
+            </Col>
+            <Col sm={12} xs={24}>
+              <p className={classes.label}>Studied At</p>
+              <Form.Item name="name">
+                <Input
+                  size="large"
+                  className={classes.textBox}
+                  placeholder="Studied At"
+                  status={
+                    touched.studied_at && errors.studied_at ? "error" : ""
+                  }
+                  value={values.studied_at}
+                  maxLength={50}
+                  onChange={(e) => {
+                    setFieldValue("studied_at", e.target.value);
+                  }}
+                />
+                {touched.studied_at && (
+                  <p className="ErrTxt">{errors?.studied_at}</p>
+                )}
+              </Form.Item>
+            </Col>
+            <Col sm={12} xs={24}>
+              <p className={classes.label}>Work At</p>
+              <Form.Item name="name">
+                <Input
+                  size="large"
+                  className={classes.textBox}
+                  placeholder="Work At"
+                  status={touched.work_at && errors.work_at ? "error" : ""}
+                  value={values.work_at}
+                  maxLength={50}
+                  onChange={(e) => {
+                    setFieldValue("work_at", e.target.value);
+                  }}
+                />
+                {touched.work_at && <p className="ErrTxt">{errors?.work_at}</p>}
               </Form.Item>
             </Col>
 

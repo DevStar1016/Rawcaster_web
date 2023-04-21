@@ -112,10 +112,10 @@ const Settings = () => {
         nugget_display_list: userSettings?.nugget_display_list,
         event_display_list: userSettings?.event_display_list,
         friend_request: userSettings?.friend_request,
-        lock_nugget: userSettings?.lock.lock_nugget,
-        lock_fans: userSettings?.lock.lock_fans,
-        lock_my_connection: userSettings?.lock.lock_my_connection,
-        lock_my_influencer: userSettings?.lock.lock_my_influencer,
+        lock_nugget: userSettings?.lock_nugget,
+        lock_fans: userSettings?.lock_fans,
+        lock_my_connection: userSettings?.lock_my_connection,
+        lock_my_influencer: userSettings?.lock_my_influencer,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

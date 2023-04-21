@@ -65,6 +65,7 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
         toast.error(err.message);
       });
   };
+  console.log(request);
   return (
     <div key={"request" + request.friend_request_id}>
       <div className={classes.list}>
