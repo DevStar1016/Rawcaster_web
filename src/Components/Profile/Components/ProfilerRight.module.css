@@ -60,3 +60,5 @@
 .list:hover .iconSec{
 display: block;
 }
+
+.othersprofileEvent .rightProfiles .profileThumb { float: left; width: 100%; padding: 25px; border: 1px solid #ECECEC; border-radius: 12px; }
