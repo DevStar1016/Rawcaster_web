@@ -90,3 +90,4 @@ display: block;
     -webkit-mask: url("../../../Assets/Icons/svg/lock_icon.svg") no-repeat center /
       contain;
   }
+  .othersprofileEvent .rightProfiles .profileThumb { float: left; width: 100%; padding: 25px; border: 1px solid #ECECEC; border-radius: 12px; }

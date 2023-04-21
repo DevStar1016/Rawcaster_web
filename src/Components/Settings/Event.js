@@ -300,7 +300,7 @@ const Event = () => {
                 <Spin></Spin>
               </p>
             ) : null}
-            <div className="w-50">
+            <div style={{maxWidth:"600px"}}>
               <BannerComponent
                 value={formikvalues?.meeting_header_image}
                 size={10}
