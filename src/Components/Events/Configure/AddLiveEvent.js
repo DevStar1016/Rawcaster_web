@@ -12,7 +12,7 @@ import {
   getValidarrayData,
 } from "./Utility";
 import { useFormik } from "formik";
-import dayjs from "dayjs";
+
 import * as yup from "yup";
 import {
   addLiveEventService,
@@ -50,7 +50,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     initialValues: {
       event_title: "Rawcaster Talk Show",
       event_type: "",
-      event_start_date: dayjs(new Date()).format("YYYY-MM-DD"),
+      event_start_date: moment(new Date()).format("YYYY-MM-DD"),
       event_start_time: moment().add(15, "minutes").format("HH:mm"),
       event_banner: "",
       event_invite_mails: "",
@@ -202,10 +202,12 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           setValues({
             event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
-            event_start_date: dayjs(eventData?.start_date_time).format(
+            event_start_date: moment(eventData?.start_date_time).format(
               "YYYY-MM-DD"
             ),
-            event_start_time: dayjs(eventData?.start_date_time).format("HH:mm"),
+            event_start_time: moment(eventData?.start_date_time).format(
+              "HH:mm"
+            ),
             event_banner: eventData?.banner_image,
             event_invite_mails: getValidarrayData(eventData?.invite_mails),
             event_invite_friends: getValidarrayData(
@@ -278,12 +280,12 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 showToday={false}
                 defaultValue={
                   values?.event_start_date
-                    ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                    ? moment(values?.event_start_date, "YYYY-MM-DD")
                     : undefined
                 }
                 value={
                   values?.event_start_date
-                    ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                    ? moment(values?.event_start_date, "YYYY-MM-DD")
                     : undefined
                 }
                 disabledDate={(current) => {
@@ -295,7 +297,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 onChange={(date, dateString) => {
                   setFieldValue(
                     "event_start_date",
-                    dayjs(dateString).format("YYYY-MM-DD")
+                    moment(dateString).format("YYYY-MM-DD")
                   );
                   if (
                     moment(new Date()).format("DD:MM:YYYY") ==

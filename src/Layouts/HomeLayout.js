@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import classes from "./Layout.module.css";
 import ProfileImg from "../UIComponents/ProfileImg";
 import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
+import ReferalIcon from "../Assets/Icons/svg/Referal.svg";
 import HomeIcon from "../Assets/Icons/svg/Home_icon.svg";
 import RawcasterLogo from "../Assets/Images/svg/rawcaster_logo.svg";
 import smLogo from "../Assets/Images/png/r_logo.png";
@@ -190,6 +191,14 @@ const HomeLayout = () => {
                       src={LiveIcon}
                       className={classes.liveIcon}
                       alt="live_icon"
+                    />
+                    <img
+                      src={ReferalIcon}
+                      className={classes.liveIcon}
+                      alt="referal_icon"
+                      onClick={() => {
+                        navigate("/referel");
+                      }}
                     />
                     <img
                       src={HomeIcon}

@@ -1,5 +1,4 @@
 import { Form, Select, Switch, TimePicker } from "antd";
-import dayjs from "dayjs";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -399,8 +398,8 @@ export const TimeValueComponent = ({ onResult, value }) => {
   useEffect(() => {
     if (value) {
       setTimeValue({
-        time: dayjs(value, "HH:mm").format("hh:mm"),
-        session: dayjs(value, "HH:mm").format("A"),
+        time: moment(value, "HH:mm").format("hh:mm"),
+        session: moment(value, "HH:mm").format("A"),
       });
       setdisplayTimeValue(value);
     }
@@ -424,10 +423,11 @@ export const TimeValueComponent = ({ onResult, value }) => {
             setshowTimePicker(false);
           }}
           onSelect={(time) => {
-            setdisplayTimeValue(dayjs(time).format("HH:mm"));
+            console.log(time);
+            setdisplayTimeValue(moment(time).format("HH:mm"));
             setTimeValue((pre) => ({
               ...pre,
-              time: dayjs(time).format("hh:mm"),
+              time: moment(time).format("hh:mm"),
             }));
           }}
           onOpenChange={(val) => {

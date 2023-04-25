@@ -16,9 +16,7 @@ import {
   getValidarrayData,
 } from "./Utility";
 import { useFormik } from "formik";
-import dayjs from "dayjs";
 import * as yup from "yup";
-
 import EventModal from "../../../Modal/Event/EventModal";
 import moment from "moment";
 import { EventSettings } from "./Constants";
@@ -33,6 +31,7 @@ import {
   JSONtoformdata,
   decodeHtml,
   filterValidObject,
+  utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { useEventContext } from "../../../Shared/Context";
 
@@ -60,7 +59,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     initialValues: {
       event_title: "Rawcaster Event",
       event_type: 1,
-      event_start_date: dayjs(new Date()).format("YYYY-MM-DD"),
+      event_start_date: moment(new Date()).format("YYYY-MM-DD"),
       event_start_time: moment().add(15, "minutes").format("HH:mm"),
       waiting_room: "",
       join_before_host: "",
@@ -87,11 +86,46 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_start_time: yup
         .string()
         .required(`Valid Event Start Time is Required !`),
-      event_participants: yup
+      event_participants: userSettings
+        ? yup
+            .number()
+            .min(2, "Enter Valid Count")
+            .max(
+              parseInt(userSettings?.max_event_participants_count),
+              `Maximum ${parseInt(
+                userSettings?.max_event_participants_count
+              )} participants only allowed`
+            )
+            .required(`Max Paticipants is Required !`)
+        : yup.number(),
+      event_duration: yup
         .string()
-
-        .required(`Max Paticipants is Required !`),
-      event_duration: yup.string().required(`Duration is Required !`),
+        .test(
+          "validDurationRequired",
+          "Valid Duration Required",
+          function (item) {
+            const hours = moment(item, "HH:mm").get("hours");
+            const minutes = moment(item, "HH:mm").get("minutes");
+            const currentDuration = moment()
+              .add(hours, "hours")
+              .add(minutes, "minutes");
+            if (currentDuration.isBefore(moment().add(15, "minutes"))) {
+              return this.createError({
+                message: `Duration must be minimum 15 minutes`,
+              });
+            } else if (
+              currentDuration.isAfter(
+                moment().add(userSettings?.max_event_duration, "hours")
+              )
+            ) {
+              return this.createError({
+                message: `Max Allowed hours is ${userSettings?.max_event_duration}`,
+              });
+            }
+            return true;
+          }
+        )
+        .required(`Duration is Required !`),
       event_melody_id: yup.string().required(`Media is Required !`),
       event_melody: yup
         .mixed()
@@ -130,6 +164,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           return true;
         }),
     }),
+    validateOnChange: true,
     onSubmit: (val) => {
       setisCreating(true);
       if (data) {
@@ -189,14 +224,16 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   };
 
   const HandleAddEvent = (val) => {
+    const dateAndTime =
+      moment(val.event_start_time).format("YYYY-MM-DD") +
+      " " +
+      moment(moment(val.event_start_time, ["hh:mm"])).format("HH:mm:00");
+
+    let utcDateTime = utctoUserTimezone(dateAndTime, userSettings.time_zone);
     let liveEventData = {
       token: token,
-      event_start_date: moment(val.event_start_date, "YYYY-MM-DD")
-        .utc()
-        .format("YYYY-MM-DD"),
-      event_start_time: moment(val.event_start_date, "HH:mm")
-        .utc()
-        .format("HH:mm"),
+      event_start_date: moment().utc(utcDateTime).format("YYYY-MM-DD"),
+      event_start_time: moment().utc(utcDateTime).format("HH:mm"),
       ...val,
     };
 
@@ -227,9 +264,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_start_date: moment(val.event_start_date, "YYYY-MM-DD")
         .utc()
         .format("YYYY-MM-DD"),
-      event_start_time: moment(val.event_start_date, "HH:mm")
-        .utc()
-        .format("HH:mm"),
+      event_start_time: moment(val.event_start_date, "HH:mm").format("HH:mm"),
       ...val,
     };
     if (typeof liveEventData.event_banner === "string") {
@@ -265,10 +300,12 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           setValues({
             event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
-            event_start_date: dayjs(eventData?.start_date_time).format(
+            event_start_date: moment(eventData?.start_date_time).format(
               "YYYY-MM-DD"
             ),
-            event_start_time: dayjs(eventData?.start_date_time).format("HH:mm"),
+            event_start_time: moment(eventData?.start_date_time).format(
+              "HH:mm"
+            ),
             waiting_room: eventData?.waiting_room,
             join_before_host: eventData?.join_before_host,
             sound_notify: eventData?.sound_notify,
@@ -463,12 +500,12 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     showToday={false}
                     defaultValue={
                       values?.event_start_date
-                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                        ? moment(values?.event_start_date, "YYYY-MM-DD")
                         : undefined
                     }
                     value={
                       values?.event_start_date
-                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                        ? moment(values?.event_start_date, "YYYY-MM-DD")
                         : undefined
                     }
                     disabledDate={(current) => {
@@ -480,7 +517,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     onChange={(date, dateString) => {
                       setFieldValue(
                         "event_start_date",
-                        dayjs(dateString).format("YYYY-MM-DD")
+                        moment(dateString).format("YYYY-MM-DD")
                       );
                       if (
                         moment(new Date()).format("DD:MM:YYYY") ==
@@ -511,6 +548,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 <TimeValueComponent
                   value={values.event_start_time}
                   onResult={(res) => {
+                    console.log(res);
                     setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                     if (
                       moment().format("DD:MM:YYYY") ==
@@ -617,8 +655,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     }}
                   />
                 </Form.Item>
-                {touched.event_title && (
-                  <p className="ErrTxt mb-3">{errors?.event_title}</p>
+                {touched.event_duration && (
+                  <p className="ErrTxt mb-3">{errors?.event_duration}</p>
                 )}
               </Col>
               <Col sm={3}>

@@ -34,8 +34,8 @@
 }
 .emptySec img {
     height: 80px;
-
 }
+
 .messageIcon {
     float: left;
     width: 22px;
@@ -44,7 +44,7 @@
     mask: url("../../../Assets/Images/svg/msgIcon.svg") no-repeat center / contain;
     -webkit-mask: url("../../../Assets/Images/svg/msgIcon.svg") no-repeat center /
       contain;
-      cursor: pointer;
+    cursor: pointer;
   }
 
 .iconSec {

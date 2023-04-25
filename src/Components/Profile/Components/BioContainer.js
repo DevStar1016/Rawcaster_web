@@ -64,12 +64,7 @@ const BioContainer = ({ isLoginuser }) => {
   };
 
   const handleChangeOption = (value, val) => {
-    // if (selectedCategory.length !== 3) {
-    setselectedCategory(value);
-    // }
-    // let userData = [...values.influencer_category]
-
-    // console.log(`selected ${value}`, val);
+    setselectedCategory(val);
   };
 
   const getCategoryList = () => {
@@ -86,7 +81,6 @@ const BioContainer = ({ isLoginuser }) => {
                 ...ele,
                 label: ele.name,
                 value: ele.name,
-                disabled: false,
               };
             })
           );
@@ -104,6 +98,7 @@ const BioContainer = ({ isLoginuser }) => {
       getCategoryList();
     }
   }, [loginUserData]);
+  console.log(selectedCategory, "selectedCategory");
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
@@ -143,15 +138,29 @@ const BioContainer = ({ isLoginuser }) => {
             mode="multiple"
             allowClear
             className={classes.categorySelect}
-            value={selectedCategory}
-            onClear={(e) => {
-              setselectedCategory([]);
-            }}
             style={{ width: "100%" }}
             placeholder="Select Category"
             onChange={handleChangeOption}
-            options={influencerCategory}
-          />
+          >
+            {influencerCategory.map((ele) => {
+              return (
+                <Select.Option
+                  key={ele.id}
+                  disabled={
+                    selectedCategory.length > 2
+                      ? selectedCategory.find(
+                          (elem) => parseInt(elem.key) === ele.id
+                        )
+                        ? false
+                        : true
+                      : false
+                  }
+                >
+                  {ele.label}
+                </Select.Option>
+              );
+            })}
+          </Select>
           <p>Bio</p>
           <Input.TextArea
             className={`${classes.textBox} ${classes.textarea}`}

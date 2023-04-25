@@ -1,5 +1,4 @@
 import { Button, Col, Form, Input, Row, Select, Tooltip } from "antd";
-import dayjs from "dayjs";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -32,6 +31,7 @@ import { Container } from "react-bootstrap";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../../../Store/Storage";
 import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
+import moment from "moment";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -343,10 +343,6 @@ const UpdateProfile = () => {
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
                   onChange={(e) => {
-                    // setFieldValue(
-                    //   "last_name",
-                    //   e.target.value.replace(/\p{Emoji}/gu, "")
-                    // );
                     setFieldValue("last_name", e.target.value);
                   }}
                 />
@@ -366,10 +362,6 @@ const UpdateProfile = () => {
                   value={values.name}
                   maxLength={40}
                   onChange={(e) => {
-                    // setFieldValue(
-                    //   "name",
-                    //   e.target.value.replace(/\p{Emoji}/gu, "")
-                    // );
                     setFieldValue("name", e.target.value);
                   }}
                 />
@@ -402,7 +394,7 @@ const UpdateProfile = () => {
                 displayDate={values.dob}
                 onSelectDate={(date) => {
                   if (date !== "") {
-                    setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
+                    setFieldValue("dob", moment(date).format("YYYY-MM-DD"));
                   } else {
                     setFieldValue("dob", "");
                   }
