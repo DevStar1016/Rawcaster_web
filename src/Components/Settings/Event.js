@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
-import { Button, Checkbox, Select, Spin, Switch } from "antd";
+import { Button, Checkbox, Progress, Select, Spin, Switch } from "antd";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { useSettingsContext } from "../../Shared/Context";
 import { EventSettings } from "./Constants";
@@ -21,6 +21,7 @@ const Event = () => {
     updateValue,
     isMelodyUploading,
     setisMelodyUploading,
+    ProgressValue,
   } = useSettingsContext();
 
   const handlePrimaryDisabled = (type, isprimary) => {
@@ -298,19 +299,34 @@ const Event = () => {
                   Choose or upload an image that depicts this event. Leave blank
                   to use Rawcaster default.
                 </p>
-                {updateValue.includes("meeting_header_image") ? (
-                  <p>
-                    <Spin></Spin>
-                  </p>
-                ) : null}
+
                 <div style={{ maxWidth: "600px" }}>
-                  <BannerComponent
-                    value={formikvalues?.meeting_header_image}
-                    size={10}
-                    onResult={(val) => {
-                      setupdateValue("meeting_header_image", val);
-                    }}
-                  />
+                  {updateValue.includes("meeting_header_image") ? (
+                    <Spin
+                      tip="Please Wait..."
+                      size="small"
+                      spinning={updateValue.includes("meeting_header_image")}
+                    >
+                      <div
+                        className={`${classes.progressSec} eventProgressSec`}
+                      >
+                        <Progress
+                          percent={ProgressValue.percent}
+                          type="circle"
+                          className={classes.progress}
+                          strokeColor={{ "0%": "#108ee9", "100%": "#87d068" }}
+                        />
+                      </div>
+                    </Spin>
+                  ) : (
+                    <BannerComponent
+                      value={formikvalues?.meeting_header_image}
+                      size={10}
+                      onResult={(val) => {
+                        setupdateValue("meeting_header_image", val);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </Col>
@@ -321,19 +337,33 @@ const Event = () => {
                   Choose or upload an image that depicts this event. Leave blank
                   to use Rawcaster default.
                 </p>
-                {updateValue.includes("live_event_banner") ? (
-                  <p>
-                    <Spin></Spin>
-                  </p>
-                ) : null}
                 <div style={{ maxWidth: "600px" }}>
-                  <BannerComponent
-                    value={formikvalues?.live_event_banner}
-                    size={10}
-                    onResult={(val) => {
-                      setupdateValue("live_event_banner", val);
-                    }}
-                  />
+                  {updateValue.includes("live_event_banner") ? (
+                    <Spin
+                      tip="Please Wait..."
+                      size="small"
+                      spinning={updateValue.includes("live_event_banner")}
+                    >
+                      <div
+                        className={`${classes.progressSec} eventProgressSec`}
+                      >
+                        <Progress
+                          percent={ProgressValue.percent}
+                          type="circle"
+                          className={classes.progress}
+                          strokeColor={{ "0%": "#108ee9", "100%": "#87d068" }}
+                        />
+                      </div>
+                    </Spin>
+                  ) : (
+                    <BannerComponent
+                      value={formikvalues?.live_event_banner}
+                      size={10}
+                      onResult={(val) => {
+                        setupdateValue("live_event_banner", val);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </Col>
@@ -344,19 +374,34 @@ const Event = () => {
                   Choose or upload an image that depicts this event. Leave blank
                   to use Rawcaster default.
                 </p>
-                {updateValue.includes("talkshow_event_banner") ? (
-                  <p>
-                    <Spin></Spin>
-                  </p>
-                ) : null}
+
                 <div style={{ maxWidth: "600px" }}>
-                  <BannerComponent
-                    value={formikvalues?.talkshow_event_banner}
-                    size={10}
-                    onResult={(val) => {
-                      setupdateValue("talkshow_event_banner", val);
-                    }}
-                  />
+                  {updateValue.includes("talkshow_event_banner") ? (
+                    <Spin
+                      tip="Please Wait..."
+                      size="small"
+                      spinning={updateValue.includes("talkshow_event_banner")}
+                    >
+                      <div
+                        className={`${classes.progressSec} eventProgressSec`}
+                      >
+                        <Progress
+                          percent={ProgressValue.percent}
+                          type="circle"
+                          className={classes.progress}
+                          strokeColor={{ "0%": "#108ee9", "100%": "#87d068" }}
+                        />
+                      </div>
+                    </Spin>
+                  ) : (
+                    <BannerComponent
+                      value={formikvalues?.talkshow_event_banner}
+                      size={10}
+                      onResult={(val) => {
+                        setupdateValue("talkshow_event_banner", val);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </Col>

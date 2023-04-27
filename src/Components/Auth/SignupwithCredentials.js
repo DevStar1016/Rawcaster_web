@@ -21,7 +21,7 @@ import {
   isValidData,
   JSONtoformdata,
 } from "../../Shared/Utility";
-import { signupService } from "../../Services/ApiService";
+import { resendOtpService, signupService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import OwlCarousel from "react-owl-carousel";
@@ -33,6 +33,7 @@ import {
   setCookieData,
 } from "../../Store/Storage";
 import moment from "moment";
+import { handletwostepVerifyModalshow } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();
@@ -140,19 +141,7 @@ const SignupwithCredentials = () => {
     signupService(JSONtoformdata(signupValue))
       .then((res) => {
         if (res.data.status === 1) {
-          getProfile(res.data.token, dispatch).then(() => {
-            let finalVal = {
-              ...res.data,
-            };
-            delete finalVal["name"];
-            setCookieData("rawcaster_user_token", finalVal);
-            if (getSessionStorageData("influencerData")) {
-              navigate("/selectinfluencers");
-              removeSessionStorageData("influencerData");
-            } else {
-              navigate("/dashboard");
-            }
-          });
+          handleProfileUpdate(res.data);
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {
@@ -162,6 +151,39 @@ const SignupwithCredentials = () => {
       .catch((err) => {
         toast.error(err.message);
       });
+  };
+
+  const handleNavigateValue = () => {
+    if (getSessionStorageData("influencerData")) {
+      removeSessionStorageData("influencerData");
+      return "/selectinfluencers";
+    } else {
+      return "/dashboard";
+    }
+  };
+
+  const handleProfileUpdate = (res) => {
+    if (getLoginType().id === 1) {
+      navigate("/verifyotp", {
+        state: {
+          type: "email",
+          navigatePath: handleNavigateValue(),
+          otp_ref_id: res?.otp_ref_id,
+          msg: "OTP sent to your Email",
+          remaining_seconds: res?.remaining_seconds,
+        },
+      });
+    } else if (getLoginType().id === 2) {
+      navigate("/verifyotp", {
+        state: {
+          type: "sms",
+          navigatePath: handleNavigateValue(),
+          otp_ref_id: res?.otp_ref_id,
+          msg: "OTP sent to your Mobile Number",
+          remaining_seconds: res?.remaining_seconds,
+        },
+      });
+    }
   };
 
   const carouselOptions = {

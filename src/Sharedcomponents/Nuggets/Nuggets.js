@@ -20,6 +20,7 @@ import {
   handleNuggetFormData,
   handleNuggetList,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import VerifiedModal from "../../Modal/Verification/VerifiedModal";
 
 const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   const dispatch = useDispatch();

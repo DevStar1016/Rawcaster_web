@@ -21,6 +21,10 @@ const Settings = () => {
   const token = useAuthToken();
   const [updateValue, setupdateValue] = useState([]);
   const dispatch = useDispatch();
+  const [Progress, setProgress] = useState({
+    percent: 0,
+    show: false,
+  });
   const [isMelodyUploading, setisMelodyUploading] = useState(false);
   const { values, setValues, setFieldValue } = useFormik({
     online_status: "",
@@ -118,10 +122,20 @@ const Settings = () => {
         lock_fans: userSettings?.lock_fans,
         lock_my_connection: userSettings?.lock_my_connection,
         lock_my_influencer: userSettings?.lock_my_influencer,
+        live_event_banner: userSettings?.live_event_banner,
+        talkshow_event_banner: userSettings?.talkshow_event_banner,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSettings]);
+
+  const handleProgress = (progress) => {
+    let val = (progress.loaded / progress.total) * 100;
+    setProgress({
+      percent: Math.round(val),
+      show: true,
+    });
+  };
 
   const handleupdate = (objValue) => {
     let promise = new Promise((resolve, reject) => {
@@ -129,7 +143,7 @@ const Settings = () => {
         ...objValue,
         token: token,
       };
-      updateUserSettingsService(JSONtoformdata(finalObj))
+      updateUserSettingsService(JSONtoformdata(finalObj), handleProgress)
         .then((res) => {
           if (res.data.status === 1) {
             toast.success("Successfully Updated");
@@ -138,8 +152,7 @@ const Settings = () => {
           } else {
             return;
           }
-          let keys = Object.keys(objValue);
-          setupdateValue((pre) => pre.filter((ele) => ele !== keys[0]));
+
           getUserSettings(token, dispatch).then((response) => {
             resolve(response);
           });
@@ -148,6 +161,8 @@ const Settings = () => {
           toast.error(err.message);
         })
         .finally(() => {
+          let keys = Object.keys(objValue);
+          setupdateValue((pre) => pre.filter((ele) => ele !== keys[0]));
           setisMelodyUploading(false);
         });
     });
@@ -201,6 +216,7 @@ const Settings = () => {
     setisMelodyUploading,
     updateValue,
     handleupdate,
+    ProgressValue: Progress,
   };
 
   return (

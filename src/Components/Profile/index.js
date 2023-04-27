@@ -45,7 +45,6 @@ import {
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
-import LockedConnections from "./Privacy/Connections";
 
 const Profile = () => {
   const params = useParams();
@@ -180,6 +179,9 @@ const Profile = () => {
                   setisCoverLoading(true);
                 }}
                 onLoad={() => {
+                  setisCoverLoading(false);
+                }}
+                onError={() => {
                   setisCoverLoading(false);
                 }}
               />

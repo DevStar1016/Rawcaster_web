@@ -55,9 +55,9 @@ const OthersEventListing = () => {
       <h2>Events</h2>
       <Row>
         {EventListData?.map((ele) => (
-          <Col>
+          <Col sm={6}>
             <div>
-              <Event ele={ele} setList={setEventListData} />
+              <Event ele={ele} setList={setEventListData} isOthers={true} />
             </div>
           </Col>
         ))}

@@ -324,7 +324,7 @@ margin: 12px 0;
 }
 .othersEventCard {
   float: left;
-  padding: 5px;
+  padding: 5px 15px;
   border: 1px solid #ECECEC;
   border-radius: 12px;
   width: 100%;

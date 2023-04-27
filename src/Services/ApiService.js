@@ -64,8 +64,10 @@ export const getOthersProfileService = (data) => {
 export const updateProfileService = (data) => {
   return axios.post("updatemyprofile", data);
 };
-export const updateUserSettingsService = (data) => {
-  return axios.post("updateusersettings", data);
+export const updateUserSettingsService = (data, progress) => {
+  return axios.post("updateusersettings", data, {
+    onUploadProgress: progress,
+  });
 };
 export const grouplistupdateService = (data) => {
   return axios.post("grouplistupdate", data);

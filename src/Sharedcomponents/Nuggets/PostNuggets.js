@@ -75,7 +75,9 @@ const PostNuggets = () => {
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
     formData.append("nugget_id", isEdit);
-    formData.append("content", val.content);
+    if (val.content !== "") {
+      formData.append("content", val.content);
+    }
     if (deletedMedia.length !== 0) {
       formData.append("delete_media_id", JSON.stringify(deletedMedia));
     }
@@ -142,7 +144,9 @@ const PostNuggets = () => {
         setPollData([]);
       }
     } else {
-      formData.append("content", val.content);
+      if (val.content !== "") {
+        formData.append("content", val.content);
+      }
     }
     if (MetaData && NuggetData.length === 0) {
       formData.append("metadata", JSON.stringify(MetaData));
