@@ -21,7 +21,6 @@ import {
   isValidData,
   JSONtoformdata,
 } from "../../Shared/Utility";
-import dayjs from "dayjs";
 import { signupService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -33,6 +32,7 @@ import {
   removeSessionStorageData,
   setCookieData,
 } from "../../Store/Storage";
+import moment from "moment";
 
 const SignupwithCredentials = () => {
   const { pathname } = useLocation();
@@ -267,7 +267,7 @@ const SignupwithCredentials = () => {
                   status={errors.dob ? "error" : ""}
                   onSelectDate={(date) => {
                     if (date !== "") {
-                      setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
+                      setFieldValue("dob", moment(date).format("YYYY-MM-DD"));
                     } else {
                       setFieldValue("dob", "");
                     }

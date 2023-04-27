@@ -40,7 +40,7 @@ width: 100%;
 }
 .logopart { width: 320px; cursor: pointer;}
 .logopart img { height: 40px;}
-.rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 320px; }
+.rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 350px; }
 .topSearch {
   width: calc(100% - 640px);
   height: 45px; max-width: 520px;

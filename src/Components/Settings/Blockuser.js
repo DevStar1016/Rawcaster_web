@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import classes from "./Settings.module.css";
 import { Button, Select } from "antd";
-import InfiniteScroll from "react-infinite-scroller";
 import { useAuthToken, useDashboard } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
@@ -192,35 +191,30 @@ const Blockuser = () => {
       </div>
 
       <div>
-        <InfiniteScroll initialLoad={false} pageStart={0} useWindow={true}>
-          {blockUserList.map((friend, index) => {
-            return (
-              <div className={classes.blockedList} key={index}>
-                <div style={{ display: "flex" }}>
-                  <img
-                    src={friend.profile_img}
-                    className={classes.userimg}
-                  ></img>
-                  <span className="mr-3"></span>
-                  <span className={classes.display_name}>
-                    {decodeHtml(friend.display_name)}
-                  </span>
-                </div>
-
-                <Button
-                  className={classes.unblkBtn}
-                  ghost
-                  type="primary"
-                  onClick={() => {
-                    handleunblockuser(friend.user_id);
-                  }}
-                >
-                  UnBlock
-                </Button>
+        {blockUserList.map((friend, index) => {
+          return (
+            <div className={classes.blockedList} key={index}>
+              <div style={{ display: "flex" }}>
+                <img src={friend.profile_img} className={classes.userimg}></img>
+                <span className="mr-3"></span>
+                <span className={classes.display_name}>
+                  {decodeHtml(friend.display_name)}
+                </span>
               </div>
-            );
-          })}
-        </InfiniteScroll>
+
+              <Button
+                className={classes.unblkBtn}
+                ghost
+                type="primary"
+                onClick={() => {
+                  handleunblockuser(friend.user_id);
+                }}
+              >
+                UnBlock
+              </Button>
+            </div>
+          );
+        })}
       </div>
       <div
         style={{ textAlign: "center", marginTop: "40px", maxWidth: "510px" }}

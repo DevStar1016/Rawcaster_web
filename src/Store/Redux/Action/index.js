@@ -53,10 +53,7 @@ export const fetchgroupsbyId = createAsyncThunk(
       );
 
       if (data.status === 1) {
-        let user_group_list = data.friend_group_list.filter((ele) => {
-          return ele.group_owner === res.user_id;
-        });
-        return user_group_list;
+        return data.friend_group_list;
       } else {
         return [];
       }

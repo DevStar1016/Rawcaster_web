@@ -5,7 +5,6 @@ import {
   getAuthenticated,
   getRawcaserToken,
 } from "../../Shared/Utility";
-import dayjs from "dayjs";
 import PostNuggets from "./PostNuggets";
 import { ListNuggetContext } from "../../Shared/Context";
 import PostProgress from "./PostProgress";
@@ -22,10 +21,7 @@ import {
   handleNuggetList,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 
-var relativeTime = require("dayjs/plugin/relativeTime");
-dayjs.extend(relativeTime);
-
-const Nuggets = ({ isLocked = false }) => {
+const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   const dispatch = useDispatch();
   const params = useParams();
   const [ViewedList, setViewedList] = useState([]);
@@ -137,7 +133,7 @@ const Nuggets = ({ isLocked = false }) => {
   };
 
   const isValidPage = () => {
-    if (getAuthenticated()) {
+    if (getAuthenticated() && isUserPostAvailable) {
       if (parseInt(display_user_id) === parseInt(userData?.user_id)) {
         return true;
       } else if (!display_user_id) {

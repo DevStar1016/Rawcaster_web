@@ -40,11 +40,15 @@
     flex-direction: row;
     justify-content: space-between;
 }
+.headingSec h2 {
+    width: 100%;
+}
 .editSec {
     padding: 5px 10px;
     border-radius: 70px;
     background: #F1F2F5;
     cursor: pointer;
+    height: 35px;
 }
 .uploadSec .loader {
     font-size: 15px !important;
@@ -104,7 +108,25 @@
 .othersprofileEvent { width: 40% !important; }  
 .othersprofileEvent .rightProfiles { width: 100%;  }
 .othersprofileEvent .profileIntro { padding: 25px; border: 1px solid #ECECEC; border-radius: 12px; }
-
+.categorySec {
+    max-width: 400px;
+  }
+.bioEditSec p {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 26px;
+    color: #1D1C1C;
+    margin-bottom: 0px !important;
+   
+}
+.bioEditSec .categorySelect
+{
+    
+    margin-bottom: 5px !important;
+    border:1px solid #839BA0;;
+}
 @media (max-width:768px) {
 .profileContainer { padding-left: 10px; margin-top: -40px; }
 .profileSec { width: 100px; }

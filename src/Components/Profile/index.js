@@ -332,18 +332,23 @@ const Profile = () => {
                           <i className={classes.editIcon}></i>
                         </div>
                       </div>
-                      {/* <div className={classes.item}>
-                <p>
-                  <img src={profile_work} />
-                </p>{" "}
-                Work at Rawcaster
-              </div>
-              <div className={classes.item}>
-                <p>
-                  <img src={profile_edu} />
-                </p>{" "}
-                Studied at ABCD
-              </div> */}
+                      {profileData?.work_at && profileData?.work_at !== "" && (
+                        <div className={classes.item}>
+                          <p>
+                            <img src={profile_work} />
+                          </p>{" "}
+                          Work at {profileData?.work_at}
+                        </div>
+                      )}
+                      {profileData?.studied_at &&
+                        profileData?.studied_at !== "" && (
+                          <div className={classes.item}>
+                            <p>
+                              <img src={profile_edu} />
+                            </p>{" "}
+                            Studied at {profileData?.studied_at}
+                          </div>
+                        )}
                       {profileData?.geo_location && (
                         <div className={classes.item}>
                           <p>

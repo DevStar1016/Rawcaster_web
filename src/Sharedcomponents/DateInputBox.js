@@ -1,9 +1,6 @@
 import { Select } from "antd";
-import dayjs from "dayjs";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
-var localeData = require("dayjs/plugin/localeData");
-dayjs.extend(localeData);
-dayjs().localeData();
 
 var ValidAge = 13;
 const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
@@ -25,9 +22,9 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
     ) {
       if (isValidData(displayDate)) {
         setDate({
-          year: dayjs(displayDate).get("year"),
-          month: dayjs(displayDate).get("month") + 1,
-          day: dayjs(displayDate).get("date"),
+          year: moment(displayDate).get("year"),
+          month: moment(displayDate).get("month") + 1,
+          day: moment(displayDate).get("date"),
         });
       }
     }
@@ -62,9 +59,9 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
     let thisYear = new Date().getFullYear() - ValidAge;
 
     if (isValidData(year) && year === thisYear) {
-      return dayjs.months().slice(0, new Date().getMonth() + 1);
+      return moment.months().slice(0, new Date().getMonth() + 1);
     }
-    return dayjs.months();
+    return moment.months();
   };
 
   function getMonths(year = date.year) {
@@ -145,7 +142,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
       isValidData(date.month) &&
       isValidData(date.year)
     ) {
-      let resultDate = dayjs(
+      let resultDate = moment(
         date.year + "-" + date.month + "-" + date.day
       ).toDate();
       onSelectDate(resultDate);

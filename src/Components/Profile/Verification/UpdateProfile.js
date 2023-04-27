@@ -1,5 +1,4 @@
 import { Button, Col, Form, Input, Row, Select, Tooltip } from "antd";
-import dayjs from "dayjs";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -32,6 +31,7 @@ import { Container } from "react-bootstrap";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../../../Store/Storage";
 import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
+import moment from "moment";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -91,6 +91,8 @@ const UpdateProfile = () => {
       geo_location: "",
       latitude: "",
       longitude: "",
+      work_at: "",
+      studied_at: "",
     },
     validationSchema,
     onSubmit: (values) => {
@@ -128,6 +130,8 @@ const UpdateProfile = () => {
             mobile_no: profileData.mobile,
             profile_image: profileData.profile_image,
             geo_location: profileData.geo_location || "",
+            work_at: profileData.work_at,
+            studied_at: profileData.studied_at,
           }));
           const isTwoStepVerified =
             profileData.is_email_id_verified === 1 &&
@@ -228,6 +232,8 @@ const UpdateProfile = () => {
         ...profileValue,
         profile_image: ProfileImage,
       };
+    } else if (typeof profileValue.profile_image === "string") {
+      delete profileValue.profile_image;
     }
     updateProfileService(JSONtoformdata(filterValidObject(profileValue)))
       .then((res) => {
@@ -318,10 +324,6 @@ const UpdateProfile = () => {
                   }
                   value={values.first_name}
                   onChange={(e) => {
-                    // setFieldValue(
-                    //   "first_name",
-                    //   e.target.value.replace(/\p{Emoji}/gu, "")
-                    // );
                     setFieldValue("first_name", e.target.value);
                   }}
                 />
@@ -341,10 +343,6 @@ const UpdateProfile = () => {
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
                   onChange={(e) => {
-                    // setFieldValue(
-                    //   "last_name",
-                    //   e.target.value.replace(/\p{Emoji}/gu, "")
-                    // );
                     setFieldValue("last_name", e.target.value);
                   }}
                 />
@@ -364,10 +362,6 @@ const UpdateProfile = () => {
                   value={values.name}
                   maxLength={40}
                   onChange={(e) => {
-                    // setFieldValue(
-                    //   "name",
-                    //   e.target.value.replace(/\p{Emoji}/gu, "")
-                    // );
                     setFieldValue("name", e.target.value);
                   }}
                 />
@@ -400,7 +394,7 @@ const UpdateProfile = () => {
                 displayDate={values.dob}
                 onSelectDate={(date) => {
                   if (date !== "") {
-                    setFieldValue("dob", dayjs(date).format("YYYY-MM-DD"));
+                    setFieldValue("dob", moment(date).format("YYYY-MM-DD"));
                   } else {
                     setFieldValue("dob", "");
                   }
@@ -499,6 +493,44 @@ const UpdateProfile = () => {
                 {touched.geo_location && (
                   <p className="ErrTxt">{errors?.geo_location}</p>
                 )}
+              </Form.Item>
+            </Col>
+            <Col sm={12} xs={24}>
+              <p className={classes.label}>Studied At</p>
+              <Form.Item name="name">
+                <Input
+                  size="large"
+                  className={classes.textBox}
+                  placeholder="Studied At"
+                  status={
+                    touched.studied_at && errors.studied_at ? "error" : ""
+                  }
+                  value={values.studied_at}
+                  maxLength={50}
+                  onChange={(e) => {
+                    setFieldValue("studied_at", e.target.value);
+                  }}
+                />
+                {touched.studied_at && (
+                  <p className="ErrTxt">{errors?.studied_at}</p>
+                )}
+              </Form.Item>
+            </Col>
+            <Col sm={12} xs={24}>
+              <p className={classes.label}>Work At</p>
+              <Form.Item name="name">
+                <Input
+                  size="large"
+                  className={classes.textBox}
+                  placeholder="Work At"
+                  status={touched.work_at && errors.work_at ? "error" : ""}
+                  value={values.work_at}
+                  maxLength={50}
+                  onChange={(e) => {
+                    setFieldValue("work_at", e.target.value);
+                  }}
+                />
+                {touched.work_at && <p className="ErrTxt">{errors?.work_at}</p>}
               </Form.Item>
             </Col>
 

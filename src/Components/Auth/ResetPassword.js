@@ -7,7 +7,6 @@ import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import { useFormik } from "formik";
 import OtpInput from "react-otp-input";
-import dayjs from "dayjs";
 import * as yup from "yup";
 import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import {
@@ -15,12 +14,12 @@ import {
   verifyotpsendPasswordService,
 } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
-import { PASSWORD_EXP } from "../../Shared/Constant";
 import {
   getSessionStorageData,
   removeSessionStorageData,
   setSessionStorageData,
 } from "../../Store/Storage";
+import moment from "moment";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -106,9 +105,9 @@ const ResetPassword = () => {
     }
 
     if (finalTimeVal && finalTimeVal.counter) {
-      const difference = dayjs(new Date() - new Date(finalTimeVal.Date)).format(
-        "ss"
-      );
+      const difference = moment(
+        new Date() - new Date(finalTimeVal.Date)
+      ).format("ss");
 
       setTimerValue(finalTimeVal.counter - difference);
       setSessionStorageData(

@@ -1,5 +1,4 @@
 import { Button, Col } from "antd";
-import dayjs from "dayjs";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
@@ -21,6 +20,7 @@ import { useAuthToken } from "../../../Shared/Reduxfetcher";
 import { handleLoading } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
 import { getProfile } from "../../../Components/Auth/getProfile";
+import moment from "moment";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -68,9 +68,9 @@ const VerifyOtp = () => {
     }
 
     if (finalTimeVal && finalTimeVal.counter) {
-      const difference = dayjs(new Date() - new Date(finalTimeVal.Date)).format(
-        "ss"
-      );
+      const difference = moment(
+        new Date() - new Date(finalTimeVal.Date)
+      ).format("ss");
 
       setTimerValue(finalTimeVal.counter - difference);
       setSessionStorageData(

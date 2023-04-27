@@ -11,12 +11,9 @@ import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
 import { Dropdown, Input } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
-import dayjs from "dayjs";
-import {
-  useListNuggetContext,
-  useSingleNuggetContext,
-} from "../../Shared/Context";
+import { useSingleNuggetContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
+import moment from "moment";
 
 const ReplyList = ({
   isReplyEnabled,
@@ -387,7 +384,7 @@ const ReplyList = ({
                             </div>
 
                             <div className={classes.time}>
-                              {dayjs(elem?.created_date).fromNow(true)} ago
+                              {moment(elem?.created_date).fromNow(true)} ago
                             </div>
                           </div>
                         </div>
