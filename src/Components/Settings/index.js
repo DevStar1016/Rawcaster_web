@@ -67,6 +67,8 @@ const Settings = () => {
     lock_fans: 0,
     lock_my_connection: 0,
     lock_my_influencer: 0,
+    live_event_banner: "",
+    talkshow_event_banner: "",
   });
 
   useEffect(() => {

@@ -60,6 +60,7 @@
   border: 1px solid #E8EAEE;
   border-radius: 7px;
   width: 100%;
+  min-width: 300px;
   padding: 10px;
   margin: 10px 0;
   cursor: pointer;

@@ -45,12 +45,27 @@ const BioContainer = ({ isLoginuser }) => {
     }
   };
 
+  useEffect(() => {
+    if (profileData && influencerCategory.length !== 0) {
+      let givenArray = profileData?.influencer_category.split(",");
+      let filterData = influencerCategory.filter((ele) => {
+        return givenArray.find((item) => parseInt(item) === parseInt(ele.id));
+      });
+      setselectedCategory(filterData);
+    }
+  }, [profileData, influencerCategory]);
+
   const updateBioDataHandler = (values) => {
     var formData = new FormData();
     formData.append("token", loginToken);
     formData.append("name", decodeHtml(loginUserData.name));
     formData.append("auth_code", getAuthToken(loginToken + loginUserData.name));
     formData.append("bio_data", values.bio_data);
+    if (selectedCategory.length !== 0) {
+      let filterIDs = selectedCategory.map((ele) => parseInt(ele.id));
+      formData.append("influencer_category", filterIDs.toString());
+    }
+
     updateProfileService(formData)
       .then((response) => {
         if (response.data.status === 1) {
@@ -64,7 +79,16 @@ const BioContainer = ({ isLoginuser }) => {
   };
 
   const handleChangeOption = (value, val) => {
-    setselectedCategory(val);
+    console.log(value);
+    let finalResult = influencerCategory.map((ele) => {
+      let findValue = value.find((item) => item === ele.label);
+      if (findValue) {
+        return ele;
+      }
+      return null;
+    });
+    finalResult = finalResult.filter((ele) => ele !== null);
+    setselectedCategory(finalResult);
   };
 
   const getCategoryList = () => {
@@ -98,14 +122,18 @@ const BioContainer = ({ isLoginuser }) => {
       getCategoryList();
     }
   }, [loginUserData]);
-  console.log(selectedCategory, "selectedCategory");
+
+  const getLabelValue = () => {
+    return selectedCategory.map((ele) => ele.value);
+  };
+
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
         <h2>
           About {profileData?.first_name}{" "}
           <i class="material-icons">fiber_manual_record</i>{" "}
-          <span>Entertainer</span>
+          <span>{getLabelValue().toString()}</span>
         </h2>
 
         {isAboutEdit ? (
@@ -138,6 +166,7 @@ const BioContainer = ({ isLoginuser }) => {
             mode="multiple"
             allowClear
             className={classes.categorySelect}
+            value={selectedCategory}
             style={{ width: "100%" }}
             placeholder="Select Category"
             onChange={handleChangeOption}
@@ -145,7 +174,7 @@ const BioContainer = ({ isLoginuser }) => {
             {influencerCategory.map((ele) => {
               return (
                 <Select.Option
-                  key={ele.id}
+                  key={ele.value}
                   disabled={
                     selectedCategory.length > 2
                       ? selectedCategory.find(

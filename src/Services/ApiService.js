@@ -260,6 +260,13 @@ export const getFollowListService = (data) => {
   return axios.post("getfollowlist", data);
 };
 
+export const listClaimAccountService = (data) => {
+  return axios.post("listunclaimaccount", data);
+};
+
+export const AddClaimAccountService = (data) => {
+  return axios.post("addclaimaccount", data);
+};
 // Influencer
 
 export const getInfluencerCategoryService = (data) => {

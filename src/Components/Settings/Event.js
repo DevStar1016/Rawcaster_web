@@ -8,6 +8,7 @@ import { EventTypeComponent } from "../Events/Configure/Utility";
 import { toast } from "react-hot-toast";
 import { BannerComponent } from "../Events/Configure/Utility";
 import { getMelodyData } from "../../Shared/DropdownApis";
+import { Col, Row } from "react-bootstrap";
 
 const Event = () => {
   const { loginUserData } = useAuth();
@@ -289,27 +290,77 @@ const Event = () => {
             </div>
           ) : null}
 
-          <div className={`${classes.item} ${classes.melodyBox}`}>
-            <p className={classes.smallheading}>Meeting Header Image</p>
-            <p className={classes.text}>
-              Choose or upload an image that depicts this event. Leave blank to
-              use Rawcaster default.
-            </p>
-            {updateValue.includes("meeting_header_image") ? (
-              <p>
-                <Spin></Spin>
-              </p>
-            ) : null}
-            <div style={{maxWidth:"600px"}}>
-              <BannerComponent
-                value={formikvalues?.meeting_header_image}
-                size={10}
-                onResult={(val) => {
-                  setupdateValue("meeting_header_image", val);
-                }}
-              />
-            </div>
-          </div>
+          <Row>
+            <Col sm={4}>
+              <div className={`${classes.item} ${classes.melodyBox}`}>
+                <p className={classes.smallheading}>Meeting Header Image</p>
+                <p className={classes.text}>
+                  Choose or upload an image that depicts this event. Leave blank
+                  to use Rawcaster default.
+                </p>
+                {updateValue.includes("meeting_header_image") ? (
+                  <p>
+                    <Spin></Spin>
+                  </p>
+                ) : null}
+                <div style={{ maxWidth: "600px" }}>
+                  <BannerComponent
+                    value={formikvalues?.meeting_header_image}
+                    size={10}
+                    onResult={(val) => {
+                      setupdateValue("meeting_header_image", val);
+                    }}
+                  />
+                </div>
+              </div>
+            </Col>
+            <Col sm={4}>
+              <div className={`${classes.item} ${classes.melodyBox}`}>
+                <p className={classes.smallheading}>Live Event Banner</p>
+                <p className={classes.text}>
+                  Choose or upload an image that depicts this event. Leave blank
+                  to use Rawcaster default.
+                </p>
+                {updateValue.includes("live_event_banner") ? (
+                  <p>
+                    <Spin></Spin>
+                  </p>
+                ) : null}
+                <div style={{ maxWidth: "600px" }}>
+                  <BannerComponent
+                    value={formikvalues?.live_event_banner}
+                    size={10}
+                    onResult={(val) => {
+                      setupdateValue("live_event_banner", val);
+                    }}
+                  />
+                </div>
+              </div>
+            </Col>
+            <Col sm={4}>
+              <div className={`${classes.item} ${classes.melodyBox}`}>
+                <p className={classes.smallheading}>Talkshow Event Banner</p>
+                <p className={classes.text}>
+                  Choose or upload an image that depicts this event. Leave blank
+                  to use Rawcaster default.
+                </p>
+                {updateValue.includes("talkshow_event_banner") ? (
+                  <p>
+                    <Spin></Spin>
+                  </p>
+                ) : null}
+                <div style={{ maxWidth: "600px" }}>
+                  <BannerComponent
+                    value={formikvalues?.talkshow_event_banner}
+                    size={10}
+                    onResult={(val) => {
+                      setupdateValue("talkshow_event_banner", val);
+                    }}
+                  />
+                </div>
+              </div>
+            </Col>
+          </Row>
         </>
       )}
 

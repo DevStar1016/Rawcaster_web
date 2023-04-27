@@ -43,8 +43,12 @@ const ProfileImg = ({
     <>
       <img
         className={imgClassName}
-        src={isLoggedIn ? src : userImg}
-        alt={isLoggedIn ? src : userImg}
+        src={isLoggedIn ? (src ? src : userImg) : userImg}
+        alt={isLoggedIn ? (src ? src : userImg) : userImg}
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null; // prevents looping
+          currentTarget.src = userImg;
+        }}
       />
       <Tooltip
         title={BadgeTitle}

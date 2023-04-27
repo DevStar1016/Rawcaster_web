@@ -8,7 +8,11 @@ import {
 import { Skeleton } from "antd";
 import EmptyImg from "../../../Assets/Images/svg/empty_connections.svg";
 import ConnectionModal from "../../../Modal/Connections/Connection";
-import { getConnectionData, getfollowerfollowingService } from "./Utility";
+import {
+  getConnectionData,
+  getUnclaimedInfluencerData,
+  getfollowerfollowingService,
+} from "./Utility";
 import { toast } from "react-hot-toast";
 import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
@@ -16,6 +20,7 @@ import msgIcon from "../../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
 import { useDispatch } from "react-redux";
 import InfluencerSend from "../../../Modal/InfluencerSend";
+import ClaimAccount from "../../../Modal/Connections/ClaimAccount";
 
 const ConnectionsList = ({
   title = "",
@@ -29,6 +34,10 @@ const ConnectionsList = ({
   const display_user_id = DecryptionString(params.user_id);
   const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
     user: "",
+    show: false,
+  });
+  const [ClaimAccountModal, setClaimAccountModal] = useState({
+    id: "",
     show: false,
   });
   const loginToken = useAuthToken();
@@ -73,6 +82,17 @@ const ConnectionsList = ({
       });
   };
 
+  const getUnclaimedInfluencer = () => {
+    getUnclaimedInfluencerData(loginToken)
+      .then((res) => {
+        console.log(res, "===>res");
+        setConnectionsList(res);
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
   useEffect(() => {
     if (type === "influencers") {
       getUserList();
@@ -80,6 +100,8 @@ const ConnectionsList = ({
       getConnectionList();
     } else if (type === "fans") {
       setConnectionsList(FansList);
+    } else if (type === "unclaimed_influencers") {
+      getUnclaimedInfluencer();
     }
   }, [FansList]);
 
@@ -178,6 +200,17 @@ const ConnectionsList = ({
                                   });
                                 }}
                               />
+                            ) : type === "unclaimed_influencers" &&
+                              isLoginUser ? (
+                              <i
+                                className={classes.sheildIcon}
+                                onClick={() => {
+                                  setClaimAccountModal({
+                                    id: ele.user_id,
+                                    show: true,
+                                  });
+                                }}
+                              />
                             ) : null}
                           </div>
                           <img
@@ -250,6 +283,23 @@ const ConnectionsList = ({
           }}
         />
       )}
+      <ClaimAccount
+        visible={ClaimAccountModal.show}
+        id={ClaimAccountModal.id}
+        onSuccess={() => {
+          getUnclaimedInfluencer();
+          setClaimAccountModal({
+            id: "",
+            show: false,
+          });
+        }}
+        onClose={() => {
+          setClaimAccountModal({
+            id: "",
+            show: false,
+          });
+        }}
+      />
     </div>
   );
 };

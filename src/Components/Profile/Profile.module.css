@@ -41,7 +41,22 @@
     justify-content: space-between;
 }
 .headingSec h2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     width: 100%;
+}
+.headingSec h2 i {
+    margin-bottom: 5px;
+}
+.headingSec h2 span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+    margin-left: 5px;
+    margin-bottom: 0px !important;
 }
 .editSec {
     padding: 5px 10px;

@@ -1,6 +1,7 @@
 import {
   getFollowListService,
   listAllFriendsService,
+  listClaimAccountService,
 } from "../../../Services/ApiService";
 import { JSONtoformdata } from "../../../Shared/Utility";
 
@@ -21,6 +22,53 @@ export const getfollowerfollowingService = (fansList) => {
             allconnections: res.data.follow_list,
             allconnectionscount: parseInt(res.data.follow_count),
             connectionscount: getFansCount(),
+            isLoaded: true,
+          });
+        } else {
+          resolve({
+            connections: [],
+            allconnections: [],
+            allconnectionscount: 0,
+            connectionscount: 0,
+            isLoaded: true,
+          });
+        }
+      })
+      .catch((err) => {
+        resolve({
+          connections: [],
+          allconnections: [],
+          allconnectionscount: 0,
+          connectionscount: 0,
+          isLoaded: true,
+        });
+      });
+  });
+  return promise;
+};
+
+export const getUnclaimedInfluencerData = (token) => {
+  let promise = new Promise((resolve, reject) => {
+    let listData = {
+      token: token,
+    };
+    listClaimAccountService(JSONtoformdata(listData))
+      .then(({ data }) => {
+        if (data.status === 1) {
+          let contactlist = data.unclaim_accounts;
+
+          const getCount = () => {
+            if (parseInt(contactlist) > 8) {
+              return parseInt(contactlist) - 8;
+            } else {
+              return 0;
+            }
+          };
+          resolve({
+            connections: contactlist.slice(0, 8),
+            allconnections: contactlist,
+            allconnectionscount: contactlist.length,
+            connectionscount: getCount(),
             isLoaded: true,
           });
         } else {
