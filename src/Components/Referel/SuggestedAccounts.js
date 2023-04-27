@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Referel.module.css";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { useDispatch } from "react-redux";
 import {
-  FollowandunfollowService,
+  InfluencerFollowService,
   InfluencerListService,
 } from "../../Services/ApiService";
 import {
@@ -47,10 +46,9 @@ const SuggestedAccounts = () => {
     let becameFanData = {
       token: token,
       auth_code: getAuthToken(token),
-      follow_userid: ele.user_ref_id,
-      type: 1,
+      follow_userid: JSON.stringify([ele?.user_ref_id]),
     };
-    FollowandunfollowService(JSONtoformdata(becameFanData))
+    InfluencerFollowService(JSONtoformdata(becameFanData))
       .then((res) => {
         if (res.data.status === 1) {
           getInfluencerList();
@@ -84,18 +82,18 @@ const SuggestedAccounts = () => {
                   )}
                 </div>
               </Col>
-              {!ele.follow && (
-                <Col sm={5}>
-                  <div
-                    className={classes.becameFan}
-                    onClick={() => {
-                      handleBecomeFan(ele);
-                    }}
-                  >
-                    Became a fan
-                  </div>
-                </Col>
-              )}
+              {/* {!ele.follow && ( */}
+              <Col sm={5}>
+                <div
+                  className={classes.becameFan}
+                  onClick={() => {
+                    handleBecomeFan(ele);
+                  }}
+                >
+                  Became a fan
+                </div>
+              </Col>
+              {/* )} */}
             </Row>
           );
         })}

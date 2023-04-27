@@ -1,0 +1,214 @@
+.centerSec {
+    padding: 0 30px;
+
+    background: #fff;
+    border-top: 20px #fff solid;
+    overflow: auto;
+  }
+  .centerSec .refImg {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+  .centerSec .grpImg {
+    margin-bottom: -70px;
+    max-width: 175px;
+    margin-left: 30px;
+  }
+  .centerSec .mailBox {
+    background: linear-gradient(116.6deg, #f3738b 0.88%, #f99f46 99.2%);
+    box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    float: left;
+    margin: 20px 0;
+    padding: 70px 30px 30px 30px;
+    border-radius: 20px;
+  }
+  .centerSec .mailBox h1 {
+    color: #fff !important;
+    text-align: left;
+    font-size: 28px;
+    line-height: 30px;
+    font-family: "Gilroy-Bold";
+  }
+  .centerSec .mailBox label {
+    font-size: 17px !important;
+    color: #fff !important;
+    font-size: 15px;
+    margin-bottom: 10px !important;
+    font-family: "DM Sans", sans-serif;
+  }
+  .centerSec .textBox {
+    color: #fff !important;
+    font-family: "DM Sans", sans-serif;
+    border: 1.5px solid #ffffff !important;
+    margin-top: 5px;
+    background: transparent !important;
+    height: 58px;
+    font-size: 16px;
+    border: 1.5px solid #ffffff;
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
+  .centerSec .textBox::placeholder {
+    font-family: "DM Sans", sans-serif;
+    color: #fff !important;
+    opacity: 1;
+  }
+  .centerSec .textBox:focus {
+    box-shadow: none;
+    outline: none;
+  }
+  .gmailReferalBox {
+    text-align: center;
+  }
+  .gmailReferalBox .gmailImg {
+    height: 60px;
+    margin: 20px 0 0 0;
+  }
+  
+  .gmailReferalBox .userName {
+    font-weight: 600;
+    font-family: "DM Sans", sans-serif;
+    font-size: 20px;
+    margin-bottom: 0;
+    color: #1d1c1c;
+  }
+  .gmailReferalBox .userEmail {
+    color: #1d1c1c;
+    font-weight: 400;
+    font-family: "DM Sans", sans-serif;
+    font-size: 17px;
+  }
+  .contactlistContainer {
+    position: relative;
+  }
+  .contactlistContainer .heading {
+    font-weight: 500;
+    font-family: "DM Sans", sans-serif;
+    font-size: 22px;
+    margin-bottom: 0;
+    color: #1d1c1c;
+    text-transform: capitalize;
+  }
+  .contactlistContainer .multiOption {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    text-decoration: underline;
+    font-size: 14px;
+    cursor: pointer;
+    color: #1d1c1c;
+  }
+  .contactList {
+    margin: 20px 0px;
+    padding: 20px;
+    border: 1px solid #e8eaee;
+    border-radius: 18px;
+  }
+  .contacts {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+  }
+  .searchBox {
+    margin-bottom: 10px;
+    border: 1px solid #e8eaee;
+    color: #1d1c1c;
+    padding-left: 20px;
+    border-radius: 30px;
+    height: 50px;
+    width: 100%;
+  }
+  .searchBox:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  .searchBox::placeholder {
+    color: #1d1c1c;
+    font-family: "DM Sans", sans-serif;
+    font-size: 16px;
+  }
+  .name {
+    color: #1d1c1c;
+    font-weight: 600;
+    font-family: "DM Sans", sans-serif;
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+  .email {
+    color: #1d1c1c;
+    font-weight: 400;
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px;
+  }
+  .NameSec {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .profileSec {
+    display: flex;
+    flex-direction: row;
+  }
+  .profileSec .NameSec  {
+    margin-left: 5px;
+  }
+  .gmailAction {
+    display: flex;
+    flex-direction: row;
+  }
+  .gmailAction .cancelBtn {
+    border: #f2718d 1px solid;
+    border-radius: 7px;
+    color: #f2718d;
+    font-weight: 500;
+    font-size: 15px;
+    font-family: "DM Sans", sans-serif;
+    height: 52px;
+    width: 40%;
+    margin-bottom: 20px;
+    margin-right: 10px;
+  }
+  .gmailAction .cancelBtn:hover {
+    color: #40a9ff;
+    border-color: #40a9ff;
+  }
+  .invibtn {
+    height: 52px;
+    width: 40%;
+    color: #191919;
+    background: #f2718d;
+    border-radius: 7px;
+    border: none;
+    font-size: 17px;
+    font-weight: 500;
+    clear: both;
+    display: block;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  .invibtn:hover {
+    color: #fff;
+    border: none;
+    background: #563662;
+  }
+  .submitbtn {
+    height: 58px;
+    margin-top: 5px;
+    border-radius: 8px;
+    color: #1d1c1c;
+    font-family: "DM Sans", sans-serif;
+    font-size: 17px;
+    width: 180px;
+  }
+  .submitbtn:hover {
+    background: #fff;
+    color: #1d1c1c;
+    border: none;
+  }
+  .tags {
+    background-color: transparent;
+    border-radius: 15px;
+    color: white;
+  }

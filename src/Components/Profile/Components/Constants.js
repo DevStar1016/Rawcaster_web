@@ -21,6 +21,12 @@ export const DropdownItems = [
 
 export const ConnectionsType = [
   {
+    id: 4,
+    title: "Unclaimed Influencers Account",
+    type: "unclaimed_influencers",
+    lockedName: "",
+  },
+  {
     id: 1,
     title: "Influencers",
     type: "influencers",
