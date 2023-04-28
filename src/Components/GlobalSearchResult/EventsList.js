@@ -24,6 +24,7 @@ import { Col, Row, Spinner } from "react-bootstrap";
 import Event from "../../Sharedcomponents/Events/Event";
 import classes from "./GlobalSearch.module.css";
 import { Skeleton } from "antd";
+import EventLoaders from "../Loaders/EventLoaders";
 
 let isRequestCancel = false;
 

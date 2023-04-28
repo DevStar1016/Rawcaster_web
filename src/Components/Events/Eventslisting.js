@@ -11,6 +11,7 @@ import classes from "./Events.module.css";
 import { DropdownItems, UserDropdownItems } from "./Configure/Constants";
 import AddEvent from "./Configure/AddEvent";
 import { EventContext } from "../../Shared/Context";
+import EventLoaders from "../Loaders/EventLoaders";
 
 const Eventslisting = ({
   isSearchEnabled = false,
@@ -124,44 +125,45 @@ const Eventslisting = ({
             </div>
           </Dropdown>
         </div>
-
-        {isFetching ? (
-          <div className="mt-5 d-flex flex-row justify-content-center">
-            {[...new Array(6)].map((ele) => {
-              return <Skeleton loading={true} active avatar />;
-            })}
-          </div>
-        ) : (
-          <div className={classes.EventListSec}>
-            {EventListData?.map((ele) => (
-              <div
-                style={{
-                  display: decodeHtml(ele.event_name)
-                    .toLowerCase()
-                    .includes(SearchData.toLowerCase())
-                    ? "block"
-                    : "none",
-                }}
-              >
-                <Event
-                  ele={ele}
-                  setList={setEventListData}
-                  handleEdit={(ele) => {
-                    setEventData(ele);
-                    if (ele.type === 1) {
-                      setisEventOpen(true);
-                    } else if (ele.type === 2) {
-                      setisTalkshowOpen(true);
-                    }
+        <div className="d-flex flex-column">
+          {isFetching ? (
+            <div className="mt-5 d-flex flex-column justify-content-center">
+              {[...new Array(3)].map((ele) => {
+                return <EventLoaders />;
+              })}
+            </div>
+          ) : (
+            <div className={classes.EventListSec}>
+              {EventListData?.map((ele) => (
+                <div
+                  style={{
+                    display: decodeHtml(ele.event_name)
+                      .toLowerCase()
+                      .includes(SearchData.toLowerCase())
+                      ? "block"
+                      : "none",
                   }}
-                />
-              </div>
-            ))}
-            {(EventListData?.length === 0 || isEmptyEvents) && (
-              <div className="text-center">No event found</div>
-            )}
-          </div>
-        )}
+                >
+                  <Event
+                    ele={ele}
+                    setList={setEventListData}
+                    handleEdit={(ele) => {
+                      setEventData(ele);
+                      if (ele.type === 1) {
+                        setisEventOpen(true);
+                      } else if (ele.type === 2) {
+                        setisTalkshowOpen(true);
+                      }
+                    }}
+                  />
+                </div>
+              ))}
+              {(EventListData?.length === 0 || isEmptyEvents) && (
+                <div className="text-center">No event found</div>
+              )}
+            </div>
+          )}
+        </div>
 
         <AddEvent
           isEventOpen={isEventOpen}

@@ -106,10 +106,20 @@ export const fetchNuggetsbyId = createAsyncThunk(
         };
         return resultData;
       } else {
-        return [];
+        return {
+          current_page_no: 0,
+          data: [],
+          total_count: 0,
+          total_pages: 0,
+        };
       }
     } catch (error) {
-      return [];
+      return {
+        current_page_no: 0,
+        data: [],
+        total_count: 0,
+        total_pages: 0,
+      };
     }
   }
 );
