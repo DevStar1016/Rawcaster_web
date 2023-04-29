@@ -398,9 +398,9 @@
   .uplBtn { background: rgba(0, 0, 0, 0.04) !important; padding: 5px 15px !important; }
   .settingmobMenu { display: none ; }
 
-  @media (min-width: 768px) {
-    .mob_menu {
-      display: none;
+  @media (max-width: 768px) {
+    .settingmobMenu {
+      display: block;
     }
   }
   

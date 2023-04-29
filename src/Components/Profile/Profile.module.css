@@ -31,7 +31,7 @@
 .uploadSec span {
     font-size: 20px;
 }
-.textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #839BA0; padding-left: 20px; width: 100% !important;min-width: 306px !important; margin: 5px 0; }
+.textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #ccc; padding-left: 20px; width: 100% !important;min-width: 306px !important; margin: 5px 0; }
 .textBox::placeholder { color: #C3C3C3; font-size: 16px; } 
 .textBox:focus, .textBox::selection, .textBox:hover { border: #191919 1px solid !important; outline: none !important; box-shadow: none !important; }
 .textarea { height: 100px !important; width: 100% !important; }
@@ -116,6 +116,7 @@
 .profileevent h2 span { font-size: 13px; font-weight: 400; }
 .profileIntro { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; margin-bottom: 10px;}
 .profileIntro i { font-size: 12px; margin-top: 5px; }
+.profileIntro .editSec i { font-size: 20px; margin-top: 3px; }
 .profileevent .intro  { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; margin-bottom: 20px;}
 .profileevent .intro .item { width: 100%; float: left; display: flex;  padding: 7px 0; align-items: center; }
 .profileevent .intro .item p { float: left; width: 35px; margin: 0; }
@@ -140,7 +141,7 @@
 {
     
     margin-bottom: 5px !important;
-    border:1px solid #839BA0;;
+    border:1px solid #ccc; border-radius: 10px;
 }
 @media (max-width:768px) {
 .profileContainer { padding-left: 10px; margin-top: -40px; }

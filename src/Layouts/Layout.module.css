@@ -102,14 +102,14 @@ padding: 2px 1px;
   white-space:nowrap;
   text-overflow:ellipsis;
 }
-.liveIcon ,.menuIcon{
+.liveIcon, .menuIcon{
   height: 30px;
   cursor: pointer;
-  margin: 0 7px;
+  margin: 0 5px;
 }
 .menuIcon {
-  height: 25px;
-  margin: 0 7px;
+  height: 23px;
+  margin: 5px;
 }
 .homeheader { z-index: 1; background: #fff; position: fixed; margin-top: 40px; float: left; width: 100%; padding: 10px 35px; box-shadow: 0 3px 6px rgb(0 0 0 / 8%); }
 .homeheader .mainlogo { max-height: 45px; cursor: pointer;}
@@ -235,7 +235,7 @@ padding: 2px 1px;
   .badgeImg {height: 20px !important; left: 33px !important; top: 16px !important;}
   .logo_img { margin: 15px 15px 5px 15px; border-bottom: #fafafa 2px solid; padding-bottom: 15px; }
   .searchmobSec { background: #fff; position: fixed; top: 0; width:100%; z-index: 1;}
-  .searchmobSec input { background: #F1F2F5; border-radius: 30px; margin-left: 10px; margin-top: 5px; border: 0; padding-left: 40px; width: calc(100% - 60px); }
+  .searchmobSec input { min-height: 45px; margin-top: 10px; margin-top: 15px; background: #F1F2F5; border-radius: 30px; margin-left: 10px; margin-top: 5px; border: 0; padding-left: 40px; width: calc(100% - 60px); }
   .searchmobSec .clsIcon { cursor: pointer;  position: absolute; right: 15px; top: 14px; background: #eee; border-radius: 12px; font-size: 16px; padding: 5px; cursor: pointer; }       
   .searchmobSec .search_icon { margin-left: 20px; margin-top:15px; position: absolute; }
   .searchIconmob { float: right; width: 30px; right: 160px; cursor: pointer; position: absolute; top: 15px;} 

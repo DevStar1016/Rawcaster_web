@@ -1,12 +1,11 @@
 .nuggetSec {
   padding: 0 35px;
-  height: calc(100vh - 67px);
   float: left;
   width: calc(100% - 620px);
   background: #fff;
   border-top: 20px solid #fff;
-  height: 100%;
-  overflow-y: scroll;
+  height: calc(100vh - 70px) !important;
+  overflow-y: auto;
 }
 .nuggetSec::-webkit-scrollbar {
   display: none !important;
