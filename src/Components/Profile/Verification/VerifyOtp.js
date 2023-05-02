@@ -16,11 +16,12 @@ import {
   signupVerifyService,
 } from "../../../Services/ApiService";
 import { getAuthToken, JSONtoformdata } from "../../../Shared/Utility";
-import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { handleLoading } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
 import { getProfile } from "../../../Components/Auth/getProfile";
 import moment from "moment";
+import VerifiedModal from "../../../Modal/Verification/VerifiedModal";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -32,10 +33,13 @@ const validationSchema = yup.object().shape({
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { state } = useLocation();
   const loginToken = useAuthToken();
+  const userData = useAuthData();
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
   const [otpRefId, setotpRefId] = useState();
+  const [verifiedModalShow, setverifiedModalShow] = useState(true);
 
   let TimeVal = getSessionStorageData("verifyCountDown") || {
     counter: state?.remaining_seconds || 60,
@@ -82,6 +86,17 @@ const VerifyOtp = () => {
       );
     }
   }, []);
+
+  const handleContinue = () => {
+    getProfile(loginToken, dispatch).then(() => {
+      if (state?.navigatePath) {
+        navigate(state?.navigatePath);
+      } else {
+        navigate("/dashboard");
+      }
+      setverifiedModalShow(false);
+    });
+  };
 
   useEffect(() => {
     let timer;
@@ -155,11 +170,11 @@ const VerifyOtp = () => {
     signupVerifyService(JSONtoformdata(ResetPasswordValue))
       .then((res) => {
         if (res.data.status === 1) {
-          getProfile(loginToken, dispatch).then(() => {
-            navigate("/dashboard");
-            dispatch(handleLoading(false));
-            toast.success(res.data.msg);
-          });
+          if (userData?.acc_verify_status === 0) {
+            setverifiedModalShow(true);
+          } else {
+            handleContinue();
+          }
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
         }
@@ -260,6 +275,16 @@ const VerifyOtp = () => {
           </div>
         </div>
       </div>
+      <VerifiedModal
+        open={verifiedModalShow}
+        onClose={() => {
+          setverifiedModalShow(false);
+        }}
+        onSuccess={() => {
+          handleContinue();
+          setverifiedModalShow(false);
+        }}
+      />
     </Col>
   );
 };

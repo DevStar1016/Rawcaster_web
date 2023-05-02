@@ -137,6 +137,9 @@ const ConnectionsList = ({
 
   return (
     <div
+      style={{
+        display: !isMyProfile && type === "unclaimed_influencers" ? "none" : "",
+      }}
       className={`${classes.profileThumb} ${
         !isMyProfile ? classes.othersProfileThumb : ""
       }`}

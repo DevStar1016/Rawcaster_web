@@ -15,7 +15,7 @@ import { deleteEventService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import moment from "moment";
 
-const Event = ({ ele, handleEdit, setList }) => {
+const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const { userSettings, loginUserData } = useAuth();
   const token = useAuthToken();
 
@@ -61,7 +61,11 @@ const Event = ({ ele, handleEdit, setList }) => {
   };
 
   return (
-    <div className={classes.eventItem}>
+    <div
+      className={`${classes.eventItem} ${
+        isOthers ? classes.othersEventItem : ""
+      }`}
+    >
       <img
         className={classes.eventImg}
         src={ele?.banner_image !== "" ? ele?.banner_image : eventList}
@@ -83,9 +87,11 @@ const Event = ({ ele, handleEdit, setList }) => {
           TALK SHOW
         </div>
       </div>
-      <div className={classes.share}>
-        <span class="material-symbols-outlined">share</span>
-      </div>
+      {!isOthers && (
+        <div className={classes.share}>
+          <span class="material-symbols-outlined">share</span>
+        </div>
+      )}
       <div className={classes.contentSec}>
         <div className="d-flex flex-row justify-content-between">
           <Tooltip title={decodeHtml(ele.event_name)}>
@@ -129,22 +135,40 @@ const Event = ({ ele, handleEdit, setList }) => {
           Hosted by {decodeHtml(ele.original_user_name)}
         </p>
         <p className={classes.des}>{ele.message}</p>
-        <p className={classes.iconsec}>
-          <span class="material-symbols-outlined">calendar_today</span>{" "}
-          {moment(
-            utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
-          ).format("DD MMM YYYY")}
-          <span class="material-symbols-outlined">schedule</span>{" "}
-          {moment(
-            utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
-          ).format("hh:mm A") +
-            " - (" +
-            utctoUserTimezonewithAbbr(
-              ele.start_date_time,
-              userSettings.time_zone
-            ) +
-            ")"}
-        </p>
+        {isOthers ? (
+          <p className={classes.iconsec}>
+            {moment(
+              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+            ).format("DD MMM YYYY")}
+            {" . "}
+            {moment(
+              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+            ).format("hh:mm A") +
+              " - (" +
+              utctoUserTimezonewithAbbr(
+                ele.start_date_time,
+                userSettings.time_zone
+              ) +
+              ")"}
+          </p>
+        ) : (
+          <p className={classes.iconsec}>
+            <span class="material-symbols-outlined">calendar_today</span>{" "}
+            {moment(
+              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+            ).format("DD MMM YYYY")}
+            <span class="material-symbols-outlined">schedule</span>{" "}
+            {moment(
+              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+            ).format("hh:mm A") +
+              " - (" +
+              utctoUserTimezonewithAbbr(
+                ele.start_date_time,
+                userSettings.time_zone
+              ) +
+              ")"}
+          </p>
+        )}
         {isNotExpired() && (
           <Link className={classes.link}>
             {isCreatedUser() ? "Start Hosting" : "Join Event"}

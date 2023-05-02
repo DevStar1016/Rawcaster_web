@@ -9,7 +9,7 @@ import {
 } from "../../../Shared/Utility";
 import { replaceBiodataHandler } from "../Utility";
 import classes from "../Profile.module.css";
-import { Input, Select, Skeleton } from "antd";
+import { Input, Select, Skeleton, Tooltip } from "antd";
 import { useState } from "react";
 import { useFormik } from "formik";
 import {
@@ -47,11 +47,14 @@ const BioContainer = ({ isLoginuser }) => {
 
   useEffect(() => {
     if (profileData && influencerCategory.length !== 0) {
-      let givenArray = profileData?.influencer_category.split(",");
-      let filterData = influencerCategory.filter((ele) => {
-        return givenArray.find((item) => parseInt(item) === parseInt(ele.id));
-      });
-      setselectedCategory(filterData);
+      setisAboutEdit(false);
+      if (profileData?.influencer_category) {
+        let givenArray = profileData?.influencer_category.split(",");
+        let filterData = influencerCategory.filter((ele) => {
+          return givenArray.find((item) => parseInt(item) === parseInt(ele.id));
+        });
+        setselectedCategory(filterData);
+      }
     }
   }, [profileData, influencerCategory]);
 
@@ -126,14 +129,18 @@ const BioContainer = ({ isLoginuser }) => {
   const getLabelValue = () => {
     return selectedCategory.map((ele) => ele.value);
   };
-
+  console.log(selectedCategory);
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
         <h2>
           About {profileData?.first_name}{" "}
-          <i class="material-icons">fiber_manual_record</i>{" "}
-          <span>{getLabelValue().toString()}</span>
+          {selectedCategory.length !== 0 && (
+            <i class="material-icons">fiber_manual_record</i>
+          )}
+          <Tooltip title={getLabelValue().toString()}>
+            <span>{getLabelValue().toString()}</span>
+          </Tooltip>
         </h2>
 
         {isAboutEdit ? (
@@ -165,7 +172,7 @@ const BioContainer = ({ isLoginuser }) => {
           <Select
             mode="multiple"
             allowClear
-            className={classes.categorySelect}
+            className={`${classes.categorySelect} categorySelect`}
             value={selectedCategory}
             style={{ width: "100%" }}
             placeholder="Select Category"
@@ -178,7 +185,7 @@ const BioContainer = ({ isLoginuser }) => {
                   disabled={
                     selectedCategory.length > 2
                       ? selectedCategory.find(
-                          (elem) => parseInt(elem.key) === ele.id
+                          (elem) => parseInt(elem.id) === ele.id
                         )
                         ? false
                         : true

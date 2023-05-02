@@ -20,6 +20,8 @@ import {
   handleNuggetFormData,
   handleNuggetList,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import VerifiedModal from "../../Modal/Verification/VerifiedModal";
+import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 
 const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   const dispatch = useDispatch();
@@ -181,15 +183,16 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
             <>{Progress.show ? <PostProgress /> : <PostNuggets />}</>
           )}
         </>
+
         {isNuggetModify?.type === "add" && (
           <div className="mt-3">
-            <Skeleton loading={true} active avatar />
+            <NuggetLoaders loading={true} />
           </div>
         )}
         {isLocked ? (
           <div className="mt-3">
             {[...Array(7)].map(() => (
-              <Skeleton loading={true} active={false} avatar />
+              <NuggetLoaders loading={true} />
             ))}
           </div>
         ) : (
@@ -197,7 +200,7 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
             {isNuggetsLoading ? (
               <div className="mt-3">
                 {[...Array(6)].map(() => (
-                  <Skeleton loading={true} active avatar />
+                  <NuggetLoaders loading={true} />
                 ))}
               </div>
             ) : (

@@ -525,7 +525,21 @@ line-height: 16px;
   opacity: 1 !important;
   
 }
-
+.eventProgressSec {
+  display: flex;
+  align-items: center;
+}
+.eventProgressSec .ant-progress-circle-gradient {
+  height: 80px !important;
+  width: 80px !important;
+  margin-top: 10px;
+}
+.ant-select-selection-item {
+  margin-bottom: 8px !important;
+}
+.categorySelect .ant-select-selection-item-remove{
+margin-bottom: 12px !important;
+}
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .ant-modal-close-x { width: 20px; height: 20px; border-radius: 50px; display: flex; align-items: center; line-height: 16px !important; }
