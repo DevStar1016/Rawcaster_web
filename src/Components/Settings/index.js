@@ -222,6 +222,60 @@ const Settings = () => {
   return (
     <SettingsContext.Provider value={settingsValues}>
       <div className={classes.settingSec}>
+      <div
+          className={`${classes.sidebar}  ${
+            !visibleSideBar ? classes.hideSlidebar : null
+          }`}
+        >
+          <h2>Settings</h2>
+          <ul>
+            <li
+              className={activeTab === 0 ? classes.active : ""}
+              onClick={() => {
+                setActiveTab(0);
+                setvisibleSideBar(false);
+              }}
+            >
+              General
+            </li>
+            <li
+              className={activeTab === 1 ? classes.active : ""}
+              onClick={() => {
+                setActiveTab(1);
+                setvisibleSideBar(false);
+              }}
+            >
+              Notifications
+            </li>
+            <li
+              className={activeTab === 2 ? classes.active : ""}
+              onClick={() => {
+                setActiveTab(2);
+                setvisibleSideBar(false);
+              }}
+            >
+              Blocking
+            </li>
+            <li
+              className={activeTab === 3 ? classes.active : ""}
+              onClick={() => {
+                setActiveTab(3);
+                setvisibleSideBar(false);
+              }}
+            >
+              Change Password
+            </li>
+            <li
+              className={activeTab === 4 ? classes.active : ""}
+              onClick={() => {
+                setActiveTab(4);
+                setvisibleSideBar(false);
+              }}
+            >
+              Event Settings
+            </li>
+          </ul>
+        </div>      
         <div className={classes.settingmobMenu}>
           <span
             class="material-icons"

@@ -328,8 +328,9 @@ margin: 12px 0;
   border: 1px solid #ECECEC;
   border-radius: 12px;
   width: 100%;
+  min-height: 200px;
 }
-.othersEventCard h2{
+.othersEventCard h2 {
   font-family: 'DM Sans';
   font-style: normal;
   font-weight: 700;

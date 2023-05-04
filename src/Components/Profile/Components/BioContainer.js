@@ -180,7 +180,7 @@ const BioContainer = ({ isLoginuser }) => {
           >
             {influencerCategory.map((ele) => {
               return (
-                <Select.Option
+                <Select.Option style={{borderRadius:"10px"}}
                   key={ele.value}
                   disabled={
                     selectedCategory.length > 2
