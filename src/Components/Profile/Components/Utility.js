@@ -94,12 +94,13 @@ export const getUnclaimedInfluencerData = (token) => {
   return promise;
 };
 
-export const getConnectionData = (token) => {
+export const getConnectionData = (values) => {
   let promise = new Promise((resolve, reject) => {
     let listData = {
-      token: token,
+      ...values,
       allfriends: 1,
     };
+
     listAllFriendsService(JSONtoformdata(listData))
       .then(({ data }) => {
         if (data.status === 1) {

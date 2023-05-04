@@ -3,6 +3,7 @@ import classes from "./ProfilerRight.module.css";
 import { useNavigate, useParams } from "react-router";
 import {
   DecryptionString,
+  EncryptionString,
   handleProfileNavigate,
 } from "../../../Shared/Utility";
 import { Skeleton } from "antd";
@@ -28,7 +29,8 @@ const ConnectionsList = ({
   isLocked = false,
   isMyProfile,
 }) => {
-  const { isLoginUser, FansList } = useProfileContext();
+  const { isLoginUser, FansList, setFansList, getFollowers } =
+    useProfileContext();
   const params = useParams();
   const dispatch = useDispatch();
   const display_user_id = DecryptionString(params.user_id);
@@ -47,13 +49,16 @@ const ConnectionsList = ({
     allconnections: [],
     connectionscount: 0,
     allconnectionscount: 0,
+    filteredConnections: [],
+    filteredConnectionCount: 0,
     isLoaded: true,
   });
   const [isSeeMore, setisSeeMore] = useState(false);
   const navigate = useNavigate();
 
-  const getUserList = () => {
+  const getUserList = (val = {}) => {
     let fansList = {
+      ...val,
       token: loginToken,
       type: 1,
     };
@@ -65,17 +70,61 @@ const ConnectionsList = ({
     }
     getfollowerfollowingService(fansList)
       .then((res) => {
-        setConnectionsList(res);
+        let isFilterEnable = Object.keys(val).length !== 0;
+        let finalObj = {
+          ...res,
+        };
+        if (isFilterEnable) {
+          finalObj = {
+            ...ConnectionsList,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        } else {
+          finalObj = {
+            ...res,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        }
+        setConnectionsList(finalObj);
       })
       .catch((err) => {
         toast.error(err.message);
       });
   };
 
-  const getConnectionList = () => {
-    getConnectionData(loginToken)
+  const getConnectionList = (val = {}) => {
+    let validData = {
+      ...val,
+      token: loginToken,
+    };
+    if (!isLoginUser) {
+      validData = {
+        ...validData,
+        user_id: display_user_id,
+      };
+    }
+    getConnectionData(validData)
       .then((res) => {
-        setConnectionsList(res);
+        let isFilterEnable = Object.keys(val).length !== 0;
+        let finalObj = {
+          ...res,
+        };
+        if (isFilterEnable) {
+          finalObj = {
+            ...ConnectionsList,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        } else {
+          finalObj = {
+            ...res,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        }
+        setConnectionsList(finalObj);
       })
       .catch((err) => {
         toast.error(err.message);
@@ -85,7 +134,6 @@ const ConnectionsList = ({
   const getUnclaimedInfluencer = () => {
     getUnclaimedInfluencerData(loginToken)
       .then((res) => {
-        console.log(res, "===>res");
         setConnectionsList(res);
       })
       .catch((err) => {
@@ -93,19 +141,34 @@ const ConnectionsList = ({
       });
   };
 
-  useEffect(() => {
+  const GetList = (val = {}) => {
     if (type === "influencers") {
-      getUserList();
+      getUserList(val);
     } else if (type === "connections") {
-      getConnectionList();
+      getConnectionList(val);
     } else if (type === "fans") {
-      setConnectionsList(FansList);
+      let isFilterEnable = Object.keys(val).length !== 0;
+      if (isFilterEnable) {
+        getFollowers(val).then((res) => {
+          setConnectionsList(res);
+        });
+      }
     } else if (type === "unclaimed_influencers") {
-      getUnclaimedInfluencer();
+      getUnclaimedInfluencer(val);
+    }
+  };
+
+  useEffect(() => {
+    GetList();
+  }, []);
+
+  useEffect(() => {
+    if (type === "fans") {
+      setConnectionsList(FansList);
     }
   }, [FansList]);
 
-  const PrivacySkeleton = ({ isActive = false }) => {
+  const PrivacySkeleton = () => {
     return [...Array(8)].map((ele) => {
       return (
         <div className={classes.list}>
@@ -208,10 +271,9 @@ const ConnectionsList = ({
                               <i
                                 className={classes.sheildIcon}
                                 onClick={() => {
-                                  setClaimAccountModal({
-                                    id: ele.user_id,
-                                    show: true,
-                                  });
+                                  navigate(
+                                    `/claim/${EncryptionString(ele.user_id)}`
+                                  );
                                 }}
                               />
                             ) : null}
@@ -226,6 +288,13 @@ const ConnectionsList = ({
                                 user_id: ele.user_id,
                               };
                               handleProfileNavigate(finalData);
+                              setFansList({
+                                connections: [],
+                                allconnections: [],
+                                connectionscount: 0,
+                                allconnectionscount: 0,
+                                isLoaded: true,
+                              });
                             }}
                           />
                         </Skeleton.Node>
@@ -268,6 +337,7 @@ const ConnectionsList = ({
           type={title}
           open={isSeeMore}
           value={ConnectionsList}
+          getConnectionList={GetList}
           setisInfluencerChatModalOpen={setisInfluencerChatModalOpen}
           onSuccess={() => {
             setisSeeMore(false);

@@ -23,6 +23,7 @@
     justify-content: space-around;
   
 }
+
 .leftSec  p {
     margin-bottom: 0px !important;
     background: #E26386;
@@ -93,4 +94,40 @@ margin-left: 10px;
     color: #1D1C1C;
     text-align:right;
     opacity: 0.7;
+}
+.NotificationSec {
+    width: 370px;
+}
+.NotificationItem  {
+    width: fit-content !important;
+  cursor: pointer;
+}
+.NotificationItem h4 {
+
+    font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 17px;
+line-height: 20px;
+text-align: center;
+/* identical to box height */
+
+white-space: nowrap;
+color: #1D1C1C;
+
+opacity: 0.7;
+}
+.NotificationSec .Active {
+    color: #000!important;
+    border-bottom: 2px solid #E26386 !important;
+    opacity: 1 !important;
+}
+.NotificationContent {
+    width: 370px;
+}
+.listSec {
+    justify-content: space-between;
+    /* display: flex;
+    flex-direction: row;
+    justify-content: space-between; */
 }

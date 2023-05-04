@@ -356,6 +356,25 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
               <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
             )}
           </Col>
+          {/* <Col sm={12}>
+          <Form.Item
+              label="Event Title"
+              colon={false}
+              className={classes.textBoxSec}
+              initialValue={values.event_title}
+            >
+              <Input
+                className={classes.textbox}
+                defaultValue={values.event_title}
+                value={values.event_title}
+                maxLength={80}
+                onChange={handleChange("event_title")}
+              />
+            </Form.Item>
+            {touched.event_title && (
+              <p className="ErrTxt mb-3">{errors?.event_title}</p>
+            )}
+          </Col> */}
           <Col sm={12}>
             <BannerComponent
               value={values.event_banner}

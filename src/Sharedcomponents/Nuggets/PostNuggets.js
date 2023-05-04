@@ -83,7 +83,7 @@ const PostNuggets = () => {
     }
     if (NuggetData.length !== 0) {
       for (const file of NuggetData) {
-        formData.append("nuggets_media[]", file);
+        formData.append("nuggets_media", file);
       }
     }
     if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {
@@ -234,6 +234,11 @@ const PostNuggets = () => {
             content: decodeHtml(res.data.nugget_detail.content),
             share_type: res.data.nugget_detail.share_type,
           });
+          if (res.data.share_type === 3) {
+            setshareWithData(res.data.shared_group_list);
+          } else if (res.data.share_type === 4) {
+            setshareWithData(res.data.shared_friends_list);
+          }
           setpostModalShow(true);
           setpreviewMedia(res.data.nugget_detail.media_list);
         }

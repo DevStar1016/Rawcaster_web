@@ -145,6 +145,88 @@
     margin-bottom: 5px !important;
     border:1px solid #839BA0;;
 }
+
+
+.textBox::placeholder {
+    color: #99a0b0;
+    padding: 15px 0px !important;
+    font-size: 15px;
+  }
+  .textBox:focus,
+  .textBox::selection,
+  .textBox:hover {
+    border: #f2718d 1px solid !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  .locationdrpmenu {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    color: #222;
+    background-color: rgb(255, 255, 255);
+    padding: 0px 0;
+    outline: none;
+    -webkit-box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%),
+      0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
+    box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
+      0 9px 28px 8px rgb(0 0 0 / 5%);
+  }
+  .claimAccountSec {
+    height: calc(100vh - 200px) ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .claimAccountBox {
+    background: #FFFFFF;
+    border: 1px solid #E8EAEE;
+    border-radius: 16px;
+    padding: 50px;
+    padding-top: 20px !important;
+  }
+  .claimAccountBox h2 {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 44px;
+    color: #231F20;
+  }
+  .textBox {
+    -webkit-text-fill-color: inherit;
+    -webkit-text-fill-color: initial;
+    -webkit-text-fill-color: unset;
+    height: 48px;
+    background: #fff;
+    border-radius: 7px;
+    border: 1px solid #e8eaee;
+    margin-bottom: 5px;
+    width: 100%;
+  }
+  .locationInputHeight {
+    height: 52px !important;
+  }
+  .locationIcon {
+    float: left;
+    padding: 13px;
+    position: absolute;
+    right: 0;
+  }
+  .locationIcon i {
+    cursor: pointer;
+  }
+  p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-size: 15px; margin-bottom: 3px !important; }
+  .textBox {
+    -webkit-text-fill-color: inherit;
+  -webkit-text-fill-color: initial;
+  -webkit-text-fill-color: unset;
+  height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
+  .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px;  } 
+  .textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
+  .btnstyle,.disabledBtn { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; width: 30%;margin-top: 30px; font-weight: 600; font-size: 16px; }
+.btnstyle:hover,.disabledBtn:hover{ background: #f2718d; color: #fff !important; }
 @media (max-width:768px) {
 .profileContainer { padding-left: 10px; margin-top: -40px; }
 .profileSec { width: 100px; }
