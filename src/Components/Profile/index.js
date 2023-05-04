@@ -339,7 +339,7 @@ const Profile = () => {
                           <p>
                             <img src={profile_work} />
                           </p>{" "}
-                          Work at {profileData?.work_at}
+                          Work at  <span> {profileData?.work_at}</span>
                         </div>
                       )}
                       {profileData?.studied_at &&
@@ -348,7 +348,8 @@ const Profile = () => {
                             <p>
                               <img src={profile_edu} />
                             </p>{" "}
-                            Studied at {profileData?.studied_at}
+                            Studied at 
+                            <span>{profileData?.studied_at}</span>
                           </div>
                         )}
                       {profileData?.geo_location && (
@@ -365,19 +366,21 @@ const Profile = () => {
                             <img src={profile_bdy} />
                           </p>
                           Date of Birth
-                          {moment(profileData?.dob, "YYYY-MM-DD").format(
+                          <span>{moment(profileData?.dob, "YYYY-MM-DD").format(
                             " DD/MM/YYYY"
-                          )}
+                          )}</span>
+                          
                         </div>
                       )}
                       <div className={classes.item}>
                         <p>
                           <img src={profile_join} />
                         </p>
-                        Joined RAWCASTER on
-                        {moment(profileData?.date_of_join).format(
+                        Joined <span>RAWCASTER</span> &nbsp; on 
+                         <span> {moment(profileData?.date_of_join).format(
                           " DD-MM-YYYY"
-                        )}
+                        )}</span>
+                       
                       </div>
                     </div>
                   ) : (

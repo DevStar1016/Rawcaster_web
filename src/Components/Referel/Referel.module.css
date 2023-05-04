@@ -11,31 +11,32 @@
     position: -webkit-sticky;
     position: sticky;
 }
-.refuserList { background: #fff !important; }
+.refuserList { background: #fff !important; float: left; width: 100%; display: flex;align-items: center; }
 .beforelogin a { display: flex; font-size: 15.5px; align-items: center; margin-top: 10px; clear: both; text-decoration: none; color: #000;cursor: pointer;}
 .beforelogin a.active { color: #F2718D; }
 .beforelogin a span { font-size: 30px; float: left; padding-right:8px; }
 .beforelogin a:hover {color: #000 !important;cursor: pointer;}
 .suggInfluencersSec { border-top:1px solid #ECECEC; padding-top: 20px; float: left; margin-top: 10px;  width:100% ;}
-.suggInfluencersSec .scrollSec { width: calc(100% - 10px); overflow: auto; height: calc(100vh - 205px); }
-.suggInfluencersSec h3 { font-family: "DM Sans", sans-serif; font-size: 18px; color: #000; opacity: 1; margin-bottom: 8px; }
-.suggAcc { float: left; width: 100%; margin-top: 5px; clear: both; margin-bottom: 10px;cursor: pointer; }
-.suggAcc img { width: 38px; height: 38px; float: left; margin-right: 10px;border-radius: 190px; }
-.suggAcc .name { font-family: "DM Sans", sans-serif; cursor: pointer; line-height: 18px; font-size: 15px; font-weight: 600; float: left; margin-bottom: 0; padding-top: 3px;
-  max-width: 80px;
+.suggInfluencersSec .scrollSec { width: calc(100% - 10px); overflow: auto; height: calc(100vh - 230px); }
+.suggInfluencersSec h3 { font-family: "DM Sans", sans-serif; font-size: 18px; color: #000; opacity: 1; margin-bottom: 10px; }
+.suggAcc { float: left; width: 100%; margin-top: 5px; clear: both; margin-bottom: 10px;cursor: pointer;display: flex;align-items: center; }
+.suggAcc img { width: 35px; height: 35px; float: left; margin-right: 10px;border-radius: 190px; }
+.suggAcc .name { font-family: "DM Sans", sans-serif; cursor: pointer; line-height: 18px; font-size: 14px; font-weight: 600; float: left; margin-bottom: 0; padding-top: 3px;
+  max-width: calc(100% - 52px);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis; }
+  text-overflow: ellipsis;
+  color: #000; } 
 .suggAcc .name span { font-size: 17px; color: #F7965B; }
 .suggAcc .username { font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 300; margin: 0px; color: rgba(0, 0, 0, 0.6); }
 .becameFan {
   font-family: 'DM Sans';
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 12px;
   line-height: 18px;
   color: #FFFFFF;
@@ -46,6 +47,8 @@
   margin-right: 3px;
   border-radius: 6px;
   cursor: pointer;
+  width: 133px;
+  height: 27px;
 }
 .inviteSec {
     width: 310px;
@@ -62,7 +65,7 @@
   border-radius: 7px;
   width: 100%;
   min-width: 300px;
-  padding:15px 10px;
+  padding:15px 17px;
   margin:13px 0 0 0;
   cursor: pointer;
   display: flex;
@@ -71,8 +74,8 @@
   align-items: center;
 }
 .inviteContainer img {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
 }
 .iconSec {
   display: flex;
