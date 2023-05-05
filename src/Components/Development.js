@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import ImageEditModal from "../Modal/ImageEditModal";
-import ContentLayout from "./Notifications/Content";
+import ContentLayout from "./Notifications/ContentLayout";
 
 const Development = () => {
   const [FileData, setFileData] = useState();

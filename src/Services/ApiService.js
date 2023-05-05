@@ -282,6 +282,9 @@ export const InfluencerListService = (data) => {
 export const InfluencerFollowService = (data) => {
   return axios.post("influencerfollow", data);
 };
+export const InfluencerChatService = (data) => {
+  return axios.post("influencerchat", data);
+};
 
 export const SocialMediaLoginService = (data) => {
   return axios.post("socialmedialogin", data);
@@ -311,4 +314,10 @@ export const TagsListService = (data, token) => {
 
 export const pollVoteService = (data) => {
   return axios.post("pollvote", data);
+};
+
+// Notifications
+
+export const ListNotificationService = (data) => {
+  return axios.post("listnotifications", data);
 };

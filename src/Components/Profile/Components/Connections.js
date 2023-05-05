@@ -147,12 +147,9 @@ const ConnectionsList = ({
     } else if (type === "connections") {
       getConnectionList(val);
     } else if (type === "fans") {
-      let isFilterEnable = Object.keys(val).length !== 0;
-      if (isFilterEnable) {
-        getFollowers(val).then((res) => {
-          setConnectionsList(res);
-        });
-      }
+      getFollowers(val).then((res) => {
+        setConnectionsList(res);
+      });
     } else if (type === "unclaimed_influencers") {
       getUnclaimedInfluencer(val);
     }
@@ -161,12 +158,6 @@ const ConnectionsList = ({
   useEffect(() => {
     GetList();
   }, []);
-
-  useEffect(() => {
-    if (type === "fans") {
-      setConnectionsList(FansList);
-    }
-  }, [FansList]);
 
   const PrivacySkeleton = () => {
     return [...Array(8)].map((ele) => {

@@ -44,7 +44,7 @@
     cursor: pointer;
 }
 .listSec {
-    max-height: 300px;
+    max-height: 700px;
     overflow: scroll;
 }
 .fansList {
@@ -52,6 +52,15 @@
     flex-direction: row;
     justify-content: space-between;
     margin: 10px 0;
+}
+.listSec h3 {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 26px;
+    /* identical to box height */
+    color: #1D1C1C;
 }
 .fansList .leftsec {
 display: flex;
@@ -61,6 +70,7 @@ width: 80%;
 .fansList .leftsec img {
     width: 53px;
     height: 53px;
+    border-radius: 30px !important;
 }
 .fansList .leftsec p {
     font-family: 'DM Sans';
@@ -71,6 +81,12 @@ width: 80%;
     color: #1D1C1C;
     margin-bottom: 0px !important;
     margin-left: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+ 
 }
 .fansList .leftsec span {
     font-family: 'DM Sans';
@@ -102,26 +118,7 @@ margin-left: 10px;
     width: fit-content !important;
   cursor: pointer;
 }
-.NotificationItem h4 {
 
-    font-family: 'DM Sans';
-font-style: normal;
-font-weight: 500;
-font-size: 17px;
-line-height: 20px;
-text-align: center;
-/* identical to box height */
-
-white-space: nowrap;
-color: #1D1C1C;
-
-opacity: 0.7;
-}
-.NotificationSec .Active {
-    color: #000!important;
-    border-bottom: 2px solid #E26386 !important;
-    opacity: 1 !important;
-}
 .NotificationContent {
     width: 370px;
 }

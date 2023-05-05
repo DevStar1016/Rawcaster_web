@@ -17,11 +17,11 @@ const FansThumb = () => {
   const dispatch = useDispatch();
   const loginToken = useAuthToken();
 
-  useEffect(() => {
-    if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
-      getFollowers();
-    }
-  }, [loginToken, FansList]);
+  // useEffect(() => {
+  //   if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
+  //     getFollowers();
+  //   }
+  // }, [loginToken, FansList]);
 
   return (
     <div className={classes.fansList}>

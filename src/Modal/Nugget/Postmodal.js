@@ -48,7 +48,6 @@ const Postmodal = ({ visible, onClose }) => {
     setpreviewMedia,
     shareWithData,
     setdeletedMedia,
-    handleChange,
   } = useContext(PostNuggetContext);
   const { isEdit } = useListNuggetContext();
   const textinputRef = useRef(null);

@@ -1,5 +1,5 @@
 import { InputNumber, Modal, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { filterValidObject, handleProfileNavigate } from "../../Shared/Utility";
 import classes from "./Connection.module.css";
 import { useNavigate } from "react-router";
@@ -8,6 +8,7 @@ import { useNuggets } from "../../Shared/Reduxfetcher";
 import { getCountylistService } from "../../Services/ApiService";
 import { Col, Row } from "react-bootstrap";
 import { useFormik } from "formik";
+import _debounce from "lodash/debounce";
 
 const ConnectionModal = ({
   type,
@@ -38,6 +39,30 @@ const ConnectionModal = ({
       })
       .catch(() => {});
   }, []);
+
+  const HandleAgeSubmit = (value) => {
+    if (value) {
+      setFieldValue("age", parseInt(value));
+      let finalValue = {
+        ...values,
+        age: parseInt(value),
+      };
+      getConnectionList(filterValidObject(finalValue));
+    } else {
+      setFieldValue("age", "");
+      let finalValue = {
+        ...values,
+        age: "",
+      };
+      getConnectionList(filterValidObject(finalValue));
+    }
+  };
+
+  const AgeProcess = useCallback(
+    _debounce(HandleAgeSubmit, 500),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   return (
     <Modal
@@ -126,21 +151,7 @@ const ConnectionModal = ({
               maxLength={2}
               defaultValue={values.age}
               onChange={(value) => {
-                if (value) {
-                  setFieldValue("age", parseInt(value));
-                  let finalValue = {
-                    ...values,
-                    age: parseInt(value),
-                  };
-                  getConnectionList(filterValidObject(finalValue));
-                } else {
-                  setFieldValue("age", "");
-                  let finalValue = {
-                    ...values,
-                    age: "",
-                  };
-                  getConnectionList(filterValidObject(finalValue));
-                }
+                AgeProcess(value);
               }}
             />
           </Col>

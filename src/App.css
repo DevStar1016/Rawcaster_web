@@ -504,8 +504,13 @@ margin-bottom: 0px !important;
   border: none !important;
 } 
 
-.notficationContainer .owl-item {
-  width: auto !important;
+.notificationContainer .ant-tabs-tab-active .ant-tabs-tab-btn,.notificationContainer .ant-tabs-tab-btn:focus,.notificationContainer .ant-tabs-tab-btn:hover {
+  color: #1D1C1C !important;
+
+}
+.notificationContainer  .ant-tabs-ink-bar {
+  border-bottom: 2px solid #E26386 !important;
+  padding:0 15px;
 }
 
 .eventProgressSec {
