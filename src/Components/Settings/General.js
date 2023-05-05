@@ -309,7 +309,7 @@ const General = () => {
             <Select
               showSearch
               style={{ width: 200 }}
-              className={`my-2 ${classes.SelectSec} settingsSelect`}
+              className={`mt-2 ${classes.SelectSec} settingsSelect`}
               placeholder="Search Preference Language"
               optionFilterProp="children"
               value={getValidDisplayData(
@@ -340,7 +340,7 @@ const General = () => {
             <Select
               showSearch
               style={{ width: 200 }}
-              className={`my-2 ${classes.SelectSec} settingsSelect`}
+              className={`mt-2 ${classes.SelectSec} settingsSelect`}
               placeholder="Search Timezone"
               optionFilterProp="children"
               value={formikvalues.time_zone}
@@ -369,7 +369,7 @@ const General = () => {
               showSearch
               style={{ width: 200 }}
               placeholder="Search to Select"
-              className={`my-2 ${classes.SelectSec} settingsSelect`}
+              className={`mt-2 ${classes.SelectSec} settingsSelect`}
               optionFilterProp="children"
               value={formikvalues.date_format}
               filterOption={(input, option) =>
