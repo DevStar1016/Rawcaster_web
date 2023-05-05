@@ -21,7 +21,7 @@
 .suggInfluencersSec h3 { font-family: "DM Sans", sans-serif; font-size: 18px; color: #000; opacity: 1; margin-bottom: 10px; }
 .suggAcc { float: left; width: 100%; margin-top: 5px; clear: both; margin-bottom: 10px;cursor: pointer;display: flex;align-items: center; }
 .suggAcc img { width: 35px; height: 35px; float: left; margin-right: 10px;border-radius: 190px; }
-.suggAcc .name { font-family: "DM Sans", sans-serif; cursor: pointer; line-height: 18px; font-size: 14px; font-weight: 600; float: left; margin-bottom: 0; padding-top: 3px;
+.suggAcc .name { font-family: "DM Sans", sans-serif; cursor: pointer; line-height: 18px; font-size: 14px; font-weight: 500; float: left; margin-bottom: 0; padding-top: 3px;
   max-width: calc(100% - 52px);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -86,4 +86,13 @@
 .iconSec p {
   margin-bottom: 0px !important;
   margin-left: 10px;
+}
+
+@media (max-width:768px) {
+  .fullcontainer { width: 100%; padding-left: 15px; padding-right: 15px; padding-top: 55px; }
+  .beforelogin { display: none;}
+  .suggestSec { padding-right: 0; padding-bottom: 0;}
+  .suggestSec, .suggInfluencersSec .scrollSec, .inviteSec { width: 100%; height: auto;}
+  .suggInfluencersSec { border: none; padding-top: 0;}
+  .suggAcc img { width: 30px; height: 30px; }
 }

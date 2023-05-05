@@ -6,7 +6,6 @@ import classes from "./Layout.module.css";
 import ProfileImg from "../UIComponents/ProfileImg";
 import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
 import ReferalIcon from "../Assets/Icons/svg/Referal.svg";
-import HomeIcon from "../Assets/Icons/svg/Home_icon.svg";
 import RawcasterLogo from "../Assets/Images/svg/rawcaster_logo.svg";
 import smLogo from "../Assets/Images/png/r_logo.png";
 import SettingsIcon from "../Assets/Icons/svg/Settings_icon.svg";
@@ -42,8 +41,6 @@ import {
   handleNuggetFormData,
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
-import Header from "../Components/Notifications/Header";
-import ContentLayout from "../Components/Notifications/Content";
 import Notification from "../Components/Notifications";
 
 const HomeLayout = () => {
@@ -59,9 +56,12 @@ const HomeLayout = () => {
   const navigate = useNavigate();
   const { Content } = Layout;
   const onClick = ({ key }) => {
-    if (parseInt(key) === 2) {
+    if (parseInt(key) === 3) {
       dispatch(handleResetNuggets());
       handleLogout();
+    }
+    if (parseInt(key) === 2) {
+      navigate("/setting");
     }
     if (parseInt(key) === 1) {
       let finalData = {
@@ -201,14 +201,6 @@ const HomeLayout = () => {
                       }}
                     />
                     <img
-                      src={HomeIcon}
-                      className={classes.menuIcon}
-                      alt="Home_logo"
-                      onClick={() => {
-                        navigate("/setting");
-                      }}
-                    />
-                    <img
                       src={SettingsIcon}
                       className={`${classes.onlydes} ${classes.menuIcon}`}
                       alt="Settings_logo"
@@ -266,6 +258,10 @@ const HomeLayout = () => {
                       },
                       {
                         key: 2,
+                        label: "Settings",
+                      },
+                      {
+                        key: 3,
                         label: "Logout",
                       },
                     ],

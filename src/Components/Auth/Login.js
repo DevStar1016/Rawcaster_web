@@ -21,6 +21,9 @@ import OwlCarousel from "react-owl-carousel";
 import { getProfile } from "./getProfile";
 import Seo from "../SEO/Seo";
 import RedirectModal from "../../Modal/Verification/RedirectModal";
+import SigninwithService from "./SigninwithService";
+import { accountVerifyHandle } from "./Utility";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -52,9 +55,18 @@ const Login = () => {
       },
       validationSchema: validationSchema,
       onSubmit: (values) => {
+        dispatch(handleLoading(true));
         HandleLoginService(values);
       },
     });
+
+  const handleProfileUpdate = (res, type) => {
+    if (type === 1) {
+      accountVerifyHandle(res, "email", navigate);
+    } else if (type === 2) {
+      accountVerifyHandle(res, "sms", navigate);
+    }
+  };
 
   const HandleLoginService = (values) => {
     let loginData = {
@@ -64,6 +76,11 @@ const Login = () => {
     loginService(JSONtoformdata(loginData))
       .then((res) => {
         if (res.data.status === 1) {
+          if (res.data.acc_verify_status === 0) {
+            toast.success(res.data.msg);
+            handleProfileUpdate(res.data, res.data.signup_type);
+            return;
+          }
           getProfile(res.data.token, dispatch).then(() => {
             let finalVal = {
               ...res.data,
@@ -85,6 +102,9 @@ const Login = () => {
       })
       .catch((err) => {
         toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleLoading(false));
       });
   };
 
@@ -170,6 +190,7 @@ const Login = () => {
                 </span>
               </p>
             </Form>
+            <SigninwithService type="Signin" />
 
             <div className={classes.copyright}>
               <img src={RawcasterLogo} />

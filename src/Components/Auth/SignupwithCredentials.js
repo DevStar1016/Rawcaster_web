@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
@@ -10,36 +10,26 @@ import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  EMAIL_REGEX,
-  MOBILE_NUMBER_REGEX,
-  PASSWORD_EXP,
-} from "../../Shared/Constant";
+import { EMAIL_REGEX, MOBILE_NUMBER_REGEX } from "../../Shared/Constant";
 import {
   getAuthToken,
   getGeocodeData,
-  isValidData,
   JSONtoformdata,
 } from "../../Shared/Utility";
-import { resendOtpService, signupService } from "../../Services/ApiService";
+import { signupService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import OwlCarousel from "react-owl-carousel";
-import { getProfile } from "./getProfile";
 import RedirectModal from "../../Modal/Verification/RedirectModal";
-import {
-  getSessionStorageData,
-  removeSessionStorageData,
-  setCookieData,
-} from "../../Store/Storage";
 import moment from "moment";
-import { handletwostepVerifyModalshow } from "../../Store/Redux/Reducer/DashboardReducer";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import { accountVerifyHandle } from "./Utility";
 
 const SignupwithCredentials = () => {
+  const dispatch = useDispatch();
   const { pathname } = useLocation();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const getLoginType = () => {
     if (pathname.includes("signupwithemail")) {
       return {
@@ -106,6 +96,7 @@ const SignupwithCredentials = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      dispatch(handleLoading(true));
       HandleSignup(values);
     },
   });
@@ -150,39 +141,17 @@ const SignupwithCredentials = () => {
       })
       .catch((err) => {
         toast.error(err.message);
+      })
+      .finally(() => {
+        dispatch(handleLoading(false));
       });
-  };
-
-  const handleNavigateValue = () => {
-    if (getSessionStorageData("influencerData")) {
-      removeSessionStorageData("influencerData");
-      return "/selectinfluencers";
-    } else {
-      return "/dashboard";
-    }
   };
 
   const handleProfileUpdate = (res) => {
     if (getLoginType().id === 1) {
-      navigate("/verifyotp", {
-        state: {
-          type: "email",
-          navigatePath: handleNavigateValue(),
-          otp_ref_id: res?.otp_ref_id,
-          msg: "OTP sent to your Email",
-          remaining_seconds: res?.remaining_seconds,
-        },
-      });
+      accountVerifyHandle(res, "email", navigate);
     } else if (getLoginType().id === 2) {
-      navigate("/verifyotp", {
-        state: {
-          type: "sms",
-          navigatePath: handleNavigateValue(),
-          otp_ref_id: res?.otp_ref_id,
-          msg: "OTP sent to your Mobile Number",
-          remaining_seconds: res?.remaining_seconds,
-        },
-      });
+      accountVerifyHandle(res, "sms", navigate);
     }
   };
 

@@ -1,7 +1,8 @@
 import { Popover } from "antd";
 import React from "react";
-import ContentLayout from "./Content";
+
 import Header from "./Header";
+import ContentLayout from "./ContentLayout";
 
 const Notification = ({ className, src }) => {
   return (
@@ -10,7 +11,6 @@ const Notification = ({ className, src }) => {
       title={Header}
       content={ContentLayout}
       showArrow={false}
-      // open={NotificationOpen}
       trigger="click"
       align="end"
     >

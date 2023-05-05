@@ -1,12 +1,12 @@
-import { fetchgfollowerfollowingList } from "../Action";
-
 const initialState = {
   fans: [],
   fansCount: 0,
-  isFansLoading: false,
   influencers: [],
   influencerCount: 0,
-  isinfluencerLoading: false,
+  connections: [],
+  connectionsCount: 0,
+  unclaimedInfluencer: [],
+  unclaimedInfluencerCount: 0,
 };
 
 export const { actions, reducer } = createSlice({
@@ -21,23 +21,14 @@ export const { actions, reducer } = createSlice({
       state.influencers = action.payload.influencers;
       state.influencerCount = action.payload.influencerCount;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchgfollowerfollowingList.pending, (state, action) => {
-      state.isFansLoading = true;
-      state.isinfluencerLoading = true;
-    });
-    builder.addCase(fetchgfollowerfollowingList.fulfilled, (state, action) => {
-      if (action.payload.type === 1) {
-        state.fans = action.payload.allconnections;
-        state.fansCount = action.payload.allconnectionscount;
-        state.isFansLoading = false;
-      } else if (action.payload.type === 2) {
-        state.influencers = action.payload.allconnections;
-        state.influencerCount = action.payload.allconnectionscount;
-        state.isinfluencerLoading = false;
-      }
-    });
+    handleConnectionsData: (state, action) => {
+      state.connections = action.payload.influencers;
+      state.connections = action.payload.influencerCount;
+    },
+    handleunClaimedInfluencer: (state, action) => {
+      state.unclaimedInfluencer = action.payload.unclaimedInfluencer;
+      state.unclaimedInfluencerCount = action.payload.unclaimedInfluencerCount;
+    },
   },
 });
 

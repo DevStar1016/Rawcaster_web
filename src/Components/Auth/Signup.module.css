@@ -34,10 +34,9 @@
 .hintTxt {
    font-size: 13px;
    line-height: 21px;
-  
    color: #4A4949;
-  
 }
+
 .loginBox { padding: 25px;  max-width: 470px; margin: auto; }
 .subText { font-size: 17px; margin-bottom: 20px; color: #1D1C1C; font-weight: 300; }
 .verifyBox { padding: 25px;  max-width: 570px; margin:40px auto 40px auto; padding:50px 100px 130px 100px; border-radius: 8px; border: 1px solid #E8EAEE; }
@@ -61,7 +60,12 @@ height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; m
    border: none; font-size: 18px; font-weight: 500; clear: both; display: block; color: #fff; margin-top: -20px; margin-bottom:-5px;
 }
 .btn span, .signupbtn span { color: #fff;}
-.btn span:hover, .btn:hover, .signupbtn:hover { color: #fff; border: none; background: #563662; }
+.btn span:hover, .btn:hover, .signupbtn:hover ,.btn:disabled{ color: #fff; border: none; background: #563662; }
+.btn:disabled {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
 .changeTxt {
    font-size: 12px;
    line-height: 10px;

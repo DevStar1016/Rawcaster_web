@@ -21,3 +21,6 @@ export const useSettingsContext = () => useContext(SettingsContext);
 
 export const EventContext = createContext();
 export const useEventContext = () => useContext(EventContext);
+
+export const NotificationContext = createContext();
+export const useNotificationContext = () => useContext(NotificationContext);

@@ -8,43 +8,20 @@ import {
 } from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
 import { useProfileContext } from "../../../Shared/Context";
-import { getfollowerfollowingService } from "./Utility";
 import { useDispatch } from "react-redux";
 
 const FansThumb = () => {
-  const { FansList, setFansList, isLoginUser } = useProfileContext();
+  const { FansList, setFansList, getFollowers } = useProfileContext();
   const { nuggetFormData } = useNuggets();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loginToken = useAuthToken();
-  const params = useParams();
-  const display_user_id = DecryptionString(params.user_id);
 
-  const getFollowers = () => {
-    let fansList = {
-      token: loginToken,
-      type: 2,
-    };
-    if (!isLoginUser) {
-      fansList = {
-        ...fansList,
-        user_id: display_user_id,
-      };
-    }
-    getfollowerfollowingService(fansList)
-      .then((res) => {
-        setFansList(res);
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
-  };
-
-  useEffect(() => {
-    if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
-      getFollowers();
-    }
-  }, [loginToken]);
+  // useEffect(() => {
+  //   if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
+  //     getFollowers();
+  //   }
+  // }, [loginToken, FansList]);
 
   return (
     <div className={classes.fansList}>
@@ -60,6 +37,13 @@ const FansThumb = () => {
               user_id: ele.user_id,
             };
             handleProfileNavigate(finalData);
+            setFansList({
+              connections: [],
+              allconnections: [],
+              connectionscount: 0,
+              allconnectionscount: 0,
+              isLoaded: true,
+            });
           }}
         />
       ))}

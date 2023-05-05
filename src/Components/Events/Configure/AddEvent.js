@@ -66,6 +66,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       sound_notify: "",
       user_screenshare: "",
       event_participants: "",
+      event_message: "",
       event_duration: "",
       event_layout: "",
       event_melody_id: "",
@@ -508,9 +509,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         ? moment(values?.event_start_date, "YYYY-MM-DD")
                         : undefined
                     }
-                    disabledDate={(current) => {
-                      return moment().add(-1, "days") >= current;
-                    }}
+                    // disabledDate={(current) => {
+                    //   return moment().add(-1, "days") >= current;
+                    // }}
                     allowClear={false}
                     className={classes.textbox}
                     format={"YYYY-MM-DD"}
@@ -579,6 +580,25 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
                 )}
               </Col>
+              {/* <Col sm={12}>
+          <Form.Item
+              label="Event Title"
+              colon={false}
+              className={classes.textBoxSec}
+              initialValue={values.event_message}
+            >
+              <Input
+                className={classes.textbox}
+                defaultValue={values.event_message}
+                value={values.event_message}
+                maxLength={80}
+                onChange={handleChange("event_message")}
+              />
+            </Form.Item>
+            {touched.event_message && (
+              <p className="ErrTxt mb-3">{errors?.event_message}</p>
+            )}
+          </Col> */}
               <div className="my-2">
                 <Row>
                   {EventSettings.map((ele) => {

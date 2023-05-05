@@ -20,7 +20,6 @@ import {
   handleNuggetFormData,
   handleNuggetList,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
-import VerifiedModal from "../../Modal/Verification/VerifiedModal";
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 
 const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
@@ -176,7 +175,9 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
         hasMore={Nuggets && parseInt(totalNuggets) !== Nuggets?.length}
         className={` ${
           params?.key ? classes.resultnuggetSec : classes.nuggetSec
-        } ${isuserConnection ? classes.othersnuggetSec : ""}`}
+        } ${isuserConnection ? classes.othersnuggetSec : ""} ${
+          display_user_id ? "h-auto" : ""
+        }`}
       >
         <>
           {isValidPage() && (

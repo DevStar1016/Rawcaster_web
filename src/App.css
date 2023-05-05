@@ -34,6 +34,8 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
 .ant-select-selector {
   border: none !important; 
   height: 42px !important;
+  display: flex;
+  align-items: center;
 }
 ::selection { background: #F2718D !important;}
 .dateinputBox .ant-select-selector {
@@ -504,27 +506,15 @@ margin-bottom: 0px !important;
   border: none !important;
 } 
 
-.notficationContainer {
-  margin-bottom: 30px;
-  border-bottom: none !important;
-}
-.notficationContainer .nav-link , .notficationContainer .nav-link.active,.notficationContainer .nav-link:focus, .notficationContainer .nav-link:hover {
-  border:  none !important;
+.notificationContainer .ant-tabs-tab-active .ant-tabs-tab-btn,.notificationContainer .ant-tabs-tab-btn:focus,.notificationContainer .ant-tabs-tab-btn:hover {
   color: #1D1C1C !important;
-  opacity: 0.7 !important;
-  font-family: 'DM Sans';
-font-style: normal;
-font-weight: 700;
-font-size: 16px;
-line-height: 16px;
 
 }
-.notficationContainer .nav-link.active {
+.notificationContainer  .ant-tabs-ink-bar {
   border-bottom: 2px solid #E26386 !important;
-  color: #1D1C1C !important;
-  opacity: 1 !important;
-  
+  padding:0 15px;
 }
+
 .eventProgressSec {
   display: flex;
   align-items: center;
@@ -539,6 +529,13 @@ line-height: 16px;
 }
 .categorySelect .ant-select-selection-item-remove{
 margin-bottom: 12px !important;
+}
+.locationSearch .ant-select-selection-search-input {
+
+  height: 100% !important;
+}
+.locationSearch .ant-select-selection-search-input::placeholder {
+  padding-top: 20px !important;
 }
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }

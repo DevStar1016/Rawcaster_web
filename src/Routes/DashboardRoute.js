@@ -7,9 +7,11 @@ import Cookiespolicy from "../Components/Policy/CookiePolicy";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
 import TermsandConditions from "../Components/Policy/TermsandConditions";
 import Profile from "../Components/Profile";
+import Claimaccount from "../Components/Profile/Claimaccount";
 import Referel from "../Components/Referel";
 import Settings from "../Components/Settings";
 import HomeLayout from "../Layouts/HomeLayout";
+
 import ViewNugget from "../Sharedcomponents/Nuggets/ViewNugget";
 import { HomePrivateRoute } from "./PrivateRoute";
 
@@ -45,6 +47,10 @@ export const DashboardRoute = [
           {
             path: "/view/:nugID",
             element: <ViewNugget />,
+          },
+          {
+            path: "claim/:user_id",
+            element: <Claimaccount />,
           },
         ],
       },

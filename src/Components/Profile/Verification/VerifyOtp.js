@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getSessionStorageData,
   removeSessionStorageData,
+  setCookieData,
   setSessionStorageData,
 } from "../../../Store/Storage";
 import classes from "./Profilverification.module.css";
@@ -39,7 +40,7 @@ const VerifyOtp = () => {
   const userData = useAuthData();
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
   const [otpRefId, setotpRefId] = useState();
-  const [verifiedModalShow, setverifiedModalShow] = useState(true);
+  const [verifiedModalShow, setverifiedModalShow] = useState(false);
 
   let TimeVal = getSessionStorageData("verifyCountDown") || {
     counter: state?.remaining_seconds || 60,
@@ -87,8 +88,8 @@ const VerifyOtp = () => {
     }
   }, []);
 
-  const handleContinue = () => {
-    getProfile(loginToken, dispatch).then(() => {
+  const handleContinue = (token = loginToken) => {
+    getProfile(token, dispatch).then(() => {
       if (state?.navigatePath) {
         navigate(state?.navigatePath);
       } else {
@@ -126,6 +127,7 @@ const VerifyOtp = () => {
     let ResendValues = {
       otp_ref_id: otpRefId,
       auth_code: getAuthToken(otpRefId),
+      otp_flag: "email",
     };
     resendOtpService(JSONtoformdata(ResendValues))
       .then((res) => {
@@ -164,6 +166,7 @@ const VerifyOtp = () => {
     let ResetPasswordValue = {
       ...values,
       otp_flag: state?.type,
+      alt_token_id: state?.alt_token_id,
       otp_ref_id: otpRefId,
       auth_code: getAuthToken(otpRefId),
     };
@@ -173,7 +176,10 @@ const VerifyOtp = () => {
           if (userData?.acc_verify_status === 0) {
             setverifiedModalShow(true);
           } else {
-            handleContinue();
+            if (res.data.token) {
+              setCookieData("rawcaster_user_token", res.data);
+            }
+            handleContinue(res.data.token);
           }
         } else if (res.data.status === 0) {
           toast.error(res.data.msg);
