@@ -11,6 +11,7 @@ import {
 } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import SearchFriends from "../Components/SearchFriends";
+import { defaultprofileImg } from "../../../Shared/CommonConstants";
 
 const AddConnection = ({ open, close }) => {
   const token = useAuthToken();
@@ -80,7 +81,13 @@ const AddConnection = ({ open, close }) => {
           {ProfileList.map((ele) => (
             <div className={classes.profileData}>
               <div className={classes.leftSec}>
-                <img src={ele.profile_img} />
+                <img
+                  src={ele.profile_img}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src = defaultprofileImg;
+                  }}
+                />
                 <div className={classes.nameSec}>
                   <p>{decodeHtml(ele.display_name)}</p>
                   {/* <span>@TheTweetOfGod</span> */}

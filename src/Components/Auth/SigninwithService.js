@@ -17,7 +17,6 @@ import {
   getGeocodeData,
 } from "../../Shared/Utility";
 import { SocialMediaLoginService } from "../../Services/ApiService";
-import { getProfile } from "./getProfile";
 import {
   getSessionStorageData,
   removeSessionStorageData,
@@ -27,6 +26,7 @@ import { useNavigate } from "react-router";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Signup.module.css";
 import { toast } from "react-hot-toast";
+import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 
 const SigninwithService = ({ type }) => {
   const dispatch = useDispatch();
@@ -72,7 +72,7 @@ const SigninwithService = ({ type }) => {
           };
           delete finalVal["name"];
           setCookieData("rawcaster_user_token", finalVal);
-          getProfile(res.data.token, dispatch).then(() => {
+          dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
             if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");

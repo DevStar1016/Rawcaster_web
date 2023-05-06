@@ -1,11 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  getProfileService,
+  getUserSettingsService,
   listAllFriendGroupsService,
   listAllFriendsService,
   listNuggetsService,
 } from "../../../Services/ApiService";
-import { JSONtoformdata, getAuthToken } from "../../../Shared/Utility";
+import {
+  JSONtoformdata,
+  decodeHtml,
+  getAuthToken,
+} from "../../../Shared/Utility";
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
+import { handlenuggetToken } from "../Reducer/NuggetsReducer";
 
 // Connections
 
@@ -120,6 +127,58 @@ export const fetchNuggetsbyId = createAsyncThunk(
         total_count: 0,
         total_pages: 0,
       };
+    }
+  }
+);
+
+export const fetchuserSettingsbyToken = createAsyncThunk(
+  "dashboard/fetchuserSettingsbyToken",
+  async (token) => {
+    let profileData = {
+      token: token,
+      auth_code: getAuthToken(token),
+    };
+    try {
+      const { data } = await getUserSettingsService(
+        JSONtoformdata(profileData)
+      );
+      if (data.status === 1) {
+        return data.settings;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+);
+
+export const fetchuserInfobyToken = createAsyncThunk(
+  "dashboard/fetchuserInfobyToken",
+  async (token, { dispatch }) => {
+    let profileData = {
+      token: token,
+      auth_code: getAuthToken(token),
+    };
+    try {
+      const { data } = await getProfileService(JSONtoformdata(profileData));
+      if (data.status === 1) {
+        const finalData = {
+          ...data.profile,
+          first_name: decodeHtml(data.profile.first_name),
+          last_name: decodeHtml(data.profile.last_name),
+          name: decodeHtml(data.profile.name),
+        };
+        dispatch(fetchuserSettingsbyToken(token));
+        dispatch(handlenuggetToken(token));
+        dispatch(fetchFrindsbyId(token));
+        dispatch(fetchgroupsbyId({ token: token, user_id: finalData.user_id }));
+        return { token: token, ...finalData };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
     }
   }
 );

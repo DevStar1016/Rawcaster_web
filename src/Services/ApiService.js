@@ -321,3 +321,11 @@ export const pollVoteService = (data) => {
 export const ListNotificationService = (data) => {
   return axios.post("listnotifications", data);
 };
+
+export const DeleteNotificationService = (data) => {
+  return axios.post("deletenotification", data);
+};
+
+export const ViewNotificationService = (data) => {
+  return axios.post("readnotification", data);
+};

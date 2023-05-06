@@ -9,6 +9,7 @@ import { getCountylistService } from "../../Services/ApiService";
 import { Col, Row } from "react-bootstrap";
 import { useFormik } from "formik";
 import _debounce from "lodash/debounce";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const ConnectionModal = ({
   type,
@@ -175,6 +176,10 @@ const ConnectionModal = ({
                   </div>
                   <img
                     src={ele.profile_img}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = defaultprofileImg;
+                    }}
                     onClick={() => {
                       onClose();
                       let finalData = {

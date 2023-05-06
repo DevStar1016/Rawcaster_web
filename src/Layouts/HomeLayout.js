@@ -4,7 +4,7 @@ import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import classes from "./Layout.module.css";
 import ProfileImg from "../UIComponents/ProfileImg";
-import LiveIcon from "../Assets/Icons/svg/Live_Img.svg";
+import LiveIcon from "../Assets/Icons/Live_Img.gif";
 import ReferalIcon from "../Assets/Icons/svg/Referal.svg";
 import RawcasterLogo from "../Assets/Images/svg/rawcaster_logo.svg";
 import smLogo from "../Assets/Images/png/r_logo.png";
@@ -52,6 +52,7 @@ const HomeLayout = () => {
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { Content } = Layout;

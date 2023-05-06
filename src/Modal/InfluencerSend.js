@@ -63,7 +63,7 @@ const InfluencerSend = ({ open, close, user }) => {
       }}
     >
       <div className={classes.influencerModal}>
-        <h2>Send message to {user?.first_name}</h2>
+        <h2>Send message to Fans</h2>
 
         <div className={classes.topProsec}>
           <div className={classes.leftec}>
@@ -71,7 +71,7 @@ const InfluencerSend = ({ open, close, user }) => {
               <Input.TextArea
                 id="post_nugget_textarea"
                 className={classes.postTextarea}
-                placeholder={`What’s on your mind for ${user?.first_name} !`}
+                placeholder={`What’s on your mind for Fans !`}
                 value={values.message}
                 onChange={handleChange("message")}
               />

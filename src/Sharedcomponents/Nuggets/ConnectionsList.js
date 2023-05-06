@@ -4,6 +4,7 @@ import { decodeHtml } from "../../Shared/Utility";
 import SearchResult from "./SearchResult";
 import classes from "./ItemsList.module.css";
 import { useSpecificConnectionNugget } from "../../Shared/Context";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const ConnectionsList = () => {
   const {
@@ -83,7 +84,13 @@ const ConnectionsList = () => {
               }}
             >
               <div className={classes.leftSec}>
-                <img src={ele.profile_img} />
+                <img
+                  src={ele.profile_img}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src = defaultprofileImg;
+                  }}
+                />
                 <div className={classes.nameSec}>
                   <p>{decodeHtml(ele.display_name)}</p>
                 </div>

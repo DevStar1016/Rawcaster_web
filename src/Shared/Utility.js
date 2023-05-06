@@ -406,12 +406,16 @@ export const getTimezoneName = (str) => {
 
 export const utcoffset = getTimezone(moment.tz?.guess()) ?? null;
 
-export const utctoUserTimezone = (time, zonename) => {
+export const utctoUserTimezone = (time, zonename = null) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
-  // let displayCutoff = moment1(utcCutoff)
-  //   .tz(getTimezoneName(zonename))
-  //   .format("YYYY-MM-DD HH:mm:ss");
-  return moment(utcCutoff);
+  if (zonename) {
+    let displayCutoff = moment1(utcCutoff)
+      .tz(getTimezoneName(zonename))
+      .format("YYYY-MM-DD HH:mm:ss");
+    return moment(displayCutoff);
+  } else {
+    return moment(utcCutoff);
+  }
 };
 
 export const utctoUserTimezonewithAbbr = (time, zonename) => {

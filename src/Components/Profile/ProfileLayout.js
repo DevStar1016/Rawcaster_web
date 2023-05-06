@@ -13,11 +13,11 @@ import {
 } from "../../Shared/Utility";
 import classes from "./Profile.module.css";
 import { updateProfileService } from "../../Services/ApiService";
-import { getProfile } from "../Auth/getProfile";
 import { useDispatch } from "react-redux";
 import { Skeleton, Spin } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import { useParams } from "react-router";
+import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 
 const ProfileLayout = ({
   children,
@@ -63,7 +63,7 @@ const ProfileLayout = ({
     updateProfileService(JSONtoformdata(profileValue))
       .then((res) => {
         if (res.data.status === 1) {
-          getProfile(loginToken, dispatch).then(() => {
+          dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
             setisUploading(false);
           });
         } else {

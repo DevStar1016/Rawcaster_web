@@ -22,6 +22,7 @@ import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
 import { useDispatch } from "react-redux";
 import InfluencerSend from "../../../Modal/InfluencerSend";
 import ClaimAccount from "../../../Modal/Connections/ClaimAccount";
+import { defaultprofileImg } from "../../../Shared/CommonConstants";
 
 const ConnectionsList = ({
   title = "",
@@ -270,7 +271,11 @@ const ConnectionsList = ({
                             ) : null}
                           </div>
                           <img
-                            src={ele.profile_img}
+                            src={ele?.profile_img || ""}
+                            onError={({ currentTarget }) => {
+                              currentTarget.onerror = null; // prevents looping
+                              currentTarget.src = defaultprofileImg;
+                            }}
                             onClick={() => {
                               let finalData = {
                                 dispatch,

@@ -18,12 +18,12 @@ import {
   setCookieData,
 } from "../../Store/Storage";
 import OwlCarousel from "react-owl-carousel";
-import { getProfile } from "./getProfile";
 import Seo from "../SEO/Seo";
 import RedirectModal from "../../Modal/Verification/RedirectModal";
 import SigninwithService from "./SigninwithService";
 import { accountVerifyHandle } from "./Utility";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
+import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -81,7 +81,7 @@ const Login = () => {
             handleProfileUpdate(res.data, res.data.signup_type);
             return;
           }
-          getProfile(res.data.token, dispatch).then(() => {
+          dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
             let finalVal = {
               ...res.data,
             };

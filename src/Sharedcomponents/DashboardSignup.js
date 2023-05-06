@@ -31,8 +31,9 @@ import { useAuth, useAuthData } from "../Shared/Reduxfetcher";
 import RedirectModal from "../Modal/Verification/RedirectModal";
 import Connections from "../Components/Connections/Friends/Connections";
 import Groups from "../Components/Connections/Groups/Groups";
-import { getProfile } from "../Components/Auth/getProfile";
+
 import { handlenuggetVideoPaused } from "../Store/Redux/Reducer/NuggetsReducer";
+import { fetchuserInfobyToken } from "../Store/Redux/Action";
 
 const DashboardSignup = () => {
   const loginUserData = useAuthData();
@@ -75,7 +76,7 @@ const DashboardSignup = () => {
     SocialMediaLoginService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          getProfile(res.data.token, dispatch).then(() => {
+          dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
             let finalVal = {
               ...res.data,
             };
