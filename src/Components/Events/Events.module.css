@@ -291,10 +291,8 @@ margin: 12px 0;
   align-items: center;
   color: #FFFFFF;
   font-size: 17px;
-
-    font-weight: 700;
- 
-    font-family: "DM Sans",sans-serif;
+  font-weight: 700; 
+  font-family: "DM Sans",sans-serif;
 }
 .headingSec span {
   cursor: pointer;
@@ -345,6 +343,7 @@ margin: 12px 0;
     align-items: center;
     color: #777;
 }
- @media (max-width:768px) {
-.eventSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
- }
+@media (max-width:768px) {
+  .eventSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
+  .EventListSec { height: auto !important; }
+}
