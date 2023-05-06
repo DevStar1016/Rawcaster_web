@@ -34,6 +34,8 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
 .ant-select-selector {
   border: none !important; 
   height: 42px !important;
+  display: flex;
+  align-items: center;
 }
 ::selection { background: #F2718D !important;}
 .dateinputBox .ant-select-selector {
@@ -253,7 +255,7 @@ line-height: 23px;
 .ant-modal-close-x { position: absolute; top: 5px; background: #ECECEC; width: 30px; height: 30px; border-radius: 50px; }
 .ant-modal-close:hover { background: transparent !important;    transform: scale(1.2);
   transition: all .3s ease-in-out;}
-.ant-input-password-icon svg {fill: #000; font-size: 15px; margin-top: 3px; }
+.ant-input-password-icon svg {fill: #000; font-size: 15px; margin-top: 1px; }
 .anticon-down svg {fill: #000; font-size: 10px; margin-top: 3px; }
 .CameraModal .ant-modal-content {
   padding: 0px !important;

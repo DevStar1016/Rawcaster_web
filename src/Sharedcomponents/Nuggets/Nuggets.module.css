@@ -17,6 +17,7 @@
   border-bottom: 1px solid #ececec;
   padding-bottom: 15px;
 }
+.DisplayMsg { display: flex; text-align: center; min-height: 70vh; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: #999; }
 .profilePart {
   width: calc(100% - 25px);
   float: left;
@@ -82,7 +83,7 @@
 }
 .proName p {
   color: #1d1c1c;
-  font-size: 13.5px;
+  font-size: 16px;
   margin-bottom: 0px;
   font-weight: 600;
   cursor: pointer;

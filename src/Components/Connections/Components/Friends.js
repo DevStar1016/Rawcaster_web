@@ -1,6 +1,8 @@
 import React from "react";
 import { decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
+import videocall from "../../../Assets/Icons/svg/videocall.svg";
+import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
 
 const Friends = ({ friend, searchInput }) => {
   return (
@@ -58,22 +60,9 @@ const Friends = ({ friend, searchInput }) => {
           <div
             id={"menu_" + friend.user_id}
             className={`${classes.friendsmenu}`}
-          >
-            <>
-              <i
-                className={`material-icons ${classes.audio_icon}`}
-                title="Audio call"
-              >
-                phone
-              </i>
-
-              <i
-                className={`material-icons ${classes.video_icon}`}
-                title="Video call"
-              >
-                videocam
-              </i>
-            </>
+          >        
+              <img src={audiocall}/> 
+              <img src={videocall}/>            
           </div>
         }
       </div>

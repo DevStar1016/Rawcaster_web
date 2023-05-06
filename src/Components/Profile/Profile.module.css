@@ -26,7 +26,7 @@
 .editIcon { background: url(../../Assets/Icons/svg/edit_icon.svg) no-repeat center center;  background-size: cover; width: 15px; height: 15px; display: flex; justify-content: center; align-items: center;cursor: pointer;    margin-top: 4px !important;}
 .bannerImg {
     width: 100% !important;
-    height: 200px !important
+    height: auto !important
 }
 .uploadSec span {
     font-size: 20px;
@@ -113,16 +113,20 @@
     width: 310px;
     float: left;   
     padding-top: 20px;
-    padding-right: 10px;
+    /* padding-right: 10px; */
 }
 .profileevent h2 { font-size: 19px; font-weight: 600; }
 .profileevent h2 span { font-size: 13px; font-weight: 400; }
-.profileIntro { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; margin-bottom: 10px;}
+.profileIntro { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px;}
 .profileIntro i { font-size: 12px; margin-top: 5px; }
 .profileIntro .editSec i { font-size: 20px; margin-top: 3px; }
 .profileevent .intro  { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; margin-bottom: 20px;}
 .profileevent .intro .item { width: 100%; float: left; display: flex;  padding: 7px 0; align-items: center; }
 .profileevent .intro .item p { float: left; width: 35px; margin: 0; }
+.profileevent .intro .item span{
+    font-weight: 600;
+    padding-left: 5px;
+}
 .profileevent .intro .item p img { height: 20px; }
 .othersprofileEvent { width: 40% !important; }  
 .othersprofileEvent .rightProfiles { width: 100%;  }
@@ -141,11 +145,20 @@
    
 }
 .bioEditSec .categorySelect
-{
-    
+{    
     margin-bottom: 5px !important;
     border:1px solid #ccc; border-radius: 10px;
 }
+.becomeafanbtn { 
+    background: linear-gradient(91.19deg, #E26C89 1.82%, #82456F 97.17%);   
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;height: 35px;display: flex; justify-content:center; align-items: center;color: #fff; margin-top: 10px; 
+    height: 42px; border: none; font-size: 15px;
+}
+.becomeafanbtn i { font-size: 19px; padding-left: 2px; }
+.becomeafanbtn:hover, .becomeafanbtn span:hover, .becomeafanbtn i:hover { color:#fff !important; } 
+
 
 
 .textBox::placeholder {
@@ -233,8 +246,8 @@
 .profileSec { width: 100px; }
 .profileSec img { width: 80px; height: 80px; }
 .fansList { margin-top: 50px; margin-left: 15px;}
-.fansList img { width: 35px; height: 35px; }
+.fansList img { width: 30px; height: 30px; }
 .actionIcon { margin-top: 55px; }
 .profileevent { width: 100%; padding: 10px 15px; }
+.othersprofileEvent { width: 100% !important; }
 }
- 

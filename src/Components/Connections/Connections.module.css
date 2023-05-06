@@ -28,7 +28,8 @@
     right: 10px;
     top: 14px;
   }
-  
+  .friendsmenu img{margin-left: 10px;
+  height: 16px;}
   .friendsmenulist {
     background: #003e78;
     border-radius: 20px;

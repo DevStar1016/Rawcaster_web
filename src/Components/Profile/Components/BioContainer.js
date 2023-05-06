@@ -9,7 +9,7 @@ import {
 } from "../../../Shared/Utility";
 import { replaceBiodataHandler } from "../Utility";
 import classes from "../Profile.module.css";
-import { Input, Select, Skeleton, Tooltip } from "antd";
+import { Button, Input, Select, Skeleton, Tooltip } from "antd";
 import { useState } from "react";
 import { useFormik } from "formik";
 import {
@@ -206,8 +206,9 @@ const BioContainer = ({ isLoginuser }) => {
             autoComplete="off"
           />
         </div>
-      ) : (
+      ) : (        
         <>
+        
           {isSuccess && profileData ? (
             <ReadMore
               maxheight={"64px"}
@@ -220,9 +221,11 @@ const BioContainer = ({ isLoginuser }) => {
             >
               {getBioData()}
             </ReadMore>
+            
           ) : (
             <Skeleton active />
           )}
+           <Button className={classes.becomeafanbtn}>Become a Fan <i class="material-symbols-outlined">arrow_forward</i></Button>  
         </>
       )}
     </div>

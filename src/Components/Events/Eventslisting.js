@@ -159,7 +159,7 @@ const Eventslisting = ({
                 </div>
               ))}
               {(EventListData?.length === 0 || isEmptyEvents) && (
-                <div className="text-center">No event found</div>
+                <div className={classes.noeventfound}>No event found</div>
               )}
             </div>
           )}

@@ -102,3 +102,8 @@ display: block;
   .othersProfileThumb { float: left; width: 100%; padding: 25px; border: 1px solid #ECECEC; border-radius: 12px; margin-bottom:20px; }
   .othersProfileThumb .listSec { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
   .othersprofileEvent .rightProfiles .profileThumb { float: left; width: 100%; padding: 25px; border: 1px solid #ECECEC; border-radius: 12px; }
+
+
+  @media (max-width:768px) {
+.othersProfileThumb {  padding: 15px;}    
+  }

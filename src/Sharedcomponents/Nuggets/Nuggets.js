@@ -207,15 +207,10 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
             ) : (
               <>
                 {Nuggets?.length === 0 ? (
-                  <div className="mt-3">
-                    <span
-                      style={{ fontSize: 20, fontWeight: "bold" }}
-                      className="mt-3"
-                    >
+                  <div className={classes.DisplayMsg}>
                       {params.key
                         ? "We didn't find any results"
                         : isDisplayPost()}
-                    </span>
                   </div>
                 ) : (
                   <>

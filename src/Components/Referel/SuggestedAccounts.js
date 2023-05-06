@@ -68,8 +68,7 @@ const SuggestedAccounts = () => {
       <div className={classes.scrollSec}>
         {influencerList?.map((ele) => {
           return (
-            <Row>
-              <Col sm={7}>
+            <div className={classes.refuserList}>
                 <div className={classes.suggAcc}>
                   <img
                     src={ele?.profile_img}
@@ -88,10 +87,7 @@ const SuggestedAccounts = () => {
                       {ele.category.toString()}
                     </p>
                   )}
-                </div>
-              </Col>
-              {/* {!ele.follow && ( */}
-              <Col sm={5}>
+                </div>  
                 <div
                   className={classes.becameFan}
                   onClick={() => {
@@ -99,10 +95,9 @@ const SuggestedAccounts = () => {
                   }}
                 >
                   Became a fan
-                </div>
-              </Col>
+                </div>            
               {/* )} */}
-            </Row>
+            </div>
           );
         })}
       </div>

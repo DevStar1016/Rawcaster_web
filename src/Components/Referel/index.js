@@ -31,8 +31,7 @@ const Referel = () => {
     dispatch(fetchNuggetsbyId(filterData));
   };
 
-  return (
-    <div className="d-none d-sm-block">
+  return (   
       <div className={classes.fullcontainer}>
         <div className={classes.suggestSec}>
           <div className={`${classes.beforelogin} mb-3`}>
@@ -55,11 +54,13 @@ const Referel = () => {
           </div>
           <SuggestedAccounts />
         </div>
+          
+        <div className="d-none d-sm-block">
+          <Nuggets isUserPostAvailable={false} />
+        </div>  
 
-        <Nuggets isUserPostAvailable={false} />
         <InviteBox />
       </div>
-    </div>
   );
 };
 
