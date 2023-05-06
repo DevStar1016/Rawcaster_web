@@ -20,9 +20,9 @@ import { getAuthToken, JSONtoformdata } from "../../../Shared/Utility";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { handleLoading } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
-import { getProfile } from "../../../Components/Auth/getProfile";
 import moment from "moment";
 import VerifiedModal from "../../../Modal/Verification/VerifiedModal";
+import { fetchuserInfobyToken } from "../../../Store/Redux/Action";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -89,7 +89,7 @@ const VerifyOtp = () => {
   }, []);
 
   const handleContinue = (token = loginToken) => {
-    getProfile(token, dispatch).then(() => {
+    dispatch(fetchuserInfobyToken(token)).then(({ payload }) => {
       if (state?.navigatePath) {
         navigate(state?.navigatePath);
       } else {

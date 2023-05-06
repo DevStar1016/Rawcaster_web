@@ -15,7 +15,6 @@ import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 
 const Referel = () => {
   const dispatch = useDispatch();
-  const { isSuccess, loginUserData } = useAuth();
   const { DashboardfilterType, nuggetFormData } = useNuggets();
 
   const handleFilterType = (type) => {

@@ -9,12 +9,12 @@ import { updateUserSettingsService } from "../../Services/ApiService";
 import { JSONtoformdata, RemoveToken } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { getUserSettings } from "../Auth/getProfile";
 import Notifications from "./Notifications";
 import Changepassword from "./ChangePassword";
 import Blockuser from "./Blockuser";
 import Event from "./Event";
 import { handleAccountActive } from "../../Store/Redux/Reducer/AuthReducer";
+import { fetchuserSettingsbyToken } from "../../Store/Redux/Action";
 
 const Settings = () => {
   const { userSettings } = useAuth();
@@ -152,9 +152,8 @@ const Settings = () => {
           } else {
             return;
           }
-
-          getUserSettings(token, dispatch).then((response) => {
-            resolve(response);
+          dispatch(fetchuserSettingsbyToken(token)).then(({ payload }) => {
+            resolve(payload);
           });
         })
         .catch((err) => {
@@ -222,7 +221,7 @@ const Settings = () => {
   return (
     <SettingsContext.Provider value={settingsValues}>
       <div className={classes.settingSec}>
-      <div
+        <div
           className={`${classes.sidebar}  ${
             !visibleSideBar ? classes.hideSlidebar : null
           }`}
@@ -275,7 +274,7 @@ const Settings = () => {
               Event Settings
             </li>
           </ul>
-        </div>      
+        </div>
         <div className={classes.settingmobMenu}>
           <span
             class="material-icons"

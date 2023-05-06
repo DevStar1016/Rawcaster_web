@@ -3,10 +3,8 @@ import React, { useState, useEffect, useRef, createRef } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { pollVoteService } from "../../Services/ApiService";
-import { useListNuggetContext } from "../../Shared/Context";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
-  getAuthenticated,
   getRawcaserToken,
   isAccountValid,
   JSONtoformdata,
@@ -55,6 +53,8 @@ const MultiplePoll = ({
         option_percentage:
           votes && parseInt(getTotalVotes(votedId))
             ? parseFloat(calculateVotes.toString()).toFixed(2)
+            : item?.option_percentage
+            ? item.option_percentage.toFixed(2)
             : "0.00",
       };
     });
@@ -71,72 +71,53 @@ const MultiplePoll = ({
     alignment: "center",
   };
 
-  function calculateTimeLeft(currentTime, startTime, endTime) {
-    const differenceToEnd = endTime - currentTime;
-    const millisecondsPerMinute = 1000 * 60;
-    const millisecondsPerHour = millisecondsPerMinute * 60;
-    const millisecondsPerDay = millisecondsPerHour * 24;
-    const remainingDays = Math.floor(differenceToEnd / millisecondsPerDay);
-    const remainingHours = Math.floor(
-      (differenceToEnd % millisecondsPerDay) / millisecondsPerHour
-    );
-    const remainingMinutes = Math.floor(
-      (differenceToEnd % millisecondsPerHour) / millisecondsPerMinute
-    );
-    const remainingSeconds = Math.floor(
-      (differenceToEnd % millisecondsPerMinute) / 1000
-    );
-    return {
-      remainingDays,
-      remainingHours,
-      remainingMinutes,
-      remainingSeconds,
-    };
-  }
-
   const getVotesTiming = () => {
-    const isoString = created_date.replace(" ", "T") + "Z";
+    if (userSettings) {
+      const [daysval, hoursval, minutesval] = VoteTiming.split(":");
+      const userZoneTime = utctoUserTimezone(
+        created_date,
+        userSettings?.time_zone
+      );
+      const utcString = moment(userZoneTime, "YYYY-MM-DD HH:mm:ss")
+        .add(daysval, "days")
+        .add(hoursval, "hours")
+        .add(minutesval, "minutes");
 
-    const startTime = new Date(isoString);
-    const now = new Date();
-    const [daysval, hoursval, minutesval] = VoteTiming.split(":");
-    const specifiedDate = new Date();
-    specifiedDate.setDate(startTime.getDate() + parseInt(daysval));
-    specifiedDate.setHours(startTime.getHours() + parseInt(hoursval));
-    specifiedDate.setMinutes(startTime.getMinutes() + parseInt(minutesval));
-
-    const timeLeft = calculateTimeLeft(
-      now.getTime(),
-      startTime.getTime(),
-      specifiedDate.getTime()
-    );
-    const { remainingDays, remainingHours, remainingMinutes } = timeLeft;
-
-    let output = "";
-    if (remainingDays > 0) {
-      output += `${remainingDays} day${remainingDays > 1 ? "s" : ""}`;
-      if (remainingMinutes > 0 && remainingHours === 0) {
-        output += `, `;
-      }
-    }
-
-    if (remainingHours > 0) {
+      const now = moment();
+      let timeDiff = utcString - now;
+      let dur = moment.duration(timeDiff);
+      const remainingDays = dur.days();
+      const remainingHours = dur.hours();
+      const remainingMinutes = dur.minutes();
+      let output = "";
       if (remainingDays > 0) {
-        output += `, `;
+        output += `${remainingDays} day${remainingDays > 1 ? "s" : ""}`;
+        if (remainingMinutes > 0 && remainingHours === 0) {
+          output += ` `;
+        }
       }
-      output += `${remainingHours} hour${remainingHours > 1 ? "s" : ""}`;
-      if (remainingMinutes > 0) {
-        output += `, `;
-      }
-    }
 
-    if (remainingMinutes > 0) {
-      output += `${remainingMinutes} minute${remainingMinutes > 1 ? "s" : ""} `;
+      if (remainingHours > 0) {
+        if (remainingDays > 0) {
+          output += ` `;
+        }
+        output += `${remainingHours} hour${remainingHours > 1 ? "s" : ""}`;
+        if (remainingMinutes > 0) {
+          output += ` `;
+        }
+      }
+
+      if (remainingMinutes > 0) {
+        output += `${remainingMinutes} minute${
+          remainingMinutes > 1 ? "s" : ""
+        } `;
+      }
+      if (output !== "") {
+        output += ` left`;
+      }
+      return output ? output : null;
     }
-    if (output !== "") {
-      output += ` left`;
-    }
-    return output ? output : null;
+    return null;
   };
 
   const handlePoll = (item) => {
@@ -153,36 +134,19 @@ const MultiplePoll = ({
   };
 
   useEffect(() => {
-    const [daysval, hoursval, minutesval] = VoteTiming.split(":");
-    if (userSettings) {
-      const createdTime = utctoUserTimezone(
-        created_date,
-        userSettings.time_zone
-      );
-
-      if (
-        moment(createdTime)
-          .add({ days: daysval, hours: hoursval, minutes: minutesval })
-          .isBefore()
-      ) {
-        animateAnswers(-1);
-        setpollVotedData({
-          isVoted: true,
-          votedOptionID: "",
-        });
-      } else if (isVoted) {
-        animateAnswers(-1);
-        setpollVotedData({
-          isVoted: true,
-          votedOptionID: "",
-        });
-      } else {
-        setpollVotedData({
-          isVoted: false,
-          votedOptionID: "",
-        });
-      }
+    if (!getVotesTiming()) {
+      animateAnswers(-1);
+      setpollVotedData({
+        isVoted: true,
+        votedOptionID: "",
+      });
     } else if (!Token) {
+      setpollVotedData({
+        isVoted: true,
+        votedOptionID: "",
+      });
+    } else if (isVoted) {
+      animateAnswers(-1);
       setpollVotedData({
         isVoted: true,
         votedOptionID: "",
@@ -272,12 +236,13 @@ const MultiplePoll = ({
                 : styles.answer_hover + " " + styles.answer
             }
             style={{
-              backgroundColor: pollVotedData.isVoted
-                ? "rgb(241 240 240)"
-                : "#F2718D",
+              backgroundColor:
+                pollVotedData.isVoted || !getVotesTiming()
+                  ? "rgb(241 240 240)"
+                  : "#F2718D",
             }}
             onClick={() => {
-              if (!pollVotedData.isVoted) {
+              if (!pollVotedData.isVoted && getVotesTiming()) {
                 if (getRawcaserToken()) {
                   if (isAccountValid(LoginUserData)) {
                     setTimeout(() => {
@@ -306,20 +271,26 @@ const MultiplePoll = ({
               ref={answerRefs?.current[index]}
               className={styles.answerInner}
               style={{
-                textAlign: pollVotedData.isVoted ? "start" : "center",
+                textAlign:
+                  pollVotedData.isVoted || !getVotesTiming()
+                    ? "start"
+                    : "center",
                 width: "100%",
               }}
             >
               <p
                 style={{
                   // borderRadius: 8,
-                  color: pollVotedData.isVoted ? "#000" : "#FFF",
+                  color:
+                    pollVotedData.isVoted || !getVotesTiming()
+                      ? "#000"
+                      : "#FFF",
                 }}
               >
                 {result.option_name}
               </p>
             </div>
-            {pollVotedData.isVoted && (
+            {(pollVotedData.isVoted || !getVotesTiming()) && (
               <span style={{ color: "#000" }}>{result.option_percentage}%</span>
             )}
           </div>

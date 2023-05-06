@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { getNuggetDetailService } from "../../Services/ApiService";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { JSONtoformdata } from "../../Shared/Utility";
+import { DecryptionString, JSONtoformdata } from "../../Shared/Utility";
 import { useParams } from "react-router";
 import Post from "./Post";
 import classes from "./Nuggets.module.css";
 const ViewNugget = () => {
   const { nugID } = useParams();
+  const nugget_id = nugID ? DecryptionString(nugID) : null;
   const Token = useAuthToken();
   const [NuggetData, setNuggetData] = useState();
 
   const getNuggetDetail = () => {
     let nuggetDetailData = {
       token: Token,
-      nugget_id: nugID,
+      nugget_id: nugget_id,
     };
     getNuggetDetailService(JSONtoformdata(nuggetDetailData))
       .then((res) => {

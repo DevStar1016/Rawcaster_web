@@ -52,7 +52,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const isNotExpired = () => {
     const createdTime = utctoUserTimezone(
       ele.start_date_time,
-      userSettings.time_zone
+      userSettings?.time_zone
     );
     if (moment(createdTime).isBefore()) {
       return false;
@@ -138,16 +138,16 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         {isOthers ? (
           <p className={classes.iconsec}>
             {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
             ).format("DD MMM YYYY")}
             {" . "}
             {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
             ).format("hh:mm A") +
               " - (" +
               utctoUserTimezonewithAbbr(
                 ele.start_date_time,
-                userSettings.time_zone
+                userSettings?.time_zone
               ) +
               ")"}
           </p>
@@ -155,16 +155,16 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
           <p className={classes.iconsec}>
             <span class="material-symbols-outlined">calendar_today</span>{" "}
             {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
             ).format("DD MMM YYYY")}
             <span class="material-symbols-outlined">schedule</span>{" "}
             {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
             ).format("hh:mm A") +
               " - (" +
               utctoUserTimezonewithAbbr(
                 ele.start_date_time,
-                userSettings.time_zone
+                userSettings?.time_zone
               ) +
               ")"}
           </p>

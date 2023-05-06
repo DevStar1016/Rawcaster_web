@@ -15,11 +15,11 @@ import {
   TwitterShareButton,
   WhatsappShareButton,
 } from "react-share";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { message } from "antd";
 import GoogleContacts from "react-google-contacts";
-import GmailListModal from "../../Modal/Referal/GmailListModal";
 import InviteFansModal from "../../Modal/Referal/InviteFansModal";
+import { handleSendEmail } from "../../Modal/Referal/utility";
 
 const shareMessage =
   "Hi, I have joined Rawcaster. A one-stop platform for all social media needs. I am asking all my friends and special people to join this platform to make it easier to reach everyone with content, personalized messages, Nuggets, and invitations to participate in my special events. I expect to see you there soon.\n";
@@ -60,39 +60,104 @@ const ShareList = [
 ];
 
 const InviteBox = () => {
+  const token = useAuthToken();
   const [contactList, setContactList] = useState(null);
   const [isGmailOpen, setisGmailOpen] = useState(false);
   const [isInviteFansOpen, setisInviteFansOpen] = useState(false);
+  const [SentedEmails, setSentedEmails] = useState([]);
   const profileData = useAuthData();
 
   const shareUrl = profileData?.referral_link || "";
 
   const responseSuccessCallback = (response) => {
+    console.log(response);
     setisGmailOpen(true);
     setContactList(response);
   };
 
+  const handleInviteFriends = (contacts) => {
+    handleSendEmail(token, contacts).then(() => {
+      setSentedEmails((pre) => [...pre, contacts]);
+    });
+  };
+
   return (
     <div className={classes.inviteSec}>
-      <GoogleContacts
-        clientId="749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com"
-        render={(renderProps) => (
-          <div
-            className={classes.inviteContainer}
-            onClick={renderProps.onClick}
-          >
-            <div className={classes.iconSec}>
-              <img src={PhoneIcon} />
-              <p>Contacts</p>
+      <div className={classes.inviteBox}>
+        <GoogleContacts
+          clientId="749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com"
+          render={(renderProps) => (
+            <div
+              className={classes.inviteContainer}
+              onClick={
+                isGmailOpen
+                  ? () => {
+                      setisGmailOpen(false);
+                      setContactList([]);
+                    }
+                  : renderProps.onClick
+              }
+            >
+              <div className={classes.iconSec}>
+                <img src={PhoneIcon} />
+                <p>Contacts</p>
+              </div>
+              {isGmailOpen ? (
+                <span class="material-symbols-outlined">expand_more</span>
+              ) : (
+                <span class="material-symbols-outlined">chevron_right</span>
+              )}
             </div>
-            <span class="material-symbols-outlined">chevron_right</span>
+          )}
+          onRequest={() => {
+            setisGmailOpen(true);
+            setContactList([]);
+          }}
+          onSuccess={responseSuccessCallback}
+          onFailure={() => {
+            message.warning("Try again after some time!!", 3);
+          }}
+        />
+        {isGmailOpen && contactList && (
+          <div className={classes.resultSec}>
+            {contactList.length !== 0 ? (
+              <>
+                {contactList.map((ele, ind) => (
+                  <div key={ind} className={classes.contacts}>
+                    <div className={classes.profileSec}>
+                      <img
+                        width="25px"
+                        height={"25px"}
+                        src={require("../../Assets/Icons/png/user_vector.png")}
+                      ></img>
+                      <div className={classes.NameSec}>
+                        <p className={classes.name}>{ele.title}</p>
+                        <p className={classes.email}>{ele.email}</p>
+                      </div>
+                    </div>
+                    {SentedEmails.includes(ele.email) ? (
+                      <span class="material-symbols-outlined">done</span>
+                    ) : (
+                      <div
+                        className={classes.inviteBtn}
+                        onClick={() => {
+                          handleInviteFriends(ele.email);
+                        }}
+                      >
+                        invite
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div className={classes.EmptyResultSec}>
+                <p>We didn't find any results!</p>
+              </div>
+            )}
           </div>
         )}
-        onSuccess={responseSuccessCallback}
-        onFailure={() => {
-          message.warning("Try again after some time!!", 3);
-        }}
-      />
+      </div>
       {ShareList.map(({ title, img, Component, id }) => (
         <Component
           quote={
@@ -125,14 +190,14 @@ const InviteBox = () => {
         <span class="material-symbols-outlined">chevron_right</span>
       </div>
 
-      <GmailListModal
+      {/* <GmailListModal
         open={isGmailOpen}
         Contacts={contactList}
         close={() => {
           setisGmailOpen(false);
           setContactList([]);
         }}
-      />
+      /> */}
       <InviteFansModal
         open={isInviteFansOpen}
         close={() => {

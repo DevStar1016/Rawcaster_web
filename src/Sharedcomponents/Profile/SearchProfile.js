@@ -22,6 +22,7 @@ import {
 } from "../../Shared/Reduxfetcher";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
   const navigate = useNavigate();
@@ -93,7 +94,13 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           handleProfileNavigate(finalData);
         }}
       >
-        <img src={ele.profile_img} />
+        <img
+          src={ele.profile_img}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = defaultprofileImg;
+          }}
+        />
       </div>
       <div className={classes.rightSec}>
         <div

@@ -501,14 +501,16 @@ const Post = ({
                     ? datetoString(
                         utctoUserTimezone(
                           ele.created_date,
-                          userSettings.time_zone
+                          userSettings?.time_zone
                         )
                       )
                     : null
                 }
                 color="rgb(250, 162, 27)"
               >
-                {dateToShortDate(ele?.created_date)}
+                {dateToShortDate(
+                  utctoUserTimezone(ele.created_date, userSettings?.time_zone)
+                )}
               </Tooltip>
             )}
             <i class="material-icons">fiber_manual_record</i>

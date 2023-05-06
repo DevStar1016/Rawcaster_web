@@ -13,6 +13,7 @@ import {
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Col, Row } from "react-bootstrap";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const SuggestedAccounts = () => {
   const token = useAuthToken();
@@ -69,7 +70,14 @@ const SuggestedAccounts = () => {
           return (
             <div className={classes.refuserList}>
                 <div className={classes.suggAcc}>
-                  <img src={ele?.profile_img} alt={ele?.display_name} />
+                  <img
+                    src={ele?.profile_img}
+                    alt={ele?.display_name}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = defaultprofileImg;
+                    }}
+                  />
                   <p className={classes.name}>
                     {decodeHtml(ele?.display_name)}
                   </p>

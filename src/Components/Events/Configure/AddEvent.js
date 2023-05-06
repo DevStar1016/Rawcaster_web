@@ -230,7 +230,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       " " +
       moment(moment(val.event_start_time, ["hh:mm"])).format("HH:mm:00");
 
-    let utcDateTime = utctoUserTimezone(dateAndTime, userSettings.time_zone);
+    let utcDateTime = utctoUserTimezone(dateAndTime, userSettings?.time_zone);
     let liveEventData = {
       token: token,
       event_start_date: moment().utc(utcDateTime).format("YYYY-MM-DD"),

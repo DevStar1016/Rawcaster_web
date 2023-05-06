@@ -59,7 +59,8 @@
     height: calc(100vh - 70px);
     position: -webkit-sticky;
     position: sticky;
-}
+  }
+  
 .inviteContainer {
   border: 1px solid #E8EAEE;
   border-radius: 7px;
@@ -72,6 +73,13 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+.resultSec {
+  border: 1px solid #E8EAEE;
+  border-radius: 7px;
+  padding: 10px;
+  max-height: 300px;
+  overflow: scroll;
 }
 .inviteContainer img {
   width: 32px;
@@ -87,7 +95,60 @@
   margin-bottom: 0px !important;
   margin-left: 10px;
 }
-
+.contacts {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+}
+.profileSec {
+  display: flex;
+  flex-direction: row;
+}
+.profileSec .NameSec  {
+  margin-left: 5px;
+}
+.name {
+  color: #1d1c1c;
+  font-weight: 600;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  margin-bottom: 0;
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+.email {
+  color: #1d1c1c;
+  font-weight: 400;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  margin-bottom: 0px !important;
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inviteBtn {
+  padding:3px 7px;
+  background: #F2718D;
+  border-radius: 8px;
+  text-align: end;
+  color: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.contacts span {
+  color: #F2718D;
+}
+.EmptyResultSec {
+display: flex;
+justify-content: center;
+height: 200px;
+}
+.EmptyResultSec p {
+  margin-top: 20px;
+}
 @media (max-width:768px) {
   .fullcontainer { width: 100%; padding-left: 15px; padding-right: 15px; padding-top: 55px; }
   .beforelogin { display: none;}

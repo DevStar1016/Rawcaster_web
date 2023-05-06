@@ -9,6 +9,7 @@ import {
 import classes from "../Profile.module.css";
 import { useProfileContext } from "../../../Shared/Context";
 import { useDispatch } from "react-redux";
+import { defaultprofileImg } from "../../../Shared/CommonConstants";
 
 const FansThumb = () => {
   const { FansList, setFansList, getFollowers } = useProfileContext();
@@ -29,6 +30,10 @@ const FansThumb = () => {
         <img
           className={classes.thumbImg}
           src={ele.profile_img}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = defaultprofileImg;
+          }}
           onClick={() => {
             let finalData = {
               dispatch,

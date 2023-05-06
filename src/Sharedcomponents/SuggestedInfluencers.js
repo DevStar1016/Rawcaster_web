@@ -11,6 +11,7 @@ import {
 import { handleloginModalShow } from "../Store/Redux/Reducer/DashboardReducer";
 import { setSessionStorageData } from "../Store/Storage";
 import classes from "./SuggestedInfluencers.module.css";
+import { defaultprofileImg } from "../Shared/CommonConstants";
 
 const SuggestedInfluencers = () => {
   const dispatch = useDispatch();
@@ -54,7 +55,14 @@ const SuggestedInfluencers = () => {
                   dispatch(handleloginModalShow(true));
                 }}
               >
-                <img src={ele?.profile_img} alt={ele?.display_name} />
+                <img
+                  src={ele?.profile_img}
+                  alt={ele?.display_name}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src = defaultprofileImg;
+                  }}
+                />
                 <p className={classes.name}>{decodeHtml(ele?.display_name)}</p>
                 <br />
                 {ele.category && ele.category.length !== 0 && (
