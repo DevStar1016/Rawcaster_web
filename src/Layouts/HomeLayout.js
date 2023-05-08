@@ -209,10 +209,12 @@ const HomeLayout = () => {
                         navigate("/dashboard");
                       }}
                     />
-                    <Notification
-                      src={NotificationIcon}
-                      className={`${classes.onlydes} ${classes.menuIcon}`}
-                    />
+                    <div className={classes.onlydes}>
+                      <Notification
+                        src={NotificationIcon}
+                        className={`${classes.onlydes} ${classes.menuIcon}`}
+                      />
+                    </div>
                   </div>
                 )}
                 <div
@@ -316,17 +318,26 @@ const HomeLayout = () => {
             src={btmevent}
             alt="event_logo"
             onClick={() => {
+              navigate("/dashboard");
               dispatch(handledasboardTab("event"));
             }}
           />
 
-          <img src={btmbell} alt="notification_logo" />
+          <img
+            src={btmbell}
+            alt="notification_logo"
+            onClick={() => {
+              navigate("/dashboard");
+              dispatch(handledasboardTab("notification"));
+            }}
+          />
 
           <img
             className={classes.btmhome}
             alt="home_logo"
             src={btmhome}
             onClick={() => {
+              navigate("/dashboard");
               dispatch(handledasboardTab("nugget"));
             }}
           />
@@ -335,6 +346,7 @@ const HomeLayout = () => {
             src={btmuser}
             alt="user_logo"
             onClick={() => {
+              navigate("/dashboard");
               dispatch(handledasboardTab("usermenu"));
             }}
           />

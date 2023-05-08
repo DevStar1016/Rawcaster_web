@@ -180,7 +180,8 @@ const BioContainer = ({ isLoginuser }) => {
           >
             {influencerCategory.map((ele) => {
               return (
-                <Select.Option style={{borderRadius:"10px"}}
+                <Select.Option
+                  style={{ borderRadius: "10px" }}
                   key={ele.value}
                   disabled={
                     selectedCategory.length > 2
@@ -206,9 +207,8 @@ const BioContainer = ({ isLoginuser }) => {
             autoComplete="off"
           />
         </div>
-      ) : (        
+      ) : (
         <>
-        
           {isSuccess && profileData ? (
             <ReadMore
               maxheight={"64px"}
@@ -221,11 +221,15 @@ const BioContainer = ({ isLoginuser }) => {
             >
               {getBioData()}
             </ReadMore>
-            
           ) : (
             <Skeleton active />
           )}
-           <Button className={classes.becomeafanbtn}>Become a Fan <i class="material-symbols-outlined">arrow_forward</i></Button>  
+          <Button
+            className={classes.becomeafanbtn}
+            style={{ display: isLoginuser ? "none" : "" }}
+          >
+            Become a Fan <i class="material-symbols-outlined">arrow_forward</i>
+          </Button>
         </>
       )}
     </div>

@@ -18,6 +18,7 @@ import {
   handleNuggetFormData,
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import Notification from "../Notifications";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
@@ -73,7 +74,8 @@ const Dashboard = () => {
       <div className="d-block d-sm-none">
         <div className={classes.fullcontainer}>
           {dashboardMenu === "event" && <Events />}
-          {/* {dashboardMenu === "nugget" && <Nuggets />} */}
+          {dashboardMenu === "notification" && <Notification />}
+          {dashboardMenu === "nugget" && <Nuggets />}
           {dashboardMenu === "usermenu" && <DashboardSignup />}
         </div>
       </div>

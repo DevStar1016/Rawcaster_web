@@ -16,6 +16,10 @@ import { sendMessage } from "../../Services/SocketService";
 import { respondToFriendRequestsService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
 
+const HomePageIds = [2, 4];
+const UserPageIds = [5, 3];
+const NuggetPageIds = [1, 6];
+
 export const getNotificationMessage = (type) => {
   switch (parseInt(type)) {
     case 1:
@@ -68,6 +72,7 @@ export const getUserTimeZone = (date, format, userSettings) => {
 
 export const NotificationsList = ({
   ele,
+  type,
   handleUpdate,
   handleDelete,
   handleView,
@@ -143,8 +148,12 @@ export const NotificationsList = ({
           className={`${classes.leftsec}`}
           onClick={() => {
             handleView(ele);
-            if (ele.nugget_id) {
+            if (NuggetPageIds.includes(parseInt(type))) {
               navigate(`/view/${EncryptionString(ele.nugget_id)}`);
+            } else if (UserPageIds.includes(parseInt(type))) {
+              navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+            } else if (HomePageIds.includes(parseInt(type))) {
+              navigate(`/dashboard`);
             }
           }}
         >

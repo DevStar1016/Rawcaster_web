@@ -131,6 +131,7 @@ const Content = ({ elem }) => {
           {NotificationList.today.map((ele) => (
             <NotificationsList
               ele={ele}
+              type={elem.id}
               handleUpdate={(id) => {
                 let filteredList = NotificationList.filter(
                   (ele) => ele.notification_id !== id
@@ -153,6 +154,7 @@ const Content = ({ elem }) => {
           {NotificationList.yesterday.map((ele) => (
             <NotificationsList
               ele={ele}
+              type={elem.id}
               handleUpdate={(id) => {
                 let filteredList = NotificationList.filter(
                   (ele) => ele.notification_id !== id
@@ -175,6 +177,7 @@ const Content = ({ elem }) => {
           {NotificationList.older.map((ele) => (
             <NotificationsList
               ele={ele}
+              type={elem.id}
               handleUpdate={(id) => {
                 let filteredList = NotificationList.filter(
                   (ele) => ele.notification_id !== id

@@ -537,8 +537,15 @@ margin-bottom: 12px !important;
 .locationSearch .ant-select-selection-search-input::placeholder {
   padding-top: 20px !important;
 }
+.onlyMob {
+  display: none;
+}
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
+  .onlydes { display: none; } 
+  .onlyMob {
+    display: block;
+  }
   .ant-modal-close-x { width: 20px; height: 20px; border-radius: 50px; display: flex; align-items: center; line-height: 16px !important; }
   .anticon-close svg { font-size: 12px; margin-top: -2px; }
   .anticon-down svg { font-size: 10px; margin-top: 0px; }

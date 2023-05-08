@@ -3,6 +3,7 @@ import Development from "../Components/Development";
 import GlobalSearchResult from "../Components/GlobalSearchResult";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
 import Membership from "../Components/Membership";
+import Notification from "../Components/Notifications";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
 import TermsandConditions from "../Components/Policy/TermsandConditions";

@@ -130,7 +130,7 @@ const PostNuggets = () => {
     formData.append("share_type", val.share_type);
     if (!PollData) {
       for (const file of NuggetData) {
-        formData.append("nuggets_media[]", file);
+        formData.append("nuggets_media", file);
       }
     }
 

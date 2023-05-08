@@ -1,6 +1,5 @@
 import { Popover } from "antd";
 import React from "react";
-
 import Header from "./Header";
 import ContentLayout from "./ContentLayout";
 import { useState } from "react";
@@ -139,16 +138,23 @@ const Notification = ({ className, src }) => {
 
   return (
     <NotificationContext.Provider value={NotificationValues}>
-      <Popover
-        placement="bottom"
-        title={<Header TotalUnreadCount={TotalUnreadCount} />}
-        content={<ContentLayout setTotalUnreadCount={setTotalUnreadCount} />}
-        showArrow={false}
-        trigger="click"
-        align="end"
-      >
-        <img src={src} alt="Notification_logo" className={className} />
-      </Popover>
+      <div className={"onlydes"}>
+        <Popover
+          placement="bottom"
+          title={<Header />}
+          content={<ContentLayout />}
+          showArrow={false}
+          trigger="click"
+          align="end"
+        >
+          <img src={src} alt="Notification_logo" className={className} />
+        </Popover>
+      </div>
+
+      <div className="onlyMob">
+        <Header />
+        <ContentLayout />
+      </div>
     </NotificationContext.Provider>
   );
 };
