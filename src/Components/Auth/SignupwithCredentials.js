@@ -139,9 +139,7 @@ const SignupwithCredentials = () => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         dispatch(handleLoading(false));
       });

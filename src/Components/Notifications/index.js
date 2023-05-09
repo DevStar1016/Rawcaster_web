@@ -121,9 +121,7 @@ const Notification = ({ className, src }) => {
             toast.error(data.msg);
           }
         })
-        .catch((err) => {
-          toast.error(err.message);
-        });
+        .catch((err) => {});
     });
     return promise;
   };

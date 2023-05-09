@@ -100,9 +100,7 @@ const Login = () => {
           setFieldError("username", res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         dispatch(handleLoading(false));
       });

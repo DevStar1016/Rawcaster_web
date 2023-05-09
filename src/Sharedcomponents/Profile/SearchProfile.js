@@ -50,9 +50,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const handleFriendRequest = (ele) => {
@@ -75,9 +73,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   return (

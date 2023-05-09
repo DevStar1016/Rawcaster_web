@@ -102,6 +102,7 @@ export const fetchNuggetsbyId = createAsyncThunk(
       ...formData,
       token: token,
     };
+    console.log(nuggetData);
     try {
       const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
       if (data.status === 1) {

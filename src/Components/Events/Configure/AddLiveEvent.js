@@ -149,9 +149,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         handleCloseEvent();
       });
@@ -181,9 +179,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         handleCloseEvent();
       });
@@ -216,9 +212,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
             event_invite_groups: getValidarrayData(eventData?.invite_groups_id),
           });
         })
-        .catch((err) => {
-          toast.error(err.message);
-        });
+        .catch((err) => {});
     }
   }, [data]);
 

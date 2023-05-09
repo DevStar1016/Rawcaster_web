@@ -34,9 +34,7 @@ export const VerificationModal = ({ open, close }) => {
           toast.error(res.data.message);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const handleValidate = () => {

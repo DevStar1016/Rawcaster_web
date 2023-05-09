@@ -73,9 +73,7 @@ const ChangePassword = () => {
           setFieldError("old_password", res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         setisDisable(false);
       });

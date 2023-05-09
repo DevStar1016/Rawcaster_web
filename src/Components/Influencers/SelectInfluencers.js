@@ -69,9 +69,7 @@ const SelectInfluencers = () => {
           }));
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         dispatch(handleLoading(false));
         setisLoadMore(null);
@@ -91,9 +89,7 @@ const SelectInfluencers = () => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -135,7 +131,6 @@ const SelectInfluencers = () => {
         })
         .catch((err) => {
           reject(false);
-          toast.error(err.message);
         });
     });
 
@@ -225,9 +220,7 @@ const SelectInfluencers = () => {
                     .then((res) => {
                       navigate("/dashboard");
                     })
-                    .catch((err) => {
-                      console.log(err);
-                    });
+                    .catch((err) => {});
                 }
               }}
             >

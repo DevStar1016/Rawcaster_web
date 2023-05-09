@@ -115,9 +115,7 @@ const BioContainer = ({ isLoginuser }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -226,7 +224,9 @@ const BioContainer = ({ isLoginuser }) => {
           )}
           <Button
             className={classes.becomeafanbtn}
-            style={{ display: isLoginuser ? "none" : "" }}
+            style={{
+              display: isLoginuser || profileData?.follow ? "none" : "",
+            }}
           >
             Become a Fan <i class="material-symbols-outlined">arrow_forward</i>
           </Button>

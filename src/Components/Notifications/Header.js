@@ -20,7 +20,7 @@ const Header = () => {
           }
         }}
       >
-        Mark as read
+        Mark all as read
       </div>
     </div>
   );

@@ -14,7 +14,6 @@ import {
   getUnclaimedInfluencerData,
   getfollowerfollowingService,
 } from "./Utility";
-import { toast } from "react-hot-toast";
 import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
 import msgIcon from "../../../Assets/Images/svg/msgIcon.svg";
@@ -30,13 +29,11 @@ const ConnectionsList = ({
   isLocked = false,
   isMyProfile,
 }) => {
-  const { isLoginUser, FansList, setFansList, getFollowers } =
-    useProfileContext();
+  const { isLoginUser, setFansList, getFollowers } = useProfileContext();
   const params = useParams();
   const dispatch = useDispatch();
   const display_user_id = DecryptionString(params.user_id);
   const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
-    user: "",
     show: false,
   });
   const [ClaimAccountModal, setClaimAccountModal] = useState({
@@ -90,9 +87,7 @@ const ConnectionsList = ({
         }
         setConnectionsList(finalObj);
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const getConnectionList = (val = {}) => {
@@ -127,9 +122,7 @@ const ConnectionsList = ({
         }
         setConnectionsList(finalObj);
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const getUnclaimedInfluencer = () => {
@@ -137,9 +130,7 @@ const ConnectionsList = ({
       .then((res) => {
         setConnectionsList(res);
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const GetList = (val = {}) => {
@@ -183,7 +174,7 @@ const ConnectionsList = ({
               marginTop: "5px",
             }}
           >
-            <p>{"User"}</p>
+            <p>{"User1234"}</p>
           </Skeleton.Node>
         </div>
       );
@@ -202,10 +193,18 @@ const ConnectionsList = ({
       <h2>
         {title} {!isLocked ? `(${ConnectionsList.allconnectionscount})` : ""}
         {!isLocked && type === "fans" && (
-          <>
-            <img className={classes.actionIcon} src={msgIcon} />
+          <div style={{ display: isLoginUser ? "" : "none" }}>
+            <img
+              className={classes.actionIcon}
+              src={msgIcon}
+              onClick={() => {
+                setisInfluencerChatModalOpen({
+                  show: true,
+                });
+              }}
+            />
             <img className={classes.actionIcon} src={talkshowIcon} />
-          </>
+          </div>
         )}
         {!isLocked &&
           ConnectionsList.connections.length <
@@ -251,12 +250,7 @@ const ConnectionsList = ({
                             {type === "influencers" && isLoginUser ? (
                               <i
                                 className={classes.messageIcon}
-                                onClick={() => {
-                                  setisInfluencerChatModalOpen({
-                                    user: ele,
-                                    show: true,
-                                  });
-                                }}
+                                onClick={() => {}}
                               />
                             ) : type === "unclaimed_influencers" &&
                               isLoginUser ? (
@@ -334,7 +328,6 @@ const ConnectionsList = ({
           open={isSeeMore}
           value={ConnectionsList}
           getConnectionList={GetList}
-          setisInfluencerChatModalOpen={setisInfluencerChatModalOpen}
           onSuccess={() => {
             setisSeeMore(false);
           }}
@@ -346,9 +339,8 @@ const ConnectionsList = ({
       {isInfluencerChatModalOpen.show && (
         <InfluencerSend
           open={isInfluencerChatModalOpen.show}
-          user={isInfluencerChatModalOpen.user}
           close={() => {
-            setisInfluencerChatModalOpen({ user: "", show: false });
+            setisInfluencerChatModalOpen({ show: false });
           }}
         />
       )}

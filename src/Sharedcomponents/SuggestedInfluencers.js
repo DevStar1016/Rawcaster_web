@@ -12,10 +12,12 @@ import { handleloginModalShow } from "../Store/Redux/Reducer/DashboardReducer";
 import { setSessionStorageData } from "../Store/Storage";
 import classes from "./SuggestedInfluencers.module.css";
 import { defaultprofileImg } from "../Shared/CommonConstants";
+import { Skeleton } from "antd";
 
 const SuggestedInfluencers = () => {
   const dispatch = useDispatch();
   const [influencerList, setinfluencerList] = useState();
+  const [isInfluencerLoading, setisInfluencerLoading] = useState(true);
   const getInfluencerList = () => {
     let influencerData = {
       token: "RAWCAST",
@@ -27,11 +29,12 @@ const SuggestedInfluencers = () => {
         if (res.data.status === 1) {
           setinfluencerList(res.data.users_list.slice(0, 10));
         } else {
-          toast.error(res.data.message);
+          setinfluencerList([]);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
+      .catch((err) => {})
+      .finally(() => {
+        setisInfluencerLoading(false);
       });
   };
 
@@ -43,45 +46,78 @@ const SuggestedInfluencers = () => {
 
   return (
     <div>
-      <div className={classes.suggInfluencersSec}>
-        <h3>Suggested accounts ({influencerList?.length})</h3>
-        <div className={classes.scrollSec}>
-          {influencerList?.map((ele) => {
-            return (
-              <div
-                className={classes.suggAcc}
-                onClick={() => {
-                  setSessionStorageData("influencerData", JSON.stringify(ele));
-                  dispatch(handleloginModalShow(true));
-                }}
-              >
-                <img
-                  src={ele?.profile_img}
-                  alt={ele?.display_name}
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null; // prevents looping
-                    currentTarget.src = defaultprofileImg;
-                  }}
-                />
-                <p className={classes.name}>{decodeHtml(ele?.display_name)}</p>
-                <br />
-                {ele.category && ele.category.length !== 0 && (
-                  <p className={classes.username}>{ele.category.toString()}</p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
       <div
-        className={classes.seemoreSec}
-        onClick={() => {
-          setSessionStorageData("influencerData", "All");
-          dispatch(handleloginModalShow(true));
+        className={classes.suggInfluencersSec}
+        style={{
+          display: !influencerList || influencerList.length === 0 ? "none" : "",
         }}
       >
-        See More <span class="material-icons">arrow_forward</span>
+        <h3>
+          Suggested accounts{" "}
+          {influencerList ? `(${influencerList?.length})` : ""}
+        </h3>
+        <div className={classes.scrollSec}>
+          {isInfluencerLoading ? (
+            <div
+              className="mt-2"
+              style={{
+                display:
+                  influencerList && influencerList.length === 0 ? "none" : "",
+              }}
+            >
+              {[...Array(3)].map(() => (
+                <Skeleton avatar paragraph={{ rows: 0 }} />
+              ))}
+            </div>
+          ) : (
+            <>
+              {influencerList?.map((ele) => {
+                return (
+                  <div
+                    className={classes.suggAcc}
+                    onClick={() => {
+                      setSessionStorageData(
+                        "influencerData",
+                        JSON.stringify(ele)
+                      );
+                      dispatch(handleloginModalShow(true));
+                    }}
+                  >
+                    <img
+                      src={ele?.profile_img}
+                      alt={ele?.display_name}
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null; // prevents looping
+                        currentTarget.src = defaultprofileImg;
+                      }}
+                    />
+                    <p className={classes.name}>
+                      {decodeHtml(ele?.display_name)}
+                    </p>
+                    <br />
+                    {ele.category && ele.category.length !== 0 && (
+                      <p className={classes.username}>
+                        {ele.category.toString()}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </div>
       </div>
+      {influencerList && influencerList.length !== 0 && (
+        <div
+          className={classes.seemoreSec}
+          onClick={() => {
+            setSessionStorageData("influencerData", "All");
+            dispatch(handleloginModalShow(true));
+          }}
+        >
+          See More <span class="material-icons">arrow_forward</span>
+        </div>
+      )}
     </div>
   );
 };

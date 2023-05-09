@@ -128,9 +128,7 @@ const MultiplePoll = ({
     };
     pollVoteService(JSONtoformdata(pollData))
       .then((res) => {})
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {

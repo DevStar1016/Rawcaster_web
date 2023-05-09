@@ -21,6 +21,8 @@ import {
   handleNuggetFormData,
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
+import { toast } from "react-hot-toast";
+import { message } from "antd";
 
 // Auth
 
@@ -473,4 +475,35 @@ export const handleProfileNavigate = (userData) => {
   dispatch(handleNuggetFormData(filterValidObject(filterData)));
   dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
   navigate(`/viewprofile/${EncryptionString(user_id)}`);
+};
+
+export const ErrorHandling = (error) => {
+  return new Promise((resolve, reject) => {
+    if (error.response) {
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      if (error.response.status === 404) {
+        handleErrorMsg(
+          "The requested resource does not exist or has been deleted",
+          resolve
+        );
+      } else if (error.response.status === 401) {
+        handleErrorMsg("Please login to access this resource!", resolve);
+      } else if (error.response.status === 500) {
+        handleErrorMsg("Internal Server Error !", resolve);
+      } else {
+        handleErrorMsg("An error occurred");
+      }
+    } else if (error.request) {
+      handleErrorMsg("Unable to connect to the server !", resolve);
+    } else {
+      handleErrorMsg("Something went Wrong!", resolve);
+    }
+  });
+};
+const handleErrorMsg = (msg, resolve) => {
+  message.error(msg).then(() => {
+    resolve();
+  });
 };

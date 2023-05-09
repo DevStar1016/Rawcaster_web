@@ -10,7 +10,11 @@ import { ListNuggetContext } from "../../Shared/Context";
 import PostProgress from "./PostProgress";
 import Post from "./Post";
 import { useParams } from "react-router";
-import { useAuthToken, useNuggets } from "../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../Shared/Reduxfetcher";
 import { Skeleton, Spin } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
@@ -21,6 +25,7 @@ import {
   handleNuggetList,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
+import NuggetLock from "../../Assets/Images/svg/nugget_lock.svg";
 
 const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   const dispatch = useDispatch();
@@ -38,6 +43,7 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
 
   const userData = getRawcaserToken();
   const token = useAuthToken();
+  const loginuserData = useAuthData();
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
@@ -134,7 +140,7 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   };
 
   const isValidPage = () => {
-    if (getAuthenticated() && isUserPostAvailable) {
+    if (getAuthenticated() && isUserPostAvailable && loginuserData) {
       if (parseInt(display_user_id) === parseInt(userData?.user_id)) {
         return true;
       } else if (!display_user_id) {
@@ -164,39 +170,49 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
-      <InfiniteScroll
-        dataLength={Nuggets?.length || 0} //This is important field to render the next data
-        next={onEndReached}
-        loader={
-          <div className="mt-3 pt-3">
-            <Skeleton loading={true} active avatar />
-          </div>
-        }
-        hasMore={Nuggets && parseInt(totalNuggets) !== Nuggets?.length}
-        className={` ${
-          params?.key ? classes.resultnuggetSec : classes.nuggetSec
-        } ${isuserConnection ? classes.othersnuggetSec : ""} ${
-          display_user_id ? "h-auto" : ""
-        }`}
-      >
-        <>
-          {isValidPage() && (
-            <>{Progress.show ? <PostProgress /> : <PostNuggets />}</>
-          )}
-        </>
-
-        {isNuggetModify?.type === "add" && (
-          <div className="mt-3">
-            <NuggetLoaders loading={true} />
-          </div>
-        )}
-        {isLocked ? (
-          <div className="mt-3">
+      {isLocked ? (
+        <div
+          className={` ${
+            params?.key ? classes.resultnuggetSec : classes.nuggetSec
+          } ${isuserConnection ? classes.othersnuggetSec : ""} overflow-hidden`}
+        >
+          <div className={`mt-3 ${classes.NuggetLockSec}`}>
+            <div className={classes.overlaySec}>
+              <img src={NuggetLock} />
+            </div>
             {[...Array(7)].map(() => (
-              <NuggetLoaders loading={true} />
+              <NuggetLoaders loading={false} />
             ))}
           </div>
-        ) : (
+        </div>
+      ) : (
+        <InfiniteScroll
+          dataLength={Nuggets?.length || 0} //This is important field to render the next data
+          next={onEndReached}
+          loader={
+            <div className="mt-3 pt-3">
+              <Skeleton loading={true} active avatar />
+            </div>
+          }
+          hasMore={Nuggets && parseInt(totalNuggets) !== Nuggets?.length}
+          className={` ${
+            params?.key ? classes.resultnuggetSec : classes.nuggetSec
+          } ${isuserConnection ? classes.othersnuggetSec : ""} ${
+            display_user_id ? "h-auto" : ""
+          }`}
+        >
+          <>
+            {isValidPage() && (
+              <>{Progress.show ? <PostProgress /> : <PostNuggets />}</>
+            )}
+          </>
+
+          {isNuggetModify?.type === "add" && (
+            <div className="mt-3">
+              <NuggetLoaders loading={true} />
+            </div>
+          )}
+
           <>
             {isNuggetsLoading ? (
               <div className="mt-3">
@@ -208,9 +224,9 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
               <>
                 {Nuggets?.length === 0 ? (
                   <div className={classes.DisplayMsg}>
-                      {params.key
-                        ? "We didn't find any results"
-                        : isDisplayPost()}
+                    {params.key
+                      ? "We didn't find any results"
+                      : isDisplayPost()}
                   </div>
                 ) : (
                   <>
@@ -280,8 +296,8 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
               </>
             )}
           </>
-        )}
-      </InfiniteScroll>
+        </InfiniteScroll>
+      )}
     </ListNuggetContext.Provider>
   );
 };

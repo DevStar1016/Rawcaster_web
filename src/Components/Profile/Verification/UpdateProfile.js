@@ -150,9 +150,7 @@ const UpdateProfile = () => {
           setProfileImage(profileData.profile_image);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const HandleprofileUpdate = (value) => {
@@ -186,9 +184,7 @@ const UpdateProfile = () => {
           toast.error(res.data.message);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const convertAddresstoLatLng = (address) => {
@@ -201,9 +197,7 @@ const UpdateProfile = () => {
           longitude: res.lng,
         }));
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const getCurrentLocation = () => {
@@ -216,9 +210,7 @@ const UpdateProfile = () => {
           longitude: res.location.lng,
         }));
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const handleupdateProfile = (values, isNext = false) => {
@@ -244,9 +236,7 @@ const UpdateProfile = () => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
