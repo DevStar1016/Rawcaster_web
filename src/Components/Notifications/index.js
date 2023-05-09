@@ -16,6 +16,7 @@ import moment from "moment";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { NotificationContext } from "../../Shared/Context";
 import { toast } from "react-hot-toast";
+import classes from "./Notification.module.css"
 
 const Notification = ({ className, src }) => {
   const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
@@ -150,8 +151,10 @@ const Notification = ({ className, src }) => {
       </div>
 
       <div className="onlyMob">
-        <Header />
-        <ContentLayout />
+        <div className={classes.mobNotification}>
+          <Header />
+          <ContentLayout />
+        </div>
       </div>
     </NotificationContext.Provider>
   );

@@ -164,6 +164,7 @@ export const NotificationsList = ({
           />
           <div>
             <p className={classes.userName}>{ele?.userName}</p>
+            <p className={classes.timeAgo}>{moment(createdTime).fromNow()}</p>
             <span>{getNotificationMessage(ele?.type)}</span>
             <p className={classes.headingContent}>{ele?.content}</p>
             {ele.event_start_time && (
@@ -194,7 +195,7 @@ export const NotificationsList = ({
         </div>
         <div className="flex-column">
           <div className={classes.rightsec}>
-            <p className={classes.timeAgo}>{moment(createdTime).fromNow()}</p>
+            
             <span
               class="material-symbols-outlined"
               style={{ display: ele.poll_option ? "none" : "" }}
@@ -209,7 +210,7 @@ export const NotificationsList = ({
             className="mt-1"
             style={{
               display:
-                ele.type === 1 && ele?.friend_request_status === 0
+                ele.type === 11 && ele?.friend_request_status === 0
                   ? "block"
                   : "none",
             }}

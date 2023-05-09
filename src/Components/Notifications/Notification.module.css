@@ -81,7 +81,8 @@ width: 80%;
 }
 
 .timeAgo {
-    margin-bottom: 0px !important;
+    margin-bottom: 0px !important; 
+      float: right;  margin-right: -60px; font-size: 11px !important; font-weight: 300 !important;
 
 }
 .fansList:hover .rightsec .timeAgo {
@@ -106,9 +107,9 @@ color: #F2718D;
 .fansList .leftsec p {
     font-family: 'DM Sans';
     font-style: normal;
-    font-weight: 500;
-    font-size: 15px;
-    line-height: 25px;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
     color: #1D1C1C;
     margin-bottom: 0px !important;
     margin-left: 10px;
@@ -116,8 +117,7 @@ color: #F2718D;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
- 
+    text-overflow: ellipsis; 
 }
 .fansList .leftsec span {
     font-family: 'DM Sans';
@@ -163,8 +163,8 @@ margin-left: 10px;
     -webkit-line-clamp: 2 !important;
 
 }
-.iconsec { align-items: center; display:flex; color: #1d1c1cb3; font-size: 12px; font-weight: 400; margin-bottom: 7px;margin: 10px 7px;}
-.iconsec i { font-size: 17px; margin-right: 5px; color: #000; }
+.iconsec { align-items: center; display:flex; color: #1d1c1cb3; font-size: 12px; font-weight: 400; margin-bottom: 7px;margin:10px 0 0 7px;}
+.iconsec i { font-size: 16px; margin-right: 5px; color: #222; }
 .iconsec i:last-child { margin-left: 10px;}
 .listSec {
     justify-content: space-between;
@@ -220,3 +220,4 @@ font-weight: 500;
 font-size: 20px;
 line-height: 26px;
 }
+.mobNotification { padding: 0 15px; }
