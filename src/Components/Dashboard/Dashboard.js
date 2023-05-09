@@ -19,6 +19,7 @@ import {
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Notifications";
+import { detectMob } from "../../Shared/Utility";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
@@ -33,6 +34,7 @@ const Dashboard = () => {
     if (loginToken === null) {
       removeSessionStorageData("influencerData");
     }
+
     let filterData = { ...nuggetFormData };
     if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
       filterData.formData = {
@@ -63,22 +65,26 @@ const Dashboard = () => {
           </Link>
         </div>
       )}
-      <div className="d-none d-sm-block">
-        <div className={classes.fullcontainer}>
-          <Events />
-          <Nuggets />
-          <DashboardSignup />
+      {!detectMob() && (
+        <div className="d-none d-sm-block">
+          <div className={classes.fullcontainer}>
+            <Events />
+            <Nuggets />
+            <DashboardSignup />
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="d-block d-sm-none">
-        <div className={classes.fullcontainer}>
-          {dashboardMenu === "event" && <Events />}
-          {dashboardMenu === "notification" && <Notification />}
-          {dashboardMenu === "nugget" && <Nuggets />}
-          {dashboardMenu === "usermenu" && <DashboardSignup />}
+      {detectMob() && (
+        <div className="d-block d-sm-none">
+          <div className={classes.fullcontainer}>
+            {dashboardMenu === "event" && <Events />}
+            {dashboardMenu === "notification" && <Notification />}
+            {dashboardMenu === "nugget" && <Nuggets />}
+            {dashboardMenu === "usermenu" && <DashboardSignup />}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
