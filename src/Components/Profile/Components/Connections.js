@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import InfluencerSend from "../../../Modal/InfluencerSend";
 import ClaimAccount from "../../../Modal/Connections/ClaimAccount";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
+import { socketListen } from "../../../Services/SocketService";
 
 const ConnectionsList = ({
   title = "",
@@ -148,7 +149,22 @@ const ConnectionsList = ({
   };
 
   useEffect(() => {
-    GetList();
+    if (loginToken) {
+      GetList();
+    }
+  }, [loginToken]);
+
+  useEffect(() => {
+    socketListen.on("connect", (message) => {
+      console.log(message);
+    });
+    socketListen.on("groupchatting", (message) => {
+      switch (message.event) {
+        case "groupchatmessage":
+          console.log(message);
+          break;
+      }
+    });
   }, []);
 
   const PrivacySkeleton = () => {

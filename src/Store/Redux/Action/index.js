@@ -13,6 +13,7 @@ import {
 } from "../../../Shared/Utility";
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
 import { handlenuggetToken } from "../Reducer/NuggetsReducer";
+import { handleToken } from "../Reducer/AuthReducer";
 
 // Connections
 
@@ -163,6 +164,7 @@ export const fetchuserInfobyToken = createAsyncThunk(
     };
     try {
       const { data } = await getProfileService(JSONtoformdata(profileData));
+      console.log(data);
       if (data.status === 1) {
         const finalData = {
           ...data.profile,
@@ -170,6 +172,7 @@ export const fetchuserInfobyToken = createAsyncThunk(
           last_name: decodeHtml(data.profile.last_name),
           name: decodeHtml(data.profile.name),
         };
+        dispatch(handleToken(token));
         dispatch(fetchuserSettingsbyToken(token));
         dispatch(handlenuggetToken(token));
         dispatch(fetchFrindsbyId(token));

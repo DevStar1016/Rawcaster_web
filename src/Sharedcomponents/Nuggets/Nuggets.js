@@ -44,6 +44,7 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   const userData = getRawcaserToken();
   const token = useAuthToken();
   const loginuserData = useAuthData();
+  console.log(token);
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
@@ -83,6 +84,7 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   };
 
   useEffect(() => {
+    console.log(token);
     if (Nuggets?.length === 0) {
       let finalData = {
         token: token ? token : "RAWCAST",
@@ -111,6 +113,7 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
         };
       }
       dispatch(handleNuggetFormData(finalData));
+      console.log("test");
       GetNuggetList(1, finalData);
     }
   }, [token]);

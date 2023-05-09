@@ -144,13 +144,16 @@ const InfluencerSend = ({ open, close, user }) => {
 
   const handleSendChatValue = (value) => {
     if (NuggetData && NuggetData.length !== 0) {
-      const encryptedMessage = EncryptionString(values.message);
       for (let index = 0; index < NuggetData.length; index++) {
         const element = NuggetData[index];
         let type = element.file.type.split("/");
         let socketMes = {
-          ...getEventPostData(type[0]),
-          message: encryptedMessage ?? "",
+          ...getEventPostData(
+            type[0],
+            value.message !== "" ? value.message : null,
+            element.file_path
+          ),
+          message: value.message ?? "",
           is_read: 0,
           media_path: null,
           file_upload_status: 1,
@@ -158,7 +161,19 @@ const InfluencerSend = ({ open, close, user }) => {
         };
         sendMessage(socketMes, "groupchatting");
       }
+    } else if (value.message !== "") {
+      let socketMes = {
+        ...getEventPostData(0, value.message, null),
+        message: value.message ?? "",
+        is_read: 0,
+        media_path: null,
+        file_upload_status: 1,
+        file_download_status: 2,
+      };
+
+      sendMessage(socketMes, "groupchatting");
     }
+    close();
   };
 
   return (
