@@ -19,9 +19,7 @@ export const handleSendEmail = (token, contacts) => {
           message.warning(res.data.msg, 3);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   });
   return promise;
 };

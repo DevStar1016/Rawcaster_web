@@ -55,9 +55,7 @@ const Eventslisting = ({
           setEventListData([]);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         setisFetching(false);
       });

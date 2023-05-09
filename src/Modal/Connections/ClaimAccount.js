@@ -82,9 +82,7 @@ const ClaimAccount = ({ visible, onSuccess, onClose, id }) => {
       .then((res) => {
         setFieldValue("location", res.address);
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {

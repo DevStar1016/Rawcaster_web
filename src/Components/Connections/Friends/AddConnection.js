@@ -46,9 +46,7 @@ const AddConnection = ({ open, close }) => {
           setProfileList(tempData);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   return (

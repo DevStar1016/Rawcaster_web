@@ -36,9 +36,7 @@ const OthersEventListing = () => {
           setEventListData([]);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {

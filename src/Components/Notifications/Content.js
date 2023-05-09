@@ -27,7 +27,7 @@ const Content = ({ elem }) => {
   });
 
   const getFansData = (page = 1) => {
-    if (userSettings) {
+    if (userSettings && token) {
       let formData = {
         page_number: page,
         notification_type: elem.id,
@@ -67,7 +67,7 @@ const Content = ({ elem }) => {
   };
   useEffect(() => {
     getFansData(1);
-  }, [userSettings, markallAsRead]);
+  }, [userSettings, markallAsRead, token]);
 
   const handleDeleteNotification = (notification_id) => {
     const DeleteData = {
@@ -92,9 +92,7 @@ const Content = ({ elem }) => {
           toast.error(data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const viewUpdate = (array, id) => {

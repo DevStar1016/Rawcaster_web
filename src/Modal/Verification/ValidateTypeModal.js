@@ -37,13 +37,11 @@ const ValidateTypeModal = ({ open, handleClose }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
   return (
     <Modal
-    centered
+      centered
       closable={true}
       open={open}
       footer={null}

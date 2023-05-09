@@ -51,9 +51,7 @@ const CommentsList = ({ index }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const EditCommentforAnugget = (id, comment, type = 1) => {
@@ -70,9 +68,7 @@ const CommentsList = ({ index }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const handleDeleteNuggetComment = (comment_id) => {
@@ -90,9 +86,7 @@ const CommentsList = ({ index }) => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const getCommentValue = (comment_id) => {

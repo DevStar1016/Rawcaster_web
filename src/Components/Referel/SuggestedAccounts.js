@@ -32,9 +32,7 @@ const SuggestedAccounts = () => {
           toast.error(res.data.message);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -57,9 +55,7 @@ const SuggestedAccounts = () => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   return (
@@ -69,33 +65,29 @@ const SuggestedAccounts = () => {
         {influencerList?.map((ele) => {
           return (
             <div className={classes.refuserList}>
-                <div className={classes.suggAcc}>
-                  <img
-                    src={ele?.profile_img}
-                    alt={ele?.display_name}
-                    onError={({ currentTarget }) => {
-                      currentTarget.onerror = null; // prevents looping
-                      currentTarget.src = defaultprofileImg;
-                    }}
-                  />
-                  <p className={classes.name}>
-                    {decodeHtml(ele?.display_name)}
-                  </p>
-                  <br />
-                  {ele.category && ele.category.length !== 0 && (
-                    <p className={classes.username}>
-                      {ele.category.toString()}
-                    </p>
-                  )}
-                </div>  
-                <div
-                  className={classes.becameFan}
-                  onClick={() => {
-                    handleBecomeFan(ele);
+              <div className={classes.suggAcc}>
+                <img
+                  src={ele?.profile_img}
+                  alt={ele?.display_name}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src = defaultprofileImg;
                   }}
-                >
-                  Became a fan
-                </div>            
+                />
+                <p className={classes.name}>{decodeHtml(ele?.display_name)}</p>
+                <br />
+                {ele.category && ele.category.length !== 0 && (
+                  <p className={classes.username}>{ele.category.toString()}</p>
+                )}
+              </div>
+              <div
+                className={classes.becameFan}
+                onClick={() => {
+                  handleBecomeFan(ele);
+                }}
+              >
+                Became a fan
+              </div>
               {/* )} */}
             </div>
           );

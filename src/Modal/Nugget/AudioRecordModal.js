@@ -11,11 +11,10 @@ import { PostNuggetContext } from "../../Shared/Context";
 import classes from "../Modal.module.css";
 import PreviewModal from "./PreviewModal";
 
-const AudioRecordModal = ({ onClose, visible }) => {
+const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
   const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
-  const { setFileValues } = useContext(PostNuggetContext);
   const [PreviewMedia, setPreviewMedia] = useState();
 
   const handleClose = () => {
@@ -142,7 +141,7 @@ const AudioRecordModal = ({ onClose, visible }) => {
               pause();
               setPreviewMedia();
               setTimeout(() => {
-                setFileValues(file);
+                onSuccess(file);
                 clearBlobUrl();
                 onClose();
               }, 100);

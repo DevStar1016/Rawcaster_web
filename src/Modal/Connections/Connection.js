@@ -164,15 +164,7 @@ const ConnectionModal = ({
               <>
                 <div className={classes.list}>
                   <div className={classes.iconSec}>
-                    <i
-                      className={classes.messageIcon}
-                      onClick={() => {
-                        setisInfluencerChatModalOpen({
-                          user: ele,
-                          show: true,
-                        });
-                      }}
-                    />
+                    <i className={classes.messageIcon} />
                   </div>
                   <img
                     src={ele.profile_img}

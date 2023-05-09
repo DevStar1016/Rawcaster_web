@@ -11,6 +11,15 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Common
+
+export const uploadChatAttachmentService = (formData, progress, token) => {
+  return axios.post("uploadchatattachment", formData, {
+    onUploadProgress: progress,
+    cancelToken: token,
+  });
+};
+
 export const loginService = (formData) => {
   return axios.post("login", formData);
 };

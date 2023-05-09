@@ -63,9 +63,7 @@ const ReplyList = ({
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const EditCommentforAnugget = (id, comment, type = 1) => {
@@ -82,9 +80,7 @@ const ReplyList = ({
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const handleDeleteNuggetComment = (comment_id) => {
@@ -101,9 +97,7 @@ const ReplyList = ({
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const getCommentValue = (comment_id) => {

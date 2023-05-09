@@ -44,9 +44,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
           toast.error(res.data.message);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const isNotExpired = () => {

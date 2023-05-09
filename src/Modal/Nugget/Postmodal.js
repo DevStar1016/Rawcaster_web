@@ -501,6 +501,9 @@ const Postmodal = ({ visible, onClose }) => {
       )}
       <AudioRecordModal
         visible={isAudioModal}
+        onSuccess={(file) => {
+          setFileValues(file);
+        }}
         onClose={() => {
           setisAudioModal(false);
         }}

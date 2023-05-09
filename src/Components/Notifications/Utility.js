@@ -132,9 +132,7 @@ export const NotificationsList = ({
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   return (

@@ -74,7 +74,7 @@
 .influencerModal .topProsec { display: flex; flex-direction: row;}
 .topProsec .rightSec { display: flex; float:right;}
 .topProsec .rightSec img:first-child { border: none; }
-.topProsec .rightSec img { margin-left: 12px; cursor: pointer; height: 21px; padding-left: 12px; border-left: 1px solid #ECECEC; }
+.topProsec .rightSec img { margin-left: 12px; height: 21px; padding-left: 12px; border-left: 1px solid #ECECEC; }
 .btnstyle,.disabledBtn { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; margin-top: 20px; width: 100%; font-weight: 600; font-size: 16px; }
 .btnstyle:hover,.disabledBtn:hover{ background: #f2718d; color: #fff !important; }
 .disabledBtn,.disabledBtn:hover { background-color: #e8849a; cursor:auto !important;}
@@ -207,6 +207,13 @@ border-bottom: 0.5px solid grey;
 .overlay { 
   transition: 0.5s ease;  position: absolute;  top: 0%;  left: 0%;  width: 100%;  height: 100%;  display: flex;  justify-content: center;
   align-items: center;  cursor: pointer;  text-align: center;
+}
+.progressSec {
+  position: absolute;  top: 0%;  left: 0%; background-color:  #fff;width: 100%;  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
 }
 .overlay:hover { transform: scale(1.1);transition: transform 0.5s ease; background-color: rgba(0, 0, 0, 0.8);
 }

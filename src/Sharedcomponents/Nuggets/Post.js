@@ -147,9 +147,7 @@ const Post = ({
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         dispatch(handleLoading(false));
       });
@@ -179,9 +177,7 @@ const Post = ({
           }
           resolve();
         })
-        .catch((err) => {
-          toast.error(err.message);
-        })
+        .catch((err) => {})
         .finally(() => {
           setisCommentLoading(false);
         });
@@ -333,7 +329,6 @@ const Post = ({
           resolve(res.data);
         })
         .catch((err) => {
-          toast.error(err.message);
           reject(err.message);
         });
     });
@@ -424,9 +419,7 @@ const Post = ({
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const getNumberofLines = () => {

@@ -90,9 +90,7 @@ const HomeLayout = () => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {

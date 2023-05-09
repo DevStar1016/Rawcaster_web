@@ -78,8 +78,8 @@ const Claimaccount = () => {
           });
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
+     .catch((err) => {
+       
       });
   };
 
@@ -88,8 +88,8 @@ const Claimaccount = () => {
       .then((res) => {
         setFieldValue("location", res.address);
       })
-      .catch((err) => {
-        toast.error(err.message);
+     .catch((err) => {
+       
       });
   };
 

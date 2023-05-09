@@ -44,9 +44,7 @@ const General = () => {
           setupdateValue(key, 3);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   return (

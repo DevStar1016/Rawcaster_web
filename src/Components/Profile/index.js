@@ -75,9 +75,7 @@ const Profile = () => {
           setprofileData(res.data.profile);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   const getprofile = () => {
@@ -165,7 +163,12 @@ const Profile = () => {
     <ProfileContext.Provider value={profileValue}>
       <div>
         <div className={`mainWrapper ${classes.profilePage}`}>
-          <ProfileLayout profileData={profileData} isFansEnabled isEditable>
+          <ProfileLayout
+            profileData={profileData}
+            isFansEnabled
+            isEditable
+            isLocked={profileData && profileData.lock_fans === 1}
+          >
             <div className={classes.fullcontainer}>
               <div
                 className={`${classes.profileevent} ${
@@ -230,7 +233,7 @@ const Profile = () => {
                               <p>
                                 <img src={profile_edu} />
                               </p>{" "}
-                              Studied at <span>{profileData?.studied_at}</span> 
+                              Studied at <span>{profileData?.studied_at}</span>
                             </div>
                           )}
                         {profileData?.geo_location && (
@@ -247,21 +250,23 @@ const Profile = () => {
                               <img src={profile_bdy} />
                             </p>
                             Date of Birth
-                            <span>{moment(profileData?.dob, "YYYY-MM-DD").format(
-                              " DD/MM/YYYY"
-                            )}</span>
-                            
+                            <span>
+                              {moment(profileData?.dob, "YYYY-MM-DD").format(
+                                " DD/MM/YYYY"
+                              )}
+                            </span>
                           </div>
                         )}
                         <div className={classes.item}>
                           <p>
                             <img src={profile_join} />
                           </p>
-                          Joined RAWCASTER on 
-                          <span>{moment(profileData?.date_of_join).format(
-                            " DD-MM-YYYY"
-                          )}</span>
-                          
+                          Joined RAWCASTER on
+                          <span>
+                            {moment(profileData?.date_of_join).format(
+                              " DD-MM-YYYY"
+                            )}
+                          </span>
                         </div>
                       </div>
                     ) : (

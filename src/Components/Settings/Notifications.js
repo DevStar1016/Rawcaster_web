@@ -102,9 +102,7 @@ const Notifications = () => {
           toast.error(res.data.message);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   return (

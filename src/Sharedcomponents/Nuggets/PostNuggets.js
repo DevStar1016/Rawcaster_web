@@ -109,9 +109,7 @@ const PostNuggets = () => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         setdeletedMedia([]);
         setpreviewMedia([]);
@@ -174,9 +172,7 @@ const PostNuggets = () => {
           toast.error(res.data.msg);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         setProgress((pre) => ({ ...pre, show: false }));
         dispatch(handleLoading(false));
@@ -243,9 +239,7 @@ const PostNuggets = () => {
           setpreviewMedia(res.data.nugget_detail.media_list);
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {

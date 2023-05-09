@@ -73,9 +73,7 @@ const Connections = () => {
             setrequests(res.data.pending_requests);
           }
         })
-        .catch((err) => {
-          toast.error(err.message);
-        });
+        .catch((err) => {});
     }
   }, [Token]);
 

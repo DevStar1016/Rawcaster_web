@@ -24,6 +24,7 @@ const ProfileLayout = ({
   profileData = null,
   isFansEnabled = false,
   isEditable = false,
+  isLocked = false,
 }) => {
   const loginUserData = useAuthData();
   const params = useParams();
@@ -140,14 +141,17 @@ const ProfileLayout = ({
             )}
           </div>
           {isFansEnabled && (
-            <>
+            <div style={{ display: isLocked ? "none" : "" }}>
               {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
 
-              <div className={classes.actionIcon}>
+              <div
+                className={classes.actionIcon}
+                style={{ display: isLoginUser ? "" : "none" }}
+              >
                 <img src={msgIcon} />
                 <img src={talkshowIcon} />
               </div>
-            </>
+            </div>
           )}
         </div>
       )}
