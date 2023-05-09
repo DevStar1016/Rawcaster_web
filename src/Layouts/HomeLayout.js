@@ -209,7 +209,7 @@ const HomeLayout = () => {
                         navigate("/dashboard");
                       }}
                     />
-                    <div className={classes.onlydes}>
+                    <div className={classes.onlydes} style={{float:"right"}}>
                       <Notification
                         src={NotificationIcon}
                         className={`${classes.onlydes} ${classes.menuIcon}`}
