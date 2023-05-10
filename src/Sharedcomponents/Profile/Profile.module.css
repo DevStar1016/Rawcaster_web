@@ -21,6 +21,8 @@
   width: 100%;
     max-width: 225px;
     cursor: pointer;
+    text-align: initial;
+    margin: 10px 0;
 }
 .profileContainer .rightSec .nameSec p {
   margin-bottom: 2px !important;
@@ -74,6 +76,10 @@
   .bioSec {
     padding: 5px 0;
     font-size: 12px;
+    width: 100%;
+  }
+  .bioSec p {
+    text-align: initial !important;
   }
   .bioSec a {
     color: #f2718d !important;

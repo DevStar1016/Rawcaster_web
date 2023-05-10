@@ -16,6 +16,7 @@ import {
   sendFriendRequestsService,
 } from "../../Services/ApiService";
 import {
+  useAuthData,
   useAuthToken,
   useDashboard,
   useNuggets,
@@ -23,10 +24,12 @@ import {
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { friendRequestSocket } from "../../Services/SocketList";
 
 const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
   const navigate = useNavigate();
   const token = useAuthToken();
+  const profileData = useAuthData();
   const dispatch = useDispatch();
   const { nuggetFormData } = useNuggets();
   const handleBecomeFan = (ele) => {
@@ -62,6 +65,13 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
     sendFriendRequestsService(JSONtoformdata(becameFanData))
       .then((res) => {
         if (res.data.status === 1) {
+          let data = {
+            friend_request_id: res.data.friend_request_ids[0],
+            display_name: profileData.name,
+            profile_img: profileData.profile_image,
+            user_id: profileData.user_id,
+          };
+          friendRequestSocket(ele.user_id, data);
           let findIndex = PeopleList.findIndex(
             (elem) => elem.user_id === ele.user_id
           );
@@ -176,9 +186,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                 console.log("test");
               }}
             >
-              I’ve left Muskville. Come join Me at
-              @TheTweetOfGod@universeodon.com. Still can’t help plugging My book
-              “The Book of Pslam” out now: tinyurl.com/yckjn828
+              {ele.bio}
             </ReadMore>
           </p>
         </div>

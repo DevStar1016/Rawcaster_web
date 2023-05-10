@@ -63,8 +63,8 @@ display:flex ;
     float: left;
     width: 22px;
     height: 22px;
-    mask: url("../../../Assets/Icons/svg/add_friend.svg") no-repeat center / contain;
-    -webkit-mask: url("../../../Assets/Icons/svg/add_friend.svg") no-repeat center /
+    mask: url("../../../Assets/Icons/svg/add_friend_1.svg") no-repeat center / contain;
+    -webkit-mask: url("../../../Assets/Icons/svg/add_friend_1.svg") no-repeat center /
       contain;
     cursor: pointer;
   }
@@ -103,11 +103,12 @@ display:flex ;
 position: absolute;
 height: 100%;
 width: 100%;
-background: rgba(255, 255, 255, .1);
+min-width: 300px;
 display: flex;
 align-items: center;
 justify-content: center;
-backdrop-filter: blur(19.5px);
+
+
 }
 .lockedConnections .listSec .list p{
     color: transparent !important;
