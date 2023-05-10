@@ -241,7 +241,7 @@ font-size: 17px;
     display: flex;
     justify-content: center;
   }
-.eventActionSec { border-bottom: 1px solid #ECECEC; padding-bottom:17px;}
+.eventActionSec { border-bottom: 1px solid #ECECEC; padding-bottom:7px; }
 
 .textBox {
   margin-bottom: 10px;
