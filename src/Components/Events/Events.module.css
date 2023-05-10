@@ -86,8 +86,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 5px 0 0 0 !important;
-  
+  margin: 7px 0 0 0 !important;
 }
 .filterSec p {
   margin-bottom: 0px !important;
@@ -142,13 +141,13 @@ opacity: 0.7;
   color: #FFFFFF; float: left; font-size: 14px !important;
 }
 .eventShowBtn:hover {
-    background: #F2718D !important;
+    background: #563662 !important;
 }
  .talkShowBtn {
     background: #FAA21B !important;
     border-radius: 8px !important;
     font-family: 'DM Sans';
-    font-style: normal; padding: 9px !important;
+    font-style: normal; padding: 9px 15px !important;
     font-weight:400;
     line-height: 23px; height: 38px !important;
     display: flex;
@@ -242,7 +241,7 @@ font-size: 17px;
     display: flex;
     justify-content: center;
   }
-.eventActionSec { border-bottom: 1px solid #ECECEC; padding-bottom:14px;}
+.eventActionSec { border-bottom: 1px solid #ECECEC; padding-bottom:17px;}
 
 .textBox {
   margin-bottom: 10px;

@@ -104,7 +104,7 @@ padding: 2px 1px;
 }
 .liveIcon, .menuIcon{
   height: 30px;
-  border-radius: 160px;
+  /* border-radius: 160px; */
   cursor: pointer;
   margin: 0 5px;
 }

@@ -14,6 +14,7 @@ import eventList from "../../Assets/Images/png/eventList.png";
 import { deleteEventService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import moment from "moment";
+import shareicon from "../../Assets/Icons/svg/shareicon.svg";
 
 const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const { userSettings, loginUserData } = useAuth();
@@ -87,7 +88,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
       </div>
       {!isOthers && (
         <div className={classes.share}>
-          <span class="material-symbols-outlined">share</span>
+          <img src={shareicon} />
         </div>
       )}
       <div className={classes.contentSec}>

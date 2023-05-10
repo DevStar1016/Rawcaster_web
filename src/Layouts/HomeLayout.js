@@ -14,9 +14,10 @@ import btmbell from "../Assets/Images/svg/btmbell.svg";
 import btmtv from "../Assets/Images/svg/btmtv.svg";
 import btmuser from "../Assets/Images/svg/btmuser.svg";
 import btmhome from "../Assets/Images/svg/btmhome.svg";
+import searchIcon from "../Assets/Icons/svg/topsearch.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
 import { useDispatch } from "react-redux";
-import { logoutService } from "../Services/ApiService";
+import { logoutService } from "../Services/ApiService"; 
 import {
   filterValidObject,
   getAuthenticated,
@@ -127,7 +128,7 @@ const HomeLayout = () => {
               <div className={`d-none d-sm-block ${classes.topSearch}`}>
                 <InputGroup>
                   <InputGroup.Text>
-                    <span class="material-symbols-outlined">search</span>
+                    <img height="22px" src={searchIcon} />
                   </InputGroup.Text>
                   <Form.Control
                     placeholder="Search Rawcaster"
@@ -186,7 +187,8 @@ const HomeLayout = () => {
               <div className={classes.rightMenus}>
                 {loginUserData && (
                   <div>
-                    <img
+                    <img 
+                      style={{borderRadius:"28px"}}
                       src={LiveIcon}
                       className={classes.liveIcon}
                       alt="live_icon"

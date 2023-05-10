@@ -16,7 +16,7 @@ const CreateEvent = ({ isSearch, onSearchEnter }) => {
   return (
     <div className={classes.eventActionSec}>
       {isCreateEnabled && (
-        <div className="mb-3">
+        <div>
           <Button
             type="primary"
             size={"large"}
