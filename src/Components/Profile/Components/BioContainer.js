@@ -9,7 +9,7 @@ import {
 } from "../../../Shared/Utility";
 import { replaceBiodataHandler } from "../Utility";
 import classes from "../Profile.module.css";
-import { Button, Input, Select, Skeleton, Tooltip } from "antd";
+import { Button, Input, Select, Skeleton, Spin, Tooltip } from "antd";
 import { useState } from "react";
 import { useFormik } from "formik";
 import {
@@ -20,12 +20,13 @@ import { toast } from "react-hot-toast";
 
 const BioContainer = ({ isLoginuser }) => {
   const [isAboutEdit, setisAboutEdit] = useState(false);
-  const { profileData, isLinkopenModal, setisLinkopenModal } =
+  const { profileData, isLinkopenModal, setisLinkopenModal, handleBecameFan } =
     useProfileContext();
   const [selectedCategory, setselectedCategory] = useState([]);
   const loginToken = useAuthToken();
   const { isSuccess, loginUserData } = useAuth();
   const [influencerCategory, setinfluencerCategory] = useState([]);
+  const [BecameFanStatus, setBecameFanStatus] = useState("");
 
   const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues: {
@@ -223,11 +224,31 @@ const BioContainer = ({ isLoginuser }) => {
           )}
           <Button
             className={classes.becomeafanbtn}
+            onClickCapture={() => {
+              if (BecameFanStatus === "") {
+                setBecameFanStatus("pending");
+                handleBecameFan().then(() => {
+                  setBecameFanStatus("completed");
+                });
+              }
+            }}
             style={{
               display: isLoginuser || profileData?.follow ? "none" : "",
             }}
           >
-            Become a Fan <i class="material-symbols-outlined">arrow_forward</i>
+            {BecameFanStatus === "" ? (
+              <>
+                Become a Fan
+                <i class="material-symbols-outlined">arrow_forward</i>
+              </>
+            ) : (
+              BecameFanStatus === "pending" && (
+                <>
+                  Please wait
+                  <Spin />
+                </>
+              )
+            )}
           </Button>
         </>
       )}

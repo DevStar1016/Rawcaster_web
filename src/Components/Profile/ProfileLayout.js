@@ -18,6 +18,8 @@ import { Skeleton, Spin } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import { useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
+import AddFriendIcon from "../../Assets/Icons/svg/profile_add_friend.svg";
+import { Col, Row } from "react-bootstrap";
 
 const ProfileLayout = ({
   children,
@@ -25,8 +27,10 @@ const ProfileLayout = ({
   isFansEnabled = false,
   isEditable = false,
   isLocked = false,
+  handleAddUser,
 }) => {
   const loginUserData = useAuthData();
+
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
   const isLoginUser =
@@ -64,7 +68,7 @@ const ProfileLayout = ({
     updateProfileService(JSONtoformdata(profileValue))
       .then((res) => {
         if (res.data.status === 1) {
-          dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
+          dispatch(fetchuserInfobyToken(loginToken)).then(({ payload }) => {
             setisUploading(false);
           });
         } else {
@@ -140,19 +144,36 @@ const ProfileLayout = ({
               </div>
             )}
           </div>
-          {isFansEnabled && (
-            <div style={{ display: isLocked ? "none" : "" }}>
-              {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
-
-              <div
-                className={classes.actionIcon}
-                style={{ display: isLoginUser ? "" : "none" }}
-              >
-                <img src={msgIcon} />
-                <img src={talkshowIcon} />
+          <div className="d-flex flex-row">
+            {!isLoginUser && !profileData?.friend_status && (
+              <div className="ms-3">
+                <img
+                  src={AddFriendIcon}
+                  className={classes.addFriendIcon}
+                  onClick={() => {
+                    handleAddUser();
+                  }}
+                />
               </div>
+            )}
+            <div>
+              {isFansEnabled && (
+                <div style={{ display: isLocked ? "none" : "" }}>
+                  {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
+
+                  <div
+                    className={classes.actionIcon}
+                    style={{
+                      display: isLoginUser ? "" : "none",
+                    }}
+                  >
+                    <img src={msgIcon} />
+                    <img src={talkshowIcon} />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       )}
 
@@ -205,6 +226,7 @@ const ProfileLayout = ({
         }}
         style={{ display: "none" }}
       />
+
       {children}
       {profileImg.src !== "" && (
         <ImageCropModal

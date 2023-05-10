@@ -27,7 +27,11 @@ import {
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 import NuggetLock from "../../Assets/Images/svg/nugget_lock.svg";
 
-const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
+const Nuggets = ({
+  isLocked = false,
+  isUserPostAvailable = true,
+  isLoading = false,
+}) => {
   const dispatch = useDispatch();
   const params = useParams();
   const [ViewedList, setViewedList] = useState([]);
@@ -83,7 +87,9 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   };
 
   useEffect(() => {
-    console.log(token);
+    if (isLocked || isLoading) {
+      return;
+    }
     if (Nuggets?.length === 0) {
       let finalData = {
         token: token ? token : "RAWCAST",
@@ -115,7 +121,7 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
       console.log("test");
       GetNuggetList(1, finalData);
     }
-  }, [token]);
+  }, [token, isLoading]);
 
   const onEndReached = () => {
     if (parseInt(totalNuggets) !== Nuggets?.length) {
@@ -172,16 +178,18 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
-      {isLocked ? (
+      {isLocked || isLoading ? (
         <div
           className={` ${
             params?.key ? classes.resultnuggetSec : classes.nuggetSec
           } ${isuserConnection ? classes.othersnuggetSec : ""} overflow-hidden`}
         >
           <div className={`mt-3 ${classes.NuggetLockSec}`}>
-            <div className={classes.overlaySec}>
-              <img src={NuggetLock} />
-            </div>
+            {!isLoading && (
+              <div className={classes.overlaySec}>
+                <img src={NuggetLock} />
+              </div>
+            )}
             {[...Array(7)].map(() => (
               <NuggetLoaders loading={false} />
             ))}

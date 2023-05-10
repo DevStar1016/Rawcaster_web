@@ -29,11 +29,14 @@ const ConnectionsList = ({
   type = "",
   isLocked = false,
   isMyProfile,
+  isLoading = false,
 }) => {
-  const { isLoginUser, setFansList, getFollowers } = useProfileContext();
+  const { isLoginUser, setFansList, getFollowers, handleBecameFan } =
+    useProfileContext();
   const params = useParams();
   const dispatch = useDispatch();
   const display_user_id = DecryptionString(params.user_id);
+  const [Becomeafan, setBecomeafan] = useState(null);
   const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
     show: false,
   });
@@ -143,16 +146,18 @@ const ConnectionsList = ({
       getFollowers(val).then((res) => {
         setConnectionsList(res);
       });
-    } else if (type === "unclaimed_influencers") {
+    } else if (type === "unclaimed_influencers" && isMyProfile) {
       getUnclaimedInfluencer(val);
     }
   };
 
   useEffect(() => {
-    if (loginToken) {
-      GetList();
+    if (loginToken && !isLoading) {
+      if (!isLocked) {
+        GetList();
+      }
     }
-  }, [loginToken]);
+  }, [loginToken, isLoading]);
 
   const PrivacySkeleton = () => {
     return [...Array(8)].map((ele) => {
@@ -278,6 +283,13 @@ const ConnectionsList = ({
                                 {type === "influencers" ? (
                                   <span
                                     className={`material-symbols-outlined ${classes.plusIcon}`}
+                                    onClick={() => {
+                                      handleBecameFan(ele.user_ref_id).then(
+                                        (res) => {
+                                          getUserList({});
+                                        }
+                                      );
+                                    }}
                                   >
                                     add
                                   </span>
@@ -368,23 +380,25 @@ const ConnectionsList = ({
           }}
         />
       )}
-      <ClaimAccount
-        visible={ClaimAccountModal.show}
-        id={ClaimAccountModal.id}
-        onSuccess={() => {
-          getUnclaimedInfluencer();
-          setClaimAccountModal({
-            id: "",
-            show: false,
-          });
-        }}
-        onClose={() => {
-          setClaimAccountModal({
-            id: "",
-            show: false,
-          });
-        }}
-      />
+      {ClaimAccountModal.show && (
+        <ClaimAccount
+          visible={ClaimAccountModal.show}
+          id={ClaimAccountModal.id}
+          onSuccess={() => {
+            getUnclaimedInfluencer();
+            setClaimAccountModal({
+              id: "",
+              show: false,
+            });
+          }}
+          onClose={() => {
+            setClaimAccountModal({
+              id: "",
+              show: false,
+            });
+          }}
+        />
+      )}
     </div>
   );
 };

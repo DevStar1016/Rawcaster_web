@@ -38,9 +38,12 @@ import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { getfollowerfollowingService } from "./Components/Utility";
 import ProfileLayout from "./ProfileLayout";
 import { socketListen } from "../../Services/SocketService";
+import { HandleAddFriend, HandleBecameaFan } from "../../Shared/SharedAPIs";
+import { friendRequestSocket } from "../../Services/SocketList";
 
 const Profile = () => {
   const params = useParams();
+  const token = useAuthToken();
   const display_user_id = DecryptionString(params.user_id);
   const navigate = useNavigate();
   const { isSuccess } = useAuth();
@@ -150,6 +153,52 @@ const Profile = () => {
     return promise;
   };
 
+  const handleBecameFan = (user_ref_id = null) => {
+    return new Promise((resolve, reject) => {
+      if (token && profileData) {
+        const ref_id = user_ref_id ? user_ref_id : profileData?.user_ref_id;
+        HandleBecameaFan(token, ref_id)
+          .then(() => {
+            if (!user_ref_id) {
+              setprofileData((pre) => ({
+                ...pre,
+                follow: true,
+              }));
+            }
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      }
+    });
+  };
+
+  const handleAddUser = () => {
+    return new Promise((resolve, reject) => {
+      if (token && profileData) {
+        HandleAddFriend(token, profileData?.user_ref_id)
+          .then((res) => {
+            let data = {
+              friend_request_id: res.friend_request_ids[0],
+              display_name: loginUserData.name,
+              profile_img: loginUserData.profile_image,
+              user_id: loginUserData.user_id,
+            };
+            friendRequestSocket(profileData?.user_id, data);
+            setprofileData((pre) => ({
+              ...pre,
+              friend_status: 0,
+            }));
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      }
+    });
+  };
+
   const profileValue = {
     FansList,
     setFansList,
@@ -158,6 +207,8 @@ const Profile = () => {
     setisLinkopenModal,
     isLoginUser: getisLoginUser(),
     getFollowers,
+    handleBecameFan,
+    handleAddUser,
   };
 
   useEffect(() => {
@@ -196,6 +247,7 @@ const Profile = () => {
             isFansEnabled
             isEditable
             isLocked={profileData && profileData.lock_fans === 1}
+            handleAddUser={handleAddUser}
           >
             <div className={classes.fullcontainer}>
               <div
@@ -215,6 +267,7 @@ const Profile = () => {
                           ) : (
                             <ConnectionsList
                               {...ele}
+                              isLoading={!profileData}
                               isMyProfile={false}
                               isLocked={
                                 profileData && profileData[ele.lockedName] === 1
@@ -314,6 +367,7 @@ const Profile = () => {
 
               <Nuggets
                 isLoginuser={getisLoginUser()}
+                isLoading={!profileData}
                 isLocked={profileData && profileData.lock_nugget === 1}
               />
 
