@@ -117,7 +117,7 @@
 }
 .profileevent h2 { font-size: 19px; font-weight: 600; }
 .profileevent h2 span { font-size: 13px; font-weight: 400; }
-.profileIntro { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px;}
+.profileIntro { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; width: 100%;}
 .profileIntro i { font-size: 12px; margin-top: 5px; }
 .profileIntro .editSec i { font-size: 20px; margin-top: 3px; }
 .profileevent .intro  { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; margin-bottom: 20px;}

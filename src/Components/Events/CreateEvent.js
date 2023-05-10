@@ -41,7 +41,7 @@ const CreateEvent = ({ isSearch, onSearchEnter }) => {
       )}
       {isSearch && (
         <input
-          className={`${classes.textBox} `}
+          className={`${classes.textBox} mt-3`}
           onChange={(e) => {
             setsearchInput(e.target.value);
             onSearchEnter(e.target.value);
