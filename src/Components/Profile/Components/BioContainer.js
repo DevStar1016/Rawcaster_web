@@ -42,6 +42,7 @@ const BioContainer = ({ isLoginuser }) => {
     if (values?.bio_data !== "") {
       return values?.bio_data;
     } else {
+      console.log(replaceBiodataHandler(profileData));
       return replaceBiodataHandler(profileData);
     }
   };

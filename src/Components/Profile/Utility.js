@@ -9,6 +9,7 @@ export const calculate_age = (dob) => {
 };
 
 export const replaceBiodataHandler = (data, type = "display") => {
+  console.log(data);
   if (data) {
     let defaultBioDataformat = "";
 
@@ -27,9 +28,8 @@ export const replaceBiodataHandler = (data, type = "display") => {
     defaultBioDataformat =
       defaultBioDataformat +
       "<first_name>’s preferred communication language is <language> . <first_name> has been a Rawcaster <user_status>  since <date_of_join> and prefers to be contacted in Rawcaster through <rawcaster_default_page>.";
-
     let str =
-      data.bio_data !== null && type === "display"
+      data.bio_data !== null && type === "display" && data.bio_data !== ""
         ? decodeHtml(data.bio_data)
         : defaultBioDataformat;
 
@@ -53,15 +53,6 @@ export const replaceBiodataHandler = (data, type = "display") => {
       // defaultRawcaterPage(userSetting ? userSetting.mobile_default_page : 1)
     );
 
-    // <first_name>
-    // <last_name>
-    // <dob>
-    // <location>
-    // <language>
-    // <first_name>
-    // <user_status>
-    // <date_of_join>
-    // <rawcaster_default_page>
     return str;
   }
   return "";
