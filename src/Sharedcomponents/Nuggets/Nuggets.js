@@ -44,7 +44,6 @@ const Nuggets = ({ isLocked = false, isUserPostAvailable = true }) => {
   const userData = getRawcaserToken();
   const token = useAuthToken();
   const loginuserData = useAuthData();
-  console.log(token);
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;

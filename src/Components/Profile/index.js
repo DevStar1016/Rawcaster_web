@@ -37,6 +37,7 @@ import {
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { getfollowerfollowingService } from "./Components/Utility";
 import ProfileLayout from "./ProfileLayout";
+import { socketListen } from "../../Services/SocketService";
 
 const Profile = () => {
   const params = useParams();
@@ -158,6 +159,33 @@ const Profile = () => {
     isLoginUser: getisLoginUser(),
     getFollowers,
   };
+
+  useEffect(() => {
+    console.log("groupchatting");
+    socketListen.on(
+      "groupchatting",
+      (message) => {
+        console.log("SocketListen  groupchatting on in Dashboard");
+
+        switch (message.event) {
+          case "groupchatmessage":
+            console.log(message, "GROUP CHAT RECEIVED");
+            break;
+          case "groupchatmessagedelete":
+            break;
+          case "groupchatmessageupdate":
+            break;
+          case "grouptyping":
+            break;
+          case "groupchatenable":
+            break;
+          case "groupchatmsgtransfer":
+            break;
+        }
+      },
+      []
+    );
+  }, []);
 
   return (
     <ProfileContext.Provider value={profileValue}>

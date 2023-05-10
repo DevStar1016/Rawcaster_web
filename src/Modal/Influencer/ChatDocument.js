@@ -11,6 +11,7 @@ import { JSONtoformdata } from "../../Shared/Utility";
 import classes from "../Modal.module.css";
 import { Progress, Spin } from "antd";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 let isRequestCancel = false;
 
@@ -82,6 +83,7 @@ const ChatDocument = ({
           };
           onUpload(finalData);
         } else {
+          toast.error(res.data.msg);
           setNuggetData((pre) => pre.filter((ele, i) => i !== index));
         }
       })
@@ -114,7 +116,7 @@ const ChatDocument = ({
           className={`${classes.progressSec} influencerProgress`}
           style={{ display: isuploading ? "" : "none" }}
         >
-          <Spin size="default" spinning={isuploading}>
+          <Spin size="default" spinning={isuploading && progress === 100}>
             <Progress
               type="dashboard"
               percent={progress}

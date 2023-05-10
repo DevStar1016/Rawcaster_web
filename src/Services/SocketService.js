@@ -3,6 +3,9 @@ import { socketURL } from "./ServiceConstants";
 
 const socket = io(socketURL, {
   transports: ["websocket"],
+  secure: false,
+  reconnection: true,
+  rejectUnauthorized: false,
 });
 
 const ConnectSocket = (props) => {

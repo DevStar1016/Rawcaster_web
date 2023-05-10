@@ -9,6 +9,7 @@ import {
 import { handleisSuccess } from "../Store/Redux/Reducer/AuthReducer";
 import { useEffect } from "react";
 import { fetchuserInfobyToken } from "../Store/Redux/Action";
+import ConnectSocket from "../Services/SocketService";
 
 const InitialRenderComponent = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,9 @@ const InitialRenderComponent = () => {
   useEffect(() => {
     if (getRawcaserToken()) {
       let userData = getRawcaserToken();
-      dispatch(fetchuserInfobyToken(userData.token));
+      dispatch(fetchuserInfobyToken(userData.token)).then(({ payload }) => {
+        ConnectSocket(payload);
+      });
     } else {
       dispatch(handleisSuccess(true));
     }

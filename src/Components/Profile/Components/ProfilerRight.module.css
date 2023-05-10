@@ -2,6 +2,9 @@
 }
 .profileThumb h2 { color: #1D1C1C; font-size: 20px; font-weight: 600; }
 .profileThumb h2 span { cursor: pointer; padding-top: 5px; font-size: 13px !important; text-align: right; font-weight:400; float: right; }
+.profileThumb .fansHeading {
+display:flex ;
+}
 .listSec { 
     width: 100%;
     display: grid;
@@ -21,7 +24,7 @@
     text-overflow: ellipsis;
 }
 .listSec .list img {    width: 100%; border-radius: 50px; margin-bottom: 3px;}
-.actionIcon { height: 23px; margin-left: 7px;  }
+.actionIcon { height: 23px; margin-left: 7px; cursor: pointer; }
 .emptySec {
     display: flex;
     align-items: center;
@@ -56,6 +59,18 @@
       contain;
     cursor: pointer;
   }
+  .addIcon {
+    float: left;
+    width: 22px;
+    height: 22px;
+    mask: url("../../../Assets/Icons/svg/add_friend.svg") no-repeat center / contain;
+    -webkit-mask: url("../../../Assets/Icons/svg/add_friend.svg") no-repeat center /
+      contain;
+    cursor: pointer;
+  }
+ 
+ 
+
 .iconSec {
     display: none;
     position: absolute;
@@ -63,7 +78,23 @@
     right:0;
     background-color: #FFFFFF;
     border-radius: 40px;
-    padding: 4px;
+    padding: 2px;
+}
+.othersIcon {
+    right: 22px !important;
+}
+.iconSec .plusIcon,.iconSec .addIcon {
+   float: left;
+   font-size: 18px;
+   color: #ffffff;
+   background-color: #AE567A;
+   border-radius: 30px;
+   padding: 2px;
+   font-weight: bold;
+}
+.iconSec .addIcon {
+  background-color: #F2718D;
+  font-weight: 200;
 }
 .lockedConnections {
     position: relative;

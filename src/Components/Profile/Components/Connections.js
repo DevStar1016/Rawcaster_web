@@ -154,19 +154,6 @@ const ConnectionsList = ({
     }
   }, [loginToken]);
 
-  useEffect(() => {
-    socketListen.on("connect", (message) => {
-      console.log(message);
-    });
-    socketListen.on("groupchatting", (message) => {
-      switch (message.event) {
-        case "groupchatmessage":
-          console.log(message);
-          break;
-      }
-    });
-  }, []);
-
   const PrivacySkeleton = () => {
     return [...Array(8)].map((ele) => {
       return (
@@ -206,10 +193,13 @@ const ConnectionsList = ({
         !isMyProfile ? classes.othersProfileThumb : ""
       }`}
     >
-      <h2>
+      <h2 className={!isLocked && type === "fans" && classes.fansHeading}>
         {title} {!isLocked ? `(${ConnectionsList.allconnectionscount})` : ""}
         {!isLocked && type === "fans" && (
-          <div style={{ display: isLoginUser ? "" : "none" }}>
+          <div
+            style={{ display: isLoginUser ? "" : "none" }}
+            className={classes.actionSec}
+          >
             <img
               className={classes.actionIcon}
               src={msgIcon}
@@ -262,23 +252,41 @@ const ConnectionsList = ({
                             borderRadius: 50,
                           }}
                         >
-                          <div className={classes.iconSec}>
-                            {type === "influencers" && isLoginUser ? (
-                              <i
-                                className={classes.messageIcon}
-                                onClick={() => {}}
-                              />
-                            ) : type === "unclaimed_influencers" &&
-                              isLoginUser ? (
-                              <i
-                                className={classes.sheildIcon}
-                                onClick={() => {
-                                  navigate(
-                                    `/claim/${EncryptionString(ele.user_id)}`
-                                  );
-                                }}
-                              />
-                            ) : null}
+                          <div
+                            className={`${classes.iconSec} ${
+                              !isMyProfile ? classes.othersIcon : ""
+                            }`}
+                          >
+                            {isMyProfile ? (
+                              <>
+                                {type === "unclaimed_influencers" &&
+                                isLoginUser ? (
+                                  <i
+                                    className={classes.sheildIcon}
+                                    onClick={() => {
+                                      navigate(
+                                        `/claim/${EncryptionString(
+                                          ele.user_id
+                                        )}`
+                                      );
+                                    }}
+                                  />
+                                ) : null}
+                              </>
+                            ) : (
+                              <>
+                                {type === "influencers" ? (
+                                  <span
+                                    className={`material-symbols-outlined ${classes.plusIcon}`}
+                                  >
+                                    add
+                                  </span>
+                                ) : null}
+                                {type === "connections" ? (
+                                  <i className={classes.addIcon} />
+                                ) : null}
+                              </>
+                            )}
                           </div>
                           <img
                             src={ele?.profile_img || ""}

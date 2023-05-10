@@ -82,7 +82,6 @@ const BioContainer = ({ isLoginuser }) => {
   };
 
   const handleChangeOption = (value, val) => {
-    console.log(value);
     let finalResult = influencerCategory.map((ele) => {
       let findValue = value.find((item) => item === ele.label);
       if (findValue) {
@@ -127,7 +126,7 @@ const BioContainer = ({ isLoginuser }) => {
   const getLabelValue = () => {
     return selectedCategory.map((ele) => ele.value);
   };
-  console.log(selectedCategory);
+
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>

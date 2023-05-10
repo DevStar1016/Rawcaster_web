@@ -4,10 +4,18 @@ import { routerpaths } from "./Routes";
 import { useDashboard } from "./Shared/Reduxfetcher";
 import Spinner from "./Sharedcomponents/Spinner";
 import InitialRenderComponent from "./Sharedcomponents/InitialRenderComponent";
+import { socketListen } from "./Services/SocketService";
+import { useEffect } from "react";
 
 function App() {
   const { isLoading } = useDashboard();
   const router = createBrowserRouter(routerpaths, { basename: "/" });
+
+  useEffect(() => {
+    socketListen.on("connect", () => {
+      console.log("connected");
+    });
+  }, []);
 
   return (
     <>
