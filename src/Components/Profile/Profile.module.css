@@ -205,11 +205,7 @@
       0 9px 28px 8px rgb(0 0 0 / 5%);
   }
   .claimAccountSec {
-    height: calc(100vh - 200px) ;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    float: left; width: 100%; padding-bottom: 20px;
   }
   .claimAccountBox {
     background: #FFFFFF;
@@ -268,4 +264,6 @@
 .actionIcon { margin-top: 55px; }
 .profileevent { width: 100%; padding: 10px 15px; }
 .othersprofileEvent { width: 100% !important; }
+.claimAccountBox { padding:10px;  }
+.claimAccountSec { margin-bottom: 50px;}
 }
