@@ -132,7 +132,7 @@ border-radius: 30px;
 .detailsRange i {
   color: #6c8c8c;
   padding: 0 5px 0 5px;
-  font-size: 11px;
+  font-size: 9px;
 }
 .contentSec {
   display: flex;
@@ -326,6 +326,7 @@ border-radius: 30px;
   height: 20px;
   resize: none;
 }
+.cmtSec .comtArea .textBox .inputSec textarea::placeholder { color: #1D1C1C; opacity: .8 !important; font-weight: 400; }
 .cmtSec .comtArea .textBox .sendicon {
   cursor: pointer;
   right: 12px;

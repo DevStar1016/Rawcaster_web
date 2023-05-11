@@ -32,7 +32,7 @@
     font-size: 20px;
 }
 .textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #ccc; padding-left: 20px; width: 100% !important;min-width: 306px !important; margin: 5px 0; }
-.textBox::placeholder { color: #C3C3C3; font-size: 16px; } 
+/* .textBox::placeholder { color: #C3C3C3; font-size: 16px; }  */
 .textBox:focus, .textBox::selection, .textBox:hover { border: #191919 1px solid !important; outline: none !important; box-shadow: none !important; }
 .textarea { height: 100px !important; width: 100% !important; }
 .headingSec {
@@ -113,11 +113,14 @@
     width: 310px;
     float: left;   
     padding-top: 20px;
+    /* position: sticky;
+    position: -webkit-sticky; */
+    /* bottom: 0px; */
     /* padding-right: 10px; */
 }
 .profileevent h2 { font-size: 19px; font-weight: 600; }
 .profileevent h2 span { font-size: 13px; font-weight: 400; }
-.profileIntro { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px;}
+.profileIntro { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; width: 100%;    margin-bottom: 10px;}
 .profileIntro i { font-size: 12px; margin-top: 5px; }
 .profileIntro .editSec i { font-size: 20px; margin-top: 3px; }
 .profileevent .intro  { float: left; border-bottom: 1px solid #ececec; padding-bottom: 10px; margin-bottom: 20px;}

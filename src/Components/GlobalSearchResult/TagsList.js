@@ -144,9 +144,9 @@ const TagsList = () => {
               ))}
             </div>
           ) : (
-            <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
+            <div className={classes.DisplayMsg}>
               We didn't find any results
-            </span>
+            </div>
           )}
         </>
       ) : null}
@@ -178,8 +178,7 @@ const TagsList = () => {
                           <p className={classes.trendTitle}>{ele.tag}</p>
                           <p className="mt-1">{ele.nugget_count} Nuggets</p>
                         </div>
-                        <div className={classes.graphSec}>
-                          <TagsChart Data={ele.trends} />
+                        <div className={classes.graphSec}>                         
                           <Dropdown
                             menu={{
                               items: [
@@ -203,6 +202,7 @@ const TagsList = () => {
                               </span>
                             </div>
                           </Dropdown>
+                          <TagsChart Data={ele.trends} />
                         </div>
                       </div>
                     );

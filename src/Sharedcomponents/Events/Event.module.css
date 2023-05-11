@@ -1,6 +1,6 @@
 .eventItem { position: relative; width: 100%; float: left; margin: 5px 0 8px 0px; border-radius: 15px; 
     border: 1px solid #ECECEC; }
-.eventImg { border-top-left-radius: 15px; border-top-right-radius: 15px; height: 140px; width: 100%; } 
+.eventImg { border-top-left-radius: 15px; border-top-right-radius: 15px; height: 150px; width: 100%; } 
 .contentSec { padding: 10px 13px; }
 .eventItem h3 { color: #1D1C1C; font-size: 18px !important; font-weight: 500; margin-bottom: 2px; overflow-wrap: break-word;
       overflow: hidden;
@@ -32,15 +32,15 @@ p.iconsec span:last-child { margin-left: 10px;}
     justify-content: space-between;
     font-size: 12px;
     background: #f2718d;
-    padding: 4px 4px;
-    border-radius: 5px;
+    padding: 7px;
+    border-radius: 7px;
 }
 .talkshow span {
     font-size: 15px;
     margin-right: 3px;
     margin-bottom: 1px;
 }
-.editIcon { background: url(../../Assets/Icons/svg/edit_icon.svg) no-repeat center center;  background-size: cover; width: 15px; height: 15px; display: flex; justify-content: center; align-items: center;cursor: pointer;}
+.editIcon { background: url(../../Assets/Icons/svg/edit_icon.svg) no-repeat center center;  background-size: cover; width: 13px; height: 13px; display: flex; justify-content: center; align-items: center;cursor: pointer;}
 .editSec {
     display: flex;
     flex-direction: row;
@@ -48,7 +48,7 @@ p.iconsec span:last-child { margin-left: 10px;}
     justify-content: space-between;
  }
  .iconBg { display: flex; align-items: center; justify-content: center; cursor: pointer; background: #F1F2F5; width: 30px; height: 30px; margin-left: 5px; border-radius: 30px;  }
- .iconBg i {font-size: 17px;}
+ .iconBg i {font-size: 15px;}
  .othersEventItem h3 {
     font-size: 16px !important;
     overflow: hidden;
