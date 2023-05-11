@@ -4,7 +4,7 @@
 p.subhead { color: #fff; font-size: 16px; font-weight: 500; text-align: center; }
 p.subhead a { color: #F4C314; font-weight: 600; cursor: pointer;  }
 .textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #ECECEC; margin-bottom: 5px; padding-left: 20px; }
-.textBox::placeholder { color: #C3C3C3; font-size: 16px; } 
+/* .textBox::placeholder { color: #C3C3C3; font-size: 16px; }  */
 .textBox:focus, .textBox::selection, .textBox:hover { border: #191919 1px solid !important; outline: none !important; box-shadow: none !important; }
 .textarea { height: 180px !important; }
 .btn {
