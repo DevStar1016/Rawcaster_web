@@ -222,7 +222,7 @@ const Postmodal = ({ visible, onClose }) => {
             </span>
           </div>
           <div className={classes.rightSec}>
-            {!isPoll && (
+            {!isPoll && !isEdit && (
               <Tooltip title="Post Poll">
                 <img
                   src={pollIcon}

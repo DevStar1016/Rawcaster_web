@@ -49,6 +49,7 @@
 .extMail input {
   background: #fff;
 }
+
 .ExtUser {
   border: none;
   outline: none;
@@ -175,6 +176,10 @@ opacity: 0.7;
     font-weight: 500 !important;
     font-family: "DM Sans", sans-serif;
     width: 100%;
+  }
+  .textArea {
+    height: 80px !important;
+    text-align: start !important;
   }
   .textBoxSec {
     display: flex;

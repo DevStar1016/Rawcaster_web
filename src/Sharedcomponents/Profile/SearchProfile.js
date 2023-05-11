@@ -25,6 +25,7 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { friendRequestSocket } from "../../Services/SocketList";
+import { replaceBiodataHandler } from "../../Components/Profile/Utility";
 
 const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
   const navigate = useNavigate();
@@ -84,6 +85,14 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
         }
       })
       .catch((err) => {});
+  };
+
+  const getBioData = () => {
+    if (ele.bio !== "") {
+      return ele.bio;
+    } else {
+      return replaceBiodataHandler(ele);
+    }
   };
 
   return (
@@ -186,7 +195,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                 console.log("test");
               }}
             >
-              {ele.bio}
+              {getBioData()}
             </ReadMore>
           </p>
         </div>

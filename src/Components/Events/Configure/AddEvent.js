@@ -31,9 +31,11 @@ import {
   JSONtoformdata,
   decodeHtml,
   filterValidObject,
+  userTimezonetoUtc,
   utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { useEventContext } from "../../../Shared/Context";
+import dayjs from "dayjs";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -167,7 +169,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }),
     validateOnChange: true,
     onSubmit: (val) => {
-      setisCreating(true);
+      // setisCreating(true);
       if (data) {
         HandleEditEvent(val);
       } else {
@@ -226,16 +228,15 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
 
   const HandleAddEvent = (val) => {
     const dateAndTime =
-      moment(val.event_start_time).format("YYYY-MM-DD") +
+      moment(val.event_start_date).format("YYYY-MM-DD") +
       " " +
-      moment(moment(val.event_start_time, ["hh:mm"])).format("HH:mm:00");
-
-    let utcDateTime = utctoUserTimezone(dateAndTime, userSettings?.time_zone);
+      moment(moment(val.event_start_time, ["HH:mm"])).format("HH:mm:00");
+    let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
     let liveEventData = {
-      token: token,
-      event_start_date: moment().utc(utcDateTime).format("YYYY-MM-DD"),
-      event_start_time: moment().utc(utcDateTime).format("HH:mm"),
       ...val,
+      token: token,
+      event_start_date: utcDateTime.format("YYYY-MM-DD"),
+      event_start_time: utcDateTime.format("HH:mm"),
     };
 
     if (typeof liveEventData.event_banner === "string") {
@@ -257,17 +258,32 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   };
 
   const HandleEditEvent = (val) => {
+    const dateAndTime =
+      moment(val.event_start_date).format("YYYY-MM-DD") +
+      " " +
+      moment(moment(val.event_start_time, ["HH:mm"])).format("HH:mm:00");
+    let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
     let liveEventData = {
+      ...val,
       token: token,
       event_id: data?.event_id,
-      event_start_date: moment(val.event_start_date, "YYYY-MM-DD")
-        .utc()
-        .format("YYYY-MM-DD"),
-      event_start_time: moment(val.event_start_date, "HH:mm").format("HH:mm"),
-      ...val,
+      event_start_date: utcDateTime.format("YYYY-MM-DD"),
+      event_start_time: utcDateTime.format("HH:mm"),
     };
+    function isFile(obj) {
+      return (
+        obj &&
+        typeof obj === "object" &&
+        obj.hasOwnProperty("type") &&
+        typeof obj.type === "string"
+      );
+    }
+    if (!isFile(liveEventData.event_melody)) {
+      delete liveEventData["event_melody"];
+    }
+
     if (typeof liveEventData.event_banner === "string") {
-      delete liveEventData.event_banner;
+      delete liveEventData["event_banner"];
     }
     editEventService(JSONtoformdata(filterValidObject(liveEventData)))
       .then((res) => {
@@ -297,12 +313,19 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           setValues({
             event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
-            event_start_date: moment(eventData?.start_date_time).format(
-              "YYYY-MM-DD"
-            ),
-            event_start_time: moment(eventData?.start_date_time).format(
-              "HH:mm"
-            ),
+            event_start_date: moment(
+              utctoUserTimezone(
+                eventData?.start_date_time,
+                userSettings?.time_zone
+              )
+            ).format("YYYY-MM-DD"),
+            event_start_time: moment(
+              utctoUserTimezone(
+                eventData?.start_date_time,
+                userSettings?.time_zone
+              )
+            ).format("HH:mm"),
+            event_message: eventData?.message,
             waiting_room: eventData?.waiting_room,
             join_before_host: eventData?.join_before_host,
             sound_notify: eventData?.sound_notify,
@@ -418,6 +441,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     <InviteEmailComponent
                       value={values.event_invite_mails}
                       onResult={(val) => {
+                        console.log(val);
                         setFieldValue("event_invite_mails", val.toString());
                       }}
                     />
@@ -493,30 +517,27 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 >
                   <DatePicker
                     showToday={false}
+                    className={classes.textbox}
                     defaultValue={
                       values?.event_start_date
-                        ? moment(values?.event_start_date, "YYYY-MM-DD")
+                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
                         : undefined
                     }
                     value={
                       values?.event_start_date
-                        ? moment(values?.event_start_date, "YYYY-MM-DD")
+                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
                         : undefined
                     }
-                    // disabledDate={(current) => {
-                    //   return moment().add(-1, "days") >= current;
-                    // }}
+                    disabledDate={(current) => {
+                      return moment().add(-1, "days") >= current;
+                    }}
                     allowClear={false}
-                    className={classes.textbox}
                     format={"YYYY-MM-DD"}
                     onChange={(date, dateString) => {
-                      setFieldValue(
-                        "event_start_date",
-                        moment(dateString).format("YYYY-MM-DD")
-                      );
+                      setFieldValue("event_start_date", dateString);
                       if (
                         moment(new Date()).format("DD:MM:YYYY") ==
-                        moment(dateString).format("DD:MM:YYYY")
+                        moment(dateString, "YYYY-MM-DD").format("DD:MM:YYYY")
                       ) {
                         if (
                           !(
@@ -574,25 +595,25 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
                 )}
               </Col>
-              {/* <Col sm={12}>
-          <Form.Item
-              label="Event Title"
-              colon={false}
-              className={classes.textBoxSec}
-              initialValue={values.event_message}
-            >
-              <Input
-                className={classes.textbox}
-                defaultValue={values.event_message}
-                value={values.event_message}
-                maxLength={80}
-                onChange={handleChange("event_message")}
-              />
-            </Form.Item>
-            {touched.event_message && (
-              <p className="ErrTxt mb-3">{errors?.event_message}</p>
-            )}
-          </Col> */}
+              <Col sm={12}>
+                <Form.Item
+                  label="Event Description"
+                  colon={false}
+                  className={classes.textBoxSec}
+                  initialValue={values.event_message}
+                >
+                  <Input.TextArea
+                    className={`${classes.textbox} ${classes.textArea}`}
+                    defaultValue={values.event_message}
+                    value={values.event_message}
+                    maxLength={150}
+                    onChange={handleChange("event_message")}
+                  />
+                </Form.Item>
+                {touched.event_message && (
+                  <p className="ErrTxt mb-3">{errors?.event_message}</p>
+                )}
+              </Col>
               <div className="my-2">
                 <Row>
                   {EventSettings.map((ele) => {
@@ -687,6 +708,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   isCustomize={true}
                   value={values.event_melody_id}
                   onResult={(val) => {
+                    console.log(val);
                     setFieldValue("event_melody_id", val.id);
                   }}
                 />

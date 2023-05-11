@@ -125,7 +125,9 @@ export const EventMelodyComponent = ({
           { id: 0, value: "Customize", label: "Customize" },
         ];
       }
+
       setEventData(finalData);
+
       onResult(finalData[0]);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -309,7 +311,7 @@ export const InviteEmailComponent = ({ onResult, value }) => {
     if (mailList.length > index) {
       mailList.splice(index, 1);
     }
-    externalMailId(mailList);
+    setExternalMailId(mailList);
     onResult(mailList);
   };
 

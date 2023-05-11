@@ -17,8 +17,10 @@ import btmhome from "../Assets/Images/svg/btmhome.svg";
 import searchIcon from "../Assets/Icons/svg/topsearch.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
 import { useDispatch } from "react-redux";
-import { logoutService } from "../Services/ApiService"; 
+import { logoutService } from "../Services/ApiService";
 import {
+  DecryptionString,
+  EncryptionString,
   filterValidObject,
   getAuthenticated,
   handleProfileNavigate,
@@ -96,7 +98,7 @@ const HomeLayout = () => {
 
   useEffect(() => {
     if (params) {
-      setsearchData(params.key);
+      setsearchData(DecryptionString(params.key));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -136,6 +138,7 @@ const HomeLayout = () => {
                     ref={inputRef}
                     value={searchData}
                     onKeyDown={(e) => {
+                      let pattern = /^[\w&.-]+$/;
                       if (e.key === "Enter") {
                         if (getAuthenticated()) {
                           if (isAccountValid(loginUserData)) {
@@ -161,7 +164,9 @@ const HomeLayout = () => {
                                 fetchNuggetsbyId(filterValidObject(filterData))
                               );
                               navigate(
-                                `/globalsearch/${e.nativeEvent.target.value}`
+                                `/globalsearch/${EncryptionString(
+                                  e.nativeEvent.target.value
+                                )}`
                               );
                             }
                           } else {
@@ -187,8 +192,8 @@ const HomeLayout = () => {
               <div className={classes.rightMenus}>
                 {loginUserData && (
                   <div>
-                    <img 
-                      style={{borderRadius:"28px"}}
+                    <img
+                      style={{ borderRadius: "28px" }}
                       src={LiveIcon}
                       className={classes.liveIcon}
                       alt="live_icon"
@@ -209,7 +214,7 @@ const HomeLayout = () => {
                         navigate("/dashboard");
                       }}
                     />
-                    <div className={classes.onlydes} style={{float:"right"}}>
+                    <div className={classes.onlydes} style={{ float: "right" }}>
                       <Notification
                         src={NotificationIcon}
                         className={`${classes.onlydes} ${classes.menuIcon}`}

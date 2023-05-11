@@ -9,6 +9,7 @@ import { useLocation, useParams } from "react-router";
 import { TagsListService } from "../../Services/ApiService";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import {
+  DecryptionString,
   getAuthenticated,
   getAuthToken,
   getRawcaserToken,
@@ -26,6 +27,7 @@ let isRequestCancel = false;
 const TagsList = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const searchKey = params?.key ? DecryptionString(params?.key) : "";
   const { pathname } = useLocation();
   const { isGlobalSearch } = useDashboard();
   const source = useRef(null);
@@ -54,7 +56,7 @@ const TagsList = () => {
     let TagsData = {
       token: getToken(),
       auth_code: getAuthToken(getToken()),
-      search_tag: params.key,
+      search_tag: searchKey,
       page_number: page,
     };
     TagsListService(JSONtoformdata(TagsData), source.current.token)

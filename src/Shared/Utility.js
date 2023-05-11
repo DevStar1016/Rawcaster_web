@@ -420,6 +420,17 @@ export const utctoUserTimezone = (time, zonename = null) => {
   }
 };
 
+export const userTimezonetoUtc = (time, zonename) => {
+  let userTimeZone = moment1(time, "YYYY-MM-DD HH:mm:ss").tz(
+    getTimezoneName(zonename)
+  );
+  console.log(
+    moment(userTimeZone).utc().format("YYYY-MM-DD HH:mm:ss"),
+    "moment().utc()"
+  );
+  return moment(userTimeZone).utc();
+};
+
 export const utctoUserTimezonewithAbbr = (time, zonename) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
   let displayCutoff = moment1(utcCutoff).tz(getTimezoneName(zonename));
@@ -506,4 +517,17 @@ const handleErrorMsg = (msg, resolve) => {
   message.error(msg).then(() => {
     resolve();
   });
+};
+
+export const getisAddFriend = (status) => {
+  switch (status) {
+    case 0:
+      return false;
+    case 1:
+      return false;
+    case 3:
+      return false;
+    default:
+      return true;
+  }
 };

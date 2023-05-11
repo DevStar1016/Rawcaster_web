@@ -51,12 +51,16 @@ const CreateEvent = ({ isSearch, onSearchEnter }) => {
           autoComplete="off"
         />
       )}
-      <AddEvent isEventOpen={isEventOpen} setisEventOpen={setisEventOpen} />
+      {isEventOpen && (
+        <AddEvent isEventOpen={isEventOpen} setisEventOpen={setisEventOpen} />
+      )}
 
-      <AddLiveEvent
-        isTalkshowOpen={isTalkshowOpen}
-        setisTalkshowOpen={setisTalkshowOpen}
-      />
+      {isTalkshowOpen && (
+        <AddLiveEvent
+          isTalkshowOpen={isTalkshowOpen}
+          setisTalkshowOpen={setisTalkshowOpen}
+        />
+      )}
     </div>
   );
 };

@@ -1,48 +1,44 @@
-.textBox::placeholder {
-    color: #99a0b0;
-    padding: 15px 0px !important;
-    font-size: 15px;
-  }
-  .textBox:focus,
-  .textBox::selection,
-  .textBox:hover {
-    border: #f2718d 1px solid !important;
-    outline: none !important;
-    box-shadow: none !important;
-  }
-  .locationdrpmenu {
-    position: absolute;
-    z-index: 1;
-    width: 100%;
-    color: #222;
-    background-color: rgb(255, 255, 255);
-    padding: 0px 0;
-    outline: none;
-    -webkit-box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%),
-      0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
-    box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
-      0 9px 28px 8px rgb(0 0 0 / 5%);
-  }
-  .textBox {
-    -webkit-text-fill-color: inherit;
-    -webkit-text-fill-color: initial;
-    -webkit-text-fill-color: unset;
-    height: 48px;
-    background: #fff;
-    border-radius: 7px;
-    border: 1px solid #e8eaee;
-    margin-bottom: 5px;
-    width: 100%;
-  }
-  .locationInputHeight {
-    height: 52px !important;
-  }
-  .locationIcon {
-    float: left;
-    padding: 13px;
-    position: absolute;
-    right: 0;
-  }
-  .locationIcon i {
-    cursor: pointer;
-  }
+.header {
+  background: #563662;
+border-top-right-radius: 7px;
+border-top-left-radius: 7px;
+padding:  15px 10px;
+text-align: center;
+font-family: 'DM Sans';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 25px;
+color: #fff;
+}
+.header span {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+line-height: 25px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+.container  p {
+   max-width: 600px;
+   text-align: center;
+   font-family: 'DM Sans';
+font-style: normal;
+font-weight: 200;
+font-size: 18px;
+line-height: 20px;
+/* or 132% */
+
+text-align: center;
+
+color: #000000;
+}
+.container img {
+  padding: 15px 0;
+  height: 95px;
+}

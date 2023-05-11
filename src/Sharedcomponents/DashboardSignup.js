@@ -31,7 +31,7 @@ import { useAuth, useAuthData } from "../Shared/Reduxfetcher";
 import RedirectModal from "../Modal/Verification/RedirectModal";
 import Connections from "../Components/Connections/Friends/Connections";
 import Groups from "../Components/Connections/Groups/Groups";
-
+import VideoThumb from "../Assets/Images/Video_preview.jpg";
 import { handlenuggetVideoPaused } from "../Store/Redux/Reducer/NuggetsReducer";
 import { fetchuserInfobyToken } from "../Store/Redux/Action";
 
@@ -41,6 +41,7 @@ const DashboardSignup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
+  const [Controlls, setControlls] = useState(false);
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
     latitude: "",
@@ -111,14 +112,16 @@ const DashboardSignup = () => {
                 width="100%"
                 height="100%"
                 style={{ zIndex: 500 }}
-                controls
+                controls={Controlls}
                 disablePictureInPicture
                 playsInline
                 preload="metadata"
                 controlsList="nodownload"
                 src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001"
+                poster={VideoThumb}
                 type="video/mp4"
                 onPlayCapture={() => {
+                  setControlls(true);
                   console.log("test");
                 }}
               />
@@ -216,11 +219,14 @@ const DashboardSignup = () => {
                 id="dashboard_signup_video"
                 style={{ zIndex: 500 }}
                 controls
+                // controls={Controlls}
                 disablePictureInPicture
                 playsInline
                 controlsList="nodownload"
+                poster={VideoThumb}
                 onPlayCapture={() => {
                   dispatch(handlenuggetVideoPaused(true));
+                  setControlls(true);
                 }}
               >
                 <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />

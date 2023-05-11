@@ -5,6 +5,7 @@ import { sendMessage } from "../../../Services/SocketService";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { decodeHtml, JSONtoformdata } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
+import { defaultprofileImg } from "../../../Shared/CommonConstants";
 const Request = ({ request, setrequests, onSuccess, onReject }) => {
   const token = useAuthToken();
   const profileData = useAuthData();
@@ -67,7 +68,13 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
   return (
     <div key={"request" + request.friend_request_id}>
       <div className={classes.list}>
-        <img src={request.profile_img}></img>
+        <img
+          src={request.profile_img ? request.profile_img : ""}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = defaultprofileImg;
+          }}
+        ></img>
         <span className={classes.disName}>
           {request.display_name.length > 18
             ? decodeHtml(request.display_name.substring(0, 15)) + "..."

@@ -163,16 +163,20 @@ const Eventslisting = ({
           )}
         </div>
 
-        <AddEvent
-          isEventOpen={isEventOpen}
-          setisEventOpen={setisEventOpen}
-          data={EventData}
-        />
-        <AddLiveEvent
-          data={EventData}
-          isTalkshowOpen={isTalkshowOpen}
-          setisTalkshowOpen={setisTalkshowOpen}
-        />
+        {isEventOpen && (
+          <AddEvent
+            isEventOpen={isEventOpen}
+            setisEventOpen={setisEventOpen}
+            data={EventData}
+          />
+        )}
+        {isTalkshowOpen && (
+          <AddLiveEvent
+            data={EventData}
+            isTalkshowOpen={isTalkshowOpen}
+            setisTalkshowOpen={setisTalkshowOpen}
+          />
+        )}
       </>
     </EventContext.Provider>
   );

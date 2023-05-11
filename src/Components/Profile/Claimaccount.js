@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Profile.module.css";
 import {
   DecryptionString,
@@ -17,6 +17,9 @@ import { Col, Row } from "react-bootstrap";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import moment from "moment";
 import PlacesAutocomplete from "react-places-autocomplete";
+import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
+import { useDispatch } from "react-redux";
+import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -32,8 +35,10 @@ const validationSchema = yup.object().shape({
 
 const Claimaccount = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
+
   const loginUserData = useAuthData();
 
   const {
@@ -69,18 +74,22 @@ const Claimaccount = () => {
       .then((res) => {
         if (res.data.status === 1) {
           navigate(-1);
-          Modal.success({
-            content: res.data.msg,
-          });
+          dispatch(
+            handleClaimAccount({
+              show: true,
+              msg: res.data.msg,
+            })
+          );
+          // Modal.success({
+          //   content: res.data.msg,
+          // });
         } else if (res.data.status === 0) {
           Modal.error({
             content: res.data.msg,
           });
         }
       })
-     .catch((err) => {
-       
-      });
+      .catch((err) => {});
   };
 
   const getCurrentLocation = () => {
@@ -88,9 +97,7 @@ const Claimaccount = () => {
       .then((res) => {
         setFieldValue("location", res.address);
       })
-     .catch((err) => {
-       
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {

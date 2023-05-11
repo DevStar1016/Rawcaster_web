@@ -3,6 +3,7 @@ import { decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
+import { defaultprofileImg } from "../../../Shared/CommonConstants";
 
 const Friends = ({ friend, searchInput }) => {
   return (
@@ -20,7 +21,13 @@ const Friends = ({ friend, searchInput }) => {
         id={"friends_" + friend.user_id}
       >
         <div className={classes.list}>
-          <img src={friend.profile_img} />
+          <img
+            src={friend?.profile_img ? friend?.profile_img : ""}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src = defaultprofileImg;
+            }}
+          />
           {friend.online !== "" ? (
             <i
               className={friend.online === 1 ? classes.online : classes.offline}
@@ -60,9 +67,9 @@ const Friends = ({ friend, searchInput }) => {
           <div
             id={"menu_" + friend.user_id}
             className={`${classes.friendsmenu}`}
-          >        
-              <img src={audiocall}/> 
-              <img src={videocall}/>            
+          >
+            <img src={audiocall} />
+            <img src={videocall} />
           </div>
         }
       </div>

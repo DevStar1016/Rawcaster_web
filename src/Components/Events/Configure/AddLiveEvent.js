@@ -23,11 +23,14 @@ import {
   decodeHtml,
   filterValidObject,
   JSONtoformdata,
+  userTimezonetoUtc,
+  utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import EventModal from "../../../Modal/Event/EventModal";
 import moment from "moment";
 import { useEventContext } from "../../../Shared/Context";
+import dayjs from "dayjs";
 
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -129,16 +132,21 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   }, [userSettings]);
 
   const HandleLiveEvent = (val) => {
+    const dateAndTime =
+      moment(val.event_start_date).format("YYYY-MM-DD") +
+      " " +
+      moment(moment(val.event_start_time, ["HH:mm"])).format("HH:mm:00");
+    let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
     let liveEventData = {
-      token: token,
-      event_start_date: moment(val.event_start_date, "YYYY-MM-DD")
-        .utc()
-        .format("YYYY-MM-DD"),
-      event_start_time: moment(val.event_start_date, "HH:mm")
-        .utc()
-        .format("HH:mm"),
       ...val,
+      token: token,
+      event_id: data?.event_id,
+      event_start_date: utcDateTime.format("YYYY-MM-DD"),
+      event_start_time: utcDateTime.format("HH:mm"),
     };
+    if (typeof liveEventData.event_banner === "string") {
+      delete liveEventData.event_banner;
+    }
 
     addLiveEventService(JSONtoformdata(filterValidObject(liveEventData)))
       .then((res) => {
@@ -156,16 +164,17 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   };
 
   const HandleEditLiveEvent = (val) => {
+    const dateAndTime =
+      moment(val.event_start_date).format("YYYY-MM-DD") +
+      " " +
+      moment(moment(val.event_start_time, ["HH:mm"])).format("HH:mm:00");
+    let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
     let liveEventData = {
+      ...val,
       token: token,
       event_id: data?.event_id,
-      event_start_date: moment(val.event_start_date, "YYYY-MM-DD")
-        .utc()
-        .format("YYYY-MM-DD"),
-      event_start_time: moment(val.event_start_date, "HH:mm")
-        .utc()
-        .format("HH:mm"),
-      ...val,
+      event_start_date: utcDateTime.format("YYYY-MM-DD"),
+      event_start_time: utcDateTime.format("HH:mm"),
     };
     if (typeof liveEventData.event_banner === "string") {
       delete liveEventData.event_banner;
@@ -198,12 +207,18 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           setValues({
             event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
-            event_start_date: moment(eventData?.start_date_time).format(
-              "YYYY-MM-DD"
-            ),
-            event_start_time: moment(eventData?.start_date_time).format(
-              "HH:mm"
-            ),
+            event_start_date: moment(
+              utctoUserTimezone(
+                eventData?.start_date_time,
+                userSettings?.time_zone
+              )
+            ).format("YYYY-MM-DD"),
+            event_start_time: moment(
+              utctoUserTimezone(
+                eventData?.start_date_time,
+                userSettings?.time_zone
+              )
+            ).format("HH:mm"),
             event_banner: eventData?.banner_image,
             event_invite_mails: getValidarrayData(eventData?.invite_mails),
             event_invite_friends: getValidarrayData(
@@ -272,30 +287,27 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
             >
               <DatePicker
                 showToday={false}
+                className={classes.textbox}
                 defaultValue={
                   values?.event_start_date
-                    ? moment(values?.event_start_date, "YYYY-MM-DD")
+                    ? dayjs(values?.event_start_date, "YYYY-MM-DD")
                     : undefined
                 }
                 value={
                   values?.event_start_date
-                    ? moment(values?.event_start_date, "YYYY-MM-DD")
+                    ? dayjs(values?.event_start_date, "YYYY-MM-DD")
                     : undefined
                 }
                 disabledDate={(current) => {
                   return moment().add(-1, "days") >= current;
                 }}
                 allowClear={false}
-                className={classes.textbox}
                 format={"YYYY-MM-DD"}
                 onChange={(date, dateString) => {
-                  setFieldValue(
-                    "event_start_date",
-                    moment(dateString).format("YYYY-MM-DD")
-                  );
+                  setFieldValue("event_start_date", dateString);
                   if (
                     moment(new Date()).format("DD:MM:YYYY") ==
-                    moment(dateString).format("DD:MM:YYYY")
+                    moment(dateString, "YYYY-MM-DD").format("DD:MM:YYYY")
                   ) {
                     if (
                       !(

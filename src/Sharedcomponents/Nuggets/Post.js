@@ -51,6 +51,7 @@ import {
   handlenuggetVideoPaused,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import _debounce from "lodash/debounce";
+import { HandleBecameaFan } from "../../Shared/SharedAPIs";
 
 const Post = ({
   ele,
@@ -189,17 +190,36 @@ const Post = ({
     console.log("Block");
   };
 
-  const handleReport = () => {
-    console.log("report");
-  };
-
-  const handleShareLink = () => {
-    console.log("sharelink");
-  };
-
   const getMoreValues = (ele) => {
     if (ele.user_id === loginUserData?.user_id) {
       if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
+        let resultData = [
+          {
+            key: 2,
+            label: (
+              <div
+                onClick={() => {
+                  Modal.confirm({
+                    title: "Confirmation",
+                    okText: "Yes",
+                    cancelText: "No",
+                    cancelButtonProps: {
+                      danger: true,
+                    },
+                    content: <div>Do you want to delete this nugget? </div>,
+                    onOk: () => {
+                      deletenugget(ele.nugget_id);
+                    },
+                  });
+                }}
+              >
+                Delete
+              </div>
+            ),
+          },
+        ];
+        return resultData;
+      } else if (ele.type === 2) {
         let resultData = [
           {
             key: 2,
@@ -262,16 +282,32 @@ const Post = ({
       let resultData = [
         {
           key: 1,
-          label: <div onClick={() => handleBlock()}>Block user</div>,
+          label: (
+            <div onClick={() => handleBlock()} className={classes.dropdownItem}>
+              <span class="material-symbols-outlined">report</span> Report
+            </div>
+          ),
         },
         {
           key: 2,
-          label: <div onClick={() => handleReport()}>Report Abuse</div>,
+          label: (
+            <div
+              style={{ display: ele?.following ? "none" : "" }}
+              onClick={() => {
+                HandleBecameaFan(Token, ele.user_ref_id);
+              }}
+              className={classes.dropdownItem}
+            >
+              <span class="material-symbols-outlined">group</span>Become a Fan
+            </div>
+          ),
         },
-        {
-          key: 3,
-          label: <div onClick={() => handleShareLink()}>Share Link</div>,
-        },
+        // {
+        //   key: 3,
+        //   label: <div onClick={() => handleShareLink()}><span class="material-symbols-outlined">
+        //   more_horiz
+        //   </span>report abuse</div>,
+        // },
       ];
       return resultData;
     }
@@ -537,6 +573,7 @@ const Post = ({
         </div>
         {getAuthenticated() && (
           <Dropdown
+            placement="bottomRight"
             menu={{
               items: getMoreValues(ele),
 

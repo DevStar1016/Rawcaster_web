@@ -22,6 +22,17 @@
   width: calc(100% - 25px);
   float: left;
 }
+.dropdownItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.dropdownItem span {
+padding: 5px ;
+background: #F1F2F5;
+margin-right: 13px; 
+border-radius: 30px;
+}
 .NuggetLockSec {
   position: relative;
 }

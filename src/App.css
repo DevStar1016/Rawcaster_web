@@ -546,6 +546,9 @@ margin-bottom: 12px !important;
     font-size: 16px !important;
 
 }
+.claimrequestModal .ant-modal-content {
+  padding: 0px !important;
+}
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .onlydes { display: none; } 

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import {
   DecryptionString,
   EncryptionString,
+  getisAddFriend,
   handleProfileNavigate,
 } from "../../../Shared/Utility";
 import { Skeleton } from "antd";
@@ -15,15 +16,17 @@ import {
   getUnclaimedInfluencerData,
   getfollowerfollowingService,
 } from "./Utility";
-import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
 import msgIcon from "../../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
 import { useDispatch } from "react-redux";
 import InfluencerSend from "../../../Modal/InfluencerSend";
-import ClaimAccount from "../../../Modal/Connections/ClaimAccount";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
-import { socketListen } from "../../../Services/SocketService";
 
 const ConnectionsList = ({
   title = "",
@@ -41,11 +44,8 @@ const ConnectionsList = ({
   const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
     show: false,
   });
-  const [ClaimAccountModal, setClaimAccountModal] = useState({
-    id: "",
-    show: false,
-  });
   const loginToken = useAuthToken();
+  const loginUserData = useAuthData();
   const { nuggetFormData } = useNuggets();
   const [ConnectionsList, setConnectionsList] = useState({
     connections: [],
@@ -197,7 +197,7 @@ const ConnectionsList = ({
       }}
       className={`${classes.profileThumb} ${
         !isMyProfile ? classes.othersProfileThumb : ""
-      }`}
+      } `}
     >
       <h2 className={!isLocked && type === "fans" && classes.fansHeading}>
         {title} {!isLocked ? `(${ConnectionsList.allconnectionscount})` : ""}
@@ -251,6 +251,21 @@ const ConnectionsList = ({
               {ConnectionsList.allconnectionscount !== 0 ? (
                 <div className={`${classes.listSec} `}>
                   {ConnectionsList.connections.map((ele) => {
+                    const isUser = parseInt() === parseInt(ele?.user_id);
+                    const isAddFriend = () => {
+                      if (isUser) {
+                        return false;
+                      } else if (ele?.unclaimed_status === 0) {
+                        return false;
+                      } else if (ele?.friend_status) {
+                        if (getisAddFriend(ele?.friend_status)) {
+                          return true;
+                        }
+                        return false;
+                      } else {
+                        return false;
+                      }
+                    };
                     return (
                       <div className={classes.list}>
                         <Skeleton.Node
@@ -272,6 +287,11 @@ const ConnectionsList = ({
                                 isLoginUser ? (
                                   <i
                                     className={classes.sheildIcon}
+                                    style={{
+                                      display: ele.unclaimed_status
+                                        ? "none"
+                                        : "",
+                                    }}
                                     onClick={() => {
                                       navigate(
                                         `/claim/${EncryptionString(
@@ -299,7 +319,12 @@ const ConnectionsList = ({
                                   </span>
                                 ) : null}
                                 {type === "connections" ? (
-                                  <i className={classes.addIcon} />
+                                  <i
+                                    className={classes.addIcon}
+                                    style={{
+                                      display: isAddFriend() ? "" : "none",
+                                    }}
+                                  />
                                 ) : null}
                               </>
                             )}
@@ -381,25 +406,6 @@ const ConnectionsList = ({
           open={isInfluencerChatModalOpen.show}
           close={() => {
             setisInfluencerChatModalOpen({ show: false });
-          }}
-        />
-      )}
-      {ClaimAccountModal.show && (
-        <ClaimAccount
-          visible={ClaimAccountModal.show}
-          id={ClaimAccountModal.id}
-          onSuccess={() => {
-            getUnclaimedInfluencer();
-            setClaimAccountModal({
-              id: "",
-              show: false,
-            });
-          }}
-          onClose={() => {
-            setClaimAccountModal({
-              id: "",
-              show: false,
-            });
           }}
         />
       )}

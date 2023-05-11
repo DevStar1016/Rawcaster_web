@@ -166,7 +166,15 @@
 .becomeafanbtn i { font-size: 15px; padding-left: 2px; margin-bottom: 4px;}
 .becomeafanbtn:hover, .becomeafanbtn span:hover, .becomeafanbtn i:hover { color:#fff !important; } 
 
-
+.claimBtnSec {
+  margin-top: 85px;
+  display: flex;
+  align-items: end;
+  justify-content: end;
+}
+.claimBtnSec .becomeafanbtn {
+  background: #F2718D !important;
+}
 
 .textBox::placeholder {
     color: #99a0b0;

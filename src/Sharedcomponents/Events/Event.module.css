@@ -11,7 +11,11 @@
     cursor: pointer;
 }
 p.host {color: #1D1C1C; font-size: 12px; font-weight: 300; margin-bottom: 5px; opacity: .9; text-align: left; }
-p.des {color: #1D1C1C; font-size: 14px; font-weight: 400; margin-bottom: 7px;}
+p.des {color: #1D1C1C; font-size: 14px; font-weight: 400; margin-bottom: 7px;overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;}
 p.iconsec { align-items: center; display:flex; color: #1d1c1cb3; font-size: 12px; font-weight: 400; margin-bottom: 7px;}
 p.iconsec span { font-size: 17px; margin-right: 5px; color: #000; }
 p.iconsec span:last-child { margin-left: 10px;}

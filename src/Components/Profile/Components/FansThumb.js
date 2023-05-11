@@ -29,7 +29,7 @@ const FansThumb = () => {
       {FansList.connections?.map((ele) => (
         <img
           className={classes.thumbImg}
-          src={ele.profile_img}
+          src={ele.profile_img ? ele.profile_img : ""}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = defaultprofileImg;

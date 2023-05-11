@@ -12,6 +12,7 @@ import {
   handleNuggetFormData,
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const Events = () => {
   const dispatch = useDispatch();
@@ -45,7 +46,11 @@ const Events = () => {
         <Link
           className={DashboardfilterType === 1 ? classes.active : ""}
           onClick={() => {
-            handleFilterType(1);
+            if (loginUserData) {
+              handleFilterType(1);
+            } else {
+              dispatch(handleloginModalShow(true));
+            }
           }}
         >
           <span class="material-icons">people</span> Following

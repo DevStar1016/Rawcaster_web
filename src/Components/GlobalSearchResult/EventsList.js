@@ -9,6 +9,7 @@ import {
 import axios from "axios";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import {
+  DecryptionString,
   getAuthenticated,
   getAuthToken,
   getRawcaserToken,
@@ -31,6 +32,7 @@ let isRequestCancel = false;
 const EventsList = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const searchKey = params?.key ? DecryptionString(params?.key) : "";
   const { pathname } = useLocation();
   const { isGlobalSearch } = useDashboard();
   const source = useRef(null);
@@ -59,7 +61,7 @@ const EventsList = () => {
     source.current = axios.CancelToken.source();
     let nuggetData = {
       token: getToken(),
-      search_key: params.key,
+      search_key: searchKey,
       page_number: page,
     };
     globalSearchEventsService(JSONtoformdata(nuggetData), source.current.token)

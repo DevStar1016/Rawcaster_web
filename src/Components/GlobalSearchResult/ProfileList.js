@@ -8,6 +8,7 @@ import { searchRawcasterUsersService } from "../../Services/ApiService";
 import axios from "axios";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import {
+  DecryptionString,
   getAuthenticated,
   getAuthToken,
   getRawcaserToken,
@@ -27,6 +28,7 @@ let isRequestCancel = false;
 const ProfileList = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const searchKey = params?.key ? DecryptionString(params?.key) : "";
   const { pathname } = useLocation();
   const { isGlobalSearch } = useDashboard();
   const source = useRef(null);
@@ -57,7 +59,7 @@ const ProfileList = () => {
       nugget_type: 0,
       token: getToken(),
       auth_code: getAuthToken(getToken()),
-      search_key: params.key,
+      search_key: searchKey,
       page_number: page,
     };
     searchRawcasterUsersService(

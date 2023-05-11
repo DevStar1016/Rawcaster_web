@@ -5,16 +5,18 @@ import classes from "./Referel.module.css";
 import InviteBox from "./InviteBox";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useAuth, useNuggets } from "../../Shared/Reduxfetcher";
+import { useAuthData, useNuggets } from "../../Shared/Reduxfetcher";
 import {
   handleDashboardFilterType,
   handleNuggetFormData,
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
+import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const Referel = () => {
   const dispatch = useDispatch();
+  const loginUserData = useAuthData();
   const { DashboardfilterType, nuggetFormData } = useNuggets();
 
   const handleFilterType = (type) => {
@@ -31,36 +33,40 @@ const Referel = () => {
     dispatch(fetchNuggetsbyId(filterData));
   };
 
-  return (   
-      <div className={classes.fullcontainer}>
-        <div className={classes.suggestSec}>
-          <div className={`${classes.beforelogin} mb-3`}>
-            <Link
-              className={DashboardfilterType === 0 ? classes.active : ""}
-              onClick={() => {
-                handleFilterType(0);
-              }}
-            >
-              <span class="material-icons">home</span> For You
-            </Link>
-            <Link
-              className={DashboardfilterType === 1 ? classes.active : ""}
-              onClick={() => {
+  return (
+    <div className={classes.fullcontainer}>
+      <div className={classes.suggestSec}>
+        <div className={`${classes.beforelogin} mb-3`}>
+          <Link
+            className={DashboardfilterType === 0 ? classes.active : ""}
+            onClick={() => {
+              handleFilterType(0);
+            }}
+          >
+            <span class="material-icons">home</span> For You
+          </Link>
+          <Link
+            className={DashboardfilterType === 1 ? classes.active : ""}
+            onClick={() => {
+              if (loginUserData) {
                 handleFilterType(1);
-              }}
-            >
-              <span class="material-icons">people</span> Following
-            </Link>
-          </div>
-          <SuggestedAccounts />
+              } else {
+                dispatch(handleloginModalShow(true));
+              }
+            }}
+          >
+            <span class="material-icons">people</span> Following
+          </Link>
         </div>
-          
-        <div className="d-none d-sm-block">
-          <Nuggets isUserPostAvailable={false} />
-        </div>  
-
-        <InviteBox />
+        <SuggestedAccounts />
       </div>
+
+      <div className="d-none d-sm-block">
+        <Nuggets isUserPostAvailable={false} />
+      </div>
+
+      <InviteBox />
+    </div>
   );
 };
 

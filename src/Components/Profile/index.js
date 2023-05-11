@@ -68,6 +68,7 @@ const Profile = () => {
   };
 
   const getuserprofile = (id) => {
+    setprofileData();
     let otherprofileValue = {
       token: loginToken,
       user_id: id,
@@ -111,7 +112,6 @@ const Profile = () => {
 
   const getFollowers = (filterValues = {}) => {
     let promise = new Promise((resolve, reject) => {
-      console.log("test1");
       let fansList = {
         ...filterValues,
         token: loginToken,
@@ -216,8 +216,6 @@ const Profile = () => {
     socketListen.on(
       "groupchatting",
       (message) => {
-        console.log("SocketListen  groupchatting on in Dashboard");
-
         switch (message.event) {
           case "groupchatmessage":
             console.log(message, "GROUP CHAT RECEIVED");

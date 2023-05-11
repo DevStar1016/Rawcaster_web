@@ -6,16 +6,17 @@ import EventsList from "./EventsList";
 import classes from "./GlobalSearch.module.css";
 import ProfileList from "./ProfileList";
 import TagsList from "./TagsList";
+import { DecryptionString } from "../../Shared/Utility";
 
 const GlobalSearchResult = () => {
   const [key, setKey] = useState("Profile");
   const params = useParams();
-
+  const searchKey = params?.key ? DecryptionString(params?.key) : "";
   return (
     <div>
       <div className={classes.mainContainer}>
         <p className={classes.searchResultName}>
-          Search Results for <span>{params?.key}</span>{" "}
+          Search Results for <span>{searchKey}</span>{" "}
         </p>
         <Tabs
           id="controlled-tab-example"

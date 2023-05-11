@@ -34,6 +34,7 @@ const Nuggets = ({
 }) => {
   const dispatch = useDispatch();
   const params = useParams();
+  const searchKey = params?.key ? DecryptionString(params?.key) : "";
   const [ViewedList, setViewedList] = useState([]);
   const [NuggetsData, setNuggetsData] = useState([]);
   const [isNuggetModify, setisNuggetModify] = useState(null);
@@ -234,9 +235,7 @@ const Nuggets = ({
               <>
                 {Nuggets?.length === 0 ? (
                   <div className={classes.DisplayMsg}>
-                    {params.key
-                      ? "We didn't find any results"
-                      : isDisplayPost()}
+                    {searchKey ? "We didn't find any results" : isDisplayPost()}
                   </div>
                 ) : (
                   <>

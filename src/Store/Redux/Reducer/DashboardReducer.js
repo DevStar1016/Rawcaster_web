@@ -15,6 +15,10 @@ const initialState = {
   groupsList: [],
   isGroupLoading: true,
   DashboardfilterType: 0,
+  claimAccount: {
+    show: false,
+    msg: "",
+  },
 };
 
 export const { actions, reducer } = createSlice({
@@ -51,6 +55,9 @@ export const { actions, reducer } = createSlice({
     handleGroupsList: (state, action) => {
       state.groupsList = action.payload;
     },
+    handleClaimAccount: (state, action) => {
+      state.claimAccount = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchFrindsbyId.fulfilled, (state, action) => {
@@ -81,6 +88,7 @@ export const {
   handleisGlobalSearch,
   handleFriendsList,
   handleGroupsList,
+  handleClaimAccount,
 } = actions;
 
 export default reducer;

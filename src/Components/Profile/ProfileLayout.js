@@ -3,23 +3,30 @@ import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import FansThumb from "./Components/FansThumb";
 import { toast } from "react-hot-toast";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useDashboard,
+} from "../../Shared/Reduxfetcher";
 import {
   DecryptionString,
+  EncryptionString,
   JSONtoformdata,
   getAspectRatio,
   getAuthToken,
+  getisAddFriend,
   isValidImageFile,
 } from "../../Shared/Utility";
 import classes from "./Profile.module.css";
 import { updateProfileService } from "../../Services/ApiService";
 import { useDispatch } from "react-redux";
-import { Skeleton, Spin } from "antd";
+import { Button, Skeleton, Spin } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import AddFriendIcon from "../../Assets/Icons/svg/profile_add_friend.svg";
-import { Col, Row } from "react-bootstrap";
+import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
+import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const ProfileLayout = ({
   children,
@@ -30,7 +37,8 @@ const ProfileLayout = ({
   handleAddUser,
 }) => {
   const loginUserData = useAuthData();
-
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
   const isLoginUser =
@@ -39,7 +47,7 @@ const ProfileLayout = ({
   const profileRef = useRef();
   const dispatch = useDispatch();
   const loginToken = useAuthToken();
-
+  const { claimAccount } = useDashboard();
   const [isUploading, setisUploading] = useState(false);
   const [isCoverLoading, setisCoverLoading] = useState(true);
   const [profileImg, setprofileImg] = useState({
@@ -80,6 +88,23 @@ const ProfileLayout = ({
         toast.error(err.message);
         setisUploading(false);
       });
+  };
+
+  const isAddFriend = () => {
+    if (isLoginUser) {
+      return false;
+    } else if (profileData?.unclaimed_status === 0) {
+      return false;
+    } else if (pathname.includes("claim")) {
+      return false;
+    } else if (profileData?.friend_status !== null) {
+      if (getisAddFriend(profileData?.friend_status)) {
+        return true;
+      }
+      return false;
+    } else {
+      return false;
+    }
   };
 
   return (
@@ -144,35 +169,49 @@ const ProfileLayout = ({
               </div>
             )}
           </div>
-          <div className="d-flex flex-row">
-            {!isLoginUser && !profileData?.friend_status && (
-              <div className="ms-3">
-                <img
-                  src={AddFriendIcon}
-                  className={classes.addFriendIcon}
-                  onClick={() => {
-                    handleAddUser();
-                  }}
-                />
-              </div>
-            )}
-            <div>
-              {isFansEnabled && (
-                <div style={{ display: isLocked ? "none" : "" }}>
-                  {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
-
-                  <div
-                    className={classes.actionIcon}
-                    style={{
-                      display: isLoginUser ? "" : "none",
+          <div className="d-flex flex-row justify-content-between">
+            <div className="d-flex flex-row">
+              {isAddFriend() && (
+                <div className="ms-3">
+                  <img
+                    src={AddFriendIcon}
+                    className={classes.addFriendIcon}
+                    onClick={() => {
+                      handleAddUser();
                     }}
-                  >
-                    <img src={msgIcon} />
-                    <img src={talkshowIcon} />
-                  </div>
+                  />
                 </div>
               )}
+              <div>
+                {isFansEnabled && (
+                  <div style={{ display: isLocked ? "none" : "" }}>
+                    {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
+
+                    <div
+                      className={classes.actionIcon}
+                      style={{
+                        display: isLoginUser ? "" : "none",
+                      }}
+                    >
+                      <img src={msgIcon} />
+                      <img src={talkshowIcon} />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
+            {profileData?.unclaimed_status === 0 && (
+              <div className={classes.claimBtnSec}>
+                <Button
+                  className={classes.becomeafanbtn}
+                  onClickCapture={() => {
+                    navigate(`/claim/${EncryptionString(profileData.user_id)}`);
+                  }}
+                >
+                  Claim this Account
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -228,6 +267,20 @@ const ProfileLayout = ({
       />
 
       {children}
+      {claimAccount.show && (
+        <ClaimAccountModal
+          visible={claimAccount.show}
+          msg={claimAccount.msg}
+          onClose={() => {
+            dispatch(
+              handleClaimAccount({
+                show: false,
+                msg: "",
+              })
+            );
+          }}
+        />
+      )}
       {profileImg.src !== "" && (
         <ImageCropModal
           open={profileImg.src !== ""}

@@ -32,13 +32,15 @@ display:flex ;
     height: 100%;
     width: 100%;
     min-height: 140px !important;
-    border-bottom: 1px solid #ececec;
+    border-bottom:  1px solid #ececec;
     margin-bottom:10px;
 }
 .emptySec img {
     height: 80px;
 }
-
+.othersProfileThumb .emptySec {
+  border-bottom:  none !important;
+}
 .messageIcon {
     float: left;
     width: 22px;
