@@ -232,8 +232,7 @@ const ConnectionsList = ({
       </h2>
       {isLocked ? (
         <div
-          className={classes.lockedConnections}
-          style={{ filter: "blur(4px)" }}
+          className={classes.lockedConnections}         
         >
           <div className={classes.lockedoverLay}>
             <div className={classes.lockBtn}>

@@ -108,11 +108,10 @@ display: flex;
 align-items: center;
 justify-content: center;
 
-
 }
+.lockedConnections .listSec { filter: blur(4px); }
 .lockedConnections .listSec .list p{
     color: transparent !important;
-
 }
 .list:hover .iconSec{
 display: block;

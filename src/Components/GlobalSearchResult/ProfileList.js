@@ -149,9 +149,9 @@ const ProfileList = () => {
               ))}
             </div>
           ) : (
-            <span style={{ fontSize: 20, fontWeight: "bold" }} className="mt-3">
+            <div className={classes.DisplayMsg}>
               We didn't find any results
-            </span>
+            </div>
           )}
         </>
       ) : null}

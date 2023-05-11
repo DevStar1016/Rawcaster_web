@@ -145,18 +145,10 @@ const EventsList = () => {
         </div>
       ) : (
         <div className={` ${classes.profileSec} w-100`} ref={scrollRef}>
-          {getValidEvent()?.length === 0 ? (
-            <div className="mt-3" style={{ textAlign: "center" }}>
-              <span
-                style={{
-                  fontSize: 20,
-                  fontWeight: "bold",
-                }}
-                className="mt-3"
-              >
+          {getValidEvent()?.length === 0 ? (          
+              <div className={classes.DisplayMsg}>
                 We didn't find any results
-              </span>
-            </div>
+              </div>          
           ) : (
             <>
               <Row>

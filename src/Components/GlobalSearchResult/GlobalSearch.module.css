@@ -73,16 +73,26 @@
   margin-left: 10px;
  }
  .graphSec {
-  display: flex; max-width: 190px;
+  max-width: 190px;
   justify-content: flex-start;
  }
 .tagsSec {
   max-height: 250px;
 }
 .dropSec {  
-  cursor: pointer; 
+  cursor: pointer;  float: right;
 }
 .dropSec span { font-size: 27px;}
+.DisplayMsg {
+  display: flex;
+  text-align: center;
+  min-height: 70vh;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #999;
+}
  @media (max-width:768px) {
  .mainContainer { padding: 15px;} 
  .TagSec { padding: 15px 0; }

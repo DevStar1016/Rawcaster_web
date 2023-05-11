@@ -87,11 +87,11 @@
   .selectBox {
     height: 45px !important;
   }
-  .textBox::placeholder {
+  /* .textBox::placeholder {
     color: #99a0b0;
     padding: 15px 0px !important;
     font-size: 15px;
-  }
+  } */
   .textBox:focus,
   .textBox::selection,
   .textBox:hover {
