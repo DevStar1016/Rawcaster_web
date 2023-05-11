@@ -315,7 +315,7 @@
   height: 20px;
   resize: none;
 }
-.cmtSec .comtArea .textBox .inputSec textarea::placeholder { color: #1D1C1C; font-weight: 400; }
+.cmtSec .comtArea .textBox .inputSec textarea::placeholder { color: #1D1C1C; opacity: .8 !important; font-weight: 400; }
 .cmtSec .comtArea .textBox .sendicon {
   cursor: pointer;
   right: 12px;

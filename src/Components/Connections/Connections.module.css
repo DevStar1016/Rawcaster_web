@@ -184,8 +184,8 @@ padding: 4px;
   .myconnectioin {
     background: #fff;
     margin: 10px 0;
-    border-radius: 10px;
-    padding:3px 0 0 0;
+    border-bottom: 1px solid #e6e5e5;
+    padding:3px 0 18px 0;
     float: left;
     width: 100%;
   }
@@ -226,12 +226,11 @@ padding: 4px;
   }
  .list:hover { background-color:#F6F6F6; border-radius: 8px; }
  .list span.disName {
-
   display: -webkit-box;
   -webkit-line-clamp: 1; /* number of lines to show */
           line-clamp: 1; 
   -webkit-box-orient: vertical;
-    width: 170px;
+    width: 180px;
     overflow: hidden;
     float: left;
     max-height: 23px; 
