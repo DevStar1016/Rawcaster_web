@@ -1,20 +1,11 @@
 import { sendMessage } from "../../../Services/SocketService";
 import { GROUP_CHAT_PROCESS_TYPE } from "./Constants";
 
-export const groupFunctionalitySocket = ({
-  group_id,
-  userId,
-  processType,
-  groupData,
-}) => {
+export const groupFunctionalitySocket = (values) => {
   const socketMessage = {
     event: "groupchatmsgtransfer",
-    processType: processType,
-    groupId: group_id,
-    userId: userId,
-    groupData: groupData,
+    ...values,
   };
-  console.log(socketMessage);
   sendMessage(socketMessage, "groupchatting");
 };
 

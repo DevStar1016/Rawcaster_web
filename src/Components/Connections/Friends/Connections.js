@@ -22,6 +22,7 @@ const Connections = () => {
   const [requests, setrequests] = useState([]);
 
   useEffect(() => {
+    console.log("socketListenFRIEND_REQUEST");
     socketListen.on(
       "message",
       (message) => {
@@ -36,14 +37,15 @@ const Connections = () => {
             friendStatusHandler(message);
             break;
           default:
+            console.log(message, "socketListen=default");
             break;
         }
       },
       []
     );
-    return () => {
-      socketListen.off("call");
-    };
+    // return () => {
+    //   socketListen.off("call");
+    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

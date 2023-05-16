@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from "react";
-import {
-  useAuthData,
-  useAuthToken,
-  useDashboard,
-} from "../../../Shared/Reduxfetcher";
+import React, { useState } from "react";
+import { useDashboard } from "../../../Shared/Reduxfetcher";
 import classes from "../Connections.module.css";
 import Group from "../Components/Group";
 import { Skeleton } from "antd";
 import ConfigureGroup from "./ConfigureGroup";
-import { socketListen } from "../../../Services/SocketService";
-import { GROUP_CHAT_PROCESS_TYPE } from "./Constants";
-import { handleGroupChatMessageTransfer } from "./Methods";
 
 const Groups = () => {
   const { groupsList, isGroupLoading } = useDashboard();
@@ -36,21 +29,6 @@ const Groups = () => {
     }
   };
 
-  // useEffect(() => {
-  //   socketListen.on(
-  //     "groupchatting",
-  //     (message) => {
-  //       switch (message.event) {
-  //         case "groupchatmsgtransfer":
-  //           handleGroupChatMessageTransfer();
-  //           break;
-  //       }
-  //     },
-  //     []
-  //   );
-  //   return () => {};
-  // }, []);
-
   return (
     <div className={classes.myconnectioin}>
       <input
@@ -62,7 +40,7 @@ const Groups = () => {
       />
       <h2>
         My Groups <span>({groupsList.length})</span>
-        {getValidData()?.length !== 0 && !isGroupLoading ? (
+        {groupsList?.length !== 0 && !isGroupLoading ? (
           <i
             class="material-symbols-outlined"
             onClick={() => {
@@ -76,12 +54,12 @@ const Groups = () => {
 
       <div
         className={
-          getValidData()?.length === 0 && !isGroupLoading
+          groupsList?.length === 0 && !isGroupLoading
             ? classes.connectionsEmpty
             : classes.connectionsLists
         }
       >
-        {getValidData()?.map((group) => {
+        {groupsList?.map((group) => {
           return (
             <Group
               group={group}

@@ -29,9 +29,9 @@ import {
   handleDeleteGroupData,
   handleUpdateGroupData,
 } from "../../../Store/Redux/Reducer/DashboardReducer";
-import ReportGroup from "../../../Modal/Report/ReportGroup";
-import { CreateGroupSocket, groupFunctionalitySocket } from "./Methods";
+import { groupFunctionalitySocket } from "./Methods";
 import { GROUP_CHAT_PROCESS_TYPE } from "./Constants";
+import { sendMessage, socketListen } from "../../../Services/SocketService";
 
 const ConfigureGroup = ({ groupId, close, open }) => {
   const { groupsList } = useDashboard();
@@ -128,21 +128,17 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       .then((res) => {
         if (res.data.status === 1) {
           let message = {
-            group_id: res.data.group_details.group_id,
+            groupId: res.data.group_details.group_id,
             userId: userData.user_id,
             processType: GROUP_CHAT_PROCESS_TYPE.createGroup,
             groupData: res.data.group_details,
           };
           groupFunctionalitySocket(message);
           if (groupId) {
-            const findIndex = groupsList.findIndex(
-              (ele) => ele.group_id === parseInt(groupId)
-            );
-            groupFunctionalitySocket(message);
             dispatch(
               handleUpdateGroupData({
                 Group: res.data.group_details,
-                index: findIndex,
+                index: groupId,
               })
             );
           } else {
@@ -180,6 +176,14 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         group_icon: findData?.group_icon,
         group_members: JSON.stringify(findData?.group_member_ids),
       }));
+    } else {
+      if (!isOwner) {
+        toast.error(
+          "Either you've been removed from the group or the group has been deleted by the owner"
+        );
+      }
+
+      close();
     }
   };
 
@@ -187,7 +191,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
     if (groupId) {
       GetGroupDetail();
     }
-  }, [groupId]);
+  }, [groupsList]);
 
   const HandleDeleteGroup = () => {
     const deleteData = {
@@ -199,7 +203,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         if (res.data.status === 1) {
           dispatch(handleDeleteGroupData(groupId));
           let message = {
-            group_id: groupId,
+            groupId: groupId,
             userId: userData.user_id,
             processType: GROUP_CHAT_PROCESS_TYPE.deleteGroup,
             groupData: null,
@@ -217,21 +221,17 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         close();
       });
   };
-
+  console.log(groupsList);
   const HandleAddFriendstoGroup = (members) => {
     const addUser = {
       token,
       group_id: groupId,
       group_members: members,
     };
-    console.log(members, GroupMembers);
+
     addFriendsToGroupService(JSONtoformdata(addUser))
       .then((res) => {
         if (res.data.status === 1) {
-          const findIndex = groupsList.findIndex(
-            (ele) => ele.group_id === parseInt(groupId)
-          );
-
           const GroupDetails = groupsList.find(
             (ele) => ele.group_id === parseInt(groupId)
           );
@@ -244,18 +244,20 @@ const ConfigureGroup = ({ groupId, close, open }) => {
               ...res.data.memberdetails,
             ],
           };
-
+          console.log(updatedGroup);
           let message = {
-            group_id: GroupDetails.group_id,
+            groupId: GroupDetails.group_id,
             userId: userData.user_id,
             processType: GROUP_CHAT_PROCESS_TYPE.addGroupMember,
+            createdBy: userData.name,
+            added_user_ids: JSON.parse(members),
             groupData: updatedGroup,
           };
           groupFunctionalitySocket(message);
           dispatch(
             handleUpdateGroupData({
               Group: updatedGroup,
-              index: findIndex,
+              id: groupId,
             })
           );
           toast.success(res.data.msg);
@@ -272,6 +274,25 @@ const ConfigureGroup = ({ groupId, close, open }) => {
   };
 
   const HandleDeleteFriendstoGroup = (user_id) => {
+    const GroupDetails = groupsList.find(
+      (ele) => ele.group_id === parseInt(groupId)
+    );
+    let updatedGroup = {
+      ...GroupDetails,
+      group_member_count: GroupDetails.group_member_count - 1,
+      group_members_list: GroupDetails.group_members_list.filter(
+        (elem) => elem.user_id !== parseInt(user_id)
+      ),
+    };
+    let message = {
+      groupId: groupId,
+      userId: userData.user_id,
+      processType: GROUP_CHAT_PROCESS_TYPE.removeGroupMember,
+      createdBy: userData.name,
+      removed_user_id: user_id,
+      groupData: updatedGroup,
+    };
+    groupFunctionalitySocket(message);
     const deleteUser = {
       token,
       group_id: groupId,
@@ -283,31 +304,11 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           setGroupMembers((pre) =>
             pre.filter((ele) => ele.user_id !== user_id)
           );
-          const findIndex = groupsList.findIndex(
-            (ele) => ele.group_id === parseInt(groupId)
-          );
 
-          const GroupDetails = groupsList.find(
-            (ele) => ele.group_id === parseInt(groupId)
-          );
-          let updatedGroup = {
-            ...GroupDetails,
-            group_member_count: GroupDetails.group_member_count - 1,
-            group_members_list: GroupDetails.group_members_list.filter(
-              (elem) => elem.user_id !== parseInt(user_id)
-            ),
-          };
-          let message = {
-            group_id: GroupDetails.group_id,
-            userId: userData.user_id,
-            processType: GROUP_CHAT_PROCESS_TYPE.removeGroupMember,
-            groupData: GroupDetails,
-          };
-          groupFunctionalitySocket(message);
           dispatch(
             handleUpdateGroupData({
               Group: updatedGroup,
-              index: findIndex,
+              id: groupId,
             })
           );
           toast.success(res.data.msg);
@@ -338,6 +339,12 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       .then((res) => {
         if (res.data.status === 1) {
           dispatch(handleDeleteGroupData(groupId));
+          let message = {
+            groupId: groupId,
+            userId: userData.user_id,
+            processType: GROUP_CHAT_PROCESS_TYPE.exitGroup,
+          };
+          groupFunctionalitySocket(message);
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
@@ -355,12 +362,32 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       .then((res) => {
         if (res.data.status === 1) {
           dispatch(handleDeleteGroupData(groupId));
+          let message = {
+            groupId: groupId,
+            userId: userData.user_id,
+            processType: GROUP_CHAT_PROCESS_TYPE.exitGroup,
+          };
+          groupFunctionalitySocket(message);
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
         }
       })
       .catch(() => {});
+  };
+
+  const handleMemberChat = (status) => {
+    setGroupData((pre) => ({
+      ...pre,
+      chat_enabled: status ? 1 : 0,
+    }));
+    let message = {
+      event: "groupchatenable",
+      groupId: groupId,
+      userId: userData.user_id,
+      status: status ? 1 : 0,
+    };
+    sendMessage(message, "groupchatting");
   };
   return (
     <Modal
@@ -395,6 +422,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           handleReportGroup,
           handleExitGroup,
           close,
+          handleMemberChat,
         }}
       >
         <div className={classes.AddGroupContainer}>

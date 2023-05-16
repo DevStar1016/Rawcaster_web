@@ -36,7 +36,7 @@ const Group = ({ group, searchInput, onClick }) => {
               {decodeHtml(group.group_name)}
             </p>
             <span className={classes.groupdisName}>
-              {group?.group_member_count + " Members"}
+              {group?.group_members_list.length + " Members"}
             </span>
           </div>
         </div>

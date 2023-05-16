@@ -143,9 +143,9 @@ const Postmodal = ({ visible, onClose }) => {
           break;
       }
     });
-    return () => {
-      socketListen.off("call");
-    };
+    // return () => {
+    //   socketListen.off("call");
+    // };
   }, []);
 
   const Getmetadata = (message) => {

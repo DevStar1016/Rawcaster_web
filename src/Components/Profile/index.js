@@ -220,34 +220,6 @@ const Profile = () => {
     handleAddUser,
   };
 
-  useEffect(() => {
-    console.log("groupchatting");
-    socketListen.on(
-      "groupchatting",
-      (message) => {
-        switch (message.event) {
-          case "groupchatmessage":
-            console.log(message, "GROUP CHAT RECEIVED");
-            break;
-          case "groupchatmessagedelete":
-            break;
-          case "groupchatmessageupdate":
-            break;
-          case "grouptyping":
-            break;
-          case "groupchatenable":
-            break;
-          case "groupchatmsgtransfer":
-            break;
-        }
-      },
-      []
-    );
-    return () => {
-      socketListen.off("call");
-    };
-  }, []);
-
   return (
     <ProfileContext.Provider value={profileValue}>
       <div>

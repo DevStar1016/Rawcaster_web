@@ -4,4 +4,5 @@ export const GROUP_CHAT_PROCESS_TYPE = {
   deleteGroup: "delete_group",
   removeGroupMember: "remove_group_member",
   addGroupMember: "add_group_member",
+  exitGroup: "exit_group",
 };

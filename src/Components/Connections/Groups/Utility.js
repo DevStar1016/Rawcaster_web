@@ -324,8 +324,15 @@ export const GroupHeader = () => {
 };
 
 export const SelectConnections = () => {
-  const { touched, setFieldValue, errors, GroupMembers, groupId } =
-    useConfigureGroupContext();
+  const {
+    touched,
+    setFieldValue,
+    errors,
+    GroupMembers,
+    groupId,
+    GroupData,
+    handleMemberChat,
+  } = useConfigureGroupContext();
   const friends = useFriends();
   const [searchInput, setsearchInput] = useState("");
   const [SelectedConnections, setSelectedConnections] = useState([]);
@@ -374,7 +381,10 @@ export const SelectConnections = () => {
           {isChatSwichEnabled() && (
             <div className={`${classes.chatEnabledSec} chatSwitch`}>
               <p>Chat:</p>
-              <Switch />
+              <Switch
+                checked={parseInt(GroupData?.chat_enabled) === 1}
+                onChange={handleMemberChat}
+              />
             </div>
           )}
         </div>
@@ -497,6 +507,7 @@ export const EditGroupMembers = () => {
     GroupData,
     HandleDeleteFriendstoGroup,
     groupId,
+    handleMemberChat,
   } = useConfigureGroupContext();
   const [searchInput, setsearchInput] = useState("");
 
@@ -539,7 +550,10 @@ export const EditGroupMembers = () => {
           {isChatSwichEnabled() && (
             <div className={`${classes.chatEnabledSec} chatSwitch`}>
               <p>Chat:</p>
-              <Switch />
+              <Switch
+                checked={parseInt(GroupData?.chat_enabled) === 1}
+                onChange={handleMemberChat}
+              />
             </div>
           )}
         </div>

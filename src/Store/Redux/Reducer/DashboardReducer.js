@@ -64,14 +64,26 @@ export const { actions, reducer } = createSlice({
       ];
     },
     handleUpdateGroupData: (state, action) => {
-      const index = action.payload.index;
-      state.groupsList = [
-        ...state.groupsList.slice(0, index),
-        {
-          ...action.payload.Group,
-        },
-        ...state.groupsList.slice(index + 1, state.groupsList.length),
-      ];
+      const id = action.payload.id;
+      const findIndex = state.groupsList.findIndex(
+        (ele) => ele.group_id === parseInt(id)
+      );
+      if (findIndex !== -1) {
+        state.groupsList = [
+          ...state.groupsList.slice(0, findIndex),
+          {
+            ...action.payload.Group,
+          },
+          ...state.groupsList.slice(findIndex + 1, state.groupsList.length),
+        ];
+      } else {
+        state.groupsList = [
+          ...state.groupsList,
+          {
+            ...action.payload.Group,
+          },
+        ];
+      }
     },
     handleDeleteGroupData: (state, action) => {
       state.groupsList = state.groupsList.filter(
