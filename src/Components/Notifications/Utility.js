@@ -150,6 +150,8 @@ export const NotificationsList = ({
               navigate(`/view/${EncryptionString(ele.nugget_id)}`);
             } else if (UserPageIds.includes(parseInt(type))) {
               navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+            } else if (parseInt(type) === 2 && ele?.event_id) {
+              navigate(`/viewevent/${ele.event_id}`);
             } else if (HomePageIds.includes(parseInt(type))) {
               navigate(`/dashboard`);
             }
@@ -195,7 +197,6 @@ export const NotificationsList = ({
         </div>
         <div className="flex-column">
           <div className={classes.rightsec}>
-            
             <span
               class="material-symbols-outlined"
               style={{ display: ele.poll_option ? "none" : "" }}

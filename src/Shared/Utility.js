@@ -531,3 +531,9 @@ export const getisAddFriend = (status) => {
       return true;
   }
 };
+
+export const eventDisplayDuration = (time) => {
+  let dur = time.split(":");
+  let hr = parseInt(dur[0]) > 0 ? `${dur[0]} hrs ` : "";
+  return `${hr}  ${dur[1]}  mins`;
+};

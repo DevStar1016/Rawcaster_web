@@ -598,6 +598,11 @@ export const Connections = ({ onResult, values }) => {
         open={selectedListVisible}
         friends={selectedFriendList}
         setfriends={(id) => {
+          const findData = selectedFriendList.find((ele) => ele.user_id === id);
+          console.log(findData);
+          if (findData) {
+            setFilterFriendList((pre) => [...pre, findData]);
+          }
           setSelectedFriendList((pre) =>
             pre.filter((ele) => ele.user_id !== id)
           );
@@ -688,7 +693,7 @@ export const AudioVideoSettings = ({ values, setFieldValue }) => {
 
 export function compareArrays(arr1, arr2) {
   for (let key in arr1) {
-    if (!arr2.includes(key)) {
+    if (arr2.includes(key)) {
       return true;
     }
   }

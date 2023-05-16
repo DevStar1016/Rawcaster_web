@@ -55,6 +55,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       event_type: "",
       event_start_date: moment(new Date()).format("YYYY-MM-DD"),
       event_start_time: moment().add(15, "minutes").format("HH:mm"),
+      event_message: "",
       event_banner: "",
       event_invite_mails: "",
       event_invite_friends: "",
@@ -213,6 +214,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 userSettings?.time_zone
               )
             ).format("YYYY-MM-DD"),
+            event_message: eventData?.message,
             event_start_time: moment(
               utctoUserTimezone(
                 eventData?.start_date_time,
@@ -362,25 +364,25 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
               <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
             )}
           </Col>
-          {/* <Col sm={12}>
-          <Form.Item
-              label="Event Title"
+          <Col sm={12}>
+            <Form.Item
+              label="Event Description"
               colon={false}
               className={classes.textBoxSec}
-              initialValue={values.event_title}
+              initialValue={values.event_message}
             >
-              <Input
-                className={classes.textbox}
-                defaultValue={values.event_title}
-                value={values.event_title}
-                maxLength={80}
-                onChange={handleChange("event_title")}
+              <Input.TextArea
+                className={`${classes.textbox} ${classes.textArea}`}
+                defaultValue={values.event_message}
+                value={values.event_message}
+                maxLength={150}
+                onChange={handleChange("event_message")}
               />
             </Form.Item>
-            {touched.event_title && (
-              <p className="ErrTxt mb-3">{errors?.event_title}</p>
+            {touched.event_message && (
+              <p className="ErrTxt mb-3">{errors?.event_message}</p>
             )}
-          </Col> */}
+          </Col>
           <Col sm={12}>
             <BannerComponent
               value={values.event_banner}

@@ -6,6 +6,7 @@
   }
   .friendslist:hover {
     background-color:#F6F6F6; border-radius: 8px;
+
   }
   
   .friendslist {
@@ -13,6 +14,7 @@
     width: 100%;
     float: left;
     background: transparent;
+    cursor: pointer;
   }
   .friendslist:hover .friendsmenu {
     display: block !important;
@@ -225,7 +227,7 @@ padding: 4px;
     align-items: center; width: 100%;
   }
  .list:hover { background-color:#F6F6F6; border-radius: 8px; }
- .list span.disName {
+ .list span.disName,.list .groupdisName {
   display: -webkit-box;
   -webkit-line-clamp: 1; /* number of lines to show */
           line-clamp: 1; 
@@ -236,6 +238,20 @@ padding: 4px;
     max-height: 23px; 
     text-transform: capitalize;
     font-family: "DM Sans", sans-serif;
+    margin-bottom: 0px !important;
+}
+.list .groupdisName {
+  font-family: 'DM Sans';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 20px;
+}
+.list p.groupdisName {
+  font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
 }
 .list .grpName {
     width: 155px;
@@ -317,9 +333,10 @@ padding: 4px;
   align-items: center;
 }
 .rightSec {
-  width: 10%;
+  width: 35%;
   display: flex;
   flex-direction: row;
+  justify-content: end;
   align-items: center;
 }
 .rightSec span {
@@ -332,6 +349,45 @@ padding: 4px;
 }
 .nameSec p  {
 margin: 20px;
+overflow: hidden;
+display: -webkit-box;
+-webkit-line-clamp: 1; /* number of lines to show */
+line-clamp: 1; 
+-webkit-box-orient: vertical;
+max-width: 230px;
+line-height: 2;
+margin-right: 5px;
+}
+.addFriendSec {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color:#F2718D ;
+  padding: 7px 10px;
+  border-radius: 30px;
+  color: #ffffff;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 20px;
+  cursor: pointer;
+  
+}
+
+.becameFanBtn {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 18px;
+    text-align: center;
+    color: #FFFFFF;
+    background-color: #AE567A;
+    padding: 10px 15px;
+    border-radius: 30px;
+    margin-right: 10px;
+    cursor: pointer;
 }
   @media (max-width:768px) {
   .groupLists { min-height: auto !important; }

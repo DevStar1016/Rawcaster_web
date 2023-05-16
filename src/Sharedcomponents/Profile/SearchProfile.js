@@ -6,6 +6,7 @@ import {
   decodeHtml,
   EncryptionString,
   getAuthToken,
+  getisAddFriend,
   handleProfileNavigate,
   JSONtoformdata,
   ReadMore,
@@ -149,7 +150,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
               </Button>
             )}
             <div className="d-none d-sm-block">
-              {ele.friend_request_status === "" && (
+              {getisAddFriend(ele.friend_request_status) && (
                 <Button
                   type="primary"
                   htmlType="Continue"

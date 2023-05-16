@@ -1,0 +1,33 @@
+.ReportSec {
+ margin: 30px 0;   
+}
+.footerSec {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    text-align: end;
+    width: 100%;
+}
+.actionBtn {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    text-align: end; 
+}
+
+  .actionBtn .reportBtn {
+    border: #f2718d 1px solid;
+    border-radius: 7px;
+    color: #fff;
+    background: #f2718d;
+    font-weight: 500;
+    font-size: 15px;
+    font-family: "DM Sans", sans-serif;
+    padding: 5px 10px;
+    width: 100px;
+    height: 35px;
+  }
+  .actionBtn .reportBtn:hover{
+    background: #563662 !important;
+    border: #563662 1px solid !important;
+  }

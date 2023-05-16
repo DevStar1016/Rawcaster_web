@@ -52,11 +52,31 @@ export const { actions, reducer } = createSlice({
     handleFriendsList: (state, action) => {
       state.friendsList = action.payload;
     },
-    handleGroupsList: (state, action) => {
-      state.groupsList = action.payload;
-    },
     handleClaimAccount: (state, action) => {
       state.claimAccount = action.payload;
+    },
+    handleAddGroupData: (state, action) => {
+      state.groupsList = [
+        ...state.groupsList,
+        {
+          ...action.payload,
+        },
+      ];
+    },
+    handleUpdateGroupData: (state, action) => {
+      const index = action.payload.index;
+      state.groupsList = [
+        ...state.groupsList.slice(0, index),
+        {
+          ...action.payload.Group,
+        },
+        ...state.groupsList.slice(index + 1, state.groupsList.length),
+      ];
+    },
+    handleDeleteGroupData: (state, action) => {
+      state.groupsList = state.groupsList.filter(
+        (ele) => ele.group_id !== action.payload
+      );
     },
   },
   extraReducers: (builder) => {
@@ -87,8 +107,11 @@ export const {
   handleverifyEnabled,
   handleisGlobalSearch,
   handleFriendsList,
-  handleGroupsList,
   handleClaimAccount,
+  handleGroupData,
+  handleAddGroupData,
+  handleUpdateGroupData,
+  handleDeleteGroupData,
 } = actions;
 
 export default reducer;

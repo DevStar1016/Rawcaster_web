@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { getNuggetDetailService } from "../../Services/ApiService";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
 import { DecryptionString, JSONtoformdata } from "../../Shared/Utility";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Post from "./Post";
 import classes from "./Nuggets.module.css";
+import { Spinner } from "react-bootstrap";
 const ViewNugget = () => {
   const { nugID } = useParams();
+  const navigate = useNavigate();
   const nugget_id = nugID ? DecryptionString(nugID) : null;
   const Token = useAuthToken();
   const [NuggetData, setNuggetData] = useState();
@@ -20,9 +22,13 @@ const ViewNugget = () => {
       .then((res) => {
         if (res.data.status === 1) {
           setNuggetData(res.data.nugget_detail);
+        } else {
+          navigate(-1);
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        navigate(-1);
+      });
   };
 
   useEffect(() => {
@@ -33,7 +39,7 @@ const ViewNugget = () => {
   return (
     <div className={classes.viewDetailNugget}>
       <div className={classes.mainPost}>
-        {NuggetData && (
+        {NuggetData ? (
           <Post
             index={0}
             isCommentShow={true}
@@ -55,6 +61,10 @@ const ViewNugget = () => {
               setNuggetData(tempData);
             }}
           />
+        ) : (
+          <div className={classes.LoadingSec}>
+            <Spinner animation="border" color="#563662" />
+          </div>
         )}
       </div>
     </div>

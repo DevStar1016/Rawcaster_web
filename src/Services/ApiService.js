@@ -144,6 +144,12 @@ export const deleteFriendGroupService = (data) => {
   return axios.post("deletefriendgroup", data);
 };
 
+export const groupAbuseReportService = (data) => {
+  return axios.post("groupabusereport", data);
+};
+export const exitFromGroupService = (data) => {
+  return axios.post("exitfromgroup", data);
+};
 // Nugget services
 
 export const addNuggetsService = (data, progress) => {

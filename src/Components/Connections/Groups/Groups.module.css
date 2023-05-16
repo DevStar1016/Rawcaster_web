@@ -1,0 +1,147 @@
+.AddGroupContainer {
+    margin: 20px 0;
+}
+
+.selectBox  { border: 1px solid #E8EAEE;    border-radius: 8px;  margin-bottom: 5px; width: 100% !important; }
+.selectBox:focus {
+    border: 1px solid #E8EAEE !important;
+    box-shadow: none !important;
+    }
+.friends {
+        cursor: pointer;
+      
+    }
+.selectBox span {
+    font-size: 20px;
+}
+.ConnectionList {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+.inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
+.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 7; border-radius: 50px !important; background: #563662 !important; width:45px; }
+.searchIcon span {color: #fff; }
+.inSearch:focus {
+    border: none !important;
+    box-shadow: none !important;
+}
+.CreateBtn {
+    height: 40px !important;
+    background-color: #F2718D !important;
+    margin-right: 10px;
+    width: 100%;
+    color: #FFFFFF !important;
+    font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 15px;
+line-height: 20px;
+
+/* identical to box height */
+max-width: 100px;
+text-align: center;
+}
+
+.CreateBtn:hover {
+    background-color: #F2718D !important; 
+    color: #FFFFFF !important;
+    border: none !important;
+}
+.actionSec i span {
+    color: #F2718D;
+    font-size: 18px;
+}
+.modifySec {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 70%;
+   
+}
+.modifySec span ,.modifySec img{
+     cursor: pointer;
+     margin:0 5px;
+}
+.modifySec :nth-child(2) {
+    color: red;
+}
+.modifySec img {
+    width: 22px;
+    height: 22px;
+}
+.uploadImageSec {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+}
+.uploadImageSec:hover .overLaySec {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.77);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.overLaySec {
+    display: none;
+}
+.disabledSec  {
+    cursor: not-allowed !important;
+}
+.disabledSec .overLaySec {
+    display: none !important;
+}
+.overLaySec span {
+    color: #fff;
+}
+.memberSec {
+    display: flex;
+    flex-direction: row;
+}
+.chatEnabledSec {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    margin:0 10px;
+}
+.chatEnabledSec p {
+    margin-bottom: 0px !important;
+    font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 15px;
+line-height: 20px;
+/* identical to box height */
+margin:0 7px;
+color: #000000;
+}
+.userName {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+            line-clamp: 1; 
+    -webkit-box-orient: vertical;
+   max-width: 230px;
+    line-height: 2;
+    margin-right: 5px;
+}
+.membersHeading {
+    font-size: 18px;
+    margin-top: 7px;
+    font-family: "DM Sans", sans-serif;
+    padding: 0 0 0 5px;
+    font-weight: 500;
+}
+.EmptySec {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

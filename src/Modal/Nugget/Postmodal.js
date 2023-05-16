@@ -143,6 +143,9 @@ const Postmodal = ({ visible, onClose }) => {
           break;
       }
     });
+    return () => {
+      socketListen.off("call");
+    };
   }, []);
 
   const Getmetadata = (message) => {
@@ -508,43 +511,45 @@ const Postmodal = ({ visible, onClose }) => {
           setisAudioModal(false);
         }}
       />
-      <SpecificConnectionorGroup
-        open={GrouporConnectionModal.show}
-        type={GrouporConnectionModal.type}
-        shareWithData={shareWithData}
-        share_type={
-          GrouporConnectionModal.type === "group"
-            ? 3
-            : GrouporConnectionModal.type === "connections"
-            ? 4
-            : ""
-        }
-        onSuccess={(val) => {
-          if (GrouporConnectionModal.type === "group") {
-            let findData = SHARED_TYPE.find((ele) => ele.key === 3);
-            setShareType(findData.Value);
-            setFieldValue("share_type", 3);
-            let finalVal = val.map((ele) => ele.group_id);
-            setshareWithData(finalVal);
-          } else if (GrouporConnectionModal.type === "connections") {
-            let findData = SHARED_TYPE.find((ele) => ele.key === 4);
-            setShareType(findData.Value);
-            setFieldValue("share_type", 4);
-            let finalVal = val.map((ele) => ele.user_id);
-            setshareWithData(finalVal);
+      {GrouporConnectionModal.show && (
+        <SpecificConnectionorGroup
+          open={GrouporConnectionModal.show}
+          type={GrouporConnectionModal.type}
+          shareWithData={shareWithData}
+          share_type={
+            GrouporConnectionModal.type === "group"
+              ? 3
+              : GrouporConnectionModal.type === "connections"
+              ? 4
+              : ""
           }
-          setGrouporConnectionModal({
-            show: false,
-            type: "",
-          });
-        }}
-        onClose={() => {
-          setGrouporConnectionModal({
-            show: false,
-            type: "",
-          });
-        }}
-      />
+          onSuccess={(val) => {
+            if (GrouporConnectionModal.type === "group") {
+              let findData = SHARED_TYPE.find((ele) => ele.key === 3);
+              setShareType(findData.Value);
+              setFieldValue("share_type", 3);
+              let finalVal = val.map((ele) => ele.group_id);
+              setshareWithData(finalVal);
+            } else if (GrouporConnectionModal.type === "connections") {
+              let findData = SHARED_TYPE.find((ele) => ele.key === 4);
+              setShareType(findData.Value);
+              setFieldValue("share_type", 4);
+              let finalVal = val.map((ele) => ele.user_id);
+              setshareWithData(finalVal);
+            }
+            setGrouporConnectionModal({
+              show: false,
+              type: "",
+            });
+          }}
+          onClose={() => {
+            setGrouporConnectionModal({
+              show: false,
+              type: "",
+            });
+          }}
+        />
+      )}
       {/* {NuggetImg && (
         <ImageCropModal
           open={NuggetImg}

@@ -1,5 +1,6 @@
 import Dashboard from "../Components/Dashboard/Dashboard";
 import Development from "../Components/Development";
+import Viewevent from "../Components/Events/Viewevent";
 import GlobalSearchResult from "../Components/GlobalSearchResult";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
 import Membership from "../Components/Membership";
@@ -48,6 +49,10 @@ export const DashboardRoute = [
           {
             path: "/view/:nugID",
             element: <ViewNugget />,
+          },
+          {
+            path: "/viewevent/:event_id",
+            element: <Viewevent />,
           },
           {
             path: "claim/:user_id",

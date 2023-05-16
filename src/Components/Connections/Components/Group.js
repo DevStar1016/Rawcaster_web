@@ -3,11 +3,16 @@ import { decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import GroupImg from "../../../Assets/Icons/svg/default_group.svg";
 
-const Group = ({ group, searchInput }) => {
+const Group = ({ group, searchInput, onClick }) => {
   return (
     <>
       <div
         className={classes.friendslist}
+        onClick={() => {
+          if (onClick) {
+            onClick();
+          }
+        }}
         style={{
           position: "relative",
           display: decodeHtml(group.group_name)
@@ -22,13 +27,18 @@ const Group = ({ group, searchInput }) => {
           <img
             src={group.group_icon}
             onError={({ currentTarget }) => {
-              currentTarget.onerror = null; // prevents looping
+              currentTarget.onerror = null;
               currentTarget.src = GroupImg;
             }}
           />
-          <span className={classes.disName}>
-            {decodeHtml(group.group_name)}
-          </span>
+          <div>
+            <p className={classes.groupdisName}>
+              {decodeHtml(group.group_name)}
+            </p>
+            <span className={classes.groupdisName}>
+              {group?.group_member_count + " Members"}
+            </span>
+          </div>
         </div>
       </div>
     </>

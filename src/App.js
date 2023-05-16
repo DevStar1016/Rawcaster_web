@@ -13,8 +13,18 @@ function App() {
 
   useEffect(() => {
     socketListen.on("connect", () => {
-      console.log("connected");
+      console.log("connected", socketListen.id);
     });
+    socketListen.on("disconnect", (reason) => {
+      console.log("connected", reason);
+    });
+    socketListen.on("error", (reason) => {
+      console.log("error:", reason);
+    });
+    return () => {
+      console.log("1234");
+      socketListen.off("call");
+    };
   }, []);
 
   return (

@@ -1,17 +1,18 @@
 import { Modal, Spin } from "antd";
 import React, { useState } from "react";
-import { toast } from "react-hot-toast";
 import { sendFriendRequestsService } from "../../../Services/ApiService";
 import { friendRequestSocket } from "../../../Services/SocketList";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import {
   decodeHtml,
   getAuthToken,
+  getisAddFriend,
   JSONtoformdata,
 } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import SearchFriends from "../Components/SearchFriends";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
+import { HandleBecameaFan } from "../../../Shared/SharedAPIs";
 
 const AddConnection = ({ open, close }) => {
   const token = useAuthToken();
@@ -33,16 +34,18 @@ const AddConnection = ({ open, close }) => {
     sendFriendRequestsService(JSONtoformdata(requestData))
       .then((res) => {
         if (res.data.status === 1) {
+          console.log(profileData);
           let data = {
             friend_request_id: res.data.friend_request_ids[0],
             display_name: profileData.name,
             profile_img: profileData.profile_image,
             user_id: profileData.user_id,
           };
+
           friendRequestSocket(user_id, data);
           let find = ProfileList.findIndex((ele) => ele.user_id === user_id);
           let tempData = [...ProfileList];
-          tempData[find] = { ...tempData[find], friend_request_status: "0" };
+          tempData[find] = { ...tempData[find], friend_request_status: 0 };
           setProfileList(tempData);
         }
       })
@@ -92,17 +95,32 @@ const AddConnection = ({ open, close }) => {
                 </div>
               </div>
               <div className={classes.rightSec}>
-                {ele.friend_request_status === "" ? (
-                  <span
-                    class="material-symbols-outlined"
+                {ele.follow === false && (
+                  <div
+                    className={classes.becameFanBtn}
+                    onClick={() => {
+                      HandleBecameaFan(token, ele.user_ref_id).then(() => {
+                        let find = ProfileList.findIndex(
+                          (elem) => elem.user_id === ele.user_id
+                        );
+                        let tempData = [...ProfileList];
+                        tempData[find] = { ...tempData[find], follow: true };
+                        setProfileList(tempData);
+                      });
+                    }}
+                  >
+                    +
+                  </div>
+                )}
+                {getisAddFriend(ele.friend_request_status) ? (
+                  <div
+                    className={classes.addFriendSec}
                     onClick={() => {
                       HandleSendRequest(ele.user_ref_id, ele.user_id);
                     }}
                   >
-                    person_add
-                  </span>
-                ) : parseInt(ele.friend_request_status) === 0 ? (
-                  <span class="material-symbols-outlined">done</span>
+                    <span class="material-symbols-outlined">person_add</span>
+                  </div>
                 ) : null}
               </div>
             </div>

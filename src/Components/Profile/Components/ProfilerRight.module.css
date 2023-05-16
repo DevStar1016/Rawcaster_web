@@ -15,15 +15,15 @@ display:flex ;
     grid-template-columns: 23% 23% 23% 23%;
     grid-template-rows: 50% 50%; margin-top:20px; margin-bottom: 10px; border-bottom: 1px solid #ececec; padding-bottom: 10px;
 }
-.listSec .list {position: relative; width: 100%; float: left; text-align: center; font-size: 12px; cursor: pointer;}
-.listSec .list p { margin-bottom: 5px;
+.list {position: relative; width: 100%; float: left; text-align: center; font-size: 12px; cursor: pointer;}
+.list p { margin-bottom: 5px;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.listSec .list img {    width: 100%; border-radius: 50px; margin-bottom: 3px;}
+.list img {    width: 100%; border-radius: 50px; margin-bottom: 3px;}
 .actionIcon { height: 23px; margin-left: 7px; cursor: pointer; }
 .emptySec {
     display: flex;
@@ -63,11 +63,9 @@ display:flex ;
   }
   .addIcon {
     float: left;
-    width: 22px;
-    height: 22px;
-    mask: url("../../../Assets/Icons/svg/add_friend_1.svg") no-repeat center / contain;
-    -webkit-mask: url("../../../Assets/Icons/svg/add_friend_1.svg") no-repeat center /
-      contain;
+    width: 25px;
+    height: 25px;
+    margin-bottom: 0px !important;
     cursor: pointer;
   }
  
@@ -112,7 +110,7 @@ justify-content: center;
 
 }
 .lockedConnections .listSec { filter: blur(4px); }
-.lockedConnections .listSec .list p{
+.lockedConnections .list p{
     color: transparent !important;
 }
 .list:hover .iconSec{

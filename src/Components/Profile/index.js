@@ -174,25 +174,34 @@ const Profile = () => {
     });
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = (ele = null) => {
     return new Promise((resolve, reject) => {
-      if (token && profileData) {
-        HandleAddFriend(token, profileData?.user_ref_id)
+      if (token && (ele || profileData)) {
+        const refId = ele ? ele?.user_ref_id : profileData?.user_ref_id;
+        HandleAddFriend(token, refId)
           .then((res) => {
             let data = {
               friend_request_id: res.friend_request_ids[0],
-              display_name: loginUserData.name,
-              profile_img: loginUserData.profile_image,
-              user_id: loginUserData.user_id,
+              display_name: ele ? ele.name : loginUserData.name,
+              profile_img: ele
+                ? ele.profile_image
+                : loginUserData.profile_image,
+              user_id: ele ? ele.user_id : loginUserData.user_id,
             };
-            friendRequestSocket(profileData?.user_id, data);
-            setprofileData((pre) => ({
-              ...pre,
-              friend_status: 0,
-            }));
+            friendRequestSocket(
+              ele ? ele.user_id : loginUserData.user_id,
+              data
+            );
+            if (ele === null) {
+              setprofileData((pre) => ({
+                ...pre,
+                friend_status: 0,
+              }));
+            }
+
             resolve();
           })
-          .catch(() => {
+          .catch((err) => {
             reject();
           });
       }
@@ -234,6 +243,9 @@ const Profile = () => {
       },
       []
     );
+    return () => {
+      socketListen.off("call");
+    };
   }, []);
 
   return (

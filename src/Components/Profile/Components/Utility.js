@@ -1,9 +1,22 @@
+import { Skeleton } from "antd";
 import {
   getFollowListService,
   listAllFriendsService,
   listClaimAccountService,
 } from "../../../Services/ApiService";
-import { JSONtoformdata } from "../../../Shared/Utility";
+import {
+  EncryptionString,
+  JSONtoformdata,
+  getisAddFriend,
+  handleProfileNavigate,
+} from "../../../Shared/Utility";
+import { useAuthData, useNuggets } from "../../../Shared/Reduxfetcher";
+import { useProfileContext } from "../../../Shared/Context";
+import classes from "./ProfilerRight.module.css";
+import { useNavigate } from "react-router";
+import { defaultprofileImg } from "../../../Shared/CommonConstants";
+import { useDispatch } from "react-redux";
+import AddFriendIcon from "../../../Assets/Icons/svg/add_friend_1.svg";
 
 export const getfollowerfollowingService = (fansList) => {
   let promise = new Promise((resolve, reject) => {
@@ -150,4 +163,133 @@ export const getConnectionData = (values) => {
       });
   });
   return promise;
+};
+
+export const UserProfile = ({ ele, type, getConnectionList }) => {
+  const dispatch = useDispatch();
+  const { nuggetFormData } = useNuggets();
+  const { isLoginUser, setFansList, handleBecameFan, handleAddUser } =
+    useProfileContext();
+  const navigate = useNavigate();
+  const loginuserData = useAuthData();
+  const isUser = parseInt(loginuserData?.user_id) === parseInt(ele?.user_id);
+  const isAddFriend = () => {
+    if (isUser) {
+      return false;
+    } else if (
+      ele?.unclaimed_status === 0 &&
+      type === "unclaimed_influencers"
+    ) {
+      return false;
+    } else if (ele?.friend_status === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  return (
+    <div className={classes.list}>
+      <Skeleton.Node
+        active={false}
+        style={{
+          height: "60px",
+          width: "60px",
+          borderRadius: 50,
+        }}
+      >
+        <div
+          className={`${classes.iconSec} ${
+            !isLoginUser ? classes.othersIcon : ""
+          }`}
+        >
+          {isLoginUser ? (
+            <>
+              {type === "unclaimed_influencers" && isLoginUser ? (
+                <i
+                  className={classes.sheildIcon}
+                  style={{
+                    display: ele.unclaimed_status ? "none" : "",
+                  }}
+                  onClick={() => {
+                    navigate(`/claim/${EncryptionString(ele.user_id)}`);
+                  }}
+                />
+              ) : null}
+            </>
+          ) : (
+            <>
+              {type === "influencers" ? (
+                <span
+                  className={`material-symbols-outlined ${classes.plusIcon}`}
+                  onClick={() => {
+                    handleBecameFan(ele.user_ref_id).then((res) => {
+                      getConnectionList({});
+                    });
+                  }}
+                >
+                  add
+                </span>
+              ) : null}
+              {type === "connections" ? (
+                <img
+                  src={AddFriendIcon}
+                  className={classes.addIcon}
+                  style={{
+                    display: isAddFriend() ? "" : "none",
+                  }}
+                  onClick={() => {
+                    handleAddUser(ele).then((res) => {
+                      getConnectionList({});
+                    });
+                  }}
+                />
+              ) : // <i
+              //   className={classes.addIcon}
+
+              //
+              // />
+              null}
+            </>
+          )}
+        </div>
+        <img
+          src={ele?.profile_img || ""}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = defaultprofileImg;
+          }}
+          onClick={() => {
+            let finalData = {
+              dispatch,
+              navigate,
+              nuggetFormData,
+              user_id: ele.user_id,
+            };
+            handleProfileNavigate(finalData);
+            setFansList({
+              connections: [],
+              allconnections: [],
+              connectionscount: 0,
+              allconnectionscount: 0,
+              isLoaded: true,
+            });
+          }}
+        />
+      </Skeleton.Node>
+      <p
+        onClick={() => {
+          let finalData = {
+            dispatch,
+            navigate,
+            nuggetFormData,
+            user_id: ele.user_id,
+          };
+          handleProfileNavigate(finalData);
+        }}
+      >
+        {ele?.display_name}
+      </p>
+    </div>
+  );
 };

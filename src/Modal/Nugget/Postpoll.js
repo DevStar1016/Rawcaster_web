@@ -15,7 +15,10 @@ const schema = Yup.object().shape({
   poll_option: Yup.array()
     .of(
       Yup.object().shape({
-        choiceData: Yup.string().optional("Choice is required"),
+        choiceData: Yup.string()
+          .trim("Choice cannot include leading and trailing spaces")
+          .strict(true)
+          .optional("Choice is required"),
       })
     )
     .test(

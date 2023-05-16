@@ -403,7 +403,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           ];
           validateForm().then((res) => {
             let validatedKeys = Object.keys(res);
-            console.log(validatedKeys);
+
             if (compareArrays(validatedKeys, requiredFields)) {
               handleSubmit();
             } else {

@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { searchRawcasterUsersService } from "../../../Services/ApiService";
 import {
   getAuthToken,
+  getisAddFriend,
   getRawcaserToken,
   JSONtoformdata,
 } from "../../../Shared/Utility";
@@ -47,8 +48,8 @@ const SearchFriends = ({
       .then((res) => {
         if (res.data.status === 1) {
           if (res.data.current_page_no === 1) {
-            let filterList = res.data.users_list.filter(
-              (ele) => ele.friend_request_status === ""
+            let filterList = res.data.users_list.filter((ele) =>
+              getisAddFriend(ele.friend_request_status)
             );
 
             setPeopleList(filterList);

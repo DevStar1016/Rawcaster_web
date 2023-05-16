@@ -1,6 +1,6 @@
 import { Modal, Tooltip } from "antd";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
@@ -18,6 +18,7 @@ import shareicon from "../../Assets/Icons/svg/shareicon.svg";
 
 const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const { userSettings, loginUserData } = useAuth();
+  const navigate = useNavigate();
   const token = useAuthToken();
 
   const isCreatedUser = () => {
@@ -68,6 +69,9 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
       <img
         className={classes.eventImg}
         src={ele?.banner_image !== "" ? ele?.banner_image : eventList}
+        onClick={() => {
+          navigate(`/viewevent/${ele.event_id}`);
+        }}
         alt="Banner_img"
         onError={({ currentTarget }) => {
           currentTarget.onerror = null;
@@ -92,82 +96,93 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         </div>
       )}
       <div className={classes.contentSec}>
-        <div className="d-flex flex-row justify-content-between">
-          <Tooltip title={decodeHtml(ele.event_name)}>
-            <h3 style={{ maxWidth: isCreatedUser() ? "180px" : "" }}>
-              {decodeHtml(ele.event_name)}
-            </h3>
-          </Tooltip>
-          {isNotExpired() && isCreatedUser() && (
-            <div className={classes.editSec}>
-              <div className={classes.iconBg}>
-                <i
-                  className={classes.editIcon}
-                  onClick={() => {
-                    handleEdit(ele);
-                  }}
-                ></i>
-              </div>
-              <div
-                className={classes.iconBg}
+        <div
+          onClick={() => {
+            navigate(`/viewevent/${ele.event_id}`);
+          }}
+        >
+          <div className="d-flex flex-row justify-content-between">
+            <Tooltip title={decodeHtml(ele.event_name)}>
+              <h3
+                style={{ maxWidth: isCreatedUser() ? "180px" : "" }}
                 onClick={() => {
-                  Modal.confirm({
-                    title: "Confirmation",
-                    okText: "Delete",
-                    cancelText: "Cancel",
-                    cancelButtonProps: {
-                      danger: true,
-                    },
-                    content: <div>Do you want to delete this Event ? </div>,
-                    onOk: () => {
-                      handleDelete(ele);
-                    },
-                  });
+                  navigate(`/viewevent/${ele.event_id}`);
                 }}
               >
-                <i class="material-symbols-outlined">delete</i>
+                {decodeHtml(ele.event_name)}
+              </h3>
+            </Tooltip>
+            {isNotExpired() && isCreatedUser() && (
+              <div className={classes.editSec}>
+                <div className={classes.iconBg}>
+                  <i
+                    className={classes.editIcon}
+                    onClick={() => {
+                      handleEdit(ele);
+                    }}
+                  ></i>
+                </div>
+                <div
+                  className={classes.iconBg}
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Confirmation",
+                      okText: "Delete",
+                      cancelText: "Cancel",
+                      cancelButtonProps: {
+                        danger: true,
+                      },
+                      content: <div>Do you want to delete this Event ? </div>,
+                      onOk: () => {
+                        handleDelete(ele);
+                      },
+                    });
+                  }}
+                >
+                  <i class="material-symbols-outlined">delete</i>
+                </div>
               </div>
-            </div>
+            )}
+          </div>
+          <p className={classes.host}>
+            Hosted by {decodeHtml(ele.original_user_name)}
+          </p>
+          <p className={classes.des}>{ele.message}</p>
+          {isOthers ? (
+            <p className={classes.iconsec}>
+              {moment(
+                utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
+              ).format("DD MMM YYYY")}
+              {" . "}
+              {moment(
+                utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
+              ).format("hh:mm A") +
+                " - (" +
+                utctoUserTimezonewithAbbr(
+                  ele.start_date_time,
+                  userSettings?.time_zone
+                ) +
+                ")"}
+            </p>
+          ) : (
+            <p className={classes.iconsec}>
+              <span class="material-symbols-outlined">calendar_today</span>{" "}
+              {moment(
+                utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
+              ).format("DD MMM YYYY")}
+              <span class="material-symbols-outlined">schedule</span>{" "}
+              {moment(
+                utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
+              ).format("hh:mm A") +
+                " - (" +
+                utctoUserTimezonewithAbbr(
+                  ele.start_date_time,
+                  userSettings?.time_zone
+                ) +
+                ")"}
+            </p>
           )}
         </div>
-        <p className={classes.host}>
-          Hosted by {decodeHtml(ele.original_user_name)}
-        </p>
-        <p className={classes.des}>{ele.message}</p>
-        {isOthers ? (
-          <p className={classes.iconsec}>
-            {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
-            ).format("DD MMM YYYY")}
-            {" . "}
-            {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
-            ).format("hh:mm A") +
-              " - (" +
-              utctoUserTimezonewithAbbr(
-                ele.start_date_time,
-                userSettings?.time_zone
-              ) +
-              ")"}
-          </p>
-        ) : (
-          <p className={classes.iconsec}>
-            <span class="material-symbols-outlined">calendar_today</span>{" "}
-            {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
-            ).format("DD MMM YYYY")}
-            <span class="material-symbols-outlined">schedule</span>{" "}
-            {moment(
-              utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
-            ).format("hh:mm A") +
-              " - (" +
-              utctoUserTimezonewithAbbr(
-                ele.start_date_time,
-                userSettings?.time_zone
-              ) +
-              ")"}
-          </p>
-        )}
         {isNotExpired() && (
           <Link className={classes.link}>
             {isCreatedUser() ? "Start Hosting" : "Join Event"}

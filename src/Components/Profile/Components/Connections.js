@@ -12,6 +12,7 @@ import EmptyImg from "../../../Assets/Images/svg/empty_connections.svg";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
 import ConnectionModal from "../../../Modal/Connections/Connection";
 import {
+  UserProfile,
   getConnectionData,
   getUnclaimedInfluencerData,
   getfollowerfollowingService,
@@ -35,18 +36,15 @@ const ConnectionsList = ({
   isMyProfile,
   isLoading = false,
 }) => {
-  const { isLoginUser, setFansList, getFollowers, handleBecameFan } =
-    useProfileContext();
+  const { isLoginUser, getFollowers } = useProfileContext();
   const params = useParams();
   const dispatch = useDispatch();
   const display_user_id = DecryptionString(params.user_id);
-  const [Becomeafan, setBecomeafan] = useState(null);
   const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
     show: false,
   });
   const loginToken = useAuthToken();
-  const loginUserData = useAuthData();
-  const { nuggetFormData } = useNuggets();
+
   const [ConnectionsList, setConnectionsList] = useState({
     connections: [],
     allconnections: [],
@@ -130,10 +128,27 @@ const ConnectionsList = ({
       .catch((err) => {});
   };
 
-  const getUnclaimedInfluencer = () => {
+  const getUnclaimedInfluencer = (val = {}) => {
     getUnclaimedInfluencerData(loginToken)
       .then((res) => {
-        setConnectionsList(res);
+        let isFilterEnable = Object.keys(val).length !== 0;
+        let finalObj = {
+          ...res,
+        };
+        if (isFilterEnable) {
+          finalObj = {
+            ...ConnectionsList,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        } else {
+          finalObj = {
+            ...res,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        }
+        setConnectionsList(finalObj);
       })
       .catch((err) => {});
   };
@@ -231,9 +246,7 @@ const ConnectionsList = ({
           )}
       </h2>
       {isLocked ? (
-        <div
-          className={classes.lockedConnections}         
-        >
+        <div className={classes.lockedConnections}>
           <div className={classes.lockedoverLay}>
             <div className={classes.lockBtn}>
               <i className={classes.lock_icon}></i>
@@ -249,125 +262,13 @@ const ConnectionsList = ({
             <>
               {ConnectionsList.allconnectionscount !== 0 ? (
                 <div className={`${classes.listSec} `}>
-                  {ConnectionsList.connections.map((ele) => {
-                    const isUser = parseInt() === parseInt(ele?.user_id);
-                    const isAddFriend = () => {
-                      if (isUser) {
-                        return false;
-                      } else if (ele?.unclaimed_status === 0) {
-                        return false;
-                      } else if (ele?.friend_status) {
-                        if (getisAddFriend(ele?.friend_status)) {
-                          return true;
-                        }
-                        return false;
-                      } else {
-                        return false;
-                      }
-                    };
-                    return (
-                      <div className={classes.list}>
-                        <Skeleton.Node
-                          active={false}
-                          style={{
-                            height: "60px",
-                            width: "60px",
-                            borderRadius: 50,
-                          }}
-                        >
-                          <div
-                            className={`${classes.iconSec} ${
-                              !isMyProfile ? classes.othersIcon : ""
-                            }`}
-                          >
-                            {isMyProfile ? (
-                              <>
-                                {type === "unclaimed_influencers" &&
-                                isLoginUser ? (
-                                  <i
-                                    className={classes.sheildIcon}
-                                    style={{
-                                      display: ele.unclaimed_status
-                                        ? "none"
-                                        : "",
-                                    }}
-                                    onClick={() => {
-                                      navigate(
-                                        `/claim/${EncryptionString(
-                                          ele.user_id
-                                        )}`
-                                      );
-                                    }}
-                                  />
-                                ) : null}
-                              </>
-                            ) : (
-                              <>
-                                {type === "influencers" ? (
-                                  <span
-                                    className={`material-symbols-outlined ${classes.plusIcon}`}
-                                    onClick={() => {
-                                      handleBecameFan(ele.user_ref_id).then(
-                                        (res) => {
-                                          getUserList({});
-                                        }
-                                      );
-                                    }}
-                                  >
-                                    add
-                                  </span>
-                                ) : null}
-                                {type === "connections" ? (
-                                  <i
-                                    className={classes.addIcon}
-                                    style={{
-                                      display: isAddFriend() ? "" : "none",
-                                    }}
-                                  />
-                                ) : null}
-                              </>
-                            )}
-                          </div>
-                          <img
-                            src={ele?.profile_img || ""}
-                            onError={({ currentTarget }) => {
-                              currentTarget.onerror = null; // prevents looping
-                              currentTarget.src = defaultprofileImg;
-                            }}
-                            onClick={() => {
-                              let finalData = {
-                                dispatch,
-                                navigate,
-                                nuggetFormData,
-                                user_id: ele.user_id,
-                              };
-                              handleProfileNavigate(finalData);
-                              setFansList({
-                                connections: [],
-                                allconnections: [],
-                                connectionscount: 0,
-                                allconnectionscount: 0,
-                                isLoaded: true,
-                              });
-                            }}
-                          />
-                        </Skeleton.Node>
-                        <p
-                          onClick={() => {
-                            let finalData = {
-                              dispatch,
-                              navigate,
-                              nuggetFormData,
-                              user_id: ele.user_id,
-                            };
-                            handleProfileNavigate(finalData);
-                          }}
-                        >
-                          {ele?.display_name}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  {ConnectionsList.connections.map((ele) => (
+                    <UserProfile
+                      ele={ele}
+                      type={type}
+                      getConnectionList={GetList}
+                    />
+                  ))}
                 </div>
               ) : (
                 <>
@@ -389,6 +290,7 @@ const ConnectionsList = ({
       {isSeeMore && (
         <ConnectionModal
           type={title}
+          userType={type}
           open={isSeeMore}
           value={ConnectionsList}
           getConnectionList={GetList}

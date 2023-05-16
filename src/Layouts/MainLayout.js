@@ -1,6 +1,6 @@
 import { Layout, Menu } from "antd";
 import React from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import classes from "./Layout.module.css";
 import mainlogo from "../Assets/Images/svg/rawcaster_logo.svg";
 import { Button, Drawer } from "antd";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const MainLayout = () => {
+  const { pathname } = useLocation();
   const [visible, setVisible] = useState(false);
   const showDrawer = () => {
     setVisible(true);
@@ -137,9 +138,11 @@ const MainLayout = () => {
                     navigate("/");
                   }}
                 />
-                <Link className={classes.contactSupport} to="/support">
-                  Contact Support
-                </Link>
+                {!pathname.includes("support") && (
+                  <Link className={classes.contactSupport} to="/support">
+                    Contact Support
+                  </Link>
+                )}
               </div>
 
               {/* <div className={classes.leftSec}>

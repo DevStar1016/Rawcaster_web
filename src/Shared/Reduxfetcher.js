@@ -16,6 +16,10 @@ export const useNuggets = () => {
   return useSelector((state) => state.nuggets);
 };
 
+export const useFriends = () => {
+  return useSelector((state) => state.dashboard.friendsList);
+};
+
 export const useAuth = () => {
   return useSelector((state) => state.auth);
 };

@@ -92,7 +92,12 @@ opacity: 1 !important;
   text-align: center;
   color: #1D1C1C;
 }
-
+.chatSwitch .ant-switch {
+  background-color: red !important;
+}
+.chatSwitch .ant-switch-checked  {
+  background-color:green !important;
+}
 .profilenavbar .nav-link.active{
   background: linear-gradient(116.6deg, #F3738B 0.88%, #F99F46 99.2%) !important;
 }
@@ -548,6 +553,7 @@ margin-bottom: 12px !important;
 .claimrequestModal .ant-modal-content {
   padding: 0px !important;
 }
+
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .onlydes { display: none; } 

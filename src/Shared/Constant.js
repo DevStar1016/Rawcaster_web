@@ -51,3 +51,38 @@ export const SHARED_TYPE = [
   { id: 6, key: 6, Value: "Connections", label: "Connections" },
   { id: 7, key: 7, Value: "My Fans", label: "My Fans" },
 ];
+
+export const customStyles = {
+  menu: (provided, state) => ({
+    ...provided,
+    boxShadow: "none",
+    padding: 0,
+    position: "relative",
+  }),
+  menuList: (provided, state) => ({
+    ...provided,
+    padding: 0,
+    minHeight: 285,
+    maxHeight: 285,
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    color: "black",
+    backgroundColor: state.isSelected ? "#DEEBFF" : "transparent",
+    opacity: state.isDisabled ? 1 : 1,
+    marginBottom: "0px",
+    padding: "0 12px !important",
+    borderRadius: "0px",
+    ":hover": {
+      ...provided,
+      backgroundColor: "#fafafa",
+      cursor: "pointer",
+      borderRadius: "8px",
+      color: "black",
+    },
+  }),
+  indicatorsContainer: (provided, state) => ({
+    ...provided,
+    display: "none",
+  }),
+};

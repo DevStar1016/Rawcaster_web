@@ -37,7 +37,7 @@ const SelectedUsers = ({ open, friends, close, setfriends }) => {
                   display: decodeHtml(friend.display_name)
                     .toLowerCase()
                     .includes(searchInput.toLowerCase())
-                    ? "block"
+                    ? "flex"
                     : "none",
                 }}
               >

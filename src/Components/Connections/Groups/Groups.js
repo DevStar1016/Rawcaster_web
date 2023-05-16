@@ -1,11 +1,23 @@
-import React, { useState } from "react";
-import { useDashboard } from "../../../Shared/Reduxfetcher";
+import React, { useEffect, useState } from "react";
+import {
+  useAuthData,
+  useAuthToken,
+  useDashboard,
+} from "../../../Shared/Reduxfetcher";
 import classes from "../Connections.module.css";
 import Group from "../Components/Group";
 import { Skeleton } from "antd";
+import ConfigureGroup from "./ConfigureGroup";
+import { socketListen } from "../../../Services/SocketService";
+import { GROUP_CHAT_PROCESS_TYPE } from "./Constants";
+import { handleGroupChatMessageTransfer } from "./Methods";
 
 const Groups = () => {
   const { groupsList, isGroupLoading } = useDashboard();
+  const [isConfigureGroup, setisConfigureGroup] = useState({
+    show: false,
+    group_id: null,
+  });
   const [searchInput, setsearchInput] = useState("");
 
   const getValidData = () => {
@@ -24,6 +36,21 @@ const Groups = () => {
     }
   };
 
+  // useEffect(() => {
+  //   socketListen.on(
+  //     "groupchatting",
+  //     (message) => {
+  //       switch (message.event) {
+  //         case "groupchatmsgtransfer":
+  //           handleGroupChatMessageTransfer();
+  //           break;
+  //       }
+  //     },
+  //     []
+  //   );
+  //   return () => {};
+  // }, []);
+
   return (
     <div className={classes.myconnectioin}>
       <input
@@ -36,7 +63,14 @@ const Groups = () => {
       <h2>
         My Groups <span>({groupsList.length})</span>
         {getValidData()?.length !== 0 && !isGroupLoading ? (
-          <i class="material-symbols-outlined">add</i>
+          <i
+            class="material-symbols-outlined"
+            onClick={() => {
+              setisConfigureGroup({ show: true, group_id: null });
+            }}
+          >
+            add
+          </i>
         ) : null}
       </h2>
 
@@ -48,7 +82,15 @@ const Groups = () => {
         }
       >
         {getValidData()?.map((group) => {
-          return <Group group={group} searchInput={searchInput} />;
+          return (
+            <Group
+              group={group}
+              searchInput={searchInput}
+              onClick={() => {
+                setisConfigureGroup({ show: true, group_id: group.group_id });
+              }}
+            />
+          );
         })}
         {isGroupLoading ? (
           <>
@@ -58,6 +100,15 @@ const Groups = () => {
           </>
         ) : null}
       </div>
+      {isConfigureGroup.show && (
+        <ConfigureGroup
+          open={isConfigureGroup.show}
+          groupId={isConfigureGroup.group_id}
+          close={() => {
+            setisConfigureGroup({ show: false, group_id: null });
+          }}
+        />
+      )}
     </div>
   );
 };

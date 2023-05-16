@@ -10,6 +10,7 @@ import { Col, Row } from "react-bootstrap";
 import { useFormik } from "formik";
 import _debounce from "lodash/debounce";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { UserProfile } from "../../Components/Profile/Components/Utility";
 
 const ConnectionModal = ({
   type,
@@ -17,13 +18,10 @@ const ConnectionModal = ({
   onSuccess,
   onClose,
   value,
-  setisInfluencerChatModalOpen,
+  userType,
   getConnectionList,
 }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [LocationList, setLocationList] = useState([]);
-  const { nuggetFormData } = useNuggets();
 
   const { values, setFieldValue } = useFormik({
     initialValues: {
@@ -161,44 +159,11 @@ const ConnectionModal = ({
         <div className={classes.listSec}>
           {value.filteredConnections?.map((ele) => {
             return (
-              <>
-                <div className={classes.list}>
-                  <div className={classes.iconSec}>
-                    <i className={classes.messageIcon} />
-                  </div>
-                  <img
-                    src={ele.profile_img}
-                    onError={({ currentTarget }) => {
-                      currentTarget.onerror = null; // prevents looping
-                      currentTarget.src = defaultprofileImg;
-                    }}
-                    onClick={() => {
-                      onClose();
-                      let finalData = {
-                        dispatch,
-                        navigate,
-                        nuggetFormData,
-                        user_id: ele.user_id,
-                      };
-                      handleProfileNavigate(finalData);
-                    }}
-                  />
-                  <p
-                    onClick={() => {
-                      onClose();
-                      let finalData = {
-                        dispatch,
-                        navigate,
-                        nuggetFormData,
-                        user_id: ele.user_id,
-                      };
-                      handleProfileNavigate(finalData);
-                    }}
-                  >
-                    {ele?.display_name}
-                  </p>
-                </div>
-              </>
+              <UserProfile
+                ele={ele}
+                type={userType}
+                getConnectionList={() => getConnectionList(values)}
+              />
             );
           })}
         </div>

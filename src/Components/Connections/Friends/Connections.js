@@ -41,9 +41,9 @@ const Connections = () => {
       },
       []
     );
-    // return () => {
-    //   socketListen.off("call");
-    // };
+    return () => {
+      socketListen.off("call");
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
