@@ -15,10 +15,9 @@ import {
   useAuthToken,
   useNuggets,
 } from "../../Shared/Reduxfetcher";
-import { Skeleton, Spin } from "antd";
+import { Spin } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
-
 import {
   handleDeleteNuggetList,
   handleNuggetFormData,
@@ -26,8 +25,6 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 import NuggetLock from "../../Assets/Images/svg/nugget_lock.svg";
-import InfiniteScroll from "react-infinite-scroller";
-import InfiniteScrollerComponent from "../InfiniteScrollerComponent";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 
@@ -43,13 +40,7 @@ const Nuggets = ({
   const [ViewedList, setViewedList] = useState([]);
   const [NuggetsData, setNuggetsData] = useState([]);
   const [isNuggetModify, setisNuggetModify] = useState(null);
-  const {
-    Nuggets,
-    isNuggetsLoading,
-    currentpage,
-    nuggetFormData,
-    totalNuggets,
-  } = useNuggets();
+  const { Nuggets, isNuggetsLoading, nuggetFormData } = useNuggets();
   const userData = getRawcaserToken();
   const [isReachedEnd, setisReachedEnd] = useState(false);
   const token = useAuthToken();
@@ -269,12 +260,7 @@ const Nuggets = ({
                     {searchKey ? "We didn't find any results" : isDisplayPost()}
                   </div>
                 ) : (
-                  <div
-                    ref={rootRef}
-                    onScroll={() => {
-                      console.log("test", rootRef, scrollRef);
-                    }}
-                  >
+                  <div ref={rootRef}>
                     {NuggetsData?.map((ele, index) => {
                       return (
                         <Spin
