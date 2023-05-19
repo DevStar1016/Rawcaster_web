@@ -6,7 +6,6 @@ import { listAllFriendRequestsService } from "../../../Services/ApiService";
 import { useDispatch } from "react-redux";
 import { handleFriendsList } from "../../../Store/Redux/Reducer/DashboardReducer";
 import AddConnection from "./AddConnection";
-import { toast } from "react-hot-toast";
 import Request from "../Components/Request";
 import Friends from "../Components/Friends";
 import { SOCKET_EVENTS } from "../../../Services/ServiceConstants";
