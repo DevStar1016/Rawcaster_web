@@ -1,18 +1,30 @@
-# Fetching the latest node image on alpine linux
-FROM node:alpine AS development
+# Stage 1: Build the React app
+FROM node:14.17.0-alpine as build
 
-# Declaring env
-ENV NODE_ENV development
+# Set working directory
+WORKDIR /app
 
-# Setting up the work directory
-WORKDIR /react-app
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Installing dependencies
-COPY ./package.json /react-app
-RUN npm install --force
+# Install dependencies
+RUN npm ci
 
-# Copying all the files in our project
+# Copy the rest of the application files
 COPY . .
 
-# Starting our application
-CMD npm start
+# Build the React app
+RUN npm run build
+
+# Stage 2: Serve the built React app with Nginx
+FROM nginx:1.21.0-alpine
+
+# Copy the built app from the previous stage
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80 for the application
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
