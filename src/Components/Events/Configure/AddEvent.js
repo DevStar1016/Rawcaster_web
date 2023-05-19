@@ -441,7 +441,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     <InviteEmailComponent
                       value={values.event_invite_mails}
                       onResult={(val) => {
-                        console.log(val);
                         setFieldValue("event_invite_mails", val.toString());
                       }}
                     />
@@ -564,7 +563,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 <TimeValueComponent
                   value={values.event_start_time}
                   onResult={(res) => {
-                    console.log(res);
                     setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                     if (
                       moment().format("DD:MM:YYYY") ==
@@ -698,7 +696,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 <EventLayoutComponent
                   value={values.event_layout}
                   onResult={(val) => {
-                    console.log(val);
                     setFieldValue("event_layout", val.id);
                   }}
                 />
@@ -708,7 +705,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   isCustomize={true}
                   value={values.event_melody_id}
                   onResult={(val) => {
-                    console.log(val);
                     setFieldValue("event_melody_id", val.id);
                   }}
                 />
@@ -735,7 +731,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   name="UploadMelody"
                   style={{ display: "none" }}
                   onChange={(event) => {
-                    console.log(event.target.files);
                     if (event.target.files[0]) {
                       setFieldValue("event_melody", event.target.files[0]);
                     }

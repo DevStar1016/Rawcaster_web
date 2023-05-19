@@ -31,12 +31,6 @@ const ContentLayout = () => {
         style={{ width: 370 }}
         items={TabsValues}
         activeKey={selectedIndex}
-        onClick={(key) => {
-          console.log(key);
-        }}
-        onSelect={(key) => {
-          console.log(key);
-        }}
         onChange={(key) => {
           setselectedIndex(key);
         }}

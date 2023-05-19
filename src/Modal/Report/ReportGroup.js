@@ -12,7 +12,7 @@ const validationSchema = yup.object().shape({
     .required(`Please input your Report Message!`),
 });
 
-const ReportGroup = ({ open, close, onSuccess }) => {
+const ReportGroup = ({ open, close, onSuccess, msg }) => {
   const { values, handleChange, handleSubmit, resetForm, touched, errors } =
     useFormik({
       initialValues: {
@@ -26,7 +26,7 @@ const ReportGroup = ({ open, close, onSuccess }) => {
     });
   return (
     <Modal
-      title="Report this group to Rawcaster"
+      title={msg}
       open={open}
       footer={[null]}
       closable

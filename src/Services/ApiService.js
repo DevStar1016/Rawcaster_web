@@ -116,6 +116,10 @@ export const blockunblockuserService = (data) => {
   return axios.post("blockunblockuser", data);
 };
 
+export const unFriendService = (data) => {
+  return axios.post("unfriend", data);
+};
+
 export const blockmultipleuserService = (data) => {
   return axios.post("blockmultipleuser", data);
 };
@@ -209,6 +213,9 @@ export const editNuggetService = (data) => {
 };
 export const shareNuggetService = (data) => {
   return axios.post("sharenugget", data);
+};
+export const NuggetAbuseReportService = (data) => {
+  return axios.post("nuggetabusereport", data);
 };
 
 export const getNuggetDetailService = (data) => {

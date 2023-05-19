@@ -22,7 +22,6 @@ const Connections = () => {
   const [requests, setrequests] = useState([]);
 
   useEffect(() => {
-    console.log("socketListenFRIEND_REQUEST");
     socketListen.on(
       "message",
       (message) => {
@@ -37,7 +36,6 @@ const Connections = () => {
             friendStatusHandler(message);
             break;
           default:
-            console.log(message, "socketListen=default");
             break;
         }
       },
@@ -196,9 +194,7 @@ const Connections = () => {
                 });
                 dispatch(handleFriendsList(getValidData(data)));
               }}
-              onReject={() => {
-                console.log("test");
-              }}
+              onReject={() => {}}
             />
           );
         })}

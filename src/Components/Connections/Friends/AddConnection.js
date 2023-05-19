@@ -34,7 +34,6 @@ const AddConnection = ({ open, close }) => {
     sendFriendRequestsService(JSONtoformdata(requestData))
       .then((res) => {
         if (res.data.status === 1) {
-          console.log(profileData);
           let data = {
             friend_request_id: res.data.friend_request_ids[0],
             display_name: profileData.name,

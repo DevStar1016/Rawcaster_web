@@ -97,9 +97,9 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
       )}
       <div className={classes.contentSec}>
         <div
-          onClick={() => {
-            navigate(`/viewevent/${ele.event_id}`);
-          }}
+        // onClick={() => {
+        //   navigate(`/viewevent/${ele.event_id}`);
+        // }}
         >
           <div className="d-flex flex-row justify-content-between">
             <Tooltip title={decodeHtml(ele.event_name)}>

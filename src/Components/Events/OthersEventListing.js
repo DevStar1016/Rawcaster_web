@@ -30,7 +30,6 @@ const OthersEventListing = () => {
           let filterEventList = res.data.events_list.filter((ele) => {
             return ele.original_user_id === parseInt(display_user_id);
           });
-          console.log(filterEventList);
           setEventListData(filterEventList.reverse());
         } else {
           setEventListData([]);

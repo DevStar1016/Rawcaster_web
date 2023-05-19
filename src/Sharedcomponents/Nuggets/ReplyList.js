@@ -485,7 +485,6 @@ const ReplyList = ({
                 "flags",
               ]}
               onEmojiSelect={(e) => {
-                // console.log(e);
                 let tempData = [...ReplyTxt];
                 if (tempData[index]) {
                   tempData[index] = tempData[index].concat(e.native);

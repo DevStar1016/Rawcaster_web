@@ -35,9 +35,7 @@ const Blockuser = () => {
           setblockUserList([]);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -55,9 +53,7 @@ const Blockuser = () => {
           getBlockedUserData();
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const handleunblockuser = (user_id) => {
@@ -72,9 +68,7 @@ const Blockuser = () => {
           getBlockedUserData();
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   return (

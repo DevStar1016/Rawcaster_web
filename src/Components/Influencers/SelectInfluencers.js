@@ -278,7 +278,8 @@ const SelectInfluencers = () => {
                   </div>
                   <Tooltip placement="topLeft" title={ele.display_name}>
                     <p className={classes.name}>
-                      {ele.display_name}
+                      <p>{ele.display_name}</p>
+
                       <span className={classes.author}>
                         {ele.category.toString()}
                       </span>

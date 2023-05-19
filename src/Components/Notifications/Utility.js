@@ -20,7 +20,7 @@ const HomePageIds = [2, 4];
 const UserPageIds = [5, 3];
 const NuggetPageIds = [1, 6];
 
-export const getNotificationMessage = (type) => {
+export const getNotificationMessage = (type, content) => {
   switch (parseInt(type)) {
     case 1:
       return "Posted a new Nugget";
@@ -50,10 +50,16 @@ export const getNotificationMessage = (type) => {
       return "Posted a talkshow";
     case 14:
       return "Live now";
+    case 15:
+      return "Started Following you";
     case 16:
       return "Poll Results";
+    case 17:
+      return content !== ""
+        ? `created  a group ' ${content} '`
+        : "created  a group";
     default:
-      return "";
+      return "You have a new Notification";
   }
 };
 
@@ -164,10 +170,14 @@ export const NotificationsList = ({
               currentTarget.src = defaultprofileImg;
             }}
           />
-          <div>
+          <div style={{ minWidth: 250 }}>
             <p className={classes.userName}>{ele?.userName}</p>
-            <p className={classes.timeAgo}>{moment(createdTime).fromNow()}</p>
-            <span>{getNotificationMessage(ele?.type)}</span>
+            {ele.type === 11 && ele?.friend_request_status === 0 ? null : (
+              <p className={classes.timeAgo}>{moment(createdTime).fromNow()}</p>
+            )}
+            <p className={classes.displayMsg}>
+              {getNotificationMessage(ele?.type, ele?.content)}
+            </p>
             <p className={classes.headingContent}>{ele?.content}</p>
             {ele.event_start_time && (
               <div className={classes.iconsec}>
@@ -197,6 +207,11 @@ export const NotificationsList = ({
         </div>
         <div className="flex-column">
           <div className={classes.rightsec}>
+            <div className={classes.connectionTimeago}>
+              {ele.type === 11 && ele?.friend_request_status === 0 && (
+                <p>{moment(createdTime).fromNow()}</p>
+              )}
+            </div>
             <span
               class="material-symbols-outlined"
               style={{ display: ele.poll_option ? "none" : "" }}
@@ -207,6 +222,7 @@ export const NotificationsList = ({
               close
             </span>
           </div>
+
           <div
             className="mt-1"
             style={{
@@ -229,6 +245,7 @@ export const NotificationsList = ({
             >
               <i class="material-symbols-outlined">done</i>
             </div>
+
             <div
               className={classes.redicon}
               onClick={() => {

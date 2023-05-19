@@ -25,7 +25,7 @@ const ConnectionModal = ({
 
   const { values, setFieldValue } = useFormik({
     initialValues: {
-      Location: "",
+      location: "",
       gender: "",
       age: "",
     },
@@ -87,18 +87,18 @@ const ConnectionModal = ({
               placeholder="Location"
               allowClear
               onClear={() => {
-                setFieldValue("Location", "");
+                setFieldValue("location", "");
                 let finalValue = {
                   ...values,
-                  Location: "",
+                  location: "",
                 };
                 getConnectionList(filterValidObject(finalValue));
               }}
               onSelect={(value) => {
-                setFieldValue("Location", value);
+                setFieldValue("location", value);
                 let finalValue = {
                   ...values,
-                  Location: value,
+                  location: value,
                 };
                 getConnectionList(filterValidObject(finalValue));
               }}
@@ -162,6 +162,7 @@ const ConnectionModal = ({
               <UserProfile
                 ele={ele}
                 type={userType}
+                className={classes.modalOthersIcon}
                 getConnectionList={() => getConnectionList(values)}
               />
             );

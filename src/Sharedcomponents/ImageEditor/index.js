@@ -34,14 +34,7 @@ const ImageEdit = () => {
               const editorInstance = editorRef.current.getInstance();
               editorInstance
                 .loadImageFromFile(e.target.files[0])
-                .then((result) => {
-                  console.log(
-                    "old : " + result.oldWidth + ", " + result.oldHeight
-                  );
-                  console.log(
-                    "new : " + result.newWidth + ", " + result.newHeight
-                  );
-                });
+                .then((result) => {});
             }}
           />
         </div>

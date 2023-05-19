@@ -4,6 +4,8 @@
 .profileThumb h2 span { cursor: pointer; padding-top: 5px; font-size: 13px !important; text-align: right; font-weight:400; float: right; }
 .profileThumb .fansHeading {
 display:flex ;
+flex-direction: row;
+justify-content: space-between;
 }
 .listSec { 
     width: 100%;
@@ -16,12 +18,15 @@ display:flex ;
     grid-template-rows: 50% 50%; margin-top:20px; margin-bottom: 10px; border-bottom: 1px solid #ececec; padding-bottom: 10px;
 }
 .list {position: relative; width: 100%; float: left; text-align: center; font-size: 12px; cursor: pointer;}
-.list p { margin-bottom: 5px;
+.list p {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 85px;
+    margin: auto;
+    margin-bottom: 5px;
 }
 .list img {    width: 100%; border-radius: 50px; margin-bottom: 3px;}
 .actionIcon { height: 23px; margin-left: 7px; cursor: pointer; }
@@ -82,6 +87,9 @@ display:flex ;
 }
 .othersIcon {
     right: 22px !important;
+}
+.modalOthersIcon {
+  right: 3px !important;
 }
 .iconSec .plusIcon,.iconSec .addIcon {
    float: left;

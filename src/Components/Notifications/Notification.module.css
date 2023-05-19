@@ -85,19 +85,37 @@ width: 80%;
       float: right;  margin-right: -60px; font-size: 11px !important; font-weight: 300 !important;
 
 }
+.fansList .rightsec {
+    width: 100%;
+    text-align: end;
+}
 .fansList:hover .rightsec .timeAgo {
     display: none;
 }
+
 .fansList .rightsec span {
 display: none;
 font-size: 18px;
 margin: auto;
 height: fit-content;
 }
-.fansList:hover .rightsec span{
-display: block;
+.rightsec .connectionTimeago {
+    display: block;
+    font-size: 10px !important; 
+    font-weight: 300 !important;
+    
+}
+.rightsec .connectionTimeago p {
+    margin-bottom: 0px !important;
+}
+.fansList:hover .connectionTimeago {
+    display: none; 
+}
+.fansList:hover .rightsec span {
 margin:0 10px;
 color: #F2718D;
+display: block;
+float: right;
 }
 .fansList .leftsec img {
     width: 53px;
@@ -221,3 +239,20 @@ font-size: 20px;
 line-height: 26px;
 }
 .mobNotification { padding: 0 15px; }
+
+
+@media (max-width:768px) {
+    .fansList .rightsec span {
+        display: block;
+        color: #F2718D;
+        float: right;
+        font-size: 12px;
+        margin:0 2px !important;
+        }
+        .fansList:hover .rightsec span {
+            margin:0 2px !important;
+        }
+        .fansList:hover .connectionTimeago {
+            display: block;
+        }
+ }

@@ -1,5 +1,10 @@
 import moment from "moment";
-import { decodeHtml } from "../../Shared/Utility";
+import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
+import {
+  FollowandunfollowService,
+  unFriendService,
+} from "../../Services/ApiService";
+import { toast } from "react-hot-toast";
 
 export const calculate_age = (dob) => {
   var diff_ms = Date.now() - dob;
@@ -9,7 +14,6 @@ export const calculate_age = (dob) => {
 };
 
 export const replaceBiodataHandler = (data, type = "display") => {
-  console.log(data);
   if (data) {
     let defaultBioDataformat = "";
 
@@ -56,4 +60,49 @@ export const replaceBiodataHandler = (data, type = "display") => {
     return str;
   }
   return "";
+};
+
+export const handleUnFriendService = (token, user_id) => {
+  return new Promise((resolve, reject) => {
+    const unfriendData = {
+      token,
+      user_id,
+    };
+    unFriendService(JSONtoformdata(unfriendData))
+      .then(({ data }) => {
+        if (data.status === 1) {
+          toast.success(data.msg);
+          resolve(data.msg);
+        } else {
+          reject();
+          toast.error(data.msg);
+        }
+      })
+      .catch(() => {
+        reject();
+      });
+  });
+};
+
+export const handleUnFollowService = (token, follow_userid) => {
+  return new Promise((resolve, reject) => {
+    const unfollowData = {
+      token,
+      follow_userid,
+      type: 2,
+    };
+    FollowandunfollowService(JSONtoformdata(unfollowData))
+      .then(({ data }) => {
+        if (data.status === 1) {
+          toast.success(data.msg);
+          resolve(data.msg);
+        } else {
+          reject();
+          toast.error(data.msg);
+        }
+      })
+      .catch(() => {
+        reject();
+      });
+  });
 };

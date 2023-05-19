@@ -70,7 +70,6 @@ const InviteBox = () => {
   const shareUrl = profileData?.referral_link || "";
 
   const responseSuccessCallback = (response) => {
-    console.log(response);
     setisGmailOpen(true);
     setContactList(response);
   };

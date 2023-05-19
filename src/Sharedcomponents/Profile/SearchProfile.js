@@ -191,13 +191,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           }}
         >
           <p>
-            <ReadMore
-              isReadMoreValid={() => {
-                console.log("test");
-              }}
-            >
-              {getBioData()}
-            </ReadMore>
+            <ReadMore isReadMoreValid={() => {}}>{getBioData()}</ReadMore>
           </p>
         </div>
       </div>

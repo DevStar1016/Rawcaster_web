@@ -83,7 +83,6 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 return value;
               }
             }
-
             return true;
           }
         ),
@@ -101,6 +100,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           return true;
         }),
     }),
+    validateOnChange: true,
     onSubmit: (val) => {
       setisCreating(true);
       if (data) {
@@ -110,7 +110,6 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       }
     },
   });
-
   const handleCloseEvent = () => {
     setisTalkshowOpen(false);
     resetForm();
@@ -400,7 +399,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 <InviteEmailComponent
                   value={values.event_invite_mails}
                   onResult={(val) => {
-                    setFieldValue("event_invite_mails", val.toString());
+                    if (val.length !== 0) {
+                      setFieldValue("event_invite_mails", JSON.stringify(val));
+                    } else {
+                      setFieldValue("event_invite_mails", "");
+                    }
                   }}
                 />
                 {touched.event_invite_mails && (

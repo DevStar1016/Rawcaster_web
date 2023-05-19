@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import {
   DecryptionString,
@@ -18,7 +18,7 @@ import {
 import { Skeleton, Spin } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
-import InfiniteScroll from "react-infinite-scroll-component";
+
 import {
   handleDeleteNuggetList,
   handleNuggetFormData,
@@ -26,12 +26,17 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 import NuggetLock from "../../Assets/Images/svg/nugget_lock.svg";
+import InfiniteScroll from "react-infinite-scroller";
+import InfiniteScrollerComponent from "../InfiniteScrollerComponent";
+import useInfiniteScroll from "react-infinite-scroll-hook";
+import { useBottomScrollListener } from "react-bottom-scroll-listener";
 
 const Nuggets = ({
   isLocked = false,
   isUserPostAvailable = true,
   isLoading = false,
 }) => {
+  const pageRef = useRef(1);
   const dispatch = useDispatch();
   const params = useParams();
   const searchKey = params?.key ? DecryptionString(params?.key) : "";
@@ -45,8 +50,8 @@ const Nuggets = ({
     nuggetFormData,
     totalNuggets,
   } = useNuggets();
-
   const userData = getRawcaserToken();
+  const [isReachedEnd, setisReachedEnd] = useState(false);
   const token = useAuthToken();
   const loginuserData = useAuthData();
   const display_user_id = params?.user_id
@@ -59,9 +64,10 @@ const Nuggets = ({
   });
   const [isEdit, setisEdit] = useState(null);
   const [Pages, setPages] = useState({
-    page: 1,
-    totalpage: 1,
+    page: null,
+    totalpage: null,
   });
+  const [loading, setloading] = useState(false);
 
   const handleProgress = (progress) => {
     let val = (progress.loaded / progress.total) * 100;
@@ -72,20 +78,39 @@ const Nuggets = ({
   };
 
   const GetNuggetList = (page = 1, formData = null) => {
-    if (formData) {
-      dispatch(fetchNuggetsbyId(formData));
-      return;
-    }
-    let finalData = { ...nuggetFormData };
-    finalData.formData = {
-      ...finalData.formData,
-      page_number: page,
-    };
+    return new Promise((resolve, reject) => {
+      if (formData) {
+        console.log("test");
+        dispatch(fetchNuggetsbyId(formData)).then((res) => {
+          pageRef.current = res.payload.current_page_no;
+          setPages({
+            page: res.payload.current_page_no,
+            totalpage: res.payload.total_pages,
+          });
+          setloading(false);
+          setisReachedEnd(false);
+        });
+        return;
+      }
+      let finalData = { ...nuggetFormData };
+      finalData.formData = {
+        ...finalData.formData,
+        page_number: page,
+      };
 
-    dispatch(fetchNuggetsbyId(finalData)).then((res) => {
-      setisNuggetModify(null);
+      dispatch(fetchNuggetsbyId(finalData)).then((res) => {
+        setisNuggetModify(null);
+        setloading(false);
+        setisReachedEnd(false);
+      });
     });
   };
+
+  const handleBottomLoader = () => {
+    setisReachedEnd(true);
+  };
+
+  const scrollRef = useBottomScrollListener(handleBottomLoader);
 
   useEffect(() => {
     if (isLocked || isLoading) {
@@ -119,16 +144,9 @@ const Nuggets = ({
         };
       }
       dispatch(handleNuggetFormData(finalData));
-      console.log("test");
       GetNuggetList(1, finalData);
     }
   }, [token, isLoading]);
-
-  const onEndReached = () => {
-    if (parseInt(totalNuggets) !== Nuggets?.length) {
-      GetNuggetList(currentpage + 1);
-    }
-  };
 
   const ListNuggetData = {
     setProgress,
@@ -177,6 +195,23 @@ const Nuggets = ({
     setNuggetsData(Nuggets);
   }, [Nuggets]);
 
+  const getHasNextPage = () => {
+    return pageRef.current !== Pages.totalpage + 1;
+  };
+  const loadMore = () => {
+    if (isReachedEnd && getHasNextPage() && !loading) {
+      setloading(true);
+      pageRef.current = pageRef.current + 1;
+      GetNuggetList(pageRef.current);
+    }
+  };
+
+  const [sentryRef, { rootRef }] = useInfiniteScroll({
+    loading: loading,
+    hasNextPage: getHasNextPage(),
+    onLoadMore: loadMore,
+  });
+
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       {isLocked || isLoading ? (
@@ -197,15 +232,11 @@ const Nuggets = ({
           </div>
         </div>
       ) : (
-        <InfiniteScroll
-          dataLength={Nuggets?.length || 0} //This is important field to render the next data
-          next={onEndReached}
-          loader={
-            <div className="mt-3 pt-3">
-              <Skeleton loading={true} active avatar />
-            </div>
-          }
-          hasMore={Nuggets && parseInt(totalNuggets) !== Nuggets?.length}
+        <div
+          ref={scrollRef}
+          onScroll={() => {
+            console.log("test", rootRef, scrollRef);
+          }}
           className={` ${
             params?.key ? classes.resultnuggetSec : classes.nuggetSec
           } ${isuserConnection ? classes.othersnuggetSec : ""} ${
@@ -225,7 +256,7 @@ const Nuggets = ({
           )}
 
           <>
-            {isNuggetsLoading ? (
+            {isNuggetsLoading || Pages.totalpage === null ? (
               <div className="mt-3">
                 {[...Array(6)].map(() => (
                   <NuggetLoaders loading={true} />
@@ -238,7 +269,12 @@ const Nuggets = ({
                     {searchKey ? "We didn't find any results" : isDisplayPost()}
                   </div>
                 ) : (
-                  <>
+                  <div
+                    ref={rootRef}
+                    onScroll={() => {
+                      console.log("test", rootRef, scrollRef);
+                    }}
+                  >
                     {NuggetsData?.map((ele, index) => {
                       return (
                         <Spin
@@ -300,12 +336,17 @@ const Nuggets = ({
                         </Spin>
                       );
                     })}
-                  </>
+                    {(loading || getHasNextPage()) && (
+                      <div ref={sentryRef}>
+                        <NuggetLoaders loading={true} />
+                      </div>
+                    )}
+                  </div>
                 )}
               </>
             )}
           </>
-        </InfiniteScroll>
+        </div>
       )}
     </ListNuggetContext.Provider>
   );

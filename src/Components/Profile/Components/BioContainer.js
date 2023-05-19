@@ -156,7 +156,7 @@ const BioContainer = ({ isLoginuser }) => {
             style={{ display: isLoginuser ? "block" : "none" }}
             onClick={() => {
               setisAboutEdit(true);
-              let tempData = replaceBiodataHandler(profileData);
+              let tempData = getBioData();
               setFieldValue("bio_data", tempData);
             }}
           >
@@ -213,9 +213,7 @@ const BioContainer = ({ isLoginuser }) => {
               isReadMore={false}
               isLinkopenModal={isLinkopenModal}
               setisLinkopenModal={setisLinkopenModal}
-              isReadMoreValid={() => {
-                console.log("valid");
-              }}
+              isReadMoreValid={() => {}}
             >
               {getBioData()}
             </ReadMore>
@@ -228,25 +226,26 @@ const BioContainer = ({ isLoginuser }) => {
               if (BecameFanStatus === "") {
                 setBecameFanStatus("pending");
                 handleBecameFan().then(() => {
-                  setBecameFanStatus("completed");
+                  setBecameFanStatus("");
                 });
               }
             }}
             style={{
-              display: isLoginuser || profileData?.follow ? "none" : "",
+              display: isLoginuser || profileData?.follow ? "none" : "flex",
             }}
           >
             {BecameFanStatus === "" ? (
-              <>
-                Become a Fan
+              <div className={classes.becomeSec}>
+                <p>Become a Fan </p>
                 <i class="material-symbols-outlined">arrow_forward</i>
-              </>
+              </div>
             ) : (
               BecameFanStatus === "pending" && (
-                <>
-                  Please wait
-                  <Spin />
-                </>
+                <div className={classes.loadingSec}>
+                  <p>Please wait</p>
+
+                  <Spin className={classes.loader} />
+                </div>
               )
             )}
           </Button>

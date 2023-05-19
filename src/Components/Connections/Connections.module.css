@@ -176,6 +176,13 @@ padding: 4px;
     mask-position: left top;
     -webkit-mask-position: left top;
   }  
+
+  .connectionsLists::-webkit-scrollbar-thumb {
+    background-color: transparent !important;
+  }
+  .connectionsLists:hover::-webkit-scrollbar-thumb {
+    background-color: #E8EAEE !important;
+  }
   .userlogedin_icon {
     float: right;
     margin-top: 7px;

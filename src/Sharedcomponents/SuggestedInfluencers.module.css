@@ -4,12 +4,11 @@
     width: 310px;
     max-height: 100vh;
     padding-top:20px;
-    overflow-y: scroll;
     height: calc(100vh - 70px);
     position: sticky !important;
     position: -webkit-sticky;
     top: 74px;
-    overflow-y: scroll;
+    overflow-y: auto;
     /* mask-image: linear-gradient(0deg,transparent,#000),linear-gradient(270deg,transparent 17px,#000 0); */
     /* mask-size: 100% 20000px; */
     mask-position: left bottom;
@@ -18,7 +17,13 @@
     -webkit-mask-position: left bottom;
     transition: mask-position .3s,-webkit-mask-position .3s;
     overflow-x: hidden;
-    padding-right: 3px;
+    padding-right: 13px;
+ }
+ .beforeloginSec::-webkit-scrollbar-thumb {
+   background-color: transparent !important;
+ }
+ .beforeloginSec:hover::-webkit-scrollbar-thumb {
+   background-color: #E8EAEE !important;
  }
  /* .inpad { padding: 0 10px 0 15px; } */
  .signupbtn {

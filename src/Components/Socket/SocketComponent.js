@@ -63,7 +63,6 @@ const SocketComponent = () => {
             (ele) => ele.user_id !== message.userId
           ),
         };
-        console.log(updatedData);
         dispatch(
           handleUpdateGroupData({
             Group: updatedData,
@@ -76,10 +75,10 @@ const SocketComponent = () => {
 
   useEffect(() => {
     socketListen.on("connect", () => {
-      console.log("connected");
+      console.log("Socket connected");
     });
     socketListen.on("disconnect", (reason) => {
-      console.log("disconnected");
+      console.log("Socket disconnected");
     });
 
     socketListen.on(

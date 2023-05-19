@@ -109,7 +109,6 @@ const General = () => {
                     defaultValue={formikvalues[ele.keyword]}
                     className={classes.online_status}
                     onChange={(e) => {
-                      console.log(ele.keyword);
                       if (
                         e.target.value === ele.groupid ||
                         e.target.value === ele.friendid
@@ -343,12 +342,7 @@ const General = () => {
               optionFilterProp="children"
               value={formikvalues.time_zone}
               filterOption={(input, option) =>
-                (option?.label ?? "").includes(input)
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA?.label ?? "")
-                  .toLowerCase()
-                  .localeCompare((optionB?.label ?? "").toLowerCase())
+                (option.value.toLowerCase() ?? "").includes(input.toLowerCase())
               }
               options={TimeZones}
               onChange={(_, { value }) => {

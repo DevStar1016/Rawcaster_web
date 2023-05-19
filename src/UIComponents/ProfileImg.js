@@ -59,6 +59,7 @@ const ProfileImg = ({
         {isLoggedIn && getBadge() && (
           <img
             className={badgeClassName}
+            id="badgeImage"
             style={{ cursor: "pointer" }}
             alt={BadgeTitle}
             src={getBadge().img}

@@ -106,7 +106,6 @@ const CommentsList = ({ index }) => {
     let likeflag = like ? 2 : 1;
     handleNuggetCommentLike(id, likeflag)
       .then((res) => {
-        console.log(res);
         if (res.status === 0) {
           let tempData = [...CommentList];
           tempData[findIndex] = {
@@ -200,7 +199,6 @@ const CommentsList = ({ index }) => {
                                 let findData = EditData.find(
                                   (ele) => ele.comment_id === elem.comment_id
                                 );
-                                console.log(findData);
                                 if (findData) {
                                   if (isValidData(findData.comment)) {
                                     EditCommentforAnugget(
@@ -415,7 +413,6 @@ const CommentsList = ({ index }) => {
               alt="emoji"
               src={emoji}
               onClick={() => {
-                console.log(showEmojis);
                 if (showEmojis === nugget_id) {
                   setShowEmojis("");
                 } else {

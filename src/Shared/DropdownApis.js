@@ -106,7 +106,6 @@ export const getMelodyData = (token) => {
             value: ele.title,
             label: ele.title,
           }));
-          console.log(result, "==>result");
           resolve(result);
         } else {
           resolve(null);

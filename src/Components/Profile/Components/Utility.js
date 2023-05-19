@@ -165,11 +165,16 @@ export const getConnectionData = (values) => {
   return promise;
 };
 
-export const UserProfile = ({ ele, type, getConnectionList }) => {
+export const UserProfile = ({ ele, type, getConnectionList, className }) => {
   const dispatch = useDispatch();
   const { nuggetFormData } = useNuggets();
-  const { isLoginUser, setFansList, handleBecameFan, handleAddUser } =
-    useProfileContext();
+  const {
+    isLoginUser,
+    setFansList,
+    handleBecameFan,
+    handleAddUser,
+    setprofileData,
+  } = useProfileContext();
   const navigate = useNavigate();
   const loginuserData = useAuthData();
   const isUser = parseInt(loginuserData?.user_id) === parseInt(ele?.user_id);
@@ -195,14 +200,11 @@ export const UserProfile = ({ ele, type, getConnectionList }) => {
         style={{
           height: "60px",
           width: "60px",
+          overflow: "hidden",
           borderRadius: 50,
         }}
       >
-        <div
-          className={`${classes.iconSec} ${
-            !isLoginUser ? classes.othersIcon : ""
-          }`}
-        >
+        <div className={`${classes.iconSec} ${!isLoginUser ? className : ""}`}>
           {isLoginUser ? (
             <>
               {type === "unclaimed_influencers" && isLoginUser ? (
@@ -222,6 +224,7 @@ export const UserProfile = ({ ele, type, getConnectionList }) => {
               {type === "influencers" ? (
                 <span
                   className={`material-symbols-outlined ${classes.plusIcon}`}
+                  style={{ display: ele.follow ? "none" : "" }}
                   onClick={() => {
                     handleBecameFan(ele.user_ref_id).then((res) => {
                       getConnectionList({});
@@ -260,13 +263,7 @@ export const UserProfile = ({ ele, type, getConnectionList }) => {
             currentTarget.src = defaultprofileImg;
           }}
           onClick={() => {
-            let finalData = {
-              dispatch,
-              navigate,
-              nuggetFormData,
-              user_id: ele.user_id,
-            };
-            handleProfileNavigate(finalData);
+            setprofileData();
             setFansList({
               connections: [],
               allconnections: [],
@@ -274,11 +271,26 @@ export const UserProfile = ({ ele, type, getConnectionList }) => {
               allconnectionscount: 0,
               isLoaded: true,
             });
+            let finalData = {
+              dispatch,
+              navigate,
+              nuggetFormData,
+              user_id: ele.user_id,
+            };
+            handleProfileNavigate(finalData);
           }}
         />
       </Skeleton.Node>
       <p
         onClick={() => {
+          setprofileData();
+          setFansList({
+            connections: [],
+            allconnections: [],
+            connectionscount: 0,
+            allconnectionscount: 0,
+            isLoaded: true,
+          });
           let finalData = {
             dispatch,
             navigate,

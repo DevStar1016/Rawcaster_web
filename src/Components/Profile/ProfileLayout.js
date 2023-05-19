@@ -20,13 +20,14 @@ import {
 import classes from "./Profile.module.css";
 import { updateProfileService } from "../../Services/ApiService";
 import { useDispatch } from "react-redux";
-import { Button, Skeleton, Spin } from "antd";
+import { Button, Dropdown, Modal, Skeleton, Spin } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import AddFriendIcon from "../../Assets/Icons/svg/profile_add_friend.svg";
 import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
+import { handleUnFollowService, handleUnFriendService } from "./Utility";
 
 const ProfileLayout = ({
   children,
@@ -35,8 +36,10 @@ const ProfileLayout = ({
   isEditable = false,
   isLocked = false,
   handleAddUser,
+  setprofileData,
 }) => {
   const loginUserData = useAuthData();
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const params = useParams();
@@ -97,14 +100,107 @@ const ProfileLayout = ({
       return false;
     } else if (pathname.includes("claim")) {
       return false;
-    } else if (profileData?.friend_status !== null) {
-      if (getisAddFriend(profileData?.friend_status)) {
-        return true;
-      }
-      return false;
+    } else if (getisAddFriend(profileData?.friend_status)) {
+      return true;
     } else {
       return false;
     }
+  };
+
+  const UnfriendService = () => {
+    handleUnFriendService(loginToken, profileData?.user_ref_id).then(() => {
+      setprofileData((pre) => ({
+        ...pre,
+        friend_status: 0,
+      }));
+    });
+  };
+  const UnfollowService = () => {
+    handleUnFollowService(loginToken, profileData?.user_ref_id).then(() => {
+      setprofileData((pre) => ({
+        ...pre,
+        follow: false,
+      }));
+    });
+  };
+
+  const DropDownItems = [
+    {
+      key: 1,
+      label: (
+        <div
+          onClick={() => {
+            Modal.confirm({
+              title: "Confirmation",
+              okText: "Yes",
+              cancelText: "No",
+              okButtonProps: {
+                danger: true,
+              },
+              content: <div>Are you sure to Unfollow this User ?</div>,
+              onOk: () => {
+                UnfollowService();
+              },
+            });
+          }}
+        >
+          Unfollow
+        </div>
+      ),
+    },
+    {
+      key: 2,
+      label: (
+        <div
+          onClick={() => {
+            Modal.confirm({
+              title: "Confirmation",
+              okText: "Yes",
+              cancelText: "No",
+              okButtonProps: {
+                danger: true,
+              },
+              content: <div>Are you sure to remove this connection ?</div>,
+              onOk: () => {
+                UnfriendService();
+              },
+            });
+          }}
+        >
+          Remove Friend
+        </div>
+      ),
+    },
+  ];
+
+  const getValidItems = () => {
+    return DropDownItems.filter((ele) => {
+      const getisAddFriend = () => {
+        if (profileData) {
+          switch (profileData.friend_status) {
+            case 1:
+              return true;
+            default:
+              return false;
+          }
+        } else {
+          if (profileData?.unclaimed_status === 0) {
+            return false;
+          }
+          return true;
+        }
+      };
+      if (
+        !isAddFriend() &&
+        getisAddFriend() &&
+        parseInt(ele.key) === 2 &&
+        !isLoginUser
+      ) {
+        return ele;
+      } else if (profileData?.follow && ele.key === 1) {
+        return ele;
+      }
+    });
   };
 
   return (
@@ -200,18 +296,32 @@ const ProfileLayout = ({
                 )}
               </div>
             </div>
-            {profileData?.unclaimed_status === 0 && (
-              <div className={classes.claimBtnSec}>
+
+            <div className={classes.claimBtnSec}>
+              {profileData?.unclaimed_status === 0 && (
                 <Button
-                  className={classes.becomeafanbtn}
+                  className={`${classes.becomeafanbtn} mx-4`}
                   onClickCapture={() => {
                     navigate(`/claim/${EncryptionString(profileData.user_id)}`);
                   }}
                 >
                   Claim this Account
                 </Button>
-              </div>
-            )}
+              )}
+              {getValidItems().length !== 0 && (
+                <Dropdown
+                  placement="bottomRight"
+                  menu={{
+                    items: getValidItems(),
+                    selectable: false,
+                  }}
+                >
+                  <div style={{ cursor: "pointer" }}>
+                    <span class="material-icons">more_horiz</span>
+                  </div>
+                </Dropdown>
+              )}
+            </div>
           </div>
         </div>
       )}

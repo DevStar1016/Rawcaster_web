@@ -221,7 +221,6 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         close();
       });
   };
-  console.log(groupsList);
   const HandleAddFriendstoGroup = (members) => {
     const addUser = {
       token,
@@ -244,7 +243,6 @@ const ConfigureGroup = ({ groupId, close, open }) => {
               ...res.data.memberdetails,
             ],
           };
-          console.log(updatedGroup);
           let message = {
             groupId: GroupDetails.group_id,
             userId: userData.user_id,

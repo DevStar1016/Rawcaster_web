@@ -258,6 +258,12 @@ const HomeLayout = () => {
                 </div>
                 <Dropdown
                   placement="bottomRight"
+                  re
+                  // disabledArea={[
+                  //   {
+                  //     element: document.getElementById("badgeImage"),
+                  //   },
+                  // ]}
                   menu={{
                     items: [
                       {
@@ -297,7 +303,11 @@ const HomeLayout = () => {
                         Badgetype={loginUserData?.user_status_id}
                         BadgeTitle={loginUserData?.user_status}
                       />
-                      <Tooltip title={loginUserData?.name} placement="right">
+                      <Tooltip
+                        title={loginUserData?.name}
+                        placement="right"
+                        open={false}
+                      >
                         <span
                           className={classes.onlydes}
                           onClick={() => {

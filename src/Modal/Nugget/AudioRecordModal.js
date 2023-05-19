@@ -26,16 +26,14 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.stop();
         clearBlobUrl();
-        console.log("recorder stopped, data available");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {});
   };
 
   const onRecordStart = () => {
     reset();
   };
   const onRecordStop = (url, blob) => {
-    console.log(blob);
     const file = new File([blob], "RecordAudio.wav", {
       type: blob.type,
     });
@@ -67,7 +65,6 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
       })
       .catch((err) => {
         const { type, message } = err;
-        console.log(message);
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
           toast.error(
             "browser does not have permission to access camera or microphone"

@@ -13,6 +13,7 @@ import {
   likeAndUnlikeNuggetCommentService,
   shareNuggetService,
   getNuggetDetailService,
+  NuggetAbuseReportService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
@@ -46,12 +47,16 @@ import ProfileImg from "../../UIComponents/ProfileImg";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
 import {
+  handleDeleteNuggetList,
+  handleDeleteNuggetListByUserId,
   handleNuggetList,
   handleNuggetViewUpdate,
   handlenuggetVideoPaused,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import _debounce from "lodash/debounce";
 import { HandleBecameaFan } from "../../Shared/SharedAPIs";
+import ReportGroup from "../../Modal/Report/ReportGroup";
+import { blockunblockuserService } from "../../Services/ApiService";
 
 const Post = ({
   ele,
@@ -84,6 +89,7 @@ const Post = ({
   const [iscollapse, setiscollapse] = useState(false);
   const [isvalidContent, setisvalidContent] = useState(false);
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
+  const [isReport, setisReport] = useState(false);
 
   const [ref] = useInView({
     onEnter: () => {
@@ -186,8 +192,36 @@ const Post = ({
     return promise;
   };
 
-  const handleBlock = () => {
-    console.log("Block");
+  const handleBlock = (id) => {
+    let BlockData = {
+      token: Token,
+      user_id: id,
+      action: 1,
+    };
+    blockunblockuserService(JSONtoformdata(BlockData)).then((res) => {
+      if (res.data.status === 1) {
+        toast.success(res.data.msg);
+        dispatch(handleDeleteNuggetListByUserId(id));
+      } else {
+        toast.error(res.data.msg);
+      }
+    });
+  };
+
+  const handleReport = (val) => {
+    let abuseData = {
+      token: Token,
+      nugget_id: ele.nugget_id,
+      ...val,
+    };
+    NuggetAbuseReportService(JSONtoformdata(abuseData)).then((res) => {
+      if (res.data.status === 1) {
+        toast.success(res.data.msg);
+        dispatch(handleDeleteNuggetList(ele.nugget_id));
+      } else {
+        toast.error(res.data.msg);
+      }
+    });
   };
 
   const getMoreValues = (ele) => {
@@ -278,13 +312,31 @@ const Post = ({
         ];
         return resultData;
       }
-    } else {
+    } else if (ele?.following) {
       let resultData = [
         {
           key: 1,
           label: (
-            <div onClick={() => handleBlock()} className={classes.dropdownItem}>
-              <span class="material-symbols-outlined">report</span> Report
+            <div
+              onClick={() => {
+                Modal.confirm({
+                  title: "Confirmation",
+                  okText: "Yes",
+                  cancelText: "No",
+                  cancelButtonProps: {
+                    danger: true,
+                  },
+                  content: (
+                    <div>Are You Sure Do you want to Block this user ? </div>
+                  ),
+                  onOk: () => {
+                    handleBlock(ele.user_id);
+                  },
+                });
+              }}
+              className={classes.dropdownItem}
+            >
+              <span class="material-symbols-outlined">block</span> Block User
             </div>
           ),
         },
@@ -292,7 +344,69 @@ const Post = ({
           key: 2,
           label: (
             <div
-              style={{ display: ele?.following ? "none" : "" }}
+              onClick={() => {
+                setisReport(true);
+              }}
+              className={classes.dropdownItem}
+            >
+              <span class="material-symbols-outlined">report</span> Report Abuse
+            </div>
+          ),
+        },
+
+        // {
+        //   key: 3,
+        //   label: <div onClick={() => handleShareLink()}><span class="material-symbols-outlined">
+        //   more_horiz
+        //   </span>report abuse</div>,
+        // },
+      ];
+      return resultData;
+    } else {
+      let resultData = [
+        {
+          key: 1,
+          label: (
+            <div
+              onClick={() => {
+                Modal.confirm({
+                  title: "Confirmation",
+                  okText: "Yes",
+                  cancelText: "No",
+                  cancelButtonProps: {
+                    danger: true,
+                  },
+                  content: (
+                    <div>Are You Sure Do you want to Block this user ? </div>
+                  ),
+                  onOk: () => {
+                    handleBlock(ele.user_id);
+                  },
+                });
+              }}
+              className={classes.dropdownItem}
+            >
+              <span class="material-symbols-outlined">block</span> Block User
+            </div>
+          ),
+        },
+        {
+          key: 2,
+          label: (
+            <div
+              onClick={() => {
+                setisReport(true);
+              }}
+              className={classes.dropdownItem}
+            >
+              <span class="material-symbols-outlined">report</span> Report Abuse
+            </div>
+          ),
+        },
+        {
+          key: 3,
+          label: (
+            <div
               onClick={() => {
                 HandleBecameaFan(Token, ele.user_ref_id);
               }}
@@ -705,7 +819,7 @@ const Post = ({
                         try {
                           LikeProcess(ele.nugget_id, like);
                         } catch (error) {
-                          console.log(error);
+                          console.log(error, "===>Post Like");
                         }
                       } else {
                         dispatch(
@@ -904,7 +1018,19 @@ const Post = ({
             });
           }}
         />
-
+        {isReport && (
+          <ReportGroup
+            open={isReport}
+            msg="Report this Nugget to Rawcaster"
+            onSuccess={(val) => {
+              handleReport(val);
+              setisReport(false);
+            }}
+            close={() => {
+              setisReport(false);
+            }}
+          />
+        )}
         {Comments === ele.nugget_id && (
           <CommentsList
             nugget_id={Comments}

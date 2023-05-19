@@ -193,7 +193,6 @@ const Settings = () => {
           };
           handleupdate(updateObj).then((response) => {
             if (response.account_active_inactive === 0) {
-              console.log("res");
               dispatch(handleAccountActive(false));
               RemoveToken(dispatch);
               window.location.reload();

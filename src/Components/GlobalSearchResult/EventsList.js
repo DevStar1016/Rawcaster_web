@@ -106,7 +106,6 @@ const EventsList = () => {
 
   useEffect(() => {
     if (isGlobalSearch || EventList?.length === 0) {
-      console.log("testttttt");
       dispatch(handleLoading(true));
       setisFetching(true);
       getEventList();
@@ -147,10 +146,8 @@ const EventsList = () => {
         </div>
       ) : (
         <div className={` ${classes.profileSec} w-100`} ref={scrollRef}>
-          {getValidEvent()?.length === 0 ? (          
-              <div className={classes.DisplayMsg}>
-                We didn't find any results
-              </div>          
+          {getValidEvent()?.length === 0 ? (
+            <div className={classes.DisplayMsg}>We didn't find any results</div>
           ) : (
             <>
               <Row>

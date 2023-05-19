@@ -10,7 +10,7 @@ import * as Yup from "yup";
 const schema = Yup.object().shape({
   content: Yup.string()
     .max(150, "Question cannot be longer than 150 characters")
-    .required("Content is required"),
+    .required("Question is required"),
   duration: Yup.string().required("Poll Length is required"),
   poll_option: Yup.array()
     .of(
@@ -82,6 +82,7 @@ const Postpoll = ({ setisPoll }) => {
           maxLength={150}
           onChange={handleChange("content")}
         />
+        {touched.content && <p className="ErrTxt">{errors?.content}</p>}
         <div className={classes.pollContainer}>
           <div className={classes.addSec}>
             {PollData.length !== 4 && (
@@ -147,12 +148,13 @@ const Postpoll = ({ setisPoll }) => {
                 );
               })}
             </Row>
-            {touched.touched && <p className="ErrTxt">{errors?.touched}</p>}
+            {touched.poll_option && (
+              <p className="ErrTxt">{errors?.poll_option}</p>
+            )}
             <Row>
               <p className={classes.label}>Poll Length </p>
               <PollDateinputBox
                 onSelectDate={(date) => {
-                  console.log(date);
                   if (typeof date === "object") {
                     setFieldValue(
                       "duration",
@@ -163,6 +165,7 @@ const Postpoll = ({ setisPoll }) => {
                   }
                 }}
               />
+              {touched.duration && <p className="ErrTxt">{errors?.duration}</p>}
             </Row>
             <div className={classes.deleteSec}>
               <div
@@ -179,11 +182,9 @@ const Postpoll = ({ setisPoll }) => {
         </div>
 
         <Button
-          className={isValid ? classes.btnstyle : classes.disabledBtn}
+          className={classes.btnstyle}
           onClick={() => {
-            if (isValid) {
-              handleSubmit();
-            }
+            handleSubmit();
           }}
         >
           Post Poll

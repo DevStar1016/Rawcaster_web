@@ -33,7 +33,11 @@
     border-radius: 12px; clear: both;
 }
 .inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
-.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 1; border-radius: 50px !important; background: #563662 !important; width:45px; }
+.inSearch:focus {
+    border:none !important;
+    box-shadow: none !important;
+}
+.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 11; border-radius: 50px !important; background: #563662 !important; width:45px; }
 .searchIcon span {color: #fff; }
 .rightarrow { float: right; font-size: 19px; margin-left: 5px;    margin-top: 2px;}
 .influencers {
@@ -44,14 +48,20 @@
 .influencers .counts { display: list-item; list-style: inside; color: #1D1C1C; margin-top: 20px; opacity: 0.7}
 .influencers .profileimg {  width: 65px; height: 65px; border-radius: 50%; float: left; margin-right: 20px; margin-bottom: 20px;}
 .influencers .diamond { position: absolute;    left: 67px;    width: 30px;    top: 76px; }
-.influencers .name { margin-bottom: 5px; display: inline-block; font-size: 16px; font-weight: 400;
-    display: -webkit-box;
+.influencers .name { margin-bottom: 5px;
+     font-size: 16px; font-weight: 400;
+     display: flex;
+     flex-direction: row;
+  
+}
+.influencers .name p {
+  display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
-        max-width: 200px;
+    max-width: 170px;
     width: fit-content;
 }
 .influencers .name span { display:list-item; float: right; margin-left: 25px; opacity: 0.7; font-size: 15px; font-weight: 300}

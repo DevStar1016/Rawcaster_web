@@ -23,6 +23,7 @@ import {
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import { toast } from "react-hot-toast";
 import { message } from "antd";
+import { useParams } from "react-router";
 
 // Auth
 
@@ -31,7 +32,6 @@ export const getRawcaserToken = () => {
     try {
       return JSON.parse(getCookieData("rawcaster_user_token"));
     } catch (error) {
-      console.log(error);
       return null;
     }
   }
@@ -424,10 +424,6 @@ export const userTimezonetoUtc = (time, zonename) => {
   let userTimeZone = moment1(time, "YYYY-MM-DD HH:mm:ss").tz(
     getTimezoneName(zonename)
   );
-  console.log(
-    moment(userTimeZone).utc().format("YYYY-MM-DD HH:mm:ss"),
-    "moment().utc()"
-  );
   return moment(userTimeZone).utc();
 };
 
@@ -473,27 +469,28 @@ export const datetoString = (t) => {
 };
 
 export const handleProfileNavigate = (userData) => {
+  const Encrypted_id = window.location.pathname.replace("/viewprofile/", "");
+  const display_user_id = DecryptionString(Encrypted_id);
   const { navigate, dispatch, nuggetFormData, user_id } = userData;
-  let filterData = { ...nuggetFormData };
-  filterData.formData = {
-    ...filterData.formData,
-    search_key: null,
-    user_id: user_id,
-    page_number: 1,
-  };
-  filterData.formData = filterValidObject(filterData.formData);
-  dispatch(handleResetNuggets());
-  dispatch(handleNuggetFormData(filterValidObject(filterData)));
-  dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
-  navigate(`/viewprofile/${EncryptionString(user_id)}`);
+  if (parseInt(display_user_id) !== parseInt(user_id)) {
+    let filterData = { ...nuggetFormData };
+    filterData.formData = {
+      ...filterData.formData,
+      search_key: null,
+      user_id: user_id,
+      page_number: 1,
+    };
+    filterData.formData = filterValidObject(filterData.formData);
+    dispatch(handleResetNuggets());
+    dispatch(handleNuggetFormData(filterValidObject(filterData)));
+    // dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
+    navigate(`/viewprofile/${EncryptionString(user_id)}`);
+  }
 };
 
 export const ErrorHandling = (error) => {
   return new Promise((resolve, reject) => {
     if (error.response) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
       if (error.response.status === 404) {
         handleErrorMsg(
           "The requested resource does not exist or has been deleted",

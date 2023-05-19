@@ -37,7 +37,6 @@ import {
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { getfollowerfollowingService } from "./Components/Utility";
 import ProfileLayout from "./ProfileLayout";
-import { socketListen } from "../../Services/SocketService";
 import { HandleAddFriend, HandleBecameaFan } from "../../Shared/SharedAPIs";
 import { friendRequestSocket } from "../../Services/SocketList";
 
@@ -68,7 +67,6 @@ const Profile = () => {
   };
 
   const getuserprofile = (id) => {
-    setprofileData();
     let otherprofileValue = {
       token: loginToken,
       user_id: id,
@@ -78,6 +76,9 @@ const Profile = () => {
       .then((res) => {
         if (res.data.status === 1) {
           setprofileData(res.data.profile);
+          if (res.data.profile.lock_nugget === 1) {
+            getprofile();
+          }
         }
       })
       .catch((err) => {});
@@ -99,12 +100,13 @@ const Profile = () => {
 
   useEffect(() => {
     if (loginUserData) {
-      getprofile();
       if (getisLoginUser()) {
         if (loginUserData) {
           setprofileData(loginUserData);
+          getprofile();
         }
       } else {
+        setprofileData();
         getuserprofile(display_user_id);
       }
     }
@@ -212,6 +214,7 @@ const Profile = () => {
     FansList,
     setFansList,
     profileData,
+    setprofileData,
     isLinkopenModal,
     setisLinkopenModal,
     isLoginUser: getisLoginUser(),
@@ -228,6 +231,7 @@ const Profile = () => {
             profileData={profileData}
             isFansEnabled
             isEditable
+            setprofileData={setprofileData}
             isLocked={profileData && profileData.lock_fans === 1}
             handleAddUser={handleAddUser}
           >

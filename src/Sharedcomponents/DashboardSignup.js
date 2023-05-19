@@ -122,7 +122,6 @@ const DashboardSignup = () => {
                 type="video/mp4"
                 onPlayCapture={() => {
                   setControlls(true);
-                  console.log("test");
                 }}
               />
 
@@ -176,9 +175,7 @@ const DashboardSignup = () => {
                   toast.error("Something Went Wrong !!");
                 }
               }}
-              onReject={(err) => {
-                console.log(err);
-              }}
+              onReject={(err) => {}}
             >
               <Button className={classes.altSignBtn}>
                 <img src={AppleIcon} alt="Signup_with_Apple" /> Signup with

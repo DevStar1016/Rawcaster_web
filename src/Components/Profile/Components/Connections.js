@@ -40,6 +40,7 @@ const ConnectionsList = ({
   const params = useParams();
   const dispatch = useDispatch();
   const display_user_id = DecryptionString(params.user_id);
+  const [isLoadingConnection, setisLoadingConnection] = useState(false);
   const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
     show: false,
   });
@@ -55,7 +56,6 @@ const ConnectionsList = ({
     isLoaded: true,
   });
   const [isSeeMore, setisSeeMore] = useState(false);
-  const navigate = useNavigate();
 
   const getUserList = (val = {}) => {
     let fansList = {
@@ -90,7 +90,10 @@ const ConnectionsList = ({
         }
         setConnectionsList(finalObj);
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setisLoadingConnection(false);
+      });
   };
 
   const getConnectionList = (val = {}) => {
@@ -125,7 +128,10 @@ const ConnectionsList = ({
         }
         setConnectionsList(finalObj);
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setisLoadingConnection(false);
+      });
   };
 
   const getUnclaimedInfluencer = (val = {}) => {
@@ -150,19 +156,30 @@ const ConnectionsList = ({
         }
         setConnectionsList(finalObj);
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setisLoadingConnection(false);
+      });
   };
 
   const GetList = (val = {}) => {
     if (type === "influencers") {
+      setisLoadingConnection("influencers");
       getUserList(val);
     } else if (type === "connections") {
+      setisLoadingConnection("connections");
       getConnectionList(val);
     } else if (type === "fans") {
-      getFollowers(val).then((res) => {
-        setConnectionsList(res);
-      });
+      setisLoadingConnection("fans");
+      getFollowers(val)
+        .then((res) => {
+          setConnectionsList(res);
+        })
+        .finally(() => {
+          setisLoadingConnection(false);
+        });
     } else if (type === "unclaimed_influencers" && isMyProfile) {
+      setisLoadingConnection("unclaimed_influencers");
       getUnclaimedInfluencer(val);
     }
   };
@@ -175,7 +192,7 @@ const ConnectionsList = ({
     }
   }, [loginToken, isLoading]);
 
-  const PrivacySkeleton = () => {
+  const PrivacySkeleton = ({ isLoading }) => {
     return [...Array(8)].map((ele) => {
       return (
         <div className={classes.list}>
@@ -187,19 +204,21 @@ const ConnectionsList = ({
               borderRadius: 50,
             }}
           >
-            <img src={userImg} />
+            <img src={isLoading ? "" : userImg} />
           </Skeleton.Node>
-          <Skeleton.Node
-            active={false}
-            style={{
-              height: "10px",
-              width: "fit-content",
-              borderRadius: 50,
-              marginTop: "5px",
-            }}
-          >
-            <p>{"Rawcaster"}</p>
-          </Skeleton.Node>
+          {isLoading ? null : (
+            <Skeleton.Node
+              active={false}
+              style={{
+                height: "10px",
+                width: "fit-content",
+                borderRadius: 50,
+                marginTop: "5px",
+              }}
+            >
+              <p>{"Rawcaster"}</p>
+            </Skeleton.Node>
+          )}
         </div>
       );
     });
@@ -214,26 +233,26 @@ const ConnectionsList = ({
         !isMyProfile ? classes.othersProfileThumb : ""
       } `}
     >
-      <h2 className={!isLocked && type === "fans" && classes.fansHeading}>
-        {title} {!isLocked ? `(${ConnectionsList.allconnectionscount})` : ""}
-        {!isLocked && type === "fans" && (
-          <div
-            style={{ display: isLoginUser ? "" : "none" }}
-            className={classes.actionSec}
-          >
-            <img
-              className={classes.actionIcon}
-              src={msgIcon}
-              onClick={() => {
-                setisInfluencerChatModalOpen({
-                  show: true,
-                });
-              }}
-            />
-            <img className={classes.actionIcon} src={talkshowIcon} />
-          </div>
-        )}
+      <h2 className={classes.fansHeading}>
+        <div className="d-flex flex-row ">
+          {title} {!isLocked ? `(${ConnectionsList.allconnectionscount})` : ""}
+          {!isLocked && type === "fans" && isMyProfile && (
+            <div className={classes.actionSec}>
+              <img
+                className={classes.actionIcon}
+                src={msgIcon}
+                onClick={() => {
+                  setisInfluencerChatModalOpen({
+                    show: true,
+                  });
+                }}
+              />
+              <img className={classes.actionIcon} src={talkshowIcon} />
+            </div>
+          )}
+        </div>
         {!isLocked &&
+          !isLoadingConnection &&
           ConnectionsList.connections.length <
             ConnectionsList.allconnectionscount && (
             <span
@@ -258,7 +277,7 @@ const ConnectionsList = ({
         </div>
       ) : (
         <>
-          {ConnectionsList.isLoaded ? (
+          {ConnectionsList.isLoaded && isLoadingConnection !== type ? (
             <>
               {ConnectionsList.allconnectionscount !== 0 ? (
                 <div className={`${classes.listSec} `}>
@@ -266,6 +285,7 @@ const ConnectionsList = ({
                     <UserProfile
                       ele={ele}
                       type={type}
+                      className={classes.othersIcon}
                       getConnectionList={GetList}
                     />
                   ))}
@@ -282,7 +302,7 @@ const ConnectionsList = ({
             </>
           ) : (
             <div className={classes.listSec}>
-              <PrivacySkeleton isActive={true} />
+              <PrivacySkeleton isLoading={true} />
             </div>
           )}
         </>

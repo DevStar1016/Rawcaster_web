@@ -224,7 +224,6 @@ const PostNuggets = () => {
     };
     getNuggetDetailService(JSONtoformdata(nuggetDetailData))
       .then((res) => {
-        console.log(res.data);
         if (res.data.status === 1) {
           setValues({
             content: decodeHtml(res.data.nugget_detail.content),

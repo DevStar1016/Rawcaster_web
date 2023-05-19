@@ -22,6 +22,7 @@
     justify-content: center;
     border-radius: 50px;
     cursor: pointer;
+    z-index: 11 !important;
 }
 .editIcon { background: url(../../Assets/Icons/svg/edit_icon.svg) no-repeat center center;  background-size: cover; width: 15px; height: 15px; display: flex; justify-content: center; align-items: center;cursor: pointer;    margin-top: 4px !important;}
 .bannerImg {
@@ -30,6 +31,7 @@
 }
 .uploadSec span {
     font-size: 20px;
+    cursor: pointer;
 }
 .textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #ccc; padding-left: 20px; width: 100% !important;min-width: 306px !important; margin: 5px 0; }
 /* .textBox::placeholder { color: #C3C3C3; font-size: 16px; }  */
@@ -163,10 +165,66 @@
     background: linear-gradient(91.19deg, #E26C89 1.82%, #82456F 97.17%);   
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    width: 100%;height: 35px;display: flex; justify-content:center; align-items: center;color: #fff; margin-top: 10px; 
-    height: 42px; border: none; font-size: 15px;
+  
+    width: 100%;
+     color: #fff; 
+     margin-top: 10px; 
+    height: 42px;
+     border: none; 
+    font-size: 15px;
+    
 }
-.becomeafanbtn i { font-size: 15px; padding-left: 2px; margin-bottom: 4px;}
+.becomeSec {
+  display: flex; 
+     flex-direction: row;
+    justify-content:center;
+     width: 100%;
+     height: 38px;
+     align-items: center;
+}
+.becomeafanbtn p {
+font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 26px;
+margin-bottom: 4px !important;
+  margin-right: 10px;
+}
+.loadingSec {
+  display: flex; 
+     flex-direction: row;
+    justify-content:space-between;
+     width: 100%;
+     height: 42px;
+     align-items: center;
+}
+.loadingSec p{
+font-family: 'DM Sans';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 20px;
+    margin-bottom: 9px !important;
+  
+
+}
+.becomeafanbtn i { 
+font-size: 15px;
+padding-left: 2px;
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 15px;
+margin-top: 0px !important;
+}
+.loader {
+   margin-bottom: 3px;
+   color: #E26C89;
+}
+.loader i {
+  background-color: darkturquoise !important
+}
 .becomeafanbtn:hover, .becomeafanbtn span:hover, .becomeafanbtn i:hover { color:#fff !important; } 
 
 .claimBtnSec {

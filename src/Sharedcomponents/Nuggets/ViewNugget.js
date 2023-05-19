@@ -45,9 +45,7 @@ const ViewNugget = () => {
             isCommentShow={true}
             ele={NuggetData}
             muted={false}
-            setmuted={(status) => {
-              console.log(status);
-            }}
+            setmuted={(status) => {}}
             handleLike={(like) => {
               let tempData = { ...NuggetData };
               tempData = {

@@ -213,15 +213,6 @@ const CameraModal = ({
                 id="Camera_ref"
                 autoPlay
                 style={{ height: "100%", width: "100%", borderRadius: "7px" }}
-                onLoadStart={() => {
-                  console.log("test");
-                }}
-                onLoadedData={() => {
-                  console.log("test1");
-                }}
-                onLoad={() => {
-                  console.log("loaded");
-                }}
               />
             ) : null}
             {visible ? (
@@ -261,7 +252,7 @@ const CameraModal = ({
                     >
                       radio_button_checked
                     </span>
-                    Start 
+                    Start
                   </button>
                 )}
               </div>

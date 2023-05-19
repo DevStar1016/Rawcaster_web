@@ -125,7 +125,7 @@ const UpdateProfile = () => {
             first_name: profileData.first_name,
             last_name: profileData.last_name,
             gender: profileData.gender,
-            dob: profileData.dob,
+            dob: profileData.dob ? profileData.dob : "",
             email_id: profileData.email_id,
             mobile_no: profileData.mobile,
             profile_image: profileData.profile_image,
@@ -384,7 +384,9 @@ const UpdateProfile = () => {
                 displayDate={values.dob}
                 onSelectDate={(date) => {
                   if (date !== "") {
+                    console.log(date);
                     setFieldValue("dob", moment(date).format("YYYY-MM-DD"));
+                    console.log(values);
                   } else {
                     setFieldValue("dob", "");
                   }
@@ -575,17 +577,14 @@ const UpdateProfile = () => {
                   <Button
                     block
                     onClick={() => {
-                      validateForm()
-                        .then((res) => {
-                          if (Object.keys(res).length === 0) {
-                            handleupdateProfile(values, true);
-                          } else {
-                            handleSubmit();
-                          }
-                        })
-                        .catch((err) => {
-                          console.log(err);
-                        });
+                      validateForm().then((res) => {
+                        if (Object.keys(res).length === 0) {
+                          handleupdateProfile(values, true);
+                        } else {
+                          handleSubmit();
+                        }
+                      });
+
                       //
                     }}
                     className={classes.nextBtn}

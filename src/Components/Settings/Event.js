@@ -81,7 +81,6 @@ const Event = () => {
                       : formikvalues[ele.type]
                   }
                   onChange={(e) => {
-                    console.log(ele.type, e.target.checked ? 1 : 0);
                     setupdateValue(ele.type, e.target.checked ? 1 : 0);
                   }}
                   disabled={handlePrimaryDisabled(ele.type, ele.isprimary)}
@@ -414,9 +413,7 @@ const Event = () => {
         id="imageUploadSetting"
         name="imageUploadSetting"
         style={{ display: "none" }}
-        onChange={(e) => {
-          console.log(e.target.files[0]);
-        }}
+        onChange={(e) => {}}
         accept="image/*"
       ></input>
     </div>

@@ -301,8 +301,11 @@ export const InviteEmailComponent = ({ onResult, value }) => {
     });
     if (newMail.length > 0) {
       document.getElementById("extmail").value = "";
-      onResult([...externalMailId, ...newMail]);
-      setExternalMailId((prev) => [...prev, ...newMail]);
+
+      setExternalMailId((prev) => {
+        onResult([...prev, ...newMail]);
+        return [...prev, ...newMail];
+      });
     }
   };
 
@@ -425,7 +428,6 @@ export const TimeValueComponent = ({ onResult, value }) => {
             setshowTimePicker(false);
           }}
           onSelect={(time) => {
-            console.log(time);
             setdisplayTimeValue(moment(time).format("HH:mm"));
             setTimeValue((pre) => ({
               ...pre,
@@ -599,7 +601,6 @@ export const Connections = ({ onResult, values }) => {
         friends={selectedFriendList}
         setfriends={(id) => {
           const findData = selectedFriendList.find((ele) => ele.user_id === id);
-          console.log(findData);
           if (findData) {
             setFilterFriendList((pre) => [...pre, findData]);
           }

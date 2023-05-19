@@ -104,7 +104,6 @@ export const fetchNuggetsbyId = createAsyncThunk(
       ...formData,
       token: token,
     };
-    console.log(nuggetData);
     try {
       const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
       if (data.status === 1) {
@@ -165,7 +164,6 @@ export const fetchuserInfobyToken = createAsyncThunk(
     };
     try {
       const { data } = await getProfileService(JSONtoformdata(profileData));
-      console.log(data);
       if (data.status === 1) {
         const finalData = {
           ...data.profile,

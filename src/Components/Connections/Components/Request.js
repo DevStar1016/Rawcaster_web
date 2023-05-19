@@ -2,13 +2,26 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { respondToFriendRequestsService } from "../../../Services/ApiService";
 import { sendMessage } from "../../../Services/SocketService";
-import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
-import { decodeHtml, JSONtoformdata } from "../../../Shared/Utility";
+import {
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../../Shared/Reduxfetcher";
+import {
+  decodeHtml,
+  handleProfileNavigate,
+  JSONtoformdata,
+} from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 const Request = ({ request, setrequests, onSuccess, onReject }) => {
   const token = useAuthToken();
   const profileData = useAuthData();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nuggetFormData } = useNuggets();
 
   const handleRequest = (action) => {
     let respondData = {
@@ -70,6 +83,15 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
       <div className={classes.list}>
         <img
           src={request.profile_img ? request.profile_img : ""}
+          onClick={() => {
+            let finalData = {
+              dispatch,
+              navigate,
+              nuggetFormData,
+              user_id: request.user_id,
+            };
+            handleProfileNavigate(finalData);
+          }}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = defaultprofileImg;

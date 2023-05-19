@@ -24,7 +24,5 @@ export default ConnectSocket;
 export const socketListen = socket;
 
 export const sendMessage = (data, type = "message") => {
-  socket.emit(type, data, (res) => {
-    console.log(res, "sendMessage");
-  });
+  socket.emit(type, data);
 };

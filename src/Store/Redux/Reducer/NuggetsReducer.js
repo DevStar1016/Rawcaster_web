@@ -41,6 +41,12 @@ export const { actions, reducer } = createSlice({
       );
       state.Nuggets = filterData;
     },
+    handleDeleteNuggetListByUserId: (state, action) => {
+      let filterData = [...state.Nuggets].filter(
+        (ele) => ele.user_id !== action.payload
+      );
+      state.Nuggets = filterData;
+    },
     handleNuggetViewUpdate: (state, action) => {
       const index = action.payload;
       if (state.Nuggets[index].viewed === 0 && state.token) {
@@ -116,6 +122,7 @@ export const {
   handleNuggetViewUpdate,
   handleDeleteNuggetList,
   handlenuggetToken,
+  handleDeleteNuggetListByUserId,
 } = actions;
 
 export default reducer;

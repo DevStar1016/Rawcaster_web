@@ -309,6 +309,7 @@ export const GroupHeader = () => {
         )}
       </div>
       <ReportGroup
+        msg="Report this group to Rawcaster"
         open={isReport}
         onSuccess={(val) => {
           handleReportGroup(val);
@@ -353,11 +354,17 @@ export const SelectConnections = () => {
   };
 
   const getSearchData = () => {
-    return getValidConnections().filter((ele) =>
-      decodeHtml(ele.display_name)
-        .toLowerCase()
-        .includes(searchInput.toLowerCase())
-    );
+    if (getValidConnections() && getValidConnections().length !== 0) {
+      return getValidConnections().filter((ele) =>
+        ele?.display_name
+          ? decodeHtml(ele?.display_name)
+              .toLowerCase()
+              .includes(searchInput.toLowerCase())
+          : ele
+      );
+    } else {
+      return [];
+    }
   };
 
   return (
@@ -569,7 +576,7 @@ export const EditGroupMembers = () => {
               style={{
                 position: "relative",
                 padding: "10px 0px",
-                display: decodeHtml(ele.display_name)
+                display: decodeHtml(ele?.display_name)
                   .toLowerCase()
                   .includes(searchInput.toLowerCase())
                   ? "block"
@@ -598,7 +605,7 @@ export const EditGroupMembers = () => {
                   }}
                 >
                   <span className={classes.userName}>
-                    {decodeHtml(ele.display_name)}
+                    {decodeHtml(ele?.display_name)}
                   </span>
                   {userData.user_id === ele.user_id && `  (You)`}
                 </span>
@@ -608,7 +615,7 @@ export const EditGroupMembers = () => {
               {ele.user_id === GroupData?.group_owner ? (
                 <span
                   style={{
-                    display: decodeHtml(ele.display_name)
+                    display: decodeHtml(ele?.display_name)
                       .toLowerCase()
                       .includes(searchInput.toLowerCase())
                       ? "block"
@@ -624,7 +631,7 @@ export const EditGroupMembers = () => {
                     parseInt(GroupData.group_category) !== 1 && (
                       <i
                         style={{
-                          display: decodeHtml(ele.display_name)
+                          display: decodeHtml(ele?.display_name)
                             .toLowerCase()
                             .includes(searchInput.toLowerCase())
                             ? "block"

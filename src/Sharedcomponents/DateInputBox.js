@@ -143,7 +143,8 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
       isValidData(date.year)
     ) {
       let resultDate = moment(
-        date.year + "-" + date.month + "-" + date.day
+        date.year + "-" + date.month + "-" + date.day,
+        "YYYY-MM-DD"
       ).toDate();
       onSelectDate(resultDate);
     } else {
@@ -174,7 +175,6 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
             let findData = getDays(value.id, date.year).find(
               (ele) => ele.value === date.day
             );
-            console.log(findData);
             if (!findData) {
               setDate((pre) => ({ ...pre, day: "" }));
             }
