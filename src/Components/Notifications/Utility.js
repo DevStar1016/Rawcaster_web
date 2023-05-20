@@ -165,6 +165,7 @@ export const NotificationsList = ({
         >
           <img
             src={ele?.userImage ? ele?.userImage : ""}
+            alt="User_img"
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
               currentTarget.src = defaultprofileImg;

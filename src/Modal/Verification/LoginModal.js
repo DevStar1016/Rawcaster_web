@@ -12,6 +12,7 @@ const LoginModal = ({ open, close }) => {
       <div className={classes.profileModal}>
         <img
           height="38px"
+          alt="Rawcaster"
           src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
         <p>You need to Login / Signup Rawcaster Account</p>

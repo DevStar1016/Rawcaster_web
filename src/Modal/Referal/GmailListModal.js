@@ -73,6 +73,7 @@ const GmailListModal = ({ open, close, Contacts }) => {
           <img
             src={require("../../Assets/Icons/png/mailimg.png")}
             className={classes.gmailImg}
+            alt="Email_img"
           />
           <p className={classes.userName}>{profileData?.name || ""}</p>
           <p className={classes.userEmail}>{profileData?.email_id || ""}</p>
@@ -116,6 +117,7 @@ const GmailListModal = ({ open, close, Contacts }) => {
                       <img
                         width="45px"
                         height={"45px"}
+                        alt="User_img"
                         src={require("../../Assets/Icons/png/user_vector.png")}
                       ></img>
                       <div className={classes.NameSec}>

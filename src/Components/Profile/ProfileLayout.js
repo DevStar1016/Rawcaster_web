@@ -37,6 +37,7 @@ const ProfileLayout = ({
   isLocked = false,
   handleAddUser,
   setprofileData,
+  className = null,
 }) => {
   const loginUserData = useAuthData();
 
@@ -204,11 +205,12 @@ const ProfileLayout = ({
   };
 
   return (
-    <>
+    <div className={className ? className : ""}>
       <div className={classes.bannersec}>
         <Skeleton.Node active={isCoverLoading} className={classes.bannerImg}>
           <img
             src={profileData?.cover_image}
+            alt="Cover Image"
             onLoadStart={() => {
               setisCoverLoading(true);
             }}
@@ -244,7 +246,7 @@ const ProfileLayout = ({
       {profileData && (
         <div className={classes.profileContainer}>
           <div className={classes.profileSec}>
-            <img src={profileData?.profile_image} />
+            <img src={profileData?.profile_image} alt="Profile" />
             {isLoginUser && (
               <div
                 className={classes.uploadSec}
@@ -271,6 +273,7 @@ const ProfileLayout = ({
                 <div className="ms-3">
                   <img
                     src={AddFriendIcon}
+                    alt="Add Friend"
                     className={classes.addFriendIcon}
                     onClick={() => {
                       handleAddUser();
@@ -289,8 +292,8 @@ const ProfileLayout = ({
                         display: isLoginUser ? "" : "none",
                       }}
                     >
-                      <img src={msgIcon} />
-                      <img src={talkshowIcon} />
+                      <img src={msgIcon} alt="Message" />
+                      <img src={talkshowIcon} alt="Talkshow" />
                     </div>
                   </div>
                 )}
@@ -415,7 +418,7 @@ const ProfileLayout = ({
           }}
         />
       )}
-    </>
+    </div>
   );
 };
 

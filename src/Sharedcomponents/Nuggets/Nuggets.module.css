@@ -1,4 +1,4 @@
-.nuggetSec {
+.nuggetSec,.resultnuggetSec {
   padding: 0 35px;
   float: left;
   width: calc(100% - 620px);
@@ -347,6 +347,7 @@ border-radius: 30px;
   /* width: calc(100% - 640px); */
   background: #fff;
   border-top: 2px solid #fff;
+  overflow: auto !important;
 }
 .resultnuggetSec::-webkit-scrollbar {
   display: none !important;

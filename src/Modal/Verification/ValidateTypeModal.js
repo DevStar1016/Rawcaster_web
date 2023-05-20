@@ -54,6 +54,7 @@ const ValidateTypeModal = ({ open, handleClose }) => {
       >
         <img
           height="38px"
+          alt="Rawcaster"
           src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
         <h1 className={classes.heading_h1}>Choose the Verification Mode</h1>

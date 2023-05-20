@@ -182,7 +182,7 @@ const ResetPassword = () => {
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/">
-            <img src={mainlogowhite} />
+            <img src={mainlogowhite} alt="Back to Home" />
           </Link>
         </div>
         <div className={classes.loginSec}>
@@ -190,6 +190,7 @@ const ResetPassword = () => {
             <Link to="/">
               <img
                 className={classes.hideMob}
+                alt="Back to Home"
                 src={require("../../Assets/Images/png/rawcater_logo.png")}
               />
             </Link>
@@ -214,7 +215,6 @@ const ResetPassword = () => {
                     height: "50px",
                     width: "100%",
                     border: "none",
-                    borderRadius: "20px",
                     borderRadius: "8px",
                     marginTop: "1px",
                   }}
@@ -298,7 +298,7 @@ const ResetPassword = () => {
             </Form>
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} />
+              <img src={RawcasterLogo} alt="Rawcaster" />
               <p>
                 © Copyright Rawcaster 2021
                 <br />
@@ -314,7 +314,7 @@ const ResetPassword = () => {
         <div className={`${classes.sliderSec} ${classes.nopad}`}>
           <div className={classes.rSec}>
             <div className={classes.contentBox}>
-              <img src={forgotImg} />
+              <img src={forgotImg} alt="Forgot Password" />
             </div>
           </div>
         </div>

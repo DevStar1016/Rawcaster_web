@@ -204,6 +204,7 @@ const InfluencerSend = ({ open, close, user }) => {
               <Tooltip title="Record Audio">
                 <img
                   src={mikeIcon}
+                  alt={"Record Audio"}
                   style={{
                     opacity: 1,
                     cursor: "pointer",
@@ -216,6 +217,7 @@ const InfluencerSend = ({ open, close, user }) => {
             ) : (
               <img
                 src={mikeIcon}
+                alt={"Record Audio"}
                 style={{
                   opacity: 0.6,
                   cursor: "",
@@ -227,6 +229,7 @@ const InfluencerSend = ({ open, close, user }) => {
               <Tooltip title="Upload Image">
                 <img
                   src={pictureIcon}
+                  alt={"Upload Image"}
                   style={{
                     opacity: 1,
                     cursor: "pointer",
@@ -262,6 +265,7 @@ const InfluencerSend = ({ open, close, user }) => {
             ) : (
               <img
                 src={pictureIcon}
+                alt={"Upload Image"}
                 style={{
                   opacity: 0.6,
                   cursor: "",
@@ -273,6 +277,7 @@ const InfluencerSend = ({ open, close, user }) => {
               <Tooltip title="Upload Video">
                 <img
                   src={imageIcon}
+                  alt={"Upload Video"}
                   onClick={() => {
                     if (VideoRef.current) {
                       VideoRef.current.click();
@@ -304,6 +309,7 @@ const InfluencerSend = ({ open, close, user }) => {
             ) : (
               <img
                 src={imageIcon}
+                alt={"Upload Video"}
                 style={{
                   opacity: 0.6,
                   cursor: "",

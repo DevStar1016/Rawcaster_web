@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import { decodeHtml } from "../../Shared/Utility";
 import SearchResult from "./SearchResult";
 import classes from "./ItemsList.module.css";
-import {
-  useSpecificConnectionNugget,
-  usePostNuggetContext,
-} from "../../Shared/Context";
+import { useSpecificConnectionNugget } from "../../Shared/Context";
 
 const Grouplist = () => {
   const {
@@ -14,7 +11,6 @@ const Grouplist = () => {
     setConnectionData,
     FilteredList,
     setFilteredList,
-    type,
     shareWithData,
     share_type,
   } = useSpecificConnectionNugget();
@@ -76,7 +72,7 @@ const Grouplist = () => {
               }}
             >
               <div className={classes.leftSec}>
-                <img src={ele.group_icon} />
+                <img src={ele.group_icon} alt={decodeHtml(ele.group_name)} />
                 <div className={classes.nameSec}>
                   <p>{decodeHtml(ele.group_name)}</p>
                 </div>

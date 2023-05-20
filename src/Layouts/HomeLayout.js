@@ -130,7 +130,7 @@ const HomeLayout = () => {
               <div className={`d-none d-sm-block ${classes.topSearch}`}>
                 <InputGroup>
                   <InputGroup.Text>
-                    <img height="22px" src={searchIcon} />
+                    <img height="22px" src={searchIcon} alt={"Search"} />
                   </InputGroup.Text>
                   <Form.Control
                     placeholder="Search Rawcaster"

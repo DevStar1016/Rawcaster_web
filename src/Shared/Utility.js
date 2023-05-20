@@ -16,14 +16,11 @@ import moment from "moment";
 import { getTimezone } from "countries-and-timezones";
 import { useLayoutEffect } from "react";
 import moment1 from "moment-timezone";
-import { fetchNuggetsbyId } from "../Store/Redux/Action";
 import {
   handleNuggetFormData,
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
-import { toast } from "react-hot-toast";
 import { message } from "antd";
-import { useParams } from "react-router";
 
 // Auth
 
@@ -429,8 +426,8 @@ export const userTimezonetoUtc = (time, zonename) => {
 
 export const utctoUserTimezonewithAbbr = (time, zonename) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
-  let displayCutoff = moment1(utcCutoff).tz(getTimezoneName(zonename));
-  let timezoneabbrs = displayCutoff.tz(getTimezoneName(zonename)).format("z");
+  let displayCutoff = moment1(utcCutoff)?.tz(getTimezoneName(zonename));
+  let timezoneabbrs = displayCutoff?.tz(getTimezoneName(zonename)).format("z");
   return timezoneabbrs;
 };
 

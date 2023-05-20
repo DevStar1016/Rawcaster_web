@@ -98,7 +98,7 @@ const InviteBox = () => {
               }
             >
               <div className={classes.iconSec}>
-                <img src={PhoneIcon} />
+                <img src={PhoneIcon} alt={"Call"} />
                 <p>Contacts</p>
               </div>
               {isGmailOpen ? (
@@ -127,6 +127,7 @@ const InviteBox = () => {
                       <img
                         width="25px"
                         height={"25px"}
+                        alt={"User_Img"}
                         src={require("../../Assets/Icons/png/user_vector.png")}
                       ></img>
                       <div className={classes.NameSec}>
@@ -168,7 +169,7 @@ const InviteBox = () => {
         >
           <div className={classes.inviteContainer}>
             <div className={classes.iconSec}>
-              <img src={img} />
+              <img src={img} alt={title} />
               <p>{title}</p>
             </div>
             <span class="material-symbols-outlined">chevron_right</span>
@@ -183,7 +184,7 @@ const InviteBox = () => {
         }}
       >
         <div className={classes.iconSec}>
-          <img src={FansIcon} />
+          <img src={FansIcon} alt={"Invite fans"} />
           <p>Invite fans</p>
         </div>
         <span class="material-symbols-outlined">chevron_right</span>

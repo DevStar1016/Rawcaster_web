@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchNuggetsbyId, handleNuggetView } from "../Action";
+import { fetchNuggetsbyId } from "../Action";
 import { addNuggetView } from "../../../Shared/SharedAPIs";
 
 const initialState = {
@@ -103,7 +103,7 @@ export const { actions, reducer } = createSlice({
         );
         state.Nuggets = filterData;
       }
-      state.totalpages = action.payload.total_count;
+      state.totalpages = action.payload.total_pages;
       state.currentpage = action.payload.current_page_no;
       state.totalNuggets = action.payload.total_count;
       state.isNuggetsLoading = false;

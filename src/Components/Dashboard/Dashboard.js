@@ -34,7 +34,7 @@ const Dashboard = () => {
     if (loginToken === null) {
       removeSessionStorageData("influencerData");
     }
-
+    console.log(nuggetFormData);
     let filterData = { ...nuggetFormData };
     if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
       filterData.formData = {
@@ -58,6 +58,7 @@ const Dashboard = () => {
           >
             <img
               className={classes.smlogo}
+              alt="Rawcaster"
               src={require("../../Assets/Images/png/mob-rlogo.png")}
             />
             Log in/Sign up to explore Rawcaster features{" "}

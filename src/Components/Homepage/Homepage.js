@@ -25,6 +25,7 @@ const Homepage = () => {
             <div className={classes.contentSec}>
               <img
                 className={classes.onlyMob}
+                alt="Welcome"
                 src={require("../../Assets/Images/png/welcome-img.png")}
               />
               <h1>
@@ -43,7 +44,10 @@ const Homepage = () => {
             </div>
           </div>
           <div className={classes.rightSec}>
-            <img src={require("../../Assets/Images/welcome.gif")} />
+            <img
+              src={require("../../Assets/Images/welcome.gif")}
+              alt="Welcome"
+            />
           </div>
         </div>
       </div>
@@ -51,10 +55,13 @@ const Homepage = () => {
       {/* Live Talk Show */}
       <div className={classes.homeContent}>
         <div className={classes.imgSec}>
-          <img src={require("../../Assets/Images/png/live-talk-show.png")} />
+          <img
+            src={require("../../Assets/Images/png/live-talk-show.png")}
+            alt="Talkshow"
+          />
         </div>
         <div className={classes.textSec}>
-          <img src={thumblogo} />
+          <img src={thumblogo} alt="Live Talk Show" />
           <h2>Live Talk Show</h2>
           <p>
             As in a typical TV or Radio talk show, you can stream a live event
@@ -79,10 +86,11 @@ const Homepage = () => {
         <div className={classes.imgSec}>
           <img
             src={require("../../Assets/Images/png/signupwithmobile-intro.png")}
+            alt="Signup with Mobile"
           />
         </div>
         <div className={classes.textSec}>
-          <img src={thumblogo} />
+          <img src={thumblogo} alt="Events" />
           <h2>Events</h2>
           <p>
             Take your scheduled events live to your invited guests or make it
@@ -105,10 +113,13 @@ const Homepage = () => {
       {/* Live Talk Show */}
       <div className={classes.homeContent}>
         <div className={classes.imgSec}>
-          <img src={require("../../Assets/Images/png/post-nuggets.png")} />
+          <img
+            src={require("../../Assets/Images/png/post-nuggets.png")}
+            alt="Post Nuggets"
+          />
         </div>
         <div className={classes.textSec}>
-          <img src={thumblogo} />
+          <img src={thumblogo} alt="Post Nuggets" />
           <h2>Post Nuggets</h2>
           <p>
             Share the precious thoughts and tidbits that are in your mind with
@@ -133,7 +144,10 @@ const Homepage = () => {
           collaborate with their fans easily
         </h5>
         <div className={classes.textSec}>
-          <img src={require("../../Assets/Images/png/nuggets.png")} />
+          <img
+            src={require("../../Assets/Images/png/nuggets.png")}
+            alt=" Nuggets"
+          />
           <h3>Nuggets</h3>
           <p>
             These are small pieces or tidbit of thoughts in your mind or an
@@ -142,7 +156,10 @@ const Homepage = () => {
           </p>
         </div>
         <div className={classes.textSec}>
-          <img src={require("../../Assets/Images/png/event-hosting.png")} />
+          <img
+            src={require("../../Assets/Images/png/event-hosting.png")}
+            alt="Event Hosting"
+          />
           <h3>Event Hosting</h3>
           <p>
             From the comfort of your home to when you are on the road; Rawcaster
@@ -151,7 +168,10 @@ const Homepage = () => {
           </p>
         </div>
         <div className={classes.textSec}>
-          <img src={require("../../Assets/Images/png/live-chat.png")} />
+          <img
+            src={require("../../Assets/Images/png/live-chat.png")}
+            alt="Live Chatting"
+          />
           <h3>Live Chatting</h3>
           <p>
             Chat allows you to have an end-to-end encrypted conversation by
@@ -174,6 +194,7 @@ const Homepage = () => {
         <img
           width="100%"
           src={require("../../Assets/Images/png/rawcaster_window.png")}
+          alt="Rawcaster Window"
         />
       </div>
       <div className={classes.platform}>
@@ -193,7 +214,7 @@ const Homepage = () => {
                 one platform is a brilliant idea.
               </p>
               <div className={classes.author}>
-                <img src={william} />
+                <img src={william} alt="William Sagoe" />
                 <p>William Sagoe</p>
               </div>
             </div>
@@ -204,7 +225,7 @@ const Homepage = () => {
                 made to show how the app works.
               </p>
               <div className={classes.author}>
-                <img src={ngozijones} />
+                <img src={ngozijones} alt="Ngozi Jones" />
                 <p>Ngozi Jones</p>
               </div>
             </div>
@@ -215,7 +236,7 @@ const Homepage = () => {
                 better with others should have it.
               </p>
               <div className={classes.author}>
-                <img src={abel} />
+                <img src={abel} alt="Abel Consiglio" />
                 <p>Abel Consiglio</p>
               </div>
             </div>
@@ -239,10 +260,15 @@ const Homepage = () => {
           <img className={classes.bgShape} src={bgelements} />
           <img
             className={classes.profileImg}
+            alt="Godfrey"
             src={require("../../Assets/Images/png/godfrey.png")}
           />
           <p>
-            <img className={classes.smLogo} src={mainlogowhite} />
+            <img
+              className={classes.smLogo}
+              src={mainlogowhite}
+              alt="Rawcaster"
+            />
             <br />
             <br />
             “Rawcaster is a platform created to appeal to young and educated
@@ -263,6 +289,7 @@ const Homepage = () => {
             <img
               className={classes.Rlogo}
               src={require("../../Assets/Images/png/ricon.png")}
+              alt="Rawcaster"
             />
             <h4>Download Apps</h4>
             <p>
@@ -276,6 +303,7 @@ const Homepage = () => {
               <img
                 className={classes.appImg}
                 src={require("../../Assets/Images/png/app-store.png")}
+                alt="App Store"
               />
             </a>
             <a
@@ -285,12 +313,16 @@ const Homepage = () => {
               <img
                 className={classes.appImg}
                 src={require("../../Assets/Images/png/play-store.png")}
+                alt="Play Store"
               />
             </a>
           </div>
         </div>
         <div className={classes.imgSec}>
-          <img src={require("../../Assets/Images/png/download-app.png")} />
+          <img
+            src={require("../../Assets/Images/png/download-app.png")}
+            alt="Download"
+          />
         </div>
       </div>
 

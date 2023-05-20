@@ -14,7 +14,6 @@ import {
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
 import { handlenuggetToken } from "../Reducer/NuggetsReducer";
 import { handleToken } from "../Reducer/AuthReducer";
-import ConnectSocket from "../../../Services/SocketService";
 
 // Connections
 

@@ -1,8 +1,7 @@
-import { Button, Form, Input, Modal } from "antd";
+import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { EditGroupMembers, GroupHeader, SelectConnections } from "./Utility";
 import classes from "./Groups.module.css";
-
 import { useFormik } from "formik";
 import { toast } from "react-hot-toast";
 import * as yup from "yup";
@@ -31,7 +30,7 @@ import {
 } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { groupFunctionalitySocket } from "./Methods";
 import { GROUP_CHAT_PROCESS_TYPE } from "./Constants";
-import { sendMessage, socketListen } from "../../../Services/SocketService";
+import { sendMessage } from "../../../Services/SocketService";
 
 const ConfigureGroup = ({ groupId, close, open }) => {
   const { groupsList } = useDashboard();

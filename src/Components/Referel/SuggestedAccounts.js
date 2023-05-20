@@ -12,7 +12,6 @@ import {
   getAuthenticated,
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
-import { Col, Row } from "react-bootstrap";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const SuggestedAccounts = () => {
@@ -68,7 +67,7 @@ const SuggestedAccounts = () => {
               <div className={classes.suggAcc}>
                 <img
                   src={ele?.profile_img}
-                  alt={ele?.display_name}
+                  alt={"User_img"}
                   onError={({ currentTarget }) => {
                     currentTarget.onerror = null; // prevents looping
                     currentTarget.src = defaultprofileImg;

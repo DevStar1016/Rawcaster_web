@@ -1,22 +1,17 @@
-import React, { useEffect } from "react";
-import { toast } from "react-hot-toast";
-import { useNavigate, useParams } from "react-router";
-import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
-import {
-  DecryptionString,
-  handleProfileNavigate,
-} from "../../../Shared/Utility";
+import React from "react";
+import { useNavigate } from "react-router";
+import { useNuggets } from "../../../Shared/Reduxfetcher";
+import { handleProfileNavigate } from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
 import { useProfileContext } from "../../../Shared/Context";
 import { useDispatch } from "react-redux";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 
 const FansThumb = () => {
-  const { FansList, setFansList, getFollowers } = useProfileContext();
+  const { FansList, setFansList } = useProfileContext();
   const { nuggetFormData } = useNuggets();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const loginToken = useAuthToken();
 
   // useEffect(() => {
   //   if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
@@ -29,6 +24,7 @@ const FansThumb = () => {
       {FansList.connections?.map((ele) => (
         <img
           className={classes.thumbImg}
+          alt="User_img"
           src={ele.profile_img ? ele.profile_img : ""}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping

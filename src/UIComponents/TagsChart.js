@@ -93,15 +93,15 @@ const TagsChart = ({ Data }) => {
     },
   };
 
-  const labels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ];
+  // const labels = [
+  //   "January",
+  //   "February",
+  //   "March",
+  //   "April",
+  //   "May",
+  //   "June",
+  //   "July",
+  // ];
 
   const getLabels = () => {
     if (Data && Data.length !== 0) {

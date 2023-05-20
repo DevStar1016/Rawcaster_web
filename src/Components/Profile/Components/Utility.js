@@ -241,6 +241,7 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
                   style={{
                     display: isAddFriend() ? "" : "none",
                   }}
+                  alt="Add Friend"
                   onClick={() => {
                     handleAddUser(ele).then((res) => {
                       getConnectionList({});
@@ -262,6 +263,7 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = defaultprofileImg;
           }}
+          alt="User_img"
           onClick={() => {
             setprofileData();
             setFansList({

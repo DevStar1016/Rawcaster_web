@@ -258,6 +258,7 @@ const UpdateProfile = () => {
             <Link to="/">
               <img
                 src={require("../../../Assets/Images/png/rawcater_logo.png")}
+                alt="Rawcaster"
               />
             </Link>
           </div>
@@ -275,6 +276,7 @@ const UpdateProfile = () => {
               <div className={classes.picuploadSec}>
                 <img
                   className={classes.profile_img}
+                  alt="user_img"
                   src={getValidImageUrl(ProfileImage)}
                 />
                 <input

@@ -1,6 +1,5 @@
 import moment from "moment";
 import React, { useState, useEffect, useRef, createRef } from "react";
-import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { pollVoteService } from "../../Services/ApiService";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
@@ -150,6 +149,7 @@ const MultiplePoll = ({
         votedOptionID: "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, userSettings, isVoted]);
 
   function animateAnswers(index, id) {
@@ -199,6 +199,7 @@ const MultiplePoll = ({
     }
 
     // animate rest of answers (not clicked)
+    // eslint-disable-next-line array-callback-return
     restOfAnswers.map((ele, index) => {
       if (answers[index]) {
         answers[index]?.animate(

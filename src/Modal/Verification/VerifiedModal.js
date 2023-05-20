@@ -48,6 +48,7 @@ const VerifiedModal = ({ open, onClose, onSuccess }) => {
       <div className={classes.profileModal}>
         <img
           height="38px"
+          alt="Rawcaster"
           src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
         <p>Congratulations! your account validation is completed</p>

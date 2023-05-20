@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Profile.module.css";
 import {
   useAuth,
@@ -39,10 +39,14 @@ import { getfollowerfollowingService } from "./Components/Utility";
 import ProfileLayout from "./ProfileLayout";
 import { HandleAddFriend, HandleBecameaFan } from "../../Shared/SharedAPIs";
 import { friendRequestSocket } from "../../Services/SocketList";
+import styles from "./Profileothers.module.css";
 
 const Profile = () => {
   const params = useParams();
+  const leftContainer = useRef();
+  const rightContainer = useRef();
   const token = useAuthToken();
+  const [hideHeader, setHideHeader] = useState(false);
   const display_user_id = DecryptionString(params.user_id);
   const navigate = useNavigate();
   const { isSuccess } = useAuth();
@@ -221,6 +225,23 @@ const Profile = () => {
     getFollowers,
     handleBecameFan,
     handleAddUser,
+    leftContainer,
+    rightContainer,
+  };
+
+  const getHeight = () => {
+    const leftheight = leftContainer.current?.offsetHeight;
+    const rightContainer = leftContainer.current?.offsetHeight;
+    if (parseInt(leftheight) > parseInt(rightContainer)) {
+      return leftheight;
+    } else if (parseInt(leftheight) < parseInt(rightContainer)) {
+      return rightContainer;
+    }
+  };
+
+  const handleScroll = () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    setHideHeader(scrollTop > 0);
   };
 
   return (
@@ -231,12 +252,14 @@ const Profile = () => {
             profileData={profileData}
             isFansEnabled
             isEditable
+            className={hideHeader ? styles.hidden : ""}
             setprofileData={setprofileData}
             isLocked={profileData && profileData.lock_fans === 1}
             handleAddUser={handleAddUser}
           >
             <div className={classes.fullcontainer}>
               <div
+                ref={leftContainer}
                 className={`${classes.profileevent} ${
                   getisLoginUser() ? "" : classes.othersprofileEvent
                 }`}
@@ -289,7 +312,7 @@ const Profile = () => {
                           profileData?.work_at !== "" && (
                             <div className={classes.item}>
                               <p>
-                                <img src={profile_work} />
+                                <img src={profile_work} alt={"Work"} />
                               </p>{" "}
                               Work at <span> {profileData?.work_at}</span>
                             </div>
@@ -298,7 +321,7 @@ const Profile = () => {
                           profileData?.studied_at !== "" && (
                             <div className={classes.item}>
                               <p>
-                                <img src={profile_edu} />
+                                <img src={profile_edu} alt={"Education"} />
                               </p>{" "}
                               Studied at <span>{profileData?.studied_at}</span>
                             </div>
@@ -306,7 +329,7 @@ const Profile = () => {
                         {profileData?.geo_location && (
                           <div className={classes.item}>
                             <p>
-                              <img src={profile_location} />
+                              <img src={profile_location} alt={"Location"} />
                             </p>
                             {profileData?.geo_location}
                           </div>
@@ -314,7 +337,7 @@ const Profile = () => {
                         {profileData?.dob && profileData?.dob !== "" && (
                           <div className={classes.item}>
                             <p>
-                              <img src={profile_bdy} />
+                              <img src={profile_bdy} alt={"Date of Birth"} />
                             </p>
                             Date of Birth
                             <span>
@@ -326,7 +349,7 @@ const Profile = () => {
                         )}
                         <div className={classes.item}>
                           <p>
-                            <img src={profile_join} />
+                            <img src={profile_join} alt={"Joined at"} />
                           </p>
                           Joined RAWCASTER on
                           <span>
@@ -355,11 +378,13 @@ const Profile = () => {
                 isLoginuser={getisLoginUser()}
                 isLoading={!profileData}
                 isLocked={profileData && profileData.lock_nugget === 1}
+                maxHeight={getHeight()}
+                className={null}
               />
 
               <>
                 {getisLoginUser() && isSuccess && (
-                  <div className={classes.rightProfiles}>
+                  <div className={classes.rightProfiles} ref={rightContainer}>
                     {ConnectionsType.map((ele) => {
                       return ele.id === 3 ? (
                         <Connections />

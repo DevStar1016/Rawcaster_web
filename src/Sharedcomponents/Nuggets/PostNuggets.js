@@ -90,9 +90,9 @@ const PostNuggets = () => {
       if (shareWithData) {
         const getShareTypeData = () => {
           if (parseInt(val.share_type) === 3) {
-            return { groups: shareWithData };
+            return JSON.stringify({ groups: shareWithData });
           } else if (parseInt(val.share_type) === 4) {
-            return { friends: shareWithData };
+            return JSON.stringify({ friends: shareWithData });
           }
         };
         formData.append("share_with", getShareTypeData());
@@ -158,6 +158,7 @@ const PostNuggets = () => {
             return JSON.stringify({ friends: shareWithData });
           }
         };
+        console.log(getShareTypeData());
         formData.append("share_with", getShareTypeData());
       }
     }
@@ -230,9 +231,9 @@ const PostNuggets = () => {
             share_type: res.data.nugget_detail.share_type,
           });
           if (res.data.share_type === 3) {
-            setshareWithData(res.data.shared_group_list);
+            setshareWithData(JSON.parse(res.data.shared_group_list));
           } else if (res.data.share_type === 4) {
-            setshareWithData(res.data.shared_friends_list);
+            setshareWithData(JSON.parse(res.data.shared_friends_list));
           }
           setpostModalShow(true);
           setpreviewMedia(res.data.nugget_detail.media_list);

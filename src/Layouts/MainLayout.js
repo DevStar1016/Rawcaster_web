@@ -48,6 +48,7 @@ const MainLayout = () => {
           <div className={classes.mobheader}>
             <img
               className={classes.moblogo}
+              alt={"Rawcaster"}
               src={require("../Assets/Images/png/mob-rlogo.png")}
             />
             <div className={classes.rightmenu}>
@@ -73,7 +74,12 @@ const MainLayout = () => {
             onClose={onClose}
             visible={visible}
           >
-            <img width="100%" className={classes.mainlogo} src={mainlogo} />
+            <img
+              width="100%"
+              className={classes.mainlogo}
+              src={mainlogo}
+              alt={"Rawcaster"}
+            />
             <p>
               <Link to="/login" onClick={onClose}>
                 LOGIN
@@ -109,6 +115,7 @@ const MainLayout = () => {
               <img
                 className={classes.mainlogo}
                 src={mainlogo}
+                alt={"Rawcaster"}
                 onClick={() => {
                   navigate("/");
                 }}
@@ -134,6 +141,7 @@ const MainLayout = () => {
               <div className={classes.leftSec}>
                 <img
                   src={mainlogo}
+                  alt={"Rawcaster"}
                   onClick={() => {
                     navigate("/");
                   }}

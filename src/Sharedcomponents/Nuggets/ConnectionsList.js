@@ -86,6 +86,7 @@ const ConnectionsList = () => {
               <div className={classes.leftSec}>
                 <img
                   src={ele.profile_img}
+                  alt={decodeHtml(ele.display_name)}
                   onError={({ currentTarget }) => {
                     currentTarget.onerror = null; // prevents looping
                     currentTarget.src = defaultprofileImg;

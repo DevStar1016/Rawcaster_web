@@ -1,10 +1,8 @@
 import React from "react";
 import classes from "./Profile.module.css";
 import { Button } from "react-bootstrap";
-
 import {
   decodeHtml,
-  EncryptionString,
   getAuthToken,
   getisAddFriend,
   handleProfileNavigate,
@@ -19,7 +17,6 @@ import {
 import {
   useAuthData,
   useAuthToken,
-  useDashboard,
   useNuggets,
 } from "../../Shared/Reduxfetcher";
 import { useNavigate } from "react-router";
@@ -112,6 +109,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
       >
         <img
           src={ele.profile_img}
+          alt={decodeHtml(ele.display_name)}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = defaultprofileImg;

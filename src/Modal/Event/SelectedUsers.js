@@ -42,8 +42,11 @@ const SelectedUsers = ({ open, friends, close, setfriends }) => {
                 }}
               >
                 <div className={classes.profileSec}>
-                  <img src={friend.profile_img} />
-                  <p>{friend.display_name}</p>
+                  <img
+                    src={friend.profile_img}
+                    alt={decodeHtml(friend.display_name)}
+                  />
+                  <p>{decodeHtml(friend.display_name)}</p>
                 </div>
                 <span
                   class="material-symbols-outlined"

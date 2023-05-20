@@ -69,7 +69,10 @@ const Viewevent = () => {
               ")"}
           </p>
           <div className={classes.eventBanner}>
-            <img src={ViewEventData.banner_image} alt=""></img>
+            <img
+              src={ViewEventData.banner_image}
+              alt={decodeHtml(ViewEventData.event_name)}
+            ></img>
           </div>
 
           <div className={classes.eventDetail}>
@@ -84,10 +87,13 @@ const Viewevent = () => {
 
           <div className={classes.eventHost}>
             <div>
-              <img src={ViewEventData.original_user_image} alt=""></img>
+              <img
+                src={ViewEventData.original_user_image}
+                alt={decodeHtml(ViewEventData.original_user_name)}
+              ></img>
             </div>
             <div className={classes.user_name}>
-              {ViewEventData.original_user_name}
+              {decodeHtml(ViewEventData.original_user_name)}
             </div>
           </div>
         </div>

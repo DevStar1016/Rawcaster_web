@@ -1,4 +1,4 @@
-import { Button, Form, Input, Spin } from "antd";
+import { Button, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
@@ -164,7 +164,7 @@ const SignupwithCredentials = () => {
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite} />
+            <img src={mainlogowhite} alt="Back to Home" />
           </Link>
         </div>
         <div className={classes.loginSec}>
@@ -173,6 +173,7 @@ const SignupwithCredentials = () => {
               <img
                 className={classes.hideMob}
                 src={require("../../Assets/Images/png/rawcater_logo.png")}
+                alt="Back to Home"
               />
             </Link>
             <h1 className={classes.heading_h1}>Join Rawcaster Family</h1>
@@ -284,7 +285,7 @@ const SignupwithCredentials = () => {
             </Form>
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} />
+              <img src={RawcasterLogo} alt="Rawcaster" />
               <p>
                 © Copyright Rawcaster 2021
                 <br />
@@ -303,7 +304,7 @@ const SignupwithCredentials = () => {
           <OwlCarousel className={"owl-theme "} {...carouselOptions}>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupImg} />
+                <img src={SignupImg} alt="Connect Share Express" />
               </div>
               <h2>Connect Share Express</h2>
               <h4>
@@ -313,7 +314,7 @@ const SignupwithCredentials = () => {
             </div>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupwithMobileImg} />
+                <img src={SignupwithMobileImg} alt="Live Talk Shows" />
               </div>
               <h2>Live Talk Shows</h2>
               <h4>
@@ -323,7 +324,7 @@ const SignupwithCredentials = () => {
             </div>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupwithEmailImg} />
+                <img src={SignupwithEmailImg} alt="Schedule Events" />
               </div>
               <h2>Schedule Events</h2>
               <h4>

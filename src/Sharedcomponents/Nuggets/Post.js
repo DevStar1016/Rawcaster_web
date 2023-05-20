@@ -122,20 +122,20 @@ const Post = ({
       .catch((err) => {});
   };
 
-  const viewHandler = () => {
-    if (ele.viewed === 0 && Token) {
-      //   let viewNugget = {
-      //     token: Token,
-      //     nugget_id: ele.nugget_id,
-      //   };
-      //   addNuggetViewService(JSONtoformdata(viewNugget))
-      //     .then((res) => {
-      //       handleView(index);
-      //     })
-      //     .catch((err) => {});
-      // }
-    }
-  };
+  // const viewHandler = () => {
+  //   if (ele.viewed === 0 && Token) {
+  //     //   let viewNugget = {
+  //     //     token: Token,
+  //     //     nugget_id: ele.nugget_id,
+  //     //   };
+  //     //   addNuggetViewService(JSONtoformdata(viewNugget))
+  //     //     .then((res) => {
+  //     //       handleView(index);
+  //     //     })
+  //     //     .catch((err) => {});
+  //     // }
+  //   }
+  // };
 
   const deletenugget = (id) => {
     let deleteData = {

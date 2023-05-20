@@ -32,6 +32,8 @@ const Nuggets = ({
   isLocked = false,
   isUserPostAvailable = true,
   isLoading = false,
+  maxHeight = null,
+  className = null,
 }) => {
   const pageRef = useRef(1);
   const dispatch = useDispatch();
@@ -40,7 +42,8 @@ const Nuggets = ({
   const [ViewedList, setViewedList] = useState([]);
   const [NuggetsData, setNuggetsData] = useState([]);
   const [isNuggetModify, setisNuggetModify] = useState(null);
-  const { Nuggets, isNuggetsLoading, nuggetFormData } = useNuggets();
+  const { Nuggets, isNuggetsLoading, nuggetFormData, totalpages } =
+    useNuggets();
   const userData = getRawcaserToken();
   const [isReachedEnd, setisReachedEnd] = useState(false);
   const token = useAuthToken();
@@ -97,8 +100,14 @@ const Nuggets = ({
     });
   };
 
+  const getHasNextPage = () => {
+    return totalpages && pageRef.current !== totalpages;
+  };
+
   const handleBottomLoader = () => {
-    setisReachedEnd(true);
+    if (getHasNextPage()) {
+      setisReachedEnd(true);
+    }
   };
 
   const scrollRef = useBottomScrollListener(handleBottomLoader);
@@ -186,9 +195,6 @@ const Nuggets = ({
     setNuggetsData(Nuggets);
   }, [Nuggets]);
 
-  const getHasNextPage = () => {
-    return pageRef.current !== Pages.totalpage + 1;
-  };
   const loadMore = () => {
     if (isReachedEnd && getHasNextPage() && !loading) {
       setloading(true);
@@ -214,7 +220,7 @@ const Nuggets = ({
           <div className={`mt-3 ${classes.NuggetLockSec}`}>
             {!isLoading && (
               <div className={classes.overlaySec}>
-                <img src={NuggetLock} />
+                <img src={NuggetLock} alt="nugget_lock" />
               </div>
             )}
             {[...Array(7)].map(() => (
@@ -225,14 +231,12 @@ const Nuggets = ({
       ) : (
         <div
           ref={scrollRef}
-          onScroll={() => {
-            console.log("test", rootRef, scrollRef);
-          }}
+          // style={{ height: maxHeight ? maxHeight : "" }}
           className={` ${
             params?.key ? classes.resultnuggetSec : classes.nuggetSec
           } ${isuserConnection ? classes.othersnuggetSec : ""} ${
-            display_user_id ? "h-auto" : ""
-          }`}
+            maxHeight ? "h-auto" : ""
+          } ${className ? className : ""}`}
         >
           <>
             {isValidPage() && (
@@ -247,7 +251,7 @@ const Nuggets = ({
           )}
 
           <>
-            {isNuggetsLoading || Pages.totalpage === null ? (
+            {isNuggetsLoading || totalpages === null ? (
               <div className="mt-3">
                 {[...Array(6)].map(() => (
                   <NuggetLoaders loading={true} />

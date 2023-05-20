@@ -1,0 +1,7 @@
+.hidden {
+    top: -100px;
+    overflow-y: hidden;
+}
+.disable_scroll {
+    overflow-y: hidden;
+  }

@@ -87,6 +87,7 @@ const ImageGrid = ({
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nuggetVideoPaused]);
 
   const volumechanged = (event) => {
@@ -100,6 +101,7 @@ const ImageGrid = ({
       let filter = imgArray.filter(
         (ele) => `videoSingleId${ele.media_id}` !== isPlaying
       );
+      // eslint-disable-next-line  array-callback-return
       filter.map((ele) => {
         let v = document.getElementById(`videoSingleId${ele.media_id}`);
         if (v) {
@@ -115,7 +117,7 @@ const ImageGrid = ({
         <img
           className="selecedImages"
           src={data.path}
-          alt=""
+          alt={data.path}
           style={{ width: "100%", height: "100%", borderRadius: 10 }}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
@@ -162,7 +164,7 @@ const ImageGrid = ({
           }}
           className="imgGridsize"
           src={data.path}
-          alt=""
+          alt={data.path}
           style={{ zIndex: 0, aspectRatio: getAspectRatio(index) }}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
@@ -239,7 +241,7 @@ const ImageGrid = ({
         <img
           className={`type === "fullview" ? "" : "imgGridsize" ${classes.modalSingleimage}`}
           src={data.path}
-          alt=""
+          alt={data.path}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = BackgroundImg;
@@ -261,15 +263,18 @@ const ImageGrid = ({
           controlsList="nodownload"
           muted={isNuggetMuted}
           onPlayCapture={(e) => {
+            // eslint-disable-next-line  array-callback-return
             let findArray = imgArray.map((ele, i) => {
               if (`modal_video_${i}` !== e.target.id) {
                 return `modal_video_${i}`;
               } else {
+                // eslint-disable-next-line  array-callback-return
                 return;
               }
             });
-
+            // eslint-disable-next-line  array-callback-return
             findArray = findArray.filter((ele) => ele !== undefined);
+            // eslint-disable-next-line  array-callback-return
             findArray.map((ele) => {
               let findVal = document.getElementById(ele);
 
@@ -329,7 +334,7 @@ const ImageGrid = ({
           ></div>
           <img
             src={data.path}
-            alt=""
+            alt={data.path}
             className="imgGridsize"
             style={{
               zIndex: 0,
@@ -703,6 +708,7 @@ const ImageGrid = ({
               let findArray = imgArray.map((ele, i) => {
                 return `modal_video_${i}`;
               });
+              // eslint-disable-next-line  array-callback-return
               findArray.map((ele) => {
                 let findVal = document.getElementById(ele);
                 if (findVal) {

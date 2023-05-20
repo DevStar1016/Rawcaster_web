@@ -2,7 +2,7 @@ import { decodeHtml } from "../../../Shared/Utility";
 import classes from "./Groups.module.css";
 import { useAuthData, useFriends } from "../../../Shared/Reduxfetcher";
 import { useEffect, useState } from "react";
-import { Form, InputGroup, Row } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import { useConfigureGroupContext } from "../../../Shared/Context";
 import { Button, Input, Form as AndForm, Modal, Switch, Tooltip } from "antd";
 import { toast } from "react-hot-toast";
@@ -101,6 +101,7 @@ export const GroupHeader = () => {
             <>
               <img
                 src={tickIcon}
+                alt={"submit"}
                 onClick={() => {
                   handleSubmit();
                 }}

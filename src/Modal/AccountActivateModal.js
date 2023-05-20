@@ -9,6 +9,7 @@ const AccountActivateModal = ({ open, close }) => {
       <div className={classes.AccountactiveSec}>
         <img
           height="38px"
+          alt={"Rawcaster Logo"}
           src={require("../Assets/Images/png/rawcater_logo.png")}
         />
         <p>

@@ -1,10 +1,9 @@
 import { Modal, Tooltip } from "antd";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
-  datetoString,
   decodeHtml,
   utctoUserTimezone,
   utctoUserTimezonewithAbbr,
@@ -92,7 +91,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
       </div>
       {!isOthers && (
         <div className={classes.share}>
-          <img src={shareicon} />
+          <img src={shareicon} alt={"Share icon"} />
         </div>
       )}
       <div className={classes.contentSec}>

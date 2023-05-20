@@ -126,7 +126,8 @@ const SigninwithService = ({ type }) => {
                   // Makes sure the page reloads. Changes are only visible after you refresh.
                 }}
               >
-                <img src={GoogleIcon} /> {type} with Google
+                <img src={GoogleIcon} alt={`${type} with Google`} /> {type} with
+                Google
               </button>
             </LoginSocialGoogle>
           </form>
@@ -175,7 +176,8 @@ const SigninwithService = ({ type }) => {
             }}
           >
             <button className={classes.altSignBtn}>
-              <img src={AppleIcon} /> {type} with Apple
+              <img src={AppleIcon} alt={`${type} with Apple`} /> {type} with
+              Apple
             </button>
           </LoginSocialApple>
         </Col>

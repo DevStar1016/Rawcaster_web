@@ -158,9 +158,19 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
         </div>
       )}
       {status === "recording" ? (
-        <img width="100%" src={AudioRecord} className={classes.audioplayIcon} />
+        <img
+          width="100%"
+          src={AudioRecord}
+          alt="Record Audio"
+          className={classes.audioplayIcon}
+        />
       ) : (
-        <img width="100%" src={AudioStop} className={classes.audioplayIcon} />
+        <img
+          width="100%"
+          src={AudioStop}
+          alt="Stop Recording"
+          className={classes.audioplayIcon}
+        />
       )}
 
       <div className={`${classes.btnSec} mt-4`}>

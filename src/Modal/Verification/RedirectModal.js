@@ -14,7 +14,7 @@ const RedirectModal = ({
   return (
     <SharedModal isVisible={open} closable={true}>
       <div className={classes.profileModal}>
-        <img height="38px" src={RawcasterLogo} />
+        <img height="38px" src={RawcasterLogo} alt="Rawcaster" />
         <p>{msg}</p>
 
         <div className={classes.actionBtn}>

@@ -29,7 +29,7 @@ const ClaimAccountModal = ({ visible, onClose }) => {
         </span>
       </div>
       <div className={classes.container}>
-        <img src={claimedAccount} />
+        <img src={claimedAccount} alt={"Claim Account"} />
         <p>
           You have placed a claim on a predefined influencer profile; We will
           contact you to validate your claim. Please contact us at
