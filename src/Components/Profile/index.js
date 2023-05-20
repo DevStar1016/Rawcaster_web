@@ -252,7 +252,7 @@ const Profile = () => {
                 ref={leftContainer}
                 style={{
                   position: "sticky",
-                  top: `-${leftContainer.current?.offsetHeight / 2}px`,
+                  top: `calc(-${leftContainer.current?.offsetHeight / 2}px + 250px)`,
                 }}
                 className={`${classes.profileevent} ${
                   getisLoginUser() ? "" : classes.othersprofileEvent

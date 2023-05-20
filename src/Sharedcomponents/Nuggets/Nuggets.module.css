@@ -1,10 +1,10 @@
-.nuggetSec,.resultnuggetSec {
+.nuggetSec, .resultnuggetSec {
   padding: 0 35px;
   float: left;
   width: calc(100% - 620px);
   background: #fff;
   border-top: 20px solid #fff;
-  height: calc(100vh - 70px) !important;
+  /* height: calc(100vh - 70px) !important; */
   overflow-y: auto;
 }
 .nuggetSec::-webkit-scrollbar {
@@ -479,7 +479,7 @@ border-radius: 30px;
   align-items: flex-end;
 }
 .othersnuggetSec {
-  width: 60%;
+  width: 60%; height: auto !important;
 }
 .viewDetailNugget  {
   width: 100%;
