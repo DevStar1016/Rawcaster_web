@@ -230,18 +230,8 @@ const Profile = () => {
   };
 
   const getHeight = () => {
-    const leftheight = leftContainer.current?.offsetHeight;
-    const rightContainer = leftContainer.current?.offsetHeight;
-    if (parseInt(leftheight) > parseInt(rightContainer)) {
-      return leftheight;
-    } else if (parseInt(leftheight) < parseInt(rightContainer)) {
-      return rightContainer;
-    }
-  };
-
-  const handleScroll = () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    setHideHeader(scrollTop > 0);
+    const leftheight = leftContainer.current?.offsetHeight / 2;
+    console.log(leftheight, window.innerHeight);
   };
 
   return (
@@ -260,6 +250,10 @@ const Profile = () => {
             <div className={classes.fullcontainer}>
               <div
                 ref={leftContainer}
+                style={{
+                  position: "sticky",
+                  top: `-${leftContainer.current?.offsetHeight / 2}px`,
+                }}
                 className={`${classes.profileevent} ${
                   getisLoginUser() ? "" : classes.othersprofileEvent
                 }`}
