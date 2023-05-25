@@ -137,7 +137,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
             dispatch(
               handleUpdateGroupData({
                 Group: res.data.group_details,
-                index: groupId,
+                id: groupId,
               })
             );
           } else {

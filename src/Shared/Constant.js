@@ -1,5 +1,5 @@
 // PRIMARY CONSTANTS
-
+export const SHARE_URL = "https://dev.rawcaster.com/join/";
 export const GECODE_API_KEY = "AIzaSyBOEl17DNwCcE0sR9LGJh72rBGF_vDfk1c";
 export const ENCRIPTION_STRING = "rawcaster@!@#$QWERTxcvbn";
 

@@ -143,9 +143,16 @@ const ConnectionModal = ({
           <Col sm={3}>
             <InputNumber
               min={1}
-              className={`${classes.locationSec} locationSearch`}
+              className={`${classes.locationSec} locationSearch ${classes.ageSec}`}
               maxLength={2}
               defaultValue={values.age}
+              placeholder="Age"
+              onKeyDown={(e) => {
+                if (e.key.match(/[0-9]/g)) {
+                } else {
+                  e.preventDefault();
+                }
+              }}
               onChange={(value) => {
                 AgeProcess(value);
               }}

@@ -17,11 +17,11 @@ import Event from "../../Sharedcomponents/Events/Event";
 import classes from "./GlobalSearch.module.css";
 import { Skeleton } from "antd";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
 
 let isRequestCancel = false;
 
 const EventsList = () => {
+  const containerRef = useRef();
   const pageRef = useRef(1);
   const dispatch = useDispatch();
   const params = useParams();
@@ -32,7 +32,6 @@ const EventsList = () => {
   const [EventList, setEventList] = useState([]);
   const [isFetching, setisFetching] = useState(true);
   const [loading, setloading] = useState(false);
-  const [isReachedEnd, setisReachedEnd] = useState(false);
   const [Pages, setPages] = useState({
     page: null,
     totalpage: null,
@@ -112,19 +111,9 @@ const EventsList = () => {
     return Pages.totalpage && pageRef.current !== Pages.totalpage;
   };
 
-  const handleBottomLoader = () => {
-    console.log("test", getHasNextPage());
-    if (getHasNextPage()) {
-      setisReachedEnd(true);
-    }
-  };
-
-  const scrollRef = useBottomScrollListener(handleBottomLoader);
-
   const loadMore = () => {
     if (!getHasNextPage()) {
       setloading(false);
-      setisReachedEnd(false);
     } else if (getHasNextPage() && !loading) {
       setloading(true);
       pageRef.current = pageRef.current + 1;
@@ -154,6 +143,30 @@ const EventsList = () => {
     }
   };
 
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        console.log("Reached End");
+        // User has reached the bottom (with a 10px threshold)
+        // Perform your desired action here, e.g., fetch more data
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
   return (
     <>
       {isFetching ? (
@@ -161,11 +174,11 @@ const EventsList = () => {
           <Skeleton active />
         </div>
       ) : (
-        <div className={` ${classes.profileSec} w-100`} ref={scrollRef}>
+        <div className={` ${classes.profileSec} w-100`}>
           {getValidEvent()?.length === 0 ? (
             <div className={classes.DisplayMsg}>We didn't find any results</div>
           ) : (
-            <div ref={[rootRef, scrollRef]}>
+            <div ref={[rootRef, containerRef]}>
               <Row>
                 {getValidEvent().map((ele) => (
                   <Col sm={6}>

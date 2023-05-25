@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
@@ -55,6 +55,7 @@ const SignupwithCredentials = () => {
       .string()
       .max(50, "Name cannot be longer than 50 characters")
       .required("Please input your Name!"),
+    gender: yup.string().required(`Please input your Gender!`),
     email_id: yup
       .string()
       .min(5, `Please Enter Valid ${getLoginType().title}`)
@@ -88,6 +89,7 @@ const SignupwithCredentials = () => {
     initialValues: {
       first_name: "",
       email_id: "",
+      gender: "",
       password: "",
       dob: "",
       geo_location: "",
@@ -250,6 +252,22 @@ const SignupwithCredentials = () => {
                   <p className="ErrTxt">{errors?.password}</p>
                 )}
               </Form.Item>
+              <p className={classes.label}>Gender</p>
+              <Form.Item name="gender" className="genderSelect">
+                <Select
+                  className={classes.selectBox}
+                  placeholder="Select Gender"
+                  status={touched.gender && errors.gender ? "error" : ""}
+                  value={values.gender}
+                  onSelect={(val) => {
+                    setFieldValue("gender", val);
+                  }}
+                >
+                  <Select.Option value={1}>Male</Select.Option>
+                  <Select.Option value={2}>Female</Select.Option>
+                </Select>
+                {touched.gender && <p className="ErrTxt">{errors?.gender}</p>}
+              </Form.Item>
               <p className={classes.label}>Date of Birth</p>
               <Form.Item>
                 <DateInputBox
@@ -270,6 +288,7 @@ const SignupwithCredentials = () => {
                 <Link to="/termsandconditions">terms and conditions</Link>
               </p>
               <br />
+
               <Form.Item>
                 <Button block htmlType="submit" className={classes.btn}>
                   Join Rawcaster Family

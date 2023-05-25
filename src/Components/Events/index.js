@@ -14,7 +14,7 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 
-const Events = () => {
+const Events = ({ ref = null, style = {} }) => {
   const dispatch = useDispatch();
   const { isSuccess, loginUserData } = useAuth();
   const { DashboardfilterType, nuggetFormData } = useNuggets();
@@ -33,7 +33,7 @@ const Events = () => {
     dispatch(fetchNuggetsbyId(filterData));
   };
   return (
-    <div className={classes.eventSec}>
+    <div className={classes.eventSec} ref={ref} style={style}>
       <div className={`${classes.beforelogin} mb-3`}>
         <Link
           className={DashboardfilterType === 0 ? classes.active : ""}

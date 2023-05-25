@@ -479,7 +479,8 @@ border-radius: 30px;
   align-items: flex-end;
 }
 .othersnuggetSec {
-  width: 60%; height: auto !important;
+  width: 60%;
+   height: max-content !important;
 }
 .viewDetailNugget  {
   width: 100%;
@@ -492,6 +493,46 @@ border-radius: 30px;
   max-width: 800px;
   margin: auto;
 }
+
+.loginuserContainer .TabSec {
+  margin: 10px 0;
+ 
+  display: flex;
+  flex-direction: row;
+}
+.loginuserContainer .TabSec p {
+  font-family: 'DM Sans';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 30px;
+/* identical to box height */
+color: #1D1C1C;
+padding:0 30px;
+padding-bottom: 5px;
+cursor: pointer;
+opacity: 0.7;
+
+}
+
+/* .loginuserContainer .TabSec p:first-child {
+  border-right: 1px solid #ECECEC;;
+} */
+
+.loginuserContainer .TabSec .activeSec {
+  opacity: 1;
+  border-bottom: 2px solid #E26386;
+}
+.loginuserContainer  .filterSec {
+ margin-top: 20px;
+}
+.loginuserContainer .inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
+.loginuserContainer .inSearch:focus {
+    border:none !important;
+    box-shadow: none !important;
+}
+.loginuserContainer .searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 11; border-radius: 50px !important; background: #563662 !important; width:45px; }
+.loginuserContainer .searchIcon span {color: #fff; }
 .LoadingSec {
   height: 100%;
   width: 100%;

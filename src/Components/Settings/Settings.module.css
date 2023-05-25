@@ -1,7 +1,9 @@
 .settingSec {
     width: 100%;
     float: left;
-    padding-top: 66px; background: #eef0f3;
+    padding-top: 66px; 
+    background: #eef0f3;
+    height: 100%;
   }
   .sidebar {
     width: 206px;
@@ -40,7 +42,7 @@
   .contentSec {
     background: #fff;
     width: calc(100% - 246px);
-    height: calc(100% - 40px);
+    /* height: calc(100% - 40px); */
     float: left;
     padding: 20px 25px;
     margin: 20px 20px 0 226px;
@@ -81,9 +83,9 @@
     color: #1a1a1a;
     font-size: 14.5px;
   }
-  .contentSec .item {
-    /* margin-bottom: 35px; */
-  }
+   /*.contentSec .item {
+   margin-bottom: 35px; 
+  }*/
   .mb0 {
     margin-bottom: 0 !important;
   }

@@ -39,14 +39,6 @@ const ConnectionsList = () => {
     }
   }, [friendsList, open, type]);
 
-  // useEffect(() => {
-  //   console.log(value);
-  //   if (value.length === 0) {
-  //     setConnectionData(friendsList);
-  //     setFilteredList([]);
-  //   }
-  // }, [value]);
-
   return (
     <div className={classes.listContainer}>
       <SearchResult

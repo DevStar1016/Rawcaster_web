@@ -70,7 +70,7 @@ const PostNuggets = () => {
 
   const EditNugget = (val) => {
     setpostModalShow(false);
-
+    setisNuggetModify({ type: "edit", id: isEdit });
     let formData = new FormData();
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
@@ -102,7 +102,7 @@ const PostNuggets = () => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
-          setisNuggetModify({ type: "edit", id: isEdit });
+
           GetNuggetList();
           setNuggetData([]);
         } else {

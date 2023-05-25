@@ -3,7 +3,10 @@
 .ribbon span { padding-left: 5px; }
 .ribbon a, .ribbon a:hover { color: #fff; text-decoration: none;  display: flex; align-items: center; justify-content: center;  height: 50px;}
 .smlogo { height: 22px; margin-right:10px;}
-
+.NuggetsSec {
+    overflow-y: auto !important;
+    height: calc(100vh - 70px) !important;
+}
 @media (max-width:768px) {
     .fullcontainer { width: 100%; }
     .ribbon a { font-size: 12px;}

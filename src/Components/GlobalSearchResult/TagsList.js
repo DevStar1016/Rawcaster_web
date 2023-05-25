@@ -1,7 +1,6 @@
 import { Dropdown, Skeleton } from "antd";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
@@ -21,11 +20,11 @@ import {
 import TagsChart from "../../UIComponents/TagsChart";
 import classes from "./GlobalSearch.module.css";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
 
 let isRequestCancel = false;
 
 const TagsList = () => {
+  const containerRef = useRef();
   const pageRef = useRef(1);
   const dispatch = useDispatch();
   const params = useParams();
@@ -101,7 +100,6 @@ const TagsList = () => {
 
   useEffect(() => {
     if (isGlobalSearch || TagsList?.length === 0) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       dispatch(handleLoading(true));
       getTagsList();
       setisFetching(true);
@@ -113,13 +111,15 @@ const TagsList = () => {
     return Pages.totalpage && pageRef.current !== Pages.totalpage;
   };
 
-  const handleBottomLoader = () => {
-    if (getHasNextPage()) {
-      setisReachedEnd(true);
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        setisReachedEnd(true);
+      }
     }
   };
-
-  const scrollRef = useBottomScrollListener(handleBottomLoader);
 
   const loadMore = () => {
     if (!getHasNextPage()) {
@@ -155,6 +155,18 @@ const TagsList = () => {
     }
   };
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
   return (
     <>
       {getValidTags()?.length === 0 ? (
@@ -172,10 +184,10 @@ const TagsList = () => {
       ) : null}
 
       {getValidTags()?.length === 0 ? (
-        <div ref={scrollRef}></div>
+        <div></div>
       ) : (
         <div
-          ref={scrollRef}
+          ref={containerRef}
           className={`${classes.nuggetSec} ${classes.nopadding} w-100`}
         >
           {getValidTags()?.length !== 0 && (

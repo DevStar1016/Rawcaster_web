@@ -5,6 +5,7 @@ import ContentLayout from "./ContentLayout";
 import { useState } from "react";
 import {
   JSONtoformdata,
+  detectMob,
   filterValidObject,
   utctoUserTimezone,
 } from "../../Shared/Utility";
@@ -16,7 +17,7 @@ import moment from "moment";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { NotificationContext } from "../../Shared/Context";
 import { toast } from "react-hot-toast";
-import classes from "./Notification.module.css"
+import classes from "./Notification.module.css";
 
 const Notification = ({ className, src }) => {
   const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
@@ -150,14 +151,16 @@ const Notification = ({ className, src }) => {
         </Popover>
       </div>
 
-      <div className="onlyMob">
-        <div className={classes.mobNotification}>
-          <Header />
-          <ContentLayout />
+      {detectMob() && (
+        <div className="onlyMob">
+          <div className={classes.mobNotification}>
+            <Header />
+            <ContentLayout />
+          </div>
         </div>
-      </div>
+      )}
     </NotificationContext.Provider>
   );
 };
 
-export default Notification;  
+export default Notification;

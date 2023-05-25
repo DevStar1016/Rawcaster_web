@@ -199,7 +199,8 @@ export const BannerComponent = ({ onResult, value, size = null }) => {
                 ? bannerImage
                 : URL.createObjectURL(bannerImage)
             }
-            alt={URL.createObjectURL(bannerImage)}
+            alt="Banner_img"
+            // alt={URL.createObjectURL(bannerImage)}
             width="100%"
             height="100%"
             style={{

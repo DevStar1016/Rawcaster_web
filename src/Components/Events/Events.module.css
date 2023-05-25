@@ -1,13 +1,11 @@
 .eventSec { 
     width: 310px;
     float: left;
+    position: -webkit-sticky;
     position: sticky; 
     padding-right: 10px;
     padding-bottom: 74px;
-    height: calc(100vh - 70px);
-    position: -webkit-sticky;
-    position: sticky;
-   
+    height: calc(100vh - 70px);   
     /* mask-image: linear-gradient(0deg,transparent,#000),linear-gradient(270deg,transparent 17px,#000 0);
     mask-size: 100% 20000px;
     mask-position: left bottom;

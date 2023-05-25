@@ -20,11 +20,11 @@ import {
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Skeleton } from "antd";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
 
 let isRequestCancel = false;
 
 const ProfileList = () => {
+  const containerRef = useRef();
   const pageRef = useRef(1);
   const dispatch = useDispatch();
   const params = useParams();
@@ -124,13 +124,15 @@ const ProfileList = () => {
     return Pages.totalpage && pageRef.current !== Pages.totalpage;
   };
 
-  const handleBottomLoader = () => {
-    if (getHasNextPage()) {
-      setisReachedEnd(true);
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        setisReachedEnd(true);
+      }
     }
   };
-
-  const scrollRef = useBottomScrollListener(handleBottomLoader);
 
   const loadMore = () => {
     if (!getHasNextPage()) {
@@ -148,6 +150,18 @@ const ProfileList = () => {
     hasNextPage: getHasNextPage(),
     onLoadMore: loadMore,
   });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   const getValidPeople = () => {
     if (PeopleList && PeopleList.length !== 0) {
@@ -172,7 +186,7 @@ const ProfileList = () => {
     //     console.log("test");
     //   }}
     // >
-    <div className={` ${classes.profileSec}`} ref={scrollRef}>
+    <div className={` ${classes.profileSec}`} ref={containerRef}>
       {getValidPeople()?.length === 0 ? (
         <>
           {isFetching ? (

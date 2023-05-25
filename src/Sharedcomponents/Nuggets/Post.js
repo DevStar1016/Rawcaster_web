@@ -50,7 +50,6 @@ import {
   handleDeleteNuggetList,
   handleDeleteNuggetListByUserId,
   handleNuggetList,
-  handleNuggetViewUpdate,
   handlenuggetVideoPaused,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import _debounce from "lodash/debounce";
@@ -93,8 +92,7 @@ const Post = ({
 
   const [ref] = useInView({
     onEnter: () => {
-      dispatch(handleNuggetViewUpdate(index));
-      if (handleView) {
+      if (handleView && ele.viewed === 0) {
         handleView(index);
       }
     },
@@ -353,13 +351,6 @@ const Post = ({
             </div>
           ),
         },
-
-        // {
-        //   key: 3,
-        //   label: <div onClick={() => handleShareLink()}><span class="material-symbols-outlined">
-        //   more_horiz
-        //   </span>report abuse</div>,
-        // },
       ];
       return resultData;
     } else {
@@ -416,12 +407,6 @@ const Post = ({
             </div>
           ),
         },
-        // {
-        //   key: 3,
-        //   label: <div onClick={() => handleShareLink()}><span class="material-symbols-outlined">
-        //   more_horiz
-        //   </span>report abuse</div>,
-        // },
       ];
       return resultData;
     }
