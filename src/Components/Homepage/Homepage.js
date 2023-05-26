@@ -261,7 +261,7 @@ const Homepage = () => {
           <img
             className={classes.profileImg}
             alt="Godfrey"
-            src={require("../../Assets/Images/png/godfrey.png")}
+            src={require("../../Assets/Images/png/Edith.png")}
           />
           <p>
             <img
@@ -278,7 +278,7 @@ const Homepage = () => {
             to interact with their fans and for the fans to interact with each
             other”
             <br />
-            <br />- Godfrey (Co-founder)
+            <br />- Edith (Co-founder)
           </p>
         </div>
       </div>
