@@ -78,6 +78,39 @@
 .profileSec {
     opacity: 1;
 }
+.VerifyIcon {
+  float: left;
+  width: 22px;
+  height: 22px;
+  mask: url("../../Assets/Icons/svg/claim_account_white.svg") no-repeat center / contain;
+  -webkit-mask: url("../../Assets/Icons/svg/claim_account_white.svg") no-repeat center /
+    contain;
+  cursor: pointer;
+}
+.verifiedImg {
+position: absolute;
+right: 2px;
+width: 35px;
+height: 35px;
+
+}
+.verifyAccount img {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 4px !important;
+    margin-right: 10px;
+}
+.verifyAccount p {
+  font-family: 'DM Sans';
+font-style: normal;
+font-weight: 300 !important;
+font-size: 18px !important;
+line-height: 23px !important;
+color: #FFFFFF !important;
+}
+.disabledverifyAccount {
+  background-color: rgba(226, 99, 134,0.9) !important;
+}
 .profileContainer {
     margin-top: -74px;
     position: relative;
@@ -90,7 +123,7 @@
     width:140px; 
     float: left;
 }
-.profileSec img {
+.profileSec .profileImg {
     width: 140px;
     height: 140px;
     border-radius: 90px;

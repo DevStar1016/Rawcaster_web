@@ -131,7 +131,14 @@ const InviteBox = () => {
                         src={require("../../Assets/Icons/png/user_vector.png")}
                       ></img>
                       <div className={classes.NameSec}>
-                        <p className={classes.name}>{ele.title}</p>
+                        <p
+                          className={classes.name}
+                          style={{
+                            width: 180,
+                          }}
+                        >
+                          {ele.title}
+                        </p>
                         <p className={classes.email}>{ele.email}</p>
                       </div>
                     </div>

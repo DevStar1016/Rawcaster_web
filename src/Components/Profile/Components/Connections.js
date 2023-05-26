@@ -16,7 +16,6 @@ import { useAuthToken } from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
 import msgIcon from "../../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
-import { useDispatch } from "react-redux";
 import InfluencerSend from "../../../Modal/InfluencerSend";
 
 const ConnectionsList = ({
@@ -26,15 +25,16 @@ const ConnectionsList = ({
   isMyProfile,
   isLoading = false,
 }) => {
-  const { isLoginUser, getFollowers } = useProfileContext();
+  const {
+    isLoginUser,
+    getFollowers,
+    isInfluencerChatModalOpen,
+    setisInfluencerChatModalOpen,
+  } = useProfileContext();
   const params = useParams();
   const display_user_id = DecryptionString(params.user_id);
   const [isLoadingConnection, setisLoadingConnection] = useState(false);
-  const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
-    show: false,
-  });
   const loginToken = useAuthToken();
-
   const [ConnectionsList, setConnectionsList] = useState({
     connections: [],
     allconnections: [],

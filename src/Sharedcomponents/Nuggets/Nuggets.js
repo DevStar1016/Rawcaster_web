@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import {
   DecryptionString,
@@ -22,22 +22,29 @@ import {
   handleDeleteNuggetList,
   handleNuggetFormData,
   handleNuggetList,
+  handleNuggetViewAPIUpdate,
+  handleNuggetViewUpdate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 import NuggetLock from "../../Assets/Images/svg/nugget_lock.svg";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
+import _debounce from "lodash/debounce";
+import { Form, InputGroup } from "react-bootstrap";
 
 const Nuggets = ({
   isLocked = false,
   isUserPostAvailable = true,
   isLoading = false,
-  maxHeight = null,
   className = null,
 }) => {
+  const containerRef = useRef(null);
   const pageRef = useRef(1);
+  const viewRef = useRef([]);
   const dispatch = useDispatch();
   const params = useParams();
+  const [SearchKey, setSearchKey] = useState("");
+  const [ActiveTab, setActiveTab] = useState(0);
   const searchKey = params?.key ? DecryptionString(params?.key) : "";
   const [ViewedList, setViewedList] = useState([]);
   const [NuggetsData, setNuggetsData] = useState([]);
@@ -45,6 +52,7 @@ const Nuggets = ({
   const { Nuggets, isNuggetsLoading, nuggetFormData, totalpages } =
     useNuggets();
   const userData = getRawcaserToken();
+  const [isloading, setisLoading] = useState(false);
   const [isReachedEnd, setisReachedEnd] = useState(false);
   const token = useAuthToken();
   const loginuserData = useAuthData();
@@ -71,10 +79,24 @@ const Nuggets = ({
     });
   };
 
+  const ViewHandling = (index) => {
+    dispatch(handleNuggetViewAPIUpdate(viewRef.current));
+    for (let i = 0; i < viewRef.current.length; i++) {
+      const element = viewRef.current[i];
+      dispatch(handleNuggetViewUpdate(element));
+    }
+    viewRef.current = [];
+  };
+
+  const ViewProgress = useCallback(
+    _debounce(ViewHandling, 2000),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   const GetNuggetList = (page = 1, formData = null) => {
     return new Promise((resolve, reject) => {
       if (formData) {
-        console.log("test");
         dispatch(fetchNuggetsbyId(formData)).then((res) => {
           pageRef.current = res.payload.current_page_no;
           setPages({
@@ -82,6 +104,7 @@ const Nuggets = ({
             totalpage: res.payload.total_pages,
           });
           setloading(false);
+          setisLoading(false);
           setisReachedEnd(false);
         });
         return;
@@ -96,6 +119,7 @@ const Nuggets = ({
         setisNuggetModify(null);
         setloading(false);
         setisReachedEnd(false);
+        setisLoading(false);
       });
     });
   };
@@ -148,6 +172,19 @@ const Nuggets = ({
     }
   }, [token, isLoading]);
 
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        console.log("Reached End");
+        setisReachedEnd(true);
+        // User has reached the bottom (with a 10px threshold)
+        // Perform your desired action here, e.g., fetch more data
+      }
+    }
+  };
+
   const ListNuggetData = {
     setProgress,
     Pages,
@@ -183,7 +220,7 @@ const Nuggets = ({
     parseInt(display_user_id) !== parseInt(userData?.user_id);
 
   const isDisplayPost = () => {
-    if (isValidPage()) {
+    if (isValidPage() && ActiveTab === 0) {
       return "Share Your First Nugget";
     } else if (parseInt(display_user_id) !== parseInt(userData?.user_id)) {
       return "No Posts Available";
@@ -192,6 +229,7 @@ const Nuggets = ({
   };
 
   useEffect(() => {
+    console.log(Nuggets);
     setNuggetsData(Nuggets);
   }, [Nuggets]);
 
@@ -208,6 +246,18 @@ const Nuggets = ({
     hasNextPage: getHasNextPage(),
     onLoadMore: loadMore,
   });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
@@ -230,13 +280,13 @@ const Nuggets = ({
         </div>
       ) : (
         <div
-          ref={scrollRef}
+          ref={containerRef}
           // style={{ height: maxHeight ? maxHeight : "" }}
           className={` ${
             params?.key ? classes.resultnuggetSec : classes.nuggetSec
           } ${isuserConnection ? classes.othersnuggetSec : ""} ${
-            maxHeight ? "h-auto" : ""
-          } ${className ? className : ""}`}
+            className ? className : ""
+          }`}
         >
           <>
             {isValidPage() && (
@@ -244,6 +294,101 @@ const Nuggets = ({
             )}
           </>
 
+          {display_user_id && !isuserConnection && (
+            <div className={classes.loginuserContainer}>
+              <div className={classes.filterSec}>
+                <InputGroup>
+                  <Form.Control
+                    className={classes.inSearch}
+                    placeholder="Search nuggets..."
+                    aria-label="Search nuggets..."
+                    value={SearchKey}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        if (SearchKey !== nuggetFormData.formData.search_key) {
+                          setisLoading(true);
+                          let FormData = { ...nuggetFormData };
+                          FormData["formData"] = {
+                            ...FormData["formData"],
+                            search_key: SearchKey,
+                          };
+                          dispatch(handleNuggetFormData(FormData));
+                          GetNuggetList(1, FormData);
+                        }
+                      }
+                    }}
+                    onChange={(e) => {
+                      setSearchKey(e.target.value);
+                    }}
+                  />
+                  <InputGroup.Text
+                    className={classes.searchIcon}
+                    onClick={() => {
+                      if (SearchKey !== nuggetFormData.formData.search_key) {
+                        setisLoading(true);
+                        let FormData = { ...nuggetFormData };
+                        FormData["formData"] = {
+                          ...FormData["formData"],
+                          search_key: SearchKey,
+                        };
+                        dispatch(handleNuggetFormData(FormData));
+                        GetNuggetList(1, FormData);
+                      }
+                    }}
+                  >
+                    <span class="material-icons">search</span>
+                  </InputGroup.Text>
+                </InputGroup>
+              </div>
+              <div className={classes.TabSec}>
+                <p
+                  className={ActiveTab === 0 ? classes.activeSec : ""}
+                  onClick={() => {
+                    if (ActiveTab !== 0) {
+                      setisLoading(true);
+                      setSearchKey("");
+                      let splitData = window.location.pathname.split("/");
+                      let finalData = {
+                        token: token,
+                        formData: {
+                          page_number: 1,
+                          nugget_type: 0,
+                          user_id:
+                            splitData[2] && splitData[2] !== ""
+                              ? DecryptionString(splitData[2])
+                              : null,
+                        },
+                      };
+                      dispatch(handleNuggetFormData(finalData));
+                      GetNuggetList(1, finalData);
+                    }
+
+                    setActiveTab(0);
+                  }}
+                >
+                  My Nuggets
+                </p>
+                <p
+                  className={ActiveTab === 1 ? classes.activeSec : ""}
+                  onClick={() => {
+                    if (ActiveTab !== 1) {
+                      setisLoading(true);
+                      setSearchKey("");
+                      let finalData = {
+                        token: token,
+                        formData: { page_number: 1, nugget_type: 0, saved: 1 },
+                      };
+                      dispatch(handleNuggetFormData(finalData));
+                      GetNuggetList(1, finalData);
+                    }
+                    setActiveTab(1);
+                  }}
+                >
+                  Favorites
+                </p>
+              </div>
+            </div>
+          )}
           {isNuggetModify?.type === "add" && (
             <div className="mt-3">
               <NuggetLoaders loading={true} />
@@ -251,7 +396,7 @@ const Nuggets = ({
           )}
 
           <>
-            {isNuggetsLoading || totalpages === null ? (
+            {isNuggetsLoading || totalpages === null || isloading ? (
               <div className="mt-3">
                 {[...Array(6)].map(() => (
                   <NuggetLoaders loading={true} />
@@ -264,7 +409,19 @@ const Nuggets = ({
                     {searchKey ? "We didn't find any results" : isDisplayPost()}
                   </div>
                 ) : (
-                  <div ref={rootRef}>
+                  <div
+                    ref={rootRef}
+                    onScroll={(e) => {
+                      const { scrollTop, scrollHeight, offsetHeight } =
+                        e.target;
+                      const hasScrollReachedBottom =
+                        offsetHeight + scrollTop > scrollHeight - 40;
+
+                      if (hasScrollReachedBottom) {
+                        console.log("hasScrollReachedBottom");
+                      }
+                    }}
+                  >
                     {NuggetsData?.map((ele, index) => {
                       return (
                         <Spin
@@ -281,6 +438,10 @@ const Nuggets = ({
                             index={index}
                             muted={muted}
                             setmuted={setmuted}
+                            handleView={(index) => {
+                              viewRef.current = [...viewRef.current, index];
+                              ViewProgress(index);
+                            }}
                             handleLike={(like) => {
                               let findIndex = Nuggets.findIndex(
                                 (elem) => elem.nugget_id === ele.nugget_id

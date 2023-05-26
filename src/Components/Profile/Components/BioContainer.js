@@ -17,11 +17,19 @@ import {
   updateProfileService,
 } from "../../../Services/ApiService";
 import { toast } from "react-hot-toast";
+import shieldIcon from "../../../Assets/Icons/svg/claim_account_white.svg";
+import { useNavigate } from "react-router";
 
 const BioContainer = ({ isLoginuser }) => {
+  const navigate = useNavigate();
   const [isAboutEdit, setisAboutEdit] = useState(false);
-  const { profileData, isLinkopenModal, setisLinkopenModal, handleBecameFan } =
-    useProfileContext();
+  const {
+    profileData,
+    isLinkopenModal,
+    setisLinkopenModal,
+    handleBecameFan,
+    DiamondVerifyType,
+  } = useProfileContext();
   const [selectedCategory, setselectedCategory] = useState([]);
   const loginToken = useAuthToken();
   const { isSuccess, loginUserData } = useAuth();
@@ -220,35 +228,70 @@ const BioContainer = ({ isLoginuser }) => {
           ) : (
             <Skeleton active />
           )}
-          <Button
-            className={classes.becomeafanbtn}
-            onClickCapture={() => {
-              if (BecameFanStatus === "") {
-                setBecameFanStatus("pending");
-                handleBecameFan().then(() => {
-                  setBecameFanStatus("");
-                });
-              }
-            }}
-            style={{
-              display: isLoginuser || profileData?.follow ? "none" : "flex",
-            }}
-          >
-            {BecameFanStatus === "" ? (
-              <div className={classes.becomeSec}>
-                <p>Become a Fan </p>
-                <i class="material-symbols-outlined">arrow_forward</i>
-              </div>
-            ) : (
-              BecameFanStatus === "pending" && (
-                <div className={classes.loadingSec}>
-                  <p>Please wait</p>
 
-                  <Spin className={classes.loader} />
+          {(DiamondVerifyType === 3 || DiamondVerifyType === 2) && (
+            <Button
+              className={`${classes.becomeafanbtn} ${classes.verifyAccount} ${
+                DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
+              }`}
+              onClickCapture={() => {
+                if (DiamondVerifyType === 3) {
+                  navigate("/verifyaccount");
+                }
+              }}
+              disabled={DiamondVerifyType === 2}
+              style={{
+                display: "flex",
+                background: "#E26386",
+              }}
+            >
+              {DiamondVerifyType === 3 ? (
+                <div className={classes.becomeSec}>
+                  <img src={shieldIcon} />
+                  <p>Verify my Account</p>
                 </div>
-              )
-            )}
-          </Button>
+              ) : (
+                DiamondVerifyType === 2 && (
+                  <div className={classes.becomeSec}>
+                    <img src={shieldIcon} />
+                    <p>Approval Pending</p>
+                  </div>
+                )
+              )}
+            </Button>
+          )}
+
+          {!profileData || isLoginuser || profileData?.follow ? null : (
+            <Button
+              className={classes.becomeafanbtn}
+              onClickCapture={() => {
+                if (BecameFanStatus === "") {
+                  setBecameFanStatus("pending");
+                  handleBecameFan().then(() => {
+                    setBecameFanStatus("");
+                  });
+                }
+              }}
+              style={{
+                display: isLoginuser || profileData?.follow ? "none" : "flex",
+              }}
+            >
+              {BecameFanStatus === "" ? (
+                <div className={classes.becomeSec}>
+                  <p>Become a Fan </p>
+                  <i class="material-symbols-outlined">arrow_forward</i>
+                </div>
+              ) : (
+                BecameFanStatus === "pending" && (
+                  <div className={classes.loadingSec}>
+                    <p>Please wait</p>
+
+                    <Spin className={classes.loader} />
+                  </div>
+                )
+              )}
+            </Button>
+          )}
         </>
       )}
     </div>

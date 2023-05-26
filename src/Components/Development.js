@@ -1,52 +1,83 @@
-import { Skeleton } from "antd";
-import React, { useState } from "react";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import useInfiniteScroll from "react-infinite-scroll-hook";
+import React, { useEffect, useRef } from "react";
 
 const Development = () => {
-  const [content, setContent] = useState([...new Array(100)]);
-  const [loading, setloading] = useState(false);
-  const [isReachedEnd, setisReachedEnd] = useState(false);
+  const canvasRef = useRef(null);
+  const audioRef = useRef(null);
+  let audioContext;
+  let analyser;
 
-  const handleBottomLoader = () => {
-    setisReachedEnd(true);
-  };
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
 
-  const scrollRef = useBottomScrollListener(handleBottomLoader);
+    // Get audio context
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-  const loadMore = () => {
-    if (isReachedEnd) {
-      console.log("isReachedEnd");
-      setloading(true);
-      setTimeout(() => {
-        setContent((pre) => [...pre, ...new Array(10)]);
-        setloading(false);
-        setisReachedEnd(false);
-      }, 1000);
-    }
-  };
+    // Create analyser
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-  const getHasNextPage = () => {
-    return content.length !== 190;
-  };
+    // Connect audio source
+    const audioElement = audioRef.current;
+    const audioSource = audioContext.createMediaElementSource(audioElement);
+    audioSource.connect(analyser);
+    audioSource.connect(audioContext.destination);
 
-  const [sentryRef, { rootRef }] = useInfiniteScroll({
-    loading,
-    hasNextPage: getHasNextPage(),
-    onLoadMore: loadMore,
-  });
+    // Render audio visualizer
+    const renderFrame = () => {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Get frequency data
+      analyser.getByteFrequencyData(dataArray);
+
+      // Calculate bar width and spacing
+      const barWidth = canvas.width / bufferLength;
+      const barSpacing = 2;
+
+      // Draw bars
+      dataArray.forEach((value, index) => {
+        const barHeight = (value / 255) * canvas.height;
+        const x = index * (barWidth + barSpacing);
+        const y = canvas.height - barHeight;
+
+        ctx.fillStyle = `rgb(${value}, 0, 0)`;
+        ctx.fillRect(x, y, barWidth, barHeight);
+      });
+
+      // Call next frame
+      requestAnimationFrame(renderFrame);
+    };
+
+    // Start rendering frames
+    renderFrame();
+
+    return () => {
+      // Clean up resources
+      analyser.disconnect();
+      audioContext.close();
+    };
+  }, []);
 
   return (
-    <div ref={[scrollRef, rootRef]}>
-      {content.map((item, index) => (
-        <div key={index}>{index}</div>
-      ))}
-      {(loading || getHasNextPage()) && (
-        <div ref={sentryRef}>
-          <Skeleton />
-        </div>
-      )}
+    <div>
+      <canvas ref={canvasRef} width={800} height={400} />
+      <audio ref={audioRef} controls>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" />
+      </audio>
+      {/* <canvas ref={canvasRef} width={800} height={400} />
+      <audio
+        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        controls
+      /> */}
     </div>
+    // <audio
+    //   ref={audioRef}
+    //   src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    //   controls
+    // />
   );
 };
 

@@ -70,7 +70,7 @@ const Dashboard = () => {
         <div className="d-none d-sm-block">
           <div className={classes.fullcontainer}>
             <Events />
-            <Nuggets />
+            <Nuggets className={classes.NuggetsSec} />
             <DashboardSignup />
           </div>
         </div>

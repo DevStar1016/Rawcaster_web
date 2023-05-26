@@ -73,6 +73,9 @@ export const getOthersProfileService = (data) => {
 export const updateProfileService = (data) => {
   return axios.post("updatemyprofile", data);
 };
+export const AccountVerifyService = (data) => {
+  return axios.post("verifyaccount", data);
+};
 export const updateUserSettingsService = (data, progress) => {
   return axios.post("updateusersettings", data, {
     onUploadProgress: progress,

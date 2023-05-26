@@ -40,6 +40,16 @@ p.iconsec span:last-child { margin-left: 10px;}
     margin-right: 3px;
     margin-bottom: 1px;
 }
+.socialmediashare {
+  margin: 8px 5px;
+}
+.socialmediashare p {
+  display: inline;
+  margin: 15px 5px;
+}
+.socialmediashare p img {
+  width: 30px;
+}
 .editIcon { background: url(../../Assets/Icons/svg/edit_icon.svg) no-repeat center center;  background-size: cover; width: 13px; height: 13px; display: flex; justify-content: center; align-items: center;cursor: pointer;}
 .editSec {
     display: flex;

@@ -58,6 +58,10 @@ export const DashboardRoute = [
             path: "claim/:user_id",
             element: <Claimaccount />,
           },
+          {
+            path: "verifyaccount",
+            element: <Claimaccount />,
+          },
         ],
       },
     ],

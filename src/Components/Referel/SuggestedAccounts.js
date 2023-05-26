@@ -73,8 +73,8 @@ const SuggestedAccounts = () => {
                     currentTarget.src = defaultprofileImg;
                   }}
                 />
+
                 <p className={classes.name}>{decodeHtml(ele?.display_name)}</p>
-                <br />
                 {ele.category && ele.category.length !== 0 && (
                   <p className={classes.username}>{ele.category.toString()}</p>
                 )}

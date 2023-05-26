@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import classes from "./Profile.module.css";
 import {
   DecryptionString,
   JSONtoformdata,
+  filterValidObject,
   getGeocodeData,
 } from "../../Shared/Utility";
 import { useNavigate, useParams } from "react-router";
 import ProfileLayout from "./ProfileLayout";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import { Button, Form, Input, Modal, Tooltip } from "antd";
-import { toast } from "react-hot-toast";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { AddClaimAccountService } from "../../Services/ApiService";
+import {
+  AccountVerifyService,
+  AddClaimAccountService,
+} from "../../Services/ApiService";
 import { Col, Row } from "react-bootstrap";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import moment from "moment";
 import PlacesAutocomplete from "react-places-autocomplete";
-import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { useDispatch } from "react-redux";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 
@@ -37,7 +39,9 @@ const Claimaccount = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
-  const display_user_id = DecryptionString(params.user_id);
+  const display_user_id = params?.user_id
+    ? DecryptionString(params.user_id)
+    : null;
 
   const loginUserData = useAuthData();
 
@@ -64,13 +68,22 @@ const Claimaccount = () => {
     },
   });
 
+  const VerifyType = (value) => {
+    if (display_user_id) {
+      return AddClaimAccountService(value);
+    } else {
+      return AccountVerifyService(value);
+    }
+  };
+
   const HandleClaimAccount = (value) => {
     let finalData = {
       ...value,
-      influencer_id: parseInt(display_user_id),
+      influencer_id: display_user_id ? parseInt(display_user_id) : null,
       token: loginUserData?.token,
     };
-    AddClaimAccountService(JSONtoformdata(finalData))
+
+    VerifyType(JSONtoformdata(filterValidObject(finalData)))
       .then((res) => {
         if (res.data.status === 1) {
           navigate(-1);
@@ -118,7 +131,11 @@ const Claimaccount = () => {
       <ProfileLayout profileData={loginUserData}>
         <div className={`mt-4  ${classes.claimAccountSec}`}>
           <div className={`${classes.claimAccountBox}`}>
-            <h2>Confirm Profile Data</h2>
+            <h2>
+              {display_user_id
+                ? "Confirm Profile Data"
+                : "Submit Details For Verification"}
+            </h2>
             <Row>
               <Col sm={6}>
                 <div className="my-2">
@@ -292,14 +309,16 @@ const Claimaccount = () => {
               </Col>
             </Row>
           </div>
-          <Button
-            className={classes.btnstyle}
-            onClickCapture={() => {
-              handleSubmit();
-            }}
-          >
-            {"Submit"}
-          </Button>
+          <div className="w-100 text-center">
+            <Button
+              className={classes.btnstyle}
+              onClickCapture={() => {
+                handleSubmit();
+              }}
+            >
+              {"Submit"}
+            </Button>
+          </div>
         </div>
       </ProfileLayout>
     </div>

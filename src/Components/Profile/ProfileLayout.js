@@ -28,6 +28,7 @@ import AddFriendIcon from "../../Assets/Icons/svg/profile_add_friend.svg";
 import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
+import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 
 const ProfileLayout = ({
   children,
@@ -38,6 +39,7 @@ const ProfileLayout = ({
   handleAddUser,
   setprofileData,
   className = null,
+  setisInfluencerChatModalOpen = null,
 }) => {
   const loginUserData = useAuthData();
 
@@ -205,7 +207,7 @@ const ProfileLayout = ({
   };
 
   return (
-    <div className={className ? className : ""}>
+    <div className={className ? className : ""} id="banner_container">
       <div className={classes.bannersec}>
         <Skeleton.Node active={isCoverLoading} className={classes.bannerImg}>
           <img
@@ -246,7 +248,19 @@ const ProfileLayout = ({
       {profileData && (
         <div className={classes.profileContainer}>
           <div className={classes.profileSec}>
-            <img src={profileData?.profile_image} alt="Profile" />
+            <img
+              src={DiamonVerified}
+              className={classes.verifiedImg}
+              style={{
+                display:
+                  profileData?.account_verify_type === 2 ? "block" : "none",
+              }}
+            />
+            <img
+              src={profileData?.profile_image}
+              alt="Profile"
+              className={classes.profileImg}
+            />
             {isLoginUser && (
               <div
                 className={classes.uploadSec}
@@ -292,7 +306,16 @@ const ProfileLayout = ({
                         display: isLoginUser ? "" : "none",
                       }}
                     >
-                      <img src={msgIcon} alt="Message" />
+                      <img
+                        src={msgIcon}
+                        alt="Message"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          if (setisInfluencerChatModalOpen) {
+                            setisInfluencerChatModalOpen({ show: true });
+                          }
+                        }}
+                      />
                       <img src={talkshowIcon} alt="Talkshow" />
                     </div>
                   </div>

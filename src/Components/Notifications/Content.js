@@ -3,10 +3,7 @@ import classes from "./Notification.module.css";
 import { useNotificationContext } from "../../Shared/Context";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { NotificationsList } from "./Utility";
-import {
-  DeleteNotificationService,
-  ViewNotificationService,
-} from "../../Services/ApiService";
+import { DeleteNotificationService } from "../../Services/ApiService";
 import { JSONtoformdata } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 

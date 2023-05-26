@@ -45,7 +45,7 @@
 .agreeTxt a { color: #E36683; font-weight: 500; }
 .heading_h1 { color: #1D1C1C !important; font-family: 'Gilroy-Bold'; font-size: 32px !important; text-align: left; margin:20px 0 0 0px !important; } 
 .verifyBox .heading_h1 { font-size: 28px !important;  }
-.textBox {
+.textBox,.selectBox {
    -webkit-text-fill-color: inherit;
 -webkit-text-fill-color: initial;
 -webkit-text-fill-color: unset;

@@ -455,6 +455,10 @@ export const getDisplayEventDate = (
   return "";
 };
 
+export const shareEventDate = (t) => {
+  return moment(t).format("D MMM YYYY hh:mm A ");
+};
+
 export const dateToShortDate = (time) => {
   let date = new Date();
   var utcCutoff = moment.utc(date);

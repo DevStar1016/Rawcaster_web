@@ -39,15 +39,17 @@ import { getfollowerfollowingService } from "./Components/Utility";
 import ProfileLayout from "./ProfileLayout";
 import { HandleAddFriend, HandleBecameaFan } from "../../Shared/SharedAPIs";
 import { friendRequestSocket } from "../../Services/SocketList";
-import styles from "./Profileothers.module.css";
+import { detectMob } from "../../Shared/Utility";
 
 const Profile = () => {
   const params = useParams();
   const leftContainer = useRef();
   const rightContainer = useRef();
   const token = useAuthToken();
-  const [hideHeader, setHideHeader] = useState(false);
   const display_user_id = DecryptionString(params.user_id);
+  const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
+    show: false,
+  });
   const navigate = useNavigate();
   const { isSuccess } = useAuth();
   const { nuggetFormData } = useNuggets();
@@ -214,6 +216,30 @@ const Profile = () => {
     });
   };
 
+  // Response
+  // 1 - verified
+  // 2 - Approval Pending
+  // 3 - not verified but verify available for this member
+  // 4 - verify not available
+
+  const getDiamondVeifyType = () => {
+    if (loginUserData) {
+      const { account_verify_type, user_status_id } = loginUserData;
+      if (getisLoginUser()) {
+        if (account_verify_type === 2) {
+          return 1;
+        } else if (account_verify_type === 1) {
+          return 2;
+        } else if (account_verify_type === 0 && user_status_id === 4) {
+          return 3;
+        }
+        return 4;
+      }
+      return 4;
+    }
+    return 4;
+  };
+
   const profileValue = {
     FansList,
     setFansList,
@@ -222,16 +248,14 @@ const Profile = () => {
     isLinkopenModal,
     setisLinkopenModal,
     isLoginUser: getisLoginUser(),
+    DiamondVerifyType: getDiamondVeifyType(),
     getFollowers,
     handleBecameFan,
     handleAddUser,
     leftContainer,
     rightContainer,
-  };
-
-  const getHeight = () => {
-    const leftheight = leftContainer.current?.offsetHeight / 2;
-    console.log(leftheight, window.innerHeight);
+    setisInfluencerChatModalOpen,
+    isInfluencerChatModalOpen,
   };
 
   return (
@@ -242,17 +266,23 @@ const Profile = () => {
             profileData={profileData}
             isFansEnabled
             isEditable
-            className={hideHeader ? styles.hidden : ""}
             setprofileData={setprofileData}
             isLocked={profileData && profileData.lock_fans === 1}
             handleAddUser={handleAddUser}
+            setisInfluencerChatModalOpen={setisInfluencerChatModalOpen}
           >
             <div className={classes.fullcontainer}>
               <div
                 ref={leftContainer}
                 style={{
-                  position: "sticky",
-                  top: `calc(-${leftContainer.current?.offsetHeight / 2}px + 250px)`,
+                  position: detectMob() ? "relative" : "sticky",
+
+                  top: detectMob()
+                    ? 0
+                    : `calc(-${leftContainer.current?.offsetHeight / 2}px + ${
+                        document.getElementById("banner_container")
+                          ?.offsetHeight
+                      }px)`,
                 }}
                 className={`${classes.profileevent} ${
                   getisLoginUser() ? "" : classes.othersprofileEvent
@@ -372,13 +402,24 @@ const Profile = () => {
                 isLoginuser={getisLoginUser()}
                 isLoading={!profileData}
                 isLocked={profileData && profileData.lock_nugget === 1}
-                maxHeight={getHeight()}
                 className={null}
               />
 
               <>
                 {getisLoginUser() && isSuccess && (
-                  <div className={classes.rightProfiles} ref={rightContainer}>
+                  <div
+                    className={classes.rightProfiles}
+                    ref={rightContainer}
+                    style={{
+                      position: "sticky",
+                      top: `calc(-${
+                        rightContainer.current?.offsetHeight / 2
+                      }px + ${
+                        document.getElementById("banner_container")
+                          ?.offsetHeight
+                      }px)`,
+                    }}
+                  >
                     {ConnectionsType.map((ele) => {
                       return ele.id === 3 ? (
                         <Connections />

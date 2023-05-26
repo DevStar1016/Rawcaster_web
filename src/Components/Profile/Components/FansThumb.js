@@ -13,12 +13,6 @@ const FansThumb = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (parseInt(FansList.allconnectionscount) === 0 && loginToken) {
-  //     getFollowers();
-  //   }
-  // }, [loginToken, FansList]);
-
   return (
     <div className={classes.fansList}>
       {FansList.connections?.map((ele) => (
@@ -27,7 +21,7 @@ const FansThumb = () => {
           alt="User_img"
           src={ele.profile_img ? ele.profile_img : ""}
           onError={({ currentTarget }) => {
-            currentTarget.onerror = null; // prevents looping
+            currentTarget.onerror = null;
             currentTarget.src = defaultprofileImg;
           }}
           onClick={() => {

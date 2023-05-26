@@ -49,12 +49,14 @@ export const { actions, reducer } = createSlice({
     },
     handleNuggetViewUpdate: (state, action) => {
       const index = action.payload;
+
       if (state.Nuggets[index].viewed === 0 && state.token) {
-        let apiData = {
-          token: state.token,
-          nugget_id: state.Nuggets[index].nugget_id,
-        };
-        addNuggetView(apiData);
+        console.log(state.Nuggets[index].viewed, index);
+        // let apiData = {
+        //   token: state.token,
+        //   nugget_id: JSON.stringify([state.Nuggets[index].nugget_id]),
+        // };
+        // addNuggetView(apiData);
         state.Nuggets = [
           ...state.Nuggets.slice(0, index),
           {
@@ -64,6 +66,26 @@ export const { actions, reducer } = createSlice({
           },
           ...state.Nuggets.slice(index + 1, state.length),
         ];
+      }
+    },
+    handleNuggetViewAPIUpdate: (state, action) => {
+      let findData = [...state.Nuggets].map((ele, index) => {
+        console.log(ele.viewed);
+        if (action.payload.includes(index) && ele.viewed === 0) {
+          return ele.nugget_id;
+        } else {
+          return null;
+        }
+      });
+
+      findData = findData.filter((ele) => ele !== null);
+      console.log(findData);
+      if (findData.length !== 0) {
+        let apiData = {
+          token: state.token,
+          nugget_id: JSON.stringify(findData),
+        };
+        addNuggetView(apiData);
       }
     },
     handleNuggetFormData: (state, action) => {
@@ -89,6 +111,8 @@ export const { actions, reducer } = createSlice({
     builder.addCase(fetchNuggetsbyId.fulfilled, (state, action) => {
       if (action.payload.current_page_no === 1) {
         state.Nuggets = action.payload.data;
+      } else if (action.payload.current_page_no === 0) {
+        state.Nuggets = [];
       } else {
         let filterData = [...state.Nuggets, ...action.payload.data].reduce(
           (acc, current) => {
@@ -123,6 +147,7 @@ export const {
   handleDeleteNuggetList,
   handlenuggetToken,
   handleDeleteNuggetListByUserId,
+  handleNuggetViewAPIUpdate,
 } = actions;
 
 export default reducer;
