@@ -31,6 +31,7 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import _debounce from "lodash/debounce";
 import { Form, InputGroup } from "react-bootstrap";
+import FavImg from "../../Assets/Icons/svg/Favorite.svg";
 
 const Nuggets = ({
   isLocked = false,
@@ -56,6 +57,10 @@ const Nuggets = ({
   const [isReachedEnd, setisReachedEnd] = useState(false);
   const token = useAuthToken();
   const loginuserData = useAuthData();
+  const [NuggetCount, setNuggetCount] = useState({
+    my_nuggets: 0,
+    favorites: 0,
+  });
   const display_user_id = params?.user_id
     ? DecryptionString(params?.user_id)
     : null;
@@ -70,6 +75,15 @@ const Nuggets = ({
     totalpage: null,
   });
   const [loading, setloading] = useState(false);
+
+  useEffect(() => {
+    if (loginuserData) {
+      setNuggetCount({
+        my_nuggets: loginuserData?.nugget_count ?? 0,
+        favorites: loginuserData?.saved_nugget_count ?? 0,
+      });
+    }
+  }, [loginuserData]);
 
   const handleProgress = (progress) => {
     let val = (progress.loaded / progress.total) * 100;
@@ -98,6 +112,17 @@ const Nuggets = ({
     return new Promise((resolve, reject) => {
       if (formData) {
         dispatch(fetchNuggetsbyId(formData)).then((res) => {
+          if (formData.formData.saved === 1) {
+            setNuggetCount((pre) => ({
+              ...pre,
+              favorites: res.payload.total_count,
+            }));
+          } else {
+            setNuggetCount((pre) => ({
+              ...pre,
+              my_nuggets: res.payload.total_count,
+            }));
+          }
           pageRef.current = res.payload.current_page_no;
           setPages({
             page: res.payload.current_page_no,
@@ -366,7 +391,10 @@ const Nuggets = ({
                     setActiveTab(0);
                   }}
                 >
-                  My Nuggets
+                  My Nuggets{" "}
+                  {NuggetCount?.my_nuggets !== 0
+                    ? `(${NuggetCount?.my_nuggets})`
+                    : ""}
                 </p>
                 <p
                   className={ActiveTab === 1 ? classes.activeSec : ""}
@@ -384,7 +412,11 @@ const Nuggets = ({
                     setActiveTab(1);
                   }}
                 >
-                  Favorites
+                  <img src={FavImg} />
+                  Favorites{" "}
+                  {NuggetCount?.favorites !== 0
+                    ? `(${NuggetCount?.favorites})`
+                    : ""}
                 </p>
               </div>
             </div>
@@ -467,6 +499,19 @@ const Nuggets = ({
                                 saved: save === 1 ? true : false,
                               };
                               dispatch(handleNuggetList(tempData));
+                              if (ActiveTab === 1 && save !== 1) {
+                                setNuggetsData((pre) =>
+                                  pre.filter(
+                                    (elem) => elem.nugget_id !== ele.nugget_id
+                                  )
+                                );
+                              }
+                            }}
+                            onSaveCountResult={(val) => {
+                              setNuggetCount((pre) => ({
+                                ...pre,
+                                favorites: val,
+                              }));
                             }}
                             onEdit={(id) => {
                               setisEdit(id);

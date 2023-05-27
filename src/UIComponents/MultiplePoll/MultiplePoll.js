@@ -14,6 +14,7 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import styles from "./Multiplepoll.module.css";
+import { getCookieData } from "../../Store/Storage";
 
 const MultiplePoll = ({
   nugget_id,
@@ -131,13 +132,13 @@ const MultiplePoll = ({
   };
 
   useEffect(() => {
-    if (!getVotesTiming()) {
+    if (!getVotesTiming() && userSettings) {
       animateAnswers(-1);
       setpollVotedData({
         isVoted: true,
         votedOptionID: "",
       });
-    } else if (!Token) {
+    } else if (!Token && !getCookieData("rawcaster_user_token")) {
       setpollVotedData({
         isVoted: true,
         votedOptionID: "",

@@ -1,4 +1,4 @@
-import { Dropdown, Layout, Popover, Tooltip } from "antd";
+import { Button, Dropdown, Layout, Popover, Tooltip } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
@@ -45,10 +45,14 @@ import {
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Components/Notifications";
+import ArtificialIntelligence from "../Components/ArtificialIntelligence";
+import { GlobalContext } from "../Shared/Context";
 
 const HomeLayout = () => {
   const params = useParams();
   const inputRef = useRef();
+  const [postModalShow, setpostModalShow] = useState(false);
+  const [PostContent, setPostContent] = useState(null);
   const { pathname } = useLocation();
   const { isSuccess } = useAuth();
   const { nuggetFormData } = useNuggets();
@@ -109,9 +113,16 @@ const HomeLayout = () => {
     }
   }, [pathname]);
 
+  const contextValue = {
+    postModalShow,
+    setpostModalShow,
+    setPostContent,
+    PostContent,
+  };
+
   return (
-    <>
-      <Layout>
+    <GlobalContext.Provider value={contextValue}>
+      <Layout className={classes.mainLayout}>
         <div className={`${classes.topheader}`}>
           <div className={classes.fullcontainer}>
             <div mode="horizontal" className="d-flex flex-row">
@@ -366,11 +377,15 @@ const HomeLayout = () => {
             }}
           />
         </div>
+
         <Content className="site-layout mainsec">
           <Outlet />
         </Content>
+        <div className={classes.chatbotsec}>
+          <ArtificialIntelligence />
+        </div>
       </Layout>
-    </>
+    </GlobalContext.Provider>
   );
 };
 

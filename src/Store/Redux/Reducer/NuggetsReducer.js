@@ -51,7 +51,6 @@ export const { actions, reducer } = createSlice({
       const index = action.payload;
 
       if (state.Nuggets[index].viewed === 0 && state.token) {
-        console.log(state.Nuggets[index].viewed, index);
         // let apiData = {
         //   token: state.token,
         //   nugget_id: JSON.stringify([state.Nuggets[index].nugget_id]),

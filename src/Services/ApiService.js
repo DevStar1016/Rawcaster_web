@@ -225,6 +225,10 @@ export const getNuggetDetailService = (data) => {
   return axios.post("getnuggetdetail", data);
 };
 
+export const getNuggetContentAudioService = (data) => {
+  return axios.post("nuggetcontentaudio", data);
+};
+
 // Event services
 
 export const getEventTypeService = (data) => {
@@ -353,4 +357,8 @@ export const DeleteNotificationService = (data) => {
 
 export const ViewNotificationService = (data) => {
   return axios.post("readnotification", data);
+};
+
+export const AIChatService = (data) => {
+  return axios.post(`aichat`, data);
 };

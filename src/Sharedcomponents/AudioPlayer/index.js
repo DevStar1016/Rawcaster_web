@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useDashboard } from "../../Shared/Reduxfetcher";
-
+import AudioPlay from "../../Assets/Icons/audio_play.gif";
+import AudioPause from "../../Assets/Images/png/audio_pause.png";
 import classes from "./Audioplayer.module.css";
 import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 
@@ -118,8 +119,12 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
           <div
             className={`${classes.playSec} ${isThumb ? classes.thumbSec : ""}`}
           >
+            <div className={classes.overlaySec}>
+              {isPlaying ? <img src={AudioPlay} /> : <img src={AudioPause} />}
+            </div>
             <button
               onClick={isPlaying ? handlePause : handlePlay}
+              className={isPlaying ? classes.Playing : ""}
               disabled={isThumb}
             >
               {isPlaying ? (

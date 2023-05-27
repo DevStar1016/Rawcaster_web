@@ -16,7 +16,11 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
-import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
+import {
+  PostNuggetContext,
+  useGlobalContext,
+  useListNuggetContext,
+} from "../../Shared/Context";
 import { useFormik } from "formik";
 import {
   decodeHtml,
@@ -29,6 +33,7 @@ import { useParams } from "react-router";
 import profileImg from "../../Assets/Images/svg/userImg.svg";
 
 const PostNuggets = () => {
+  const { postModalShow, setpostModalShow, PostContent } = useGlobalContext();
   const { GetNuggetList, setisNuggetModify } = useListNuggetContext();
   const dispatch = useDispatch();
   const Token = useAuthToken();
@@ -37,7 +42,6 @@ const PostNuggets = () => {
   const VideoRef = useRef();
   const [NuggetData, setNuggetData] = useState([]);
   const [PollData, setPollData] = useState();
-  const [postModalShow, setpostModalShow] = useState(false);
   const [previewMedia, setpreviewMedia] = useState([]);
   const [deletedMedia, setdeletedMedia] = useState([]);
   const [isPoll, setisPoll] = useState(false);
@@ -67,6 +71,12 @@ const PostNuggets = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (PostContent) {
+      setFieldValue("content", PostContent);
+    }
+  }, [PostContent]);
 
   const EditNugget = (val) => {
     setpostModalShow(false);

@@ -30,7 +30,7 @@
 }
 .topbar li a:hover, .topbar li:hover { border: none !important; }
 .topheader {    z-index: 13; box-shadow: 0px 4px 27px rgba(0, 0, 0, 0.06);   background: #FFFFFF; padding: 10px 0; float: left; position: fixed; width: 100%;}
-.fullcontainer { margin: auto;  max-width: 1350px; width: 95%; }
+.fullcontainer { margin: auto;  max-width: 1350px; width: 95%; position: relative; }
 
 .hometopbar { 
 display: flex;
@@ -195,7 +195,28 @@ padding: 2px 1px;
 }
 
 .mobmenu, .bottomMenu { display: none;}
-
+.mainLayout {
+  position: relative;
+}
+.chatbotsec {
+  position: absolute;
+  bottom: 27px;
+  width: 98%;
+}
+.chatbotsec .ChatBotBtnSec {
+  float: right;
+  max-width: 300px;
+}
+.chatbotsec  .ChatBotBtn  {
+  width: 82px !important;
+  height: 82px !important;
+  background: linear-gradient(116.6deg, #E26C89 0.88%, #84466F 99.2%) !important;
+  box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.07) !important;
+  border-radius: 100px;
+}
+.overLayClasses {
+  max-width: 500px;
+}
 @media (max-width: 768px) {
 .topheader { padding: 5px 0;}
 .onlydes { display: none; }    

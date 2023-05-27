@@ -56,6 +56,7 @@ import _debounce from "lodash/debounce";
 import { HandleBecameaFan } from "../../Shared/SharedAPIs";
 import ReportGroup from "../../Modal/Report/ReportGroup";
 import { blockunblockuserService } from "../../Services/ApiService";
+import { ReadoutSec } from "./Utility";
 
 const Post = ({
   ele,
@@ -69,6 +70,7 @@ const Post = ({
   onEdit,
   isCommentShow = false,
   onDelete,
+  onSaveCountResult,
 }) => {
   const source = useRef(null);
   const Token = useAuthToken();
@@ -436,7 +438,12 @@ const Post = ({
       JSONtoformdata(nuggetData),
       source.current?.token
     )
-      .then((res) => {})
+      .then((res) => {
+        if (res.data.status === 1)
+          if (onSaveCountResult) {
+            onSaveCountResult(res.data.saved_nugget_count);
+          }
+      })
       .catch((err) => {});
   };
 
@@ -684,10 +691,22 @@ const Post = ({
             </div>
           </Dropdown>
         )}
+        {ele && isValidData(ele?.content) ? (
+          <div className={classes.ReadoutSec}>
+            <ReadoutSec nugget_id={ele.nugget_id} />
+          </div>
+        ) : (
+          <div className={`${classes.ReadoutSec} py-2`}></div>
+        )}
         <div className={classes.contentSec} ref={ref}>
           <div className={classes.feedsSec}>
             {ele && isValidData(ele?.content) && (
-              <p style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
+              <p
+                style={{
+                  whiteSpace: "pre-wrap",
+                  lineBreak: "anywhere",
+                }}
+              >
                 <ReadMore
                   isReadMore={isReadMore()}
                   isLinkopenModal={isLinkopenModal}
@@ -701,6 +720,7 @@ const Post = ({
                 </ReadMore>
               </p>
             )}
+
             {ele.media_list && ele.media_list.length === 0 && ele.metadata ? (
               <div
                 className={classes.metaLink}
