@@ -15,10 +15,13 @@ import Blockuser from "./Blockuser";
 import Event from "./Event";
 import { handleAccountActive } from "../../Store/Redux/Reducer/AuthReducer";
 import { fetchuserSettingsbyToken } from "../../Store/Redux/Action";
+import Seo from "../SEO/Seo";
+import { SettingsSEO } from "../SEO/SEOContent";
 
 const Settings = () => {
   const { userSettings } = useAuth();
   const token = useAuthToken();
+  const [ActiveTabName, setActiveTabName] = useState("General");
   const [updateValue, setupdateValue] = useState([]);
   const dispatch = useDispatch();
   const [Progress, setProgress] = useState({
@@ -217,6 +220,20 @@ const Settings = () => {
     ProgressValue: Progress,
   };
 
+  const getTitle = () => {
+    if (activeTab === 0) {
+      return "General";
+    } else if (activeTab === 1) {
+      return "Notifications";
+    } else if (activeTab === 2) {
+      return "Blocking";
+    } else if (activeTab === 3) {
+      return "Change Password";
+    } else if (activeTab === 4) {
+      return "Event Settings";
+    }
+  };
+
   return (
     <SettingsContext.Provider value={settingsValues}>
       <div className={classes.settingSec}>
@@ -230,6 +247,7 @@ const Settings = () => {
             <li
               className={activeTab === 0 ? classes.active : ""}
               onClick={() => {
+                setActiveTabName("General");
                 setActiveTab(0);
                 setvisibleSideBar(false);
               }}
@@ -239,6 +257,7 @@ const Settings = () => {
             <li
               className={activeTab === 1 ? classes.active : ""}
               onClick={() => {
+                setActiveTabName("Notifications");
                 setActiveTab(1);
                 setvisibleSideBar(false);
               }}
@@ -248,6 +267,7 @@ const Settings = () => {
             <li
               className={activeTab === 2 ? classes.active : ""}
               onClick={() => {
+                setActiveTabName("Blocking");
                 setActiveTab(2);
                 setvisibleSideBar(false);
               }}
@@ -257,6 +277,7 @@ const Settings = () => {
             <li
               className={activeTab === 3 ? classes.active : ""}
               onClick={() => {
+                setActiveTabName("Change Password");
                 setActiveTab(3);
                 setvisibleSideBar(false);
               }}
@@ -266,6 +287,7 @@ const Settings = () => {
             <li
               className={activeTab === 4 ? classes.active : ""}
               onClick={() => {
+                setActiveTabName("Event Settings");
                 setActiveTab(4);
                 setvisibleSideBar(false);
               }}

@@ -40,6 +40,8 @@ import ProfileLayout from "./ProfileLayout";
 import { HandleAddFriend, HandleBecameaFan } from "../../Shared/SharedAPIs";
 import { friendRequestSocket } from "../../Services/SocketList";
 import { detectMob } from "../../Shared/Utility";
+import Seo from "../SEO/Seo";
+import { ProfileSEO } from "../SEO/SEOContent";
 
 const Profile = () => {
   const params = useParams();
@@ -257,9 +259,13 @@ const Profile = () => {
     setisInfluencerChatModalOpen,
     isInfluencerChatModalOpen,
   };
-
+  console.log(profileData);
   return (
     <ProfileContext.Provider value={profileValue}>
+      <Seo
+        title={ProfileSEO(profileData?.first_name ?? "User").title}
+        description={ProfileSEO(profileData?.first_name ?? "User").description}
+      />
       <div>
         <div className={`mainWrapper ${classes.profilePage}`}>
           <ProfileLayout
