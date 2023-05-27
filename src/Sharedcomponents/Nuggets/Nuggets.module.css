@@ -496,24 +496,22 @@ border-radius: 30px;
 }
 
 .loginuserContainer .TabSec {
-  margin: 10px 0;
- 
+  margin: 20px 0 5px 0; 
   display: flex;
   flex-direction: row;
 }
 .loginuserContainer .TabSec p {
   font-family: 'DM Sans';
-font-style: normal;
-font-weight: 700;
-font-size: 20px;
-line-height: 30px;
-/* identical to box height */
-color: #1D1C1C;
-padding:0 30px;
-padding-bottom: 5px;
-cursor: pointer;
-opacity: 0.7;
-
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 30px;
+  /* identical to box height */
+  color: #1D1C1C;
+  padding:0 30px;
+  padding-bottom: 5px;
+  cursor: pointer;
+  opacity: 0.7; margin-bottom: 5px;
 }
 .loginuserContainer .TabSec p img {
   margin-right: 10px;
