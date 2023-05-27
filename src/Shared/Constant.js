@@ -52,6 +52,12 @@ export const SHARED_TYPE = [
   { id: 7, key: 7, Value: "My Fans", label: "My Fans" },
 ];
 
+export const GENDER_TYPE = [
+  { key: 0, label: "TransGender" },
+  { key: 1, label: "Male" },
+  { key: 2, label: "Female" },
+];
+
 export const customStyles = {
   menu: (provided, state) => ({
     ...provided,

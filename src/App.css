@@ -69,6 +69,15 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
   box-shadow: none !important;
   height: 45px !important; padding-left: 15px !important;
 }
+.chatbotClass .ant-popover-inner {
+  padding: 0px !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+
+}
+.chatbotClass .ant-popover-title {
+  margin-bottom: 0px !important;
+}
 .login_carosel .owl-dot span ,.signup_carosel .owl-dot span{
   background: #FFFFFF !important;
   opacity: 0.6 !important;

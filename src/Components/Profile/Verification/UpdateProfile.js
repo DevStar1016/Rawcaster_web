@@ -32,6 +32,7 @@ import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../../../Store/Storage";
 import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
 import moment from "moment";
+import { GENDER_TYPE } from "../../../Shared/Constant";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -373,8 +374,9 @@ const UpdateProfile = () => {
                     setFieldValue("gender", val);
                   }}
                 >
-                  <Select.Option value={1}>Male</Select.Option>
-                  <Select.Option value={2}>Female</Select.Option>
+                  {GENDER_TYPE.map(({ key, label }) => (
+                    <Select.Option value={key}>{label}</Select.Option>
+                  ))}
                 </Select>
                 {touched.gender && <p className="ErrTxt">{errors?.gender}</p>}
               </Form.Item>

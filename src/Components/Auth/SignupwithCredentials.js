@@ -10,7 +10,11 @@ import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { EMAIL_REGEX, MOBILE_NUMBER_REGEX } from "../../Shared/Constant";
+import {
+  EMAIL_REGEX,
+  GENDER_TYPE,
+  MOBILE_NUMBER_REGEX,
+} from "../../Shared/Constant";
 import {
   getAuthToken,
   getGeocodeData,
@@ -263,8 +267,9 @@ const SignupwithCredentials = () => {
                     setFieldValue("gender", val);
                   }}
                 >
-                  <Select.Option value={1}>Male</Select.Option>
-                  <Select.Option value={2}>Female</Select.Option>
+                  {GENDER_TYPE.map(({ key, label }) => (
+                    <Select.Option value={key}>{label}</Select.Option>
+                  ))}
                 </Select>
                 {touched.gender && <p className="ErrTxt">{errors?.gender}</p>}
               </Form.Item>

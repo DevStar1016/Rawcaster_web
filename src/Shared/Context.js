@@ -1,5 +1,8 @@
 import { createContext, useContext } from "react";
 
+export const GlobalContext = createContext();
+export const useGlobalContext = () => useContext(GlobalContext);
+
 export const PostNuggetContext = createContext();
 export const usePostNuggetContext = () => useContext(PostNuggetContext);
 
@@ -27,3 +30,6 @@ export const useNotificationContext = () => useContext(NotificationContext);
 
 export const ConfigureGroupContext = createContext();
 export const useConfigureGroupContext = () => useContext(ConfigureGroupContext);
+
+export const ChatBotContext = createContext();
+export const useChatBotContext = () => useContext(ChatBotContext);
