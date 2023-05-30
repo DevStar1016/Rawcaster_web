@@ -68,16 +68,18 @@ const ChatContent = () => {
       </div>
       <ChatInput
         HandleSendMessage={(ChatMessage) => {
-          setMessages((pre) => [
-            ...pre,
-            {
-              user: 1,
-              type: "message",
-              message: ChatMessage,
-              created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-            },
-          ]);
-          HandleSendMessage(ChatMessage);
+          if (ChatMessage.trim() !== "") {
+            setMessages((pre) => [
+              ...pre,
+              {
+                user: 1,
+                type: "message",
+                message: ChatMessage,
+                created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+              },
+            ]);
+            HandleSendMessage(ChatMessage);
+          }
         }}
         onAudioResult={(val) => {
           setMessages((pre) => [...pre, val]);

@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import {
+  Link,
+  useActionData,
+  useBeforeUnload,
+  useLocation,
+} from "react-router-dom";
 import {
   useAuth,
   useAuthData,
@@ -34,7 +39,6 @@ const Dashboard = () => {
     if (loginToken === null) {
       removeSessionStorageData("influencerData");
     }
-    console.log(nuggetFormData);
     let filterData = { ...nuggetFormData };
     if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
       filterData.formData = {

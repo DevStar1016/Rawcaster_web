@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import SuggestedAccounts from "./SuggestedAccounts";
 import classes from "./Referel.module.css";
@@ -13,10 +13,13 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
+import { detectMob } from "../../Shared/Utility";
 
 const Referel = () => {
   const dispatch = useDispatch();
   const loginUserData = useAuthData();
+  const leftContainer = useRef();
+  const rightContainer = useRef();
   const { DashboardfilterType, nuggetFormData } = useNuggets();
 
   const handleFilterType = (type) => {
@@ -35,7 +38,18 @@ const Referel = () => {
 
   return (
     <div className={classes.fullcontainer}>
-      <div className={classes.suggestSec}>
+      <div
+        className={classes.suggestSec}
+        ref={leftContainer}
+        style={{
+          position: detectMob() ? "relative" : "sticky",
+          top: detectMob()
+            ? 0
+            : `calc(-${leftContainer.current?.offsetHeight / 2}px + ${
+                document.getElementById("banner_container")?.offsetHeight
+              }px)`,
+        }}
+      >
         <div className={`${classes.beforelogin} mb-3`}>
           <Link
             className={DashboardfilterType === 0 ? classes.active : ""}
@@ -61,11 +75,20 @@ const Referel = () => {
         <SuggestedAccounts />
       </div>
 
-      <div className="d-none d-sm-block">
-        <Nuggets isUserPostAvailable={false} />
+      <div className={`d-none d-sm-block `}>
+        <Nuggets isUserPostAvailable={false} className={classes.NuggetSec} />
       </div>
-
-      <InviteBox />
+      <div
+        ref={rightContainer}
+        style={{
+          position: "sticky",
+          top: `calc(-${rightContainer.current?.offsetHeight / 2}px + ${
+            document.getElementById("banner_container")?.offsetHeight
+          }px)`,
+        }}
+      >
+        <InviteBox />
+      </div>
     </div>
   );
 };

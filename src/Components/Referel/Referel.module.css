@@ -4,12 +4,16 @@
 .suggestSec{
     width: 310px;
     float: left;
-    position: sticky; 
     padding-right: 10px;
     padding-bottom: 74px;
     height: calc(100vh - 70px);
     position: -webkit-sticky;
     position: sticky;
+}
+.NuggetSec {
+  /* width: 310px; */
+  height: calc(100vh - 70px);
+  /* overflow-y: scroll; */
 }
 .refuserList { background: #fff !important; float: left; width: 100%; display: flex;align-items: center; }
 .beforelogin a { display: flex; font-size: 15.5px; align-items: center; margin-top: 10px; clear: both; text-decoration: none; color: #000;cursor: pointer;}
@@ -29,7 +33,6 @@
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
   color: #000; } 
 .suggAcc .name span { font-size: 17px; color: #F7965B; }
 .suggAcc .username { font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 300; margin: 0px; color: rgba(0, 0, 0, 0.6); }
@@ -104,6 +107,9 @@
 .profileSec {
   display: flex;
   flex-direction: row;
+}
+.profileSec img {
+  border-radius: 30px;
 }
 .profileSec .NameSec  {
   margin-left: 5px;

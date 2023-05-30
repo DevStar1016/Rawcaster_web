@@ -17,9 +17,9 @@ import {
 } from "react-share";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { message } from "antd";
-import GoogleContacts from "react-google-contacts";
 import InviteFansModal from "../../Modal/Referal/InviteFansModal";
 import { handleSendEmail } from "../../Modal/Referal/utility";
+import { fetchGoogleContacts } from "../../Shared/Utility";
 
 const shareMessage =
   "Hi, I have joined Rawcaster. A one-stop platform for all social media needs. I am asking all my friends and special people to join this platform to make it easier to reach everyone with content, personalized messages, Nuggets, and invitations to participate in my special events. I expect to see you there soon.\n";
@@ -69,10 +69,10 @@ const InviteBox = () => {
 
   const shareUrl = profileData?.referral_link || "";
 
-  const responseSuccessCallback = (response) => {
-    setisGmailOpen(true);
-    setContactList(response);
-  };
+  // const responseSuccessCallback = (response) => {
+  //   setisGmailOpen(true);
+  //   setContactList(response);
+  // };
 
   const handleInviteFriends = (contacts) => {
     handleSendEmail(token, contacts).then(() => {
@@ -80,43 +80,56 @@ const InviteBox = () => {
     });
   };
 
+  const FetchGoogleContacts = () => {
+    fetchGoogleContacts()
+      .then((res) => {
+        if (res) {
+          let contactDetails = res.map((ele) => {
+            return {
+              title: ele.names?.[0].displayName ?? ele.emailAddresses[0].value,
+              email: ele.emailAddresses[0].value,
+              profile_img:
+                ele.photos[0].url ??
+                require("../../Assets/Icons/png/user_vector.png"),
+            };
+          });
+
+          setContactList(contactDetails);
+          setisGmailOpen(true);
+        } else {
+          setContactList([]);
+          setisGmailOpen(true);
+        }
+      })
+      .catch(() => {
+        message.warning("Try again after some time!!", 3);
+      });
+  };
+
   return (
     <div className={classes.inviteSec}>
       <div className={classes.inviteBox}>
-        <GoogleContacts
-          clientId="749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com"
-          render={(renderProps) => (
-            <div
-              className={classes.inviteContainer}
-              onClick={
-                isGmailOpen
-                  ? () => {
-                      setisGmailOpen(false);
-                      setContactList([]);
-                    }
-                  : renderProps.onClick
-              }
-            >
-              <div className={classes.iconSec}>
-                <img src={PhoneIcon} alt={"Call"} />
-                <p>Contacts</p>
-              </div>
-              {isGmailOpen ? (
-                <span class="material-symbols-outlined">expand_more</span>
-              ) : (
-                <span class="material-symbols-outlined">chevron_right</span>
-              )}
-            </div>
+        <div
+          className={classes.inviteContainer}
+          onClick={
+            isGmailOpen
+              ? () => {
+                  setisGmailOpen(false);
+                  setContactList([]);
+                }
+              : () => FetchGoogleContacts()
+          }
+        >
+          <div className={classes.iconSec}>
+            <img src={PhoneIcon} alt={"Call"} />
+            <p>Contacts</p>
+          </div>
+          {isGmailOpen ? (
+            <span class="material-symbols-outlined">expand_more</span>
+          ) : (
+            <span class="material-symbols-outlined">chevron_right</span>
           )}
-          onRequest={() => {
-            setisGmailOpen(true);
-            setContactList([]);
-          }}
-          onSuccess={responseSuccessCallback}
-          onFailure={() => {
-            message.warning("Try again after some time!!", 3);
-          }}
-        />
+        </div>
         {isGmailOpen && contactList && (
           <div className={classes.resultSec}>
             {contactList.length !== 0 ? (
@@ -128,7 +141,7 @@ const InviteBox = () => {
                         width="25px"
                         height={"25px"}
                         alt={"User_Img"}
-                        src={require("../../Assets/Icons/png/user_vector.png")}
+                        src={ele?.profile_img}
                       ></img>
                       <div className={classes.NameSec}>
                         <p

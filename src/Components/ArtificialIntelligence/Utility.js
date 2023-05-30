@@ -11,10 +11,11 @@ import { toast } from "react-hot-toast";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useStopwatch } from "react-timer-hook";
 import moment from "moment";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { useGlobalContext } from "../../Shared/Context";
-import { ReadMore } from "../../Shared/Utility";
+import { JSONtoformdata, ReadMore } from "../../Shared/Utility";
 import { findIndex } from "lodash";
+import { TextToAudioService } from "../../Services/ApiService";
 
 export const isUser = (id) => {
   if (parseInt(id) === 1) {
@@ -23,11 +24,12 @@ export const isUser = (id) => {
   return false;
 };
 
-export const ReadoutSec = ({ url, index }) => {
+export const ReadoutSec = ({ url, index, message }) => {
+  const token = useAuthToken();
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
 
-  const HandlegetNuggetContentAudio = () => {
+  const HandlegetNuggetContentAudio = (url) => {
     const audioElement = new Audio(url);
     audioElement.id = index;
     setAudio(audioElement);
@@ -51,6 +53,21 @@ export const ReadoutSec = ({ url, index }) => {
     }
   }, [audio]);
 
+  const convertToAudio = () => {
+    TextToAudioService(
+      JSONtoformdata({
+        token,
+        message,
+      })
+    ).then((res) => {
+      if (res.data.status === 1) {
+        HandlegetNuggetContentAudio(res.data.file_path);
+      } else {
+        toast.error(res.data.msg);
+      }
+    });
+  };
+
   return isPlaying === index ? (
     <p
       style={{ color: "red" }}
@@ -63,7 +80,7 @@ export const ReadoutSec = ({ url, index }) => {
   ) : (
     <p
       onClick={() => {
-        HandlegetNuggetContentAudio();
+        convertToAudio();
       }}
     >
       <i className={classes.read_mic_icon}></i>Read Out
@@ -103,6 +120,7 @@ export const MessageContent = (props) => {
       {!isUser(user) && (
         <div className={`d-flex flex-row ${classes.optionSec}`}>
           <ReadoutSec
+            message={message}
             url={
               "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
             }

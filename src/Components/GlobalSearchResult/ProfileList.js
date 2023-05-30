@@ -18,7 +18,7 @@ import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import { Skeleton } from "antd";
+import { Empty, Skeleton } from "antd";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 let isRequestCancel = false;
@@ -196,7 +196,11 @@ const ProfileList = () => {
               ))}
             </div>
           ) : (
-            <div className={classes.DisplayMsg}>We didn't find any results</div>
+            <>
+              <div className={classes.DisplayMsg}>
+                <Empty description=" We didn't find any results" />
+              </div>
+            </>
           )}
         </>
       ) : null}

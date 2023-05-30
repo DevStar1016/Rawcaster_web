@@ -202,7 +202,6 @@ const Nuggets = ({
     if (container) {
       const { scrollTop, clientHeight, scrollHeight } = container;
       if (scrollTop + clientHeight >= scrollHeight - 10) {
-        console.log("Reached End");
         setisReachedEnd(true);
         // User has reached the bottom (with a 10px threshold)
         // Perform your desired action here, e.g., fetch more data
@@ -254,7 +253,6 @@ const Nuggets = ({
   };
 
   useEffect(() => {
-    console.log(Nuggets);
     setNuggetsData(Nuggets);
   }, [Nuggets]);
 

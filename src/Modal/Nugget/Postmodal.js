@@ -338,10 +338,17 @@ const Postmodal = ({ visible, onClose }) => {
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
                 value={values.content}
                 onChange={(e) => {
-                  if (e.target.value.length <= 700) {
-                    setFieldValue("content", e.target.value);
-                    getLinkInfo(e.target.value);
-                  }
+                  // let MAX_LENGTH = 700;
+                  // if (e.target.value.length <= MAX_LENGTH) {
+                  setFieldValue("content", e.target.value);
+                  getLinkInfo(e.target.value);
+                  // } else {
+                  //   setFieldValue(
+                  //     "content",
+                  //     e.target.value.slice(0, MAX_LENGTH)
+                  //   );
+                  //   getLinkInfo(e.target.value.slice(0, MAX_LENGTH));
+                  // }
                 }}
               />
               <img
@@ -377,10 +384,32 @@ const Postmodal = ({ visible, onClose }) => {
                     "flags",
                   ]}
                   onEmojiSelect={(event, emojiObject) => {
-                    setFieldValue(
-                      "content",
-                      values.content.concat(event.native)
-                    );
+                    // const inputField = document.getElementById(
+                    //   "post_nugget_textarea"
+                    // );
+                    // const cursorPosition = inputField.selectionStart;
+
+                    // // Get the value of the input field
+                    // const inputValue = inputField.value;
+
+                    // // Define the emoji you want to add
+                    // const emoji = "🙂";
+
+                    // // Create the new value by inserting the emoji at the cursor position
+                    // const newValue =
+                    //   inputValue.slice(0, cursorPosition) +
+                    //   emoji +
+                    //   inputValue.slice(cursorPosition);
+
+                    // // Set the new value of the input field
+                    // inputField.value = newValue;
+                    // console.log(cursorPosition);
+                    // // // Set the cursor position to after the inserted emoji
+                    // inputField.setSelectionRange(cursorPosition + 1, 0);
+
+                    // // Focus on the input field
+                    // inputField.focus();
+                    setFieldValue("content", values.content.concat());
                   }}
                 />
               </div>

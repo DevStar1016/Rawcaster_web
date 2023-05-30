@@ -199,7 +199,7 @@ padding: 2px 1px;
   position: relative;
 }
 .chatbotsec {
-  position: absolute;
+  position: fixed;
   bottom: 27px;
   right: 27px;
   z-index: 100;
@@ -219,6 +219,11 @@ padding: 2px 1px;
   max-width: 500px;
 }
 @media (max-width: 768px) {
+  .chatbotsec .ChatBotBtn  {
+    width: 52px !important;
+    height: 52px !important;
+ 
+  }
 .topheader { padding: 5px 0;}
 .onlydes { display: none; }    
 .mobmenu { display: block; }
@@ -272,4 +277,8 @@ padding: 2px 1px;
  }
 @media (max-width:769px) {
   .fullcontainer { width: 100%; }
+  .chatbotsec {
+    bottom: 60px;
+  }
+  
  }

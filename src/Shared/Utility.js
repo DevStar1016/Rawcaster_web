@@ -1,6 +1,10 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
-import { ENCRIPTION_STRING, GECODE_API_KEY } from "./Constant";
+import {
+  ENCRIPTION_STRING,
+  GECODE_API_KEY,
+  GOOGLE_CLIENT_ID,
+} from "./Constant";
 import { getCookieData, removeCookieData } from "../Store/Storage";
 import {
   handleLoginData,
@@ -534,4 +538,37 @@ export const eventDisplayDuration = (time) => {
   let dur = time.split(":");
   let hr = parseInt(dur[0]) > 0 ? `${dur[0]} hrs ` : "";
   return `${hr}  ${dur[1]}  mins`;
+};
+
+// Google Contacts
+
+export const fetchGoogleContacts = async () => {
+  let maxResults = 1000;
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Step 1: Load the Google API client library
+      await new Promise((resolve, reject) => {
+        window.gapi.load("client", resolve);
+      });
+
+      // Step 2: Initialize the client library
+      await window.gapi.client.init({
+        clientId: GOOGLE_CLIENT_ID,
+        discoveryDocs: [
+          "https://www.googleapis.com/discovery/v1/apis/people/v1/rest",
+        ],
+        scope: "https://www.googleapis.com/auth/contacts.other.readonly",
+      });
+
+      // Step 3: Authenticate and fetch contacts
+      await window.gapi.auth2.getAuthInstance().signIn();
+      const response = await window.gapi.client.people.otherContacts.list({
+        pageSize: maxResults,
+        readMask: "names,emailAddresses,photos",
+      });
+      resolve(response.result.otherContacts);
+    } catch (error) {
+      reject(error);
+    }
+  });
 };

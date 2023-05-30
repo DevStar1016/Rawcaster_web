@@ -359,6 +359,12 @@ export const ViewNotificationService = (data) => {
   return axios.post("readnotification", data);
 };
 
+// Artifitial Intelligence
+
 export const AIChatService = (data) => {
   return axios.post(`aichat`, data);
+};
+
+export const TextToAudioService = (data) => {
+  return axios.post(`texttoaudio`, data);
 };
