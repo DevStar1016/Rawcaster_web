@@ -120,6 +120,41 @@ const HomeLayout = () => {
     PostContent,
   };
 
+  const handleGlobalSearch = (e) => {
+    if (e.key === "Enter") {
+      if (getAuthenticated()) {
+        if (isAccountValid(loginUserData)) {
+          if (e.nativeEvent.target.value.trim() !== "") {
+            dispatch(handleisGlobalSearch(true));
+            let filterData = { ...nuggetFormData };
+            filterData.formData = {
+              ...filterData.formData,
+              search_key: e.nativeEvent.target.value,
+              user_id: null,
+              page_number: 1,
+            };
+            filterData.formData = filterValidObject(filterData.formData);
+            dispatch(handleResetNuggets());
+            dispatch(handleNuggetFormData(filterValidObject(filterData)));
+            dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
+            navigate(
+              `/globalsearch/${EncryptionString(e.nativeEvent.target.value)}`
+            );
+          }
+        } else {
+          dispatch(
+            handleprofileVerifyModalShow({
+              show: true,
+              msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+            })
+          );
+        }
+      } else {
+        dispatch(handleloginModalShow(true));
+      }
+    }
+  };
+
   return (
     <GlobalContext.Provider value={contextValue}>
       <Layout className={classes.mainLayout}>
@@ -145,54 +180,11 @@ const HomeLayout = () => {
                   </InputGroup.Text>
                   <Form.Control
                     placeholder="Search Rawcaster"
+                    as="input"
                     aria-label="Search Rawcaster"
                     ref={inputRef}
                     value={searchData}
-                    onKeyDown={(e) => {
-                      let pattern = /^[\w&.-]+$/;
-                      if (e.key === "Enter") {
-                        if (getAuthenticated()) {
-                          if (isAccountValid(loginUserData)) {
-                            if (e.nativeEvent.target.value.trim() !== "") {
-                              dispatch(handleisGlobalSearch(true));
-                              let filterData = { ...nuggetFormData };
-                              filterData.formData = {
-                                ...filterData.formData,
-                                search_key: e.nativeEvent.target.value,
-                                user_id: null,
-                                page_number: 1,
-                              };
-                              filterData.formData = filterValidObject(
-                                filterData.formData
-                              );
-                              dispatch(handleResetNuggets());
-                              dispatch(
-                                handleNuggetFormData(
-                                  filterValidObject(filterData)
-                                )
-                              );
-                              dispatch(
-                                fetchNuggetsbyId(filterValidObject(filterData))
-                              );
-                              navigate(
-                                `/globalsearch/${EncryptionString(
-                                  e.nativeEvent.target.value
-                                )}`
-                              );
-                            }
-                          } else {
-                            dispatch(
-                              handleprofileVerifyModalShow({
-                                show: true,
-                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                              })
-                            );
-                          }
-                        } else {
-                          dispatch(handleloginModalShow(true));
-                        }
-                      }
-                    }}
+                    onKeyDown={handleGlobalSearch}
                     onChange={(e) => {
                       setsearchData(e.target.value);
                     }}
@@ -257,7 +249,15 @@ const HomeLayout = () => {
                   <span className={`material-icons ${classes.search_icon}`}>
                     search
                   </span>
-                  <input type="text" placeholder={"Search Rawcaster"}></input>
+                  <input
+                    type="text"
+                    placeholder={"Search Rawcaster"}
+                    value={searchData}
+                    onKeyDown={handleGlobalSearch}
+                    onChange={(e) => {
+                      setsearchData(e.target.value);
+                    }}
+                  ></input>
                   <span
                     className={`material-icons ${classes.clsIcon}`}
                     onClick={() => {
@@ -352,9 +352,14 @@ const HomeLayout = () => {
           <img
             src={btmbell}
             alt="notification_logo"
+            style={{
+              opacity: loginUserData ? 1 : 0.5,
+            }}
             onClick={() => {
-              navigate("/dashboard");
-              dispatch(handledasboardTab("notification"));
+              if (loginUserData) {
+                navigate("/dashboard");
+                dispatch(handledasboardTab("notification"));
+              }
             }}
           />
 
@@ -367,7 +372,13 @@ const HomeLayout = () => {
               dispatch(handledasboardTab("nugget"));
             }}
           />
-          <img src={btmtv} alt="talkshow_logo" />
+          <img
+            src={btmtv}
+            alt="talkshow_logo"
+            style={{
+              opacity: loginUserData ? 1 : 0.5,
+            }}
+          />
           <img
             src={btmuser}
             alt="user_logo"

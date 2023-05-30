@@ -17,7 +17,10 @@ const EmojiPicker = (props) => {
     };
   }, []);
 
-  return React.createElement("div", { ref });
+  return React.createElement("div", {
+    ref,
+    className: "emoji-keyboard-container",
+  });
 };
 
 export default EmojiPicker;

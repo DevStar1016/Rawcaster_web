@@ -602,4 +602,15 @@ margin-bottom: 12px !important;
   .full_readmore {
     max-height: none;
   }
+ 
 }
+
+/* @media (max-width: 600px) {
+  .emoji-keyboard-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100% !important;
+    z-index: 9999;
+  }
+} */

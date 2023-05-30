@@ -97,7 +97,10 @@ const SpecificConnectionorGroup = ({
 
           <Button
             type="primary"
-            style={{ marginLeft: "10px" }}
+            style={{
+              marginLeft: "10px",
+              opacity: FilteredList.length === 0 ? 0.5 : 1,
+            }}
             htmlType="Continue"
             size="large"
             className={classes.reportBtn}

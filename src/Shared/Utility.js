@@ -568,6 +568,7 @@ export const fetchGoogleContacts = async () => {
       });
       resolve(response.result.otherContacts);
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });

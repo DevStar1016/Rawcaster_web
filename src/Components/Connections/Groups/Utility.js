@@ -4,7 +4,15 @@ import { useAuthData, useFriends } from "../../../Shared/Reduxfetcher";
 import { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { useConfigureGroupContext } from "../../../Shared/Context";
-import { Button, Input, Form as AndForm, Modal, Switch, Tooltip } from "antd";
+import {
+  Button,
+  Input,
+  Form as AndForm,
+  Modal,
+  Switch,
+  Tooltip,
+  Empty,
+} from "antd";
 import { toast } from "react-hot-toast";
 import uploadImg from "../../../Assets/Icons/png/upload.png";
 import tickIcon from "../../../Assets/Icons/png/tick.png";
@@ -500,7 +508,7 @@ export const SelectConnections = () => {
         </div>
       ) : (
         <div className={classes.EmptySec}>
-          <p>No Connections Found</p>{" "}
+          <Empty description="No Connections Found" />
         </div>
       )}
     </div>
@@ -569,108 +577,115 @@ export const EditGroupMembers = () => {
       <h2 className={classes.membersHeading}>
         Members <span>({getSearchData().length})</span>
       </h2>
-      <div className={`${classes.ConnectionList} my-2`}>
-        {getSearchData()?.map((ele) => (
-          <div className="d-flex flex-row justify-content-between align-items-center">
-            <div
-              className={classes.friends}
-              style={{
-                position: "relative",
-                padding: "10px 0px",
-                display: decodeHtml(ele?.display_name)
-                  .toLowerCase()
-                  .includes(searchInput.toLowerCase())
-                  ? "block"
-                  : "none",
-              }}
-            >
-              <div className="d-flex flex-row">
-                <img
-                  src={ele.profile_img ? ele.profile_img : ""}
-                  alt="uploadImg"
-                  style={{ borderRadius: "16px" }}
-                  width="32px"
-                  height="32px"
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null; // prevents looping
-                    currentTarget.src = defaultprofileImg;
-                  }}
-                ></img>
-                <span
-                  className="d-flex flex-row"
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    marginLeft: "10px",
-                    lineHeight: 2,
-                  }}
-                >
-                  <span className={classes.userName}>
-                    {decodeHtml(ele?.display_name)}
+      {getSearchData().length !== 0 ? (
+        <div className={`${classes.ConnectionList} my-2`}>
+          {getSearchData()?.map((ele) => (
+            <div className="d-flex flex-row justify-content-between align-items-center">
+              <div
+                className={classes.friends}
+                style={{
+                  position: "relative",
+                  padding: "10px 0px",
+                  display: decodeHtml(ele?.display_name)
+                    .toLowerCase()
+                    .includes(searchInput.toLowerCase())
+                    ? "block"
+                    : "none",
+                }}
+              >
+                <div className="d-flex flex-row">
+                  <img
+                    src={ele.profile_img ? ele.profile_img : ""}
+                    alt="uploadImg"
+                    style={{ borderRadius: "16px" }}
+                    width="32px"
+                    height="32px"
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = defaultprofileImg;
+                    }}
+                  ></img>
+                  <span
+                    className="d-flex flex-row"
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      marginLeft: "10px",
+                      lineHeight: 2,
+                    }}
+                  >
+                    <span className={classes.userName}>
+                      {decodeHtml(ele?.display_name)}
+                    </span>
+                    {userData.user_id === ele.user_id && `  (You)`}
                   </span>
-                  {userData.user_id === ele.user_id && `  (You)`}
-                </span>
+                </div>
               </div>
-            </div>
-            <div className={classes.actionSec}>
-              {ele.user_id === GroupData?.group_owner ? (
-                <span
-                  style={{
-                    display: decodeHtml(ele?.display_name)
-                      .toLowerCase()
-                      .includes(searchInput.toLowerCase())
-                      ? "block"
-                      : "none",
-                  }}
-                >
-                  Owner
-                </span>
-              ) : (
-                <>
-                  {isOwner &&
-                    GroupData &&
-                    parseInt(GroupData.group_category) !== 1 && (
-                      <i
-                        style={{
-                          display: decodeHtml(ele?.display_name)
-                            .toLowerCase()
-                            .includes(searchInput.toLowerCase())
-                            ? "block"
-                            : "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <span
-                          class="material-symbols-outlined"
-                          onClick={() => {
-                            Modal.confirm({
-                              title: "Confirmation",
-                              okText: "Yes",
-                              cancelText: "No",
-                              cancelButtonProps: {
-                                danger: true,
-                              },
-                              content: (
-                                <div>
-                                  Are you sure you want to Remove this member ?
-                                </div>
-                              ),
-                              onOk: () => {
-                                HandleDeleteFriendstoGroup(ele.user_id);
-                              },
-                            });
+              <div className={classes.actionSec}>
+                {ele.user_id === GroupData?.group_owner ? (
+                  <span
+                    style={{
+                      display: decodeHtml(ele?.display_name)
+                        .toLowerCase()
+                        .includes(searchInput.toLowerCase())
+                        ? "block"
+                        : "none",
+                    }}
+                  >
+                    Owner
+                  </span>
+                ) : (
+                  <>
+                    {isOwner &&
+                      GroupData &&
+                      parseInt(GroupData.group_category) !== 1 && (
+                        <i
+                          style={{
+                            display: decodeHtml(ele?.display_name)
+                              .toLowerCase()
+                              .includes(searchInput.toLowerCase())
+                              ? "block"
+                              : "none",
+                            cursor: "pointer",
                           }}
                         >
-                          close
-                        </span>
-                      </i>
-                    )}
-                </>
-              )}
+                          <span
+                            class="material-symbols-outlined"
+                            onClick={() => {
+                              Modal.confirm({
+                                title: "Confirmation",
+                                okText: "Yes",
+                                cancelText: "No",
+                                cancelButtonProps: {
+                                  danger: true,
+                                },
+                                content: (
+                                  <div>
+                                    Are you sure you want to Remove this member
+                                    ?
+                                  </div>
+                                ),
+                                onOk: () => {
+                                  HandleDeleteFriendstoGroup(ele.user_id);
+                                },
+                              });
+                            }}
+                          >
+                            close
+                          </span>
+                        </i>
+                      )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="py-3">
+          <Empty description="No Members Found" />
+        </div>
+      )}
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { useAuthToken } from "../../Shared/Reduxfetcher";
 const ChatContent = () => {
   const token = useAuthToken();
   const { Messages, setMessages, isChatOpen } = useChatBotContext();
+  const [ChatEnabled, setChatEnabled] = useState(true);
   const lastElementRef = useRef(null);
 
   const HandleSendMessage = (ChatMessage = "") => {
@@ -17,17 +18,21 @@ const ChatContent = () => {
       token,
       user_query: ChatMessage,
     };
-    AIChatService(JSONtoformdata(formData)).then((res) => {
-      setMessages((pre) => [
-        ...pre,
-        {
-          user: 2,
-          type: "message",
-          message: res.data.msg,
-          created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-        },
-      ]);
-    });
+    AIChatService(JSONtoformdata(formData))
+      .then((res) => {
+        setMessages((pre) => [
+          ...pre,
+          {
+            user: 2,
+            type: "message",
+            message: res.data.msg,
+            created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+          },
+        ]);
+      })
+      .finally(() => {
+        setChatEnabled(true);
+      });
   };
 
   useEffect(() => {
@@ -67,8 +72,10 @@ const ChatContent = () => {
         })}
       </div>
       <ChatInput
+        disabled={!ChatEnabled}
         HandleSendMessage={(ChatMessage) => {
           if (ChatMessage.trim() !== "") {
+            setChatEnabled(false);
             setMessages((pre) => [
               ...pre,
               {

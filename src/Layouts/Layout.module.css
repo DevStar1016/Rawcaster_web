@@ -280,5 +280,7 @@ padding: 2px 1px;
   .chatbotsec {
     bottom: 60px;
   }
-  
+  .badgeImg  {
+    z-index: 0;
+  }
  }

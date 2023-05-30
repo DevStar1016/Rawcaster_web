@@ -157,8 +157,12 @@ height: 200px;
 @media (max-width:768px) {
   .fullcontainer { width: 100%; padding-left: 15px; padding-right: 15px; padding-top: 55px; }
   .beforelogin { display: none;}
-  .suggestSec { padding-right: 0; padding-bottom: 0;}
+  .suggestSec { padding-right: 0; padding-bottom: 0;  }
+  .inviteContainer {
+    width: calc(100vw - 30px) !important;
+  }
   .suggestSec, .suggInfluencersSec .scrollSec, .inviteSec { width: 100%; height: auto;}
   .suggInfluencersSec { border: none; padding-top: 0;}
   .suggAcc img { width: 30px; height: 30px; }
+  .inviteSec {  padding-bottom: 10px; }
 }

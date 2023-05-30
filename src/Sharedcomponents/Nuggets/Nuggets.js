@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import {
   DecryptionString,
+  detectMob,
   getAuthenticated,
   getRawcaserToken,
 } from "../../Shared/Utility";
@@ -19,11 +20,13 @@ import { Spin } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
 import {
+  handleDashboardFilterType,
   handleDeleteNuggetList,
   handleNuggetFormData,
   handleNuggetList,
   handleNuggetViewAPIUpdate,
   handleNuggetViewUpdate,
+  handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 import NuggetLock from "../../Assets/Images/svg/nugget_lock.svg";
@@ -32,6 +35,8 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import _debounce from "lodash/debounce";
 import { Form, InputGroup } from "react-bootstrap";
 import FavImg from "../../Assets/Icons/svg/Favorite.svg";
+import { Link } from "react-router-dom";
+import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const Nuggets = ({
   isLocked = false,
@@ -50,8 +55,14 @@ const Nuggets = ({
   const [ViewedList, setViewedList] = useState([]);
   const [NuggetsData, setNuggetsData] = useState([]);
   const [isNuggetModify, setisNuggetModify] = useState(null);
-  const { Nuggets, isNuggetsLoading, nuggetFormData, totalpages } =
-    useNuggets();
+  const {
+    Nuggets,
+    isNuggetsLoading,
+    nuggetFormData,
+    totalpages,
+    DashboardfilterType,
+  } = useNuggets();
+
   const userData = getRawcaserToken();
   const [isloading, setisLoading] = useState(false);
   const [isReachedEnd, setisReachedEnd] = useState(false);
@@ -282,6 +293,20 @@ const Nuggets = ({
     };
   }, []);
 
+  const handleFilterType = (type) => {
+    let filterData = { ...nuggetFormData };
+
+    filterData.formData = {
+      page_number: 1,
+      nugget_type: 0,
+      filter_type: type,
+    };
+    dispatch(handleResetNuggets());
+    dispatch(handleDashboardFilterType(type));
+    dispatch(handleNuggetFormData(filterData));
+    dispatch(fetchNuggetsbyId(filterData));
+  };
+
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
       {isLocked || isLoading ? (
@@ -316,6 +341,32 @@ const Nuggets = ({
               <>{Progress.show ? <PostProgress /> : <PostNuggets />}</>
             )}
           </>
+          {detectMob() && !display_user_id && !params?.key && (
+            <div className={classes.CategorySec}>
+              <div className={classes.TabSec}>
+                <p
+                  className={DashboardfilterType === 0 ? classes.activeSec : ""}
+                  onClick={() => {
+                    handleFilterType(0);
+                  }}
+                >
+                  <span class="material-icons">home</span> For You
+                </p>
+                <p
+                  className={DashboardfilterType === 1 ? classes.activeSec : ""}
+                  onClick={() => {
+                    if (userData) {
+                      handleFilterType(1);
+                    } else {
+                      dispatch(handleloginModalShow(true));
+                    }
+                  }}
+                >
+                  <span class="material-icons">people</span> Following
+                </p>
+              </div>
+            </div>
+          )}
 
           {display_user_id && !isuserConnection && (
             <div className={classes.loginuserContainer}>

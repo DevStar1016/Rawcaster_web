@@ -38,6 +38,11 @@ const Referel = () => {
 
   return (
     <div className={classes.fullcontainer}>
+      {detectMob() && (
+        <div ref={rightContainer}>
+          <InviteBox />
+        </div>
+      )}
       <div
         className={classes.suggestSec}
         ref={leftContainer}
@@ -80,6 +85,7 @@ const Referel = () => {
       </div>
       <div
         ref={rightContainer}
+        className={`d-none d-sm-block `}
         style={{
           position: "sticky",
           top: `calc(-${rightContainer.current?.offsetHeight / 2}px + ${

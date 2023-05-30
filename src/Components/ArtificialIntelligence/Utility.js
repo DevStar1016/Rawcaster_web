@@ -61,7 +61,7 @@ export const ReadoutSec = ({ url, index, message }) => {
       })
     ).then((res) => {
       if (res.data.status === 1) {
-        HandlegetNuggetContentAudio(res.data.file_path);
+        HandlegetNuggetContentAudio(res.data.url);
       } else {
         toast.error(res.data.msg);
       }
@@ -264,7 +264,7 @@ export const ChatVoice = ({ url, audioId, user }) => {
   );
 };
 
-export const ChatInput = ({ HandleSendMessage, onAudioResult }) => {
+export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
   const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
@@ -339,7 +339,7 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult }) => {
           aria-label="Type or ask question here.."
           value={ChatMessage}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !disabled) {
               HandleSendMessage(ChatMessage);
               setChatMessage("");
             }
@@ -357,8 +357,10 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult }) => {
           <InputGroup.Text
             className={classes.searchIcon}
             onClick={() => {
-              HandleSendMessage(ChatMessage);
-              setChatMessage("");
+              if (!disabled) {
+                HandleSendMessage(ChatMessage);
+                setChatMessage("");
+              }
             }}
           >
             <span className={`material-symbols-outlined ${classes.SendIcon}`}>

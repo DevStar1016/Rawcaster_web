@@ -84,6 +84,7 @@ const Blockuser = () => {
           <Select
             mode="multiple"
             className={classes.blockuserSec}
+            maxTagCount={"responsive"}
             style={{
               width: "20%",
               minWidth: "200px",
