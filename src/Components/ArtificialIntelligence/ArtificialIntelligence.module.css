@@ -4,34 +4,34 @@
   max-width: 300px;
 }
 .ChatBotBtn  {
-  width: 82px !important;
-  height: 82px !important;
+  width: 60px !important;
+  height: 60px !important;
   background: linear-gradient(116.6deg, #E26C89 0.88%, #84466F 99.2%) !important;
   box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.07) !important;
-  border-radius: 100px;
+  border-radius: 100px; padding: 5px;
 }
 .overLayClasses {
   max-width: 500px;
   width: 100%;
 }
 .HeadingSec {
-    background: #FFFFFF !important;
-box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.07);
-border-radius: 8px 8px 0px 0px;
-padding: 10px;
-margin: auto;
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-align-items: center;
+  background: #FFFFFF !important;
+  box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.07);
+  border-radius: 8px 8px 0px 0px;
+  padding: 10px;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 .HeadingSec p {
-    font-family: 'Gilroy-Bold';
-    font-size: 16px;
-    line-height: 19px;
-    color: #1D1C1C;
-    margin-bottom: 0px !important;
-    margin-left: 10px;
+  font-family: 'Gilroy-Bold';
+  font-size: 16px;
+  line-height: 19px;
+  color: #1D1C1C;
+  margin-bottom: 0px !important;
+  margin-left: 10px;
 }
 .HeadingSec span {
     color: #1D1C1C !important;

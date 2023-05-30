@@ -45,7 +45,7 @@ const ArtificialIntelligence = () => {
             setisChatOpen(!isChatOpen);
           }}
         >
-          <img src={AIIcon} />
+          <img height="35px" src={AIIcon} />
         </Button>
       </Popover>
     </ChatBotContext.Provider>
