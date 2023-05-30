@@ -201,7 +201,8 @@ padding: 2px 1px;
 .chatbotsec {
   position: absolute;
   bottom: 27px;
-  width: 98%;
+  right: 27px;
+  z-index: 100;
 }
 .chatbotsec .ChatBotBtnSec {
   float: right;

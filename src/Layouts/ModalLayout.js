@@ -17,6 +17,7 @@ import {
 import AccountActivateModal from "../Modal/AccountActivateModal";
 import { handleAccountActive } from "../Store/Redux/Reducer/AuthReducer";
 import { removeSessionStorageData } from "../Store/Storage";
+import HelmetComponent from "../Components/SEO";
 
 const ModalLayout = () => {
   const location = useLocation();
@@ -38,8 +39,10 @@ const ModalLayout = () => {
       }
     }
   }, [location]);
+
   return (
     <>
+      <HelmetComponent />
       <Outlet />
       <ValidateTypeModal
         open={twostepVerifyModalshow}

@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { getNuggetDetailService } from "../../Services/ApiService";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { DecryptionString, JSONtoformdata } from "../../Shared/Utility";
+import {
+  DecryptionString,
+  JSONtoformdata,
+  decodeHtml,
+} from "../../Shared/Utility";
 import { useNavigate, useParams } from "react-router";
 import Post from "./Post";
 import classes from "./Nuggets.module.css";
 import { Spinner } from "react-bootstrap";
+import { NuggetSEO, PollNuggetSEO } from "../../Components/SEO/SEOContent";
+import Seo from "../../Components/SEO/Seo";
 const ViewNugget = () => {
   const { nugID } = useParams();
   const navigate = useNavigate();
@@ -35,10 +41,31 @@ const ViewNugget = () => {
     if (Token) {
       getNuggetDetail();
     }
-  }, [Token]);
+  }, [Token, nugget_id]);
+
+  const getOriginalName = () => {
+    if (NuggetData?.poll_option.length !== 0) {
+      return PollNuggetSEO(
+        NuggetData?.original_user_name
+          ? decodeHtml(NuggetData.original_user_name)
+          : "Nugget"
+      );
+    } else {
+      return NuggetSEO(
+        NuggetData?.original_user_name
+          ? decodeHtml(NuggetData.original_user_name)
+          : "Nugget"
+      );
+    }
+  };
+
   return (
     <div className={classes.viewDetailNugget}>
       <div className={classes.mainPost}>
+        <Seo
+          title={getOriginalName().title}
+          description={getOriginalName().description}
+        />
         {NuggetData ? (
           <Post
             index={0}

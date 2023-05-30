@@ -11,6 +11,8 @@ import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import classes from "./viewevent.module.css";
 import moment from "moment";
 import { Spinner } from "react-bootstrap";
+import Seo from "../SEO/Seo";
+import { EventSEO } from "../SEO/SEOContent";
 
 const Viewevent = () => {
   const { userSettings } = useAuth();
@@ -42,6 +44,22 @@ const Viewevent = () => {
 
   return (
     <div className={classes.eventContainer}>
+      <Seo
+        title={
+          EventSEO(
+            ViewEventData?.event_name
+              ? decodeHtml(ViewEventData.event_name)
+              : "Event"
+          ).title
+        }
+        description={
+          EventSEO(
+            ViewEventData?.event_name
+              ? decodeHtml(ViewEventData.event_name)
+              : "Event"
+          ).description
+        }
+      />
       {ViewEventData ? (
         <div className={classes.eventCard}>
           <div className={classes.eventTitle}>

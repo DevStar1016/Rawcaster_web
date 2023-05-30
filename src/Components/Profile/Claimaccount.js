@@ -3,6 +3,7 @@ import classes from "./Profile.module.css";
 import {
   DecryptionString,
   JSONtoformdata,
+  decodeHtml,
   filterValidObject,
   getGeocodeData,
 } from "../../Shared/Utility";
@@ -22,6 +23,8 @@ import moment from "moment";
 import PlacesAutocomplete from "react-places-autocomplete";
 import { useDispatch } from "react-redux";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
+import Seo from "../SEO/Seo";
+import { ClaimorVerifySEO } from "../SEO/SEOContent";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -126,9 +129,31 @@ const Claimaccount = () => {
     }
   }, [loginUserData]);
 
+  const getSeoType = () => {
+    if (display_user_id) {
+      return ClaimorVerifySEO(
+        loginUserData.first_name
+          ? decodeHtml(loginUserData.first_name)
+          : "Claim Account",
+        "Claim"
+      );
+    } else {
+      return ClaimorVerifySEO(
+        loginUserData.first_name
+          ? decodeHtml(loginUserData.first_name)
+          : "Claim Account",
+        "Verify"
+      );
+    }
+  };
+
   return (
     <div className={`mainWrapper ${classes.profilePage}`}>
       <ProfileLayout profileData={loginUserData}>
+        <Seo
+          title={getSeoType().title}
+          description={getSeoType().description}
+        />
         <div className={`mt-4  ${classes.claimAccountSec}`}>
           <div className={`${classes.claimAccountBox}`}>
             <h2>
