@@ -159,22 +159,30 @@ const ConfigureGroup = ({ groupId, close, open }) => {
     );
     if (findData) {
       setGroupData(findData);
-      let members = [...findData?.group_members_list];
-      let findUser = members.findIndex(
-        (ele) => parseInt(ele.user_id) === parseInt(userData?.user_id)
-      );
+      if (findData?.locked !== 1) {
+        let members = [...findData?.group_members_list];
+        let findUser = members.findIndex(
+          (ele) => parseInt(ele.user_id) === parseInt(userData?.user_id)
+        );
 
-      let removedObj = members.splice(findUser, 1)[0];
-      members.splice(0, 0, removedObj);
-      setGroupMembers(members);
-      setisOwner(
-        parseInt(findData?.group_owner) === parseInt(userData?.user_id)
-      );
-      setValues((pre) => ({
-        group_name: findData?.group_name,
-        group_icon: findData?.group_icon,
-        group_members: JSON.stringify(findData?.group_member_ids),
-      }));
+        let removedObj = members.splice(findUser, 1)[0];
+        members.splice(0, 0, removedObj);
+        setGroupMembers(members);
+        setisOwner(
+          parseInt(findData?.group_owner) === parseInt(userData?.user_id)
+        );
+        setValues((pre) => ({
+          group_name: findData?.group_name,
+          group_icon: findData?.group_icon,
+          group_members: JSON.stringify(findData?.group_member_ids),
+        }));
+      } else {
+        setValues((pre) => ({
+          ...pre,
+          group_name: findData?.group_name,
+          group_icon: findData?.group_icon,
+        }));
+      }
     } else {
       if (!isOwner) {
         toast.error(

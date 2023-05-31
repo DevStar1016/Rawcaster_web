@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+  margin-bottom: 10px;
 }
 .displaySec {
     display: flex;
@@ -17,12 +18,12 @@
   
 
 .nameitem {
-   display: flex;
-   flex-direction: row;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   text-align: center;
- padding: 2px;
+  padding: 2px;
   margin:5px 2px ;
   background-color:#D1D0CE;
   font-size: 13px;
