@@ -90,7 +90,7 @@ export const ReadoutSec = ({ url, index, message }) => {
 
 export const MessageContent = (props) => {
   const { setpostModalShow, setPostContent } = useGlobalContext();
-  const { message, user, index, created_at } = props;
+  const { message, user, index } = props;
   const loginUserData = useAuthData();
   return (
     <div
@@ -112,9 +112,13 @@ export const MessageContent = (props) => {
         <div className={classes.content}>
           {/* <p className={classes.userNameSec}>David thompson</p> */}
           <p>{message}</p>
-          <span className={classes.timestamp}>
-            {moment(created_at, "YYYY-MM-DD HH:mm:ss").format("hh:mm A")}
-          </span>
+          {props.created_at && (
+            <span className={classes.timestamp}>
+              {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                "hh:mm A"
+              )}
+            </span>
+          )}
         </div>
       </div>
       {!isUser(user) && (
