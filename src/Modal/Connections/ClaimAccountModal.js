@@ -3,7 +3,7 @@ import classes from "./ClaimAccount.module.css";
 import { Modal } from "antd";
 import claimedAccount from "../../Assets/Icons/svg/Claim_success.svg";
 
-const ClaimAccountModal = ({ visible, onClose }) => {
+const ClaimAccountModal = ({ visible, onClose, msg }) => {
   return (
     <Modal
       centered
@@ -29,12 +29,8 @@ const ClaimAccountModal = ({ visible, onClose }) => {
         </span>
       </div>
       <div className={classes.container}>
-        <img src={claimedAccount} />
-        <p>
-          You have placed a claim on a predefined influencer profile; We will
-          contact you to validate your claim. Please contact us at
-          info@rawcaster.com if you have any questions.
-        </p>
+        <img src={claimedAccount} alt={"Claim Account"} />
+        <p>{msg}</p>
       </div>
     </Modal>
   );

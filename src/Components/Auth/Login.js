@@ -120,13 +120,17 @@ const Login = () => {
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/">
-            <img src={mainlogowhite} />
+            <img src={mainlogowhite} alt="Back to Home" />
           </Link>
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link to="/">
-              <img className={classes.hideMob} src={mainlogo} />
+              <img
+                className={classes.hideMob}
+                src={mainlogo}
+                alt="Back to Home"
+              />
             </Link>
             <h1 className={classes.heading_h1}> Welcome to Rawcaster</h1>
             <p className={classes.subText}>
@@ -191,7 +195,7 @@ const Login = () => {
             <SigninwithService type="Signin" />
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} />
+              <img src={RawcasterLogo} alt="Rawcaster Logo" />
               <p>
                 © Copyright Rawcaster 2021
                 <br />
@@ -207,7 +211,7 @@ const Login = () => {
         <div className={`${classes.sliderSec} login_carosel`}>
           <OwlCarousel className={"owl-theme "} {...carouselOptions}>
             <div className={classes.contentBox}>
-              <img src={SigninImg} />
+              <img src={SigninImg} alt="Connect Share Express" />
               <h2>Connect Share Express</h2>
               <h4>
                 with Rawcaster influencers, bloggers, writers, photographers can
@@ -215,7 +219,7 @@ const Login = () => {
               </h4>
             </div>
             <div className={classes.contentBox}>
-              <img src={SigninImg} />
+              <img src={SigninImg} alt="Connect Share Express" />
               <h2>Connect Share Express</h2>
               <h4>
                 with Rawcaster influencers, bloggers, writers, photographers can
@@ -223,7 +227,7 @@ const Login = () => {
               </h4>
             </div>
             <div className={classes.contentBox}>
-              <img src={SigninImg} />
+              <img src={SigninImg} alt="Connect Share Express" />
               <h2>Connect Share Express</h2>
               <h4>
                 with Rawcaster influencers, bloggers, writers, photographers can

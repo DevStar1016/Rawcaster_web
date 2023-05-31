@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classes from "./ProfilerRight.module.css";
-import { useNavigate, useParams } from "react-router";
-import {
-  DecryptionString,
-  EncryptionString,
-  getisAddFriend,
-  handleProfileNavigate,
-} from "../../../Shared/Utility";
+import { useParams } from "react-router";
+import { DecryptionString } from "../../../Shared/Utility";
 import { Skeleton } from "antd";
 import EmptyImg from "../../../Assets/Images/svg/empty_connections.svg";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
@@ -17,17 +12,11 @@ import {
   getUnclaimedInfluencerData,
   getfollowerfollowingService,
 } from "./Utility";
-import {
-  useAuthData,
-  useAuthToken,
-  useNuggets,
-} from "../../../Shared/Reduxfetcher";
+import { useAuthToken } from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
 import msgIcon from "../../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
-import { useDispatch } from "react-redux";
 import InfluencerSend from "../../../Modal/InfluencerSend";
-import { defaultprofileImg } from "../../../Shared/CommonConstants";
 
 const ConnectionsList = ({
   title = "",
@@ -36,16 +25,16 @@ const ConnectionsList = ({
   isMyProfile,
   isLoading = false,
 }) => {
-  const { isLoginUser, getFollowers } = useProfileContext();
+  const {
+    isLoginUser,
+    getFollowers,
+    isInfluencerChatModalOpen,
+    setisInfluencerChatModalOpen,
+  } = useProfileContext();
   const params = useParams();
-  const dispatch = useDispatch();
   const display_user_id = DecryptionString(params.user_id);
   const [isLoadingConnection, setisLoadingConnection] = useState(false);
-  const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
-    show: false,
-  });
   const loginToken = useAuthToken();
-
   const [ConnectionsList, setConnectionsList] = useState({
     connections: [],
     allconnections: [],
@@ -204,7 +193,7 @@ const ConnectionsList = ({
               borderRadius: 50,
             }}
           >
-            <img src={isLoading ? "" : userImg} />
+            <img src={isLoading ? "" : userImg} alt="User_img" />
           </Skeleton.Node>
           {isLoading ? null : (
             <Skeleton.Node
@@ -241,13 +230,18 @@ const ConnectionsList = ({
               <img
                 className={classes.actionIcon}
                 src={msgIcon}
+                alt="message"
                 onClick={() => {
                   setisInfluencerChatModalOpen({
                     show: true,
                   });
                 }}
               />
-              <img className={classes.actionIcon} src={talkshowIcon} />
+              <img
+                className={classes.actionIcon}
+                src={talkshowIcon}
+                alt="Talkshow"
+              />
             </div>
           )}
         </div>
@@ -294,7 +288,7 @@ const ConnectionsList = ({
                 <>
                   {ConnectionsList.allconnectionscount === 0 && (
                     <div className={classes.emptySec}>
-                      <img src={EmptyImg} />
+                      <img src={EmptyImg} alt="Empty Connections" />
                     </div>
                   )}
                 </>

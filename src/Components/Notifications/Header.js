@@ -3,8 +3,7 @@ import classes from "./Notification.module.css";
 import { useNotificationContext } from "../../Shared/Context";
 
 const Header = () => {
-  const { handleViewNotification, setmarkallAsRead, TotalUnreadCount } =
-    useNotificationContext();
+  const { handleViewNotification, TotalUnreadCount } = useNotificationContext();
   return (
     <div className={classes.headingSec}>
       <div className={classes.leftSec}>

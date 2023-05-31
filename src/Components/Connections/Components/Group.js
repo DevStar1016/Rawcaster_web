@@ -30,13 +30,14 @@ const Group = ({ group, searchInput, onClick }) => {
               currentTarget.onerror = null;
               currentTarget.src = GroupImg;
             }}
+            alt={decodeHtml(group.group_name)}
           />
           <div>
             <p className={classes.groupdisName}>
               {decodeHtml(group.group_name)}
             </p>
             <span className={classes.groupdisName}>
-              {group?.group_members_list.length + " Members"}
+              {group?.group_member_count + " Members"}
             </span>
           </div>
         </div>

@@ -4,12 +4,16 @@
 .suggestSec{
     width: 310px;
     float: left;
-    position: sticky; 
     padding-right: 10px;
     padding-bottom: 74px;
     height: calc(100vh - 70px);
     position: -webkit-sticky;
     position: sticky;
+}
+.NuggetSec {
+  /* width: 310px; */
+  height: calc(100vh - 70px);
+  /* overflow-y: scroll; */
 }
 .refuserList { background: #fff !important; float: left; width: 100%; display: flex;align-items: center; }
 .beforelogin a { display: flex; font-size: 15.5px; align-items: center; margin-top: 10px; clear: both; text-decoration: none; color: #000;cursor: pointer;}
@@ -22,14 +26,13 @@
 .suggAcc { float: left; width: 100%; margin-top: 5px; clear: both; margin-bottom: 10px;cursor: pointer;display: flex;align-items: center; }
 .suggAcc img { width: 35px; height: 35px; float: left; margin-right: 10px;border-radius: 190px; }
 .suggAcc .name { font-family: "DM Sans", sans-serif; cursor: pointer; line-height: 18px; font-size: 13px; font-weight: 500; float: left; margin-bottom: 0; padding-top: 3px;
-  max-width: calc(100% - 52px);
+  max-width: calc(100% - 34px);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
   color: #000; } 
 .suggAcc .name span { font-size: 17px; color: #F7965B; }
 .suggAcc .username { font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 300; margin: 0px; color: rgba(0, 0, 0, 0.6); }
@@ -47,7 +50,7 @@
   margin-right: 3px;
   border-radius: 6px;
   cursor: pointer;
-  width: 133px;
+  width: 120px;
   height: 27px;
 }
 .inviteSec {
@@ -105,6 +108,9 @@
   display: flex;
   flex-direction: row;
 }
+.profileSec img {
+  border-radius: 30px;
+}
 .profileSec .NameSec  {
   margin-left: 5px;
 }
@@ -114,7 +120,6 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   margin-bottom: 0;
-  width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap
@@ -152,8 +157,12 @@ height: 200px;
 @media (max-width:768px) {
   .fullcontainer { width: 100%; padding-left: 15px; padding-right: 15px; padding-top: 55px; }
   .beforelogin { display: none;}
-  .suggestSec { padding-right: 0; padding-bottom: 0;}
+  .suggestSec { padding-right: 0; padding-bottom: 0;  }
+  .inviteContainer {
+    width: calc(100vw - 30px) !important;
+  }
   .suggestSec, .suggInfluencersSec .scrollSec, .inviteSec { width: 100%; height: auto;}
   .suggInfluencersSec { border: none; padding-top: 0;}
   .suggAcc img { width: 30px; height: 30px; }
+  .inviteSec {  padding-bottom: 10px; }
 }

@@ -1,6 +1,5 @@
 import moment from "moment";
 import React, { useState, useEffect, useRef, createRef } from "react";
-import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { pollVoteService } from "../../Services/ApiService";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
@@ -15,6 +14,7 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import styles from "./Multiplepoll.module.css";
+import { getCookieData } from "../../Store/Storage";
 
 const MultiplePoll = ({
   nugget_id,
@@ -132,13 +132,13 @@ const MultiplePoll = ({
   };
 
   useEffect(() => {
-    if (!getVotesTiming()) {
+    if (!getVotesTiming() && userSettings) {
       animateAnswers(-1);
       setpollVotedData({
         isVoted: true,
         votedOptionID: "",
       });
-    } else if (!Token) {
+    } else if (!Token && !getCookieData("rawcaster_user_token")) {
       setpollVotedData({
         isVoted: true,
         votedOptionID: "",
@@ -150,6 +150,7 @@ const MultiplePoll = ({
         votedOptionID: "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, userSettings, isVoted]);
 
   function animateAnswers(index, id) {
@@ -199,6 +200,7 @@ const MultiplePoll = ({
     }
 
     // animate rest of answers (not clicked)
+    // eslint-disable-next-line array-callback-return
     restOfAnswers.map((ele, index) => {
       if (answers[index]) {
         answers[index]?.animate(

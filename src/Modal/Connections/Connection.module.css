@@ -36,6 +36,9 @@ overflow-y: auto;
 .modalOthersIcon {
     right: 8px !important;
   }
+.ageSec input{
+    height: 44px !important;
+}
 .messageIcon {
     float: left;
     width: 22px;

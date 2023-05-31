@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { InfluencerListService } from "../Services/ApiService";
 import {
@@ -53,7 +52,7 @@ const SuggestedInfluencers = () => {
         }}
       >
         <h3>
-          Suggested accounts{" "}
+          Suggested accounts
           {influencerList ? `(${influencerList?.length})` : ""}
         </h3>
         <div className={classes.scrollSec}>
@@ -91,15 +90,16 @@ const SuggestedInfluencers = () => {
                         currentTarget.src = defaultprofileImg;
                       }}
                     />
-                    <p className={classes.name}>
-                      {decodeHtml(ele?.display_name)}
-                    </p>
-                    <br />
-                    {ele.category && ele.category.length !== 0 && (
-                      <p className={classes.username}>
-                        {ele.category.toString()}
+                    <div className="d-flex flex-column">
+                      <p className={classes.name}>
+                        {decodeHtml(ele?.display_name)}
                       </p>
-                    )}
+                      {ele.category && ele.category.length !== 0 && (
+                        <p className={classes.username}>
+                          {ele.category.toString()}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 );
               })}

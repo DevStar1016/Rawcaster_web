@@ -32,6 +32,7 @@ import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../../../Store/Storage";
 import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
 import moment from "moment";
+import { GENDER_TYPE } from "../../../Shared/Constant";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -250,7 +251,13 @@ const UpdateProfile = () => {
       <Col xs={24} sm={24} md={24} lg={24} xl={16} style={{ margin: "auto" }}>
         <div className={classes.centerLogo}>
           <div className={classes.backBtn}>
-            <Link to="/">
+            <Link
+              to={".."}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(-1);
+              }}
+            >
               <span class="material-symbols-outlined">arrow_back</span>
             </Link>
           </div>
@@ -258,6 +265,7 @@ const UpdateProfile = () => {
             <Link to="/">
               <img
                 src={require("../../../Assets/Images/png/rawcater_logo.png")}
+                alt="Rawcaster"
               />
             </Link>
           </div>
@@ -275,6 +283,7 @@ const UpdateProfile = () => {
               <div className={classes.picuploadSec}>
                 <img
                   className={classes.profile_img}
+                  alt="user_img"
                   src={getValidImageUrl(ProfileImage)}
                 />
                 <input
@@ -371,8 +380,9 @@ const UpdateProfile = () => {
                     setFieldValue("gender", val);
                   }}
                 >
-                  <Select.Option value={1}>Male</Select.Option>
-                  <Select.Option value={2}>Female</Select.Option>
+                  {GENDER_TYPE.map(({ key, label }) => (
+                    <Select.Option value={key}>{label}</Select.Option>
+                  ))}
                 </Select>
                 {touched.gender && <p className="ErrTxt">{errors?.gender}</p>}
               </Form.Item>

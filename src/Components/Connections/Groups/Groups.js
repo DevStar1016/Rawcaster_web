@@ -13,21 +13,21 @@ const Groups = () => {
   });
   const [searchInput, setsearchInput] = useState("");
 
-  const getValidData = () => {
-    if (groupsList && groupsList.length !== 0) {
-      const filteredArr = groupsList.reduce((acc, current) => {
-        const x = acc.find((item) => item.group_id === current.group_id);
-        if (!x) {
-          return acc.concat([current]);
-        } else {
-          return acc;
-        }
-      }, []);
-      return filteredArr;
-    } else {
-      return [];
-    }
-  };
+  // const getValidData = () => {
+  //   if (groupsList && groupsList.length !== 0) {
+  //     const filteredArr = groupsList.reduce((acc, current) => {
+  //       const x = acc.find((item) => item.group_id === current.group_id);
+  //       if (!x) {
+  //         return acc.concat([current]);
+  //       } else {
+  //         return acc;
+  //       }
+  //     }, []);
+  //     return filteredArr;
+  //   } else {
+  //     return [];
+  //   }
+  // };
 
   return (
     <div className={classes.myconnectioin}>

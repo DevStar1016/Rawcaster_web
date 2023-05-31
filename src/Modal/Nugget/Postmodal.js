@@ -229,6 +229,7 @@ const Postmodal = ({ visible, onClose }) => {
               <Tooltip title="Post Poll">
                 <img
                   src={pollIcon}
+                  alt="Post poll"
                   onClick={() => {
                     setisPoll(true);
                   }}
@@ -238,6 +239,7 @@ const Postmodal = ({ visible, onClose }) => {
             <Tooltip title="Record Audio">
               <img
                 src={mikeIcon}
+                alt="Record Audio"
                 onClick={() => {
                   setisPoll(false);
                   handleAllowMicPermission();
@@ -248,6 +250,7 @@ const Postmodal = ({ visible, onClose }) => {
               <Tooltip title="Record Video">
                 <img
                   src={videoIcon}
+                  alt="Record Video"
                   onClick={() => {
                     handleCameraPermission("Video");
                   }}
@@ -258,6 +261,7 @@ const Postmodal = ({ visible, onClose }) => {
               <Tooltip title="Capture Image">
                 <img
                   src={cameraIcon}
+                  alt="Capture Image"
                   onClick={() => {
                     handleCameraPermission("Camera");
                   }}
@@ -267,6 +271,7 @@ const Postmodal = ({ visible, onClose }) => {
             <Tooltip title="Upload Image">
               <img
                 src={pictureIcon}
+                alt="Upload Image"
                 onClick={() => {
                   if (ImageRef.current) {
                     setisPoll(false);
@@ -294,6 +299,7 @@ const Postmodal = ({ visible, onClose }) => {
             <Tooltip title="Upload Video">
               <img
                 src={imageIcon}
+                alt="Upload Video"
                 onClick={() => {
                   if (VideoRef.current) {
                     setisPoll(false);
@@ -330,16 +336,34 @@ const Postmodal = ({ visible, onClose }) => {
                 ref={textinputRef}
                 className={classes.postTextarea}
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
+                onPaste={(event) => {
+                  const pastedText = event.clipboardData.getData("text/plain");
+                  const selectedText = window.getSelection().toString();
+                  const updatedText = textinputRef.current.value.replace(
+                    selectedText,
+                    pastedText
+                  );
+                  setFieldValue("content", updatedText);
+                  getLinkInfo(updatedText);
+                }}
                 value={values.content}
                 onChange={(e) => {
-                  if (e.target.value.length <= 700) {
-                    setFieldValue("content", e.target.value);
-                    getLinkInfo(e.target.value);
-                  }
+                  // let MAX_LENGTH = 700;
+                  // if (e.target.value.length <= MAX_LENGTH) {
+                  setFieldValue("content", e.target.value);
+                  getLinkInfo(e.target.value);
+                  // } else {
+                  //   setFieldValue(
+                  //     "content",
+                  //     e.target.value.slice(0, MAX_LENGTH)
+                  //   );
+                  //   getLinkInfo(e.target.value.slice(0, MAX_LENGTH));
+                  // }
                 }}
               />
               <img
                 width="24px"
+                alt="Add Emoji"
                 className={classes.emojiIcon}
                 src={emoji}
                 style={{ cursor: "pointer" }}
@@ -348,6 +372,7 @@ const Postmodal = ({ visible, onClose }) => {
             </div>
             {showEmojis && (
               <div
+                className={classes.emojiPicker}
                 style={{
                   display: "flex",
                   justifyContent: "end",
@@ -391,6 +416,7 @@ const Postmodal = ({ visible, onClose }) => {
                 {MetaData.image && MetaData.image !== "" ? (
                   <img
                     src={MetaData.image}
+                    alt="Meta Data"
                     width="100%"
                     height="200px"
                     style={{ objectFit: "cover" }}

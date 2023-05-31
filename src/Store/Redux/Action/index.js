@@ -14,7 +14,6 @@ import {
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
 import { handlenuggetToken } from "../Reducer/NuggetsReducer";
 import { handleToken } from "../Reducer/AuthReducer";
-import ConnectSocket from "../../../Services/SocketService";
 
 // Connections
 
@@ -106,6 +105,7 @@ export const fetchNuggetsbyId = createAsyncThunk(
     };
     try {
       const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
+      console.log(data);
       if (data.status === 1) {
         let resultData = {
           current_page_no: data.current_page_no,

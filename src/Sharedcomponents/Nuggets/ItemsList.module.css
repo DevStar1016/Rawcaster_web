@@ -12,6 +12,7 @@
     padding: 0px 5px;
     display: flex;
     flex-direction: row;
+    align-items: center;
     border-radius: 30px;
   }
   .profileData:hover {
@@ -32,4 +33,13 @@
   .nameSec p  {
     margin: 20px;
     }
-   
+    .selectedIcon {
+      display: none;
+    }
+    .selectedItem {
+      background-color: #e6f4ff !important;
+    }
+  .selectedItem .selectedIcon{
+display: block;
+  }
+  

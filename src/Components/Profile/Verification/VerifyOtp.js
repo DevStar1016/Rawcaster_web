@@ -197,6 +197,7 @@ const VerifyOtp = () => {
         <div className={classes.centerLogo}>
           <Link to="/">
             <img
+              alt="Rawcaster"
               src={require("../../../Assets/Images/png/rawcater_logo.png")}
             />
           </Link>
@@ -269,7 +270,10 @@ const VerifyOtp = () => {
 
           <div className={`${classes.copyright} ${classes.verifyCopy}`}>
             <p>
-              <img src={require("../../../Assets/Images/png/r_logo.png")} />
+              <img
+                alt="Rawcaster"
+                src={require("../../../Assets/Images/png/r_logo.png")}
+              />
               © Copyright Rawcaster 2021
               <br />
               <Link to="/termsandconditions">Terms and Conditions</Link> |{" "}

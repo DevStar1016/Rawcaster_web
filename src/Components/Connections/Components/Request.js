@@ -92,6 +92,7 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
             };
             handleProfileNavigate(finalData);
           }}
+          alt={decodeHtml(request.display_name)}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = defaultprofileImg;

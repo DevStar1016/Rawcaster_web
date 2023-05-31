@@ -1,8 +1,7 @@
-import { Button, Form, Input, Modal } from "antd";
+import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { EditGroupMembers, GroupHeader, SelectConnections } from "./Utility";
 import classes from "./Groups.module.css";
-
 import { useFormik } from "formik";
 import { toast } from "react-hot-toast";
 import * as yup from "yup";
@@ -31,7 +30,7 @@ import {
 } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { groupFunctionalitySocket } from "./Methods";
 import { GROUP_CHAT_PROCESS_TYPE } from "./Constants";
-import { sendMessage, socketListen } from "../../../Services/SocketService";
+import { sendMessage } from "../../../Services/SocketService";
 
 const ConfigureGroup = ({ groupId, close, open }) => {
   const { groupsList } = useDashboard();
@@ -138,7 +137,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
             dispatch(
               handleUpdateGroupData({
                 Group: res.data.group_details,
-                index: groupId,
+                id: groupId,
               })
             );
           } else {
@@ -160,22 +159,30 @@ const ConfigureGroup = ({ groupId, close, open }) => {
     );
     if (findData) {
       setGroupData(findData);
-      let members = [...findData?.group_members_list];
-      let findUser = members.findIndex(
-        (ele) => parseInt(ele.user_id) === parseInt(userData?.user_id)
-      );
+      if (findData?.locked !== 1) {
+        let members = [...findData?.group_members_list];
+        let findUser = members.findIndex(
+          (ele) => parseInt(ele.user_id) === parseInt(userData?.user_id)
+        );
 
-      let removedObj = members.splice(findUser, 1)[0];
-      members.splice(0, 0, removedObj);
-      setGroupMembers(members);
-      setisOwner(
-        parseInt(findData?.group_owner) === parseInt(userData?.user_id)
-      );
-      setValues((pre) => ({
-        group_name: findData?.group_name,
-        group_icon: findData?.group_icon,
-        group_members: JSON.stringify(findData?.group_member_ids),
-      }));
+        let removedObj = members.splice(findUser, 1)[0];
+        members.splice(0, 0, removedObj);
+        setGroupMembers(members);
+        setisOwner(
+          parseInt(findData?.group_owner) === parseInt(userData?.user_id)
+        );
+        setValues((pre) => ({
+          group_name: findData?.group_name,
+          group_icon: findData?.group_icon,
+          group_members: JSON.stringify(findData?.group_member_ids),
+        }));
+      } else {
+        setValues((pre) => ({
+          ...pre,
+          group_name: findData?.group_name,
+          group_icon: findData?.group_icon,
+        }));
+      }
     } else {
       if (!isOwner) {
         toast.error(

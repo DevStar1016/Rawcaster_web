@@ -1,51 +1,54 @@
-import { Skeleton } from "antd";
-import React, { useState } from "react";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import useInfiniteScroll from "react-infinite-scroll-hook";
+import React, { useEffect, useRef, useState } from "react";
+import classes from "./Dev.module.css";
+import styled, { keyframes } from "styled-components";
 
 const Development = () => {
-  const [content, setContent] = useState([...new Array(100)]);
-  const [loading, setloading] = useState(false);
-  const [isReachedEnd, setisReachedEnd] = useState(false);
+  const keyPressAnimation = keyframes`
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+`;
 
-  const handleBottomLoader = () => {
-    setisReachedEnd(true);
-  };
+  // Define the styled components for the keyboard and key
+  const KeyboardWrapper = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+  `;
 
-  const scrollRef = useBottomScrollListener(handleBottomLoader);
+  const Key = styled.button`
+    padding: 10px;
+    margin: 5px;
+    animation: ${keyPressAnimation} 0.5s;
 
-  const loadMore = () => {
-    if (isReachedEnd) {
-      console.log("isReachedEnd");
-      setloading(true);
-      setTimeout(() => {
-        setContent((pre) => [...pre, ...new Array(10)]);
-        setloading(false);
-        setisReachedEnd(false);
-      }, 1000);
+    &:hover {
+      background-color: lightgray;
     }
-  };
 
-  const getHasNextPage = () => {
-    return content.length !== 190;
-  };
+    @media (max-width: 768px) {
+      padding: 8px;
+      margin: 4px;
+      font-size: 14px;
+    }
 
-  const [sentryRef, { rootRef }] = useInfiniteScroll({
-    loading,
-    hasNextPage: getHasNextPage(),
-    onLoadMore: loadMore,
-  });
+    @media (max-width: 480px) {
+      padding: 6px;
+      margin: 3px;
+      font-size: 12px;
+    }
+  `;
+
+  const handleKeyPress = (key) => {
+    console.log(`Pressed key: ${key}`);
+  };
 
   return (
-    <div ref={[scrollRef, rootRef]}>
-      {content.map((item, index) => (
-        <div key={index}>{index}</div>
-      ))}
-      {(loading || getHasNextPage()) && (
-        <div ref={sentryRef}>
-          <Skeleton />
-        </div>
-      )}
+    <div className="h-100 pt-5 mt-5 m-auto w-25">
+      <KeyboardWrapper>
+        <Key onClick={() => handleKeyPress("A")}>A</Key>
+        <Key onClick={() => handleKeyPress("B")}>B</Key>
+        <Key onClick={() => handleKeyPress("C")}>C</Key>
+        {/* Add more keys as needed */}
+      </KeyboardWrapper>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { Button, Form, Input, Spin } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
@@ -10,7 +10,11 @@ import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { EMAIL_REGEX, MOBILE_NUMBER_REGEX } from "../../Shared/Constant";
+import {
+  EMAIL_REGEX,
+  GENDER_TYPE,
+  MOBILE_NUMBER_REGEX,
+} from "../../Shared/Constant";
 import {
   getAuthToken,
   getGeocodeData,
@@ -55,6 +59,7 @@ const SignupwithCredentials = () => {
       .string()
       .max(50, "Name cannot be longer than 50 characters")
       .required("Please input your Name!"),
+    gender: yup.string().required(`Please input your Gender!`),
     email_id: yup
       .string()
       .min(5, `Please Enter Valid ${getLoginType().title}`)
@@ -88,6 +93,7 @@ const SignupwithCredentials = () => {
     initialValues: {
       first_name: "",
       email_id: "",
+      gender: "",
       password: "",
       dob: "",
       geo_location: "",
@@ -164,7 +170,7 @@ const SignupwithCredentials = () => {
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite} />
+            <img src={mainlogowhite} alt="Back to Home" />
           </Link>
         </div>
         <div className={classes.loginSec}>
@@ -173,6 +179,7 @@ const SignupwithCredentials = () => {
               <img
                 className={classes.hideMob}
                 src={require("../../Assets/Images/png/rawcater_logo.png")}
+                alt="Back to Home"
               />
             </Link>
             <h1 className={classes.heading_h1}>Join Rawcaster Family</h1>
@@ -249,6 +256,23 @@ const SignupwithCredentials = () => {
                   <p className="ErrTxt">{errors?.password}</p>
                 )}
               </Form.Item>
+              <p className={classes.label}>Gender</p>
+              <Form.Item name="gender" className="genderSelect">
+                <Select
+                  className={classes.selectBox}
+                  placeholder="Select Gender"
+                  status={touched.gender && errors.gender ? "error" : ""}
+                  value={values.gender}
+                  onSelect={(val) => {
+                    setFieldValue("gender", val);
+                  }}
+                >
+                  {GENDER_TYPE.map(({ key, label }) => (
+                    <Select.Option value={key}>{label}</Select.Option>
+                  ))}
+                </Select>
+                {touched.gender && <p className="ErrTxt">{errors?.gender}</p>}
+              </Form.Item>
               <p className={classes.label}>Date of Birth</p>
               <Form.Item>
                 <DateInputBox
@@ -269,6 +293,7 @@ const SignupwithCredentials = () => {
                 <Link to="/termsandconditions">terms and conditions</Link>
               </p>
               <br />
+
               <Form.Item>
                 <Button block htmlType="submit" className={classes.btn}>
                   Join Rawcaster Family
@@ -284,7 +309,7 @@ const SignupwithCredentials = () => {
             </Form>
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} />
+              <img src={RawcasterLogo} alt="Rawcaster" />
               <p>
                 © Copyright Rawcaster 2021
                 <br />
@@ -303,7 +328,7 @@ const SignupwithCredentials = () => {
           <OwlCarousel className={"owl-theme "} {...carouselOptions}>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupImg} />
+                <img src={SignupImg} alt="Connect Share Express" />
               </div>
               <h2>Connect Share Express</h2>
               <h4>
@@ -313,7 +338,7 @@ const SignupwithCredentials = () => {
             </div>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupwithMobileImg} />
+                <img src={SignupwithMobileImg} alt="Live Talk Shows" />
               </div>
               <h2>Live Talk Shows</h2>
               <h4>
@@ -323,7 +348,7 @@ const SignupwithCredentials = () => {
             </div>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupwithEmailImg} />
+                <img src={SignupwithEmailImg} alt="Schedule Events" />
               </div>
               <h2>Schedule Events</h2>
               <h4>

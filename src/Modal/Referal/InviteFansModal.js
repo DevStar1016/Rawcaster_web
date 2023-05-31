@@ -59,6 +59,7 @@ const InviteFansModal = ({ open, close }) => {
       <div className={classes.centerSec}>
         <img
           className={classes.grpImg}
+          alt="Group_img"
           src={require("../../Assets/Images/png/group_img.png")}
         />
         <div className={classes.mailBox}>

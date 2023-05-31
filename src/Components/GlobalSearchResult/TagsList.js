@@ -1,8 +1,6 @@
-import { Dropdown, Skeleton } from "antd";
+import { Dropdown, Empty, Skeleton } from "antd";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { Spinner } from "react-bootstrap";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
@@ -21,10 +19,13 @@ import {
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import TagsChart from "../../UIComponents/TagsChart";
 import classes from "./GlobalSearch.module.css";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 let isRequestCancel = false;
 
 const TagsList = () => {
+  const containerRef = useRef();
+  const pageRef = useRef(1);
   const dispatch = useDispatch();
   const params = useParams();
   const searchKey = params?.key ? DecryptionString(params?.key) : "";
@@ -32,11 +33,12 @@ const TagsList = () => {
   const { isGlobalSearch } = useDashboard();
   const source = useRef(null);
   const [TagsList, setTagsList] = useState([]);
-  const [isLoading, setisLoading] = useState(false);
   const [isFetching, setisFetching] = useState(true);
+  const [loading, setloading] = useState(false);
+  const [isReachedEnd, setisReachedEnd] = useState(false);
   const [Pages, setPages] = useState({
-    page: 1,
-    totalpage: 1,
+    page: null,
+    totalpage: null,
   });
 
   const getToken = () => {
@@ -90,7 +92,6 @@ const TagsList = () => {
         }
       })
       .finally(() => {
-        setisLoading(false);
         dispatch(handleLoading(false));
         dispatch(handleisGlobalSearch(false));
         setisFetching(false);
@@ -99,7 +100,6 @@ const TagsList = () => {
 
   useEffect(() => {
     if (isGlobalSearch || TagsList?.length === 0) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       dispatch(handleLoading(true));
       getTagsList();
       setisFetching(true);
@@ -107,14 +107,36 @@ const TagsList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const onEndReached = () => {
-    if (Pages.page !== Pages.totalpage) {
-      setisLoading(true);
-      getTagsList(Pages.page + 1);
+  const getHasNextPage = () => {
+    return Pages.totalpage && pageRef.current !== Pages.totalpage;
+  };
+
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        setisReachedEnd(true);
+      }
     }
   };
 
-  const scrollRef = useBottomScrollListener(onEndReached);
+  const loadMore = () => {
+    if (!getHasNextPage()) {
+      setloading(false);
+      setisReachedEnd(false);
+    } else if (isReachedEnd && getHasNextPage() && !loading) {
+      setloading(true);
+      pageRef.current = pageRef.current + 1;
+      getTagsList(pageRef.current);
+    }
+  };
+
+  const [sentryRef, { rootRef }] = useInfiniteScroll({
+    loading: loading,
+    hasNextPage: getHasNextPage(),
+    onLoadMore: loadMore,
+  });
 
   const getValidTags = () => {
     if (TagsList && TagsList.length !== 0) {
@@ -133,6 +155,18 @@ const TagsList = () => {
     }
   };
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
   return (
     <>
       {getValidTags()?.length === 0 ? (
@@ -145,17 +179,17 @@ const TagsList = () => {
             </div>
           ) : (
             <div className={classes.DisplayMsg}>
-              We didn't find any results
+              <Empty description=" We didn't find any results" />
             </div>
           )}
         </>
       ) : null}
 
       {getValidTags()?.length === 0 ? (
-        <div ref={scrollRef}></div>
+        <div></div>
       ) : (
         <div
-          ref={scrollRef}
+          ref={containerRef}
           className={`${classes.nuggetSec} ${classes.nopadding} w-100`}
         >
           {getValidTags()?.length !== 0 && (
@@ -167,7 +201,7 @@ const TagsList = () => {
                   ))}
                 </div>
               ) : (
-                <>
+                <div ref={rootRef}>
                   {getValidTags().map((ele, index) => {
                     return (
                       <div className={classes.TagSec}>
@@ -178,7 +212,7 @@ const TagsList = () => {
                           <p className={classes.trendTitle}>{ele.tag}</p>
                           <p className="mt-1">{ele.nugget_count} Nuggets</p>
                         </div>
-                        <div className={classes.graphSec}>                         
+                        <div className={classes.graphSec}>
                           <Dropdown
                             menu={{
                               items: [
@@ -207,13 +241,13 @@ const TagsList = () => {
                       </div>
                     );
                   })}
-                </>
+                </div>
               )}
             </>
           )}
-          {isLoading && (
-            <div className="text-center py-2">
-              <Spinner animation="border" role="status" />
+          {(loading || getHasNextPage()) && (
+            <div className="text-center py-2" ref={sentryRef}>
+              <Skeleton active />
             </div>
           )}
         </div>

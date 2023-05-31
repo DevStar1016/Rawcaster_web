@@ -84,6 +84,7 @@ const Blockuser = () => {
           <Select
             mode="multiple"
             className={classes.blockuserSec}
+            maxTagCount={"responsive"}
             style={{
               width: "20%",
               minWidth: "200px",
@@ -189,7 +190,11 @@ const Blockuser = () => {
           return (
             <div className={classes.blockedList} key={index}>
               <div style={{ display: "flex" }}>
-                <img src={friend.profile_img} className={classes.userimg}></img>
+                <img
+                  src={friend.profile_img}
+                  className={classes.userimg}
+                  alt={"User_img"}
+                ></img>
                 <span className="mr-3"></span>
                 <span className={classes.display_name}>
                   {decodeHtml(friend.display_name)}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Profile.module.css";
 import {
   useAuth,
@@ -39,11 +39,20 @@ import { getfollowerfollowingService } from "./Components/Utility";
 import ProfileLayout from "./ProfileLayout";
 import { HandleAddFriend, HandleBecameaFan } from "../../Shared/SharedAPIs";
 import { friendRequestSocket } from "../../Services/SocketList";
+import { detectMob } from "../../Shared/Utility";
+import Seo from "../SEO/Seo";
+import { ProfileSEO } from "../SEO/SEOContent";
+import { ScrollRestoration } from "react-router-dom";
 
 const Profile = () => {
   const params = useParams();
+  const leftContainer = useRef();
+  const rightContainer = useRef();
   const token = useAuthToken();
   const display_user_id = DecryptionString(params.user_id);
+  const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
+    show: false,
+  });
   const navigate = useNavigate();
   const { isSuccess } = useAuth();
   const { nuggetFormData } = useNuggets();
@@ -210,6 +219,30 @@ const Profile = () => {
     });
   };
 
+  // Response
+  // 1 - verified
+  // 2 - Approval Pending
+  // 3 - not verified but verify available for this member
+  // 4 - verify not available
+
+  const getDiamondVeifyType = () => {
+    if (loginUserData) {
+      const { account_verify_type, user_status_id } = loginUserData;
+      if (getisLoginUser()) {
+        if (account_verify_type === 2) {
+          return 1;
+        } else if (account_verify_type === 1) {
+          return 2;
+        } else if (account_verify_type === 0 && user_status_id === 4) {
+          return 3;
+        }
+        return 4;
+      }
+      return 4;
+    }
+    return 4;
+  };
+
   const profileValue = {
     FansList,
     setFansList,
@@ -218,13 +251,21 @@ const Profile = () => {
     isLinkopenModal,
     setisLinkopenModal,
     isLoginUser: getisLoginUser(),
+    DiamondVerifyType: getDiamondVeifyType(),
     getFollowers,
     handleBecameFan,
     handleAddUser,
+    leftContainer,
+    rightContainer,
+    setisInfluencerChatModalOpen,
+    isInfluencerChatModalOpen,
   };
-
   return (
     <ProfileContext.Provider value={profileValue}>
+      <Seo
+        title={ProfileSEO(profileData?.first_name ?? "User").title}
+        description={ProfileSEO(profileData?.first_name ?? "User").description}
+      />
       <div>
         <div className={`mainWrapper ${classes.profilePage}`}>
           <ProfileLayout
@@ -234,9 +275,21 @@ const Profile = () => {
             setprofileData={setprofileData}
             isLocked={profileData && profileData.lock_fans === 1}
             handleAddUser={handleAddUser}
+            setisInfluencerChatModalOpen={setisInfluencerChatModalOpen}
           >
             <div className={classes.fullcontainer}>
               <div
+                ref={leftContainer}
+                style={{
+                  position: detectMob() ? "relative" : "sticky",
+
+                  top: detectMob()
+                    ? 0
+                    : `calc(-${leftContainer.current?.offsetHeight / 2}px + ${
+                        document.getElementById("banner_container")
+                          ?.offsetHeight
+                      }px)`,
+                }}
                 className={`${classes.profileevent} ${
                   getisLoginUser() ? "" : classes.othersprofileEvent
                 }`}
@@ -289,7 +342,7 @@ const Profile = () => {
                           profileData?.work_at !== "" && (
                             <div className={classes.item}>
                               <p>
-                                <img src={profile_work} />
+                                <img src={profile_work} alt={"Work"} />
                               </p>{" "}
                               Work at <span> {profileData?.work_at}</span>
                             </div>
@@ -298,7 +351,7 @@ const Profile = () => {
                           profileData?.studied_at !== "" && (
                             <div className={classes.item}>
                               <p>
-                                <img src={profile_edu} />
+                                <img src={profile_edu} alt={"Education"} />
                               </p>{" "}
                               Studied at <span>{profileData?.studied_at}</span>
                             </div>
@@ -306,7 +359,7 @@ const Profile = () => {
                         {profileData?.geo_location && (
                           <div className={classes.item}>
                             <p>
-                              <img src={profile_location} />
+                              <img src={profile_location} alt={"Location"} />
                             </p>
                             {profileData?.geo_location}
                           </div>
@@ -314,7 +367,7 @@ const Profile = () => {
                         {profileData?.dob && profileData?.dob !== "" && (
                           <div className={classes.item}>
                             <p>
-                              <img src={profile_bdy} />
+                              <img src={profile_bdy} alt={"Date of Birth"} />
                             </p>
                             Date of Birth
                             <span>
@@ -326,7 +379,7 @@ const Profile = () => {
                         )}
                         <div className={classes.item}>
                           <p>
-                            <img src={profile_join} />
+                            <img src={profile_join} alt={"Joined at"} />
                           </p>
                           Joined RAWCASTER on
                           <span>
@@ -355,11 +408,24 @@ const Profile = () => {
                 isLoginuser={getisLoginUser()}
                 isLoading={!profileData}
                 isLocked={profileData && profileData.lock_nugget === 1}
+                className={null}
               />
 
               <>
                 {getisLoginUser() && isSuccess && (
-                  <div className={classes.rightProfiles}>
+                  <div
+                    className={classes.rightProfiles}
+                    ref={rightContainer}
+                    style={{
+                      position: "sticky",
+                      top: `calc(-${
+                        rightContainer.current?.offsetHeight / 2
+                      }px + ${
+                        document.getElementById("banner_container")
+                          ?.offsetHeight
+                      }px)`,
+                    }}
+                  >
                     {ConnectionsType.map((ele) => {
                       return ele.id === 3 ? (
                         <Connections />
@@ -374,6 +440,7 @@ const Profile = () => {
           </ProfileLayout>
         </div>
       </div>
+      <ScrollRestoration />
     </ProfileContext.Provider>
   );
 };

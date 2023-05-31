@@ -32,7 +32,7 @@ const ContentLayout = () => {
         items={TabsValues}
         activeKey={selectedIndex}
         onChange={(key) => {
-          setselectedIndex(key);
+          setselectedIndex(parseInt(key));
         }}
       />
       <SwipeableViews index={selectedIndex} onChangeIndex={handleChangeIndex}>

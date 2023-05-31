@@ -20,7 +20,7 @@ import {
 import classes from "./Profile.module.css";
 import { updateProfileService } from "../../Services/ApiService";
 import { useDispatch } from "react-redux";
-import { Button, Dropdown, Modal, Skeleton, Spin } from "antd";
+import { Button, Dropdown, Image, Modal, Skeleton, Spin } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
@@ -28,6 +28,7 @@ import AddFriendIcon from "../../Assets/Icons/svg/profile_add_friend.svg";
 import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
+import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 
 const ProfileLayout = ({
   children,
@@ -37,6 +38,8 @@ const ProfileLayout = ({
   isLocked = false,
   handleAddUser,
   setprofileData,
+  className = null,
+  setisInfluencerChatModalOpen = null,
 }) => {
   const loginUserData = useAuthData();
 
@@ -204,22 +207,20 @@ const ProfileLayout = ({
   };
 
   return (
-    <>
+    <div className={className ? className : ""} id="banner_container">
       <div className={classes.bannersec}>
-        <Skeleton.Node active={isCoverLoading} className={classes.bannerImg}>
-          <img
-            src={profileData?.cover_image}
-            onLoadStart={() => {
-              setisCoverLoading(true);
-            }}
-            onLoad={() => {
-              setisCoverLoading(false);
-            }}
-            onError={() => {
-              setisCoverLoading(false);
-            }}
-          />
-        </Skeleton.Node>
+        <Image
+          alt="Cover Image"
+          width="100%"
+          preview={false}
+          rootClassName={classes.bannerImg}
+          src={profileData?.cover_image}
+          placeholder={
+            <Skeleton.Node active={true} className={classes.bannerImg}>
+              <div className={classes.bannerLoading}></div>
+            </Skeleton.Node>
+          }
+        />
 
         {isLoginUser && (
           <div
@@ -244,7 +245,20 @@ const ProfileLayout = ({
       {profileData && (
         <div className={classes.profileContainer}>
           <div className={classes.profileSec}>
-            <img src={profileData?.profile_image} />
+            <img
+              src={DiamonVerified}
+              className={classes.verifiedImg}
+              style={{
+                display:
+                  profileData?.account_verify_type === 2 ? "block" : "none",
+              }}
+            />
+
+            <img
+              src={profileData?.profile_image}
+              alt="Profile"
+              className={classes.profileImg}
+            />
             {isLoginUser && (
               <div
                 className={classes.uploadSec}
@@ -271,6 +285,7 @@ const ProfileLayout = ({
                 <div className="ms-3">
                   <img
                     src={AddFriendIcon}
+                    alt="Add Friend"
                     className={classes.addFriendIcon}
                     onClick={() => {
                       handleAddUser();
@@ -289,8 +304,17 @@ const ProfileLayout = ({
                         display: isLoginUser ? "" : "none",
                       }}
                     >
-                      <img src={msgIcon} />
-                      <img src={talkshowIcon} />
+                      <img
+                        src={msgIcon}
+                        alt="Message"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          if (setisInfluencerChatModalOpen) {
+                            setisInfluencerChatModalOpen({ show: true });
+                          }
+                        }}
+                      />
+                      <img src={talkshowIcon} alt="Talkshow" />
                     </div>
                   </div>
                 )}
@@ -415,7 +439,7 @@ const ProfileLayout = ({
           }}
         />
       )}
-    </>
+    </div>
   );
 };
 

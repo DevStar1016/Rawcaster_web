@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
-import { Button, Checkbox, Progress, Select, Spin, Switch } from "antd";
+import { Button, Checkbox, Progress, Spin, Switch } from "antd";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import { useSettingsContext } from "../../Shared/Context";
 import { EventSettings } from "./Constants";

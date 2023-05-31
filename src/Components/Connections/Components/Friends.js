@@ -38,6 +38,7 @@ const Friends = ({ friend, searchInput }) => {
               };
               handleProfileNavigate(finalData);
             }}
+            alt={decodeHtml(friend.display_name)}
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
               currentTarget.src = defaultprofileImg;
@@ -83,8 +84,8 @@ const Friends = ({ friend, searchInput }) => {
             id={"menu_" + friend.user_id}
             className={`${classes.friendsmenu}`}
           >
-            <img src={audiocall} />
-            <img src={videocall} />
+            <img src={audiocall} alt={"audio call"} />
+            <img src={videocall} alt={"video call"} />
           </div>
         }
       </div>

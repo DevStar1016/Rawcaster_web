@@ -27,13 +27,17 @@ const Signup = () => {
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite} />
+            <img src={mainlogowhite} alt="Back to Home" />
           </Link>
         </div>
         <div className={classes.loginSec}>
           <div className={classes.loginBox}>
             <Link to="/">
-              <img className={classes.hideMob} src={mainlogo} />
+              <img
+                className={classes.hideMob}
+                src={mainlogo}
+                alt="Back to Home"
+              />
             </Link>
             <h1 className={classes.heading_h1}>Join Rawcaster Family</h1>
             <p className={classes.subText}>
@@ -69,7 +73,7 @@ const Signup = () => {
             </Form>
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} />
+              <img src={RawcasterLogo} alt="Rawcaster" />
               <p>
                 © Copyright Rawcaster 2021
                 <br />
@@ -88,7 +92,7 @@ const Signup = () => {
           <OwlCarousel className={"owl-theme "} {...carouselOptions}>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupImg} />
+                <img src={SignupImg} alt="Connect Share Express" />
               </div>
               <h2>Connect Share Express</h2>
               <h4>
@@ -98,7 +102,7 @@ const Signup = () => {
             </div>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupwithMobileImg} />
+                <img src={SignupwithMobileImg} alt="Live Talk Shows" />
               </div>
               <h2>Live Talk Shows</h2>
               <h4>
@@ -108,7 +112,7 @@ const Signup = () => {
             </div>
             <div className={classes.contentBox}>
               <div className={classes.signupImgSec}>
-                <img src={SignupwithEmailImg} />
+                <img src={SignupwithEmailImg} alt="Schedule Events" />
               </div>
               <h2>Schedule Events</h2>
               <h4>

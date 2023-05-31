@@ -1,5 +1,5 @@
 // PRIMARY CONSTANTS
-
+export const SHARE_URL = "https://dev.rawcaster.com/join/";
 export const GECODE_API_KEY = "AIzaSyBOEl17DNwCcE0sR9LGJh72rBGF_vDfk1c";
 export const ENCRIPTION_STRING = "rawcaster@!@#$QWERTxcvbn";
 
@@ -32,7 +32,7 @@ export const NAME_REGEX = /^[A-Za-z_ ]+$/;
 export const NUMBER_REGEX = /^[0-9]*$/;
 export const MOBILE_NUMBER_REGEX = "";
 export const EMAIL_REGEX =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 // export const LOGIN_ID = /^(?:\d{5,16}|\w+@\w+\.\w{2,3})$/;
 // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,6 +50,12 @@ export const SHARED_TYPE = [
   // },
   { id: 6, key: 6, Value: "Connections", label: "Connections" },
   { id: 7, key: 7, Value: "My Fans", label: "My Fans" },
+];
+
+export const GENDER_TYPE = [
+  { key: 0, label: "TransGender" },
+  { key: 1, label: "Male" },
+  { key: 2, label: "Female" },
 ];
 
 export const customStyles = {

@@ -169,7 +169,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }),
     validateOnChange: true,
     onSubmit: (val) => {
-      // setisCreating(true);
+      setisCreating(true);
       if (data) {
         HandleEditEvent(val);
       } else {
@@ -181,7 +181,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const handleCloseEvent = () => {
     resetForm();
     setisCreating(false);
-
     setValues((pre) => ({
       ...pre,
       event_title: "Rawcaster Event",

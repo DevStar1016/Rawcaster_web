@@ -2,34 +2,27 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
 import { useDashboard } from "../../Shared/Reduxfetcher";
-import {
-  globalSearchEventsService,
-  searchRawcasterUsersService,
-} from "../../Services/ApiService";
+import { globalSearchEventsService } from "../../Services/ApiService";
 import axios from "axios";
-import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import {
   DecryptionString,
   getAuthenticated,
-  getAuthToken,
   getRawcaserToken,
   JSONtoformdata,
 } from "../../Shared/Utility";
-import { getCookieData } from "../../Store/Storage";
 import { toast } from "react-hot-toast";
-import {
-  handleisGlobalSearch,
-  handleLoading,
-} from "../../Store/Redux/Reducer/DashboardReducer";
+import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Col, Row, Spinner } from "react-bootstrap";
 import Event from "../../Sharedcomponents/Events/Event";
 import classes from "./GlobalSearch.module.css";
-import { Skeleton } from "antd";
-import EventLoaders from "../Loaders/EventLoaders";
+import { Empty, Skeleton } from "antd";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 let isRequestCancel = false;
 
 const EventsList = () => {
+  const containerRef = useRef();
+  const pageRef = useRef(1);
   const dispatch = useDispatch();
   const params = useParams();
   const searchKey = params?.key ? DecryptionString(params?.key) : "";
@@ -37,11 +30,11 @@ const EventsList = () => {
   const { isGlobalSearch } = useDashboard();
   const source = useRef(null);
   const [EventList, setEventList] = useState([]);
-  const [isLoading, setisLoading] = useState(false);
   const [isFetching, setisFetching] = useState(true);
+  const [loading, setloading] = useState(false);
   const [Pages, setPages] = useState({
-    page: 1,
-    totalpage: 1,
+    page: null,
+    totalpage: null,
   });
 
   const getToken = () => {
@@ -83,6 +76,7 @@ const EventsList = () => {
               }, [])
             );
           }
+          pageRef.current = res.data.current_page_no;
           setPages({
             page: res.data.current_page_no,
             totalpage: res.data.total_pages,
@@ -97,8 +91,8 @@ const EventsList = () => {
         }
       })
       .finally(() => {
-        setisLoading(false);
         dispatch(handleLoading(false));
+        setloading(false);
         // dispatch(handleisGlobalSearch(false));
         setisFetching(false);
       });
@@ -113,14 +107,25 @@ const EventsList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const onEndReached = () => {
-    if (Pages.page !== Pages.totalpage) {
-      setisLoading(true);
-      getEventList(Pages.page + 1);
+  const getHasNextPage = () => {
+    return Pages.totalpage && pageRef.current !== Pages.totalpage;
+  };
+
+  const loadMore = () => {
+    if (!getHasNextPage()) {
+      setloading(false);
+    } else if (getHasNextPage() && !loading) {
+      setloading(true);
+      pageRef.current = pageRef.current + 1;
+      getEventList(pageRef.current);
     }
   };
 
-  const scrollRef = useBottomScrollListener(onEndReached);
+  const [sentryRef, { rootRef }] = useInfiniteScroll({
+    loading: loading,
+    hasNextPage: getHasNextPage(),
+    onLoadMore: loadMore,
+  });
 
   const getValidEvent = () => {
     if (EventList && EventList.length !== 0) {
@@ -138,6 +143,30 @@ const EventsList = () => {
     }
   };
 
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        console.log("Reached End");
+        // User has reached the bottom (with a 10px threshold)
+        // Perform your desired action here, e.g., fetch more data
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
   return (
     <>
       {isFetching ? (
@@ -145,11 +174,13 @@ const EventsList = () => {
           <Skeleton active />
         </div>
       ) : (
-        <div className={` ${classes.profileSec} w-100`} ref={scrollRef}>
+        <div className={` ${classes.profileSec} w-100`}>
           {getValidEvent()?.length === 0 ? (
-            <div className={classes.DisplayMsg}>We didn't find any results</div>
+            <div className={classes.DisplayMsg}>
+              <Empty description=" We didn't find any results" />
+            </div>
           ) : (
-            <>
+            <div ref={[rootRef, containerRef]}>
               <Row>
                 {getValidEvent().map((ele) => (
                   <Col sm={6}>
@@ -157,12 +188,12 @@ const EventsList = () => {
                   </Col>
                 ))}
               </Row>
-              {isLoading && (
-                <div className="text-center py-2">
+              {(loading || getHasNextPage()) && (
+                <div className="text-center py-2" ref={sentryRef}>
                   <Spinner animation="border" role="status" />
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       )}

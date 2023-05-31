@@ -251,6 +251,7 @@ const SelectInfluencers = () => {
 
                     <img
                       className={classes.checked_icon}
+                      alt="Checked"
                       src={
                         SelectedInfluencersList.includes(ele?.user_ref_id)
                           ? Checked

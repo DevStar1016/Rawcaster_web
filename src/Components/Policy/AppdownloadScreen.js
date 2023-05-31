@@ -7,12 +7,15 @@ const AppdownloadScreen = () => {
     <>
       <div className={classes.downloadApp}>
         <div className={classes.imgSec}>
-          <img src={require("../../Assets/Images/download-sec-img.jpeg")} />
+          <img
+            src={require("../../Assets/Images/download-sec-img.jpeg")}
+            alt="Download"
+          />
         </div>
 
         <div className={classes.textSec}>
           <div className={classes.centerBox}>
-            <img className={classes.Rlogo} src={Rlogo} />
+            <img className={classes.Rlogo} src={Rlogo} alt="Rawcaster" />
             <h4>Download Apps</h4>
             <p>
               Please download the Rawcaster app from Google Play store and APP
@@ -25,6 +28,7 @@ const AppdownloadScreen = () => {
               <img
                 className={classes.appImg}
                 src={require("../../Assets/Images/app-store.jpeg")}
+                alt="app store"
               />
             </a>
             <a
@@ -34,6 +38,7 @@ const AppdownloadScreen = () => {
               <img
                 className={classes.appImg}
                 src={require("../../Assets/Images/play-store.jpeg")}
+                alt="play store"
               />
             </a>
           </div>

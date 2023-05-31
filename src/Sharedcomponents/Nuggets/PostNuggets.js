@@ -16,7 +16,11 @@ import {
   handleprofileVerifyModalShow,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
-import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
+import {
+  PostNuggetContext,
+  useGlobalContext,
+  useListNuggetContext,
+} from "../../Shared/Context";
 import { useFormik } from "formik";
 import {
   decodeHtml,
@@ -29,6 +33,7 @@ import { useParams } from "react-router";
 import profileImg from "../../Assets/Images/svg/userImg.svg";
 
 const PostNuggets = () => {
+  const { postModalShow, setpostModalShow, PostContent } = useGlobalContext();
   const { GetNuggetList, setisNuggetModify } = useListNuggetContext();
   const dispatch = useDispatch();
   const Token = useAuthToken();
@@ -37,7 +42,6 @@ const PostNuggets = () => {
   const VideoRef = useRef();
   const [NuggetData, setNuggetData] = useState([]);
   const [PollData, setPollData] = useState();
-  const [postModalShow, setpostModalShow] = useState(false);
   const [previewMedia, setpreviewMedia] = useState([]);
   const [deletedMedia, setdeletedMedia] = useState([]);
   const [isPoll, setisPoll] = useState(false);
@@ -68,9 +72,15 @@ const PostNuggets = () => {
     },
   });
 
+  useEffect(() => {
+    if (PostContent) {
+      setFieldValue("content", PostContent);
+    }
+  }, [PostContent]);
+
   const EditNugget = (val) => {
     setpostModalShow(false);
-
+    setisNuggetModify({ type: "edit", id: isEdit });
     let formData = new FormData();
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
@@ -90,9 +100,9 @@ const PostNuggets = () => {
       if (shareWithData) {
         const getShareTypeData = () => {
           if (parseInt(val.share_type) === 3) {
-            return { groups: shareWithData };
+            return JSON.stringify({ groups: shareWithData });
           } else if (parseInt(val.share_type) === 4) {
-            return { friends: shareWithData };
+            return JSON.stringify({ friends: shareWithData });
           }
         };
         formData.append("share_with", getShareTypeData());
@@ -102,7 +112,7 @@ const PostNuggets = () => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
-          setisNuggetModify({ type: "edit", id: isEdit });
+
           GetNuggetList();
           setNuggetData([]);
         } else {
@@ -158,6 +168,7 @@ const PostNuggets = () => {
             return JSON.stringify({ friends: shareWithData });
           }
         };
+        console.log(getShareTypeData());
         formData.append("share_with", getShareTypeData());
       }
     }
@@ -230,9 +241,9 @@ const PostNuggets = () => {
             share_type: res.data.nugget_detail.share_type,
           });
           if (res.data.share_type === 3) {
-            setshareWithData(res.data.shared_group_list);
+            setshareWithData(JSON.parse(res.data.shared_group_list));
           } else if (res.data.share_type === 4) {
-            setshareWithData(res.data.shared_friends_list);
+            setshareWithData(JSON.parse(res.data.shared_friends_list));
           }
           setpostModalShow(true);
           setpreviewMedia(res.data.nugget_detail.media_list);

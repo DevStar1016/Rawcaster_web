@@ -1,11 +1,11 @@
-import { Modal, Tooltip } from "antd";
+import { Modal, Popover, Tooltip } from "antd";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
-  datetoString,
   decodeHtml,
+  shareEventDate,
   utctoUserTimezone,
   utctoUserTimezonewithAbbr,
 } from "../../Shared/Utility";
@@ -15,11 +15,24 @@ import { deleteEventService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import moment from "moment";
 import shareicon from "../../Assets/Icons/svg/shareicon.svg";
+import { SHARE_URL } from "../../Shared/Constant";
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+} from "react-share";
+import FaceBookIcon from "../../Assets/Icons/svg/facebook.svg";
+import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
+import TwitterIcon from "../../Assets/Icons/svg/twitterIcon.svg";
+import GmailIcon from "../../Assets/Icons/svg/gmail_icon.svg";
 
 const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const { userSettings, loginUserData } = useAuth();
   const navigate = useNavigate();
   const token = useAuthToken();
+  const eventType =
+    ele.type === 1 ? "event/" : ele.type === 2 ? "talkshow/" : "golive/";
 
   const isCreatedUser = () => {
     if (loginUserData?.user_id === ele?.original_user_id) {
@@ -60,6 +73,58 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
     return true;
   };
 
+  const shareMessage = `Hi,\n ${
+    ele.original_user_name
+  } is inviting you to join a web event called ${ele.event_name} on ${
+    shareEventDate(
+      utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
+    ) + utctoUserTimezonewithAbbr(ele.start_date_time, userSettings.time_zone)
+  }. The link for this Rawcaster event is :`;
+
+  const shareUrl = SHARE_URL + eventType + ele.reference_id;
+
+  const content = (
+    <div className={classes.socialmediashare}>
+      <p>
+        <FacebookShareButton
+          quote={shareMessage + " " + shareUrl}
+          url={shareUrl}
+        >
+          <img src={FaceBookIcon} alt="Facebook"></img>
+        </FacebookShareButton>
+      </p>
+
+      <p>
+        <TwitterShareButton
+          title={shareMessage}
+          via={"Rawcaster"}
+          url={shareUrl}
+        >
+          <img src={TwitterIcon} alt="Facebook"></img>
+        </TwitterShareButton>
+      </p>
+      <p>
+        <EmailShareButton
+          subject={"Rawcaster Event Invite"}
+          body={shareMessage}
+          url={shareUrl}
+        >
+          <img src={GmailIcon} alt="Facebook"></img>
+        </EmailShareButton>
+      </p>
+      <p>
+        <WhatsappShareButton
+          //  title="dhdsdfsdfsfsdf"
+          title={shareMessage}
+          url={shareUrl}
+          separator=" "
+        >
+          <img src={WhatsappIcon} alt="Facebook"></img>
+        </WhatsappShareButton>
+      </p>
+    </div>
+  );
+
   return (
     <div
       className={`${classes.eventItem} ${
@@ -92,7 +157,9 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
       </div>
       {!isOthers && (
         <div className={classes.share}>
-          <img src={shareicon} />
+          <Popover placement="leftTop" content={content} trigger="hover">
+            <img src={shareicon} alt={"Share icon"} />
+          </Popover>
         </div>
       )}
       <div className={classes.contentSec}>
@@ -185,7 +252,9 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         </div>
         {isNotExpired() && (
           <Link className={classes.link}>
-            {isCreatedUser() ? "Start Hosting" : "Join Event"}
+            {isCreatedUser()
+              ? `Start ${ele.type === 2 ? "Talkshow" : "Event"}`
+              : `Join ${ele.type === 2 ? "Talkshow" : "Event"}`}
             <span class="material-symbols-outlined">arrow_right_alt</span>
           </Link>
         )}

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import { decodeHtml } from "../../Shared/Utility";
 import SearchResult from "./SearchResult";
 import classes from "./ItemsList.module.css";
-import {
-  useSpecificConnectionNugget,
-  usePostNuggetContext,
-} from "../../Shared/Context";
+import { useSpecificConnectionNugget } from "../../Shared/Context";
+import { Empty } from "antd";
 
 const Grouplist = () => {
   const {
@@ -14,7 +12,6 @@ const Grouplist = () => {
     setConnectionData,
     FilteredList,
     setFilteredList,
-    type,
     shareWithData,
     share_type,
   } = useSpecificConnectionNugget();
@@ -39,52 +36,67 @@ const Grouplist = () => {
     }
   }, [groupsList]);
 
+  const isSelectedGroup = (group_id) => {
+    const findData = FilteredList.find(
+      (ele) => parseInt(ele.group_id) === parseInt(group_id)
+    );
+    return findData;
+  };
+
   return (
     <div className={classes.listContainer}>
       <SearchResult
-        displayData={FilteredList}
-        setFilteredList={setFilteredList}
+        allList={groupsList}
         setConnectionData={setConnectionData}
         type={"group"}
-        list={ConnectionData}
-        ConnectionData={ConnectionData}
-        handleClose={(ele) => {
-          setFilteredList((pre) =>
-            pre.filter((elem) => elem.group_id !== ele.group_id)
-          );
-        }}
       />
-      <div className={classes.listSec}>
-        {ConnectionData?.map((ele) => {
-          return (
-            <div
-              className={classes.profileData}
-              onClick={() => {
-                setConnectionData((pre) =>
-                  pre.filter((elem) => elem.group_id !== ele.group_id)
-                );
-                if (FilteredList.length !== 0) {
-                  setFilteredList((pre) => [
-                    ...pre,
-                    { ...ele, listname: decodeHtml(ele.group_name) },
-                  ]);
-                } else {
-                  setFilteredList([
-                    { ...ele, listname: decodeHtml(ele.group_name) },
-                  ]);
-                }
-              }}
-            >
-              <div className={classes.leftSec}>
-                <img src={ele.group_icon} />
-                <div className={classes.nameSec}>
-                  <p>{decodeHtml(ele.group_name)}</p>
+      {ConnectionData.length !== 0 ? (
+        <div className={classes.listSec}>
+          {ConnectionData?.map((ele) => {
+            return (
+              <div
+                className={`${classes.profileData} ${
+                  isSelectedGroup(ele.group_id) ? classes.selectedItem : ""
+                }`}
+                onClick={() => {
+                  if (isSelectedGroup(ele.group_id)) {
+                    setFilteredList((pre) =>
+                      pre.filter((elem) => elem.group_id !== ele.group_id)
+                    );
+                  } else {
+                    if (FilteredList.length !== 0) {
+                      setFilteredList((pre) => [
+                        ...pre,
+                        { ...ele, listname: decodeHtml(ele.group_name) },
+                      ]);
+                    } else {
+                      setFilteredList([
+                        { ...ele, listname: decodeHtml(ele.group_name) },
+                      ]);
+                    }
+                  }
+                }}
+              >
+                <div className={classes.leftSec}>
+                  <img src={ele.group_icon} alt={decodeHtml(ele.group_name)} />
+                  <div className={classes.nameSec}>
+                    <p>{decodeHtml(ele.group_name)}</p>
+                  </div>
                 </div>
+                <span
+                  className={`material-symbols-outlined ${classes.selectedIcon}`}
+                >
+                  done
+                </span>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="py-5">
+          <Empty />
+        </div>
+      )}
     </div>
   );
 };

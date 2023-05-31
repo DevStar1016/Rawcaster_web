@@ -25,7 +25,7 @@ const CreateEvent = ({ isSearch, onSearchEnter }) => {
               setisTalkshowOpen(true);
             }}
           >
-            <img src={talkshowIcon} /> Create Talkshow
+            <img src={talkshowIcon} alt={"Create Talkshow"} /> Create Talkshow
           </Button>
           <Button
             type="primary"
@@ -35,7 +35,7 @@ const CreateEvent = ({ isSearch, onSearchEnter }) => {
               setisEventOpen(true);
             }}
           >
-            <img src={eventIcon} /> Create Event
+            <img src={eventIcon} alt={" Create Event"} /> Create Event
           </Button>
         </div>
       )}

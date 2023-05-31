@@ -2,9 +2,17 @@ import { decodeHtml } from "../../../Shared/Utility";
 import classes from "./Groups.module.css";
 import { useAuthData, useFriends } from "../../../Shared/Reduxfetcher";
 import { useEffect, useState } from "react";
-import { Form, InputGroup, Row } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import { useConfigureGroupContext } from "../../../Shared/Context";
-import { Button, Input, Form as AndForm, Modal, Switch, Tooltip } from "antd";
+import {
+  Button,
+  Input,
+  Form as AndForm,
+  Modal,
+  Switch,
+  Tooltip,
+  Empty,
+} from "antd";
 import { toast } from "react-hot-toast";
 import uploadImg from "../../../Assets/Icons/png/upload.png";
 import tickIcon from "../../../Assets/Icons/png/tick.png";
@@ -101,6 +109,7 @@ export const GroupHeader = () => {
             <>
               <img
                 src={tickIcon}
+                alt={"submit"}
                 onClick={() => {
                   handleSubmit();
                 }}
@@ -499,7 +508,7 @@ export const SelectConnections = () => {
         </div>
       ) : (
         <div className={classes.EmptySec}>
-          <p>No Connections Found</p>{" "}
+          <Empty description="No Connections Found" />
         </div>
       )}
     </div>
@@ -507,6 +516,7 @@ export const SelectConnections = () => {
 };
 
 export const EditGroupMembers = () => {
+  let isLocked = false;
   const userData = useAuthData();
   const {
     isOwner,
@@ -536,23 +546,31 @@ export const EditGroupMembers = () => {
     );
   };
 
+  // const getisLocked = () => {
+
+  //   const findOwner = GroupMembers.find((ele)=>ele.)
+
+  // }
+
   return (
     <div>
       <div className={classes.filterSec}>
         <div className={classes.memberSec}>
-          <InputGroup className="mb-2">
-            <Form.Control
-              className={classes.inSearch}
-              placeholder="Search Members"
-              aria-label="Search Members"
-              onChange={(e) => {
-                setsearchInput(e.target.value);
-              }}
-            />
-            <InputGroup.Text className={classes.searchIcon}>
-              <span class="material-icons">search</span>
-            </InputGroup.Text>
-          </InputGroup>
+          {GroupData?.locked !== 1 && (
+            <InputGroup className="mb-2">
+              <Form.Control
+                className={classes.inSearch}
+                placeholder="Search Members"
+                aria-label="Search Members"
+                onChange={(e) => {
+                  setsearchInput(e.target.value);
+                }}
+              />
+              <InputGroup.Text className={classes.searchIcon}>
+                <span class="material-icons">search</span>
+              </InputGroup.Text>
+            </InputGroup>
+          )}
 
           {isChatSwichEnabled() && (
             <div className={`${classes.chatEnabledSec} chatSwitch`}>
@@ -566,110 +584,167 @@ export const EditGroupMembers = () => {
         </div>
       </div>
       <h2 className={classes.membersHeading}>
-        Members <span>({getSearchData().length})</span>
+        Members
+        <span>({GroupData?.group_member_count})</span>
       </h2>
-      <div className={`${classes.ConnectionList} my-2`}>
-        {getSearchData()?.map((ele) => (
-          <div className="d-flex flex-row justify-content-between align-items-center">
-            <div
-              className={classes.friends}
-              style={{
-                position: "relative",
-                padding: "10px 0px",
-                display: decodeHtml(ele?.display_name)
-                  .toLowerCase()
-                  .includes(searchInput.toLowerCase())
-                  ? "block"
-                  : "none",
-              }}
-            >
-              <div className="d-flex flex-row">
-                <img
-                  src={ele.profile_img ? ele.profile_img : ""}
-                  alt="uploadImg"
-                  style={{ borderRadius: "16px" }}
-                  width="32px"
-                  height="32px"
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null; // prevents looping
-                    currentTarget.src = defaultprofileImg;
-                  }}
-                ></img>
-                <span
-                  className="d-flex flex-row"
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    marginLeft: "10px",
-                    lineHeight: 2,
-                  }}
-                >
-                  <span className={classes.userName}>
-                    {decodeHtml(ele?.display_name)}
-                  </span>
-                  {userData.user_id === ele.user_id && `  (You)`}
-                </span>
-              </div>
+      {GroupData?.locked === 1 ? (
+        <div className={classes.lockedConnections}>
+          <div className={classes.lockedoverLay}>
+            <div className={classes.lockBtn}>
+              <i className={classes.lock_icon}></i>
             </div>
-            <div className={classes.actionSec}>
-              {ele.user_id === GroupData?.group_owner ? (
-                <span
+          </div>
+
+          <>
+            {[...Array(GroupData?.group_member_count)]?.map((ele) => (
+              <div
+                className={`d-flex flex-row justify-content-between align-items-center ${classes.groupListSec}`}
+              >
+                <div
+                  className={classes.friends}
                   style={{
-                    display: decodeHtml(ele?.display_name)
-                      .toLowerCase()
-                      .includes(searchInput.toLowerCase())
-                      ? "block"
-                      : "none",
+                    position: "relative",
+                    padding: "10px 0px",
                   }}
                 >
-                  Owner
-                </span>
-              ) : (
-                <>
-                  {isOwner &&
-                    GroupData &&
-                    parseInt(GroupData.group_category) !== 1 && (
-                      <i
+                  <div className="d-flex flex-row">
+                    <img
+                      src={defaultprofileImg}
+                      alt="uploadImg"
+                      style={{ borderRadius: "16px" }}
+                      width="32px"
+                      height="32px"
+                    ></img>
+                    <span
+                      className="d-flex flex-row"
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        marginLeft: "10px",
+                        lineHeight: 2,
+                      }}
+                    >
+                      <span className={classes.userName}>Rawcaster User</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        </div>
+      ) : (
+        <>
+          {getSearchData().length !== 0 ? (
+            <div className={`${classes.ConnectionList} my-2`}>
+              {getSearchData()?.map((ele) => (
+                <div className="d-flex flex-row justify-content-between align-items-center">
+                  <div
+                    className={classes.friends}
+                    style={{
+                      position: "relative",
+                      padding: "10px 0px",
+                      display: decodeHtml(ele?.display_name)
+                        .toLowerCase()
+                        .includes(searchInput.toLowerCase())
+                        ? "block"
+                        : "none",
+                    }}
+                  >
+                    <div className="d-flex flex-row">
+                      <img
+                        src={ele.profile_img ? ele.profile_img : ""}
+                        alt="uploadImg"
+                        style={{ borderRadius: "16px" }}
+                        width="32px"
+                        height="32px"
+                        onError={({ currentTarget }) => {
+                          currentTarget.onerror = null; // prevents looping
+                          currentTarget.src = defaultprofileImg;
+                        }}
+                      ></img>
+                      <span
+                        className="d-flex flex-row"
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          marginLeft: "10px",
+                          lineHeight: 2,
+                        }}
+                      >
+                        <span className={classes.userName}>
+                          {decodeHtml(ele?.display_name)}
+                        </span>
+                        {userData.user_id === ele.user_id && `  (You)`}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={classes.actionSec}>
+                    {ele.user_id === GroupData?.group_owner ? (
+                      <span
                         style={{
                           display: decodeHtml(ele?.display_name)
                             .toLowerCase()
                             .includes(searchInput.toLowerCase())
                             ? "block"
                             : "none",
-                          cursor: "pointer",
                         }}
                       >
-                        <span
-                          class="material-symbols-outlined"
-                          onClick={() => {
-                            Modal.confirm({
-                              title: "Confirmation",
-                              okText: "Yes",
-                              cancelText: "No",
-                              cancelButtonProps: {
-                                danger: true,
-                              },
-                              content: (
-                                <div>
-                                  Are you sure you want to Remove this member ?
-                                </div>
-                              ),
-                              onOk: () => {
-                                HandleDeleteFriendstoGroup(ele.user_id);
-                              },
-                            });
-                          }}
-                        >
-                          close
-                        </span>
-                      </i>
+                        Owner
+                      </span>
+                    ) : (
+                      <>
+                        {isOwner &&
+                          GroupData &&
+                          parseInt(GroupData.group_category) !== 1 && (
+                            <i
+                              style={{
+                                display: decodeHtml(ele?.display_name)
+                                  .toLowerCase()
+                                  .includes(searchInput.toLowerCase())
+                                  ? "block"
+                                  : "none",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <span
+                                class="material-symbols-outlined"
+                                onClick={() => {
+                                  Modal.confirm({
+                                    title: "Confirmation",
+                                    okText: "Yes",
+                                    cancelText: "No",
+                                    cancelButtonProps: {
+                                      danger: true,
+                                    },
+                                    content: (
+                                      <div>
+                                        Are you sure you want to Remove this
+                                        member ?
+                                      </div>
+                                    ),
+                                    onOk: () => {
+                                      HandleDeleteFriendstoGroup(ele.user_id);
+                                    },
+                                  });
+                                }}
+                              >
+                                close
+                              </span>
+                            </i>
+                          )}
+                      </>
                     )}
-                </>
-              )}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
+          ) : (
+            <div className="py-3">
+              <Empty description="No Members Found" />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };

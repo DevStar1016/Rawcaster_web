@@ -16,7 +16,7 @@ const LockedConnections = () => {
                 borderRadius: 50,
               }}
             >
-              <img src={""} />
+              <img src={""} alt="User" />
             </Skeleton.Node>{" "}
             <p>{"User"}</p>
           </div>

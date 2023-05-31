@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Input } from "antd";
 import { useFormik } from "formik";
 import React, { useContext, useState } from "react";
 import { Col, Row } from "react-bootstrap";
@@ -40,28 +40,21 @@ const Postpoll = ({ setisPoll }) => {
     { choiceData: "" },
     { choiceData: "" },
   ]);
-  const {
-    values,
-    setFieldValue,
-    handleSubmit,
-    handleChange,
-    errors,
-    touched,
-    isValid,
-  } = useFormik({
-    initialValues: {
-      content: "",
-      poll_option: [],
-      duration: "",
-    },
-    validateOnMount: true,
-    validateOnChange: true,
-    validationSchema: schema,
-    onSubmit: (value) => {
-      context.setPollData(value);
-      context.handleSubmit();
-    },
-  });
+  const { values, setFieldValue, handleSubmit, handleChange, errors, touched } =
+    useFormik({
+      initialValues: {
+        content: "",
+        poll_option: [],
+        duration: "",
+      },
+      validateOnMount: true,
+      validateOnChange: true,
+      validationSchema: schema,
+      onSubmit: (value) => {
+        context.setPollData(value);
+        context.handleSubmit();
+      },
+    });
 
   const getChoiceTitle = (index) => {
     if (index > 2) {

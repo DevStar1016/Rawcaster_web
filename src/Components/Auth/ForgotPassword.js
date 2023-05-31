@@ -58,7 +58,7 @@ const ForgotPassword = () => {
       <div className={classes.loginbg}>
         <div className={classes.mobHeader}>
           <Link to="/home">
-            <img src={mainlogowhite} />
+            <img src={mainlogowhite} alt="Back to Home" />
           </Link>
         </div>
         <div className={classes.loginSec}>
@@ -67,6 +67,7 @@ const ForgotPassword = () => {
               <img
                 className={classes.hideMob}
                 src={require("../../Assets/Images/png/rawcater_logo.png")}
+                alt="Forgot Password Rawcaster Logo"
               />
             </Link>
             <h1 className={classes.heading_h1}> Forgot Password</h1>
@@ -106,7 +107,7 @@ const ForgotPassword = () => {
             </Form>
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} />
+              <img src={RawcasterLogo} alt="Copyright Rawcaster Logo" />
               <p>
                 © Copyright Rawcaster 2021
                 <br />
@@ -126,6 +127,7 @@ const ForgotPassword = () => {
           >
             <img
               className={classes.backBtn}
+              alt="Back Button"
               src={require("../../Assets/Icons/png/Backbtn.png")}
             />
             Go Back

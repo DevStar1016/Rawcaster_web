@@ -10,7 +10,7 @@ import classes from "./Nuggets.module.css";
 import replyicon from "../../Assets/Images/svg/comment.svg";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
-import { Dropdown, Input, Spin } from "antd";
+import { Dropdown, Input } from "antd";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import ReplyList from "./ReplyList";

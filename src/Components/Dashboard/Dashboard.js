@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import {
+  Link,
+  useActionData,
+  useBeforeUnload,
+  useLocation,
+} from "react-router-dom";
 import {
   useAuth,
   useAuthData,
@@ -34,7 +39,6 @@ const Dashboard = () => {
     if (loginToken === null) {
       removeSessionStorageData("influencerData");
     }
-
     let filterData = { ...nuggetFormData };
     if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
       filterData.formData = {
@@ -58,6 +62,7 @@ const Dashboard = () => {
           >
             <img
               className={classes.smlogo}
+              alt="Rawcaster"
               src={require("../../Assets/Images/png/mob-rlogo.png")}
             />
             Log in/Sign up to explore Rawcaster features{" "}
@@ -69,7 +74,7 @@ const Dashboard = () => {
         <div className="d-none d-sm-block">
           <div className={classes.fullcontainer}>
             <Events />
-            <Nuggets />
+            <Nuggets className={classes.NuggetsSec} />
             <DashboardSignup />
           </div>
         </div>

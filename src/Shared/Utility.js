@@ -1,6 +1,10 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
-import { ENCRIPTION_STRING, GECODE_API_KEY } from "./Constant";
+import {
+  ENCRIPTION_STRING,
+  GECODE_API_KEY,
+  GOOGLE_CLIENT_ID,
+} from "./Constant";
 import { getCookieData, removeCookieData } from "../Store/Storage";
 import {
   handleLoginData,
@@ -16,14 +20,11 @@ import moment from "moment";
 import { getTimezone } from "countries-and-timezones";
 import { useLayoutEffect } from "react";
 import moment1 from "moment-timezone";
-import { fetchNuggetsbyId } from "../Store/Redux/Action";
 import {
   handleNuggetFormData,
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
-import { toast } from "react-hot-toast";
 import { message } from "antd";
-import { useParams } from "react-router";
 
 // Auth
 
@@ -429,8 +430,8 @@ export const userTimezonetoUtc = (time, zonename) => {
 
 export const utctoUserTimezonewithAbbr = (time, zonename) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
-  let displayCutoff = moment1(utcCutoff).tz(getTimezoneName(zonename));
-  let timezoneabbrs = displayCutoff.tz(getTimezoneName(zonename)).format("z");
+  let displayCutoff = moment1(utcCutoff)?.tz(getTimezoneName(zonename));
+  let timezoneabbrs = displayCutoff?.tz(getTimezoneName(zonename)).format("z");
   return timezoneabbrs;
 };
 
@@ -456,6 +457,10 @@ export const getDisplayEventDate = (
     return utcoffset?.utcOffsetStr ? todaysDate : "";
   }
   return "";
+};
+
+export const shareEventDate = (t) => {
+  return moment(t).format("D MMM YYYY hh:mm A ");
 };
 
 export const dateToShortDate = (time) => {
@@ -533,4 +538,38 @@ export const eventDisplayDuration = (time) => {
   let dur = time.split(":");
   let hr = parseInt(dur[0]) > 0 ? `${dur[0]} hrs ` : "";
   return `${hr}  ${dur[1]}  mins`;
+};
+
+// Google Contacts
+
+export const fetchGoogleContacts = async () => {
+  let maxResults = 1000;
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Step 1: Load the Google API client library
+      await new Promise((resolve, reject) => {
+        window.gapi.load("client", resolve);
+      });
+
+      // Step 2: Initialize the client library
+      await window.gapi.client.init({
+        clientId: GOOGLE_CLIENT_ID,
+        discoveryDocs: [
+          "https://www.googleapis.com/discovery/v1/apis/people/v1/rest",
+        ],
+        scope: "https://www.googleapis.com/auth/contacts.other.readonly",
+      });
+
+      // Step 3: Authenticate and fetch contacts
+      await window.gapi.auth2.getAuthInstance().signIn();
+      const response = await window.gapi.client.people.otherContacts.list({
+        pageSize: maxResults,
+        readMask: "names,emailAddresses,photos",
+      });
+      resolve(response.result.otherContacts);
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
 };

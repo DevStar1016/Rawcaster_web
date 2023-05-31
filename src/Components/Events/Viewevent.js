@@ -11,6 +11,8 @@ import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import classes from "./viewevent.module.css";
 import moment from "moment";
 import { Spinner } from "react-bootstrap";
+import Seo from "../SEO/Seo";
+import { EventSEO } from "../SEO/SEOContent";
 
 const Viewevent = () => {
   const { userSettings } = useAuth();
@@ -42,6 +44,22 @@ const Viewevent = () => {
 
   return (
     <div className={classes.eventContainer}>
+      <Seo
+        title={
+          EventSEO(
+            ViewEventData?.event_name
+              ? decodeHtml(ViewEventData.event_name)
+              : "Event"
+          ).title
+        }
+        description={
+          EventSEO(
+            ViewEventData?.event_name
+              ? decodeHtml(ViewEventData.event_name)
+              : "Event"
+          ).description
+        }
+      />
       {ViewEventData ? (
         <div className={classes.eventCard}>
           <div className={classes.eventTitle}>
@@ -69,7 +87,10 @@ const Viewevent = () => {
               ")"}
           </p>
           <div className={classes.eventBanner}>
-            <img src={ViewEventData.banner_image} alt=""></img>
+            <img
+              src={ViewEventData.banner_image}
+              alt={decodeHtml(ViewEventData.event_name)}
+            ></img>
           </div>
 
           <div className={classes.eventDetail}>
@@ -84,10 +105,13 @@ const Viewevent = () => {
 
           <div className={classes.eventHost}>
             <div>
-              <img src={ViewEventData.original_user_image} alt=""></img>
+              <img
+                src={ViewEventData.original_user_image}
+                alt={decodeHtml(ViewEventData.original_user_name)}
+              ></img>
             </div>
             <div className={classes.user_name}>
-              {ViewEventData.original_user_name}
+              {decodeHtml(ViewEventData.original_user_name)}
             </div>
           </div>
         </div>

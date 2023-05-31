@@ -145,3 +145,37 @@ color: #000000;
     align-items: center;
     justify-content: center;
 }
+.lockedConnections {
+    position: relative;
+}
+.lockedConnections .lockedoverLay {
+position: absolute;
+height: 100%;
+width: 100%;
+min-width: 300px;
+display: flex;
+align-items: center;
+justify-content: center;
+
+}
+.lockedConnections .groupListSec { filter: blur(4px); }
+.lockedConnections .list p{
+    color: transparent !important;
+}
+.list:hover .iconSec{
+display: block;
+}
+.lockBtn {
+    padding: 15px;
+    background-color: #AE567A;
+    border-radius: 30px;
+}
+.lock_icon {
+    float: left;
+    width: 25px;
+    height: 25px;
+    background: #FFFFFF;
+    mask: url("../../../Assets/Icons/svg/lock_icon.svg") no-repeat center / contain;
+    -webkit-mask: url("../../../Assets/Icons/svg/lock_icon.svg") no-repeat center /
+      contain;
+  }

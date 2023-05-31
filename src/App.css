@@ -55,7 +55,9 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
     color: red;
     margin-bottom: 0px !important;
 }
-
+.ant-input-number-handler-wrap {
+  display: none !important;
+}
 .innerContent { padding-top: 60px; }
 .ant-form-item { margin-bottom: 20px !important;}
 .mainWrapper { max-width: 1350px; width: 95%; margin: auto; }
@@ -66,6 +68,15 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
   border-radius: 126px !important;
   box-shadow: none !important;
   height: 45px !important; padding-left: 15px !important;
+}
+.chatbotClass .ant-popover-inner {
+  padding: 0px !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+
+}
+.chatbotClass .ant-popover-title {
+  margin-bottom: 0px !important;
 }
 .login_carosel .owl-dot span ,.signup_carosel .owl-dot span{
   background: #FFFFFF !important;
@@ -591,4 +602,15 @@ margin-bottom: 12px !important;
   .full_readmore {
     max-height: none;
   }
+ 
 }
+
+/* @media (max-width: 600px) {
+  .emoji-keyboard-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100% !important;
+    z-index: 9999;
+  }
+} */

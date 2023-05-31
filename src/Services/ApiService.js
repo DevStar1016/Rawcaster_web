@@ -73,6 +73,9 @@ export const getOthersProfileService = (data) => {
 export const updateProfileService = (data) => {
   return axios.post("updatemyprofile", data);
 };
+export const AccountVerifyService = (data) => {
+  return axios.post("verifyaccount", data);
+};
 export const updateUserSettingsService = (data, progress) => {
   return axios.post("updateusersettings", data, {
     onUploadProgress: progress,
@@ -222,6 +225,10 @@ export const getNuggetDetailService = (data) => {
   return axios.post("getnuggetdetail", data);
 };
 
+export const getNuggetContentAudioService = (data) => {
+  return axios.post("nuggetcontentaudio", data);
+};
+
 // Event services
 
 export const getEventTypeService = (data) => {
@@ -350,4 +357,14 @@ export const DeleteNotificationService = (data) => {
 
 export const ViewNotificationService = (data) => {
   return axios.post("readnotification", data);
+};
+
+// Artifitial Intelligence
+
+export const AIChatService = (data) => {
+  return axios.post(`aichat`, data);
+};
+
+export const TextToAudioService = (data) => {
+  return axios.post(`texttoaudio`, data);
 };

@@ -6,7 +6,6 @@ import { useDashboard } from "../../Shared/Reduxfetcher";
 import classes from "./GlobalSearch.module.css";
 import { searchRawcasterUsersService } from "../../Services/ApiService";
 import axios from "axios";
-import { BottomScrollListener } from "react-bottom-scroll-listener";
 import {
   DecryptionString,
   getAuthenticated,
@@ -19,12 +18,14 @@ import {
   handleisGlobalSearch,
   handleLoading,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import { Skeleton } from "antd";
-import InfiniteScrollerComponent from "../../Sharedcomponents/InfiniteScrollerComponent";
+import { Empty, Skeleton } from "antd";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 let isRequestCancel = false;
 
 const ProfileList = () => {
+  const containerRef = useRef();
+  const pageRef = useRef(1);
   const dispatch = useDispatch();
   const params = useParams();
   const searchKey = params?.key ? DecryptionString(params?.key) : "";
@@ -33,6 +34,8 @@ const ProfileList = () => {
   const source = useRef(null);
   const [PeopleList, setPeopleList] = useState([]);
   const [isFetching, setisFetching] = useState(true);
+  const [loading, setloading] = useState(false);
+  const [isReachedEnd, setisReachedEnd] = useState(false);
   const [Pages, setPages] = useState({
     page: null,
     totalpage: null,
@@ -83,6 +86,7 @@ const ProfileList = () => {
                 }, [])
               );
             }
+            pageRef.current = res.data.current_page_no;
             setPages({
               page: res.data.current_page_no,
               totalpage: res.data.total_pages,
@@ -99,6 +103,7 @@ const ProfileList = () => {
         .finally(() => {
           dispatch(handleLoading(false));
           dispatch(handleisGlobalSearch(false));
+          setloading(false);
           setTimeout(() => {
             setisFetching(false);
           }, 1000);
@@ -114,6 +119,49 @@ const ProfileList = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  const getHasNextPage = () => {
+    return Pages.totalpage && pageRef.current !== Pages.totalpage;
+  };
+
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        setisReachedEnd(true);
+      }
+    }
+  };
+
+  const loadMore = () => {
+    if (!getHasNextPage()) {
+      setloading(false);
+      setisReachedEnd(false);
+    } else if (isReachedEnd && getHasNextPage() && !loading) {
+      setloading(true);
+      pageRef.current = pageRef.current + 1;
+      getPeopleList(pageRef.current);
+    }
+  };
+
+  const [sentryRef, { rootRef }] = useInfiniteScroll({
+    loading: loading,
+    hasNextPage: getHasNextPage(),
+    onLoadMore: loadMore,
+  });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   const getValidPeople = () => {
     if (PeopleList && PeopleList.length !== 0) {
@@ -138,7 +186,7 @@ const ProfileList = () => {
     //     console.log("test");
     //   }}
     // >
-    <div className={` ${classes.profileSec}`}>
+    <div className={` ${classes.profileSec}`} ref={containerRef}>
       {getValidPeople()?.length === 0 ? (
         <>
           {isFetching ? (
@@ -148,7 +196,11 @@ const ProfileList = () => {
               ))}
             </div>
           ) : (
-            <div className={classes.DisplayMsg}>We didn't find any results</div>
+            <>
+              <div className={classes.DisplayMsg}>
+                <Empty description=" We didn't find any results" />
+              </div>
+            </>
           )}
         </>
       ) : null}
@@ -162,34 +214,22 @@ const ProfileList = () => {
               ))}
             </div>
           ) : (
-            <>
-              <InfiniteScrollerComponent
-                Component={() => {
-                  return (
-                    <>
-                      {getValidPeople().map((ele) => {
-                        return (
-                          <SearchProfile
-                            ele={ele}
-                            setPeopleList={setPeopleList}
-                            PeopleList={PeopleList}
-                          />
-                        );
-                      })}
-                    </>
-                  );
-                }}
-                totalPages={Pages.totalpage}
-                onNextPage={getPeopleList}
-                Loader={() => {
-                  return (
-                    <div className="text-center py-2">
-                      <Skeleton active />
-                    </div>
-                  );
-                }}
-              />
-            </>
+            <div ref={rootRef}>
+              {getValidPeople().map((ele) => {
+                return (
+                  <SearchProfile
+                    ele={ele}
+                    setPeopleList={setPeopleList}
+                    PeopleList={PeopleList}
+                  />
+                );
+              })}
+              {(loading || getHasNextPage()) && (
+                <div className="text-center py-2" ref={sentryRef}>
+                  <Skeleton active />
+                </div>
+              )}
+            </div>
           )}
         </>
       )}
