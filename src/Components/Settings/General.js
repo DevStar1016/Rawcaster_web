@@ -14,7 +14,7 @@ import {
 import { getValidDisplayData } from "./Utility";
 import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
 import { grouplistupdateService } from "../../Services/ApiService";
-import { toast } from "react-hot-toast";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const General = () => {
   const { formikvalues, setFieldValue, setupdateValue, updateValue } =
@@ -38,6 +38,7 @@ const General = () => {
       profile_field_name: key,
       groupid: JSON.stringify(value),
     };
+
     grouplistupdateService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
@@ -146,8 +147,9 @@ const General = () => {
                   <>
                     <Select
                       mode="multiple"
-                      style={{ width: "20%", minWidth: "200px" }}
-                      placeholder="Search to group"
+                      maxTagCount={"responsive"}
+                      className={classes.connectionselectBox}
+                      placeholder="Search group"
                       value={formikvalues[ele.groupkeyword]}
                       onChange={(val) => {
                         setFieldValue([ele.groupkeyword], val);
@@ -209,8 +211,9 @@ const General = () => {
                   <>
                     <Select
                       mode="multiple"
-                      style={{ width: "20%", minWidth: "200px" }}
-                      placeholder="Search to Connection"
+                      maxTagCount={"responsive"}
+                      className={classes.connectionselectBox}
+                      placeholder="Search Connection"
                       value={formikvalues[ele.groupkeyword]}
                       onChange={(val) => {
                         setFieldValue([ele.groupkeyword], val);
@@ -234,11 +237,15 @@ const General = () => {
                               }}
                             >
                               <img
-                                src={opt.profile_img}
+                                src={opt.profile_img ? opt.profile_img : ""}
                                 alt="groupImg"
                                 style={{ borderRadius: "16px" }}
                                 width="32px"
                                 height="32px"
+                                onError={({ currentTarget }) => {
+                                  currentTarget.onerror = null; // prevents looping
+                                  currentTarget.src = defaultprofileImg;
+                                }}
                               ></img>
                               <span
                                 style={{

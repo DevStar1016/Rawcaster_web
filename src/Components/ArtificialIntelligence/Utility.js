@@ -12,7 +12,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import { useStopwatch } from "react-timer-hook";
 import moment from "moment";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
-import { useGlobalContext } from "../../Shared/Context";
+import { useChatBotContext, useGlobalContext } from "../../Shared/Context";
 import { JSONtoformdata, ReadMore } from "../../Shared/Utility";
 import { findIndex } from "lodash";
 import { TextToAudioService } from "../../Services/ApiService";
@@ -24,12 +24,14 @@ export const isUser = (id) => {
   return false;
 };
 
-export const ReadoutSec = ({ url, index, message }) => {
+export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
+  const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
   const token = useAuthToken();
-  const [audio, setAudio] = useState(null);
-  const [isPlaying, setisPlaying] = useState(null);
 
   const HandlegetNuggetContentAudio = (url) => {
+    if (audio) {
+      audio.pause();
+    }
     const audioElement = new Audio(url);
     audioElement.id = index;
     setAudio(audioElement);
@@ -54,18 +56,23 @@ export const ReadoutSec = ({ url, index, message }) => {
   }, [audio]);
 
   const convertToAudio = () => {
-    TextToAudioService(
-      JSONtoformdata({
-        token,
-        message,
-      })
-    ).then((res) => {
-      if (res.data.status === 1) {
-        HandlegetNuggetContentAudio(res.data.url);
-      } else {
-        toast.error(res.data.msg);
-      }
-    });
+    if (audiourl) {
+      HandlegetNuggetContentAudio(audiourl);
+    } else {
+      TextToAudioService(
+        JSONtoformdata({
+          token,
+          message,
+        })
+      ).then((res) => {
+        if (res.data.status === 1) {
+          onResponse(res.data.url);
+          HandlegetNuggetContentAudio(res.data.url);
+        } else {
+          toast.error(res.data.msg);
+        }
+      });
+    }
   };
 
   return isPlaying === index ? (
@@ -90,7 +97,8 @@ export const ReadoutSec = ({ url, index, message }) => {
 
 export const MessageContent = (props) => {
   const { setpostModalShow, setPostContent } = useGlobalContext();
-  const { message, user, index } = props;
+  const { message, user, index, read_out_url, OnReadoutResponse } = props;
+  console.log(read_out_url);
   const loginUserData = useAuthData();
   return (
     <div
@@ -125,10 +133,9 @@ export const MessageContent = (props) => {
         <div className={`d-flex flex-row ${classes.optionSec}`}>
           <ReadoutSec
             message={message}
-            url={
-              "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-            }
+            url={read_out_url}
             index={index}
+            onResponse={OnReadoutResponse}
           />
           <p
             onClick={() => {

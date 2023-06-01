@@ -714,6 +714,7 @@ const Post = ({
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
                     isReadMoreValid={() => {
+                      console.log("valid");
                       setisvalidContent(true);
                     }}
                   >
