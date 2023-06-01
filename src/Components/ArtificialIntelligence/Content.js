@@ -14,7 +14,7 @@ const ChatContent = () => {
   const { Messages, setMessages, isChatOpen } = useChatBotContext();
   const [isTyping, setisTyping] = useState(false);
   const [ChatEnabled, setChatEnabled] = useState(true);
-
+  console.log(Messages);
   const HandleSendMessage = (ChatMessage = "", audio_file = null) => {
     const formData = {
       token,

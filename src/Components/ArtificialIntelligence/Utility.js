@@ -14,7 +14,6 @@ import moment from "moment";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { useChatBotContext, useGlobalContext } from "../../Shared/Context";
 import { JSONtoformdata, ReadMore } from "../../Shared/Utility";
-import { findIndex } from "lodash";
 import { TextToAudioService } from "../../Services/ApiService";
 
 export const isUser = (id) => {
@@ -26,6 +25,7 @@ export const isUser = (id) => {
 
 export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
   const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
+  const [isFetchingurl, setisFetchingurl] = useState(false);
   const token = useAuthToken();
 
   const HandlegetNuggetContentAudio = (url) => {
@@ -59,19 +59,24 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
     if (audiourl) {
       HandlegetNuggetContentAudio(audiourl);
     } else {
+      setisFetchingurl(true);
       TextToAudioService(
         JSONtoformdata({
           token,
           message,
         })
-      ).then((res) => {
-        if (res.data.status === 1) {
-          onResponse(res.data.url);
-          HandlegetNuggetContentAudio(res.data.url);
-        } else {
-          toast.error(res.data.msg);
-        }
-      });
+      )
+        .then((res) => {
+          if (res.data.status === 1) {
+            onResponse(res.data.url);
+            HandlegetNuggetContentAudio(res.data.url);
+          } else {
+            toast.error(res.data.msg);
+          }
+        })
+        .finally(() => {
+          setisFetchingurl(false);
+        });
     }
   };
 
@@ -133,7 +138,7 @@ export const MessageContent = (props) => {
         <div className={`d-flex flex-row ${classes.optionSec}`}>
           <ReadoutSec
             message={message}
-            url={read_out_url}
+            audiourl={read_out_url}
             index={index}
             onResponse={OnReadoutResponse}
           />
