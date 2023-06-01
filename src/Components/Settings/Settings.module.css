@@ -412,7 +412,14 @@
   .selectBox { border: 1px solid #E8EAEE; border-radius: 8px; min-width:280px; margin-top: 5px; }
   .uplBtn { background: rgba(0, 0, 0, 0.04) !important; padding: 5px 15px !important; }
   .settingmobMenu { display: none ; }
-
+.connectionselectBox {
+  background-color: #ffffff;
+  border: 1px solid #d9d9d9;
+  width: 35%;
+}
+.connectionselectBox input {
+  height: 40px;
+}
   @media (max-width: 768px) {
     .settingmobMenu {
       display: block;

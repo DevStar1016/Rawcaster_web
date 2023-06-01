@@ -16,7 +16,7 @@ import {
   useAuthToken,
   useNuggets,
 } from "../../Shared/Reduxfetcher";
-import { Spin } from "antd";
+import { Empty, Spin } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
 import {
@@ -35,7 +35,6 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import _debounce from "lodash/debounce";
 import { Form, InputGroup } from "react-bootstrap";
 import FavImg from "../../Assets/Icons/svg/Favorite.svg";
-import { Link } from "react-router-dom";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const Nuggets = ({
@@ -123,6 +122,7 @@ const Nuggets = ({
     return new Promise((resolve, reject) => {
       if (formData) {
         dispatch(fetchNuggetsbyId(formData)).then((res) => {
+          console.log(res);
           if (formData.formData.saved === 1) {
             setNuggetCount((pre) => ({
               ...pre,
@@ -139,6 +139,7 @@ const Nuggets = ({
             page: res.payload.current_page_no,
             totalpage: res.payload.total_pages,
           });
+          setNuggetsData(res.payload.data);
           setloading(false);
           setisLoading(false);
           setisReachedEnd(false);
@@ -258,13 +259,15 @@ const Nuggets = ({
     if (isValidPage() && ActiveTab === 0) {
       return "Share Your First Nugget";
     } else if (parseInt(display_user_id) !== parseInt(userData?.user_id)) {
-      return "No Posts Available";
+      return <Empty description="No Posts Available" />;
     }
-    return "No Posts Available";
+    return <Empty description="No Posts Available" />;
   };
 
   useEffect(() => {
+    // if (NuggetsData.length === 0) {
     setNuggetsData(Nuggets);
+    // }
   }, [Nuggets]);
 
   const loadMore = () => {
@@ -306,6 +309,7 @@ const Nuggets = ({
     dispatch(handleNuggetFormData(filterData));
     dispatch(fetchNuggetsbyId(filterData));
   };
+  console.log(NuggetsData);
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
@@ -487,22 +491,14 @@ const Nuggets = ({
               <>
                 {Nuggets?.length === 0 ? (
                   <div className={classes.DisplayMsg}>
-                    {searchKey ? "We didn't find any results" : isDisplayPost()}
+                    {searchKey ? (
+                      <Empty description="We didn't find any results" />
+                    ) : (
+                      isDisplayPost()
+                    )}
                   </div>
                 ) : (
-                  <div
-                    ref={rootRef}
-                    onScroll={(e) => {
-                      const { scrollTop, scrollHeight, offsetHeight } =
-                        e.target;
-                      const hasScrollReachedBottom =
-                        offsetHeight + scrollTop > scrollHeight - 40;
-
-                      if (hasScrollReachedBottom) {
-                        console.log("hasScrollReachedBottom");
-                      }
-                    }}
-                  >
+                  <div ref={rootRef}>
                     {NuggetsData?.map((ele, index) => {
                       return (
                         <Spin
@@ -536,24 +532,32 @@ const Nuggets = ({
                                     ? tempData[findIndex].total_likes + 1
                                     : tempData[findIndex].total_likes - 1,
                               };
+                              setNuggetsData(tempData);
                               dispatch(handleNuggetList(tempData));
                             }}
                             handleSave={(save) => {
-                              let findIndex = Nuggets.findIndex(
-                                (elem) => elem.nugget_id === ele.nugget_id
-                              );
-                              let tempData = [...Nuggets];
-                              tempData[findIndex] = {
-                                ...tempData[findIndex],
-                                saved: save === 1 ? true : false,
-                              };
-                              dispatch(handleNuggetList(tempData));
                               if (ActiveTab === 1 && save !== 1) {
-                                setNuggetsData((pre) =>
-                                  pre.filter(
+                                setNuggetsData((pre) => {
+                                  const data = pre.filter(
                                     (elem) => elem.nugget_id !== ele.nugget_id
-                                  )
+                                  );
+                                  return data;
+                                });
+                                setNuggetCount((pre) => ({
+                                  ...pre,
+                                  favorites: pre.favorites - 1,
+                                }));
+                              } else {
+                                let findIndex = Nuggets.findIndex(
+                                  (elem) => elem.nugget_id === ele.nugget_id
                                 );
+                                let tempData = [...Nuggets];
+                                tempData[findIndex] = {
+                                  ...tempData[findIndex],
+                                  saved: save === 1 ? true : false,
+                                };
+                                setNuggetsData(tempData);
+                                dispatch(handleNuggetList(tempData));
                               }
                             }}
                             onSaveCountResult={(val) => {

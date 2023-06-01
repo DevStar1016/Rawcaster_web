@@ -11,12 +11,18 @@ const ArtificialIntelligence = () => {
   const userData = useAuthData();
   const [isChatOpen, setisChatOpen] = useState(false);
   const [Messages, setMessages] = useState();
+  const [audio, setAudio] = useState(null);
+  const [isPlaying, setisPlaying] = useState(null);
 
   const values = {
     isChatOpen,
     setisChatOpen,
     Messages,
     setMessages,
+    audio,
+    setAudio,
+    isPlaying,
+    setisPlaying,
   };
   return (
     <ChatBotContext.Provider value={values}>

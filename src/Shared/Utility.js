@@ -277,7 +277,6 @@ export const ReadMore = ({
 }) => {
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
-
     return (
       <>
         <a
@@ -314,7 +313,10 @@ export const ReadMore = ({
       isReadMoreValid();
       setShowLink(true);
     } else if (isReadMore) {
-      setOpen(true);
+      if (ref.current && ref.current.clientHeight < ref.current.scrollHeight) {
+        isReadMoreValid();
+        setOpen(true);
+      }
     }
   }, [ref]);
 

@@ -1,29 +1,30 @@
-.custom_keyboard {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 0;
-    overflow: hidden;
-    transition: height 0.3s;
-  }
-  
-  .custom_keyboard.open {
-    height: 50%; /* Adjust the height as per your requirement */
-  }
-  
-  .keyboard_container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    /* Add more styling properties as needed */
-  }
-  
-  .keyboard {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as per your keyboard layout */
-    gap: 10px;
-    /* Add more styling properties as needed */
-  }
+.grid_container {
+  display: grid;
+  grid-template-columns: 1fr; /* Two equal-width columns */
+  gap: 20px; /* Gap between columns */
+}
+
+.container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 300px; /* Set a fixed height for containers */
+  overflow: hidden; /* Hide overflow content */
+}
+
+.overflow_content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.overflow_content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.overflow_content ul li {
+  margin-bottom: 5px;
+  padding: 12px 0;
+}
