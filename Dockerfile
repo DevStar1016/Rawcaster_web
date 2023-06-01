@@ -4,26 +4,29 @@ FROM node:18.16.0-alpine as build
 # Set working directory
 WORKDIR /app
 
+ENV PATH /app/node_modules/.bin:$PATH
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
-
-# Clear npm cache
-RUN npm cache clean --force
 
 # Install dependencies
 RUN npm install -force
 
+RUN npm install react-scripts@3.4.1 -g --silent
+
 # Copy the rest of the application files
-COPY . .
+COPY . ./
 
 # Build the React app
 RUN npm run build
 
 # Stage 2: Serve the built React app with Nginx
-FROM nginx:1.21.0-alpine
+FROM nginx:stable-alpine
 
 # Copy the built app from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
+
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80 for the application
 EXPOSE 80
