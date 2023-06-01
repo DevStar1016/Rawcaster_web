@@ -10,7 +10,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --silent
+RUN npm install -force
 
 RUN npm install react-scripts@3.4.1 -g --silent
 
@@ -25,6 +25,8 @@ FROM nginx:stable-alpine
 
 # Copy the built app from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
+
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80 for the application
 EXPOSE 80
