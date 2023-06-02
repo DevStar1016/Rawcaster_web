@@ -25,6 +25,7 @@ import {
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import { message } from "antd";
+import { Typography } from "antd";
 
 // Auth
 
@@ -267,84 +268,84 @@ export const isAccountValid = (userData) => {
   }
 };
 
-export const ReadMore = ({
-  partialShowLines = 3,
-  children,
-  isReadMore = true,
-  isLinkopenModal,
-  setisLinkopenModal,
-  isReadMoreValid,
-}) => {
-  const renderLink = ({ attributes, content }) => {
-    const { href, ...props } = attributes;
-    return (
-      <>
-        <a
-          className="content_link"
-          onClick={() => {
-            setisLinkopenModal(true);
-          }}
-          {...props}
-        >
-          {decodeHtml(content)}
-        </a>
+// export const ReadMore = ({
+//   partialShowLines = 3,
+//   children,
+//   isReadMore = true,
+//   isLinkopenModal,
+//   setisLinkopenModal,
+//   isReadMoreValid,
+// }) => {
+//   const renderLink = ({ attributes, content }) => {
+//     const { href, ...props } = attributes;
+//     return (
+//       <>
+//         <a
+//           className="content_link"
+//           onClick={() => {
+//             setisLinkopenModal(true);
+//           }}
+//           {...props}
+//         >
+//           {decodeHtml(content)}
+//         </a>
 
-        <LinkOpenModal
-          open={isLinkopenModal}
-          url={href}
-          close={() => {
-            setisLinkopenModal(false);
-          }}
-        />
-      </>
-    );
-  };
+//         <LinkOpenModal
+//           open={isLinkopenModal}
+//           url={href}
+//           close={() => {
+//             setisLinkopenModal(false);
+//           }}
+//         />
+//       </>
+//     );
+//   };
 
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-  const [showLink, setShowLink] = useState(false);
+//   const [open, setOpen] = useState(false);
+//   const ref = useRef(null);
+//   const [showLink, setShowLink] = useState(false);
 
-  useLayoutEffect(() => {
-    if (
-      ref.current &&
-      ref.current.clientHeight < ref.current.scrollHeight &&
-      !isReadMore
-    ) {
-      isReadMoreValid();
-      setShowLink(true);
-    } else if (isReadMore) {
-      if (ref.current && ref.current.clientHeight < ref.current.scrollHeight) {
-        isReadMoreValid();
-        setOpen(true);
-      }
-    }
-  }, [ref]);
+//   useLayoutEffect(() => {
+//     if (
+//       ref.current &&
+//       ref.current.clientHeight < ref.current.scrollHeight &&
+//       !isReadMore
+//     ) {
+//       isReadMoreValid();
+//       setShowLink(true);
+//     } else if (isReadMore) {
+//       if (ref.current && ref.current.clientHeight < ref.current.scrollHeight) {
+//         isReadMoreValid();
+//         setOpen(true);
+//       }
+//     }
+//   }, [ref]);
 
-  let textClass = `text${partialShowLines}lines`;
-  if (open) {
-    textClass += " open";
-  }
+//   let textClass = `text${partialShowLines}lines`;
+//   if (open) {
+//     textClass += " open";
+//   }
 
-  return (
-    <Linkify options={{ render: renderLink }}>
-      <div>
-        <span class={textClass} ref={ref}>
-          {children}
-        </span>
-        {showLink && (
-          <>
-            <span
-              onClick={() => setOpen(!open)}
-              style={{ color: "#e26386", cursor: "pointer" }}
-            >
-              {open ? "Read Less" : "Read More"}
-            </span>
-          </>
-        )}
-      </div>
-    </Linkify>
-  );
-};
+//   return (
+//     <Linkify options={{ render: renderLink }}>
+//       <div>
+//         <span class={textClass} ref={ref}>
+//           {children}
+//         </span>
+//         {showLink && (
+//           <>
+//             <span
+//               onClick={() => setOpen(!open)}
+//               style={{ color: "#e26386", cursor: "pointer" }}
+//             >
+//               {open ? "Read Less" : "Read More"}
+//             </span>
+//           </>
+//         )}
+//       </div>
+//     </Linkify>
+//   );
+// };
 
 export function detectMob() {
   const toMatch = [
@@ -574,4 +575,89 @@ export const fetchGoogleContacts = async () => {
       reject(error);
     }
   });
+};
+
+export const ReadMore = ({
+  partialShowLines = 3,
+  children,
+  isReadMore = true,
+  isLinkopenModal,
+  setisLinkopenModal,
+  isReadMoreValid,
+}) => {
+  const { Paragraph } = Typography;
+  const [OnEllipsis, setOnEllipsis] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const renderLink = ({ attributes, content }) => {
+    const { href, ...props } = attributes;
+    return (
+      <>
+        <a
+          className="content_link"
+          onClick={() => {
+            setisLinkopenModal(true);
+          }}
+          {...props}
+        >
+          {decodeHtml(content)}
+        </a>
+
+        <LinkOpenModal
+          open={isLinkopenModal}
+          url={href}
+          close={() => {
+            setisLinkopenModal(false);
+          }}
+        />
+      </>
+    );
+  };
+  return (
+    <Linkify options={{ render: renderLink }}>
+      {expanded || isReadMore ? (
+        <>
+          <Paragraph className="ReadMoreText" style={{ cursor: "pointer" }}>
+            {children}
+          </Paragraph>
+          {OnEllipsis && (
+            <span
+              style={{ color: "#e26386", cursor: "pointer" }}
+              onClick={() => {
+                setExpanded(false);
+              }}
+            >
+              Read Less
+            </span>
+          )}
+        </>
+      ) : (
+        <>
+          <Paragraph
+            className="ReadMoreText"
+            ellipsis={{
+              rows: parseInt(partialShowLines),
+              onEllipsis: (status) => {
+                console.log(status);
+                isReadMoreValid();
+                setOnEllipsis(status);
+              },
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            {children}
+          </Paragraph>
+          {OnEllipsis && (
+            <span
+              style={{ color: "#e26386", cursor: "pointer" }}
+              onClick={() => {
+                setExpanded(true);
+              }}
+            >
+              Read More
+            </span>
+          )}
+        </>
+      )}
+    </Linkify>
+  );
 };

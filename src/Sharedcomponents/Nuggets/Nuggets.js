@@ -122,7 +122,6 @@ const Nuggets = ({
     return new Promise((resolve, reject) => {
       if (formData) {
         dispatch(fetchNuggetsbyId(formData)).then((res) => {
-          console.log(res);
           if (formData.formData.saved === 1) {
             setNuggetCount((pre) => ({
               ...pre,

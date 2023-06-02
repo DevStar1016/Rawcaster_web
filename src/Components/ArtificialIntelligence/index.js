@@ -14,6 +14,13 @@ const ArtificialIntelligence = () => {
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
 
+  const generateRandomId = () => {
+    const randomId = Math.random().toString(36).substr(2, 9);
+    console.log("Random ID:", parseInt(randomId));
+    return parseInt(randomId);
+    // Perform any additional actions with the randomId here
+  };
+
   const values = {
     isChatOpen,
     setisChatOpen,
@@ -23,7 +30,9 @@ const ArtificialIntelligence = () => {
     setAudio,
     isPlaying,
     setisPlaying,
+    generateRandomId,
   };
+
   return (
     <ChatBotContext.Provider value={values}>
       <Popover

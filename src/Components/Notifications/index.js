@@ -1,5 +1,5 @@
-import { Popover } from "antd";
-import React from "react";
+import { Badge, Popover } from "antd";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import ContentLayout from "./ContentLayout";
 import { useState } from "react";
@@ -14,12 +14,13 @@ import {
   ViewNotificationService,
 } from "../../Services/ApiService";
 import moment from "moment";
-import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { NotificationContext } from "../../Shared/Context";
 import { toast } from "react-hot-toast";
 import classes from "./Notification.module.css";
 
-const Notification = ({ className, src }) => {
+const Notification = ({ className, src, onReadCountChange }) => {
+  const loginuserData = useAuthData();
   const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
   const token = useAuthToken();
   const { userSettings } = useAuth();
@@ -38,6 +39,7 @@ const Notification = ({ className, src }) => {
       ListNotificationService(JSONtoformdata(finalData))
         .then((res) => {
           if (res.data.status === 1) {
+            onReadCountChange(res.data.total_unread_count);
             setTotalUnreadCount(res.data.total_unread_count);
             const result = res.data.notification_list;
             const today = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -128,6 +130,13 @@ const Notification = ({ className, src }) => {
     return promise;
   };
 
+  useEffect(() => {
+    if (loginuserData) {
+      onReadCountChange(loginuserData?.unread_notification_count);
+      setTotalUnreadCount(loginuserData?.unread_notification_count);
+    }
+  }, [loginuserData]);
+
   const NotificationValues = {
     getNotificationList,
     handleViewNotification,
@@ -138,7 +147,7 @@ const Notification = ({ className, src }) => {
 
   return (
     <NotificationContext.Provider value={NotificationValues}>
-      <div className={"onlydes"}>
+      <div className={"onlydes"} style={{ marginRight: 21 }}>
         <Popover
           placement="bottom"
           title={<Header />}
@@ -147,7 +156,9 @@ const Notification = ({ className, src }) => {
           trigger="click"
           align="end"
         >
-          <img src={src} alt="Notification_logo" className={className} />
+          <Badge count={TotalUnreadCount} overflowCount={99} color="#F2718D">
+            <img src={src} alt="Notification_logo" className={className} />
+          </Badge>
         </Popover>
       </div>
 

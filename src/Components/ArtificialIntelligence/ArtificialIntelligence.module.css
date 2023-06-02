@@ -289,7 +289,10 @@ min-width: 300px;
   flex-direction: row;
   justify-content: space-between;
 }
-
+.fetchingSec {
+  width: 50px  !important;
+  margin-left: 18px !important;
+}
 .playSec button {
   background-color: transparent !important;
   border: none !important

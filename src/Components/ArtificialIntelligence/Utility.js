@@ -90,13 +90,21 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
       <i class="material-symbols-outlined">mic_off</i>Stop
     </p>
   ) : (
-    <p
-      onClick={() => {
-        convertToAudio();
-      }}
-    >
-      <i className={classes.read_mic_icon}></i>Read Out
-    </p>
+    <>
+      {isFetchingurl ? (
+        <p className={`mx-2 ${classes.fetchingSec}`}>
+          <div class="dot_typing"></div>
+        </p>
+      ) : (
+        <p
+          onClick={() => {
+            convertToAudio();
+          }}
+        >
+          <i className={classes.read_mic_icon}></i>Read Out
+        </p>
+      )}
+    </>
   );
 };
 
@@ -156,7 +164,7 @@ export const MessageContent = (props) => {
   );
 };
 
-export const ChatVoice = ({ url, audioId, user }) => {
+export const ChatVoice = ({ url, audioId, user, created_at }) => {
   const [audio, setAudio] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -270,9 +278,12 @@ export const ChatVoice = ({ url, audioId, user }) => {
                 </span>
               </div>
             </div>
-            <span className={`${classes.timestamp} ${classes.timeSec}`}>
-              12:34 PM
-            </span>
+
+            {created_at && (
+              <span className={`${classes.timestamp} ${classes.timeSec}`}>
+                {moment(created_at, "YYYY-MM-DD HH:mm:ss").format("hh:mm A")}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -297,6 +308,8 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
       user: 1,
       type: "audio",
       message: url,
+      created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+      read_out_url: null,
     });
   };
 

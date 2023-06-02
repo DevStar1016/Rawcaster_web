@@ -11,24 +11,30 @@ import TypingContainer from "./TypingContainer";
 
 const ChatContent = () => {
   const token = useAuthToken();
-  const { Messages, setMessages, isChatOpen } = useChatBotContext();
+  const { Messages, setMessages, isChatOpen, audio, setisPlaying } =
+    useChatBotContext();
   const [isTyping, setisTyping] = useState(false);
   const [ChatEnabled, setChatEnabled] = useState(true);
-  console.log(Messages);
+
   const HandleSendMessage = (ChatMessage = "", audio_file = null) => {
     const formData = {
       token,
-      // user_query: ChatMessage,
-      // audio_file,
+      user_query: ChatMessage,
+      audio_file,
     };
     AIChatService(JSONtoformdata(filterValidObject(formData)))
       .then((res) => {
+        if (audio) {
+          audio.pause();
+          setisPlaying(false);
+        }
         setMessages((pre) => [
           {
             user: 2,
             type: "message",
             message: res.data.msg,
             created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+
             read_out_url: null,
           },
           ...pre,

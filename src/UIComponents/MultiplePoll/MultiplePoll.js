@@ -84,6 +84,7 @@ const MultiplePoll = ({
         .add(minutesval, "minutes");
 
       const now = moment();
+
       let timeDiff = utcString - now;
       let dur = moment.duration(timeDiff);
       const remainingDays = dur.days();
