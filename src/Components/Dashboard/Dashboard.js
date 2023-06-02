@@ -84,7 +84,13 @@ const Dashboard = () => {
         <div className="d-block d-sm-none">
           <div className={classes.fullcontainer}>
             {dashboardMenu === "event" && <Events />}
-            {dashboardMenu === "notification" && <Notification />}
+            {dashboardMenu === "notification" && (
+              <Notification
+                onReadCountChange={() => {
+                  console.log("test");
+                }}
+              />
+            )}
             {dashboardMenu === "nugget" && <Nuggets />}
             {dashboardMenu === "usermenu" && <DashboardSignup />}
           </div>

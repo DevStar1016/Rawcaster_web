@@ -59,6 +59,7 @@ const HomeLayout = () => {
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
+  const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -221,6 +222,9 @@ const HomeLayout = () => {
                       <Notification
                         src={NotificationIcon}
                         className={`${classes.onlydes} ${classes.menuIcon}`}
+                        onReadCountChange={(count) => {
+                          setTotalUnreadCount(count);
+                        }}
                       />
                     </div>
                   </div>
@@ -348,21 +352,21 @@ const HomeLayout = () => {
               dispatch(handledasboardTab("event"));
             }}
           />
-
-          <img
-            src={btmbell}
-            alt="notification_logo"
-            style={{
-              opacity: loginUserData ? 1 : 0.5,
-            }}
-            onClick={() => {
-              if (loginUserData) {
-                navigate("/dashboard");
-                dispatch(handledasboardTab("notification"));
-              }
-            }}
-          />
-
+          <Badge count={TotalUnreadCount} overflowCount={99} color="#F2718D">
+            <img
+              src={btmbell}
+              alt="notification_logo"
+              style={{
+                opacity: loginUserData ? 1 : 0.5,
+              }}
+              onClick={() => {
+                if (loginUserData) {
+                  navigate("/dashboard");
+                  dispatch(handledasboardTab("notification"));
+                }
+              }}
+            />
+          </Badge>
           <img
             className={classes.btmhome}
             alt="home_logo"
