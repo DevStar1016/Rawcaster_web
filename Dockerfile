@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy the package.json and package-lock.json (or yarn.lock) files to the container
 COPY package*.json ./
 
+RUN npm install -force
+
 # Install dependencies
 RUN npm ci --only=production
 
