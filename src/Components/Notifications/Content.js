@@ -6,6 +6,7 @@ import { NotificationsList } from "./Utility";
 import { DeleteNotificationService } from "../../Services/ApiService";
 import { JSONtoformdata } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
+import { Empty } from "antd";
 
 const Content = ({ elem }) => {
   const { userSettings } = useAuth();
@@ -117,7 +118,7 @@ const Content = ({ elem }) => {
     <div className={classes.listSec}>
       {Pages.totalPages === 0 && (
         <div className={classes.noResultSec}>
-          <p>{NoResultMsg}</p>
+          <Empty description="No Notifications" />
         </div>
       )}
       {NotificationList.today.length !== 0 && (

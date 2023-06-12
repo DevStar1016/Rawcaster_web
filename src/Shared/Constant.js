@@ -8,21 +8,21 @@ export const GOOGLE_CLIENT_ID =
 
 export const FACEBOOK_APP_ID = "501963974865826";
 
-export const INSTAGRAM_APP_ID = "1652047128572389";
+// export const INSTAGRAM_APP_ID = "1652047128572389";
 
-export const INSTAGRAM_APP_SECRET = "a4ccdb1961ffe87bd5f38861c7958586";
+// export const INSTAGRAM_APP_SECRET = "a4ccdb1961ffe87bd5f38861c7958586";
 
-export const TWITTER_CLIENT_ID = "YTF4cTFKU25UVld2Yk1JUzFFSnU6MTpjaQ";
+// export const TWITTER_CLIENT_ID = "YTF4cTFKU25UVld2Yk1JUzFFSnU6MTpjaQ";
 
-export const TWITTER_CLIENT_SECRET =
-  "dwhNdl1A-GnBbKu63J77qSLApgyMQrnOFiKDzgcHjBQDfbENw2";
+// export const TWITTER_CLIENT_SECRET =
+//   "dwhNdl1A-GnBbKu63J77qSLApgyMQrnOFiKDzgcHjBQDfbENw2";
 
 export const APPLE_API_KEY = "CR8PDZDGNZcom.rawcaster.app";
 
 export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com/";
 export const REDIRECT_URI = "https://localhost:3000/signup/";
 export const SECONDARY_REDIRECT_URI = "https://dev.rawcaster.com/signup";
-export const INSTA_REDIRECT_URI = "https://dev.rawcaster.com/signup/";
+// export const INSTA_REDIRECT_URI = "https://dev.rawcaster.com/signup/";
 // SECONDARY CONSTANTS
 
 export const PASSWORD_EXP =

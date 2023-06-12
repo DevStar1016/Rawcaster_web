@@ -242,6 +242,7 @@ const ImageGrid = ({
           className={`type === "fullview" ? "" : "imgGridsize" ${classes.modalSingleimage}`}
           src={data.path}
           alt={data.path}
+          key={data.media_id || ""}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = BackgroundImg;

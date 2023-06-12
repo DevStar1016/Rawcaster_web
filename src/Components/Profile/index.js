@@ -42,6 +42,7 @@ import { friendRequestSocket } from "../../Services/SocketList";
 import { detectMob } from "../../Shared/Utility";
 import Seo from "../SEO/Seo";
 import { ProfileSEO } from "../SEO/SEOContent";
+import { ScrollRestoration } from "react-router-dom";
 
 const Profile = () => {
   const params = useParams();
@@ -259,7 +260,6 @@ const Profile = () => {
     setisInfluencerChatModalOpen,
     isInfluencerChatModalOpen,
   };
-  console.log(profileData);
   return (
     <ProfileContext.Provider value={profileValue}>
       <Seo
@@ -440,6 +440,7 @@ const Profile = () => {
           </ProfileLayout>
         </div>
       </div>
+      <ScrollRestoration />
     </ProfileContext.Provider>
   );
 };

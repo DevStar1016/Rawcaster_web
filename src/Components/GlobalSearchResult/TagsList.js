@@ -1,4 +1,4 @@
-import { Dropdown, Skeleton } from "antd";
+import { Dropdown, Empty, Skeleton } from "antd";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -178,7 +178,9 @@ const TagsList = () => {
               ))}
             </div>
           ) : (
-            <div className={classes.DisplayMsg}>We didn't find any results</div>
+            <div className={classes.DisplayMsg}>
+              <Empty description=" We didn't find any results" />
+            </div>
           )}
         </>
       ) : null}

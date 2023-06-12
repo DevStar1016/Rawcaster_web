@@ -108,4 +108,7 @@
 @media (max-width:768px) {
 .audio_player { padding: 12px;  }
 .audio_player input {width: 100% !important; }
+.overlaySec img {
+  width: 360px !important;
+}
 }

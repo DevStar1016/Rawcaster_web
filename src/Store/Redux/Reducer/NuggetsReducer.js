@@ -69,7 +69,6 @@ export const { actions, reducer } = createSlice({
     },
     handleNuggetViewAPIUpdate: (state, action) => {
       let findData = [...state.Nuggets].map((ele, index) => {
-        console.log(ele.viewed);
         if (action.payload.includes(index) && ele.viewed === 0) {
           return ele.nugget_id;
         } else {
@@ -78,7 +77,6 @@ export const { actions, reducer } = createSlice({
       });
 
       findData = findData.filter((ele) => ele !== null);
-      console.log(findData);
       if (findData.length !== 0) {
         let apiData = {
           token: state.token,

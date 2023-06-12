@@ -11,10 +11,10 @@ import { toast } from "react-hot-toast";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useStopwatch } from "react-timer-hook";
 import moment from "moment";
-import { useAuthData } from "../../Shared/Reduxfetcher";
-import { useGlobalContext } from "../../Shared/Context";
-import { ReadMore } from "../../Shared/Utility";
-import { findIndex } from "lodash";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useChatBotContext, useGlobalContext } from "../../Shared/Context";
+import { JSONtoformdata, ReadMore } from "../../Shared/Utility";
+import { TextToAudioService } from "../../Services/ApiService";
 
 export const isUser = (id) => {
   if (parseInt(id) === 1) {
@@ -23,11 +23,15 @@ export const isUser = (id) => {
   return false;
 };
 
-export const ReadoutSec = ({ url, index }) => {
-  const [audio, setAudio] = useState(null);
-  const [isPlaying, setisPlaying] = useState(null);
+export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
+  const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
+  const [isFetchingurl, setisFetchingurl] = useState(false);
+  const token = useAuthToken();
 
-  const HandlegetNuggetContentAudio = () => {
+  const HandlegetNuggetContentAudio = (url) => {
+    if (audio) {
+      audio.pause();
+    }
     const audioElement = new Audio(url);
     audioElement.id = index;
     setAudio(audioElement);
@@ -51,6 +55,31 @@ export const ReadoutSec = ({ url, index }) => {
     }
   }, [audio]);
 
+  const convertToAudio = () => {
+    if (audiourl) {
+      HandlegetNuggetContentAudio(audiourl);
+    } else {
+      setisFetchingurl(true);
+      TextToAudioService(
+        JSONtoformdata({
+          token,
+          message,
+        })
+      )
+        .then((res) => {
+          if (res.data.status === 1) {
+            onResponse(res.data.url);
+            HandlegetNuggetContentAudio(res.data.url);
+          } else {
+            toast.error(res.data.msg);
+          }
+        })
+        .finally(() => {
+          setisFetchingurl(false);
+        });
+    }
+  };
+
   return isPlaying === index ? (
     <p
       style={{ color: "red" }}
@@ -61,19 +90,28 @@ export const ReadoutSec = ({ url, index }) => {
       <i class="material-symbols-outlined">mic_off</i>Stop
     </p>
   ) : (
-    <p
-      onClick={() => {
-        HandlegetNuggetContentAudio();
-      }}
-    >
-      <i className={classes.read_mic_icon}></i>Read Out
-    </p>
+    <>
+      {isFetchingurl ? (
+        <p className={`mx-2 ${classes.fetchingSec}`}>
+          <div class="dot_typing"></div>
+        </p>
+      ) : (
+        <p
+          onClick={() => {
+            convertToAudio();
+          }}
+        >
+          <i className={classes.read_mic_icon}></i>Read Out
+        </p>
+      )}
+    </>
   );
 };
 
 export const MessageContent = (props) => {
   const { setpostModalShow, setPostContent } = useGlobalContext();
-  const { message, user, index, created_at } = props;
+  const { message, user, index, read_out_url, OnReadoutResponse } = props;
+  console.log(read_out_url);
   const loginUserData = useAuthData();
   return (
     <div
@@ -95,18 +133,22 @@ export const MessageContent = (props) => {
         <div className={classes.content}>
           {/* <p className={classes.userNameSec}>David thompson</p> */}
           <p>{message}</p>
-          <span className={classes.timestamp}>
-            {moment(created_at, "YYYY-MM-DD HH:mm:ss").format("hh:mm A")}
-          </span>
+          {props.created_at && (
+            <span className={classes.timestamp}>
+              {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                "hh:mm A"
+              )}
+            </span>
+          )}
         </div>
       </div>
       {!isUser(user) && (
         <div className={`d-flex flex-row ${classes.optionSec}`}>
           <ReadoutSec
-            url={
-              "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-            }
+            message={message}
+            audiourl={read_out_url}
             index={index}
+            onResponse={OnReadoutResponse}
           />
           <p
             onClick={() => {
@@ -122,7 +164,7 @@ export const MessageContent = (props) => {
   );
 };
 
-export const ChatVoice = ({ url, audioId, user }) => {
+export const ChatVoice = ({ url, audioId, user, created_at }) => {
   const [audio, setAudio] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -236,9 +278,12 @@ export const ChatVoice = ({ url, audioId, user }) => {
                 </span>
               </div>
             </div>
-            <span className={`${classes.timestamp} ${classes.timeSec}`}>
-              12:34 PM
-            </span>
+
+            {created_at && (
+              <span className={`${classes.timestamp} ${classes.timeSec}`}>
+                {moment(created_at, "YYYY-MM-DD HH:mm:ss").format("hh:mm A")}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -246,7 +291,7 @@ export const ChatVoice = ({ url, audioId, user }) => {
   );
 };
 
-export const ChatInput = ({ HandleSendMessage, onAudioResult }) => {
+export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
   const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
@@ -263,6 +308,8 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult }) => {
       user: 1,
       type: "audio",
       message: url,
+      created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+      read_out_url: null,
     });
   };
 
@@ -321,7 +368,7 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult }) => {
           aria-label="Type or ask question here.."
           value={ChatMessage}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !disabled) {
               HandleSendMessage(ChatMessage);
               setChatMessage("");
             }
@@ -339,8 +386,10 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult }) => {
           <InputGroup.Text
             className={classes.searchIcon}
             onClick={() => {
-              HandleSendMessage(ChatMessage);
-              setChatMessage("");
+              if (!disabled) {
+                HandleSendMessage(ChatMessage);
+                setChatMessage("");
+              }
             }}
           >
             <span className={`material-symbols-outlined ${classes.SendIcon}`}>

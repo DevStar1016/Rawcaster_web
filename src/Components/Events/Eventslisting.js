@@ -1,4 +1,4 @@
-import { Dropdown, Skeleton } from "antd";
+import { Button, Dropdown, Empty, Skeleton } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { listEventsService } from "../../Services/ApiService";
@@ -157,7 +157,13 @@ const Eventslisting = ({
                 </div>
               ))}
               {(EventListData?.length === 0 || isEmptyEvents) && (
-                <div className={classes.noeventfound}>No event found</div>
+                <div className={classes.noeventfound}>
+                  <Empty
+                    image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                    imageStyle={{ height: 80 }}
+                    description={<p className="pt-1">No Events Found</p>}
+                  />
+                </div>
               )}
             </div>
           )}

@@ -4,6 +4,7 @@ import ResetPassword from "../Components/Auth/ResetPassword";
 import Signup from "../Components/Auth/Signup";
 import SignupwithCredentials from "../Components/Auth/SignupwithCredentials";
 import Homepage from "../Components/Homepage/Homepage";
+import NotFound from "../Components/NotFound/NotFound";
 import AppdownloadScreen from "../Components/Policy/AppdownloadScreen";
 import Contactus from "../Components/Policy/Contactus";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
@@ -18,6 +19,7 @@ export const AuthRoute = [
   {
     path: "/",
     element: <AuthPrivateRoute />,
+    errorElement: <NotFound />,
     children: [
       {
         path: "/",
@@ -52,6 +54,7 @@ export const AuthRoute = [
       {
         path: "/",
         element: <MainLayout />,
+        errorElement: <NotFound />,
         children: [
           {
             index: true,

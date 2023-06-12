@@ -1,0 +1,30 @@
+.grid_container {
+  display: grid;
+  grid-template-columns: 1fr; /* Two equal-width columns */
+  gap: 20px; /* Gap between columns */
+}
+
+.container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 300px; /* Set a fixed height for containers */
+  overflow: hidden; /* Hide overflow content */
+}
+
+.overflow_content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.overflow_content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.overflow_content ul li {
+  margin-bottom: 5px;
+  padding: 12px 0;
+}

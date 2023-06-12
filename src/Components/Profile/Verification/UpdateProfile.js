@@ -251,7 +251,13 @@ const UpdateProfile = () => {
       <Col xs={24} sm={24} md={24} lg={24} xl={16} style={{ margin: "auto" }}>
         <div className={classes.centerLogo}>
           <div className={classes.backBtn}>
-            <Link to="/">
+            <Link
+              to={".."}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(-1);
+              }}
+            >
               <span class="material-symbols-outlined">arrow_back</span>
             </Link>
           </div>

@@ -336,12 +336,29 @@ const Postmodal = ({ visible, onClose }) => {
                 ref={textinputRef}
                 className={classes.postTextarea}
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
+                onPaste={(event) => {
+                  const pastedText = event.clipboardData.getData("text/plain");
+                  const selectedText = window.getSelection().toString();
+                  const updatedText = textinputRef.current.value.replace(
+                    selectedText,
+                    pastedText
+                  );
+                  setFieldValue("content", updatedText);
+                  getLinkInfo(updatedText);
+                }}
                 value={values.content}
                 onChange={(e) => {
-                  if (e.target.value.length <= 700) {
-                    setFieldValue("content", e.target.value);
-                    getLinkInfo(e.target.value);
-                  }
+                  // let MAX_LENGTH = 700;
+                  // if (e.target.value.length <= MAX_LENGTH) {
+                  setFieldValue("content", e.target.value);
+                  getLinkInfo(e.target.value);
+                  // } else {
+                  //   setFieldValue(
+                  //     "content",
+                  //     e.target.value.slice(0, MAX_LENGTH)
+                  //   );
+                  //   getLinkInfo(e.target.value.slice(0, MAX_LENGTH));
+                  // }
                 }}
               />
               <img
@@ -355,6 +372,7 @@ const Postmodal = ({ visible, onClose }) => {
             </div>
             {showEmojis && (
               <div
+                className={classes.emojiPicker}
                 style={{
                   display: "flex",
                   justifyContent: "end",

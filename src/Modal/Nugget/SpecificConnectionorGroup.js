@@ -1,10 +1,6 @@
 import { Button, Modal } from "antd";
 import React, { useState } from "react";
-import {
-  SpecificConnectionNugget,
-  usePostNuggetContext,
-  useSingleNuggetContext,
-} from "../../Shared/Context";
+import { SpecificConnectionNugget } from "../../Shared/Context";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import { decodeHtml } from "../../Shared/Utility";
 import ConnectionsList from "../../Sharedcomponents/Nuggets/ConnectionsList";
@@ -83,32 +79,23 @@ const SpecificConnectionorGroup = ({
         </div>
         <div className={classes.actionBtn}>
           <Button
-            ghost
             type="primary"
-            htmlType="button"
-            size="large"
-            className={classes.cancelBtn}
-            onClickCapture={() => {
-              handleClose();
+            style={{
+              marginLeft: "10px",
+              opacity: FilteredList.length === 0 ? 0.5 : 1,
+              width: "100%",
             }}
-          >
-            Cancel
-          </Button>
-
-          <Button
-            type="primary"
-            style={{ marginLeft: "10px" }}
             htmlType="Continue"
             size="large"
             className={classes.reportBtn}
-            disabled={FilteredList.length === 0}
             onClickCapture={() => {
-              onSuccess(FilteredList);
+              if (FilteredList.length !== 0) {
+                onSuccess(FilteredList);
+              }
             }}
           >
             Add
           </Button>
-          {/* )} */}
         </div>
       </SpecificConnectionNugget.Provider>
     </Modal>

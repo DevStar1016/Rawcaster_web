@@ -199,7 +199,7 @@ padding: 2px 1px;
   position: relative;
 }
 .chatbotsec {
-  position: absolute;
+  position: fixed;
   bottom: 27px;
   right: 27px;
   z-index: 100;
@@ -219,6 +219,11 @@ padding: 2px 1px;
   max-width: 500px;
 }
 @media (max-width: 768px) {
+  .chatbotsec .ChatBotBtn  {
+    width: 52px !important;
+    height: 52px !important;
+ 
+  }
 .topheader { padding: 5px 0;}
 .onlydes { display: none; }    
 .mobmenu { display: block; }
@@ -252,7 +257,7 @@ padding: 2px 1px;
     margin-right: 5px;
   }
   .leftSec { display: none; }
-  .bottomMenu { border-top: 1px solid #e4e4e4; display: block; background: #fff; height: 50px; position: fixed; bottom: 0; z-index: 1; width: 100%; display: flex; justify-content: space-around; align-items: center;}
+  .bottomMenu { border-top: 1px solid #e4e4e4; display: block; background: #fff; height: 50px; position: fixed; bottom: 0; z-index: 3; width: 100%; display: flex; justify-content: space-around; align-items: center;}
   .btmhome { height: 60px; margin-top: -50px; box-shadow: 0 0 9px 1px rgb(0 0 0 / 20%); border-radius: 50%;}
   .bottomMenu img { cursor: pointer;}
   .smLogo { height: 30px !important; margin-left: 10px; margin-top: 8px; }
@@ -272,4 +277,10 @@ padding: 2px 1px;
  }
 @media (max-width:769px) {
   .fullcontainer { width: 100%; }
+  .chatbotsec {
+    bottom: 60px;
+  }
+  .badgeImg  {
+    z-index: 0;
+  }
  }

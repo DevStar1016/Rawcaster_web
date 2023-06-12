@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import {
   DecryptionString,
+  detectMob,
   getAuthenticated,
   getRawcaserToken,
 } from "../../Shared/Utility";
@@ -15,15 +16,17 @@ import {
   useAuthToken,
   useNuggets,
 } from "../../Shared/Reduxfetcher";
-import { Spin } from "antd";
+import { Empty, Spin } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
 import {
+  handleDashboardFilterType,
   handleDeleteNuggetList,
   handleNuggetFormData,
   handleNuggetList,
   handleNuggetViewAPIUpdate,
   handleNuggetViewUpdate,
+  handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import NuggetLoaders from "../../Components/Loaders/NuggetLoaders";
 import NuggetLock from "../../Assets/Images/svg/nugget_lock.svg";
@@ -32,6 +35,7 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import _debounce from "lodash/debounce";
 import { Form, InputGroup } from "react-bootstrap";
 import FavImg from "../../Assets/Icons/svg/Favorite.svg";
+import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const Nuggets = ({
   isLocked = false,
@@ -50,8 +54,14 @@ const Nuggets = ({
   const [ViewedList, setViewedList] = useState([]);
   const [NuggetsData, setNuggetsData] = useState([]);
   const [isNuggetModify, setisNuggetModify] = useState(null);
-  const { Nuggets, isNuggetsLoading, nuggetFormData, totalpages } =
-    useNuggets();
+  const {
+    Nuggets,
+    isNuggetsLoading,
+    nuggetFormData,
+    totalpages,
+    DashboardfilterType,
+  } = useNuggets();
+
   const userData = getRawcaserToken();
   const [isloading, setisLoading] = useState(false);
   const [isReachedEnd, setisReachedEnd] = useState(false);
@@ -128,6 +138,7 @@ const Nuggets = ({
             page: res.payload.current_page_no,
             totalpage: res.payload.total_pages,
           });
+          setNuggetsData(res.payload.data);
           setloading(false);
           setisLoading(false);
           setisReachedEnd(false);
@@ -202,7 +213,6 @@ const Nuggets = ({
     if (container) {
       const { scrollTop, clientHeight, scrollHeight } = container;
       if (scrollTop + clientHeight >= scrollHeight - 10) {
-        console.log("Reached End");
         setisReachedEnd(true);
         // User has reached the bottom (with a 10px threshold)
         // Perform your desired action here, e.g., fetch more data
@@ -248,14 +258,15 @@ const Nuggets = ({
     if (isValidPage() && ActiveTab === 0) {
       return "Share Your First Nugget";
     } else if (parseInt(display_user_id) !== parseInt(userData?.user_id)) {
-      return "No Posts Available";
+      return <Empty description="No Posts Available" />;
     }
-    return "No Posts Available";
+    return <Empty description="No Posts Available" />;
   };
 
   useEffect(() => {
-    console.log(Nuggets);
+    // if (NuggetsData.length === 0) {
     setNuggetsData(Nuggets);
+    // }
   }, [Nuggets]);
 
   const loadMore = () => {
@@ -283,6 +294,21 @@ const Nuggets = ({
       }
     };
   }, []);
+
+  const handleFilterType = (type) => {
+    let filterData = { ...nuggetFormData };
+
+    filterData.formData = {
+      page_number: 1,
+      nugget_type: 0,
+      filter_type: type,
+    };
+    dispatch(handleResetNuggets());
+    dispatch(handleDashboardFilterType(type));
+    dispatch(handleNuggetFormData(filterData));
+    dispatch(fetchNuggetsbyId(filterData));
+  };
+  console.log(NuggetsData);
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>
@@ -318,6 +344,32 @@ const Nuggets = ({
               <>{Progress.show ? <PostProgress /> : <PostNuggets />}</>
             )}
           </>
+          {detectMob() && !display_user_id && !params?.key && (
+            <div className={classes.CategorySec}>
+              <div className={classes.TabSec}>
+                <p
+                  className={DashboardfilterType === 0 ? classes.activeSec : ""}
+                  onClick={() => {
+                    handleFilterType(0);
+                  }}
+                >
+                  <span class="material-icons">home</span> For You
+                </p>
+                <p
+                  className={DashboardfilterType === 1 ? classes.activeSec : ""}
+                  onClick={() => {
+                    if (userData) {
+                      handleFilterType(1);
+                    } else {
+                      dispatch(handleloginModalShow(true));
+                    }
+                  }}
+                >
+                  <span class="material-icons">people</span> Following
+                </p>
+              </div>
+            </div>
+          )}
 
           {display_user_id && !isuserConnection && (
             <div className={classes.loginuserContainer}>
@@ -438,22 +490,14 @@ const Nuggets = ({
               <>
                 {Nuggets?.length === 0 ? (
                   <div className={classes.DisplayMsg}>
-                    {searchKey ? "We didn't find any results" : isDisplayPost()}
+                    {searchKey ? (
+                      <Empty description="We didn't find any results" />
+                    ) : (
+                      isDisplayPost()
+                    )}
                   </div>
                 ) : (
-                  <div
-                    ref={rootRef}
-                    onScroll={(e) => {
-                      const { scrollTop, scrollHeight, offsetHeight } =
-                        e.target;
-                      const hasScrollReachedBottom =
-                        offsetHeight + scrollTop > scrollHeight - 40;
-
-                      if (hasScrollReachedBottom) {
-                        console.log("hasScrollReachedBottom");
-                      }
-                    }}
-                  >
+                  <div ref={rootRef}>
                     {NuggetsData?.map((ele, index) => {
                       return (
                         <Spin
@@ -487,24 +531,32 @@ const Nuggets = ({
                                     ? tempData[findIndex].total_likes + 1
                                     : tempData[findIndex].total_likes - 1,
                               };
+                              setNuggetsData(tempData);
                               dispatch(handleNuggetList(tempData));
                             }}
                             handleSave={(save) => {
-                              let findIndex = Nuggets.findIndex(
-                                (elem) => elem.nugget_id === ele.nugget_id
-                              );
-                              let tempData = [...Nuggets];
-                              tempData[findIndex] = {
-                                ...tempData[findIndex],
-                                saved: save === 1 ? true : false,
-                              };
-                              dispatch(handleNuggetList(tempData));
                               if (ActiveTab === 1 && save !== 1) {
-                                setNuggetsData((pre) =>
-                                  pre.filter(
+                                setNuggetsData((pre) => {
+                                  const data = pre.filter(
                                     (elem) => elem.nugget_id !== ele.nugget_id
-                                  )
+                                  );
+                                  return data;
+                                });
+                                setNuggetCount((pre) => ({
+                                  ...pre,
+                                  favorites: pre.favorites - 1,
+                                }));
+                              } else {
+                                let findIndex = Nuggets.findIndex(
+                                  (elem) => elem.nugget_id === ele.nugget_id
                                 );
+                                let tempData = [...Nuggets];
+                                tempData[findIndex] = {
+                                  ...tempData[findIndex],
+                                  saved: save === 1 ? true : false,
+                                };
+                                setNuggetsData(tempData);
+                                dispatch(handleNuggetList(tempData));
                               }
                             }}
                             onSaveCountResult={(val) => {

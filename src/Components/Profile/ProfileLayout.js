@@ -20,7 +20,7 @@ import {
 import classes from "./Profile.module.css";
 import { updateProfileService } from "../../Services/ApiService";
 import { useDispatch } from "react-redux";
-import { Button, Dropdown, Modal, Skeleton, Spin } from "antd";
+import { Button, Dropdown, Image, Modal, Skeleton, Spin } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
@@ -209,21 +209,18 @@ const ProfileLayout = ({
   return (
     <div className={className ? className : ""} id="banner_container">
       <div className={classes.bannersec}>
-        <Skeleton.Node active={isCoverLoading} className={classes.bannerImg}>
-          <img
-            src={profileData?.cover_image}
-            alt="Cover Image"
-            onLoadStart={() => {
-              setisCoverLoading(true);
-            }}
-            onLoad={() => {
-              setisCoverLoading(false);
-            }}
-            onError={() => {
-              setisCoverLoading(false);
-            }}
-          />
-        </Skeleton.Node>
+        <Image
+          alt="Cover Image"
+          width="100%"
+          preview={false}
+          rootClassName={classes.bannerImg}
+          src={profileData?.cover_image}
+          placeholder={
+            <Skeleton.Node active={true} className={classes.bannerImg}>
+              <div className={classes.bannerLoading}></div>
+            </Skeleton.Node>
+          }
+        />
 
         {isLoginUser && (
           <div
@@ -256,6 +253,7 @@ const ProfileLayout = ({
                   profileData?.account_verify_type === 2 ? "block" : "none",
               }}
             />
+
             <img
               src={profileData?.profile_image}
               alt="Profile"

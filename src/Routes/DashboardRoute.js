@@ -4,6 +4,7 @@ import Viewevent from "../Components/Events/Viewevent";
 import GlobalSearchResult from "../Components/GlobalSearchResult";
 import SelectInfluencers from "../Components/Influencers/SelectInfluencers";
 import Membership from "../Components/Membership";
+import NotFound from "../Components/NotFound/NotFound";
 import Notification from "../Components/Notifications";
 import Cookiespolicy from "../Components/Policy/CookiePolicy";
 import Privacypolicy from "../Components/Policy/Privacypolicy";
@@ -15,12 +16,14 @@ import Settings from "../Components/Settings";
 import HomeLayout from "../Layouts/HomeLayout";
 
 import ViewNugget from "../Sharedcomponents/Nuggets/ViewNugget";
+import { NuggetLoader } from "./Actions";
 import { HomePrivateRoute } from "./PrivateRoute";
 
 export const DashboardRoute = [
   {
     path: "/",
     element: <HomePrivateRoute />,
+    // errorElement: <NotFound />,
     children: [
       {
         path: "/",
@@ -70,6 +73,7 @@ export const DashboardRoute = [
   {
     path: "/",
     element: <HomeLayout />,
+    // errorElement: <NotFound />,
     children: [
       {
         path: "/dashboard",

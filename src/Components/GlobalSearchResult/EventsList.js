@@ -15,7 +15,7 @@ import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { Col, Row, Spinner } from "react-bootstrap";
 import Event from "../../Sharedcomponents/Events/Event";
 import classes from "./GlobalSearch.module.css";
-import { Skeleton } from "antd";
+import { Empty, Skeleton } from "antd";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 
 let isRequestCancel = false;
@@ -176,7 +176,9 @@ const EventsList = () => {
       ) : (
         <div className={` ${classes.profileSec} w-100`}>
           {getValidEvent()?.length === 0 ? (
-            <div className={classes.DisplayMsg}>We didn't find any results</div>
+            <div className={classes.DisplayMsg}>
+              <Empty description=" We didn't find any results" />
+            </div>
           ) : (
             <div ref={[rootRef, containerRef]}>
               <Row>

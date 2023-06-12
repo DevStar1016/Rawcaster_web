@@ -2,7 +2,7 @@ import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
-import SigninImg from "../../Assets/Images/svg/signin-intro.svg";
+import SigninImg from "../../Assets/Images/svg/signin-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
 import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";

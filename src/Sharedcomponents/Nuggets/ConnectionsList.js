@@ -5,6 +5,7 @@ import SearchResult from "./SearchResult";
 import classes from "./ItemsList.module.css";
 import { useSpecificConnectionNugget } from "../../Shared/Context";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { Empty } from "antd";
 
 const ConnectionsList = () => {
   const {
@@ -39,59 +40,74 @@ const ConnectionsList = () => {
     }
   }, [friendsList, open, type]);
 
+  const isSelectedConnection = (user_id) => {
+    const findData = FilteredList.find(
+      (ele) => parseInt(ele.user_id) === parseInt(user_id)
+    );
+    return findData;
+  };
+
   return (
     <div className={classes.listContainer}>
       <SearchResult
-        displayData={FilteredList}
-        setFilteredList={setFilteredList}
+        allList={friendsList}
         setConnectionData={setConnectionData}
-        list={ConnectionData}
         type={"connection"}
-        ConnectionData={ConnectionData}
-        handleClose={(ele) => {
-          setFilteredList((pre) =>
-            pre.filter((elem) => elem.user_id !== ele.user_id)
-          );
-        }}
       />
-      <div className={classes.listSec}>
-        {ConnectionData?.map((ele) => {
-          return (
-            <div
-              className={classes.profileData}
-              onClick={() => {
-                setConnectionData((pre) =>
-                  pre.filter((elem) => elem.user_id !== ele.user_id)
-                );
-                if (FilteredList.length !== 0) {
-                  setFilteredList((pre) => [
-                    ...pre,
-                    { ...ele, listname: decodeHtml(ele.display_name) },
-                  ]);
-                } else {
-                  setFilteredList([
-                    { ...ele, listname: decodeHtml(ele.display_name) },
-                  ]);
-                }
-              }}
-            >
-              <div className={classes.leftSec}>
-                <img
-                  src={ele.profile_img}
-                  alt={decodeHtml(ele.display_name)}
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null; // prevents looping
-                    currentTarget.src = defaultprofileImg;
-                  }}
-                />
-                <div className={classes.nameSec}>
-                  <p>{decodeHtml(ele.display_name)}</p>
+      {ConnectionData.length !== 0 ? (
+        <div className={classes.listSec}>
+          {ConnectionData?.map((ele) => {
+            return (
+              <div
+                className={`${classes.profileData} ${
+                  isSelectedConnection(ele.user_id) ? classes.selectedItem : ""
+                }`}
+                onClick={() => {
+                  if (isSelectedConnection(ele.user_id)) {
+                    setFilteredList((pre) =>
+                      pre.filter((elem) => elem.user_id !== ele.user_id)
+                    );
+                  } else {
+                    if (FilteredList.length !== 0) {
+                      setFilteredList((pre) => [
+                        ...pre,
+                        { ...ele, listname: decodeHtml(ele.display_name) },
+                      ]);
+                    } else {
+                      setFilteredList([
+                        { ...ele, listname: decodeHtml(ele.display_name) },
+                      ]);
+                    }
+                  }
+                }}
+              >
+                <div className={classes.leftSec}>
+                  <img
+                    src={ele.profile_img ? ele.profile_img : ""}
+                    alt={decodeHtml(ele.display_name)}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = defaultprofileImg;
+                    }}
+                  />
+                  <div className={classes.nameSec}>
+                    <p>{decodeHtml(ele.display_name)}</p>
+                  </div>
                 </div>
+                <span
+                  className={`material-symbols-outlined ${classes.selectedIcon}`}
+                >
+                  done
+                </span>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="py-5">
+          <Empty />
+        </div>
+      )}
     </div>
   );
 };

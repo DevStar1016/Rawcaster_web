@@ -13,6 +13,7 @@ import {
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
+import { detectMob } from "../../Shared/Utility";
 
 const Events = ({ ref = null, style = {} }) => {
   const dispatch = useDispatch();
@@ -34,28 +35,30 @@ const Events = ({ ref = null, style = {} }) => {
   };
   return (
     <div className={classes.eventSec} ref={ref} style={style}>
-      <div className={`${classes.beforelogin} mb-3`}>
-        <Link
-          className={DashboardfilterType === 0 ? classes.active : ""}
-          onClick={() => {
-            handleFilterType(0);
-          }}
-        >
-          <span class="material-icons">home</span> For You
-        </Link>
-        <Link
-          className={DashboardfilterType === 1 ? classes.active : ""}
-          onClick={() => {
-            if (loginUserData) {
-              handleFilterType(1);
-            } else {
-              dispatch(handleloginModalShow(true));
-            }
-          }}
-        >
-          <span class="material-icons">people</span> Following
-        </Link>
-      </div>
+      {!detectMob() && (
+        <div className={`${classes.beforelogin} mb-3`}>
+          <Link
+            className={DashboardfilterType === 0 ? classes.active : ""}
+            onClick={() => {
+              handleFilterType(0);
+            }}
+          >
+            <span class="material-icons">home</span> For You
+          </Link>
+          <Link
+            className={DashboardfilterType === 1 ? classes.active : ""}
+            onClick={() => {
+              if (loginUserData) {
+                handleFilterType(1);
+              } else {
+                dispatch(handleloginModalShow(true));
+              }
+            }}
+          >
+            <span class="material-icons">people</span> Following
+          </Link>
+        </div>
+      )}
       {/* BEFORE LOGIN START */}
       {loginUserData === null && isSuccess ? (
         <BeforeAuthEvents />
