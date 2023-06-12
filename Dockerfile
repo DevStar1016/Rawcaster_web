@@ -1,35 +1,17 @@
-# Stage 1: Build the React app
-FROM node:18.16.0-alpine as build
+FROM node:18.12.1-buster-slim AS builder
 
-# Set working directory
 WORKDIR /app
-
-ENV PATH /app/node_modules/.bin:$PATH
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
+COPY package.json ./
+COPY public/ public/
+COPY src/ src/
 RUN npm install -force
-
-RUN npm install react-scripts@3.4.1 -g --silent
-
-# Copy the rest of the application files
-COPY . ./
-
-# Build the React app
 RUN npm run build
 
-# Stage 2: Serve the built React app with Nginx
-FROM nginx:stable-alpine
-
-# Copy the built app from the previous stage
-COPY --from=build /app/build /usr/share/nginx/html
-
+FROM nginx:1.23.2-alpine
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80 for the application
+COPY --from=builder /app/build /usr/share/nginx/html
+RUN touch /var/run/nginx.pid
+RUN chown -R nginx:nginx /var/run/nginx.pid /usr/share/nginx/html /var/cache/nginx /var/log/nginx /etc/nginx/conf.d
+USER nginx
 EXPOSE 80
-
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
