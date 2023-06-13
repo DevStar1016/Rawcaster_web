@@ -19,6 +19,7 @@ const initialState = {
     show: false,
     msg: "",
   },
+  meetingData: null,
 };
 
 export const { actions, reducer } = createSlice({
@@ -90,6 +91,9 @@ export const { actions, reducer } = createSlice({
         (ele) => ele.group_id !== action.payload
       );
     },
+    handleMeetingData: (state, action) => {
+      state.meetingData = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchFrindsbyId.fulfilled, (state, action) => {
@@ -124,6 +128,7 @@ export const {
   handleAddGroupData,
   handleUpdateGroupData,
   handleDeleteGroupData,
+  handleMeetingData,
 } = actions;
 
 export default reducer;

@@ -119,6 +119,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         ...finalCreateObject,
         group_id: groupId,
       };
+      delete finalCreateObject["group_members"];
       if (typeof value.group_icon === "string") {
         delete finalCreateObject["group_icon"];
       }

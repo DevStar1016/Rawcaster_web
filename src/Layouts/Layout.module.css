@@ -218,6 +218,30 @@ padding: 2px 1px;
 .overLayClasses {
   max-width: 500px;
 }
+.eventHeader {
+  background: #563662 !important;
+      padding: 5px 0 !important;
+}
+.meetingHeader {
+
+  background: #563662 !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.meetingHeader img {
+height: 30px;
+margin:0 20px;
+margin-right: 10px !important;
+}
+.meetingHeader h2 {
+font-weight: 500;
+font-size: 18px;
+line-height: 23px;
+margin-top: 5px;
+
+color: #E8EAEE;
+}
 @media (max-width: 768px) {
   .chatbotsec .ChatBotBtn  {
     width: 52px !important;

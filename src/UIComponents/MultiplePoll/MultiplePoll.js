@@ -74,16 +74,14 @@ const MultiplePoll = ({
   const getVotesTiming = () => {
     if (userSettings) {
       const [daysval, hoursval, minutesval] = VoteTiming.split(":");
-      const userZoneTime = utctoUserTimezone(
-        created_date,
-        userSettings?.time_zone
-      );
-      const utcString = moment(userZoneTime, "YYYY-MM-DD HH:mm:ss")
+      const utcString = moment(created_date, "YYYY-MM-DD HH:mm:ss")
         .add(daysval, "days")
         .add(hoursval, "hours")
         .add(minutesval, "minutes");
 
-      const now = moment();
+      const momenttimezone = require("moment-timezone");
+      const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
+      const now = moment(currentTime, "YYYY-MM-DD HH:mm:ss");
 
       let timeDiff = utcString - now;
       let dur = moment.duration(timeDiff);
@@ -118,7 +116,7 @@ const MultiplePoll = ({
       }
       return output ? output : null;
     }
-    return null;
+    return true;
   };
 
   const handlePoll = (item) => {

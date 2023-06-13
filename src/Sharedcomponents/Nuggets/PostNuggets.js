@@ -240,10 +240,15 @@ const PostNuggets = () => {
             content: decodeHtml(res.data.nugget_detail.content),
             share_type: res.data.nugget_detail.share_type,
           });
-          if (res.data.share_type === 3) {
-            setshareWithData(JSON.parse(res.data.shared_group_list));
-          } else if (res.data.share_type === 4) {
-            setshareWithData(JSON.parse(res.data.shared_friends_list));
+          if (
+            res.data.nugget_detail.share_type === 3 ||
+            res.data.nugget_detail.share_type === 4
+          ) {
+            const getShareWithData = res.data.nugget_detail.shared_detail.map(
+              (ele) => ele.id
+            );
+            console.log(getShareWithData, "getShareWithData");
+            setshareWithData(getShareWithData);
           }
           setpostModalShow(true);
           setpreviewMedia(res.data.nugget_detail.media_list);

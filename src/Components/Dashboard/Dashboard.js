@@ -51,7 +51,11 @@ const Dashboard = () => {
     }
   }, [pathname]);
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: 67,
+      }}
+    >
       {isSuccess && loginUserData === null && (
         <div className={classes.ribbon}>
           <Link

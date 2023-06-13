@@ -30,7 +30,6 @@ const SpecificConnectionorGroup = ({
     shareWithData,
     share_type,
   };
-
   const handleClose = () => {
     if (type === "group") {
       if (shareWithData.length !== 0 && share_type === 3) {

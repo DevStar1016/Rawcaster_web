@@ -225,8 +225,14 @@ export const getNuggetDetailService = (data) => {
   return axios.post("getnuggetdetail", data);
 };
 
-export const getNuggetContentAudioService = (data) => {
-  return axios.post("nuggetcontentaudio", data);
+export const getNuggetContentAudioService = (data, token) => {
+  return axios.post("nuggetcontentaudio", data, {
+    cancelToken: token,
+  });
+};
+
+export const getNuggetandCommentLikedUserListService = (data) => {
+  return axios.post("nuggetandcommentlikeeduserlist", data);
 };
 
 // Event services
@@ -279,6 +285,16 @@ export const geteventMelodyService = (data) => {
 
 export const getFaqService = (data) => {
   return axios.post("getfaq", data);
+};
+
+// Meetings
+
+export const CreateMeeting = (data) => {
+  return axios.post("create_meeting", data);
+};
+
+export const JoinAttendeeMeeting = (data) => {
+  return axios.post("attendee_meeting", data);
 };
 
 // Profile Config

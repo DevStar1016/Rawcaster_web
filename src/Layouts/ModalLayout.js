@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Outlet, useLocation } from "react-router";
+import { Outlet, useLocation, useOutletContext } from "react-router";
 import LoginModal from "../Modal/Verification/LoginModal";
 import { VerificationModal } from "../Modal/Verification/ProfileVerificationModal";
 import ValidateTypeModal from "../Modal/Verification/ValidateTypeModal";
@@ -18,10 +18,18 @@ import AccountActivateModal from "../Modal/AccountActivateModal";
 import { handleAccountActive } from "../Store/Redux/Reducer/AuthReducer";
 import { removeSessionStorageData } from "../Store/Storage";
 import HelmetComponent from "../Components/SEO";
+import { MainContext } from "../Shared/Context";
+import {
+  useMeetingManager,
+  useRosterState,
+} from "amazon-chime-sdk-component-library-react";
 
 const ModalLayout = () => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const meetingManager = useMeetingManager();
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
   const { loginModalShow, twostepVerifyModalshow } = useDashboard();
   const { isAccountActive, userSettings } = useAuth();
   const profileverifyStatus = useProfileVerifyModal();
@@ -41,7 +49,12 @@ const ModalLayout = () => {
   }, [location]);
 
   return (
-    <>
+    <MainContext.Provider
+      value={{
+        meetingManager,
+        attendees,
+      }}
+    >
       <HelmetComponent />
       <Outlet />
       <ValidateTypeModal
@@ -69,7 +82,7 @@ const ModalLayout = () => {
           dispatch(handleAccountActive(false));
         }}
       />
-    </>
+    </MainContext.Provider>
   );
 };
 
