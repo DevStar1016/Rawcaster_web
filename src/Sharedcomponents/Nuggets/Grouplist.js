@@ -30,9 +30,7 @@ const Grouplist = () => {
       });
       findData = findData.filter((ele) => ele !== undefined);
       setFilteredList(findData);
-      setConnectionData(
-        groupsList.filter((ele) => !shareWithData.includes(ele.group_id))
-      );
+      setConnectionData(groupsList);
     }
   }, [groupsList]);
 

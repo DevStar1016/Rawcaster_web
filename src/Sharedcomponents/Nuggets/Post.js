@@ -57,6 +57,8 @@ import { HandleBecameaFan } from "../../Shared/SharedAPIs";
 import ReportGroup from "../../Modal/Report/ReportGroup";
 import { blockunblockuserService } from "../../Services/ApiService";
 import { ReadoutSec } from "./Utility";
+import AgreedusersListModal from "../../Modal/Nugget/AgreedusersListModal";
+import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 
 const Post = ({
   ele,
@@ -82,6 +84,10 @@ const Post = ({
   const [Comments, setComments] = useState("");
   const [CommentList, setCommentList] = useState([]);
   const [isCommentLoading, setisCommentLoading] = useState(false);
+  const [AgreedUsersList, setAgreedUsersList] = useState({
+    show: false,
+    formData: {},
+  });
   const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
     show: false,
     type: "",
@@ -122,21 +128,6 @@ const Post = ({
       .catch((err) => {});
   };
 
-  // const viewHandler = () => {
-  //   if (ele.viewed === 0 && Token) {
-  //     //   let viewNugget = {
-  //     //     token: Token,
-  //     //     nugget_id: ele.nugget_id,
-  //     //   };
-  //     //   addNuggetViewService(JSONtoformdata(viewNugget))
-  //     //     .then((res) => {
-  //     //       handleView(index);
-  //     //     })
-  //     //     .catch((err) => {});
-  //     // }
-  //   }
-  // };
-
   const deletenugget = (id) => {
     let deleteData = {
       token: Token,
@@ -167,7 +158,7 @@ const Post = ({
       setComments(ele.nugget_id);
       getCommentList(ele.nugget_id);
     }
-  }, [isCommentShow]);
+  }, [isCommentShow, ele.nugget_id]);
 
   const getCommentList = (id) => {
     let promise = new Promise((resolve, reject) => {
@@ -485,6 +476,7 @@ const Post = ({
     isCommentLoading,
     setCommentList,
     handleNuggetCommentLike,
+    setAgreedUsersList,
     getNuggetDetail,
     getCommentList(id) {
       return getCommentList(id);
@@ -606,7 +598,7 @@ const Post = ({
                   handleProfileNavigate(finalData);
                 }}
               >
-                {decodeHtml(ele?.user_name)}{" "}
+                <p>{decodeHtml(ele?.user_name)}</p>{" "}
                 {ele?.type === 2 && (
                   <span>
                     shared{" "}
@@ -628,6 +620,13 @@ const Post = ({
                   </span>
                 )}
               </p>
+              <img
+                src={DiamonVerified}
+                className={classes.verifiedImg}
+                style={{
+                  display: ele?.account_verify_type === 1 ? "block" : "none",
+                }}
+              />
             </div>
             <p className={classes.detailsRange}>
               {ele && (
@@ -644,9 +643,7 @@ const Post = ({
                   }
                   color="rgb(250, 162, 27)"
                 >
-                  {dateToShortDate(
-                    utctoUserTimezone(ele.created_date, userSettings?.time_zone)
-                  )}
+                  {dateToShortDate(ele.created_date, userSettings?.time_zone)}
                 </Tooltip>
               )}
               <i class="material-icons">fiber_manual_record</i>
@@ -692,9 +689,12 @@ const Post = ({
               </div>
             </Dropdown>
           )}
-          {ele && isValidData(ele?.content) ? (
+          {ele && isValidData(ele?.content) && loginUserData ? (
             <div className={classes.ReadoutSec}>
-              <ReadoutSec nugget_id={ele.nugget_id} />
+              <ReadoutSec
+                nugget_id={ele.nugget_id}
+                readout_url={ele.readout_url}
+              />
             </div>
           ) : (
             <div className={`${classes.ReadoutSec} py-2`}></div>
@@ -705,7 +705,7 @@ const Post = ({
                 <p
                   style={{
                     whiteSpace: "pre-wrap",
-                    lineBreak: "anywhere",
+                    wordBreak: "break-word",
                   }}
                 >
                   <ReadMore
@@ -714,7 +714,6 @@ const Post = ({
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
                     isReadMoreValid={() => {
-                      console.log("valid");
                       setisvalidContent(true);
                     }}
                   >
@@ -820,33 +819,49 @@ const Post = ({
                     className={
                       ele?.liked ? classes.activeiconsec : classes.iconsec
                     }
-                    onClick={() => {
-                      if (getAuthenticated()) {
-                        if (isAccountValid(loginUserData)) {
-                          let like = ele.liked ? 2 : 1;
-                          handleLike(like);
-                          try {
-                            LikeProcess(ele.nugget_id, like);
-                          } catch (error) {
-                            console.log(error, "===>Post Like");
+                  >
+                    <p
+                      onClick={() => {
+                        if (getAuthenticated()) {
+                          if (isAccountValid(loginUserData)) {
+                            let like = ele.liked ? 2 : 1;
+                            handleLike(like);
+                            try {
+                              LikeProcess(ele.nugget_id, like);
+                            } catch (error) {
+                              console.log(error, "===>Post Like");
+                            }
+                          } else {
+                            dispatch(
+                              handleprofileVerifyModalShow({
+                                show: true,
+                                msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                              })
+                            );
                           }
                         } else {
-                          dispatch(
-                            handleprofileVerifyModalShow({
-                              show: true,
-                              msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                            })
-                          );
+                          dispatch(handleloginModalShow(true));
                         }
-                      } else {
-                        dispatch(handleloginModalShow(true));
-                      }
-                    }}
-                  >
-                    <p>
+                      }}
+                    >
                       <i className={`${classes.inactive_like_icon}`} />
                     </p>
-                    <span>{ele.total_likes}</span>
+                    <span
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        if (parseInt(ele.total_likes) !== 0) {
+                          setAgreedUsersList({
+                            show: true,
+                            formData: {
+                              id: ele.nugget_id,
+                              type: 1,
+                            },
+                          });
+                        }
+                      }}
+                    >
+                      {ele.total_likes}
+                    </span>
                   </div>
                   <div
                     className={
@@ -1050,6 +1065,18 @@ const Post = ({
         </div>
       ) : (
         <></>
+      )}
+      {AgreedUsersList.show && (
+        <AgreedusersListModal
+          open={AgreedUsersList.show}
+          formData={AgreedUsersList.formData}
+          close={() => {
+            setAgreedUsersList({
+              show: false,
+              formData: {},
+            });
+          }}
+        />
       )}
     </SingleNuggetContext.Provider>
   );

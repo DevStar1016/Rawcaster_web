@@ -22,6 +22,7 @@ import classes from "./Notification.module.css";
 const Notification = ({ className, src, onReadCountChange }) => {
   const loginuserData = useAuthData();
   const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
+  const [isPopupOpen, setisPopupOpen] = useState(false);
   const token = useAuthToken();
   const { userSettings } = useAuth();
   const [markallAsRead, setmarkallAsRead] = useState(false);
@@ -155,9 +156,17 @@ const Notification = ({ className, src, onReadCountChange }) => {
           showArrow={false}
           trigger="click"
           align="end"
+          // open={isPopupOpen}
         >
           <Badge count={TotalUnreadCount} overflowCount={99} color="#F2718D">
-            <img src={src} alt="Notification_logo" className={className} />
+            <img
+              src={src}
+              alt="Notification_logo"
+              className={className}
+              onClick={() => {
+                setisPopupOpen(!isPopupOpen);
+              }}
+            />
           </Badge>
         </Popover>
       </div>

@@ -111,7 +111,6 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
 export const MessageContent = (props) => {
   const { setpostModalShow, setPostContent } = useGlobalContext();
   const { message, user, index, read_out_url, OnReadoutResponse } = props;
-  console.log(read_out_url);
   const loginUserData = useAuthData();
   return (
     <div
@@ -165,6 +164,7 @@ export const MessageContent = (props) => {
 };
 
 export const ChatVoice = ({ url, audioId, user, created_at }) => {
+  const loginUserData = useAuthData();
   const [audio, setAudio] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -244,7 +244,9 @@ export const ChatVoice = ({ url, audioId, user, created_at }) => {
         } w-100`}
       >
         <div className={classes.avatar}>
-          <img src={ChatProfile} />
+          <img
+            src={loginUserData ? loginUserData?.profile_image : ChatProfile}
+          />
         </div>
         <div className={`d-flex flex-column ${classes.playContainer}`}>
           <div className="d-flex flex-row">

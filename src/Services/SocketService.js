@@ -9,7 +9,7 @@ const socket = io(socketURL, {
 });
 
 const ConnectSocket = (props) => {
-  if (props.user_id !== "") {
+  if (props && props.user_id !== "") {
     sendMessage({
       event: "userdata",
       userid: props.user_id,

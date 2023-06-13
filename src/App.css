@@ -587,7 +587,9 @@ margin-bottom: 12px !important;
 .claimrequestModal .ant-modal-content {
   padding: 0px !important;
 }
-
+.ant-popover {
+  position: fixed !important;
+}
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .onlydes { display: none; } 

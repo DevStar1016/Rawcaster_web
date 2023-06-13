@@ -28,6 +28,7 @@ const ReplyList = ({
     isCommentLoading,
     getNuggetDetail,
     handleNuggetCommentLike,
+    setAgreedUsersList,
   } = useSingleNuggetContext();
   const loginUserData = useAuthData();
   const [ReplyTxt, setReplyTxt] = useState([]);
@@ -359,24 +360,47 @@ const ReplyList = ({
                             <div
                               className={classes.agree}
                               style={{ color: elem.liked ? "#e26386" : "#000" }}
-                              onClick={() => {
-                                handleAgree(
-                                  elem.comment_id,
-                                  elem.liked,
-                                  elem.like_count
-                                );
-                              }}
                             >
                               <i
                                 className={classes.agreeIcon}
+                                onClick={() => {
+                                  handleAgree(
+                                    elem.comment_id,
+                                    elem.liked,
+                                    elem.like_count
+                                  );
+                                }}
                                 style={{
                                   background: elem.liked ? "#e26386" : "#000",
                                 }}
-                              />{" "}
-                              Agree{" "}
-                              {elem.like_count ? `(${elem.like_count})` : null}
+                              />
+                              <span
+                                onClick={() => {
+                                  handleAgree(
+                                    elem.comment_id,
+                                    elem.liked,
+                                    elem.like_count
+                                  );
+                                }}
+                              >
+                                Agree
+                              </span>
+                              <span
+                                onClick={() => {
+                                  setAgreedUsersList({
+                                    show: true,
+                                    formData: {
+                                      id: elem.comment_id,
+                                      type: 2,
+                                    },
+                                  });
+                                }}
+                              >
+                                {elem.like_count
+                                  ? `(${elem.like_count})`
+                                  : null}
+                              </span>
                             </div>
-
                             <div className={classes.time}>
                               {moment(elem?.created_date).fromNow(true)} ago
                             </div>

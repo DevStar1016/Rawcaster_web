@@ -466,10 +466,10 @@ export const shareEventDate = (t) => {
   return moment(t).format("D MMM YYYY hh:mm A ");
 };
 
-export const dateToShortDate = (time) => {
-  let date = new Date();
-  var utcCutoff = moment.utc(date);
-  return moment(moment.utc(time)).from(utcCutoff) + "";
+export const dateToShortDate = (time, time_zone) => {
+  const momenttimezone = require("moment-timezone");
+  const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
+  return moment(time).from(moment(currentTime, "YYYY-MM-DD HH:mm:ss"));
 };
 
 export const datetoString = (t) => {
@@ -584,6 +584,7 @@ export const ReadMore = ({
   isLinkopenModal,
   setisLinkopenModal,
   isReadMoreValid,
+  onExpand,
 }) => {
   const { Paragraph } = Typography;
   const [OnEllipsis, setOnEllipsis] = useState(false);
@@ -616,13 +617,19 @@ export const ReadMore = ({
     <Linkify options={{ render: renderLink }}>
       {expanded || isReadMore ? (
         <>
-          <Paragraph className="ReadMoreText" style={{ cursor: "pointer" }}>
+          <Paragraph
+            className="ReadMoreText"
+            // style={{ cursor: "pointer", wordBreak: "break-all" }}
+          >
             {children}
           </Paragraph>
           {OnEllipsis && (
             <span
               style={{ color: "#e26386", cursor: "pointer" }}
               onClick={() => {
+                if (onExpand) {
+                  onExpand(false);
+                }
                 setExpanded(false);
               }}
             >
@@ -636,8 +643,8 @@ export const ReadMore = ({
             className="ReadMoreText"
             ellipsis={{
               rows: parseInt(partialShowLines),
+              onExpand: onExpand,
               onEllipsis: (status) => {
-                console.log(status);
                 isReadMoreValid();
                 setOnEllipsis(status);
               },
@@ -650,6 +657,9 @@ export const ReadMore = ({
             <span
               style={{ color: "#e26386", cursor: "pointer" }}
               onClick={() => {
+                if (onExpand) {
+                  onExpand(true);
+                }
                 setExpanded(true);
               }}
             >

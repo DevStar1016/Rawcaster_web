@@ -80,6 +80,19 @@ const InviteBox = () => {
     });
   };
 
+  function compareByName(a, b) {
+    const nameA = a.title.toUpperCase();
+    const nameB = b.title.toUpperCase();
+
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  }
+
   const FetchGoogleContacts = () => {
     fetchGoogleContacts()
       .then((res) => {
@@ -93,7 +106,7 @@ const InviteBox = () => {
                 require("../../Assets/Icons/png/user_vector.png"),
             };
           });
-
+          contactDetails.sort(compareByName);
           setContactList(contactDetails);
           setisGmailOpen(true);
         } else {
@@ -134,7 +147,7 @@ const InviteBox = () => {
           <div className={classes.resultSec}>
             {contactList.length !== 0 ? (
               <>
-                {contactList.map((ele, ind) => (
+                {contactList.sort().map((ele, ind) => (
                   <div key={ind} className={classes.contacts}>
                     <div className={classes.profileSec}>
                       <img

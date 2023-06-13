@@ -76,6 +76,7 @@ const Settings = () => {
     lock_my_influencer: 0,
     live_event_banner: "",
     talkshow_event_banner: "",
+    read_out_language_id: "",
   });
 
   useEffect(() => {
@@ -127,6 +128,7 @@ const Settings = () => {
         lock_my_influencer: userSettings?.lock_my_influencer,
         live_event_banner: userSettings?.live_event_banner,
         talkshow_event_banner: userSettings?.talkshow_event_banner,
+        read_out_language_id: userSettings?.read_out_language_id,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

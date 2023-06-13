@@ -85,8 +85,30 @@ export const { actions, reducer } = createSlice({
         addNuggetView(apiData);
       }
     },
+    handleNuggetReadoutUrlUpdate: (state, action) => {
+      const nugget_id = action.payload.nugget_id;
+      let findIndex = [...state.Nuggets].findIndex(
+        (ele, index) => parseInt(ele.nugget_id) === parseInt(nugget_id)
+      );
+      if (findIndex !== -1) {
+        let TempData = [...state.Nuggets];
+        TempData[findIndex] = {
+          ...TempData[findIndex],
+          readout_url: action.payload.readout_url,
+        };
+        state.Nuggets = TempData;
+      }
+    },
     handleNuggetFormData: (state, action) => {
       state.nuggetFormData = action.payload;
+    },
+    handleRemoveReadoutURL: (state, action) => {
+      state.Nuggets = [...state.Nuggets].map((ele) => {
+        return {
+          ...ele,
+          readout_url: null,
+        };
+      });
     },
     handleResetNuggets: (state, action) => {
       state.Nuggets = [];
@@ -145,6 +167,8 @@ export const {
   handlenuggetToken,
   handleDeleteNuggetListByUserId,
   handleNuggetViewAPIUpdate,
+  handleNuggetReadoutUrlUpdate,
+  handleRemoveReadoutURL,
 } = actions;
 
 export default reducer;

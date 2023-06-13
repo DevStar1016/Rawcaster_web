@@ -13,6 +13,7 @@
 .overLayClasses {
   max-width: 500px;
   width: 100%;
+  z-index: 11;
 }
 .HeadingSec {
     background: #FFFFFF !important;
@@ -83,7 +84,7 @@ min-width: 300px;
    
     object-fit: cover;
 }
-.user_chatbox_message .avatar img {
+.avatar img {
   height: 44px;
   width: 44px;
 }

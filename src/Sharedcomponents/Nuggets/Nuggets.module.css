@@ -111,6 +111,11 @@ border-radius: 30px;
   font-weight: 600;
   cursor: pointer;
 }
+.proName .verifiedImg {
+  height: 15px;
+  margin-bottom: 4px;
+  margin-left: 5px;
+}
 .proName span {
   color: #1d1c1c;
   font-size: 11px;
