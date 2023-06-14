@@ -31,6 +31,7 @@
     "mic-check": "^1.1.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.42",
+    "rc-virtual-list": "^3.5.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-bottom-scroll-listener": "^5.1.0",

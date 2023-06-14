@@ -1,15 +1,38 @@
-import React, { useState } from "react";
-import userImg from "../Assets/Images/svg/userImg.svg";
-import classes from "./Dev.module.css";
-import { Dropdown } from "react-bootstrap";
-import { Button, Menu, Tooltip } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import Participants from "./Events/Room/Participants";
+import React, { useEffect, useState } from "react";
+import { Avatar, List, message } from "antd";
+import VirtualList from "rc-virtual-list";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
+const fakeDataUrl =
+  "https://randomuser.me/api/?results=20&inc=name,gender,email,nat,picture&noinfo";
+const ContainerHeight = 400;
+
 const Development = () => {
   const [MeetingId, setMeetingId] = useState("");
+  const [data, setData] = useState([]);
+
+  const appendData = () => {
+    fetch(fakeDataUrl)
+      .then((res) => res.json())
+      .then((body) => {
+        setData(data.concat(body.results));
+        // message.success(`${body.results.length} more items loaded!`);
+      });
+  };
+
+  useEffect(() => {
+    appendData();
+  }, []);
+
+  const onScroll = (e) => {
+    if (
+      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
+      ContainerHeight
+    ) {
+      appendData();
+    }
+  };
 
   return (
     <>
@@ -43,7 +66,27 @@ const Development = () => {
           Join Meeting
         </button>
       </div>
-      <div
+      <List>
+        <VirtualList
+          data={data}
+          height={ContainerHeight}
+          itemHeight={47}
+          itemKey="email"
+          onScroll={onScroll}
+        >
+          {(item) => (
+            <List.Item key={item.email}>
+              <List.Item.Meta
+                avatar={<Avatar src={item.picture.large} />}
+                title={<a href="https://ant.design">{item.name.last}</a>}
+                description={item.email}
+              />
+              <div>Content</div>
+            </List.Item>
+          )}
+        </VirtualList>
+      </List>
+      {/* <div
         style={{
           background: "#563662",
           height: "100%",
@@ -52,7 +95,7 @@ const Development = () => {
         }}
       >
         <Participants />
-      </div>
+      </div> */}
       {/* <div
         style={{
           background: "#563662",
