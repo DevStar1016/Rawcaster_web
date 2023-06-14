@@ -93,10 +93,10 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
         isRequestCancel = true;
         ReadSource.current.cancel("Request Cancelled");
       }
-      if (audio) {
-        audio.pause();
-        setisPlaying(null);
-      }
+      // if (audio) {
+      //   audio.pause();
+      //   setisPlaying(null);
+      // }
     };
   }, [audio]);
 

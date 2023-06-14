@@ -255,4 +255,10 @@ line-height: 26px;
         .fansList:hover .connectionTimeago {
             display: block;
         }
+        .NotificationSec {
+            width: 100%;
+        }
+        .NotificationContent {
+            width: 100%;
+        }
  }

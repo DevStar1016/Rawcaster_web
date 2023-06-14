@@ -137,6 +137,7 @@ const HomeLayout = () => {
               user_id: null,
               page_number: 1,
             };
+            console.log(filterData);
             filterData.formData = filterValidObject(filterData.formData);
             dispatch(handleResetNuggets());
             dispatch(handleNuggetFormData(filterValidObject(filterData)));
@@ -323,7 +324,7 @@ const HomeLayout = () => {
                       />
                       <Tooltip
                         title={loginUserData?.name}
-                        placement="right"
+                        placement="topLeft"
                         open={false}
                       >
                         <span
@@ -399,6 +400,7 @@ const HomeLayout = () => {
         <Content className="site-layout mainsec" id="home-container">
           <Outlet />
         </Content>
+
         {loginUserData && loginUserData.user_status_id > 1 && (
           <div className={classes.chatbotsec}>
             <ArtificialIntelligence />

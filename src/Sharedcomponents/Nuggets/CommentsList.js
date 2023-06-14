@@ -5,13 +5,18 @@ import {
   deleteNuggetCommentService,
   editNuggetCommentService,
 } from "../../Services/ApiService";
-import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
+import {
+  dateToShortDate,
+  decodeHtml,
+  isValidData,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import replyicon from "../../Assets/Images/svg/comment.svg";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
 import { Dropdown, Input } from "antd";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import ReplyList from "./ReplyList";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
@@ -28,6 +33,7 @@ const CommentsList = ({ index }) => {
     getNuggetDetail,
     setAgreedUsersList,
   } = useSingleNuggetContext();
+  const { userSettings } = useAuth();
   const loginUserData = useAuthData();
   const [CommentTxt, setCommentTxt] = useState([]);
   const [EditData, seteditData] = useState([]);
@@ -276,6 +282,14 @@ const CommentsList = ({ index }) => {
                             </div>
                           )}
                         </div>
+                        <span
+                          class={`material-symbols-outlined ${classes.closeIcon}`}
+                          onClick={() => {
+                            setisActiveEdit(null);
+                          }}
+                        >
+                          close
+                        </span>
                       </div>
                     ) : (
                       <div
@@ -393,7 +407,10 @@ const CommentsList = ({ index }) => {
                             <img src={replyicon} alt="reply_icon" /> Reply
                           </div>
                           <div className={classes.time}>
-                            {moment(elem?.created_date).fromNow(true)} ago
+                            {dateToShortDate(
+                              elem.commented_date,
+                              userSettings?.time_zone
+                            )}
                           </div>
                         </div>
                       </div>

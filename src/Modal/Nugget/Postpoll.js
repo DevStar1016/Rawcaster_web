@@ -52,9 +52,8 @@ const Postpoll = ({ setisPoll }) => {
       validateOnChange: true,
       validationSchema: schema,
       onSubmit: (value) => {
-        console.log(value);
-        // context.setPollData(value);
-        // context.handleSubmit();
+        context.setPollData(value);
+        context.handleSubmit();
       },
     });
 

@@ -3,9 +3,10 @@ import Heading from "./Heading";
 import ChatContent from "./Content";
 import AIIcon from "../../Assets/Icons/svg/AI_icon.svg";
 import classes from "./ArtificialIntelligence.module.css";
-import { Button, Popover } from "antd";
+import { Button, Drawer, Popover } from "antd";
 import { ChatBotContext } from "../../Shared/Context";
 import { useAuthData } from "../../Shared/Reduxfetcher";
+import { detectMob } from "../../Shared/Utility";
 
 const ArtificialIntelligence = () => {
   const userData = useAuthData();
@@ -35,10 +36,31 @@ const ArtificialIntelligence = () => {
 
   return (
     <ChatBotContext.Provider value={values}>
+      <Drawer
+        title={
+          <Heading
+            onClose={() => {
+              setisChatOpen(false);
+            }}
+          />
+        }
+        closable={false}
+        placement={"bottom"}
+        className="ai_chat"
+        width={500}
+        height="90%"
+        onClose={() => {
+          setMessages([]);
+          setisChatOpen(false);
+        }}
+        open={isChatOpen && detectMob()}
+      >
+        <ChatContent />
+      </Drawer>
       <Popover
         placement="leftBottom"
         className={classes.ChatBotBtnSec}
-        open={isChatOpen}
+        open={isChatOpen && !detectMob()}
         overlayClassName={`${classes.overLayClasses} chatbotClass`}
         title={
           <Heading

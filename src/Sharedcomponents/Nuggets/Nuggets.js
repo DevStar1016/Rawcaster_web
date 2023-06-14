@@ -153,7 +153,6 @@ const Nuggets = ({
         ...finalData.formData,
         page_number: page,
       };
-
       dispatch(fetchNuggetsbyId(finalData)).then((res) => {
         setisNuggetModify(null);
         setloading(false);
@@ -190,7 +189,7 @@ const Nuggets = ({
           ...finalData,
           formData: {
             ...finalData.formData,
-            search_key: splitData[2],
+            search_key: DecryptionString(splitData[2]),
           },
         };
       } else if (window.location.pathname.includes("viewprofile")) {

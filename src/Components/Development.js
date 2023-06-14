@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import userImg from "../Assets/Images/svg/userImg.svg";
 import classes from "./Dev.module.css";
+import { Dropdown } from "react-bootstrap";
+import { Button, Menu, Tooltip } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import Participants from "./Events/Room/Participants";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
 const Development = () => {
   const [MeetingId, setMeetingId] = useState("");
+
   return (
     <>
       <div className="h-100 p-5 mt-5 m-auto w-100">
@@ -41,6 +46,16 @@ const Development = () => {
       <div
         style={{
           background: "#563662",
+          height: "100%",
+          width: "20%",
+          margin: "auto",
+        }}
+      >
+        <Participants />
+      </div>
+      {/* <div
+        style={{
+          background: "#563662",
           height: 300,
         }}
       >
@@ -55,7 +70,7 @@ const Development = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
