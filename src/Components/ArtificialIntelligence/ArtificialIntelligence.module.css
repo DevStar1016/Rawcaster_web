@@ -10,6 +10,8 @@
   box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.07) !important;
   border-radius: 100px; padding: 5px;
 }
+
+
 .overLayClasses {
   max-width: 500px;
   width: 100%;
@@ -362,6 +364,12 @@ line-height: 26px;
     width: 32px !important;
     height: 32px !important;
   }
+.overLayClasses {
 
+left: 0px !important;
+bottom: 120px;
+top: auto !important;
+}
+.MessageBox { height: 290px !important;}
 }
 
