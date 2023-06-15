@@ -1,0 +1,314 @@
+/* Participants */
+.headerStyle {
+  padding-inline: 0px !important;
+  height: fit-content !important;
+}
+.headerStyle {
+  background-color: transparent !important;
+  border-bottom: 1px solid grey;
+}
+.footerSec,.chatFooterSec {
+
+
+  padding-inline: 0px !important;
+  height: fit-content !important;
+  background-color: #ffffff1a !important;
+}
+.headerStyle {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.footerSec {
+border-bottom-left-radius: 10px;
+border-bottom-right-radius: 10px;
+}
+.footerSec,.chatFooterSec {
+ 
+  padding: 20px 0px !important;
+  padding-bottom: 0px !important;
+}
+.popupContainer {
+    width: 100%;
+     height: 86vh;
+     background-color: #ffffff1a !important;
+     border-radius: 10px;
+   }
+   .popupHeader {
+    padding:  10px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+   }
+   .popupHeader div {
+    display: flex;
+    flex-direction: row;
+   }
+   .popupHeader i {
+    color: #FFFFFF;
+    margin: 0 5px;
+    cursor: pointer;
+   }
+   .participant_icon {
+    float: left;
+    width: 22px;
+    height: 22px;
+    background: #FFFFFF;
+    margin: 0 10px !important;
+    margin-bottom: 3px;
+    mask: url("../../../Assets/Icons/svg/Events/participants.svg") no-repeat center / contain;
+    -webkit-mask: url("../../../Assets/Icons/svg/Events/participants.svg") no-repeat center /
+      contain;
+  }
+  .popupContainer  p {
+    font-family: 'Gilroy-Bold';
+    font-size: 16px;
+    line-height: 25px;
+    margin-bottom: 0px !important;
+    color: #FFFFFF;
+  }
+
+  .GlobalSettingContainer ,.participantContainer{
+    margin:0 5px;
+    width: 98%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: #FFFFFF;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  .GlobalSettingContainer {
+    margin-bottom: 5px;
+  }
+  .participantContainer {
+    background-color: transparent !important;
+  }
+  .itemName {
+    font-family: 'Gilroy-Bold';
+    font-size: 14px;
+    line-height: 25px;
+    text-align: center;
+
+  }
+  .itemName img {
+    height: 25px;
+    margin-right: 10px;
+    background-color: #fff;
+    border-radius: 30px;
+    padding-top: 1px;
+  }
+  .participantContainer   .itemName {
+    font-family: "Gilroy-Regular";
+  }
+  
+  .itemAction {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .itemAction span {
+    margin: 0 3px;
+    cursor: pointer;
+    font-weight: 300;
+    font-size: 20px;
+  }
+  .participantSec {
+    height: fit-content;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-top: 10px;
+  }
+.inviteContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10%;
+  width: 100%;
+  padding-top: 10px;
+}
+.inviteContainer .inviteBtn {
+  text-align: center;
+  background-color:#F2718D ;
+  width: 90%;
+ padding: 10px;
+ border-radius: 10px;
+ cursor: pointer;
+}
+.inviteBtn  {
+  font-family: 'Gilroy-Bold';
+font-size: 17px;
+line-height: 21px;
+letter-spacing: 0.04em;
+text-align: center;
+color: #FFFFFF;
+}
+
+.redicon { margin-right: 0px; }
+.greenicon,
+.redicon {
+  float: right; margin-top: 10px; 
+  margin:2px 4px;
+  
+}
+.hostIcon {
+  font-size: 10px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color:#F2718D ;
+padding: 1px 4px;
+border-radius: 3px;
+}
+.redicon i {
+ background-color:  #F1F2F5;
+  color: #000000 !important;
+  cursor: pointer; 
+  border-radius: 50px;
+font-size: 15px;
+padding: 4px;
+}
+.greenicon i {
+  background-color:#18d350 !important;
+  color: #fff !important;
+  cursor: pointer; 
+  border-radius: 50px;
+font-size: 15px;
+padding: 4px;
+}
+
+
+/* Chat */
+
+.ContentSec {
+  display: flex;
+  flex-direction: row;
+  align-items:center ;
+  background-color: #FFFFFF;
+  border-radius:  20px;
+   margin: 0 5px;
+  margin-bottom: 5px;
+ 
+}
+.chatinputSec {
+  width: 100% !important;
+  background: #F1F2F5 !important;
+  border-radius:  20px;
+  display: flex;
+  align-items: center;
+}
+.chatinputSec span {
+  cursor: pointer;
+}
+.inSearch {   background: #F1F2F5 !important; padding-top: 5px;  border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
+.inSearch:focus {
+  border: none !important;
+  box-shadow: none !important;
+}
+.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 7; border-radius: 50px !important; background: #F2718D !important; width:45px;height: 45px; }
+.searchIcon span {color: #fff; }
+.SendIcon { 
+  color: #C4C4C4;
+}
+.tagContainer {
+  padding: 10px;
+  color: #FFFFFF;
+  width: fit-content;
+  margin: auto;
+}
+.tag {
+  margin-bottom: 5px;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+.messageContainer {
+ display: flex;
+ align-items: flex-start;
+ justify-content: flex-start;
+ margin: 10px;
+ color: #FFFFFF;
+}
+.usermessageContainer {
+ justify-content: flex-end;
+}
+.message {
+  display: flex;
+    padding: 10px;
+ background-color: rgba(255, 255, 255, 0.3);
+     width: fit-content;
+     border-radius: 10px;
+     max-width: 80%;
+}
+.usermessage {
+  flex-direction: row-reverse;
+background-color:#f2718d64 ;
+
+}
+.usermessage img {
+  display: none;
+}
+.message img {
+  height: 25px;
+  background-color: #fff;
+  border-radius: 35px;
+  padding-top: 2px;
+  margin-right: 10px;
+}
+.messagesec {
+  margin:0 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+ 
+
+
+}
+.usermessage .messagesec span {
+  display: none;
+  
+}
+.usermessage .messagesec p {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  
+}
+
+.chatBox {
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.messagesec p,.messagesec span {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  min-width: 50px;
+
+}
+.messagesec span {
+
+  font-weight: 500;
+  
+  }
+  .emojiContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+  }

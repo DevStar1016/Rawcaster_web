@@ -27,6 +27,7 @@
     margin-bottom: 5px;
   }
   .sidebar ul {
+
     padding: 0;
   }
   .sidebar  a,.sidebar  a:hover {
@@ -465,6 +466,9 @@
     }
     .unblkBtn {
       padding: 3px 5px;
+    }
+    .sidebar {
+      width: 50%;
     }
   }
   

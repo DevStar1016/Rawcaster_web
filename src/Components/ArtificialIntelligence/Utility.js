@@ -110,7 +110,15 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
 
 export const MessageContent = (props) => {
   const { setpostModalShow, setPostContent } = useGlobalContext();
-  const { message, user, index, read_out_url, OnReadoutResponse } = props;
+  const {
+    message,
+    user,
+    index,
+    read_out_url,
+    OnReadoutResponse,
+    isshareavailble,
+  } = props;
+  console.log(isshareavailble);
   const loginUserData = useAuthData();
   return (
     <div
@@ -142,21 +150,27 @@ export const MessageContent = (props) => {
         </div>
       </div>
       {!isUser(user) && (
-        <div className={`d-flex flex-row ${classes.optionSec}`}>
+        <div
+          className={`d-flex flex-row ${classes.optionSec} ${
+            !isshareavailble && classes.isSingleOption
+          }`}
+        >
           <ReadoutSec
             message={message}
             audiourl={read_out_url}
             index={index}
             onResponse={OnReadoutResponse}
           />
-          <p
-            onClick={() => {
-              setPostContent(message);
-              setpostModalShow(true);
-            }}
-          >
-            <i className={classes.share_icon}></i> Share
-          </p>
+          {isshareavailble && (
+            <p
+              onClick={() => {
+                setPostContent(message);
+                setpostModalShow(true);
+              }}
+            >
+              <i className={classes.share_icon}></i> Share
+            </p>
+          )}
         </div>
       )}
     </div>

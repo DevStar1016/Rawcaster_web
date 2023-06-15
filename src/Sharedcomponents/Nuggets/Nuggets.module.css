@@ -604,6 +604,14 @@ white-space: nowrap;
 .CategorySec .TabSec .activeSec {
   color:#f2718d ;
 }
+.comtArea {
+  display: flex;
+  align-items: center;
+}
+.comtArea .closeIcon {
+margin-left: 10px;
+cursor: pointer;
+}
 @media (max-width: 768px) {
   .nuggetSec {
     width: 100%;

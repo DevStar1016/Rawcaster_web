@@ -607,7 +607,19 @@ margin-bottom: 12px !important;
   .full_readmore {
     max-height: none;
   }
- 
+  .ai_chat .ant-drawer-body{
+    padding: 0px !important;
+    }
+    .ai_chat {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+     div:has(.settingsDrawer)  {
+      width: fit-content !important;
+    }
+    .settingsDrawer .ant-drawer-body {
+      padding: 0px !important;
+    }
 }
 
 /* @media (max-width: 600px) {

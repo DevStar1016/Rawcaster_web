@@ -5,15 +5,19 @@ import {
   deleteNuggetCommentService,
   editNuggetCommentService,
 } from "../../Services/ApiService";
-import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
+import {
+  dateToShortDate,
+  decodeHtml,
+  isValidData,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
 import { Dropdown, Input } from "antd";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
-import moment from "moment";
 
 const ReplyList = ({
   isReplyEnabled,
@@ -30,6 +34,7 @@ const ReplyList = ({
     handleNuggetCommentLike,
     setAgreedUsersList,
   } = useSingleNuggetContext();
+  const { userSettings } = useAuth();
   const loginUserData = useAuthData();
   const [ReplyTxt, setReplyTxt] = useState([]);
   const [ReplyList, setReplyList] = useState([]);
@@ -242,12 +247,14 @@ const ReplyList = ({
                             </div>
                             {showEmojis === elem.comment_id && (
                               <div
-                                style={{
-                                  position: "absolute",
-                                  // bottom: "90%",
-                                  // right: "50px",
-                                  // zIndex: 11,
-                                }}
+                                style={
+                                  {
+                                    // position: "absolute",
+                                    // bottom: "90%",
+                                    // right: "50px",
+                                    // zIndex: 11,
+                                  }
+                                }
                               >
                                 <EmojiPicker
                                   emojiButtonColors={["#364157"]}
@@ -302,6 +309,14 @@ const ReplyList = ({
                               </div>
                             )}
                           </div>
+                          <span
+                            class={`material-symbols-outlined ${classes.closeIcon}`}
+                            onClick={() => {
+                              setisActiveEdit(null);
+                            }}
+                          >
+                            close
+                          </span>
                         </div>
                       ) : (
                         <div className={classes.item}>
@@ -402,7 +417,10 @@ const ReplyList = ({
                               </span>
                             </div>
                             <div className={classes.time}>
-                              {moment(elem?.created_date).fromNow(true)} ago
+                              {dateToShortDate(
+                                elem.commented_date,
+                                userSettings?.time_zone
+                              )}
                             </div>
                           </div>
                         </div>

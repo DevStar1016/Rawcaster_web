@@ -1,11 +1,41 @@
-import React, { useState } from "react";
-import userImg from "../Assets/Images/svg/userImg.svg";
-import classes from "./Dev.module.css";
+import React, { useEffect, useState } from "react";
+import { Avatar, List, message } from "antd";
+import VirtualList from "rc-virtual-list";
+import ChatBox from "./Events/Room/ChatBox";
+import { RosterAttendee } from "amazon-chime-sdk-component-library-react";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
+const fakeDataUrl =
+  "https://randomuser.me/api/?results=20&inc=name,gender,email,nat,picture&noinfo";
+const ContainerHeight = 400;
+
 const Development = () => {
   const [MeetingId, setMeetingId] = useState("");
+  const [data, setData] = useState([]);
+
+  const appendData = () => {
+    fetch(fakeDataUrl)
+      .then((res) => res.json())
+      .then((body) => {
+        setData(data.concat(body.results));
+        // message.success(`${body.results.length} more items loaded!`);
+      });
+  };
+
+  useEffect(() => {
+    appendData();
+  }, []);
+
+  const onScroll = (e) => {
+    if (
+      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
+      ContainerHeight
+    ) {
+      appendData();
+    }
+  };
+
   return (
     <>
       <div className="h-100 p-5 mt-5 m-auto w-100">
@@ -38,24 +68,18 @@ const Development = () => {
           Join Meeting
         </button>
       </div>
+
       <div
         style={{
           background: "#563662",
-          height: 300,
+          height: "100%",
+          width: "20%",
+          margin: "auto",
         }}
       >
-        <div className={classes.Child}>
-          <img src={userImg} />
-          <p>{"participant"}</p>
-          <div className={classes.overlaySec}>
-            <div className={classes.actionContainer}>
-              <span class="material-symbols-outlined">mic</span>
-              <span class="material-symbols-outlined">videocam</span>
-              <span class="material-symbols-outlined">push_pin</span>
-            </div>
-          </div>
-        </div>
+        <ChatBox />
       </div>
+      <br />
     </>
   );
 };

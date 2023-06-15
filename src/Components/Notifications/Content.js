@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Notification.module.css";
 import { useNotificationContext } from "../../Shared/Context";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
@@ -6,14 +6,18 @@ import { NotificationsList } from "./Utility";
 import { DeleteNotificationService } from "../../Services/ApiService";
 import { JSONtoformdata } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
-import { Empty } from "antd";
+import { Empty, Skeleton } from "antd";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 
 const Content = ({ elem }) => {
+  const containerRef = useRef();
+  const pageRef = useRef();
+  const [loading, setloading] = useState(false);
+  const [isReachedEnd, setisReachedEnd] = useState(false);
   const { userSettings } = useAuth();
   const token = useAuthToken();
   const { getNotificationList, handleViewNotification, markallAsRead } =
     useNotificationContext();
-  const [NoResultMsg, setNoResultMsg] = useState("");
   const [Pages, setPages] = useState({
     Page: 0,
     totalPages: 0,
@@ -33,7 +37,6 @@ const Content = ({ elem }) => {
       getNotificationList(formData).then((res) => {
         const { today, yesterday, older, total_pages, current_page_no, msg } =
           res;
-        setNoResultMsg(msg);
         if (current_page_no === 1) {
           setNotificationList({ today, yesterday, older });
         } else if (current_page_no !== 0) {
@@ -114,8 +117,51 @@ const Content = ({ elem }) => {
     });
   };
 
+  const loadMore = () => {
+    if (!getHasNextPage()) {
+      setloading(false);
+      setisReachedEnd(false);
+    } else if (isReachedEnd && getHasNextPage() && !loading) {
+      setloading(true);
+      pageRef.current = pageRef.current + 1;
+      getFansData(pageRef.current);
+    }
+  };
+
+  const getHasNextPage = () => {
+    return Pages.totalPages && pageRef.current !== Pages.totalPages;
+  };
+
+  const [sentryRef, { rootRef }] = useInfiniteScroll({
+    loading: loading,
+    hasNextPage: getHasNextPage(),
+    onLoadMore: loadMore,
+  });
+
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        setisReachedEnd(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
   return (
-    <div className={classes.listSec}>
+    <div className={classes.listSec} ref={containerRef}>
       {Pages.totalPages === 0 && (
         <div className={classes.noResultSec}>
           <Empty description="No Notifications" />
@@ -190,17 +236,11 @@ const Content = ({ elem }) => {
           ))}
         </>
       )}
-      <div
-        className={classes.seemoreSec}
-        style={{
-          display: Pages.Page < Pages.totalPages ? "" : "none",
-        }}
-        onClick={() => {
-          getFansData(Pages.Page + 1);
-        }}
-      >
-        Load More <span class="material-icons">arrow_forward</span>
-      </div>
+      {loading || getHasNextPage() ? (
+        <div className="text-center py-2" ref={sentryRef}>
+          <Skeleton active />
+        </div>
+      ) : null}
     </div>
   );
 };

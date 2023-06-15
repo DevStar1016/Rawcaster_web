@@ -713,6 +713,9 @@ const Post = ({
                     isLinkopenModal={isLinkopenModal}
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
+                    onExpand={(status) => {
+                      setiscollapse(status);
+                    }}
                     isReadMoreValid={() => {
                       setisvalidContent(true);
                     }}

@@ -619,6 +619,7 @@ export const ReadMore = ({
         <>
           <Paragraph
             className="ReadMoreText"
+
             // style={{ cursor: "pointer", wordBreak: "break-all" }}
           >
             {children}

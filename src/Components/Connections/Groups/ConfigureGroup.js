@@ -165,17 +165,20 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         let findUser = members.findIndex(
           (ele) => parseInt(ele.user_id) === parseInt(userData?.user_id)
         );
-
-        let removedObj = members.splice(findUser, 1)[0];
-        members.splice(0, 0, removedObj);
-        setGroupMembers(members);
-        setisOwner(
-          parseInt(findData?.group_owner) === parseInt(userData?.user_id)
-        );
+        if (findUser) {
+          let removedObj = members.splice(findUser, 1)[0];
+          members.splice(0, 0, removedObj);
+          setGroupMembers(members);
+          setisOwner(
+            parseInt(findData?.group_owner) === parseInt(userData?.user_id)
+          );
+        }
         setValues((pre) => ({
           group_name: findData?.group_name,
           group_icon: findData?.group_icon,
-          group_members: JSON.stringify(findData?.group_member_ids),
+          group_members: findUser
+            ? JSON.stringify(findData?.group_member_ids)
+            : [],
         }));
       } else {
         setValues((pre) => ({
