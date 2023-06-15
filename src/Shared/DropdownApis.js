@@ -57,14 +57,17 @@ export const getlanguagelist = () => {
         let filterData = res.data.language_list.map((ele) => {
           return { ...ele, label: ele.name, value: ele.name };
         });
+        let readoutfilterData = res.data.read_out_language_list.map((ele) => {
+          return { ...ele, label: ele.name, value: ele.name };
+        });
         if (filterData.length !== 0) {
-          resolve(filterData);
+          resolve({ default: filterData, read_out: readoutfilterData });
         } else {
-          resolve([]);
+          resolve({ default: [], read_out: [] });
         }
       })
       .catch((err) => {
-        resolve([]);
+        resolve({ default: [], read_out: [] });
       });
   });
   return promise;

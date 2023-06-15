@@ -24,7 +24,7 @@ justify-content: space-between;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 85px;
+    /* width: 85px; */
     margin: auto;
     margin-bottom: 5px;
 }

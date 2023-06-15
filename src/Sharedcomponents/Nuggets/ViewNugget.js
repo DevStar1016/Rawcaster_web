@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getNuggetDetailService } from "../../Services/ApiService";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
 import {
@@ -12,12 +12,16 @@ import classes from "./Nuggets.module.css";
 import { Spinner } from "react-bootstrap";
 import { NuggetSEO, PollNuggetSEO } from "../../Components/SEO/SEOContent";
 import Seo from "../../Components/SEO/Seo";
+import { ListNuggetContext } from "../../Shared/Context";
 const ViewNugget = () => {
   const { nugID } = useParams();
+  const ReadSource = useRef(null);
   const navigate = useNavigate();
   const nugget_id = nugID ? DecryptionString(nugID) : null;
   const Token = useAuthToken();
   const [NuggetData, setNuggetData] = useState();
+  const [audio, setAudio] = useState(null);
+  const [isPlaying, setisPlaying] = useState(null);
 
   const getNuggetDetail = () => {
     let nuggetDetailData = {
@@ -39,6 +43,7 @@ const ViewNugget = () => {
 
   useEffect(() => {
     if (Token) {
+      console.log(nugget_id);
       getNuggetDetail();
     }
   }, [Token, nugget_id]);
@@ -59,40 +64,50 @@ const ViewNugget = () => {
     }
   };
 
+  const ListNuggetData = {
+    audio,
+    setAudio,
+    isPlaying,
+    setisPlaying,
+    ReadSource,
+  };
+
   return (
-    <div className={classes.viewDetailNugget}>
-      <div className={classes.mainPost}>
-        <Seo
-          title={getOriginalName().title}
-          description={getOriginalName().description}
-        />
-        {NuggetData ? (
-          <Post
-            index={0}
-            isCommentShow={true}
-            ele={NuggetData}
-            muted={false}
-            setmuted={(status) => {}}
-            handleLike={(like) => {
-              let tempData = { ...NuggetData };
-              tempData = {
-                ...tempData,
-                liked: like === 1 ? true : false,
-                total_likes:
-                  like === 1
-                    ? tempData.total_likes + 1
-                    : tempData.total_likes - 1,
-              };
-              setNuggetData(tempData);
-            }}
+    <ListNuggetContext.Provider value={ListNuggetData}>
+      <div className={classes.viewDetailNugget}>
+        <div className={classes.mainPost}>
+          <Seo
+            title={getOriginalName().title}
+            description={getOriginalName().description}
           />
-        ) : (
-          <div className={classes.LoadingSec}>
-            <Spinner animation="border" color="#563662" />
-          </div>
-        )}
+          {NuggetData ? (
+            <Post
+              index={0}
+              isCommentShow={true}
+              ele={NuggetData}
+              muted={false}
+              setmuted={(status) => {}}
+              handleLike={(like) => {
+                let tempData = { ...NuggetData };
+                tempData = {
+                  ...tempData,
+                  liked: like === 1 ? true : false,
+                  total_likes:
+                    like === 1
+                      ? tempData.total_likes + 1
+                      : tempData.total_likes - 1,
+                };
+                setNuggetData(tempData);
+              }}
+            />
+          ) : (
+            <div className={classes.LoadingSec}>
+              <Spinner animation="border" color="#563662" />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </ListNuggetContext.Provider>
   );
 };
 

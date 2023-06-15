@@ -1,5 +1,5 @@
-.fullcontainer { position: relative; height: 100vh; padding-top: 67px; margin: auto;  max-width: 1350px; width: 95%; }
-.ribbon { color:#fff; font-size: 16px; font-weight: 300; position: fixed; top: calc(50% - 25px); background: #563662; width: 100%; z-index: 1; left: 0;}
+.fullcontainer { position: relative; height: 100vh; margin: auto;  max-width: 1350px; width: 95%; padding-top: 67px;}
+.ribbon { color:#fff; font-size: 16px; font-weight: 300; position: fixed; top: calc(50% - 25px); background: #563662; width: 100%; z-index: 3;; left: 0;}
 .ribbon span { padding-left: 5px; }
 .ribbon a, .ribbon a:hover { color: #fff; text-decoration: none;  display: flex; align-items: center; justify-content: center;  height: 50px;}
 .smlogo { height: 22px; margin-right:10px;}

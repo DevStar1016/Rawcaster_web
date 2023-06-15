@@ -17,6 +17,7 @@ import { handleAccountActive } from "../../Store/Redux/Reducer/AuthReducer";
 import { fetchuserSettingsbyToken } from "../../Store/Redux/Action";
 import Seo from "../SEO/Seo";
 import { SettingsSEO } from "../SEO/SEOContent";
+import { Drawer } from "antd";
 
 const Settings = () => {
   const { userSettings } = useAuth();
@@ -76,6 +77,7 @@ const Settings = () => {
     lock_my_influencer: 0,
     live_event_banner: "",
     talkshow_event_banner: "",
+    read_out_language_id: "",
   });
 
   useEffect(() => {
@@ -127,6 +129,7 @@ const Settings = () => {
         lock_my_influencer: userSettings?.lock_my_influencer,
         live_event_banner: userSettings?.live_event_banner,
         talkshow_event_banner: userSettings?.talkshow_event_banner,
+        read_out_language_id: userSettings?.read_out_language_id,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -237,6 +240,85 @@ const Settings = () => {
   return (
     <SettingsContext.Provider value={settingsValues}>
       <div className={classes.settingSec}>
+        {/* <Drawer
+          placement="left"
+          closable={false}
+          onClose={() => {
+            setvisibleSideBar(false);
+          }}
+          className="settingsDrawer"
+          open={visibleSideBar}
+        >
+          <div className={`${classes.sidebar}  `}>
+            <Nav variant="pills" className="flex-column">
+              <h2>Settings</h2>
+              <Nav.Item>
+                <Nav.Link
+                  className={activeTab === 1 ? classes.active : ""}
+                  onClick={() => {
+                    setActiveTab(1);
+                    setvisibleSideBar(false);
+                  }}
+                  eventKey="general"
+                >
+                  General
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  className={activeTab === 2 ? classes.active : ""}
+                  onClick={() => {
+                    setActiveTab(2);
+                    setvisibleSideBar(false);
+                  }}
+                  disabled={userSettings?.account_active_inactive === 0}
+                  eventKey="notifications"
+                >
+                  Notifications
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  className={activeTab === 3 ? classes.active : ""}
+                  disabled={userSettings?.account_active_inactive === 0}
+                  onClick={() => {
+                    setActiveTab(3);
+                    setvisibleSideBar(false);
+                  }}
+                  eventKey="blocking"
+                >
+                  Blocking
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  className={activeTab === 4 ? classes.active : ""}
+                  disabled={userSettings?.account_active_inactive === 0}
+                  onClick={() => {
+                    setActiveTab(4);
+                    setvisibleSideBar(false);
+                  }}
+                  eventKey="change_password"
+                >
+                  Change Password
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  className={activeTab === 5 ? classes.active : ""}
+                  disabled={userSettings?.account_active_inactive === 0}
+                  onClick={() => {
+                    setActiveTab(5);
+                    setvisibleSideBar(false);
+                  }}
+                  eventKey="event_setting"
+                >
+                  Event Settings
+                </Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </div>
+        </Drawer> */}
         <div
           className={`${classes.sidebar}  ${
             !visibleSideBar ? classes.hideSlidebar : null

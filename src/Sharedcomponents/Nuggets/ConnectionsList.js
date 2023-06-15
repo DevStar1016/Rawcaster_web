@@ -19,7 +19,6 @@ const ConnectionsList = () => {
     share_type,
   } = useSpecificConnectionNugget();
   const { friendsList } = useDashboard();
-
   useEffect(() => {
     if (friendsList) {
       setConnectionData(friendsList);
@@ -33,12 +32,11 @@ const ConnectionsList = () => {
         }
       });
       findData = findData.filter((ele) => ele !== undefined);
+      console.log(findData);
       setFilteredList(findData);
-      setConnectionData(
-        friendsList.filter((ele) => !shareWithData.includes(ele.user_id))
-      );
+      setConnectionData(friendsList);
     }
-  }, [friendsList, open, type]);
+  }, [friendsList, open, type, shareWithData]);
 
   const isSelectedConnection = (user_id) => {
     const findData = FilteredList.find(

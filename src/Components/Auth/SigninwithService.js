@@ -101,36 +101,38 @@ const SigninwithService = ({ type }) => {
       </div>
       <Row className="my-2 g-2">
         <Col sm={6}>
-          <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-            <LoginSocialGoogle
-              client_id={GOOGLE_CLIENT_ID}
-              redirect_uri={PRIMARY_REDIRECT_URI}
-              scope="openid profile email"
-              discoveryDocs="claims_supported"
-              access_type="offline"
-              onResolve={({ provider, data }) => {
-                let resultVal = {
-                  signin_type: 5,
-                  first_name: data.name,
-                  display_name: data.name,
-                  email_id: data.email,
-                };
-                HandleSignup(resultVal);
-                dispatch(handleLoading(true));
+          <LoginSocialGoogle
+            client_id={GOOGLE_CLIENT_ID}
+            redirect_uri={PRIMARY_REDIRECT_URI}
+            scope="openid profile email"
+            discoveryDocs="claims_supported"
+            access_type="offline"
+            onResolve={({ provider, data }) => {
+              console.log(data, "data");
+              let resultVal = {
+                signin_type: 5,
+                first_name: data.name,
+                display_name: data.name,
+                email_id: data.email,
+              };
+              console.log(resultVal, "resultVal");
+              HandleSignup(resultVal);
+              dispatch(handleLoading(true));
+            }}
+            onReject={(err) => {
+              console.log(err, "err");
+            }}
+          >
+            <button
+              className={classes.altSignBtn}
+              onClick={() => {
+                // Makes sure the page reloads. Changes are only visible after you refresh.
               }}
-              onReject={(err) => {}}
             >
-              <button
-                className={classes.altSignBtn}
-                onClick={() => {
-                  // Makes sure the page reloads. Changes are only visible after you refresh.
-                }}
-              >
-                <img src={GoogleIcon} alt={`${type} with Google`} /> {type} with
-                Google
-              </button>
-            </LoginSocialGoogle>
-          </form>
+              <img src={GoogleIcon} alt={`${type} with Google`} /> {type} with
+              Google
+            </button>
+          </LoginSocialGoogle>
         </Col>
 
         <Col sm={6}>

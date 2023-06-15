@@ -73,11 +73,16 @@ const SuggestedAccounts = () => {
                     currentTarget.src = defaultprofileImg;
                   }}
                 />
-
-                <p className={classes.name}>{decodeHtml(ele?.display_name)}</p>
-                {ele.category && ele.category.length !== 0 && (
-                  <p className={classes.username}>{ele.category.toString()}</p>
-                )}
+                <div className="d-flex flex-column w-100">
+                  <p className={classes.name}>
+                    {decodeHtml(ele?.display_name)}
+                  </p>
+                  {ele.category && ele.category.length !== 0 && (
+                    <p className={classes.username}>
+                      {ele.category.toString()}
+                    </p>
+                  )}
+                </div>
               </div>
               <div
                 className={classes.becameFan}

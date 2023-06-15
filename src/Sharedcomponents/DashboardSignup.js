@@ -6,6 +6,7 @@ import AppleIcon from "../Assets/Icons/png/apple_logo.png";
 import { LoginSocialApple, LoginSocialGoogle } from "reactjs-social-login";
 import {
   APPLE_API_KEY,
+  DEFAULT_VIDEO,
   GOOGLE_CLIENT_ID,
   PRIMARY_REDIRECT_URI,
   SECONDARY_REDIRECT_URI,
@@ -117,7 +118,7 @@ const DashboardSignup = () => {
                 playsInline
                 preload="metadata"
                 controlsList="nodownload"
-                src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001"
+                src={DEFAULT_VIDEO}
                 poster={VideoThumb}
                 type="video/mp4"
                 onPlayCapture={() => {

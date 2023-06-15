@@ -15,15 +15,21 @@ import { getValidDisplayData } from "./Utility";
 import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
 import { grouplistupdateService } from "../../Services/ApiService";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { useDispatch } from "react-redux";
+import { handleRemoveReadoutURL } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const General = () => {
   const { formikvalues, setFieldValue, setupdateValue, updateValue } =
     useSettingsContext();
+  const dispatch = useDispatch();
   const token = useAuthToken();
   const { loginUserData, userSettings } = useAuth();
   const { groupsList, friendsList } = useDashboard();
   const [TimeZones, setTimeZones] = useState([]);
-  const [LanguagesList, setLanguagesList] = useState([]);
+  const [LanguagesList, setLanguagesList] = useState({
+    default: [],
+    read_out: [],
+  });
 
   useEffect(() => {
     Promise.all([getTimeZone(), getlanguagelist()]).then((res) => {
@@ -317,7 +323,7 @@ const General = () => {
               placeholder="Search Preference Language"
               optionFilterProp="children"
               value={getValidDisplayData(
-                LanguagesList,
+                LanguagesList.default,
                 formikvalues.language_id,
                 "id"
               )}
@@ -329,12 +335,44 @@ const General = () => {
                   .toLowerCase()
                   .localeCompare((optionB?.label ?? "").toLowerCase())
               }
-              options={LanguagesList}
+              options={LanguagesList.default}
               onChange={(_, { id }) => {
                 setupdateValue("language_id", id);
               }}
               disabled={
                 updateValue.includes("language_id") ||
+                userSettings?.account_active_inactive === 0
+              }
+            />
+          </div>
+          <div>
+            <p className={classes.smallheading}>Readout Language</p>
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              className={`mt-2 ${classes.SelectSec} settingsSelect`}
+              placeholder="Search Preference Language"
+              optionFilterProp="children"
+              value={getValidDisplayData(
+                LanguagesList.read_out,
+                formikvalues.read_out_language_id,
+                "id"
+              )}
+              filterOption={(input, option) =>
+                (option?.label ?? "").includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? "")
+                  .toLowerCase()
+                  .localeCompare((optionB?.label ?? "").toLowerCase())
+              }
+              options={LanguagesList.read_out}
+              onChange={(_, { id }) => {
+                setupdateValue("read_out_language_id", id);
+                dispatch(handleRemoveReadoutURL());
+              }}
+              disabled={
+                updateValue.includes("read_out_language_id") ||
                 userSettings?.account_active_inactive === 0
               }
             />

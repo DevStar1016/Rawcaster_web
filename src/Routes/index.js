@@ -2,6 +2,7 @@ import NotFound from "../Components/NotFound/NotFound";
 import ModalLayout from "../Layouts/ModalLayout";
 import { AuthRoute } from "./AuthRoutes";
 import { DashboardRoute } from "./DashboardRoute";
+import { EventRoute } from "./EventRoute";
 import { ProfileRoute } from "./ProfileRoutes";
 
 export const routerpaths = [
@@ -12,7 +13,12 @@ export const routerpaths = [
     children: [
       {
         path: "/",
-        children: [...AuthRoute, ...DashboardRoute, ...ProfileRoute],
+        children: [
+          ...AuthRoute,
+          ...DashboardRoute,
+          ...ProfileRoute,
+          ...EventRoute,
+        ],
       },
     ],
   },

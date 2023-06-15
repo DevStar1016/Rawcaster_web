@@ -6,6 +6,7 @@ import { PostNuggetContext } from "../../Shared/Context";
 import PollDateinputBox from "../../Sharedcomponents/PollDateinputBox";
 import classes from "../Modal.module.css";
 import * as Yup from "yup";
+import { isArray } from "lodash";
 
 const schema = Yup.object().shape({
   content: Yup.string()
@@ -137,11 +138,16 @@ const Postpoll = ({ setisPoll }) => {
                         )
                       }
                     />
+                    {isArray(touched.poll_option) && (
+                      <p className="ErrTxt">
+                        {errors?.poll_option?.[index]?.choiceData}
+                      </p>
+                    )}
                   </Col>
                 );
               })}
             </Row>
-            {touched.poll_option && (
+            {touched.poll_option && !isArray(touched.poll_option) && (
               <p className="ErrTxt">{errors?.poll_option}</p>
             )}
             <Row>

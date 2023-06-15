@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import classes from "./Homepage.module.css";
 import thumblogo from "../../Assets/Images/svg/Fav-Rawcaster.svg";
@@ -8,9 +8,12 @@ import ngozijones from "../../Assets/Images/png/ngozijones.png";
 import william from "../../Assets/Images/png/william.png";
 import abel from "../../Assets/Images/png/abel.png";
 import OwlCarousel from "react-owl-carousel";
+import { Modal } from "antd";
+import { DEFAULT_VIDEO } from "../../Shared/Constant";
 // import { Carousel } from '@trendyol-js/react-carousel';
 
 const Homepage = () => {
+  const [isVideoOpen, setisVideoOpen] = useState(false);
   const carouselOptions = {
     items: 3.5,
     nav: false,
@@ -46,7 +49,13 @@ const Homepage = () => {
           <div className={classes.rightSec}>
             <img
               src={require("../../Assets/Images/welcome.gif")}
+              style={{
+                cursor: "pointer",
+              }}
               alt="Welcome"
+              onClick={() => {
+                setisVideoOpen(true);
+              }}
             />
           </div>
         </div>
@@ -340,6 +349,29 @@ const Homepage = () => {
           </div>
         </div>
       </div>
+      {isVideoOpen && (
+        <Modal
+          centered
+          open={isVideoOpen}
+          footer={null}
+          onCancel={() => {
+            setisVideoOpen(false);
+          }}
+        >
+          <video
+            width="100%"
+            height="100%"
+            controls
+            style={{ zIndex: 500 }}
+            disablePictureInPicture
+            playsInline
+            preload="metadata"
+            controlsList="nodownload"
+            src={DEFAULT_VIDEO}
+            type="video/mp4"
+          />
+        </Modal>
+      )}
     </div>
   );
 };

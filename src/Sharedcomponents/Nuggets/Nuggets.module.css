@@ -111,6 +111,11 @@ border-radius: 30px;
   font-weight: 600;
   cursor: pointer;
 }
+.proName .verifiedImg {
+  height: 15px;
+  margin-bottom: 4px;
+  margin-left: 5px;
+}
 .proName span {
   color: #1d1c1c;
   font-size: 11px;
@@ -599,6 +604,14 @@ white-space: nowrap;
 .CategorySec .TabSec .activeSec {
   color:#f2718d ;
 }
+.comtArea {
+  display: flex;
+  align-items: center;
+}
+.comtArea .closeIcon {
+margin-left: 10px;
+cursor: pointer;
+}
 @media (max-width: 768px) {
   .nuggetSec {
     width: 100%;
@@ -701,7 +714,7 @@ white-space: nowrap;
   .cmtSec .comtArea .textBox .emojiicon {
     right: 42px;
     top: 12px;
-    height: 20px;
+    height: 20px; 
   }
   .resultnuggetSec {
     padding: 0;

@@ -1,0 +1,172 @@
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+  }
+  .video_grid  {
+    display: block;
+    height: calc(90vh - 10px) ;
+    width: 100%;
+    overflow-y: scroll;
+    background-color: #392342;
+    margin-top: 45px;
+  
+  }
+
+  .full_container, .Half_container ,.grid_3_boxes ,.grid_4_boxes,.grid_5_boxes,.grid_initial_3_boxes ,.grid_initial_4_boxes,.grid_initial_5_boxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: auto;
+    margin-top: 5px;
+    height:calc(100% - 20px) !important;
+    
+     border-radius: 10px !important;
+     overflow: hidden;
+  }
+  .isPinavailableSec .Child {
+    min-height: 185px !important;
+  }
+  .Child video {
+    border-radius: 10px !important;
+  }
+  .Child {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #ffffff1a !important;
+    border-radius: 10px;
+    min-height: 20% !important;
+    color: #FFFFFF;
+    /* box-shadow: 0px 0px 70px rgba(0, 0, 0, 0.2); */
+  
+  }
+  .Child img,.pinned_video img{
+    border: 3px solid rgba(255, 255, 255, 0.652);
+    height: 70px;
+    width: 70px;
+    border-radius: 73px;
+    margin-bottom: 10px;
+  }
+  .Child p,.pinned_video p {
+    margin-bottom: 0px !important;
+    font-size: 12px;
+  }
+  .pinned_video {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 5px auto;
+    background-color: #ffffff1a !important;
+    border-radius: 10px;
+    height: 100%;
+    width:calc(45% - 30px);
+    color: #FFFFFF;
+    /* box-shadow: 0px 0px 70px rgba(0, 0, 0, 0.2); */
+  }
+  .Half_container .Child {
+    display: block;
+    width:calc(50% - 10px);
+  }
+  .full_container .Child {
+    display: block;
+    margin: 2px;
+   width:calc(100% - 30px);
+   background-color: #61dafb;
+  }
+  .grid_3_boxes,.grid_initial_3_boxes {
+    width:calc(100% - 30px);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Create three equal-width columns */
+    gap: 5px; 
+  }
+  .grid_initial_3_boxes {
+    grid-template-columns: repeat(2, 2fr);
+  }
+  .grid_3_boxes .Child,.grid_initial_3_boxes .Child {
+    background-color:#61dafb;
+    padding: 20px;
+  
+  }
+  
+  .grid_4_boxes ,.grid_initial_4_boxes {
+    width:calc(100% - 30px);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Create three equal-width columns */
+    gap: 5px;
+  }
+  .grid_initial_4_boxes {
+    grid-template-columns: repeat(2, 2fr); /* Create three equal-width columns */
+  }
+  .grid_4_boxes .Child,.grid_initial_4_boxes .Child {
+    background-color:#61dafb;
+    padding: 20px;
+  
+  }
+  .grid_5_boxes .Child,.grid_initial_5_boxes .Child {
+    background-color:#61dafb;
+    padding: 20px;
+   
+  }
+  .grid_5_boxes ,.grid_initial_5_boxes {
+    width:calc(100% - 30px);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Create three equal-width columns */
+    gap: 5px; 
+  }
+  .grid_initial_5_boxes {
+    grid-template-columns: repeat(3, 2fr);
+  }
+  .participantsSec {
+    width: 20%;
+  }
+  
+  .videoBox {
+    display: flex;
+    justify-content: center;
+  }
+  .isPinavailableSec {
+    height: 46%;
+  }
+  .isPinavailablePinSec {
+    height: 52%;
+  }
+  .ParticipantSec {
+    height: 50%;
+  }
+  .ParticipantSec {
+    height: 100%;
+  }
+  .isPinavailableSec::-webkit-scrollbar {
+    display: none !important;
+  }
+  .PinSec {
+    display: none !important;
+  }
+  .video_grid::-webkit-scrollbar ,.ParticipantSec::-webkit-scrollbar  {
+    display: none !important;
+  }
+  
+  @media (max-width:768px) {
+    .Half_container {
+      flex-direction: column;
+    }
+    .Child  {
+       min-height: 180px !important;
+    }
+    .Half_container .Child {
+      width:calc(100% - 30px);
+      height: 48%;
+    }
+    .grid_5_boxes {
+      grid-template-columns: repeat(2, 2fr); /* Create three equal-width columns */
+    }
+  
+    .grid_initial_5_boxes {
+      grid-template-columns: repeat(2, 3fr);
+    }
+    .pinned_video {
+      width:calc(100% - 30px);
+    }
+  }

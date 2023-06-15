@@ -63,11 +63,10 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   };
 
   const isNotExpired = () => {
-    const createdTime = utctoUserTimezone(
-      ele.start_date_time,
-      userSettings?.time_zone
-    );
-    if (moment(createdTime).isBefore()) {
+    const momenttimezone = require("moment-timezone");
+    const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
+    console.log(ele.start_date_time, currentTime);
+    if (moment(ele.start_date_time).isBefore(currentTime)) {
       return false;
     }
     return true;

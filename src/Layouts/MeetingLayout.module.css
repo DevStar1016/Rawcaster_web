@@ -1,0 +1,124 @@
+.BottomContainer {
+   
+    position: fixed;
+     background-color: #563662;
+     bottom: 0;
+     width: 100%;
+     display: flex;
+     flex-direction: row;
+     justify-content: space-between;
+     align-items: center;
+     font-size: 13px;
+     font-weight: 500;
+ }
+ .startContainer {
+      display: flex;
+     flex-direction: row;
+     width: 30%;
+ }
+ .endContainer {
+     display: flex;
+     flex-direction: row;
+     justify-content: end;
+     width: 30%;
+ }
+ .meetingContainer {
+     width: 80%;
+     height: calc(100% - 55px);
+ }
+ .VideotileConteiner {
+     width: 100%;
+ }
+ .Videotile {
+     border-radius: 10px;
+     overflow: hidden;
+ }
+ .Actionsec {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     padding: 10px 0;
+     color: #FFFFFF;
+     cursor: pointer;
+     margin:0 15px;
+   
+     white-space: nowrap;
+ }
+ .icon {
+     float: left;
+     width: 22px;
+     height: 22px;
+     background: #FFFFFF;
+     margin-bottom: 3px;
+ }
+ .spanicon {
+  background: transparent !important;
+ }
+ .present_icon {
+     mask: url("../Assets/Icons/svg/Events/share.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/share.svg") no-repeat center /
+       contain;
+   }
+   .mute_icon {
+    margin-right: 5px !important;
+    margin-bottom: 1px !important;
+     mask: url("../Assets/Icons/svg/Events/mute.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/mute.svg") no-repeat center /
+       contain;
+   }
+ 
+   .unmute_icon {
+    margin-right: 5px !important;
+    margin-bottom: 1px !important;
+     mask: url("../Assets/Icons/svg/Events/unmute.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/unmute.svg") no-repeat center /
+       contain;
+   }
+   .video_icon {
+    margin-right: 5px !important;
+    margin-bottom: 1px !important;
+     mask: url("../Assets/Icons/svg/Events/video.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/video.svg") no-repeat center /
+       contain;
+   }
+   .video_off_icon {
+    margin-right: 5px !important;
+    margin-bottom: 1px !important;
+    width: 26px;
+    height: 26px;
+     mask: url("../Assets/Icons/svg/Events/videooff.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/videooff.svg") no-repeat center /
+       contain;
+   }
+ 
+   .exit_icon {
+     mask: url("../Assets/Icons/svg/Events/exit.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/exit.svg") no-repeat center /
+       contain;
+       background: red;
+   }
+   .chat_icon {
+       width: 18px;
+    height: 18px;
+    margin-bottom: 5px;
+     mask: url("../Assets/Icons/svg/Events/chat.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/chat.svg") no-repeat center /
+       contain;
+   }
+   .participant_icon {
+     mask: url("../Assets/Icons/svg/Events/participants.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/participants.svg") no-repeat center /
+       contain;
+   }
+   .raise_hand_icon {
+    /* width: 25px;
+    height: 25px; */
+    margin-bottom: 3px;
+     mask: url("../Assets/Icons/svg/Events/raisehand_1.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/raisehand_1.svg") no-repeat center /
+       contain;
+   }
+   .DropdownBtn {
+    margin: 10px 0;
+   }

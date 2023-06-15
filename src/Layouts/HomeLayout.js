@@ -47,10 +47,12 @@ import {
 import Notification from "../Components/Notifications";
 import ArtificialIntelligence from "../Components/ArtificialIntelligence";
 import { GlobalContext } from "../Shared/Context";
+import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
 
 const HomeLayout = () => {
   const params = useParams();
   const inputRef = useRef();
+  const meetingManager = useMeetingManager();
   const [postModalShow, setpostModalShow] = useState(false);
   const [PostContent, setPostContent] = useState(null);
   const { pathname } = useLocation();
@@ -119,6 +121,7 @@ const HomeLayout = () => {
     setpostModalShow,
     setPostContent,
     PostContent,
+    meetingManager,
   };
 
   const handleGlobalSearch = (e) => {
@@ -134,6 +137,7 @@ const HomeLayout = () => {
               user_id: null,
               page_number: 1,
             };
+            console.log(filterData);
             filterData.formData = filterValidObject(filterData.formData);
             dispatch(handleResetNuggets());
             dispatch(handleNuggetFormData(filterValidObject(filterData)));
@@ -158,7 +162,7 @@ const HomeLayout = () => {
 
   return (
     <GlobalContext.Provider value={contextValue}>
-      <Layout className={classes.mainLayout}>
+      <Layout className={classes.mainLayout} id="main-container">
         <div className={`${classes.topheader}`}>
           <div className={classes.fullcontainer}>
             <div mode="horizontal" className="d-flex flex-row">
@@ -320,7 +324,7 @@ const HomeLayout = () => {
                       />
                       <Tooltip
                         title={loginUserData?.name}
-                        placement="right"
+                        placement="topLeft"
                         open={false}
                       >
                         <span
@@ -393,12 +397,15 @@ const HomeLayout = () => {
           />
         </div>
 
-        <Content className="site-layout mainsec">
+        <Content className="site-layout mainsec" id="home-container">
           <Outlet />
         </Content>
-        <div className={classes.chatbotsec}>
-          <ArtificialIntelligence />
-        </div>
+
+        {loginUserData && loginUserData.user_status_id > 1 && (
+          <div className={classes.chatbotsec}>
+            <ArtificialIntelligence />
+          </div>
+        )}
       </Layout>
     </GlobalContext.Provider>
   );

@@ -5,15 +5,19 @@ import {
   deleteNuggetCommentService,
   editNuggetCommentService,
 } from "../../Services/ApiService";
-import { decodeHtml, isValidData, JSONtoformdata } from "../../Shared/Utility";
+import {
+  dateToShortDate,
+  decodeHtml,
+  isValidData,
+  JSONtoformdata,
+} from "../../Shared/Utility";
 import classes from "./Nuggets.module.css";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
 import { Dropdown, Input } from "antd";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
-import moment from "moment";
 
 const ReplyList = ({
   isReplyEnabled,
@@ -28,7 +32,9 @@ const ReplyList = ({
     isCommentLoading,
     getNuggetDetail,
     handleNuggetCommentLike,
+    setAgreedUsersList,
   } = useSingleNuggetContext();
+  const { userSettings } = useAuth();
   const loginUserData = useAuthData();
   const [ReplyTxt, setReplyTxt] = useState([]);
   const [ReplyList, setReplyList] = useState([]);
@@ -241,12 +247,14 @@ const ReplyList = ({
                             </div>
                             {showEmojis === elem.comment_id && (
                               <div
-                                style={{
-                                  position: "absolute",
-                                  // bottom: "90%",
-                                  // right: "50px",
-                                  // zIndex: 11,
-                                }}
+                                style={
+                                  {
+                                    // position: "absolute",
+                                    // bottom: "90%",
+                                    // right: "50px",
+                                    // zIndex: 11,
+                                  }
+                                }
                               >
                                 <EmojiPicker
                                   emojiButtonColors={["#364157"]}
@@ -301,6 +309,14 @@ const ReplyList = ({
                               </div>
                             )}
                           </div>
+                          <span
+                            class={`material-symbols-outlined ${classes.closeIcon}`}
+                            onClick={() => {
+                              setisActiveEdit(null);
+                            }}
+                          >
+                            close
+                          </span>
                         </div>
                       ) : (
                         <div className={classes.item}>
@@ -359,26 +375,52 @@ const ReplyList = ({
                             <div
                               className={classes.agree}
                               style={{ color: elem.liked ? "#e26386" : "#000" }}
-                              onClick={() => {
-                                handleAgree(
-                                  elem.comment_id,
-                                  elem.liked,
-                                  elem.like_count
-                                );
-                              }}
                             >
                               <i
                                 className={classes.agreeIcon}
+                                onClick={() => {
+                                  handleAgree(
+                                    elem.comment_id,
+                                    elem.liked,
+                                    elem.like_count
+                                  );
+                                }}
                                 style={{
                                   background: elem.liked ? "#e26386" : "#000",
                                 }}
-                              />{" "}
-                              Agree{" "}
-                              {elem.like_count ? `(${elem.like_count})` : null}
+                              />
+                              <span
+                                onClick={() => {
+                                  handleAgree(
+                                    elem.comment_id,
+                                    elem.liked,
+                                    elem.like_count
+                                  );
+                                }}
+                              >
+                                Agree
+                              </span>
+                              <span
+                                onClick={() => {
+                                  setAgreedUsersList({
+                                    show: true,
+                                    formData: {
+                                      id: elem.comment_id,
+                                      type: 2,
+                                    },
+                                  });
+                                }}
+                              >
+                                {elem.like_count
+                                  ? `(${elem.like_count})`
+                                  : null}
+                              </span>
                             </div>
-
                             <div className={classes.time}>
-                              {moment(elem?.created_date).fromNow(true)} ago
+                              {dateToShortDate(
+                                elem.commented_date,
+                                userSettings?.time_zone
+                              )}
                             </div>
                           </div>
                         </div>

@@ -46,6 +46,7 @@ const Nuggets = ({
   const containerRef = useRef(null);
   const pageRef = useRef(1);
   const viewRef = useRef([]);
+  const ReadSource = useRef(null);
   const dispatch = useDispatch();
   const params = useParams();
   const [SearchKey, setSearchKey] = useState("");
@@ -54,6 +55,8 @@ const Nuggets = ({
   const [ViewedList, setViewedList] = useState([]);
   const [NuggetsData, setNuggetsData] = useState([]);
   const [isNuggetModify, setisNuggetModify] = useState(null);
+  const [audio, setAudio] = useState(null);
+  const [isPlaying, setisPlaying] = useState(null);
   const {
     Nuggets,
     isNuggetsLoading,
@@ -150,7 +153,6 @@ const Nuggets = ({
         ...finalData.formData,
         page_number: page,
       };
-
       dispatch(fetchNuggetsbyId(finalData)).then((res) => {
         setisNuggetModify(null);
         setloading(false);
@@ -187,7 +189,7 @@ const Nuggets = ({
           ...finalData,
           formData: {
             ...finalData.formData,
-            search_key: splitData[2],
+            search_key: DecryptionString(splitData[2]),
           },
         };
       } else if (window.location.pathname.includes("viewprofile")) {
@@ -230,6 +232,11 @@ const Nuggets = ({
     ViewedList,
     setisNuggetModify,
     setViewedList,
+    audio,
+    setAudio,
+    isPlaying,
+    setisPlaying,
+    ReadSource,
     getProgress() {
       return Progress;
     },
@@ -308,7 +315,6 @@ const Nuggets = ({
     dispatch(handleNuggetFormData(filterData));
     dispatch(fetchNuggetsbyId(filterData));
   };
-  console.log(NuggetsData);
 
   return (
     <ListNuggetContext.Provider value={ListNuggetData}>

@@ -516,7 +516,6 @@ export const SelectConnections = () => {
 };
 
 export const EditGroupMembers = () => {
-  let isLocked = false;
   const userData = useAuthData();
   const {
     isOwner,
