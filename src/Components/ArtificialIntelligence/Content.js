@@ -34,7 +34,7 @@ const ChatContent = () => {
             type: "message",
             message: res.data.msg,
             created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-
+            isshareavailble: ChatMessage !== "",
             read_out_url: null,
           },
           ...pre,
@@ -125,6 +125,7 @@ const ChatContent = () => {
                 message: ChatMessage,
                 created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
                 read_out_url: null,
+                isshareavailble: false,
               },
               ...pre,
             ]);
@@ -132,7 +133,10 @@ const ChatContent = () => {
           }
         }}
         onAudioResult={async (val) => {
-          setMessages((pre) => [{ ...val, read_out_url: null }, ...pre]);
+          setMessages((pre) => [
+            { ...val, read_out_url: null, isshareavailble: false },
+            ...pre,
+          ]);
           const file = await blobUrlToFile(val.message);
           HandleSendMessage(null, file);
         }}

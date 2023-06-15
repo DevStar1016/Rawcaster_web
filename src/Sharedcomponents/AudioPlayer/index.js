@@ -20,6 +20,7 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     audioElement.id = audioId;
     setAudio(audioElement);
     if (!isPreview) {
+      console.log("Muter", "");
       audioElement.muted = isNuggetMuted;
       setisMuted(isNuggetMuted);
     }
@@ -83,9 +84,9 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   function toggleMute() {
     if (audio) {
       if (!isPreview) {
-        audio.muted = !isNuggetMuted;
-        setisMuted(!isNuggetMuted);
-        dispatch(handleisNuggetMuted(!isNuggetMuted));
+        audio.muted = !isMuted;
+        setisMuted(!isMuted);
+        dispatch(handleisNuggetMuted(!isMuted));
       } else {
         audio.muted = !isMuted;
         setisMuted(!isMuted);
