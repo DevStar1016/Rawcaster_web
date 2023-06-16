@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Heading from "./Heading";
 import ChatContent from "./Content";
 import AIIcon from "../../Assets/Icons/svg/AI_icon.svg";
@@ -7,11 +7,13 @@ import { Button, Drawer, Popover } from "antd";
 import { ChatBotContext } from "../../Shared/Context";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import { detectMob } from "../../Shared/Utility";
+import { useLocation } from "react-router";
 
 const ArtificialIntelligence = () => {
+  const { pathname } = useLocation();
   const userData = useAuthData();
   const [isChatOpen, setisChatOpen] = useState(false);
-  const [Messages, setMessages] = useState();
+  const [Messages, setMessages] = useState([]);
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
 
@@ -34,6 +36,10 @@ const ArtificialIntelligence = () => {
     generateRandomId,
   };
 
+  useEffect(() => {
+    setMessages([]);
+  }, [pathname]);
+
   return (
     <ChatBotContext.Provider value={values}>
       <Drawer
@@ -50,7 +56,6 @@ const ArtificialIntelligence = () => {
         width={500}
         height="90%"
         onClose={() => {
-          setMessages([]);
           setisChatOpen(false);
         }}
         open={isChatOpen && detectMob()}
@@ -70,7 +75,6 @@ const ArtificialIntelligence = () => {
           />
         }
         onOpenChange={(val) => {
-          setMessages([]);
           setisChatOpen(val);
         }}
         content={ChatContent}

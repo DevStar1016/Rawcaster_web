@@ -5,16 +5,23 @@ import {
   EncryptionString,
   JSONtoformdata,
   decodeHtml,
+  handleProfileNavigate,
   utctoUserTimezone,
   utctoUserTimezonewithAbbr,
 } from "../../Shared/Utility";
-import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  useAuth,
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../Shared/Reduxfetcher";
 import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { toast } from "react-hot-toast";
 import { sendMessage } from "../../Services/SocketService";
 import { respondToFriendRequestsService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 
 const HomePageIds = [2, 4];
 const UserPageIds = [5, 3];
@@ -83,10 +90,12 @@ export const NotificationsList = ({
   handleDelete,
   handleView,
 }) => {
+  const dispatch = useDispatch();
   const token = useAuthToken();
   const navigate = useNavigate();
   const profileData = useAuthData();
   const { userSettings } = useAuth();
+  const { nuggetFormData } = useNuggets();
   const createdTime = getUserTimeZone(
     ele?.created_datetime,
     null,
@@ -155,7 +164,13 @@ export const NotificationsList = ({
             if (NuggetPageIds.includes(parseInt(type))) {
               navigate(`/view/${EncryptionString(ele.nugget_id)}`);
             } else if (UserPageIds.includes(parseInt(type))) {
-              navigate(`/viewprofile/${EncryptionString(ele.user_id)}`);
+              let finalData = {
+                dispatch,
+                navigate,
+                nuggetFormData,
+                user_id: ele.user_id,
+              };
+              handleProfileNavigate(finalData);
             } else if (parseInt(type) === 2 && ele?.event_id) {
               navigate(`/viewevent/${ele.event_id}`);
             } else if (HomePageIds.includes(parseInt(type))) {
