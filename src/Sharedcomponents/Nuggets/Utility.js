@@ -45,7 +45,6 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       token,
       nugget_id,
     };
-    console.log("test", formData);
     getNuggetContentAudioService(JSONtoformdata(formData))
       .then((res) => {
         if (res.data.status === 1) {
