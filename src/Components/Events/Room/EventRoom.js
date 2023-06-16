@@ -19,8 +19,11 @@ const EventRoom = () => {
   const [searchParams] = useSearchParams();
   const data = searchParams.get("meetingid");
   const handleCreate = async () => {
-    const response = await CreateMeeting();
+    const formData = new FormData();
+    formData.append("host_name", "vasanth");
+    const response = await CreateMeeting(formData);
     if (response.data.status === 1) {
+      console.log(response.data.data, "esponse.data.data");
       const { meetingResponse, attendeeResponse } = response.data.data;
       const meetingSessionConfiguration = new MeetingSessionConfiguration(
         meetingResponse,
@@ -43,7 +46,7 @@ const EventRoom = () => {
   const handleJoin = async () => {
     const formData = new FormData();
     formData.append("meeting_id", data);
-    formData.append("attendee_name", "1234");
+    formData.append("attendee_name", Math.random(1, 100).toString());
     const response = await JoinAttendeeMeeting(formData);
     if (response.data.status === 1) {
       const { meetingResponse, attendeeResponse } = response.data.data;

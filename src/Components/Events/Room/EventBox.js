@@ -12,6 +12,8 @@ import {
   useLocalVideo,
   useRemoteVideoTileState,
 } from "amazon-chime-sdk-component-library-react";
+import Participants from "./Participants";
+import ChatBox from "./ChatBox";
 
 const EventBox = () => {
   const { attendees } = useMainContext();
@@ -131,7 +133,15 @@ const EventBox = () => {
           )}
         </div>
       </div>
-      {isChatorParticipant && <div className={classes.participantsSec}></div>}
+      {isChatorParticipant && (
+        <div className={classes.participantsSec}>
+          {isChatorParticipant === "participant" ? (
+            <Participants />
+          ) : isChatorParticipant === "chat" ? (
+            <ChatBox />
+          ) : null}
+        </div>
+      )}
     </div>
   );
 };

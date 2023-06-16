@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, List, message } from "antd";
 import VirtualList from "rc-virtual-list";
+import ChatBox from "./Events/Room/ChatBox";
+import { RosterAttendee } from "amazon-chime-sdk-component-library-react";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
@@ -66,27 +68,8 @@ const Development = () => {
           Join Meeting
         </button>
       </div>
-      <List>
-        <VirtualList
-          data={data}
-          height={ContainerHeight}
-          itemHeight={47}
-          itemKey="email"
-          onScroll={onScroll}
-        >
-          {(item) => (
-            <List.Item key={item.email}>
-              <List.Item.Meta
-                avatar={<Avatar src={item.picture.large} />}
-                title={<a href="https://ant.design">{item.name.last}</a>}
-                description={item.email}
-              />
-              <div>Content</div>
-            </List.Item>
-          )}
-        </VirtualList>
-      </List>
-      {/* <div
+
+      <div
         style={{
           background: "#563662",
           height: "100%",
@@ -94,26 +77,9 @@ const Development = () => {
           margin: "auto",
         }}
       >
-        <Participants />
-      </div> */}
-      {/* <div
-        style={{
-          background: "#563662",
-          height: 300,
-        }}
-      >
-        <div className={classes.Child}>
-          <img src={userImg} />
-          <p>{"participant"}</p>
-          <div className={classes.overlaySec}>
-            <div className={classes.actionContainer}>
-              <span class="material-symbols-outlined">mic</span>
-              <span class="material-symbols-outlined">videocam</span>
-              <span class="material-symbols-outlined">push_pin</span>
-            </div>
-          </div>
-        </div>
-      </div> */}
+        <ChatBox />
+      </div>
+      <br />
     </>
   );
 };

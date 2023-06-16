@@ -24,11 +24,13 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       ReadSource.current.cancel("Request Cancelled");
     }
     ReadSource.current = axios.CancelToken.source();
+
     if (audio) {
       audio.pause();
       setAudio(null);
       setisPlaying(false);
     }
+
     if (readout_url) {
       const audioElement = new Audio(readout_url);
       audioElement.id = nugget_id;
@@ -43,10 +45,7 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       token,
       nugget_id,
     };
-    getNuggetContentAudioService(
-      JSONtoformdata(formData),
-      ReadSource.current.token
-    )
+    getNuggetContentAudioService(JSONtoformdata(formData))
       .then((res) => {
         if (res.data.status === 1) {
           if (audio) {
@@ -69,6 +68,7 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
         }
       })
       .finally(() => {
+        ReadSource.current = null;
         setisFetchingurl(false);
       });
   };
@@ -93,10 +93,10 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
         isRequestCancel = true;
         ReadSource.current.cancel("Request Cancelled");
       }
-      // if (audio) {
-      //   audio.pause();
-      //   setisPlaying(null);
-      // }
+      if (audio) {
+        audio.pause();
+        setisPlaying(null);
+      }
     };
   }, [audio]);
 
