@@ -70,10 +70,10 @@ const ChatContent = () => {
   };
 
   useEffect(() => {
-    if (isChatOpen) {
+    if (isChatOpen && Messages.length === 0) {
       HandleSendMessage();
     }
-  }, [isChatOpen]);
+  }, [isChatOpen, Messages]);
 
   function getFilenameFromUrl(url) {
     const parsedUrl = new URL(url);

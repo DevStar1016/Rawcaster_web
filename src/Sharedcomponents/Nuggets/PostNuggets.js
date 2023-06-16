@@ -31,6 +31,7 @@ import {
 import Postmodal from "../../Modal/Nugget/Postmodal";
 import { useParams } from "react-router";
 import profileImg from "../../Assets/Images/svg/userImg.svg";
+import { isArray } from "lodash";
 
 const PostNuggets = () => {
   const { postModalShow, setpostModalShow, PostContent } = useGlobalContext();
@@ -199,8 +200,13 @@ const PostNuggets = () => {
       } else if (NuggetData === 0) {
         setNuggetData([value]);
       } else {
-        setNuggetData((pre) => [...pre, value]);
+        if (isArray(value)) {
+          setNuggetData((pre) => [...pre, ...value]);
+        } else {
+          setNuggetData((pre) => [...pre, value]);
+        }
       }
+      setpostModalShow(true);
     },
     getPostValues() {
       return NuggetData;
@@ -326,6 +332,7 @@ const PostNuggets = () => {
                 ref={VideoRef}
                 type="file"
                 name="file"
+                multiple
                 id="nugget_video"
                 accept="video/mp4"
                 onClick={(event) => {
@@ -333,8 +340,7 @@ const PostNuggets = () => {
                 }}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length !== 0) {
-                    PostNuggetValues.setFileValues(e.target.files[0]);
-                    setpostModalShow(true);
+                    PostNuggetValues.setFileValues(Array.from(e.target.files));
                   }
                 }}
                 style={{ display: "none" }}
@@ -362,6 +368,7 @@ const PostNuggets = () => {
                 ref={ImageRef}
                 type="file"
                 name="file"
+                multiple
                 id="nugget_image"
                 accept="image/png, image/gif, image/jpeg"
                 onClick={(event) => {
@@ -369,8 +376,7 @@ const PostNuggets = () => {
                 }}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length !== 0) {
-                    PostNuggetValues.setFileValues(e.target.files[0]);
-                    setpostModalShow(true);
+                    PostNuggetValues.setFileValues(Array.from(e.target.files));
                   }
                 }}
                 style={{ display: "none" }}

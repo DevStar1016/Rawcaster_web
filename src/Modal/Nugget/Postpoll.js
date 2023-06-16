@@ -19,7 +19,7 @@ const schema = Yup.object().shape({
         choiceData: Yup.string()
           .trim("Choice cannot include leading and trailing spaces")
           .strict(true)
-          .optional("Choice is required"),
+          .required("Choice is required"),
       })
     )
     .test(

@@ -294,13 +294,14 @@ const Postmodal = ({ visible, onClose }) => {
               type="file"
               name="file"
               id="post_nugget_image"
+              multiple
               accept="image/png, image/gif, image/jpeg"
               onClick={(event) => {
                 event.target.value = null;
               }}
               onChange={(e) => {
                 if (e.target.files && e.target.files.length !== 0) {
-                  setFileValues(e.target.files[0]);
+                  setFileValues(Array.from(e.target.files));
                 }
               }}
               style={{ display: "none" }}
@@ -323,12 +324,13 @@ const Postmodal = ({ visible, onClose }) => {
               name="file"
               id="post_nugget_video"
               accept="video/mp4"
+              multiple
               onClick={(event) => {
                 event.target.value = null;
               }}
               onChange={(e) => {
                 if (e.target.files && e.target.files.length !== 0) {
-                  setFileValues(e.target.files[0]);
+                  setFileValues(Array.from(e.target.files));
                 }
               }}
               style={{ display: "none" }}
@@ -467,6 +469,7 @@ const Postmodal = ({ visible, onClose }) => {
                   );
                 })}
                 {NuggetData?.map((ele, index) => {
+                  console.log(ele);
                   const getURL = () => {
                     let type = ele.type.split("/");
                     return {
