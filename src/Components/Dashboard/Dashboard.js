@@ -25,6 +25,7 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Notifications";
 import { detectMob } from "../../Shared/Utility";
+import StickyPopup from "../../Modal/StickyPopup/Stickypopup";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
@@ -75,6 +76,7 @@ const Dashboard = () => {
           <div className={classes.fullcontainer}>
             <Events />
             <Nuggets className={classes.NuggetsSec} />
+
             <DashboardSignup />
           </div>
         </div>

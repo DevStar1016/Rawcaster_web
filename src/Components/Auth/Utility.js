@@ -25,4 +25,5 @@ export const accountVerifyHandle = (res, type, navigate) => {
       alt_token_id,
     },
   });
+  window.location.reload();
 };

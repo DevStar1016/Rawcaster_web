@@ -593,6 +593,10 @@ margin-bottom: 12px !important;
 .ant-popover {
   position: fixed !important;
 }
+
+.emojipopover  {
+  position: absolute !important;
+}
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .onlydes { display: none; } 

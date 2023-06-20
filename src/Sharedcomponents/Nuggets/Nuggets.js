@@ -46,7 +46,6 @@ const Nuggets = ({
   const containerRef = useRef(null);
   const pageRef = useRef(1);
   const viewRef = useRef([]);
-  const ReadSource = useRef(null);
   const dispatch = useDispatch();
   const params = useParams();
   const [SearchKey, setSearchKey] = useState("");
@@ -97,6 +96,14 @@ const Nuggets = ({
       });
     }
   }, [loginuserData]);
+
+  useEffect(() => {
+    // return () => {
+    //   if (ReadSource.current) {
+    //     ReadSource.current.cancel("Request Cancelled");
+    //   }
+    // };
+  }, [audio]);
 
   const handleProgress = (progress) => {
     let val = (progress.loaded / progress.total) * 100;
@@ -236,7 +243,6 @@ const Nuggets = ({
     setAudio,
     isPlaying,
     setisPlaying,
-    ReadSource,
     getProgress() {
       return Progress;
     },

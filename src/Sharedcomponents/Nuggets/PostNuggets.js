@@ -3,7 +3,7 @@ import classes from "./PostNuggets.module.css";
 import cameraIcon from "../../Assets/Images/svg/camera.svg";
 import imageIcon from "../../Assets/Images/svg/picture.svg";
 import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
-import { Input } from "antd";
+import { Input, message } from "antd";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   addNuggetsService,
@@ -34,13 +34,15 @@ import profileImg from "../../Assets/Images/svg/userImg.svg";
 import { isArray } from "lodash";
 
 const PostNuggets = () => {
-  const { postModalShow, setpostModalShow, PostContent } = useGlobalContext();
+  const { postModalShow, setpostModalShow, PostContent, setPostContent } =
+    useGlobalContext();
   const { GetNuggetList, setisNuggetModify } = useListNuggetContext();
   const dispatch = useDispatch();
   const Token = useAuthToken();
   const params = useParams();
   const ImageRef = useRef();
   const VideoRef = useRef();
+  const [messageApi, contextHolder] = message.useMessage();
   const [NuggetData, setNuggetData] = useState([]);
   const [PollData, setPollData] = useState();
   const [previewMedia, setpreviewMedia] = useState([]);
@@ -73,13 +75,26 @@ const PostNuggets = () => {
     },
   });
 
+  const getNuggetTextLength = () => {
+    if (LoginUserData) {
+      return LoginUserData?.nugget_content_length;
+    } else {
+      return 0;
+    }
+  };
+
   useEffect(() => {
     if (PostContent) {
-      setFieldValue("content", PostContent);
+      console.log(PostContent.slice(0, getNuggetTextLength()).length);
+      setFieldValue("content", PostContent.slice(0, getNuggetTextLength()));
     }
   }, [PostContent]);
 
   const EditNugget = (val) => {
+    if (NuggetData.length === 0 && !isValidData(val.content)) {
+      toast.error("Sorry! Nuggets content or Media can not be empty.");
+      return;
+    }
     setpostModalShow(false);
     setisNuggetModify({ type: "edit", id: isEdit });
     let formData = new FormData();
@@ -122,6 +137,7 @@ const PostNuggets = () => {
       })
       .catch((err) => {})
       .finally(() => {
+        setPostContent("");
         setdeletedMedia([]);
         setpreviewMedia([]);
         setisEdit();
@@ -186,6 +202,7 @@ const PostNuggets = () => {
       })
       .catch((err) => {})
       .finally(() => {
+        setPostContent("");
         setProgress((pre) => ({ ...pre, show: false }));
         dispatch(handleLoading(false));
       });
@@ -193,12 +210,17 @@ const PostNuggets = () => {
 
   const PostNuggetValues = {
     setFileValues(value, index) {
-      if (index !== undefined) {
+      if (isEdit) {
+        let getmediaids = previewMedia.map((ele) => ele.media_id);
+        setdeletedMedia(getmediaids);
+        setpreviewMedia([]);
+        setNuggetData([...value]);
+      } else if (index !== undefined) {
         let tempData = [...NuggetData];
         tempData[index] = value;
         setNuggetData(tempData);
       } else if (NuggetData === 0) {
-        setNuggetData([value]);
+        setNuggetData([...value]);
       } else {
         if (isArray(value)) {
           setNuggetData((pre) => [...pre, ...value]);
@@ -340,7 +362,21 @@ const PostNuggets = () => {
                 }}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length !== 0) {
-                    PostNuggetValues.setFileValues(Array.from(e.target.files));
+                    const filterValidFiles = [
+                      ...Array.from(e.target.files),
+                    ].filter((fileInfo) =>
+                      ["audio", "video", "image"].includes(
+                        fileInfo.type.split("/")[0]
+                      )
+                    );
+                    if (filterValidFiles.length !== 0) {
+                      PostNuggetValues.setFileValues(filterValidFiles);
+                    } else {
+                      messageApi.open({
+                        type: "warning",
+                        content: "Please Select Valid File",
+                      });
+                    }
                   }
                 }}
                 style={{ display: "none" }}
@@ -376,7 +412,21 @@ const PostNuggets = () => {
                 }}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length !== 0) {
-                    PostNuggetValues.setFileValues(Array.from(e.target.files));
+                    const filterValidFiles = [
+                      ...Array.from(e.target.files),
+                    ].filter((fileInfo) =>
+                      ["audio", "video", "image"].includes(
+                        fileInfo.type.split("/")[0]
+                      )
+                    );
+                    if (filterValidFiles.length !== 0) {
+                      PostNuggetValues.setFileValues(filterValidFiles);
+                    } else {
+                      messageApi.open({
+                        type: "warning",
+                        content: "Please Select Valid File",
+                      });
+                    }
                   }
                 }}
                 style={{ display: "none" }}
@@ -398,6 +448,7 @@ const PostNuggets = () => {
       <Postmodal
         visible={postModalShow}
         onClose={() => {
+          setPostContent("");
           resetForm();
           setNuggetData([]);
           setpreviewMedia([]);

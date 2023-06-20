@@ -1,4 +1,4 @@
-import { Button, Dropdown, Input, Modal, Tooltip } from "antd";
+import { Button, Dropdown, Input, Modal, Tooltip, message } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import classes from "../Modal.module.css";
 import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
@@ -9,7 +9,11 @@ import pictureIcon from "../../Assets/Images/png/photoIcon.png";
 import imageIcon from "../../Assets/Images/png/videoAttach.png";
 import emoji from "../../Assets/Images/svg/emoji.svg";
 import CameraModal from "./CameraModal";
-import { PostNuggetContext, useListNuggetContext } from "../../Shared/Context";
+import {
+  PostNuggetContext,
+  useGlobalContext,
+  useListNuggetContext,
+} from "../../Shared/Context";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
 import { toast } from "react-hot-toast";
@@ -49,6 +53,8 @@ const Postmodal = ({ visible, onClose }) => {
     shareWithData,
     setdeletedMedia,
   } = useContext(PostNuggetContext);
+  const { setPostContent } = useGlobalContext();
+  const [messageApi, contextHolder] = message.useMessage();
   const { isEdit } = useListNuggetContext();
   const textinputRef = useRef(null);
   new Picker({
@@ -66,6 +72,7 @@ const Postmodal = ({ visible, onClose }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [showEmojis, setShowEmojis] = useState(false);
+  const [isPostContentValid, setisPostContentValid] = useState(true);
   const [NuggetImg, setNuggetImg] = useState();
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
@@ -161,6 +168,14 @@ const Postmodal = ({ visible, onClose }) => {
     setMetaData(message.data);
   };
 
+  const getNuggetTextLength = () => {
+    if (loginUserData) {
+      return loginUserData?.nugget_content_length;
+    } else {
+      return 0;
+    }
+  };
+
   return (
     <Modal
       centered
@@ -170,6 +185,7 @@ const Postmodal = ({ visible, onClose }) => {
       width={650}
       onCancel={() => {
         onClose();
+        setPostContent("");
       }}
     >
       <div className={classes.nuggetModal}>
@@ -301,7 +317,21 @@ const Postmodal = ({ visible, onClose }) => {
               }}
               onChange={(e) => {
                 if (e.target.files && e.target.files.length !== 0) {
-                  setFileValues(Array.from(e.target.files));
+                  const filterValidFiles = [
+                    ...Array.from(e.target.files),
+                  ].filter((fileInfo) =>
+                    ["audio", "video", "image"].includes(
+                      fileInfo.type.split("/")[0]
+                    )
+                  );
+                  if (filterValidFiles.length !== 0) {
+                    setFileValues(filterValidFiles);
+                  } else {
+                    messageApi.open({
+                      type: "warning",
+                      content: "Please Select Valid File",
+                    });
+                  }
                 }
               }}
               style={{ display: "none" }}
@@ -330,7 +360,21 @@ const Postmodal = ({ visible, onClose }) => {
               }}
               onChange={(e) => {
                 if (e.target.files && e.target.files.length !== 0) {
-                  setFileValues(Array.from(e.target.files));
+                  const filterValidFiles = [
+                    ...Array.from(e.target.files),
+                  ].filter((fileInfo) =>
+                    ["audio", "video", "image"].includes(
+                      fileInfo.type.split("/")[0]
+                    )
+                  );
+                  if (filterValidFiles.length !== 0) {
+                    setFileValues(filterValidFiles);
+                  } else {
+                    messageApi.open({
+                      type: "warning",
+                      content: "Please Select Valid File",
+                    });
+                  }
                 }
               }}
               style={{ display: "none" }}
@@ -359,17 +403,18 @@ const Postmodal = ({ visible, onClose }) => {
                 }}
                 value={values.content}
                 onChange={(e) => {
-                  // let MAX_LENGTH = 700;
-                  // if (e.target.value.length <= MAX_LENGTH) {
-                  setFieldValue("content", e.target.value);
-                  getLinkInfo(e.target.value);
-                  // } else {
-                  //   setFieldValue(
-                  //     "content",
-                  //     e.target.value.slice(0, MAX_LENGTH)
-                  //   );
-                  //   getLinkInfo(e.target.value.slice(0, MAX_LENGTH));
-                  // }
+                  if (e.target.value.length <= getNuggetTextLength()) {
+                    setFieldValue("content", e.target.value);
+                    getLinkInfo(e.target.value);
+                    setisPostContentValid(true);
+                  } else {
+                    setFieldValue(
+                      "content",
+                      e.target.value.slice(0, getNuggetTextLength())
+                    );
+                    getLinkInfo(e.target.value.slice(0, getNuggetTextLength()));
+                    setisPostContentValid(false);
+                  }
                 }}
               />
               <img
@@ -381,6 +426,12 @@ const Postmodal = ({ visible, onClose }) => {
                 onClick={() => setShowEmojis(!showEmojis)}
               />
             </div>
+            {!isPostContentValid && (
+              <p className="ErrTxt">
+                Post Content cannot be longer than {getNuggetTextLength() + " "}
+                characters
+              </p>
+            )}
             {showEmojis && (
               <div
                 className={classes.emojiPicker}
@@ -469,7 +520,6 @@ const Postmodal = ({ visible, onClose }) => {
                   );
                 })}
                 {NuggetData?.map((ele, index) => {
-                  console.log(ele);
                   const getURL = () => {
                     let type = ele.type.split("/");
                     return {

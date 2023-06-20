@@ -11,7 +11,7 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 
 const Content = ({ elem }) => {
   const containerRef = useRef();
-  const pageRef = useRef();
+  const pageRef = useRef(1);
   const [loading, setloading] = useState(false);
   const [isReachedEnd, setisReachedEnd] = useState(false);
   const { userSettings } = useAuth();
@@ -34,36 +34,42 @@ const Content = ({ elem }) => {
         page_number: page,
         notification_type: elem.id,
       };
-      getNotificationList(formData).then((res) => {
-        const { today, yesterday, older, total_pages, current_page_no, msg } =
-          res;
-        if (current_page_no === 1) {
-          setNotificationList({ today, yesterday, older });
-        } else if (current_page_no !== 0) {
-          if (today.length !== 0) {
-            setNotificationList((pre) => ({
-              ...pre,
-              today: [...pre.today, ...today],
-            }));
+      getNotificationList(formData)
+        .then((res) => {
+          const { today, yesterday, older, total_pages, current_page_no, msg } =
+            res;
+          if (current_page_no === 1) {
+            setNotificationList({ today, yesterday, older });
+          } else if (current_page_no !== 0) {
+            if (today.length !== 0) {
+              setNotificationList((pre) => ({
+                ...pre,
+                today: [...pre.today, ...today],
+              }));
+            }
+            if (yesterday.length !== 0) {
+              setNotificationList((pre) => ({
+                ...pre,
+                yesterday: [...pre.yesterday, ...yesterday],
+              }));
+            }
+            if (older.length !== 0) {
+              setNotificationList((pre) => ({
+                ...pre,
+                older: [...pre.older, ...older],
+              }));
+            }
           }
-          if (yesterday.length !== 0) {
-            setNotificationList((pre) => ({
-              ...pre,
-              yesterday: [...pre.yesterday, ...yesterday],
-            }));
-          }
-          if (older.length !== 0) {
-            setNotificationList((pre) => ({
-              ...pre,
-              older: [...pre.older, ...older],
-            }));
-          }
-        }
-        setPages({
-          Page: current_page_no,
-          totalPages: total_pages,
+          pageRef.current = current_page_no;
+          setPages({
+            Page: current_page_no,
+            totalPages: total_pages,
+          });
+        })
+        .finally(() => {
+          setisReachedEnd(false);
+          setloading(false);
         });
-      });
     }
   };
   useEffect(() => {
@@ -129,6 +135,7 @@ const Content = ({ elem }) => {
   };
 
   const getHasNextPage = () => {
+    console.log(Pages.totalPages, pageRef.current);
     return Pages.totalPages && pageRef.current !== Pages.totalPages;
   };
 
@@ -143,6 +150,7 @@ const Content = ({ elem }) => {
     if (container) {
       const { scrollTop, clientHeight, scrollHeight } = container;
       if (scrollTop + clientHeight >= scrollHeight - 10) {
+        console.log("Reached End");
         setisReachedEnd(true);
       }
     }

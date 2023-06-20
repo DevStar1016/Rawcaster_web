@@ -69,6 +69,10 @@ align-items:center ;
 }
 .chatinputSec {
   width: 89% !important;
+ 
+}
+.chatinputSec  input {
+  padding-right: 20px;
 }
 .Content {
     margin: auto;
@@ -343,6 +347,7 @@ line-height: 26px;
 }
 .typingSec {
   align-items: center !important;
+  padding: 0px !important;
 }
 .typingSec .content {
   padding-bottom: 0px !important;
@@ -353,6 +358,7 @@ line-height: 26px;
 }
 .typingSec img {
   height: 25px;
+  width: 25px;
 }
 .typingSec {
   width: 126px !important;

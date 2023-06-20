@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./ArtificialIntelligence.module.css";
-import { ChatInput, ChatVoice, MessageContent } from "./Utility";
+import { ChatVoice, MessageContent } from "./Utility";
 import { AIChatService } from "../../Services/ApiService";
 import { JSONtoformdata, filterValidObject } from "../../Shared/Utility";
 import moment from "moment";
@@ -8,11 +8,13 @@ import { useChatBotContext } from "../../Shared/Context";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
 import TypingContainer from "./TypingContainer";
+import { ChatInput } from "../../Sharedcomponents/Chat/utility";
 
 const ChatContent = () => {
   const token = useAuthToken();
   const { Messages, setMessages, isChatOpen, audio, setisPlaying } =
     useChatBotContext();
+
   const [isTyping, setisTyping] = useState(false);
   const [ChatEnabled, setChatEnabled] = useState(true);
 
@@ -28,17 +30,28 @@ const ChatContent = () => {
           audio.pause();
           setisPlaying(false);
         }
-        setMessages((pre) => [
-          {
-            user: 2,
-            type: "message",
-            message: res.data.msg,
-            created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-            isshareavailble: ChatMessage !== "",
-            read_out_url: null,
-          },
-          ...pre,
-        ]);
+
+        setMessages((pre) => {
+          let tempData = [...pre];
+          if (res.data.query) {
+            tempData[0] = {
+              ...tempData[0],
+              query: res.data.query,
+            };
+          }
+
+          return [
+            {
+              user: 2,
+              type: "message",
+              message: res.data.msg,
+              created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+              isshareavailble: ChatMessage !== "",
+              read_out_url: null,
+            },
+            ...tempData,
+          ];
+        });
       })
       .finally(() => {
         setChatEnabled(true);

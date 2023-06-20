@@ -93,6 +93,7 @@ const Login = () => {
             } else {
               navigate("/dashboard");
             }
+            window.location.reload();
           });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });

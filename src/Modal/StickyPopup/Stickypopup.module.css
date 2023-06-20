@@ -1,0 +1,33 @@
+.sticky_popup {
+    position: fixed;
+  bottom: 0;
+  right: 12%;
+  background-color: #f8f8f8;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+  }
+  
+  .sticky_popup.visible {
+    opacity: 1;
+  transform: translateY(0);
+  }
+ 
+  .sticky_popup .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .sticky_popup .content .close {
+    cursor: pointer;
+    font-size: 20px;
+    color: #aaa;
+  }
+  
+  .sticky_popup .content .close:hover {
+    color: #888;
+  }
