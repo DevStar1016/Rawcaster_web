@@ -55,7 +55,7 @@ export const SHARED_TYPE = [
 ];
 
 export const GENDER_TYPE = [
-  { key: 0, label: "TransGender" },
+  // { key: 0, label: "TransGender" },
   { key: 1, label: "Male" },
   { key: 2, label: "Female" },
 ];

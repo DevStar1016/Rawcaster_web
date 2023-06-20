@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Avatar, List, message } from "antd";
 import VirtualList from "rc-virtual-list";
 import ChatBox from "./Events/Room/ChatBox";
 import { RosterAttendee } from "amazon-chime-sdk-component-library-react";
+import StickyPopup from "../Modal/StickyPopup/Stickypopup";
+
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
@@ -11,6 +13,7 @@ const fakeDataUrl =
 const ContainerHeight = 400;
 
 const Development = () => {
+  const [open, setOpen] = useState(false);
   const [MeetingId, setMeetingId] = useState("");
   const [data, setData] = useState([]);
 
@@ -37,7 +40,12 @@ const Development = () => {
   };
 
   return (
-    <>
+    <div
+      style={{
+        position: "relative",
+        height: "100vh",
+      }}
+    >
       <div className="h-100 p-5 mt-5 m-auto w-100">
         <button
           className="mx-2"
@@ -68,7 +76,17 @@ const Development = () => {
           Join Meeting
         </button>
       </div>
-
+      <div
+        style={{
+          background: "#563662",
+          height: "100%",
+          width: "20%",
+          margin: "auto",
+        }}
+      >
+        <button onClick={() => setOpen(true)}>Open</button>
+      </div>
+      {/* 
       <div
         style={{
           background: "#563662",
@@ -78,9 +96,10 @@ const Development = () => {
         }}
       >
         <ChatBox />
-      </div>
+      </div> */}
+      <StickyPopup />
       <br />
-    </>
+    </div>
   );
 };
 

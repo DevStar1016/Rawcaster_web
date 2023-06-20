@@ -538,12 +538,21 @@ export const EditGroupMembers = () => {
     return false;
   };
   const getSearchData = () => {
-    return GroupMembers.filter((ele) =>
-      decodeHtml(ele.display_name)
+    let searchData = GroupMembers.filter((ele) =>
+      decodeHtml(ele?.display_name || "")
         .toLowerCase()
         .includes(searchInput.toLowerCase())
     );
+    searchData = searchData.filter((ele) => ele !== undefined);
+    console.log(searchData, GroupMembers);
+    if (searchData) {
+      return searchData;
+    } else {
+      return [];
+    }
   };
+
+  console.log(getSearchData());
 
   // const getisLocked = () => {
 

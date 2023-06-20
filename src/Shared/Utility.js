@@ -26,6 +26,7 @@ import {
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import { message } from "antd";
 import { Typography } from "antd";
+import axios, { isCancel } from "axios";
 
 // Auth
 
@@ -498,7 +499,9 @@ export const handleProfileNavigate = (userData) => {
 
 export const ErrorHandling = (error) => {
   return new Promise((resolve, reject) => {
-    if (error.response) {
+    if ((axios, isCancel(error))) {
+      console.log(error.message);
+    } else if (error.response) {
       if (error.response.status === 404) {
         handleErrorMsg(
           "The requested resource does not exist or has been deleted",

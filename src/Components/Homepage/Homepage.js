@@ -10,9 +10,11 @@ import abel from "../../Assets/Images/png/abel.png";
 import OwlCarousel from "react-owl-carousel";
 import { Modal } from "antd";
 import { DEFAULT_VIDEO } from "../../Shared/Constant";
+import { useMainContext } from "../../Shared/Context";
 // import { Carousel } from '@trendyol-js/react-carousel';
 
 const Homepage = () => {
+  const { player, setplayer } = useMainContext();
   const [isVideoOpen, setisVideoOpen] = useState(false);
   const carouselOptions = {
     items: 3.5,
@@ -359,6 +361,7 @@ const Homepage = () => {
           }}
         >
           <video
+            id="dashboardSignup"
             width="100%"
             height="100%"
             controls
@@ -369,6 +372,17 @@ const Homepage = () => {
             controlsList="nodownload"
             src={DEFAULT_VIDEO}
             type="video/mp4"
+            onPlay={() => {
+              console.log("test");
+            }}
+            onPlayingCapture={() => {
+              console.log(player);
+              if (player && player.id !== `dashboardSignup`) {
+                player.pause();
+              }
+              const video = document.getElementById(`dashboardSignup`);
+              setplayer(video);
+            }}
           />
         </Modal>
       )}

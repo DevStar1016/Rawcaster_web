@@ -4,26 +4,43 @@ import { useAuthToken } from "../../Shared/Reduxfetcher";
 import { getNuggetContentAudioService } from "../../Services/ApiService";
 import { JSONtoformdata } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
-import { useListNuggetContext } from "../../Shared/Context";
+import { useListNuggetContext, useMainContext } from "../../Shared/Context";
 import { useDispatch } from "react-redux";
 import { handleNuggetReadoutUrlUpdate } from "../../Store/Redux/Reducer/NuggetsReducer";
 import axios from "axios";
+import { useLocation } from "react-router";
 
 let isRequestCancel = false;
 
 export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
+  const { player, setplayer, PlayerSource } = useMainContext();
   const token = useAuthToken();
   const dispatch = useDispatch();
-  const { audio, setAudio, isPlaying, setisPlaying, ReadSource } =
-    useListNuggetContext();
+  const { audio, setAudio, isPlaying, setisPlaying } = useListNuggetContext();
   const [isFetchingurl, setisFetchingurl] = useState(false);
 
-  const HandlegetNuggetContentAudio = () => {
-    if (ReadSource.current) {
-      isRequestCancel = true;
-      ReadSource.current.cancel("Request Cancelled");
+  const handleplayaudio = (url) => {
+    if (player && player.id !== nugget_id) {
+      player.pause();
     }
-    ReadSource.current = axios.CancelToken.source();
+
+    const audioElement = new Audio(url);
+
+    audioElement.id = nugget_id;
+    setAudio(audioElement);
+    setplayer(audioElement);
+    audioElement.play();
+    setisPlaying(nugget_id);
+  };
+
+  const HandlegetNuggetContentAudio = () => {
+    if (PlayerSource.current) {
+      isRequestCancel = true;
+      PlayerSource.current.cancel("Request Cancelled");
+    }
+    if (!PlayerSource.current) {
+      PlayerSource.current = axios.CancelToken.source();
+    }
 
     if (audio) {
       audio.pause();
@@ -32,11 +49,7 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
     }
 
     if (readout_url) {
-      const audioElement = new Audio(readout_url);
-      audioElement.id = nugget_id;
-      setAudio(audioElement);
-      audioElement.play();
-      setisPlaying(nugget_id);
+      handleplayaudio(readout_url);
       return;
     }
 
@@ -45,7 +58,10 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       token,
       nugget_id,
     };
-    getNuggetContentAudioService(JSONtoformdata(formData))
+    getNuggetContentAudioService(
+      JSONtoformdata(formData),
+      PlayerSource.current.token
+    )
       .then((res) => {
         if (res.data.status === 1) {
           if (audio) {
@@ -58,17 +74,13 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
             readout_url: res.data.file_path,
           };
           dispatch(handleNuggetReadoutUrlUpdate(NuggetData));
-          const audioElement = new Audio(res.data.file_path);
-          audioElement.id = nugget_id;
-          setAudio(audioElement);
-          audioElement.play();
-          setisPlaying(nugget_id);
+          handleplayaudio(res.data.file_path);
         } else {
           toast.error(res.data.msg);
         }
       })
       .finally(() => {
-        ReadSource.current = null;
+        PlayerSource.current = null;
         setisFetchingurl(false);
       });
   };
@@ -86,18 +98,18 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
         audio.pause();
         setisPlaying(null);
       });
-    }
-
-    return () => {
-      if (ReadSource.current) {
-        isRequestCancel = true;
-        ReadSource.current.cancel("Request Cancelled");
-      }
-      if (audio) {
+      audio.addEventListener("pause", () => {
         audio.pause();
         setisPlaying(null);
-      }
-    };
+      });
+    }
+
+    // return () => {
+    //   if (ReadSource.current) {
+    //     isRequestCancel = true;
+    //     ReadSource.current.cancel("Request Cancelled");
+    //   }
+    // };
   }, [audio]);
 
   return isPlaying === nugget_id ? (

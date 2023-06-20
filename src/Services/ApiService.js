@@ -381,6 +381,8 @@ export const AIChatService = (data) => {
   return axios.post(`aichat`, data);
 };
 
-export const TextToAudioService = (data) => {
-  return axios.post(`texttoaudio`, data);
+export const TextToAudioService = (data, token) => {
+  return axios.post(`texttoaudio`, data, {
+    cancelToken: token,
+  });
 };

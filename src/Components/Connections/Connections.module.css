@@ -19,6 +19,9 @@
   .friendslist:hover .friendsmenu {
     display: block !important;
   }
+  .friendslist:hover .disName{
+    width: 140px;
+  }
   .friendslist:hover .userlogedin_icon {
       display: none !important;
   }

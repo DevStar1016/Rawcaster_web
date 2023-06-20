@@ -226,7 +226,10 @@ opacity: 1 !important;
   .gallery_popup  .carousel-control-next span {
     display: none;
   }
-
+.ant-menu-item-selected::after,
+.ant-menu-item:hover:after,
+.ant-menu-item:focus:after
+ { border: 0px !important;}
 .ant-tooltip-inner {
   font-weight: 500;
 font-size: 13px;
@@ -268,7 +271,7 @@ line-height: 23px;
 .ant-modal-close {
   margin-right: 5px;
 }
-.ant-modal-close-x { position: absolute; top: 5px; background: #ECECEC; width: 30px; height: 30px; border-radius: 50px; }
+.ant-modal-close-x { position: absolute; top: 5px; background: #ECECEC; width: 30px; height: 30px; border-radius: 50px; align-items: center; }
 .ant-modal-close:hover { background: transparent !important;   }
 .ant-input-password-icon svg {fill: #000; font-size: 15px; margin-top: 1px; }
 .anticon-down svg {fill: #000; font-size: 10px; margin-top: 3px; }
@@ -589,6 +592,10 @@ margin-bottom: 12px !important;
 }
 .ant-popover {
   position: fixed !important;
+}
+
+.emojipopover  {
+  position: absolute !important;
 }
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }

@@ -1,0 +1,61 @@
+.inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
+.searchIcon { cursor: pointer; text-align: center;  z-index: 7; border-radius: 50px !important; background: #F2718D !important; width:45px; }
+.searchIcon span {color: #fff; }
+.inSearch:focus {
+    border: none !important;
+    box-shadow: none !important;
+}
+.ContentSec {
+
+display: flex;
+flex-direction: row;
+align-items:center ;
+}
+.mic_icon {
+    float: left;
+    width: 32px;
+    height: 32px;
+    background: #563662;
+    mask: url("../../Assets/Icons/svg/Mic_icon.svg") no-repeat center / contain;
+    -webkit-mask:  url("../../Assets/Icons/svg/Mic_icon.svg") no-repeat center /
+      contain;
+    margin: auto;
+      cursor: pointer;
+}
+.SendIcon { 
+    color: #C4C4C4;
+}
+.chatinputSec {
+  width: 89% !important;
+  background: #F1F2F5;
+  border-radius: 20px;
+ 
+}
+
+
+.recordingBox  {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+     padding-left: 25px !important; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-radius: 20px !important; 
+  }
+  
+  .recordingBox .ActionSec {
+  display: flex;
+  flex-direction: row;
+  }
+  .closeIcon {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: red;
+  }
+  .RecordingTimeSec {
+    padding: 10px  !important;
+    font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 26px;
+  
+  }

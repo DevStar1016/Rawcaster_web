@@ -3,12 +3,15 @@ import { decodeHtml, handleProfileNavigate } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
+import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { useNuggets } from "../../../Shared/Reduxfetcher";
+import { useMainContext } from "../../../Shared/Context";
 
 const Friends = ({ friend, searchInput }) => {
+  const { setisChatOpen } = useMainContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
@@ -86,6 +89,14 @@ const Friends = ({ friend, searchInput }) => {
           >
             <img src={audiocall} alt={"audio call"} />
             <img src={videocall} alt={"video call"} />
+            <img
+              src={chatIcon}
+              alt={"Chat"}
+              // onClick={() => {
+              //   console.log("chat");
+              //   setisChatOpen("chat");
+              // }}
+            />
           </div>
         }
       </div>

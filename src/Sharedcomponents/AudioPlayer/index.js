@@ -5,10 +5,12 @@ import AudioPlay from "../../Assets/Icons/audio_play.gif";
 import AudioPause from "../../Assets/Images/png/audio_pause.png";
 import classes from "./Audioplayer.module.css";
 import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
+import { useMainContext } from "../../Shared/Context";
 
 const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   const { isNuggetMuted } = useDashboard();
   const dispatch = useDispatch();
+  const { player, setplayer } = useMainContext();
   const [audio, setAudio] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -19,14 +21,13 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     const audioElement = new Audio(url);
     audioElement.id = audioId;
     setAudio(audioElement);
+
     if (!isPreview) {
-      console.log("Muter", "");
       audioElement.muted = isNuggetMuted;
       setisMuted(isNuggetMuted);
     }
     return () => {
       audioElement.pause();
-
       setAudio(null);
     };
   }, [url]);
@@ -42,10 +43,17 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
 
   useEffect(() => {
     if (audio) {
+      audio.addEventListener("pause", () => {
+        setIsPlaying(false);
+      });
       audio.addEventListener("timeupdate", handleTimeUpdate);
       audio.addEventListener("durationchange", handleDurationChange);
       audio.addEventListener("ended", handleEnded);
+
       return () => {
+        audio.removeEventListener("pause", () => {
+          setIsPlaying(false);
+        });
         audio.removeEventListener("timeupdate", handleTimeUpdate);
         audio.removeEventListener("durationchange", handleDurationChange);
         audio.removeEventListener("ended", handleEnded);
@@ -68,6 +76,10 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   }
 
   function handlePlay() {
+    if (player && player.id !== audioId) {
+      player.pause();
+    }
+    setplayer(audio);
     if (audio) {
       audio.play();
       setIsPlaying(true);
