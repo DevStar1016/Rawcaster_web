@@ -338,8 +338,8 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
               />
             </div>
           </div>
-
-          {query && <div>{query}</div>}
+        
+          {query && <div className={classes.queryText}>{query}</div>}
           <div className="d-flex flex-row justify-content-between">
             <div className={classes.controlSec}>
               <div className={classes.timeSec}>

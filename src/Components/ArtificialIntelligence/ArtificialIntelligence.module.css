@@ -99,9 +99,11 @@ min-width: 300px;
     align-items: flex-start;
     border-radius: 20px;
     background-color: #f0f0f0;
-    max-width: 90%;
+    /* max-width: 90%; */
     width: fit-content;
-    padding: 5px 5px 0 5px;
+    /* padding: 5px 5px 0 5px; */
+    padding: 8px 10px;
+    max-width: 320px !important;
   }
 
   .chatbox_message .avatar {
@@ -120,7 +122,7 @@ min-width: 300px;
   }
   .chatbox_message .content {
     flex: 1;
-    padding: 10px;
+    padding: 0px 10px;
     overflow-wrap: break-word;
     padding-top: 0px !important;
   }
@@ -268,7 +270,7 @@ min-width: 300px;
   accent-color:#FFFFFF;
   cursor: pointer;
   border-radius: 30px;
-  margin-bottom: 18px;
+  /* margin-bottom: 18px; */
 }
 .sliderSec {
   height: 10%;
@@ -363,12 +365,16 @@ line-height: 26px;
 .typingSec {
   width: 126px !important;
 }
+.queryText{
+  color: #fff !important;
+  padding: 0px 5px !important;
+}
 
 @media (max-width: 768px) {
   .ChatBotBtn  {
     width: 52px !important;
     height: 52px !important;
-    padding-left: 10px;
+    /* padding-left: 10px; */
   }
   .ChatBotBtn img {
     width: 32px !important;
@@ -382,7 +388,7 @@ line-height: 26px;
     width: 100%;
   }
   .MessageBox {
-    height: 68vh  !important;
+    height: 55vh  !important;
   }
 }
 

@@ -612,6 +612,11 @@ white-space: nowrap;
 margin-left: 10px;
 cursor: pointer;
 }
+@media (max-width:1200px) {
+  .nuggetSec, .resultnuggetSec {
+    padding: 0 15px;
+  } 
+}
 @media (max-width: 768px) {
   .nuggetSec {
     width: 100%;
