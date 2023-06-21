@@ -217,7 +217,7 @@ export const ChatInput = ({
 };
 
 export const MessageContent = (props) => {
-  const { message, user, index } = props;
+  const { message = null, user, index } = props;
 
   const loginUserData = useAuthData();
 
@@ -257,7 +257,7 @@ export const MessageContent = (props) => {
           {!isUser(user) && (
             <p className={classes.userNameSec}>David thompson</p>
           )}
-          <p>{message}</p>
+          {message && <p>{message}</p>}
           {/* <Image
             className={classes.chatimg}
             preview={{
