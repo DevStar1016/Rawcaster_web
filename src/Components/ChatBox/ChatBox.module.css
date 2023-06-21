@@ -8,6 +8,8 @@ border-radius: 8px 8px 0px 0px;
 padding-inline: 10px !important;
      background:transparent !important;
      line-height: 20px !important;
+     width: 100%;
+     justify-content: space-between;
 }
 .chatboxHeader img {
     width: 42px;
@@ -71,4 +73,10 @@ padding-inline: 10px !important;
       contain;
     margin: auto;
       cursor: pointer;
+}
+.mainContainer {
+  max-height: 500px;
+  overflow: scroll;
+  background-color: #fff;
+  padding: 5px;
 }

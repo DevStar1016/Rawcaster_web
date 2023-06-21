@@ -92,10 +92,9 @@ const Friends = ({ friend, searchInput }) => {
             <img
               src={chatIcon}
               alt={"Chat"}
-              // onClick={() => {
-              //   console.log("chat");
-              //   setisChatOpen("chat");
-              // }}
+              onClick={() => {
+                setisChatOpen("chat");
+              }}
             />
           </div>
         }

@@ -11,6 +11,9 @@ import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Chat.module.css";
 import moment from "moment";
 import ChatIcon from "../../Assets/Icons/svg/chat_icon.svg";
+import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
+import { Image } from "antd";
+import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 
 export const ChatInput = ({
   HandleSendMessage,
@@ -131,19 +134,20 @@ export const ChatInput = ({
                 }
               }}
             />
+
             {fileuploadEnabled && (
               <i
-                className={classes.mic_icon}
+                className={classes.upload_icon}
                 onClick={() => {
-                  handleAllowMicPermission();
+                  console.log("upload");
                 }}
               />
             )}
             {cameraenabled && (
               <i
-                className={classes.mic_icon}
+                className={classes.camera_icon}
                 onClick={() => {
-                  handleAllowMicPermission();
+                  console.log("camera");
                 }}
               />
             )}
@@ -209,5 +213,97 @@ export const ChatInput = ({
         </div>
       )}
     </>
+  );
+};
+
+export const MessageContent = (props) => {
+  const { message, user, index } = props;
+
+  const loginUserData = useAuthData();
+
+  const isUser = (id) => {
+    if (id === 1) {
+      return true;
+    }
+    return false;
+  };
+
+  const getURL = () => {
+    return {
+      path: "https://img.freepik.com/free-photo/wide-angle-shot-single-tree-growing-clouded-sky-during-sunset-surrounded-by-grass_181624-22807.jpg",
+      media_type: "image",
+      media_file_type: "jpg",
+      media_id: 1,
+    };
+  };
+  return (
+    <div
+      className={
+        isUser(user) ? classes.MessageContainer : classes.receiverConteiner
+      }
+    >
+      <div
+        key={index}
+        className={`${classes.chatbox_message} ${
+          isUser(user) ? classes.user_chatbox_message : ""
+        }`}
+      >
+        <div className={classes.avatar}>
+          <img
+            src={isUser(user) ? loginUserData?.profile_image : ChatProfile}
+          />
+        </div>
+        <div className={classes.content}>
+          {!isUser(user) && (
+            <p className={classes.userNameSec}>David thompson</p>
+          )}
+          <p>{message}</p>
+          {/* <Image
+            className={classes.chatimg}
+            preview={{
+              mask: false,
+            }}
+            src={
+              "https://img.freepik.com/free-photo/wide-angle-shot-single-tree-growing-clouded-sky-during-sunset-surrounded-by-grass_181624-22807.jpg"
+            }
+          /> */}
+          <video controls className={classes.chatimg}>
+            <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+          </video>
+
+          {props.created_at && (
+            <span className={classes.timestamp}>
+              {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                "hh:mm A"
+              )}
+            </span>
+          )}
+        </div>
+      </div>
+      {/* {!isUser(user) && (
+        <div
+          className={`d-flex flex-row ${classes.optionSec} ${
+            !isshareavailble && classes.isSingleOption
+          }`}
+        >
+          <ReadoutSec
+            message={message}
+            audiourl={read_out_url}
+            index={index}
+            onResponse={OnReadoutResponse}
+          />
+          {isshareavailble && (
+            <p
+              onClick={() => {
+                setPostContent(message);
+                setpostModalShow(true);
+              }}
+            >
+              <i className={classes.share_icon}></i> Share
+            </p>
+          )}
+        </div>
+      )} */}
+    </div>
   );
 };

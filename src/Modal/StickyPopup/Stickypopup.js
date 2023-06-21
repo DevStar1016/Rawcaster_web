@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import classes from "./Stickypopup.module.css";
 import { Layout } from "antd";
 import Footer from "../../Components/ChatBox/Footer";
+import Content from "../../Components/ChatBox/Group/Content";
 
 const { Header } = Layout;
 
-const StickyPopup = ({ HeaderContainer, Content, open, close }) => {
+const StickyPopup = ({ HeaderContainer, open, close }) => {
   const [isHidden, setisHidden] = useState(false);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const StickyPopup = ({ HeaderContainer, Content, open, close }) => {
             close();
           }}
         />
-        <Layout.Content>Content </Layout.Content>
+        <Content />
         <Footer />
       </Layout>
     </div>

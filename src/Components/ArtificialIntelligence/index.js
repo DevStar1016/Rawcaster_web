@@ -15,7 +15,6 @@ const ArtificialIntelligence = () => {
   const [Messages, setMessages] = useState([]);
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
-  console.log(Messages);
 
   const generateRandomId = () => {
     const randomId = Math.random().toString(36).substr(2, 9);
