@@ -38,13 +38,16 @@ flex-direction: row; align-items: center;
 justify-content: space-between;
 width: 100%;
 }
-.logopart { width: 320px; cursor: pointer;}
+.logopart { width: 320px; cursor: pointer;align-self: center;}
 .logopart img { height: 40px;}
-.rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 350px; }
+.rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 370px; }
 .topSearch {
-  width: calc(100% - 640px);
-  height: 45px; max-width: 520px;
+  /* width: calc(100% - 640px); */
+  height: 45px; 
+  /* max-width: 520px; */
   margin: auto;
+  width: 665px;
+  max-width: 100%;
 }
 .topSearch span {
   background: #F1F2F5!important;
@@ -92,7 +95,7 @@ padding: 2px 1px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding:0 10px;
+  padding-left:10px;
   padding-right: 15px !important;
   cursor: pointer;
   position: relative;
@@ -242,7 +245,7 @@ margin-top: 5px;
 
 color: #E8EAEE;
 }
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .chatbotsec .ChatBotBtn  {
     width: 52px !important;
     height: 52px !important;
@@ -296,15 +299,34 @@ color: #E8EAEE;
   .beforeSearchicon { right: 5px; top: 7px; display: block; position: relative;  }
 }
 
-@media (min-width:769px) {
-  .searchIconmob, .searchmobSec .clsIcon, .beforeSearchicon { display: none; }
- }
-@media (max-width:769px) {
-  .fullcontainer { width: 100%; }
+
+@media (max-width:1100px) {
+  .fullcontainer { width: 98%; }
   .chatbotsec {
     bottom: 60px;
   }
   .badgeImg  {
     z-index: 0;
   }
+  .rightMenus{
+    width: 250px;
+  }
+ }
+ @media (min-width:768px) {
+  .searchIconmob, .searchmobSec .clsIcon, .beforeSearchicon { display: none; }
+
+ }
+ @media (max-width:767px) {
+  .searchIconmob{
+    display: block !important;
+  }
+  .topSearch{
+    display: none !important;
+  }
+  .rightMenus{
+    width: 50%;
+    max-width: 100%;
+  }
+  .logopart { width: 50%;}
+  
  }

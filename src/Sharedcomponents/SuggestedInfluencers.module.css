@@ -74,6 +74,15 @@
 .seemoreSec span {  
    margin-left: 5px; font-size: 17px;
 }
+@media (max-width:1100px) {
+   .beforeloginSec {
+      width: 500px;
+      max-width: 100%;
+      padding-right: inherit;
+      margin: auto;
+   }
+   
+}
 
 @media(max-width:768px) {
    .advideoSec { display: none;}
