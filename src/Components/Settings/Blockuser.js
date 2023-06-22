@@ -175,7 +175,7 @@ const Blockuser = () => {
             <span
               class="material-symbols-outlined"
               onClick={() => {
-                setQuery(null);
+                setQuery("");
                 getBlockedUserData();
               }}
             >

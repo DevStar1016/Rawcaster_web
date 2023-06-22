@@ -386,3 +386,11 @@ export const TextToAudioService = (data, token) => {
     cancelToken: token,
   });
 };
+
+// Rawcaster Chat
+
+//QR Code
+
+export const GenerateQRtokenService = (data) => {
+  return axios.post(`generate_qrtoken`, data);
+};

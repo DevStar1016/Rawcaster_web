@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Avatar, List, message } from "antd";
+import { Avatar, List, QRCode, message } from "antd";
 import VirtualList from "rc-virtual-list";
 import ChatBox from "./Events/Room/ChatBox";
 import { RosterAttendee } from "amazon-chime-sdk-component-library-react";
@@ -43,7 +43,7 @@ const Development = () => {
     <div
       style={{
         position: "relative",
-        height: "100vh",
+        // height: "100vh",
       }}
     >
       <div className="h-100 p-5 mt-5 m-auto w-100">
@@ -76,7 +76,7 @@ const Development = () => {
           Join Meeting
         </button>
       </div>
-      <div
+      {/* <div
         style={{
           background: "#563662",
           height: "100%",
@@ -85,7 +85,7 @@ const Development = () => {
         }}
       >
         <button onClick={() => setOpen(true)}>Open</button>
-      </div>
+      </div> */}
       {/* 
       <div
         style={{
@@ -97,7 +97,8 @@ const Development = () => {
       >
         <ChatBox />
       </div> */}
-      <StickyPopup />
+      <QRCode value={JSON.stringify({ value: "test" })} />
+      {/* <StickyPopup /> */}
       <br />
     </div>
   );

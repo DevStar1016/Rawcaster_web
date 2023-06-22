@@ -39,6 +39,7 @@ import { useMainContext } from "../Shared/Context";
 import StickyPopup from "../Modal/StickyPopup/Stickypopup";
 import Header from "../Components/ChatBox/Header";
 import Content from "../Components/ChatBox/Group/Content";
+import LinkDeviceModal from "../Modal/Chat/LinkDeviceModal";
 
 const DashboardSignup = () => {
   const { player, setplayer, setisChatOpen, isChatOpen } = useMainContext();
@@ -257,14 +258,20 @@ const DashboardSignup = () => {
           </div>
         )}
         {isChatOpen && (
-          <StickyPopup
+          <LinkDeviceModal
             open={isChatOpen}
-            HeaderContainer={Header}
-            Content={Content}
             close={() => {
               setisChatOpen(false);
             }}
           />
+          // <StickyPopup
+          //   open={isChatOpen}
+          //   HeaderContainer={Header}
+          //   Content={Content}
+          //   close={() => {
+          //     setisChatOpen(false);
+          //   }}
+          // />
         )}
       </div>
     </>

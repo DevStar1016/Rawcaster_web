@@ -99,6 +99,20 @@ export const { actions, reducer } = createSlice({
         state.Nuggets = TempData;
       }
     },
+    handleNuggetTranslateUpdate: (state, action) => {
+      const nugget_id = action.payload.nugget_id;
+      let findIndex = [...state.Nuggets].findIndex(
+        (ele, index) => parseInt(ele.nugget_id) === parseInt(nugget_id)
+      );
+      if (findIndex !== -1) {
+        let TempData = [...state.Nuggets];
+        TempData[findIndex] = {
+          ...TempData[findIndex],
+          translate_text: action.payload.translate_text,
+        };
+        state.Nuggets = TempData;
+      }
+    },
     handleNuggetFormData: (state, action) => {
       state.nuggetFormData = action.payload;
     },
@@ -107,6 +121,14 @@ export const { actions, reducer } = createSlice({
         return {
           ...ele,
           readout_url: null,
+        };
+      });
+    },
+    handleRemoveTranslate: (state, action) => {
+      state.Nuggets = [...state.Nuggets].map((ele) => {
+        return {
+          ...ele,
+          translate_text: null,
         };
       });
     },
@@ -169,6 +191,8 @@ export const {
   handleNuggetViewAPIUpdate,
   handleNuggetReadoutUrlUpdate,
   handleRemoveReadoutURL,
+  handleNuggetTranslateUpdate,
+  handleRemoveTranslate,
 } = actions;
 
 export default reducer;

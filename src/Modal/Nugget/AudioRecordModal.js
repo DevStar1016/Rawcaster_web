@@ -1,7 +1,7 @@
 import { Modal } from "antd";
 import { MediaPermissionsErrorType } from "mic-check";
 import { requestAudioPermissions } from "mic-check/lib/requestMediaPermissions";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useStopwatch } from "react-timer-hook";
@@ -10,11 +10,14 @@ import AudioStop from "../../Assets/Images/audio_stop.jpg";
 import { PostNuggetContext } from "../../Shared/Context";
 import classes from "../Modal.module.css";
 import PreviewModal from "./PreviewModal";
+import { Timer } from "../../Shared/Utility";
 
 const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
   const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const timerRef = useRef(null);
+  const recordingRef = useRef(null);
   const [PreviewMedia, setPreviewMedia] = useState();
 
   const handleClose = () => {
@@ -32,6 +35,11 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
 
   const onRecordStart = () => {
     reset();
+    timerRef.current = new Timer(function () {
+      if (recordingRef.current === "recording") {
+        stopRecording();
+      }
+    }, 150000);
   };
   const onRecordStop = (url, blob) => {
     const file = new File([blob], "RecordAudio.wav", {
@@ -53,6 +61,10 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
     onStart: onRecordStart,
     onStop: onRecordStop,
   });
+
+  useEffect(() => {
+    recordingRef.current = status;
+  }, [status]);
 
   const handleStartMic = () => {
     requestAudioPermissions()
@@ -85,9 +97,11 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
 
   const handlePause = () => {
     if (status === "paused") {
+      timerRef.current?.resume();
       start();
       resumeRecording();
     } else {
+      timerRef.current?.pause();
       pauseRecording();
       pause();
     }

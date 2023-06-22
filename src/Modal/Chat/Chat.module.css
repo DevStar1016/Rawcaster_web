@@ -1,0 +1,30 @@
+.linkContainer {
+    margin-top: 40px;
+}
+.heading {
+    font-size: 28px;
+    font-weight: 300;
+    line-height: normal;
+    color: #41525d;
+}
+.qrSec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.qrcode {
+margin-top: -30px;
+}
+.editableSec {
+    padding: 0 0 0 24px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 80%;
+}
+.editableSec li {
+    font-size: 18px;
+    line-height: 28px;
+    margin: 6px 0;
+    color:#3b4a54;
+}

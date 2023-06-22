@@ -10,6 +10,10 @@
 .nuggetSec::-webkit-scrollbar {
   display: none !important;
 }
+.fetchingSec {
+  width: 50px  !important;
+  margin-left: 18px !important;
+}
 .nuggetItem {
   margin-top: 20px;
   float: left;
@@ -539,7 +543,7 @@ border-radius: 30px;
   display: flex;
   flex-direction: row;
   margin-bottom: 5px;
-
+  padding-left: 10px;
 }
 .readoutContainer  i {
   font-size: 17px;
@@ -556,7 +560,7 @@ border-radius: 30px;
   margin: auto;
   margin-right: 5px;
 }
-.ReadoutSec p {
+.ReadoutSec p,.translationTxt {
   font-family: 'DM Sans';
 font-style: normal;
 font-weight: 400;
@@ -564,6 +568,10 @@ font-size: 14px;
 line-height: 18px;
 margin-bottom: 0px !important;
 white-space: nowrap;
+}
+.translationTxt span {
+font-size: 14px;
+margin:0 6px;
 }
 .TabSec .activeSec {
   opacity: 1;
@@ -611,6 +619,14 @@ white-space: nowrap;
 .comtArea .closeIcon {
 margin-left: 10px;
 cursor: pointer;
+}
+.translationTxt {
+padding:0 15px ;
+margin-bottom: 6px !important;
+cursor: pointer;
+display: flex;
+align-items: center;
+border-right: 1px solid gray;
 }
 @media (max-width:1200px) {
   .nuggetSec, .resultnuggetSec {

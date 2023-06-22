@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import { useReactMediaRecorder } from "react-media-recorder";
@@ -12,8 +12,7 @@ import classes from "./Chat.module.css";
 import moment from "moment";
 import ChatIcon from "../../Assets/Icons/svg/chat_icon.svg";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
-import { Image } from "antd";
-import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
+import { Timer } from "../../Shared/Utility";
 
 export const ChatInput = ({
   HandleSendMessage,
@@ -25,24 +24,36 @@ export const ChatInput = ({
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const [AudioElement, setAudioElement] = useState();
+  const timerRef = useRef(null);
+  const recordingRef = useRef(null);
   const [ChatMessage, setChatMessage] = useState("");
   const loginUserData = useAuthData();
-
+  const isSend = useRef(null);
   const [isChatContentValid, setisChatContentValid] = useState(true);
   const onRecordStart = () => {
     reset();
+    timerRef.current = new Timer(function () {
+      if (recordingRef.current === "recording") {
+        isSend.current = false;
+        stopRecording();
+      }
+    }, 120000);
   };
-  const onRecordStop = (url, blob) => {
-    // const file = new File([blob], "RecordAudio.wav", {
-    //   type: blob.type,
-    // });
-    onAudioResult({
-      user: 1,
-      type: "audio",
-      message: url,
-      created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-      read_out_url: null,
-    });
+  const onRecordStop = (url) => {
+    if (isSend.current) {
+      onAudioResult({
+        user: 1,
+        type: "audio",
+        message: url,
+        created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+        read_out_url: null,
+      });
+    } else {
+      const audio = new Audio(url);
+      setAudioElement(audio);
+      audio.play();
+    }
   };
 
   const handleClose = () => {
@@ -56,7 +67,7 @@ export const ChatInput = ({
       .catch((error) => {});
   };
 
-  const { status, startRecording, stopRecording, clearBlobUrl } =
+  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({
       audio: true,
       stopStreamsOnStop: true,
@@ -85,6 +96,10 @@ export const ChatInput = ({
       });
   };
 
+  useEffect(() => {
+    recordingRef.current = status;
+  }, [status]);
+
   const getNuggetTextLength = () => {
     if (loginUserData) {
       return loginUserData?.nugget_content_length;
@@ -99,6 +114,14 @@ export const ChatInput = ({
       : num.toString();
   };
 
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    const formattedSeconds =
+      remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+    return `${minutes}:${formattedSeconds}`;
+  }
+
   return (
     <>
       {!isChatContentValid && (
@@ -107,7 +130,7 @@ export const ChatInput = ({
           characters
         </p>
       )}
-      {status === "idle" || status === "stopped" ? (
+      {status === "idle" ? (
         <div className={classes.ContentSec}>
           <InputGroup className={classes.chatinputSec}>
             <Form.Control
@@ -185,10 +208,46 @@ export const ChatInput = ({
       ) : (
         <div className={classes.recordingBox}>
           <div className={classes.RecordingTimeSec}>
-            {" "}
-            {getValidNumber(minutes) + `:` + getValidNumber(seconds)}
+            {status === "stopped" ? (
+              <>{AudioElement ? formatTime(AudioElement.currentTime) : null}</>
+            ) : (
+              <>{getValidNumber(minutes) + `:` + getValidNumber(seconds)}</>
+            )}
           </div>
           <div className={classes.ActionSec}>
+            {status === "stopped" ? (
+              <>
+                {AudioElement && AudioElement?.paused ? (
+                  <span
+                    class="material-symbols-rounded"
+                    onClick={() => {
+                      AudioElement.play();
+                    }}
+                  >
+                    play_circle
+                  </span>
+                ) : (
+                  <span
+                    class="material-symbols-rounded"
+                    onClick={() => {
+                      AudioElement.pause();
+                    }}
+                  >
+                    pause_circle
+                  </span>
+                )}
+              </>
+            ) : (
+              <span
+                class="material-symbols-rounded"
+                onClick={() => {
+                  isSend.current = false;
+                  stopRecording();
+                }}
+              >
+                stop_circle
+              </span>
+            )}
             <span
               class={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
@@ -201,7 +260,19 @@ export const ChatInput = ({
             <InputGroup.Text
               className={classes.searchIcon}
               onClick={() => {
-                stopRecording();
+                if (mediaBlobUrl) {
+                  onAudioResult({
+                    user: 1,
+                    type: "audio",
+                    message: mediaBlobUrl,
+                    created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                    read_out_url: null,
+                  });
+                } else {
+                  isSend.current = true;
+                  stopRecording();
+                }
+                clearBlobUrl();
                 handleClose();
               }}
             >
@@ -280,30 +351,6 @@ export const MessageContent = (props) => {
           )}
         </div>
       </div>
-      {/* {!isUser(user) && (
-        <div
-          className={`d-flex flex-row ${classes.optionSec} ${
-            !isshareavailble && classes.isSingleOption
-          }`}
-        >
-          <ReadoutSec
-            message={message}
-            audiourl={read_out_url}
-            index={index}
-            onResponse={OnReadoutResponse}
-          />
-          {isshareavailble && (
-            <p
-              onClick={() => {
-                setPostContent(message);
-                setpostModalShow(true);
-              }}
-            >
-              <i className={classes.share_icon}></i> Share
-            </p>
-          )}
-        </div>
-      )} */}
     </div>
   );
 };
