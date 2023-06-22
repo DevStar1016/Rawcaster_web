@@ -353,7 +353,17 @@ margin-top: 0px !important;
   .textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
   .btnstyle,.disabledBtn { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; width: 30%;margin-top: 30px; font-weight: 600; font-size: 16px; }
 .btnstyle:hover,.disabledBtn:hover{ background: #f2718d; color: #fff !important; }
-@media (max-width:768px) {
+
+@media (max-width:1100px) {
+  .profileevent, .rightProfiles {
+    width: 600px;
+    margin: auto;
+    float: unset;
+    max-width: 100%;
+  }
+  
+}
+/* @media (max-width:768px) {
 .profileContainer { padding-left: 10px; margin-top: -40px; }
 .profileSec { width: 100px; }
 .profileSec img { width: 40px; height: 40px; }
@@ -365,4 +375,22 @@ margin-top: 0px !important;
 .claimAccountBox { padding:10px;  }
 .claimAccountSec { margin-bottom: 50px;}
 
+} */
+@media (max-width:575px) {
+  .profileContainer {
+    padding-left: 10px !important;
+}  
+.profileContainer {
+  margin-top: -52px;
+}
+.profileSec .profileImg {
+  width: 100px;
+  height: 100px;
+}
+.profileSec .uploadSec  {
+  right: 28px;    
+}
+.fansList {  margin-top: 65px; margin-left: 0px; }
+.actionIcon { margin-top: 74px}
+.fullcontainer { padding-top: 0px;}
 }

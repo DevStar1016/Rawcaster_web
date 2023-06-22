@@ -148,7 +148,7 @@ const Notification = ({ className, src, onReadCountChange }) => {
 
   return (
     <NotificationContext.Provider value={NotificationValues}>
-      <div className={"onlydes"} style={{ marginRight: 21 }}>
+      <div className={classes.onlydes}>
         <Popover
           placement="bottom"
           title={<Header />}

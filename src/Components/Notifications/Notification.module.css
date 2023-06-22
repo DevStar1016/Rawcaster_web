@@ -239,8 +239,16 @@ font-size: 20px;
 line-height: 26px;
 }
 .mobNotification { padding: 0 15px; }
-
-
+.onlydes{ margin-right: 21px }
+@media (max-width:1100px) {
+    .onlydes{
+        width: 600px;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+}
 @media (max-width:768px) {
     .fansList .rightsec span {
         display: block;

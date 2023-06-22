@@ -72,7 +72,7 @@ const Dashboard = () => {
         </div>
       )}
       {!detectMob() && (
-        <div className="d-none d-sm-block">
+        <div className={classes.mobScreen}>
           <div className={classes.fullcontainer}>
             <Events />
             <Nuggets className={classes.NuggetsSec} />
@@ -83,7 +83,7 @@ const Dashboard = () => {
       )}
 
       {detectMob() && (
-        <div className="d-block d-sm-none">
+        <div className={classes.webScreeen}>
           <div className={classes.fullcontainer}>
             {dashboardMenu === "event" && <Events />}
             {dashboardMenu === "notification" && (
