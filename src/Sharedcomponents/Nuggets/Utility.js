@@ -4,9 +4,16 @@ import { useAuthToken } from "../../Shared/Reduxfetcher";
 import { getNuggetContentAudioService } from "../../Services/ApiService";
 import { JSONtoformdata } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
-import { useListNuggetContext, useMainContext } from "../../Shared/Context";
+import {
+  useListNuggetContext,
+  useMainContext,
+  useSingleNuggetContext,
+} from "../../Shared/Context";
 import { useDispatch } from "react-redux";
-import { handleNuggetReadoutUrlUpdate } from "../../Store/Redux/Reducer/NuggetsReducer";
+import {
+  handleNuggetReadoutUrlUpdate,
+  handleNuggetTranslateUpdate,
+} from "../../Store/Redux/Reducer/NuggetsReducer";
 import axios from "axios";
 import { useLocation } from "react-router";
 
@@ -141,5 +148,65 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
         </div>
       )}
     </>
+  );
+};
+
+export const SeeTranslate = ({ nugget_id, translate_text = null }) => {
+  const token = useAuthToken();
+  const dispatch = useDispatch();
+  const { isTranslate, setisTranslate } = useSingleNuggetContext();
+  const [isFetching, setisFetching] = useState(false);
+
+  const getTranslatedText = () => {
+    if (translate_text) {
+      setisTranslate(true);
+    } else {
+      setisFetching(true);
+      const formData = {
+        token,
+        nugget_id: nugget_id,
+        translation_type: 2,
+      };
+      getNuggetContentAudioService(JSONtoformdata(formData))
+        .then((res) => {
+          if (res.data.status === 1 && res.data.translation) {
+            dispatch(
+              handleNuggetTranslateUpdate({
+                nugget_id: nugget_id,
+                translate_text: res.data.translation,
+              })
+            );
+            setisTranslate(true);
+          } else {
+            toast.error(res.data.msg);
+          }
+        })
+        .finally(() => {
+          setisFetching(false);
+        });
+    }
+  };
+  return (
+    <div
+      className={classes.translationTxt}
+      onClick={() => {
+        if (isTranslate) {
+          setisTranslate(false);
+        } else {
+          getTranslatedText();
+        }
+      }}
+    >
+      {isFetching ? (
+        <p className={`mx-2 ${classes.fetchingSec}`}>
+          <div class="dot_typing"></div>
+        </p>
+      ) : (
+        <>
+          <span class="material-symbols-rounded">g_translate</span>
+          See {isTranslate ? "Original" : "Translation"}
+        </>
+      )}
+    </div>
   );
 };

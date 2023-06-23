@@ -13,6 +13,7 @@ import TermsandConditions from "../Components/Policy/TermsandConditions";
 import Profile from "../Components/Profile";
 import Claimaccount from "../Components/Profile/Claimaccount";
 import Referel from "../Components/Referel";
+import ReferalDashboard from "../Components/Referel/Dashboard/Dashboard";
 import Settings from "../Components/Settings";
 import HomeLayout from "../Layouts/HomeLayout";
 
@@ -49,6 +50,10 @@ export const DashboardRoute = [
           {
             path: "/referel",
             element: <Referel />,
+          },
+          {
+            path: "/referel/dashboard",
+            element: <ReferalDashboard />,
           },
           {
             path: "/view/:nugID",

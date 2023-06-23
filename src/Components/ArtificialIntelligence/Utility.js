@@ -17,7 +17,7 @@ import {
   useGlobalContext,
   useMainContext,
 } from "../../Shared/Context";
-import { JSONtoformdata, ReadMore } from "../../Shared/Utility";
+import { JSONtoformdata, ReadMore, Timer } from "../../Shared/Utility";
 import { TextToAudioService } from "../../Services/ApiService";
 import axios from "axios";
 
@@ -338,7 +338,7 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
               />
             </div>
           </div>
-        
+
           {query && <div className={classes.queryText}>{query}</div>}
           <div className="d-flex flex-row justify-content-between">
             <div className={classes.controlSec}>
@@ -366,17 +366,22 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
   const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const timerRef = useRef(null);
+  const recordingRef = useRef(null);
   const { ChatMessage, setChatMessage } = useChatBotContext();
   const loginUserData = useAuthData();
 
   const [isChatContentValid, setisChatContentValid] = useState(true);
   const onRecordStart = () => {
     reset();
+    timerRef.current = new Timer(function () {
+      if (recordingRef.current === "recording") {
+        stopRecording();
+      }
+    }, 120000);
   };
+
   const onRecordStop = (url, blob) => {
-    // const file = new File([blob], "RecordAudio.wav", {
-    //   type: blob.type,
-    // });
     onAudioResult({
       user: 1,
       type: "audio",
@@ -405,6 +410,10 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
       onStop: onRecordStop,
     });
 
+  useEffect(() => {
+    recordingRef.current = status;
+  }, [status]);
+
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
       .then(() => {
@@ -428,7 +437,7 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
 
   const getNuggetTextLength = () => {
     if (loginUserData) {
-      return loginUserData?.nugget_content_length;
+      return loginUserData?.ai_content_length;
     } else {
       return 0;
     }
@@ -457,7 +466,8 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
               aria-label="Type or ask question here.."
               value={ChatMessage}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !disabled) {
+                if (e.key === "Enter" && !disabled && isChatContentValid) {
+                  setisChatContentValid(true);
                   HandleSendMessage(ChatMessage);
                   setChatMessage("");
                 }
@@ -484,7 +494,8 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
               <InputGroup.Text
                 className={classes.searchIcon}
                 onClick={() => {
-                  if (!disabled) {
+                  if (!disabled && isChatContentValid) {
+                    setisChatContentValid(true);
                     HandleSendMessage(ChatMessage);
                     setChatMessage("");
                   }

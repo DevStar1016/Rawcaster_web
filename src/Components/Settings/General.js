@@ -16,7 +16,10 @@ import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
 import { grouplistupdateService } from "../../Services/ApiService";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
-import { handleRemoveReadoutURL } from "../../Store/Redux/Reducer/NuggetsReducer";
+import {
+  handleRemoveReadoutURL,
+  handleRemoveTranslate,
+} from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const General = () => {
   const { formikvalues, setFieldValue, setupdateValue, updateValue } =
@@ -370,6 +373,7 @@ const General = () => {
               onChange={(_, { id }) => {
                 setupdateValue("read_out_language_id", id);
                 dispatch(handleRemoveReadoutURL());
+                dispatch(handleRemoveTranslate());
               }}
               disabled={
                 updateValue.includes("read_out_language_id") ||

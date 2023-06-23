@@ -42,7 +42,7 @@ const PostNuggets = () => {
   const params = useParams();
   const ImageRef = useRef();
   const VideoRef = useRef();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   const [NuggetData, setNuggetData] = useState([]);
   const [PollData, setPollData] = useState();
   const [previewMedia, setpreviewMedia] = useState([]);
@@ -275,7 +275,6 @@ const PostNuggets = () => {
             const getShareWithData = res.data.nugget_detail.shared_detail.map(
               (ele) => ele.id
             );
-            console.log(getShareWithData, "getShareWithData");
             setshareWithData(getShareWithData);
           }
           setpostModalShow(true);
