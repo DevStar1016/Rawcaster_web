@@ -360,10 +360,19 @@ margin: 12px 0;
     max-width: 100%;
    margin: 0 auto;
   } 
+  .EventListSec {
+    height: calc(100% - 270px);
+  }
 }
 @media (max-width:768px) {
   .eventSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
   .EventListSec { height: auto !important; }
+}
+@media (max-width:575px) {
+.eventShowBtn,.talkShowBtn{
+  margin-bottom: 5px;
+  display: inline-flex;
+}  
 }
 
 

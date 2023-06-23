@@ -72,3 +72,8 @@
 .tie-btn-delete ,.tie-btn-deleteAll {
   display: none !important;
 }
+
+/* .searchNugets{
+  height: calc(100vh - 230px);
+  overflow: auto;
+} */

@@ -310,7 +310,7 @@ const UpdateProfile = () => {
             </Col>
           </Row>
           <Row gutter={10}>
-            <Col sm={12} xs={24}>
+            <Col md={12} xs={24}>
               <p className={classes.label}>First Name</p>
               <Form.Item name="first_name">
                 <Input
@@ -331,7 +331,7 @@ const UpdateProfile = () => {
                 )}
               </Form.Item>
             </Col>
-            <Col sm={12} xs={24}>
+            <Col md={12} xs={24}>
               <p className={classes.label}>Last Name</p>
               <Form.Item name="last_name">
                 <Input
@@ -350,7 +350,7 @@ const UpdateProfile = () => {
                 )}
               </Form.Item>
             </Col>
-            <Col sm={12} xs={24}>
+            <Col md={12} xs={24}>
               <p className={classes.label}>Display Name</p>
               <Form.Item name="name">
                 <Input
@@ -368,7 +368,7 @@ const UpdateProfile = () => {
               </Form.Item>
             </Col>
 
-            <Col sm={12} xs={24}>
+            <Col md={12} xs={24}>
               <p className={classes.label}>Gender</p>
               <Form.Item name="gender" className="genderSelect">
                 <Select
@@ -388,7 +388,7 @@ const UpdateProfile = () => {
               </Form.Item>
             </Col>
 
-            <Col sm={12} xs={24}>
+            <Col md={12} xs={24}>
               <p className={classes.label}>Date of Birth</p>
               <DateInputBox
                 displayDate={values.dob}
@@ -405,7 +405,7 @@ const UpdateProfile = () => {
               {touched.dob && <p className="ErrTxt">{errors?.dob}</p>}
             </Col>
 
-            <Col sm={12} xs={24}>
+            <Col md={12} xs={24}>
               <p className={classes.label}>Location</p>
               <Form.Item name="geo_location">
                 <PlacesAutocomplete

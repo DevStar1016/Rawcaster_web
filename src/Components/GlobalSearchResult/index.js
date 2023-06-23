@@ -14,7 +14,7 @@ const GlobalSearchResult = () => {
   const searchKey = params?.key ? DecryptionString(params?.key) : "";
   return (
     <div>
-      <div className={classes.mainContainer}>
+      <div className={`searchNugets ${classes.mainContainer}`}>
         <p className={classes.searchResultName}>
           Search Results for <span>{searchKey}</span>{" "}
         </p>

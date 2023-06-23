@@ -169,7 +169,7 @@
   }
   .centerLogo { margin:25px auto !important; text-align: center;display: flex;flex-direction: row; align-items: center;  }
   .centerLogo .backBtn {
-    width: 15%;
+    width: 80px;
   }
   .backBtn a {
     color: #191919;
@@ -189,7 +189,7 @@
   .centerLogo .backBtn span {
     cursor: pointer;
   }
-  .centerLogo .linkSec { width: 40%; text-align: center;display: flex; align-items: center; justify-content: center;}
+  .centerLogo .linkSec { width: calc(100% - 80px); text-align: center;display: flex; align-items: center; justify-content: center;}
   .updatebg { border-radius: 8px; border: 1px solid #E8EAEE; padding: 30px; }
   .verifybg { 
     min-height: 100%; float: left; width: 100%;
@@ -233,4 +233,11 @@ cursor: pointer;
 
   color: #EE456A;
   margin-bottom: 10px !important; 
+}
+@media (max-width:575px) {
+  .updatebg {padding: 15px; }
+  .heading_h1 {font-size: 26px !important;}
+  .linkSec img{ max-width: 100%;}
+  .subText {font-size: 15px;}
+  
 }

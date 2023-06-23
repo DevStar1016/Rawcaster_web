@@ -162,7 +162,7 @@ const Claimaccount = () => {
                 : "Submit Details For Verification"}
             </h2>
             <Row>
-              <Col sm={6}>
+              <Col md={6}>
                 <div className="my-2">
                   <p className={classes.label}>First Name </p>
                   <Input
@@ -177,7 +177,7 @@ const Claimaccount = () => {
                   <p className="ErrTxt">{errors?.first_name}</p>
                 )}
               </Col>
-              <Col sm={6}>
+              <Col md={6}>
                 <div className="my-2">
                   <p className={classes.label}>Last Name </p>
                   <Input
@@ -192,7 +192,7 @@ const Claimaccount = () => {
                   <p className="ErrTxt">{errors?.last_name}</p>
                 )}
               </Col>
-              <Col sm={6}>
+              <Col md={6}>
                 <div className="my-2">
                   <p className={classes.label}>Telephone </p>
                   <Input
@@ -207,7 +207,7 @@ const Claimaccount = () => {
                   <p className="ErrTxt">{errors?.telephone}</p>
                 )}
               </Col>
-              <Col sm={6}>
+              <Col md={6}>
                 <div className="my-2">
                   <p className={classes.label}>Email id </p>
                   <Input
@@ -222,7 +222,7 @@ const Claimaccount = () => {
                   <p className="ErrTxt">{errors?.email_id}</p>
                 )}
               </Col>
-              <Col sm={6}>
+              <Col md={6}>
                 <div className="my-2">
                   <p className={classes.label}>Date of Birth </p>
                   <DateInputBox
@@ -238,7 +238,7 @@ const Claimaccount = () => {
                 </div>
                 {touched.dob && <p className="ErrTxt">{errors?.dob}</p>}
               </Col>
-              <Col sm={6}>
+              <Col md={6}>
                 <div className="my-2">
                   <p className={classes.label}>Location</p>
                   <Form.Item name="location">
