@@ -13,19 +13,16 @@ const ReferalDashboard = () => {
   const userData = useAuthData();
   return (
     <div className={classes.fullcontainer}>
-      <Row>
-        <Col sm={3}>
-          <div className={classes.leftFull}>
+     
+          <div className={`${classes.leftFull} ${classes.dashLeft}`}>
             <ReferralsList />
           </div>
-        </Col>
-        <Col>
-          <div>
+    
+          <div className={`${classes.dashCenter}`}>
             <ReferContainer />
           </div>
-        </Col>
-        <Col sm={3}>
-          <div>
+    
+          <div className={`${classes.dashRight}`}>
             {userData ? (
               <div className={classes.proBox}>
                 <Tooltip placement="top" title={"Copy referral link"}>
@@ -74,8 +71,7 @@ const ReferalDashboard = () => {
             ) : null}
             <Connections />
           </div>
-        </Col>
-      </Row>
+     
     </div>
   );
 };

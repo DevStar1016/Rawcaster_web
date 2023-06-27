@@ -1,5 +1,5 @@
 .fullcontainer { 
-    position: relative; height: 100vh; padding-top: 67px; margin: auto;  max-width: 1350px; width: 95%;
+    position: relative; height: calc(100vh - 70px); margin: auto;  max-width: 1350px; width: 95%;
 }
 
 /* Referal List */
@@ -7,7 +7,7 @@
 .leftFull {
     width: 345px;
     float: left;
-    height: calc(100vh - 70px);
+    /* height: calc(100vh - 70px); */
     position: sticky;
     overflow-y: scroll;
     mask-image: linear-gradient(to top, transparent, black),
@@ -19,9 +19,9 @@
     -webkit-mask-size: 100% 20000px;
     -webkit-mask-position: left bottom;
     transition: mask-position 0.3s, -webkit-mask-position 0.3s;
-    top: 74px;
-    padding-bottom: 74px;
-    padding: 15px;
+    /* top: 74px;
+    padding-bottom: 74px; */
+    padding: 18px 0px;
     /* background: #f6f6f6; */
   }
   .leftFull:hover {
@@ -37,9 +37,9 @@
     float: left;
   }
   .refSec h1 {
-    margin-bottom: 0px !important;
+    /* margin-bottom: 0px !important; */
     text-align: left;
-    padding: 20px 20px 10px 20px;
+    /* padding: 20px 20px 10px 20px; */
     font-size: 25px;
     font-weight: 500;
     color: #1d1c1c;
@@ -107,19 +107,19 @@
 
   /* Dashboard */
 
-  .centerSec {
-    padding: 0 30px;
-    height: calc(100vh - 70px);
-    float: left;
-    /* width: calc(100% - 680px); */
-    background: #fff;
-    border-top: 20px #fff solid;
-    overflow: auto;
+  /* .centerSec div {
+ display: flex;
+ justify-content: center;
+ flex-direction: column;
+  } */
+  .centerImg{
+    display: flex;
+    justify-content: center;
   }
   .centerSec .refImg {
     max-width: 100%;
     padding: 0 10px;
-  }
+  } 
   .shareList {
     border: #e8eaee 1px solid;
     float: left;
@@ -176,9 +176,8 @@
   .proBox {
     position: relative;
     background: #fff;
-    margin: 15px 0;
     border-radius: 10px;
-    padding: 20px;
+    padding: 18px 20px;
     text-align: center;
     float: left;
     width: 100%;
@@ -261,10 +260,93 @@
     float: left;
     height: 34px;
   }
+  .dashLeft{
+    width: 310px;
+    float: left;
+    position: sticky;
+    /* padding-right: 10px;
+    padding-bottom: 74px; */
+    /* height: calc(100vh - 70px); */
+    /* top: 74px;
+    padding-bottom: 74px */
+  }
+  .dashCenter{
+    padding: 18px 30px;
+    float: left;
+    width: calc(100% - 620px);
+    height: calc(100vh - 70px);
+    background: #fff;
+    /* scroll-behavior: unset; */
+    /* border-top: 20px solid #fff; */
+    overflow-y: auto;
+  }
+  .dashRight{
+    width: 310px;
+    float: left;
+    position: sticky;
+    padding: 0 15px;
+    /* padding-bottom: 74px; */
+    /* height: calc(100vh - 70px); */
+    /* top: 74px; */
+  }
+  .onlymob, .mobrefSec { display: none; }
 
-@media (min-width:1150px){ 
+/* @media (min-width:1150px){ 
     .onlymob, .mobrefSec { display: none; }
   }
   @media (max-width:1150px){
     .onlydesktop { display: none; }
-   }
+   } */
+@media (max-width:1100px) {
+  .dashLeft,.dashCenter,.dashRight{
+    width: 100%;
+    float: unset;
+    padding: 0 !important;
+  }
+  .fullcontainer{
+    width: 600px;
+    max-width: 100%;
+    padding: 18px 20px !important;
+  }
+  .leftFull{
+    height: fit-content;
+  }
+  .emptyRefmsg{
+    min-height: 180px;
+  }
+  .dashLeft{
+    padding: 0;
+    top: 0;
+    position: relative;
+  }
+  .dashRight{
+    height: fit-content;
+  }
+  .onlydesktop { display: none; }
+  .onlymob, .mobrefSec { display:flex;margin: auto; }
+  .dashCenter{height: auto;}
+}
+@media (max-width:575px) {
+  .centerSec{
+    padding: 0;
+  }
+  .dashCenter{
+    padding: 0 20px;
+  }
+  .cardSec {
+    width: 100%;
+    max-width: 300px;
+  }
+  .cardsecParent{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+  .shareList ul {
+    width: 100%;
+  }
+}
+
+

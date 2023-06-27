@@ -408,6 +408,9 @@ position: absolute;
 right: 0;
 top: 0;
 }
+@media (max-width:1100px) {
+  .connectionsLists { max-height: 228px;}
+}
   @media (max-width:768px) {
   .groupLists { min-height: auto !important; }
   .myconnectioin { max-height: inherit !important; }

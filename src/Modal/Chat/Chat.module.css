@@ -28,3 +28,13 @@ margin-top: -30px;
     margin: 6px 0;
     color:#3b4a54;
 }
+@media (max-width:575px) {
+    .heading {
+        font-size: 20px;
+        font-weight: 500;
+    }
+    .editableSec li {
+        font-size: 16px;
+        line-height: 22px;
+    }
+}

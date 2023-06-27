@@ -80,12 +80,12 @@ const Referel = () => {
         <SuggestedAccounts />
       </div>
 
-      <div className={`d-none d-sm-block `}>
+      <div className={classes.inviteNone}>
         <Nuggets isUserPostAvailable={false} className={classes.NuggetSec} />
       </div>
       <div
         ref={rightContainer}
-        className={`d-none d-sm-block `}
+        className={classes.inviteBlock}
         style={{
           position: "sticky",
           top: `calc(-${rightContainer.current?.offsetHeight / 2}px + ${

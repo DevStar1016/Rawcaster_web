@@ -3,12 +3,12 @@
     float: left;
     width: 310px;
     max-height: 100vh;
-    padding-top:20px;
+    padding-top:18px;
     height: calc(100vh - 70px);
     position: sticky !important;
     position: -webkit-sticky;
-    top: 74px;
-    overflow-y: auto;
+    /* top: 74px; */
+    /* overflow-y: auto; */
     /* mask-image: linear-gradient(0deg,transparent,#000),linear-gradient(270deg,transparent 17px,#000 0); */
     /* mask-size: 100% 20000px; */
     mask-position: left bottom;
@@ -16,8 +16,8 @@
     /* -webkit-mask-size: 100% 20000px; */
     -webkit-mask-position: left bottom;
     transition: mask-position .3s,-webkit-mask-position .3s;
-    overflow-x: hidden;
-    padding-right: 13px;
+    /* overflow-x: hidden; */
+   /* padding: 90px 12px 0px; */
  }
  .beforeloginSec::-webkit-scrollbar-thumb {
    background-color: transparent !important;
@@ -80,12 +80,13 @@
       max-width: 100%;
       padding-right: inherit;
       margin: auto;
+      padding-top: 60px;
    }
    
 }
 
 @media(max-width:768px) {
    .advideoSec { display: none;}
-   .beforeloginSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
+   .beforeloginSec { width: 100%; padding: 0 15px; height: auto; margin: unset; }
    .suggInfluencersSec { max-height:inherit !important;}
 }

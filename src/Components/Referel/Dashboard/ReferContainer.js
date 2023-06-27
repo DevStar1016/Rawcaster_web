@@ -94,6 +94,7 @@ const ReferContainer = () => {
           })}
         </ul>
       </div>
+      <div className={classes.cardsecParent}>
 
       <div className={classes.cardSec}>
         <p className={classes.value}>{0}</p>
@@ -103,6 +104,7 @@ const ReferContainer = () => {
       <div className={classes.cardSec}>
         <p className={classes.value}>{0}</p>
         <p className={classes.text}>Referrals Needed for Upgrade to Premium </p>
+      </div>
       </div>
     </div>
   );

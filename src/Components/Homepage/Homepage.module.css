@@ -8,7 +8,6 @@
     float: left;
     clear: both;
     display: flex;
-    margin-top: 110px;
 }
 .welcomeSec2 {
     width: 100%;
@@ -28,7 +27,9 @@
     font-weight: 500;
     font-size: 17px; 
     float: left;
-    padding-top: 16px; text-decoration: none;
+    margin: 30px auto 60px;
+    padding:15px 20px;
+     text-decoration: none;
     font-family: 'DM Sans', sans-serif;
   }
   .getStarted:hover { background: #563662 !important; color: #fff; }
@@ -79,7 +80,7 @@
   .onlyMob {
     display: none;
   }
-  .homeContent { max-width: 1620px; width: calc(100% - 60px); padding: 40px 15px 50px 15px; display: flex; margin: auto; }
+  .homeContent { max-width: 1620px; width: calc(100% - 60px); padding: 30px 15px 25px 15px; display: flex; margin: auto; }
   .homeContent .textSec { width: 50%; float: left; padding: 20px; max-width: 550px; margin: auto; justify-content: center; align-items: center; }
   .homeContent .imgSec { width: 50%; float: left; justify-content: center; align-items: center; display: flex;}
   .homeContent .imgSec img { width: 100%; }
@@ -89,14 +90,14 @@
   .homeContent .getStarted { background: #563662 !important; border-radius: 12px; width: 200px; margin-top: 10px;}
   .homeContent .getStarted:hover { background: #E26386 !important; color: #fff; }
   
-  .platform { max-width: 1620px; padding: 0 20px 0 20px; margin: 40px auto 0 auto; }
+  .platform { width: 1620px;max-width: 100%; padding: 50px 20px 0; margin: 0px auto 0px auto; }
   .platform h1 { text-align: center; font-size: 34px !important; color: #1D1C1C !important; margin-bottom: 10px !important; font-family: 'Gilroy-Bold';  }
   .platform h5 { text-align: center; font-size: 18px !important; color: #1D1C1C; font-weight: normal; font-family: 'DM Sans', sans-serif; max-width: 540px; margin: auto; margin-bottom: 20px;}
   .platform .textSec { margin:20px 25px 0 25px; width: calc(33% - 50px); float: left; }
   .platform .textSec img { width: 100%; margin-bottom: 20px;}
   .platform .textSec h3 { font-size: 21px !important; color: #1D1C1C; font-weight: 600; font-family: 'DM Sans', sans-serif; margin-bottom: 10px;}
   .platform .textSec p, .userSec p, .downloadApp .textSec p { font-size:17px !important; line-height: 24px; color: #1D1C1C; font-weight: 400; font-family: 'DM Sans', sans-serif; }
-  .platform .btnSec { margin:30px auto 100px auto; text-align: center; float: left; width: 100%; justify-content: center; display: flex; }
+  .platform .btnSec { text-align: center; float: left; width: 100%; justify-content: center; display: flex; }
 
   .userSec { display: flex;  min-height: 315px; flex-direction: column; position: relative;  background: #fff; padding:30px; margin: 20px; box-shadow:0px 1px 16px rgb(0 0 0 / 16%);
      border-radius: 22px; border: solid 5px transparent; }
@@ -117,7 +118,7 @@
   .userSec .author p {font-weight: 600; margin-top: 10px; }
   .userSec button { display: none; }
   
-  .founder { width: 100%; padding: 100px 0; float: left;  margin-top: 100px;}
+  .founder { width: 100%; padding: 100px 0; float: left; margin: 100px 0 0;}
   .founder .msgBox { position: relative; display: flex; align-items: center; background: #563662; border-radius: 22px; max-width: 1000px; margin: auto; padding:40px; color: #fff; font-size: 17px; font-family: 'DM Sans', sans-serif; }
   .founder .profileImg { width: 190px; height: 190px; margin-right: 30px; }
   .founder p {flex-direction: column;}
@@ -128,16 +129,16 @@
   .downloadApp .textSec { width: 45%; float: left; flex-direction: column; justify-content: center; align-items: center; display: flex; }
   .downloadApp .imgSec { width: 55%; float: left;}
   .downloadApp .textSec h4 { font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight: bold; }
-  .downloadApp .textSec .Rlogo { max-height: 80px; margin-bottom: 15px; }
+  .downloadApp .textSec .Rlogo {width: 90px !important; margin-bottom: 15px !important;margin: 0; }
   .downloadApp .textSec p { max-width: 300px; font-size: 19px !important; }
-  .downloadApp .textSec .appImg { max-height: 58px; margin-right: 10px; margin-bottom: 10px; }
+  .downloadApp .textSec .appImg { width: 200px !important; margin-right: 10px !important; margin-bottom: 10px !important;margin: 0; }
   .downloadApp .imgSec img { width: 100%; }
   
   .bgart { 
     background: url(../../Assets/Images/svg/bg-2.svg) no-repeat top center;
-     background-size: 1200px 200px; float: left; width: 100%;}
+     background-size: 1200px 200px; float: left; width: 100%; padding: 100px 0px 0px;}
   
-     .userSec { display: flex;  min-height: 315px; flex-direction: column; position: relative;  background: #fff; padding:30px; margin: 20px; box-shadow:0px 1px 16px rgb(0 0 0 / 16%);
+     .userSec { display: flex;  min-height: 340px;width: 300px;max-width: 100%; flex-direction: column; position: relative;  background: #fff; padding:30px; margin: 20px; box-shadow:0px 1px 16px rgb(0 0 0 / 16%);
       border-radius: 22px; border: solid 5px transparent; }
    .userSec:before {
      content: "";
@@ -155,60 +156,109 @@
    .userSec .author img { width: 50px !important; height: 50px; border-radius: 50%; float: left; margin-right: 10px; }
    .userSec .author p {font-weight: 600; margin-top: 10px; }
    .userSec button { display: none; }
-  @media (max-width: 768px) {
-    .welcomeSec { margin-top: 50px; }
-    .rightSec {
-      display: none;
-    }
-    .leftSec h1 {
-      font-size: 26px !important;
-      line-height: 30px;
-      margin-top: 20px;
-    }
-    .onlyMob {
-      margin-top: 30px;
-      margin-left: -10px;
-      margin-bottom: 30px;
-    }  
-    .contentSec .getStarted {
-      margin-bottom: 50px;
-    }
-    .founder .msgBox, .downloadApp { margin: 0 15px; width: calc(100% - 30px) !important;  }
-    .downloadApp .textSec {padding-bottom: 50px; text-align: center; }
-    .downloadApp .textSec p { text-align: center; max-width: 100%; }  
-    .founder .msgBox { text-align: center; }
-    .msgBox .profileImg { margin:0 auto 20px auto !important; width: 130px; height: 130px;}
-    .platform { margin: 50px auto 0 auto; }
-    .platform .textSec { margin: 0; }
-    .platform .btnSec { margin: 10px auto; }
-    .platform h1 { font-size: 30px; line-height: 30px; }
-    .leftSec p { padding: 0 15px 0 0; }
-    .homeContent { width: calc(100% - 30px); }
-    .homeContent .textSec { padding-left: 0; padding-right: 0; }
-    .homeContent, .downloadApp {  padding: 50px 0; display: block; }  
+
+.customCarousel>div>div>div{
+  width : 340px !important 
+
+}
+
+   @media (max-width:991px) {
+    .homeContent, .downloadApp { display: block !important; }  
+    .homeContent { width: calc(100% - 60px); padding: 30px 0px 0px; }
+    .downloadApp .textSec p { max-width: 100%;}
+    .leftSec .contentSec {max-width: 100%;} 
+    .homeContent .imgSec, .homeContent .textSec, .platform .textSec, .downloadApp .textSec, .downloadApp .imgSec, .founder p, .founder .msgBox { width: 100%; display: block; float: unset; }
+    .homeContent .textSec { width: 100%;max-width: 100%; }
+    .rightSec,.leftSec {width: 100%;display: none;} 
+    .platform{float: left;}
     .leftSec,
     .welcomeSec,
     .welcomeSec2,
+    .onlyMob{ display: block;margin: auto;float: left; }
+    .onlyMob{max-width: 100%;}
+    .imgSec img ,.textSec img{
+    width: 700px !important;
+    max-width: 100%;
+    margin: auto;
+    justify-self: center;
+    display: block;
+   }
+   .homeContent .textSec img { margin-left:-20px; margin-top: 0px; max-width: 120px;float: unset; }
+   .welcomeSec {width: unset}
+   .getStarted {float: left;margin-bottom: 20px;display: block;}
+   .downloadApp .textSec .appImg{float: left;}
+   }
+
+
+  
+  @media (max-width: 768px) {
+    /* .welcomeSec { margin-top: 50px; } */
+    .rightSec {display: none;}
+    .leftSec h1 {font-size: 26px !important;line-height: 30px;margin-top: 20px;}
+    .onlyMob {
+      /* margin-top: 30px;
+      margin-left: -10px; */
+      margin-bottom: 20px;
+    }  
+    .contentSec .getStarted {margin-bottom: 50px;}
+    .founder .msgBox, .downloadApp { margin: 0 15px; width: calc(100% - 30px) !important;  }
+    .downloadApp .textSec {padding-bottom: 50px; text-align: center; }
+    .downloadApp .textSec p { text-align: left; max-width: 100%; }  
+    .founder .msgBox { text-align: center; }
+    .msgBox .profileImg { margin:0 auto 20px auto !important; width: 130px; height: 130px;}
+    /* .platform { margin: 50px auto 0 auto; } */
+    .platform .textSec { margin: 0; }
+    /* .platform .btnSec { margin: 10px auto; } */
+    .platform h1 { font-size: 30px !important; line-height: 30px; }
+    .leftSec p { padding: 0 15px 0 0; }
+    .homeContent .textSec { padding-left: 0; padding-right: 0; }
+   
+    /* .leftSec,
+    .welcomeSec,
+    .welcomeSec2,
     .onlyMob, .platform,
-    .homeContent .imgSec, .homeContent .textSec, .platform .textSec, .downloadApp .textSec, .downloadApp .imgSec, .founder p, .founder .msgBox { width: 100%; display: block; float: left; }
-    .deskSlide { display: none; }
+  .deskSlide { display: none; } */
     .mobSlide { display: block; }
   }
+
+
   @media (min-width:768px) {
     .desEvent, .downloadApp .imgSec { flex-direction: row-reverse; }
     .mobSlide { display: none; }
   } 
+
   @media (min-width:769px) and (max-width:1150px) {
-    .leftSec h1 {
-      font-size: 32px !important;
-      line-height: 37px;
-      margin-top: 20px;
-    }
+    .leftSec h1 {font-size: 32px !important;line-height: 37px;margin-top: 20px;}
     .homeContent { width: 100%; padding: 20px; }
-    .homeContent .textSec img {    margin-left: -30px;
-      margin-top: -20px;
-      max-width: 110px;}
+    .homeContent .textSec img {margin-left: -30px;margin-top: -20px;max-width: 110px;}
     .platform { padding: 0;}
     .founder { padding: 30px 20px; }
-    .downloadApp .appImg {height: 40px; }
+    .downloadApp .appImg {width: 280px; }
+  }
+
+
+  @media (max-width:575px) {
+    .homeContent { width:95%; padding: 0px; }
+    .userSec {width: 270px;padding: 15px; margin: 15px;}
+    .founder .msgBox, .downloadApp {margin: 0 auto;width: 96% !important;padding: 15px;}
+    .leftSec h1 {font-size: 22px !important;}
+    .homeContent p { font-size: 16px;}
+    .homeContent .getStarted {
+      width: 160px;
+      margin-top: 10px;
+      font-size: 14px;
+      padding: 0px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .homeContent h2 {font-size: 22px; }
+    .platform h1 { font-size: 22px !important }
+    .downloadApp .textSec .appImg { width: 160px !important;}
+    .downloadApp .textSec .Rlogo {width: 65px !important; }
+    .downloadApp .textSec p{font-size: 16px !important;   }
+    .downloadApp .textSec h4 { font-size: 24px;text-align: left; }
+    .bgart {padding: 25px 0px;}
+    .platform {padding: 20px 10px; }
   }

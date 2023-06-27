@@ -1,4 +1,4 @@
-.profilePage {    padding-top: 67px !important; }
+/* .profilePage {    padding-top: 67px !important; } */
 .bannersec {
     width:100%;
     max-height: 280px;
@@ -6,7 +6,7 @@
     position: relative;
 }
 .bannersec img {
-    max-height: 240px;
+    height: 240px !important;
      width: 100%;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -34,7 +34,7 @@
 .bannerImg {
     width: 100% !important;
     min-height: 230px;
-    height:fit-content!important
+    height:100% !important
 }
 .uploadSec span {
     font-size: 20px;
@@ -149,7 +149,7 @@ color: #FFFFFF !important;
 .actionIcon { margin-top: 94px; margin-left: 10px; float: left; }
 .actionIcon img { margin-right:8px; height: 25px; }
 
-.fullcontainer { position: relative; width: 100%; float: left; padding-top: 10px; margin: auto;  max-width: 1350px;height: calc(100vh - 120px); }
+.fullcontainer { position: relative; width: 100%; float: left; margin: auto;  max-width: 1350px;height: calc(100vh - 120px); }
 
 .profileevent, .rightProfiles {
     width: 310px;
@@ -393,12 +393,13 @@ margin-top: 0px !important;
   .profileContainer {
     padding-left: 10px !important;
 }  
-.profileContainer {
+/* .profileContainer {
   margin-top: -52px;
-}
+} */
 .profileSec .profileImg {
   width: 100px;
   height: 100px;
+  margin-top: 24px;
 }
 .profileSec .uploadSec  {
   right: 28px;    

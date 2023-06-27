@@ -1,5 +1,5 @@
 .centerSec {
-    padding: 0 30px;
+    /* padding: 0 30px; */
 
     background: #fff;
     border-top: 20px #fff solid;
@@ -48,6 +48,7 @@
     border: 1.5px solid #ffffff;
     box-sizing: border-box;
     border-radius: 8px;
+    outline: none;
   }
   .centerSec .textBox::placeholder {
     font-family: "DM Sans", sans-serif;
@@ -211,4 +212,19 @@
     background-color: transparent;
     border-radius: 15px;
     color: white;
+  }
+  @media (max-width:575px) {
+    .centerSec {
+      padding: 0;
+    } 
+    .centerSec .mailBox h1 {
+      font-size: 20px;
+    }
+    .centerSec .textBox {
+      height: 45px;
+    }
+    .submitbtn {
+      height: 45px;
+    }
+   
   }

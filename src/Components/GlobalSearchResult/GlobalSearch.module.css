@@ -1,6 +1,6 @@
 .mainContainer { height: 92vh;   max-width: 670px;margin: auto;background: #FFFFFF;
   border-left: 1px solid #ECECEC; border-right: 1px solid #ECECEC;
-  padding: 20px;margin-top: 67px !important;    padding-bottom: 50px !important;  }
+  padding: 18px;    padding-bottom: 50px !important;  }
 .mainContainer .searchResultName {
   font-family: 'DM Sans';
   font-style: normal;

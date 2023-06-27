@@ -186,6 +186,7 @@ margin-left: 10px;
 .iconsec i:last-child { margin-left: 10px;}
 .listSec {
     justify-content: space-between;
+    height: calc(100vh - 240px);
     /* display: flex;
     flex-direction: row;
     justify-content: space-between; */
