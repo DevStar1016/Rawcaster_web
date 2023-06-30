@@ -60,5 +60,4 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$tag
       - name: Deploy to EKS
         run: |
-          kubectl rollout restart deployment/user -n dev
-          kubectl apply -f 
+          kubectl apply -f react.yml
