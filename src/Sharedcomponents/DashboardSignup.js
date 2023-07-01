@@ -257,21 +257,25 @@ const DashboardSignup = () => {
             <Connections />
           </div>
         )}
-        {isChatOpen && (
-          <LinkDeviceModal
-            open={isChatOpen}
-            close={() => {
-              setisChatOpen(false);
-            }}
-          />
-          // <StickyPopup
+        {isChatOpen.show && (
+          // <LinkDeviceModal
           //   open={isChatOpen}
-          //   HeaderContainer={Header}
-          //   Content={Content}
           //   close={() => {
           //     setisChatOpen(false);
           //   }}
           // />
+          <StickyPopup
+            open={isChatOpen.show}
+            HeaderContainer={Header}
+            Content={Content}
+            close={() => {
+              setisChatOpen({
+                show: false,
+                type: "",
+                id: "",
+              });
+            }}
+          />
         )}
       </div>
     </>

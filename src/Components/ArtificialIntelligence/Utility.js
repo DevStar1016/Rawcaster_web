@@ -301,7 +301,6 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
       remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
     return `${minutes}:${formattedSeconds}`;
   }
-  console.log(query);
 
   return (
     <div className={classes.MessageContainer}>

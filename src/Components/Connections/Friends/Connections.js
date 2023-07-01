@@ -11,7 +11,7 @@ import Friends from "../Components/Friends";
 import { SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Skeleton } from "antd";
 
-const Connections = () => {
+const Connections = ({ maxHeight = null }) => {
   const dispatch = useDispatch();
   const Token = useAuthToken();
   const { friendsList, isFriendsLoading } = useDashboard();
@@ -164,6 +164,9 @@ const Connections = () => {
       </h2>
 
       <div
+        style={{
+          maxHeight: maxHeight ? maxHeight : "252px",
+        }}
         className={
           requests.length === 0 && friends.length === 0 && !isFriendsLoading
             ? classes.connectionsEmpty

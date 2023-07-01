@@ -30,28 +30,35 @@ const ChatContent = () => {
           audio.pause();
           setisPlaying(false);
         }
+        if (audio_file) {
+          setMessages((pre) => {
+            let tempData = [...pre];
+            if (res.data.query) {
+              tempData[0] = {
+                ...tempData[0],
+                query: res.data.query,
+              };
+            }
 
-        setMessages((pre) => {
-          let tempData = [...pre];
-          if (res.data.query) {
-            tempData[0] = {
-              ...tempData[0],
-              query: res.data.query,
-            };
-          }
+            return tempData;
+          });
+        }
 
-          return [
-            {
-              user: 2,
-              type: "message",
-              message: res.data.msg,
-              created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-              isshareavailble: ChatMessage !== "",
-              read_out_url: null,
-            },
-            ...tempData,
-          ];
-        });
+        setTimeout(() => {
+          setMessages((pre) => {
+            return [
+              {
+                user: 2,
+                type: "message",
+                message: res.data.msg,
+                created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                isshareavailble: ChatMessage !== "",
+                read_out_url: null,
+              },
+              ...pre,
+            ];
+          });
+        }, 1000);
       })
       .finally(() => {
         setChatEnabled(true);
@@ -86,7 +93,7 @@ const ChatContent = () => {
     if (isChatOpen && Messages.length === 0) {
       HandleSendMessage();
     }
-  }, [isChatOpen, Messages]);
+  }, [isChatOpen]);
 
   function getFilenameFromUrl(url) {
     const parsedUrl = new URL(url);

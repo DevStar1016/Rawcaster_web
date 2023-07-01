@@ -39,3 +39,9 @@ export const useChatBotContext = () => useContext(ChatBotContext);
 
 export const MeetingContext = createContext();
 export const useMeetingContext = () => useContext(MeetingContext);
+
+export const ReferalContext = createContext();
+export const useReferalContext = () => useContext(ReferalContext);
+
+export const ChatContext = createContext();
+export const useChatContext = () => useContext(ChatContext);

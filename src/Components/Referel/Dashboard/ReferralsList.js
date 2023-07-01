@@ -3,20 +3,21 @@ import classes from "./Dashboard.module.css";
 import { decodeHtml } from "../../../Shared/Utility";
 import moment from "moment";
 import { Empty } from "antd";
+import { useReferalContext } from "../../../Shared/Context";
 
 const ReferralsList = () => {
-  const [referralInfo, setreferralInfo] = useState(null);
+  const { ReferalData } = useReferalContext();
   return (
     <div className={classes.refSec}>
       <h1>Referals List</h1>
-      {referralInfo?.referral_list === undefined && (
+      {ReferalData?.referral_list === undefined && (
         <Empty
           className={classes.emptyRefmsg}
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           description="No referals found!!"
         />
       )}
-      {referralInfo?.referral_list?.map((ele, ind) => (
+      {ReferalData?.referral_list?.map((ele, ind) => (
         <div key={ind} className={classes.list}>
           <img
             className={classes.topicon}
@@ -30,13 +31,15 @@ const ReferralsList = () => {
           <p className={classes.name}>{decodeHtml(ele.display_name)}</p>
           <div className={classes.clearfix}></div>
           <p className={classes.mail}>{ele.email_id}</p>
-          <p className={classes.date}>
-            <span>Invited Date</span>
-            <br />
-            {moment(ele.invited_date, "YYYY-MM_DD HH:mm:ss").format(
-              "D MMM YYYY"
-            )}
-          </p>
+          {ele.invited_date && ele.invited_date !== "" && (
+            <p className={classes.date}>
+              <span>Invited Date</span>
+              <br />
+              {moment(ele.invited_date, "YYYY-MM_DD HH:mm:ss").format(
+                "D MMM YYYY"
+              )}
+            </p>
+          )}
           <p className={classes.date}>
             <span>Signed up</span>
             <br />

@@ -1,7 +1,11 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { ErrorHandling, getRawcaserToken } from "../Shared/Utility";
+import {
+  ErrorHandling,
+  RemoveToken,
+  getRawcaserToken,
+} from "../Shared/Utility";
 import { handleisSuccess } from "../Store/Redux/Reducer/AuthReducer";
 import { useEffect } from "react";
 import { fetchuserInfobyToken } from "../Store/Redux/Action";
@@ -12,6 +16,7 @@ const InitialRenderComponent = () => {
   axios.interceptors.response.use(
     function (response) {
       if (response.data.status === -1) {
+        console.log(response.data);
         // RemoveToken(dispatch);
         // window.location.reload();
       }

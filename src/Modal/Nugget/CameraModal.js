@@ -15,6 +15,7 @@ const CameraModal = ({
   type = "Camera",
   videoRef,
   canvasRef,
+  isPreviewEnabled = true,
 }) => {
   const { seconds, minutes, isRunning, start, pause } = useStopwatch({
     autoStart: false,
@@ -26,11 +27,22 @@ const CameraModal = ({
     start();
   };
 
+  const handlePreview = (file, url) => {
+    if (isPreviewEnabled) {
+      setPreviewMedia({ file, url });
+    } else {
+      onSuccess(file);
+      handleToggleWebcam(true);
+      clearBlobUrl();
+    }
+  };
+
   const onRecordStop = (url, blob) => {
     const file = new File([blob], "myVideo.mp4", {
       type: "video/mp4",
     });
-    setPreviewMedia({ file: file, url: url });
+
+    handlePreview(file, url);
     pause();
     handleToggleWebcam(false);
   };
@@ -127,7 +139,7 @@ const CameraModal = ({
       type: type,
     });
     handleToggleWebcam(false);
-    setPreviewMedia({ file: file, url: URL.createObjectURL(file) });
+    handlePreview(file, URL.createObjectURL(file));
   };
 
   const captureImage = () => {

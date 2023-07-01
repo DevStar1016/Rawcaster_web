@@ -1,42 +1,88 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Avatar, List, QRCode, message } from "antd";
+import { List, QRCode, message } from "antd";
 import VirtualList from "rc-virtual-list";
 import ChatBox from "./Events/Room/ChatBox";
 import { RosterAttendee } from "amazon-chime-sdk-component-library-react";
 import StickyPopup from "../Modal/StickyPopup/Stickypopup";
-
+import classes from "./Dev.module.css";
+import ChatAudioplayer from "../Sharedcomponents/AudioPlayer/ChatAudioplayer";
+import axios from "axios";
+import {
+  Avatar,
+  ChatContainer,
+  MainContainer,
+  Message,
+  MessageList,
+  MessageSeparator,
+  TypingIndicator,
+} from "@chatscope/chat-ui-kit-react";
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import joeIco from "../Assets/Icons/png/add_friend.png";
+import { useAuthData } from "../Shared/Reduxfetcher";
+import { JSONtoformdata, getRawcaserToken } from "../Shared/Utility";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
-const fakeDataUrl =
-  "https://randomuser.me/api/?results=20&inc=name,gender,email,nat,picture&noinfo";
-const ContainerHeight = 400;
-
 const Development = () => {
-  const [open, setOpen] = useState(false);
+  let userData = getRawcaserToken();
+  const [MemberId, setMemberId] = useState("");
+  const [ChannelId, setChannelId] = useState("");
   const [MeetingId, setMeetingId] = useState("");
-  const [data, setData] = useState([]);
+  // useEffect(() => {
 
-  const appendData = () => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((body) => {
-        setData(data.concat(body.results));
-        // message.success(`${body.results.length} more items loaded!`);
+  //   axios
+  //     .post("192.168.1.246:4500/chime/create-channel", formdata)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     });
+  // }, []);
+
+  const createChannel = () => {
+    const data = {
+      group_name: "test",
+      chime_bearer: userData.chat_user_id,
+    };
+    axios
+      .post(
+        "http://192.168.1.108:8003/rawcaster/create_channel",
+        JSONtoformdata(data)
+      )
+      .then((res) => {
+        console.log(res.data, "res.data.ChannelArn");
+        setChannelId(res.data.ChannelArn);
       });
   };
 
-  useEffect(() => {
-    appendData();
-  }, []);
+  const addmembertoChannel = () => {
+    const data = {
+      channel_arn: ChannelId,
+      chime_bearer: userData.chat_user_id,
+      member_id: JSON.stringify([MemberId]),
+    };
+    axios
+      .post(
+        "http://192.168.1.108:8003/rawcaster/addmembers",
+        JSONtoformdata(data)
+      )
+      .then((res) => {
+        console.log(res.data, "res.data.ChannelArn");
+      });
+  };
 
-  const onScroll = (e) => {
-    if (
-      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
-      ContainerHeight
-    ) {
-      appendData();
-    }
+  const sendMessageToChannel = () => {
+    const data = {
+      channel_arn: ChannelId,
+      chime_bearer: userData.chat_user_id,
+      message: "message",
+    };
+    axios
+      .post(
+        "http://192.168.1.108:8003/rawcaster/send_message",
+        JSONtoformdata(data)
+      )
+      .then((res) => {
+        console.log(res.data);
+      });
   };
 
   return (
@@ -46,6 +92,49 @@ const Development = () => {
         // height: "100vh",
       }}
     >
+      <div className="h-100 p-5 mt-5 m-auto w-100">
+        <div
+          style={{
+            height: "500px",
+          }}
+        >
+          <button
+            onClick={() => {
+              createChannel();
+            }}
+          >
+            Create Channel
+          </button>
+          <input
+            placeholder="Member"
+            value={MemberId}
+            onChange={(e) => {
+              setMemberId(e.target.value);
+            }}
+          />
+          <input
+            placeholder="Channel"
+            value={ChannelId}
+            onChange={(e) => {
+              setChannelId(e.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              addmembertoChannel();
+            }}
+          >
+            Add members to Channel
+          </button>
+          <button
+            onClick={() => {
+              sendMessageToChannel();
+            }}
+          >
+            List members of Channel
+          </button>
+        </div>
+      </div>
       <div className="h-100 p-5 mt-5 m-auto w-100">
         <button
           className="mx-2"
@@ -97,7 +186,7 @@ const Development = () => {
       >
         <ChatBox />
       </div> */}
-      <QRCode value={JSON.stringify({ value: "test" })} />
+      <ChatAudioplayer />
       {/* <StickyPopup /> */}
       <br />
     </div>

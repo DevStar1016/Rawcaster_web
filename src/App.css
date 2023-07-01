@@ -603,7 +603,12 @@ margin-bottom: 12px !important;
   height: calc(100vh - 230px) !important;
   overflow: auto !important;
     }
-
+    .cs-typing-indicator__dot {
+      background-color: #F2718D;
+    }
+    .cs-typing-indicator__text {
+      color: #F2718D !important;
+    }
 /* @media (max-width:1100px) {
   .searchNugets>.tab-content{
   height: calc(100vh - 230px) !important;
@@ -700,7 +705,29 @@ margin-bottom: 12px !important;
   animation: dot_elastic_after 1s infinite linear;
 }
 
+/* Chat */
 
+.cs-message__avatar {
+  width: fit-content;
+}
+.br_top_right {
+  border-top-right-radius: 0px !important;
+}
+.br_top_left {
+  border-top-left-radius: 0px !important;
+}
+.br_bottom_right {
+  border-bottom-right-radius: 0px !important;
+}
+.br_bottom_left {
+  border-bottom-left-radius: 0px !important;
+}
+.pb_0 {
+  padding-bottom: 0px !important;
+}
+.cs-message-list__scroll-wrapper {
+  padding: 0px !important;
+}
 @keyframes dot_elastic_before {
   0% {
     transform: scale(1, 1);

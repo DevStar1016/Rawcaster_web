@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuthData, useFriends } from "../../Shared/Reduxfetcher";
 import { useReactMediaRecorder } from "react-media-recorder";
 import {
   MediaPermissionsErrorType,
   requestAudioPermissions,
+  requestVideoPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import { toast } from "react-hot-toast";
 import { Form, InputGroup } from "react-bootstrap";
@@ -12,18 +13,35 @@ import classes from "./Chat.module.css";
 import moment from "moment";
 import ChatIcon from "../../Assets/Icons/svg/chat_icon.svg";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
-import { Timer } from "../../Shared/Utility";
+import { Timer, formatBytes } from "../../Shared/Utility";
+import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
+import CameraModal from "../../Modal/Nugget/CameraModal";
+import { Dropdown, Image } from "antd";
+import { useChatContext } from "../../Shared/Context";
+import EmojiPicker from "../../UIComponents/EmojiPicker";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 export const ChatInput = ({
+  onInput,
   HandleSendMessage,
   onAudioResult,
   disabled,
   fileuploadEnabled = false,
   cameraenabled = false,
+  isSendOnly = false,
+  onSendResponse,
+  onFileResult,
+  isGroup = true,
 }) => {
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const [isEmoji, setisEmoji] = useState(false);
+  const fileRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [isCamera, setisCamera] = useState({ show: false, type: "" });
+  const [IsRecording, setIsRecording] = useState(false);
   const [AudioElement, setAudioElement] = useState();
   const timerRef = useRef(null);
   const recordingRef = useRef(null);
@@ -32,6 +50,7 @@ export const ChatInput = ({
   const isSend = useRef(null);
   const [isChatContentValid, setisChatContentValid] = useState(true);
   const onRecordStart = () => {
+    setIsRecording(true);
     reset();
     timerRef.current = new Timer(function () {
       if (recordingRef.current === "recording") {
@@ -40,8 +59,10 @@ export const ChatInput = ({
       }
     }, 120000);
   };
-  const onRecordStop = (url) => {
+
+  const onRecordStop = (url, blob) => {
     if (isSend.current) {
+      setIsRecording(false);
       onAudioResult({
         user: 1,
         type: "audio",
@@ -71,6 +92,7 @@ export const ChatInput = ({
     useReactMediaRecorder({
       audio: true,
       stopStreamsOnStop: true,
+
       onStart: onRecordStart,
       onStop: onRecordStop,
     });
@@ -83,6 +105,24 @@ export const ChatInput = ({
         } else {
           stopRecording();
         }
+      })
+      .catch((err) => {
+        const { type, message } = err;
+        if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
+          toast.error("browser does not have permission to access microphone");
+        } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
+          toast.error("user didn't allow app to access microphone");
+        } else {
+          toast.error(message);
+        }
+      });
+  };
+
+  const handleCameraPermission = (type) => {
+    requestVideoPermissions()
+      .then(() => {
+        console.log("isCamera");
+        setisCamera({ show: true, type: type });
       })
       .catch((err) => {
         const { type, message } = err;
@@ -130,9 +170,19 @@ export const ChatInput = ({
           characters
         </p>
       )}
-      {status === "idle" ? (
+      {!IsRecording ? (
         <div className={classes.ContentSec}>
-          <InputGroup className={classes.chatinputSec}>
+          <InputGroup
+            className={`${classes.chatinputSec} ${isSendOnly ? "w-100" : ""}`}
+          >
+            <i
+              className={`material-symbols-outlined ${classes.emojiIcon}`}
+              onClick={() => {
+                setisEmoji(!isEmoji);
+              }}
+            >
+              mood
+            </i>
             <Form.Control
               className={classes.inSearch}
               placeholder="Type or ask question here..."
@@ -145,6 +195,9 @@ export const ChatInput = ({
                 }
               }}
               onChange={(e) => {
+                if (onInput) {
+                  onInput(e.target.value);
+                }
                 if (e.target.value.length <= getNuggetTextLength()) {
                   setChatMessage(e.target.value);
                   setisChatContentValid(true);
@@ -158,24 +211,43 @@ export const ChatInput = ({
               }}
             />
 
-            {fileuploadEnabled && (
-              <i
-                className={classes.upload_icon}
-                onClick={() => {
-                  console.log("upload");
-                }}
-              />
+            {!isSendOnly && fileuploadEnabled && (
+              <>
+                <i
+                  className={classes.upload_icon}
+                  onClick={() => {
+                    fileRef?.current.click();
+                  }}
+                />
+                <input
+                  ref={fileRef}
+                  type="file"
+                  name="file"
+                  id="chat_file"
+                  onClick={(event) => {
+                    event.target.value = null;
+                  }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length !== 0) {
+                      if (onFileResult) {
+                        onFileResult(e.target.files[0]);
+                      }
+                    }
+                  }}
+                  style={{ display: "none" }}
+                />
+              </>
             )}
-            {cameraenabled && (
+            {!isSendOnly && cameraenabled && (
               <i
                 className={classes.camera_icon}
                 onClick={() => {
-                  console.log("camera");
+                  handleCameraPermission("Camera");
                 }}
               />
             )}
 
-            {ChatMessage === "" ? (
+            {ChatMessage === "" && !isSendOnly ? (
               <InputGroup.Text className={classes.searchIcon}>
                 <img src={ChatIcon} />
               </InputGroup.Text>
@@ -183,7 +255,13 @@ export const ChatInput = ({
               <InputGroup.Text
                 className={classes.searchIcon}
                 onClick={() => {
-                  if (!disabled) {
+                  setisEmoji(false);
+                  if (isSendOnly) {
+                    if (onSendResponse) {
+                      onSendResponse(ChatMessage);
+                    }
+                    setChatMessage("");
+                  } else if (!disabled) {
                     HandleSendMessage(ChatMessage);
                     setChatMessage("");
                   }
@@ -198,24 +276,26 @@ export const ChatInput = ({
             )}
           </InputGroup>
 
-          <i
-            className={classes.mic_icon}
-            onClick={() => {
-              handleAllowMicPermission();
-            }}
-          />
+          {!isSendOnly && (
+            <i
+              className={classes.mic_icon}
+              onClick={() => {
+                handleAllowMicPermission();
+              }}
+            />
+          )}
         </div>
       ) : (
         <div className={classes.recordingBox}>
           <div className={classes.RecordingTimeSec}>
-            {status === "stopped" ? (
+            {AudioElement ? (
               <>{AudioElement ? formatTime(AudioElement.currentTime) : null}</>
             ) : (
               <>{getValidNumber(minutes) + `:` + getValidNumber(seconds)}</>
             )}
           </div>
           <div className={classes.ActionSec}>
-            {status === "stopped" ? (
+            {AudioElement ? (
               <>
                 {AudioElement && AudioElement?.paused ? (
                   <span
@@ -261,6 +341,7 @@ export const ChatInput = ({
               className={classes.searchIcon}
               onClick={() => {
                 if (mediaBlobUrl) {
+                  setIsRecording(false);
                   onAudioResult({
                     user: 1,
                     type: "audio",
@@ -272,6 +353,7 @@ export const ChatInput = ({
                   isSend.current = true;
                   stopRecording();
                 }
+                setAudioElement(null);
                 clearBlobUrl();
                 handleClose();
               }}
@@ -283,73 +365,290 @@ export const ChatInput = ({
           </div>
         </div>
       )}
+      {isEmoji ? (
+        <div className={classes.emojiContainer}>
+          <EmojiPicker
+            emojiButtonColors={["#364157"]}
+            emojiButtonRadius="8px"
+            skinTonePosition="none"
+            previewPosition="none"
+            //   onClickOutside={() => {
+            //     setisEmoji(!isEmoji);
+            //   }}
+            categories={[
+              "people",
+              "nature",
+              "foods",
+              "activity",
+              "places",
+              "objects",
+              "symbols",
+              "flags",
+            ]}
+            onEmojiSelect={(e) => {
+              setChatMessage((pre) => pre.concat(e.native));
+            }}
+          />
+        </div>
+      ) : null}
+      {isCamera.show && (
+        <CameraModal
+          visible={isCamera.show}
+          videoRef={videoRef}
+          canvasRef={canvasRef}
+          type={isCamera.type}
+          onSuccess={(value) => {
+            console.log(value);
+            if (onFileResult) {
+              onFileResult(value);
+            }
+          }}
+          isPreviewEnabled={false}
+          onClose={() => {
+            setisCamera({ show: false, type: "" });
+          }}
+        />
+      )}
     </>
   );
 };
 
 export const MessageContent = (props) => {
-  const { message = null, user, index } = props;
-
+  const { Messages } = useChatContext();
+  const {
+    message = null,
+    user,
+    index,
+    type,
+    file_path = null,
+    file,
+    isGroup,
+  } = props;
+  const friends_list = useFriends();
   const loginUserData = useAuthData();
+  const [isAvatarErr, setisAvatarErr] = useState(false);
 
   const isUser = (id) => {
-    if (id === 1) {
+    if (id === loginUserData?.chime_user_id) {
       return true;
     }
     return false;
   };
 
-  const getURL = () => {
-    return {
-      path: "https://img.freepik.com/free-photo/wide-angle-shot-single-tree-growing-clouded-sky-during-sunset-surrounded-by-grass_181624-22807.jpg",
-      media_type: "image",
-      media_file_type: "jpg",
-      media_id: 1,
-    };
-  };
-  return (
-    <div
-      className={
-        isUser(user) ? classes.MessageContainer : classes.receiverConteiner
+  const getUserData = () => {
+    if (user === loginUserData?.chime_user_id) {
+      return {
+        profile_img: null,
+        display_name: null,
+      };
+    } else {
+      const friendData = friends_list.find((ele) => ele.chime_user_id === user);
+      if (friendData) {
+        return {
+          profile_img: friendData?.profile_img,
+          display_name: friendData?.display_name,
+        };
+      } else {
+        return {
+          profile_img: defaultprofileImg,
+          display_name: "Rawcaster User",
+        };
       }
-    >
-      <div
-        key={index}
-        className={`${classes.chatbox_message} ${
-          isUser(user) ? classes.user_chatbox_message : ""
-        }`}
-      >
-        <div className={classes.avatar}>
-          <img
-            src={isUser(user) ? loginUserData?.profile_image : ChatProfile}
-          />
-        </div>
-        <div className={classes.content}>
-          {!isUser(user) && (
-            <p className={classes.userNameSec}>David thompson</p>
-          )}
-          {message && <p>{message}</p>}
-          {/* <Image
-            className={classes.chatimg}
+    }
+  };
+
+  const getmessageType = () => {
+    if (!Messages[index - 1] || Messages[index - 1]?.user !== user) {
+      return "first";
+    } else if (
+      Messages[index - 1] &&
+      Messages[index - 1]?.user === user &&
+      Messages[index + 1] &&
+      Messages[index + 1]?.user === user
+    ) {
+      return "middle";
+    } else if (!Messages[index + 1] || Messages[index + 1]?.user !== user) {
+      return "end";
+    }
+  };
+
+  const GetValidComponent = () => {
+    switch (type) {
+      case "image":
+        return (
+          <Image
+            className={`${classes.chatimg}  ${message ? "mb-0" : ""} ${
+              isUser(user) ? "" : "mt-0"
+            }`}
             preview={{
               mask: false,
             }}
-            src={
-              "https://img.freepik.com/free-photo/wide-angle-shot-single-tree-growing-clouded-sky-during-sunset-surrounded-by-grass_181624-22807.jpg"
-            }
-          /> */}
-          <video controls className={classes.chatimg}>
-            <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+            src={file_path}
+          />
+        );
+      case "video":
+        return (
+          <video
+            controls
+            className={`${classes.chatimg} ${message ? "mb-0" : ""} ${
+              isUser(user) ? "" : "mt-0"
+            }`}
+          >
+            <source src={file_path} />
           </video>
+        );
+      case "voice":
+        return (
+          <div className={classes.audioSec}>
+            <div className={classes.audioplayer}>
+              <ChatAudioplayer
+                textColor={isUser(user) ? "#FFFFFF" : "#000000"}
+                url={file_path}
+                time={moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                  "hh:mm A"
+                )}
+              />
+            </div>
+            <div className={classes.avatar}>
+              <img
+                src={isUser(user) ? loginUserData?.profile_image : ChatProfile}
+              />
+            </div>
+          </div>
+        );
 
-          {props.created_at && (
-            <span className={classes.timestamp}>
-              {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
-                "hh:mm A"
-              )}
-            </span>
-          )}
+      default:
+        if (file) {
+          const validcontent = file.type.split("/")[1];
+          return (
+            <div
+              className={classes.fileSec}
+              style={{
+                marginTop: isUser(user) ? 1 : 0,
+              }}
+            >
+              <div
+                className={classes.filContainer}
+                style={{
+                  background: isUser(user) ? "#FFFFFF" : "#563662",
+                }}
+              >
+                <i
+                  className={classes.file_icon}
+                  style={{
+                    background: isUser(user) ? "#563662" : "#FFFFFF",
+                  }}
+                />
+              </div>
+              <div className={classes.textSec}>
+                <h6>{file.name}</h6>
+                <p>
+                  {validcontent.toUpperCase()} - {formatBytes(file.size)}
+                </p>
+              </div>
+            </div>
+          );
+        }
+        return null;
+    }
+  };
+
+  const getBorderType = () => {
+    if (getmessageType() === "first") {
+      if (isUser(user)) {
+        return "br_top_right";
+      } else {
+        return "br_top_left";
+      }
+    }
+  };
+
+  const items = [
+    {
+      key: "1",
+      label: <div>Copy</div>,
+    },
+    {
+      key: "2",
+      label: <div>Edit</div>,
+    },
+    {
+      key: "3",
+      label: <div>Delete</div>,
+    },
+  ];
+
+  return (
+    <div
+      className={`${
+        isUser(user) ? classes.MessageContainer : classes.receiverConteiner
+      } ${isUser(user) ? "br_top_right" : "br_top_left"}`}
+    >
+      <div className={classes.msgBox}>
+        {isGroup && (
+          <div className={classes.avatar}>
+            {getmessageType() !== "first" ? (
+              <div
+                style={{
+                  height: 30,
+                  width: 30,
+                }}
+              ></div>
+            ) : (
+              <img
+                src={
+                  isUser(user)
+                    ? loginUserData?.profile_image
+                    : getUserData().profile_img
+                }
+                onError={(e) => {
+                  setisAvatarErr(true);
+                }}
+              />
+            )}
+          </div>
+        )}
+        <div
+          key={index}
+          className={`${classes.chatbox_message} ${
+            isUser(user) ? classes.user_chatbox_message : ""
+          } ${getBorderType()}`}
+        >
+          <div className={classes.content}>
+            {!isUser(user) && isGroup && getUserData().display_name && (
+              <p className={classes.userNameSec}>
+                {getUserData().display_name}
+              </p>
+            )}
+            <GetValidComponent />
+
+            {message && <p>{message}</p>}
+            {props.created_at && type !== "voice" && (
+              <span className={classes.timestamp}>
+                {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                  "hh:mm A"
+                )}
+              </span>
+            )}
+          </div>
         </div>
+        {isUser(user) && (
+          <Dropdown
+            menu={{ items }}
+            placement="bottomRight"
+            arrow
+            trigger={["click"]}
+          >
+            <span
+              className={`material-symbols-outlined ${classes.moreIcon}`}
+              style={{
+                color: "black",
+              }}
+            >
+              more_vert
+            </span>
+          </Dropdown>
+        )}
       </div>
     </div>
   );
