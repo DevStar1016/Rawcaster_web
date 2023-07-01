@@ -55,7 +55,7 @@ export const SHARED_TYPE = [
 ];
 
 export const GENDER_TYPE = [
-  { key: 0, label: "TransGender" },
+  // { key: 0, label: "TransGender" },
   { key: 1, label: "Male" },
   { key: 2, label: "Female" },
 ];
@@ -94,3 +94,10 @@ export const customStyles = {
     display: "none",
   }),
 };
+
+// Chat
+
+export const AES_IV_KEY = "CDCA735CDA8888EECDCA735CDA8888EE";
+export const AES_KEY =
+  "cece3a7dc9cf86aae926fd2ee520a06e5a5b616fa9e381de53600121e8aff095";
+export const AES_ENCRYPT_METHOD = "aes-256-cbc";

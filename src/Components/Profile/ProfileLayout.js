@@ -280,7 +280,7 @@ const ProfileLayout = ({
             )}
           </div>
           <div className="d-flex flex-row justify-content-between">
-            <div className="d-flex flex-row">
+            <div className="d-flex flex-row align-items-baseline">
               {isAddFriend() && (
                 <div className="ms-3">
                   <img
@@ -293,7 +293,7 @@ const ProfileLayout = ({
                   />
                 </div>
               )}
-              <div>
+              <div className={classes.profilesSec}>
                 {isFansEnabled && (
                   <div style={{ display: isLocked ? "none" : "" }}>
                     {loginUserData && <FansThumb isLoginUser={isLoginUser} />}

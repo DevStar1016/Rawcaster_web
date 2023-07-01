@@ -12,29 +12,46 @@ import {
 } from "../../../Services/ApiService";
 import { useSearchParams } from "react-router-dom";
 import { useEventLayout } from "../../../Layouts/EventLayout";
+import { ChimesocketListen } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 const EventRoom = () => {
   const meetingManager = useMeetingManager();
   const MeetingStatus = useMeetingStatus();
   const [searchParams] = useSearchParams();
   const data = searchParams.get("meetingid");
+
+  useEffect(() => {
+    ChimesocketListen.on(
+      "message",
+      (message) => {
+        switch (message.event) {
+          case CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:
+            console.log(message);
+        }
+      },
+      []
+    );
+    return () => {
+      ChimesocketListen.off("call");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const handleCreate = async () => {
-    const formData = new FormData();
-    formData.append("host_name", "vasanth");
-    const response = await CreateMeeting(formData);
-    if (response.data.status === 1) {
-      console.log(response.data.data, "esponse.data.data");
-      const { meetingResponse, attendeeResponse } = response.data.data;
+    const response = await CreateMeeting();
+    if (response.data.status === 200) {
+      const { Meeting } = response.data.result;
       const meetingSessionConfiguration = new MeetingSessionConfiguration(
-        meetingResponse,
-        attendeeResponse
+        Meeting,
+        null
       );
       const meetingOptions = {
         deviceLabels: DeviceLabels.AudioAndVideo,
       };
       try {
-        await meetingManager.join(meetingSessionConfiguration, meetingOptions);
-        await meetingManager.start();
+        // await meetingManager.join(meetingSessionConfiguration, meetingOptions);
+        // await meetingManager.start();
+        handleJoin(Meeting.MeetingId);
       } catch (error) {
         console.log(error, "error");
       }
@@ -43,10 +60,11 @@ const EventRoom = () => {
     }
   };
 
-  const handleJoin = async () => {
-    const formData = new FormData();
-    formData.append("meeting_id", data);
-    formData.append("attendee_name", Math.random(1, 100).toString());
+  const handleJoin = async (data) => {
+    const formData = {
+      MeetingId: data,
+      userId: "1234",
+    };
     const response = await JoinAttendeeMeeting(formData);
     if (response.data.status === 1) {
       const { meetingResponse, attendeeResponse } = response.data.data;
@@ -62,13 +80,13 @@ const EventRoom = () => {
       await meetingManager.join(meetingSessionConfiguration, meetingOptions);
       await meetingManager.start();
     } else {
-      console.log(response.data.msg);
+      console.log(response.data);
     }
   };
 
   useEffect(() => {
     if (data) {
-      handleJoin();
+      handleJoin(data);
     } else {
       if (!MeetingStatus) {
         handleCreate();

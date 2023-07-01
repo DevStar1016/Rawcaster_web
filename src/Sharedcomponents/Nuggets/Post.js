@@ -14,6 +14,7 @@ import {
   shareNuggetService,
   getNuggetDetailService,
   NuggetAbuseReportService,
+  getNuggetContentAudioService,
 } from "../../Services/ApiService";
 import { SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
@@ -50,13 +51,14 @@ import {
   handleDeleteNuggetList,
   handleDeleteNuggetListByUserId,
   handleNuggetList,
+  handleNuggetTranslateUpdate,
   handlenuggetVideoPaused,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import _debounce from "lodash/debounce";
 import { HandleBecameaFan } from "../../Shared/SharedAPIs";
 import ReportGroup from "../../Modal/Report/ReportGroup";
 import { blockunblockuserService } from "../../Services/ApiService";
-import { ReadoutSec } from "./Utility";
+import { ReadoutSec, SeeTranslate } from "./Utility";
 import AgreedusersListModal from "../../Modal/Nugget/AgreedusersListModal";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 
@@ -80,6 +82,7 @@ const Post = ({
   const dispatch = useDispatch();
   const { userSettings } = useAuth();
   const loginUserData = useAuthData();
+  const [isTranslate, setisTranslate] = useState(false);
   const { nuggetFormData, Nuggets } = useNuggets();
   const [Comments, setComments] = useState("");
   const [CommentList, setCommentList] = useState([]);
@@ -478,6 +481,8 @@ const Post = ({
     handleNuggetCommentLike,
     setAgreedUsersList,
     getNuggetDetail,
+    isTranslate,
+    setisTranslate,
     getCommentList(id) {
       return getCommentList(id);
     },
@@ -568,6 +573,30 @@ const Post = ({
     }
   };
 
+  const getTranslatedText = () => {
+    if (ele.translate_text) {
+      setisTranslate(true);
+    } else {
+      const formData = {
+        token: Token,
+        nugget_id: ele.nugget_id,
+        translation_type: 2,
+      };
+      getNuggetContentAudioService(JSONtoformdata(formData)).then((res) => {
+        if (res.data.status === 1 && res.data.translation) {
+          dispatch(
+            handleNuggetTranslateUpdate({
+              nugget_id: ele.nugget_id,
+              translate_text: res.data.translation,
+            })
+          );
+          setisTranslate(true);
+        } else {
+          toast.error(res.data.msg);
+        }
+      });
+    }
+  };
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (
@@ -691,6 +720,10 @@ const Post = ({
           )}
           {ele && isValidData(ele?.content) && loginUserData ? (
             <div className={classes.ReadoutSec}>
+              <SeeTranslate
+                nugget_id={ele.nugget_id}
+                translate_text={ele.translate_text}
+              />
               <ReadoutSec
                 nugget_id={ele.nugget_id}
                 readout_url={ele.readout_url}
@@ -720,7 +753,9 @@ const Post = ({
                       setisvalidContent(true);
                     }}
                   >
-                    {decodeHtml(ele?.content)}
+                    {ele?.translate_text && isTranslate
+                      ? decodeHtml(ele?.translate_text)
+                      : decodeHtml(ele?.content)}
                   </ReadMore>
                 </p>
               )}

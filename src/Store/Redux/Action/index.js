@@ -14,6 +14,7 @@ import {
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
 import { handlenuggetToken } from "../Reducer/NuggetsReducer";
 import { handleToken } from "../Reducer/AuthReducer";
+import { connectChimeMessaging } from "../../../Services/Messaging/MessageService";
 
 // Connections
 
@@ -171,6 +172,7 @@ export const fetchuserInfobyToken = createAsyncThunk(
           last_name: decodeHtml(data.profile.last_name),
           name: decodeHtml(data.profile.name),
         };
+        connectChimeMessaging({ userId: data.profile.chime_user_id });
 
         dispatch(handleToken(token));
         dispatch(fetchuserSettingsbyToken(token));

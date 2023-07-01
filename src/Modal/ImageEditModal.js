@@ -14,7 +14,10 @@ const ImageEditModal = ({ open, initialFile, onSuccess, onFailure }) => {
       ia[i] = byteString.charCodeAt(i);
     }
     let blob = new Blob([ab], { type: "image/jpeg" });
-    return { Bloburl: URL.createObjectURL(blob), Blob: blob };
+    var file = new File([blob], "edited_img.jpeg", {
+      type: blob.type,
+    });
+    return { Bloburl: URL.createObjectURL(file), Blob: blob };
   }
 
   function getBase64(file) {

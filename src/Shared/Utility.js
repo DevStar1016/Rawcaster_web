@@ -26,6 +26,7 @@ import {
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import { message } from "antd";
 import { Typography } from "antd";
+import axios, { isCancel } from "axios";
 
 // Auth
 
@@ -498,7 +499,9 @@ export const handleProfileNavigate = (userData) => {
 
 export const ErrorHandling = (error) => {
   return new Promise((resolve, reject) => {
-    if (error.response) {
+    if ((axios, isCancel(error))) {
+      console.log(error.message);
+    } else if (error.response) {
       if (error.response.status === 404) {
         handleErrorMsg(
           "The requested resource does not exist or has been deleted",
@@ -672,3 +675,38 @@ export const ReadMore = ({
     </Linkify>
   );
 };
+
+export const Timer = function (callback, delay) {
+  var timerId,
+    start,
+    remaining = delay;
+
+  this.pause = function () {
+    window.clearTimeout(timerId);
+    timerId = null;
+    remaining -= Date.now() - start;
+  };
+
+  this.resume = function () {
+    if (timerId) {
+      return;
+    }
+
+    start = Date.now();
+    timerId = window.setTimeout(callback, remaining);
+  };
+
+  this.resume();
+};
+
+export function formatBytes(bytes) {
+  if (bytes === 0) {
+    return "0 B";
+  }
+
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const formattedSize = (bytes / Math.pow(1024, i)).toFixed(2);
+
+  return `${formattedSize} ${sizes[i]}`;
+}

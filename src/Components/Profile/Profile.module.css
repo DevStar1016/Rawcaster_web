@@ -1,4 +1,4 @@
-.profilePage {    padding-top: 67px !important; }
+/* .profilePage {    padding-top: 67px !important; } */
 .bannersec {
     width:100%;
     max-height: 280px;
@@ -6,7 +6,7 @@
     position: relative;
 }
 .bannersec img {
-    max-height: 240px;
+    height: 240px !important;
      width: 100%;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -34,13 +34,13 @@
 .bannerImg {
     width: 100% !important;
     min-height: 230px;
-    height:fit-content!important
+    height:100% !important
 }
 .uploadSec span {
     font-size: 20px;
     cursor: pointer;
 }
-.textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #ccc; padding-left: 20px; width: 100% !important;min-width: 306px !important; margin: 5px 0; }
+.textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #ccc; padding-left: 20px; width: 100% !important;margin: 5px 0; }
 /* .textBox::placeholder { color: #C3C3C3; font-size: 16px; }  */
 .textBox:focus, .textBox::selection, .textBox:hover { border: #191919 1px solid !important; outline: none !important; box-shadow: none !important; }
 .textarea { height: 100px !important; width: 100% !important; }
@@ -149,7 +149,7 @@ color: #FFFFFF !important;
 .actionIcon { margin-top: 94px; margin-left: 10px; float: left; }
 .actionIcon img { margin-right:8px; height: 25px; }
 
-.fullcontainer { position: relative; width: 100%; float: left; padding-top: 10px; margin: auto;  max-width: 1350px; }
+.fullcontainer { position: relative; width: 100%; float: left; margin: auto;  max-width: 1350px;height: calc(100vh - 120px); }
 
 .profileevent, .rightProfiles {
     width: 310px;
@@ -353,7 +353,30 @@ margin-top: 0px !important;
   .textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
   .btnstyle,.disabledBtn { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; width: 30%;margin-top: 30px; font-weight: 600; font-size: 16px; }
 .btnstyle:hover,.disabledBtn:hover{ background: #f2718d; color: #fff !important; }
-@media (max-width:768px) {
+
+@media (max-width:1100px) {
+  .profileevent, .rightProfiles {
+    width: 600px !important;
+    margin: auto;
+    float: unset;
+    max-width: 100%;
+    /* top: -123px !important; */
+    background-color: #fff;
+  }
+  .claimAccountSec {
+    padding-bottom: 65px;
+  }
+  .claimAccountBox {
+    padding: 15px;
+  }
+  .claimAccountBox h2 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  
+}
+/* @media (max-width:768px) {
 .profileContainer { padding-left: 10px; margin-top: -40px; }
 .profileSec { width: 100px; }
 .profileSec img { width: 40px; height: 40px; }
@@ -365,4 +388,25 @@ margin-top: 0px !important;
 .claimAccountBox { padding:10px;  }
 .claimAccountSec { margin-bottom: 50px;}
 
+} */
+@media (max-width:575px) {
+  .profileContainer {
+    padding-left: 10px !important;
+}  
+/* .profileContainer {
+  margin-top: -52px;
+} */
+.profileSec .profileImg {
+  width: 100px;
+  height: 100px;
+  margin-top: 24px;
+}
+.profileSec .uploadSec  {
+  right: 28px;    
+}
+.fansList {  margin-top: 65px; margin-left: 0px; }
+.actionIcon { margin-top: 74px}
+.fullcontainer { padding-top: 0px;}
+.profileSec {width:110px;}
+.profilesSec{min-width: 100px;display: flex;justify-content: end;}
 }

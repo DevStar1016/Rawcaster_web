@@ -1,0 +1,184 @@
+.chatboxHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 7px;
+    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.07);
+border-radius: 8px 8px 0px 0px;
+padding-inline: 10px !important;
+     background:transparent !important;
+     line-height: 20px !important;
+     width: 100%;
+     justify-content: space-between;
+}
+.chatboxHeader img {
+    width: 42px;
+    height: 42px;
+}
+.chatboxHeader h2 {
+    font-family: 'Gilroy-Bold';
+    font-size: 16px;
+    line-height: 8px;
+    color: #1D1C1C ;
+}
+.chatboxHeader p {
+    margin-bottom: 0px !important;
+}
+.MessagesList {
+  padding: 0px !important;
+}
+.describeSec {
+    padding:5px 10px;
+}
+.describeSec h2 {
+  width: 200px;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+          line-clamp: 1; 
+  -webkit-box-orient: vertical;
+}
+.groupintroSec {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+   min-width: 300px;
+  }
+  .groupintroSec img {
+    border-radius: 30px;
+  }
+  .chatboxHeader span {
+    font-size: 28px;
+    cursor: pointer;
+    margin: 0 5px;
+  }
+
+/* Footer */
+.footerSec {
+    padding: 10px !important;
+    width: 100% !important;
+    background-color: #fff !important;
+    padding-top: 0px !important
+}
+.ContentSec {
+  display: flex;
+  flex-direction: row;
+  align-items:center ;
+}
+.chatinputSec {
+    width: 89% !important;
+}
+.chatinputSec  input {
+   padding-right: 20px;
+}
+.inSearch { padding-left: 25px !important; padding-top: 5px; background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
+.searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 7; border-radius: 50px !important; background: #F2718D !important; width:45px; }
+.searchIcon span {color: #fff; }
+.inSearch:focus {
+     border: none !important;
+     box-shadow: none !important;
+}
+.mic_icon {
+    float: left;
+    width: 32px;
+    height: 32px;
+    background: #563662;
+    mask: url("../../Assets/Icons/svg/Mic_icon.svg") no-repeat center / contain;
+    -webkit-mask:  url("../../Assets/Icons/svg/Mic_icon.svg") no-repeat center /
+      contain;
+    margin: auto;
+      cursor: pointer;
+}
+.fileSec {
+  display: flex;
+  flex-direction: column;
+}
+.fileIcon {
+  padding: 10px 0;
+  border-radius: 50%;
+  -webkit-box-shadow: 2px 3px 55px -29px rgba(0,0,0,0.75);
+  -moz-box-shadow: 2px 3px 55px -29px rgba(0,0,0,0.75);
+  box-shadow: 2px 3px 55px -29px rgba(0,0,0,0.75);
+}
+.previewImg h6 {
+  max-width: 200px;
+
+  margin:3px auto;
+}
+.previewImg video {
+max-width: 400px;
+  max-height: 400px;
+}
+.file_icon {
+  float: left;
+  width: 42px;
+  height: 42px;
+  background: #563662;
+  mask: url("../../Assets/Icons/svg/Chats/file_icon.svg") no-repeat center / contain;
+  -webkit-mask:  url("../../Assets/Icons/svg/Chats/file_icon.svg") no-repeat center /
+    contain;
+  margin:10px auto ;
+    cursor: pointer;
+}
+.endToEndSec {
+  background: var(--linear, linear-gradient(135deg, rgba(243, 115, 139, 0.85) 0%, rgba(249, 159, 70, 0.85) 100%));
+  max-width: 400px;
+  color: #FFF;
+font-size: 14px;
+line-height: 17px;
+padding: 10px;
+}
+.rawcaster_icon {
+  float: left;
+  width: 25px;
+  height: 25px;
+  background: #FFFFFF;
+  mask: url("../../Assets/Icons/svg/Chats/r_logo.svg") no-repeat center / contain;
+  -webkit-mask:  url("../../Assets/Icons/svg/Chats/r_logo.svg") no-repeat center /
+    contain;
+  margin:10px  ;
+  margin-left: 0px !important;
+  margin-right: 15px !important;
+    cursor: pointer;
+}
+.mainContainer {
+  height: 500px;
+  overflow: scroll;
+  background-color: #fff;
+  /* padding: 5px; */
+  padding-bottom: 20px !important;
+  width: 100%;
+}
+.previewSec {
+  height: 500px;
+  background-color: #fff;
+  padding: 5px;
+  width: 100%;
+  position: relative;
+}
+.previewImg {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.previewImg img,video.previewImg  {
+  width: 350px;
+  height: 100%;
+  object-fit: contain;
+}
+.previewSec .actionSec {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+   width: 350px;
+margin-left: 10px;
+}
+.previewSec .actionSec span {
+  cursor: pointer;
+}
+.previewSec .actionSec .deleteIcon span {
+  color: red;
+}

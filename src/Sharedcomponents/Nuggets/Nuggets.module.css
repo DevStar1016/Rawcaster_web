@@ -1,14 +1,18 @@
 .nuggetSec, .resultnuggetSec {
-  padding: 0 35px;
+  padding: 18px 35px;
   float: left;
   width: calc(100% - 620px);
   background: #fff;
-  border-top: 20px solid #fff;
+  /* border-top: 20px solid #fff; */
   /* height: calc(100vh - 70px) !important; */
   overflow-y: auto;
 }
 .nuggetSec::-webkit-scrollbar {
   display: none !important;
+}
+.fetchingSec {
+  width: 50px  !important;
+  margin-left: 18px !important;
 }
 .nuggetItem {
   margin-top: 20px;
@@ -150,7 +154,7 @@ border-radius: 30px;
   word-wrap: break-word;
   font-size: 13.5px;
   line-height: 22px;
-  width: calc(100% - 40px);
+  width: calc(100% - 45px);
   float: left;
   display: flex;
   flex-direction: column;
@@ -539,7 +543,8 @@ border-radius: 30px;
   display: flex;
   flex-direction: row;
   margin-bottom: 5px;
-
+  padding-left: 10px;
+  position: relative;
 }
 .readoutContainer  i {
   font-size: 17px;
@@ -556,7 +561,7 @@ border-radius: 30px;
   margin: auto;
   margin-right: 5px;
 }
-.ReadoutSec p {
+.ReadoutSec p,.translationTxt {
   font-family: 'DM Sans';
 font-style: normal;
 font-weight: 400;
@@ -564,6 +569,10 @@ font-size: 14px;
 line-height: 18px;
 margin-bottom: 0px !important;
 white-space: nowrap;
+}
+.translationTxt span {
+font-size: 14px;
+margin:0 6px;
 }
 .TabSec .activeSec {
   opacity: 1;
@@ -577,7 +586,7 @@ white-space: nowrap;
     border:none !important;
     box-shadow: none !important;
 }
-.loginuserContainer .searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 11; border-radius: 50px !important; background: #563662 !important; width:45px; }
+.loginuserContainer .searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 11; border-radius: 50px !important; background: #563662 !important; width:45px;display: flex;justify-content: center;align-items: center; }
 .loginuserContainer .searchIcon span {color: #fff; }
 .LoadingSec {
   height: 100%;
@@ -612,10 +621,34 @@ white-space: nowrap;
 margin-left: 10px;
 cursor: pointer;
 }
+.translationTxt {
+  padding:0 15px ;
+  margin-bottom: 6px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid gray;
+  }
+  /* .nuggetScroll{
+    overflow-x: auto;
+    height: calc(100vh - 240px);
+    width: 100%;
+  } */
+@media (max-width:1100px) {
+  .nuggetSec, .resultnuggetSec {
+    padding:15px !important;
+    width: 600px;
+    max-width: 100%;
+    margin:0 auto;
+    float: unset;
+    position: relative;
+
+  }
+}
 @media (max-width: 768px) {
   .nuggetSec {
     width: 100%;
-    padding: 0 15px 100px 15px;
+    padding: 0 15px 0px 15px;
     height: auto;
     border: 0;
   }
@@ -730,4 +763,9 @@ cursor: pointer;
     font-size: 15px;
     line-height: 26px;
   }
+}
+@media (max-width:575px) {
+  .TabSec p {
+    padding: 0 25px;
+  }  
 }

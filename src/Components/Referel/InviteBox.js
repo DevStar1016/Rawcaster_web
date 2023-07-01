@@ -3,6 +3,7 @@ import classes from "./Referel.module.css";
 import PhoneIcon from "../../Assets/Icons/svg/Phone.svg";
 import FacebookIcon from "../../Assets/Icons/svg/facebook.svg";
 // import InstaIcon from "../../Assets/Icons/svg/Instagram.svg";
+import ReferalIcon from "../../Assets/Icons/svg/Referal.svg";
 import FansIcon from "../../Assets/Icons/svg/Other_fans.svg";
 import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
 import TelegramIcon from "../../Assets/Icons/svg/telegram.svg";
@@ -20,6 +21,7 @@ import { message } from "antd";
 import InviteFansModal from "../../Modal/Referal/InviteFansModal";
 import { handleSendEmail } from "../../Modal/Referal/utility";
 import { fetchGoogleContacts } from "../../Shared/Utility";
+import { useNavigate } from "react-router";
 
 const shareMessage =
   "Hi, I have joined Rawcaster. A one-stop platform for all social media needs. I am asking all my friends and special people to join this platform to make it easier to reach everyone with content, personalized messages, Nuggets, and invitations to participate in my special events. I expect to see you there soon.\n";
@@ -61,6 +63,7 @@ const ShareList = [
 
 const InviteBox = () => {
   const token = useAuthToken();
+  const navigate = useNavigate();
   const [contactList, setContactList] = useState(null);
   const [isGmailOpen, setisGmailOpen] = useState(false);
   const [isInviteFansOpen, setisInviteFansOpen] = useState(false);
@@ -124,6 +127,19 @@ const InviteBox = () => {
       <div className={classes.inviteBox}>
         <div
           className={classes.inviteContainer}
+          onClick={() => {
+            navigate("/referel/dashboard");
+          }}
+        >
+          <div className={classes.iconSec}>
+            <img src={ReferalIcon} alt={"Dashboard"} />
+            <p>Dashboard</p>
+          </div>
+          <span class="material-symbols-outlined">chevron_right</span>
+        </div>
+
+        <div
+          className={classes.inviteContainer}
           onClick={
             isGmailOpen
               ? () => {
@@ -143,6 +159,7 @@ const InviteBox = () => {
             <span class="material-symbols-outlined">chevron_right</span>
           )}
         </div>
+
         {isGmailOpen && contactList && (
           <div className={classes.resultSec}>
             {contactList.length !== 0 ? (

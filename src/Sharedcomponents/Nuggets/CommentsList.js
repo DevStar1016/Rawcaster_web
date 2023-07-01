@@ -15,7 +15,7 @@ import classes from "./Nuggets.module.css";
 import replyicon from "../../Assets/Images/svg/comment.svg";
 import sendicon from "../../Assets/Images/svg/sendicon.svg";
 import emoji from "../../Assets/Images/svg/emoji.svg";
-import { Dropdown, Input } from "antd";
+import { Dropdown, Input, Popover } from "antd";
 import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import ReplyList from "./ReplyList";
@@ -38,7 +38,6 @@ const CommentsList = ({ index }) => {
   const [CommentTxt, setCommentTxt] = useState([]);
   const [EditData, seteditData] = useState([]);
   const [isReplyEnabled, setisReplyEnabled] = useState(false);
-  const [showEmojis, setShowEmojis] = useState(false);
   const [isActiveEdit, setisActiveEdit] = useState("");
 
   const AddCommentforAnugget = (id, comment, type = 1) => {
@@ -185,19 +184,71 @@ const CommentsList = ({ index }) => {
                                 }
                               }}
                             />
-                            <img
-                              className={classes.emojiicon}
-                              alt="emoji"
-                              src={emoji}
-                              onClick={() => {
-                                if (showEmojis === elem.comment_id) {
-                                  setShowEmojis("");
-                                } else {
-                                  setShowEmojis(elem.comment_id);
-                                }
-                              }}
-                            />
 
+                            <Popover
+                              getPopupContainer={(trigger) =>
+                                trigger.parentElement
+                              }
+                              overlayClassName="emojipopover"
+                              content={
+                                <div>
+                                  <EmojiPicker
+                                    emojiButtonColors={["#364157"]}
+                                    emojiButtonRadius="8px"
+                                    skinTonePosition="none"
+                                    previewPosition="none"
+                                    categories={[
+                                      "people",
+                                      "nature",
+                                      "foods",
+                                      "activity",
+                                      "places",
+                                      "objects",
+                                      "symbols",
+                                      "flags",
+                                    ]}
+                                    onEmojiSelect={(e) => {
+                                      let tempData = [...CommentList];
+                                      tempData[ind].comment = tempData[
+                                        ind
+                                      ].comment.concat(e.native);
+                                      setCommentList(tempData);
+                                      let editData = {
+                                        ...getCommentValue(elem.comment_id),
+                                        comment: getCommentValue(
+                                          elem.comment_id
+                                        ).comment.concat(e.native),
+                                      };
+                                      let findIndex = EditData.findIndex(
+                                        (ele) =>
+                                          ele.comment_id === elem.comment_id
+                                      );
+                                      if (findIndex !== -1) {
+                                        let tmpData = [...EditData];
+                                        tmpData[findIndex] = editData;
+                                        seteditData(tmpData);
+                                      } else {
+                                        if (EditData.length === 0) {
+                                          seteditData([editData]);
+                                        } else {
+                                          seteditData((pre) => [
+                                            ...pre,
+                                            editData,
+                                          ]);
+                                        }
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              }
+                              trigger="click"
+                            >
+                              <img
+                                className={classes.emojiicon}
+                                alt="emoji"
+                                src={emoji}
+                              />
+                            </Popover>
                             <img
                               className={classes.sendicon}
                               src={sendicon}
@@ -212,7 +263,6 @@ const CommentsList = ({ index }) => {
                                       elem.comment_id,
                                       findData.comment
                                     );
-                                    setShowEmojis("");
                                   } else {
                                     toast.error("Please Enter Valid Comment");
                                   }
@@ -222,65 +272,6 @@ const CommentsList = ({ index }) => {
                               }}
                             />
                           </div>
-                          {showEmojis === elem.comment_id && (
-                            <div
-                              style={
-                                {
-                                  // position: "absolute",
-                                  // bottom: "90%",
-                                  // right: "50px",
-                                  // zIndex: 11,
-                                }
-                              }
-                            >
-                              <EmojiPicker
-                                emojiButtonColors={["#364157"]}
-                                emojiButtonRadius="8px"
-                                skinTonePosition="none"
-                                previewPosition="none"
-                                // onClickOutside={() => {
-                                //   setShowEmojis(!showEmojis);
-                                // }}
-                                categories={[
-                                  "people",
-                                  "nature",
-                                  "foods",
-                                  "activity",
-                                  "places",
-                                  "objects",
-                                  "symbols",
-                                  "flags",
-                                ]}
-                                onEmojiSelect={(e) => {
-                                  let tempData = [...CommentList];
-                                  tempData[ind].comment = tempData[
-                                    ind
-                                  ].comment.concat(e.native);
-                                  setCommentList(tempData);
-                                  let editData = {
-                                    ...getCommentValue(elem.comment_id),
-                                    comment: getCommentValue(
-                                      elem.comment_id
-                                    ).comment.concat(e.native),
-                                  };
-                                  let findIndex = EditData.findIndex(
-                                    (ele) => ele.comment_id === elem.comment_id
-                                  );
-                                  if (findIndex !== -1) {
-                                    let tmpData = [...EditData];
-                                    tmpData[findIndex] = editData;
-                                    seteditData(tmpData);
-                                  } else {
-                                    if (EditData.length === 0) {
-                                      seteditData([editData]);
-                                    } else {
-                                      seteditData((pre) => [...pre, editData]);
-                                    }
-                                  }
-                                }}
-                              />
-                            </div>
-                          )}
                         </div>
                         <span
                           class={`material-symbols-outlined ${classes.closeIcon}`}
@@ -448,19 +439,49 @@ const CommentsList = ({ index }) => {
                 setCommentTxt(tempData);
               }}
             />
-            <img
-              className={classes.emojiicon}
-              alt="emoji"
-              src={emoji}
-              onClick={() => {
-                if (showEmojis === nugget_id) {
-                  setShowEmojis("");
-                } else {
-                  setShowEmojis(nugget_id);
-                }
-              }}
-            />
+            <Popover
+              getPopupContainer={(trigger) => trigger.parentElement}
+              overlayClassName="emojipopover"
+              content={
+                <div style={{}}>
+                  <EmojiPicker
+                    emojiButtonColors={["#364157"]}
+                    emojiButtonRadius="8px"
+                    skinTonePosition="none"
+                    previewPosition="none"
+                    categories={[
+                      "people",
+                      "nature",
+                      "foods",
+                      "activity",
+                      "places",
+                      "objects",
+                      "symbols",
+                      "flags",
+                    ]}
+                    onEmojiSelect={(e) => {
+                      // console.log(e);
+                      let tempData = [...CommentTxt];
+                      if (tempData[index]) {
+                        tempData[index] = tempData[index].concat(e.native);
+                      } else {
+                        tempData[index] = e.native;
+                      }
 
+                      setCommentTxt(tempData);
+                    }}
+                  />
+                </div>
+              }
+              trigger="click"
+            >
+              <img
+                className={classes.emojiicon}
+                id={`emoji_${nugget_id}`}
+                alt="emoji"
+                src={emoji}
+              />
+            </Popover>
             <img
               className={classes.sendicon}
               src={sendicon}
@@ -471,14 +492,13 @@ const CommentsList = ({ index }) => {
                   let tempData = [...CommentTxt];
                   tempData[index] = "";
                   setCommentTxt(tempData);
-                  setShowEmojis("");
                 } else {
                   toast.error("Please Enter Valid Comment");
                 }
               }}
             />
           </div>
-          {showEmojis === nugget_id && (
+          {/* {showEmojis === nugget_id && (
             <div
               style={
                 {
@@ -518,7 +538,7 @@ const CommentsList = ({ index }) => {
                 }}
               />
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

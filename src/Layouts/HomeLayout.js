@@ -178,7 +178,7 @@ const HomeLayout = () => {
                   alt="rawcaster_sm_logo"
                 />
               </Link>
-              <div className={`d-none d-sm-block ${classes.topSearch}`}>
+              <div className={classes.topSearch}>
                 <InputGroup>
                   <InputGroup.Text>
                     <img height="22px" src={searchIcon} alt={"Search"} />

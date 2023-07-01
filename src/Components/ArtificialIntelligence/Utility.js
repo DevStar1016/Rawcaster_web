@@ -12,9 +12,14 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import { useStopwatch } from "react-timer-hook";
 import moment from "moment";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
-import { useChatBotContext, useGlobalContext } from "../../Shared/Context";
-import { JSONtoformdata, ReadMore } from "../../Shared/Utility";
+import {
+  useChatBotContext,
+  useGlobalContext,
+  useMainContext,
+} from "../../Shared/Context";
+import { JSONtoformdata, ReadMore, Timer } from "../../Shared/Utility";
 import { TextToAudioService } from "../../Services/ApiService";
+import axios from "axios";
 
 export const isUser = (id) => {
   if (parseInt(id) === 1) {
@@ -22,19 +27,25 @@ export const isUser = (id) => {
   }
   return false;
 };
+let isRequestCancel = false;
 
 export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
+  const { player, setplayer, PlayerSource } = useMainContext();
   const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
   const [isFetchingurl, setisFetchingurl] = useState(false);
   const token = useAuthToken();
 
   const HandlegetNuggetContentAudio = (url) => {
+    if (player) {
+      player.pause();
+    }
     if (audio) {
       audio.pause();
     }
     const audioElement = new Audio(url);
     audioElement.id = index;
     setAudio(audioElement);
+    setplayer(audioElement);
     audioElement.play();
     setisPlaying(index);
   };
@@ -49,10 +60,28 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
   useEffect(() => {
     if (audio) {
       audio.addEventListener("ended", function () {
+        setplayer(null);
         audio.pause();
         setisPlaying(null);
       });
+      audio.addEventListener("pause", () => {
+        setplayer(null);
+        setAudio(null);
+      });
     }
+    return () => {
+      if (audio) {
+        audio.removeEventListener("ended", function () {
+          setplayer(null);
+          audio.pause();
+          setisPlaying(null);
+        });
+        audio.addEventListener("pause", () => {
+          setplayer(null);
+          setAudio(null);
+        });
+      }
+    };
   }, [audio]);
 
   const convertToAudio = () => {
@@ -60,11 +89,19 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
       HandlegetNuggetContentAudio(audiourl);
     } else {
       setisFetchingurl(true);
+      if (PlayerSource.current) {
+        isRequestCancel = true;
+        PlayerSource.current.cancel("Request Cancelled");
+      }
+      if (!PlayerSource.current) {
+        PlayerSource.current = axios.CancelToken.source();
+      }
       TextToAudioService(
         JSONtoformdata({
           token,
           message,
-        })
+        }),
+        PlayerSource.current.token
       )
         .then((res) => {
           if (res.data.status === 1) {
@@ -75,6 +112,7 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
           }
         })
         .finally(() => {
+          PlayerSource.current = null;
           setisFetchingurl(false);
         });
     }
@@ -118,7 +156,7 @@ export const MessageContent = (props) => {
     OnReadoutResponse,
     isshareavailble,
   } = props;
-  console.log(isshareavailble);
+
   const loginUserData = useAuthData();
   return (
     <div
@@ -177,7 +215,8 @@ export const MessageContent = (props) => {
   );
 };
 
-export const ChatVoice = ({ url, audioId, user, created_at }) => {
+export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
+  const { player, setplayer, ...props } = useMainContext();
   const loginUserData = useAuthData();
   const [audio, setAudio] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -200,6 +239,11 @@ export const ChatVoice = ({ url, audioId, user, created_at }) => {
     if (audio) {
       audio.addEventListener("timeupdate", handleTimeUpdate);
       audio.addEventListener("durationchange", handleDurationChange);
+      audio.addEventListener("pause", () => {
+        setIsPlaying(false);
+        setAudio(null);
+        props.setIsPlaying(false);
+      });
       audio.addEventListener("ended", handleEnded);
       return () => {
         audio.removeEventListener("timeupdate", handleTimeUpdate);
@@ -224,7 +268,14 @@ export const ChatVoice = ({ url, audioId, user, created_at }) => {
   }
 
   function handlePlay() {
+    if (player) {
+      player.pause();
+      if (props.setIsPlaying) {
+        props.setIsPlaying(false);
+      }
+    }
     if (audio) {
+      setplayer(audio);
       audio.play();
       setIsPlaying(true);
     }
@@ -238,6 +289,7 @@ export const ChatVoice = ({ url, audioId, user, created_at }) => {
   }
 
   function handleEnded() {
+    setplayer(null);
     setIsPlaying(false);
     // setCurrentTime(0);
   }
@@ -285,6 +337,8 @@ export const ChatVoice = ({ url, audioId, user, created_at }) => {
               />
             </div>
           </div>
+
+          {query && <div className={classes.queryText}>{query}</div>}
           <div className="d-flex flex-row justify-content-between">
             <div className={classes.controlSec}>
               <div className={classes.timeSec}>
@@ -311,15 +365,22 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
   const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: false,
   });
-  const [ChatMessage, setChatMessage] = useState("");
+  const timerRef = useRef(null);
+  const recordingRef = useRef(null);
+  const { ChatMessage, setChatMessage } = useChatBotContext();
+  const loginUserData = useAuthData();
 
+  const [isChatContentValid, setisChatContentValid] = useState(true);
   const onRecordStart = () => {
     reset();
+    timerRef.current = new Timer(function () {
+      if (recordingRef.current === "recording") {
+        stopRecording();
+      }
+    }, 120000);
   };
+
   const onRecordStop = (url, blob) => {
-    // const file = new File([blob], "RecordAudio.wav", {
-    //   type: blob.type,
-    // });
     onAudioResult({
       user: 1,
       type: "audio",
@@ -348,6 +409,10 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
       onStop: onRecordStop,
     });
 
+  useEffect(() => {
+    recordingRef.current = status;
+  }, [status]);
+
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
       .then(() => {
@@ -369,87 +434,118 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
       });
   };
 
+  const getNuggetTextLength = () => {
+    if (loginUserData) {
+      return loginUserData?.ai_content_length;
+    } else {
+      return 0;
+    }
+  };
+
   const getValidNumber = (num) => {
     return num.toString().length == 1
       ? num.toString().padStart(2, "0")
       : num.toString();
   };
 
-  return status === "idle" || status === "stopped" ? (
-    <div className={classes.ContentSec}>
-      <InputGroup className={classes.chatinputSec}>
-        <Form.Control
-          className={classes.inSearch}
-          placeholder="Type or ask question here.."
-          aria-label="Type or ask question here.."
-          value={ChatMessage}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !disabled) {
-              HandleSendMessage(ChatMessage);
-              setChatMessage("");
-            }
-          }}
-          onChange={(e) => {
-            setChatMessage(e.target.value);
-          }}
-        />
+  return (
+    <>
+      {!isChatContentValid && (
+        <p className="ErrTxt mx-auto text-center mb-1">
+          Message Content cannot be longer than {getNuggetTextLength() + " "}
+          characters
+        </p>
+      )}
+      {status === "idle" || status === "stopped" ? (
+        <div className={classes.ContentSec}>
+          <InputGroup className={classes.chatinputSec}>
+            <Form.Control
+              className={classes.inSearch}
+              placeholder="Type or ask question here.."
+              aria-label="Type or ask question here.."
+              value={ChatMessage}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !disabled && isChatContentValid) {
+                  setisChatContentValid(true);
+                  HandleSendMessage(ChatMessage);
+                  setChatMessage("");
+                }
+              }}
+              onChange={(e) => {
+                if (e.target.value.length <= getNuggetTextLength()) {
+                  setChatMessage(e.target.value);
+                  setisChatContentValid(true);
+                } else {
+                  setChatMessage(
+                    e.target.value.slice(0, getNuggetTextLength())
+                  );
 
-        {ChatMessage === "" ? (
-          <InputGroup.Text className={classes.searchIcon}>
-            <img src={ChatIcon} />
-          </InputGroup.Text>
-        ) : (
-          <InputGroup.Text
-            className={classes.searchIcon}
+                  setisChatContentValid(false);
+                }
+              }}
+            />
+
+            {ChatMessage === "" ? (
+              <InputGroup.Text className={classes.searchIcon}>
+                <img src={ChatIcon} />
+              </InputGroup.Text>
+            ) : (
+              <InputGroup.Text
+                className={classes.searchIcon}
+                onClick={() => {
+                  if (!disabled && isChatContentValid) {
+                    setisChatContentValid(true);
+                    HandleSendMessage(ChatMessage);
+                    setChatMessage("");
+                  }
+                }}
+              >
+                <span
+                  className={`material-symbols-outlined ${classes.SendIcon}`}
+                >
+                  send
+                </span>
+              </InputGroup.Text>
+            )}
+          </InputGroup>
+
+          <i
+            className={classes.mic_icon}
             onClick={() => {
-              if (!disabled) {
-                HandleSendMessage(ChatMessage);
-                setChatMessage("");
-              }
+              handleAllowMicPermission();
             }}
-          >
-            <span className={`material-symbols-outlined ${classes.SendIcon}`}>
-              send
+          />
+        </div>
+      ) : (
+        <div className={classes.recordingBox}>
+          <div className={classes.RecordingTimeSec}>
+            {" "}
+            {getValidNumber(minutes) + `:` + getValidNumber(seconds)}
+          </div>
+          <div className={classes.ActionSec}>
+            <span
+              class={`material-symbols-outlined ${classes.closeIcon}`}
+              onClick={() => {
+                handleClose();
+                clearBlobUrl();
+              }}
+            >
+              delete
             </span>
-          </InputGroup.Text>
-        )}
-      </InputGroup>
-
-      <i
-        className={classes.mic_icon}
-        onClick={() => {
-          handleAllowMicPermission();
-        }}
-      />
-    </div>
-  ) : (
-    <div className={classes.recordingBox}>
-      <div className={classes.RecordingTimeSec}>
-        {" "}
-        {getValidNumber(minutes) + `:` + getValidNumber(seconds)}
-      </div>
-      <div className={classes.ActionSec}>
-        <span
-          class={`material-symbols-outlined ${classes.closeIcon}`}
-          onClick={() => {
-            handleClose();
-            clearBlobUrl();
-          }}
-        >
-          delete
-        </span>
-        <InputGroup.Text
-          className={classes.searchIcon}
-          onClick={() => {
-            stopRecording();
-            handleClose();
-          }}
-        >
-          <span className={`material-symbols-outlined ${classes.SendIcon}`}>
-            send
-          </span>
-        </InputGroup.Text>
-      </div>
-    </div>
+            <InputGroup.Text
+              className={classes.searchIcon}
+              onClick={() => {
+                stopRecording();
+                handleClose();
+              }}
+            >
+              <span className={`material-symbols-outlined ${classes.SendIcon}`}>
+                send
+              </span>
+            </InputGroup.Text>
+          </div>
+        </div>
+      )}
+    </>
   );
 };

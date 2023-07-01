@@ -2,8 +2,13 @@ import React from "react";
 import { decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import GroupImg from "../../../Assets/Icons/svg/default_group.svg";
+import videocall from "../../../Assets/Icons/svg/videocall.svg";
+import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
+import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
+import { useMainContext } from "../../../Shared/Context";
 
 const Group = ({ group, searchInput, onClick }) => {
+  const { setisChatOpen } = useMainContext();
   return (
     <>
       <div
@@ -40,6 +45,19 @@ const Group = ({ group, searchInput, onClick }) => {
               {group?.group_member_count + " Members"}
             </span>
           </div>
+        </div>
+        <div
+          className={`${classes.friendsmenu}`}
+          // onClick={(event) => {
+          //   event.stopPropagation();
+          //   setisChatOpen({
+          //     show: true,
+          //     type: "group",
+          //     id: group.group_id,
+          //   });
+          // }}
+        >
+          <img src={chatIcon} alt={"Group Chat"} />
         </div>
       </div>
     </>

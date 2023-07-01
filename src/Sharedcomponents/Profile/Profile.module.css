@@ -2,7 +2,9 @@
     width: 100%;
     border-bottom:  1px solid #ECECEC;
     float: left;   
-    padding: 13px 8px 0 0;
+    padding: 8px 5px 5px 0;
+    display: flex !important;
+    align-items: center;
 }
 .profileContainer img {
   width: 60px;
@@ -19,11 +21,12 @@
   font-weight: 400;
   line-height: 23px;
   color: #000000;
-  width: 100%;
-    max-width: 225px;
+  width: calc(100% - 95px);
+    /* max-width: 225px; */
     cursor: pointer;
     text-align: initial;
-    margin: 10px 0;
+    align-self: center;
+    /* margin: 10px 0; */
 }
 .profileContainer .rightSec .nameSec p {
   margin-bottom: 2px !important;
@@ -78,6 +81,7 @@
     padding: 5px 0;
     font-size: 12px;
     width: 100%;
+    display: none;
   }
   .bioSec p {
     text-align: initial !important;
@@ -90,7 +94,7 @@
 @media (max-width:768px) {
   .profileContainer { padding: 10px 0;}
   .profileContainer .rightSec { width: calc(100% - 60px); }
-  .profileContainer .rightSec .nameSec { margin:2px 0 7px 0; }
+  .profileContainer .rightSec .nameSec { margin:2px 0 0px 0; }
   .profileContainer .rightSec .nameSec p { font-size: 12px;}
   .profileContainer img { width: 45px; height: 45px; margin-right: 8px; }
   .actionBtn .connectBtn { cursor: pointer; padding: 2px 0 !important; height: 24px; width: 24px; border-radius: 25px; background: #f2718d; }

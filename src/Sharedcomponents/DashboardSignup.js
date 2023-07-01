@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Drawer } from "antd";
 import React, { useEffect, useState } from "react";
 import classes from "./SuggestedInfluencers.module.css";
 import GoogleIcon from "../Assets/Icons/png/google_logo.png";
@@ -35,8 +35,14 @@ import Groups from "../Components/Connections/Groups/Groups";
 import VideoThumb from "../Assets/Images/Video_preview.jpg";
 import { handlenuggetVideoPaused } from "../Store/Redux/Reducer/NuggetsReducer";
 import { fetchuserInfobyToken } from "../Store/Redux/Action";
+import { useMainContext } from "../Shared/Context";
+import StickyPopup from "../Modal/StickyPopup/Stickypopup";
+import Header from "../Components/ChatBox/Header";
+import Content from "../Components/ChatBox/Group/Content";
+import LinkDeviceModal from "../Modal/Chat/LinkDeviceModal";
 
 const DashboardSignup = () => {
+  const { player, setplayer, setisChatOpen, isChatOpen } = useMainContext();
   const loginUserData = useAuthData();
   const { isSuccess } = useAuth();
   const dispatch = useDispatch();
@@ -112,6 +118,7 @@ const DashboardSignup = () => {
               <video
                 width="100%"
                 height="100%"
+                id="dashboardSignup"
                 style={{ zIndex: 500 }}
                 controls={Controlls}
                 disablePictureInPicture
@@ -120,6 +127,13 @@ const DashboardSignup = () => {
                 controlsList="nodownload"
                 src={DEFAULT_VIDEO}
                 poster={VideoThumb}
+                onPlayingCapture={() => {
+                  if (player && player.id !== `dashboardSignup`) {
+                    player.pause();
+                  }
+                  const video = document.getElementById(`dashboardSignup`);
+                  setplayer(video);
+                }}
                 type="video/mp4"
                 onPlayCapture={() => {
                   setControlls(true);
@@ -222,6 +236,15 @@ const DashboardSignup = () => {
                 playsInline
                 controlsList="nodownload"
                 poster={VideoThumb}
+                onPlayingCapture={() => {
+                  if (player && player.id !== `dashboard_signup_video`) {
+                    player.pause();
+                  }
+                  const video = document.getElementById(
+                    `dashboard_signup_video`
+                  );
+                  setplayer(video);
+                }}
                 onPlayCapture={() => {
                   dispatch(handlenuggetVideoPaused(true));
                   setControlls(true);
@@ -233,6 +256,26 @@ const DashboardSignup = () => {
             <Groups />
             <Connections />
           </div>
+        )}
+        {isChatOpen.show && (
+          // <LinkDeviceModal
+          //   open={isChatOpen}
+          //   close={() => {
+          //     setisChatOpen(false);
+          //   }}
+          // />
+          <StickyPopup
+            open={isChatOpen.show}
+            HeaderContainer={Header}
+            Content={Content}
+            close={() => {
+              setisChatOpen({
+                show: false,
+                type: "",
+                id: "",
+              });
+            }}
+          />
         )}
       </div>
     </>

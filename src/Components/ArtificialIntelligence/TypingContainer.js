@@ -16,7 +16,7 @@ const TypingContainer = () => {
 
     return () => clearInterval(intervalId);
   }, []);
-  return <span>Typing{dots}</span>;
+  return <span>Thinking{dots}</span>;
 };
 
 export default TypingContainer;

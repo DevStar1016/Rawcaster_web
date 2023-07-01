@@ -3,9 +3,9 @@
     float: left;
     position: -webkit-sticky;
     position: sticky; 
-    padding-right: 10px;
-    padding-bottom: 74px;
-    height: calc(100vh - 70px);   
+    /* padding-right: 10px; */
+    padding: 18px 0px 0px;
+    /* height: calc(100vh - 70px);    */
     /* mask-image: linear-gradient(0deg,transparent,#000),linear-gradient(270deg,transparent 17px,#000 0);
     mask-size: 100% 20000px;
     mask-position: left bottom;
@@ -13,10 +13,9 @@
     -webkit-mask-size: 100% 20000px;
     -webkit-mask-position: left bottom;
     transition: mask-position .3s,-webkit-mask-position .3s; */
-    top: 74px;
-    padding-bottom: 74px;
+    /* top: 74px; */
  }
- .beforelogin a { display: flex; font-size: 15.5px; align-items: center; margin-top: 10px; clear: both; text-decoration: none; color: #000;cursor: pointer;}
+ .beforelogin a { display: flex; font-size: 15.5px; align-items: center; clear: both; text-decoration: none; color: #000;cursor: pointer;}
  .beforelogin a.active { color: #F2718D; }
  .beforelogin a span { font-size: 30px; float: left; padding-right:8px; }
  .beforelogin a:hover {color: #000 !important;cursor: pointer;}
@@ -247,6 +246,7 @@ opacity: 0.7;
   }
   .headerSec .searchSec i  {
 font-size: 17px;
+align-self: center;
   }
   .headerSec .searchSec {
     display: flex;
@@ -352,10 +352,27 @@ margin: 12px 0;
     justify-content: center;
     align-items: center;
     color: #777;
+    background-color: #fff !important;
+}
+@media (max-width:1100px) {
+  .eventSec { 
+    width: 600px;
+    max-width: 100%;
+   margin: 0 auto;
+  } 
+  .EventListSec {
+    height: calc(100% - 270px);
+  }
 }
 @media (max-width:768px) {
-  .eventSec { width: 100%; padding: 0 15px 100px 15px; height: auto; }
+  .eventSec {padding:15px; height: auto; }
   .EventListSec { height: auto !important; }
+}
+@media (max-width:575px) {
+.eventShowBtn,.talkShowBtn{
+  margin-bottom: 5px;
+  display: inline-flex;
+}  
 }
 
 

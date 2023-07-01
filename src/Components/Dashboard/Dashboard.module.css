@@ -1,4 +1,4 @@
-.fullcontainer { position: relative; height: 100vh; margin: auto;  max-width: 1350px; width: 95%; padding-top: 67px;}
+.fullcontainer { position: relative; height:calc(100vh - 70px); margin: auto;  max-width: 1350px; width: 95%;}
 .ribbon { color:#fff; font-size: 16px; font-weight: 300; position: fixed; top: calc(50% - 25px); background: #563662; width: 100%; z-index: 3;; left: 0;}
 .ribbon span { padding-left: 5px; }
 .ribbon a, .ribbon a:hover { color: #fff; text-decoration: none;  display: flex; align-items: center; justify-content: center;  height: 50px;}
@@ -6,9 +6,30 @@
 .NuggetsSec {
     overflow-y: auto !important;
     height: calc(100vh - 70px) !important;
+    /* padding: 90px 30px 30px; */
+    margin: auto;
+
 }
+
+.webScreeen{
+    display: none;
+   }
+@media (max-width:1100px) {
+    .webScreeen{
+    display: block;
+   } 
+   .mobScreen{
+    display: none;
+   }
+   .fullcontainer{
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 50px !important;
+   } 
+}
+
 @media (max-width:768px) {
-    .fullcontainer { width: 100%; }
+    .fullcontainer { width: 100%;overflow: hidden; }
     .ribbon a { font-size: 12px;}
     .smlogo { height: 19px; }
 }

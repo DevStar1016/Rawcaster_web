@@ -68,3 +68,7 @@ overflow-y: auto;
 .list:hover .iconSec{
     display: block;
 }
+@media (max-width:575px) {
+  .modalInput{ margin-bottom: 15px;}
+  .modalContainer h2{font-size: 20px;text-align: left;  }
+}

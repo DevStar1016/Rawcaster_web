@@ -72,3 +72,37 @@
 .tie-btn-delete ,.tie-btn-deleteAll {
   display: none !important;
 }
+.ant-drawer-header{
+  padding: 6px 10px !important;
+}
+.ant-btn:not(:disabled):focus-visible {
+  outline: none !important;
+}
+.ant-btn:not(:disabled):focus-visible {
+  outline: none;
+}
+.ant-input-affix-wrapper-focused {
+  border-color: #563662 !important;
+}
+.ant-btn-default:hover {
+  color: #fff !important;
+  border-color: #563662 !important;
+}
+/* .owl-item{
+  width: 340px !important;
+} */
+.owl-carousel .owl-stage{
+  display: flex;
+  flex-wrap: nowrap;
+}
+#hosted div:nth-child(1){
+  padding: 10px 14px !important;
+}
+/* .mainsec{
+  padding: 90px 0px 0px;
+} */
+
+/* .searchNugets{
+  height: calc(100vh - 230px);
+  overflow: auto;
+} */

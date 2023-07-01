@@ -8,6 +8,7 @@ import AudioPlayer from "../../Sharedcomponents/AudioPlayer";
 import { Carousel } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
+import { useMainContext } from "../../Shared/Context";
 
 const ImageGrid = ({
   imgArray,
@@ -18,7 +19,7 @@ const ImageGrid = ({
 }) => {
   const dispatch = useDispatch();
   const { nuggetVideoPaused, isNuggetMuted } = useNuggets();
-
+  const { player, setplayer } = useMainContext();
   const [isPlaying, setisPlaying] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [ActiveModalIndex, setActiveModalIndex] = useState(0);
@@ -202,6 +203,13 @@ const ImageGrid = ({
             controlsList="nodownload"
             muted={!isPreview && isNuggetMuted}
             onPlayCapture={(e) => {
+              if (player && player.id !== `videoSingleId${data.media_id}`) {
+                player.pause();
+              }
+              const video = document.getElementById(
+                `videoSingleId${data.media_id}`
+              );
+              setplayer(video);
               setisPlaying(e.target.id);
               // if (`videoSingleId${data.media_id}` !== e.target.id) {
               //   {
@@ -264,6 +272,11 @@ const ImageGrid = ({
           controlsList="nodownload"
           muted={isNuggetMuted}
           onPlayCapture={(e) => {
+            if (player && player.id !== `modal_video_${i}`) {
+              player.pause();
+            }
+            const video = document.getElementById(`modal_video_${i}`);
+            setplayer(video);
             // eslint-disable-next-line  array-callback-return
             let findArray = imgArray.map((ele, i) => {
               if (`modal_video_${i}` !== e.target.id) {
@@ -283,6 +296,7 @@ const ImageGrid = ({
                 findVal.pause();
               }
             });
+
             if (onPlay) {
               onPlay();
             }

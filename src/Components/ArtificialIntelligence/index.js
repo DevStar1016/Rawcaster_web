@@ -5,13 +5,12 @@ import AIIcon from "../../Assets/Icons/svg/AI_icon.svg";
 import classes from "./ArtificialIntelligence.module.css";
 import { Button, Drawer, Popover } from "antd";
 import { ChatBotContext } from "../../Shared/Context";
-import { useAuthData } from "../../Shared/Reduxfetcher";
 import { detectMob } from "../../Shared/Utility";
 import { useLocation } from "react-router";
 
 const ArtificialIntelligence = () => {
   const { pathname } = useLocation();
-  const userData = useAuthData();
+  const [ChatMessage, setChatMessage] = useState("");
   const [isChatOpen, setisChatOpen] = useState(false);
   const [Messages, setMessages] = useState([]);
   const [audio, setAudio] = useState(null);
@@ -19,7 +18,6 @@ const ArtificialIntelligence = () => {
 
   const generateRandomId = () => {
     const randomId = Math.random().toString(36).substr(2, 9);
-    console.log("Random ID:", parseInt(randomId));
     return parseInt(randomId);
     // Perform any additional actions with the randomId here
   };
@@ -34,6 +32,8 @@ const ArtificialIntelligence = () => {
     isPlaying,
     setisPlaying,
     generateRandomId,
+    ChatMessage,
+    setChatMessage,
   };
 
   useEffect(() => {
@@ -46,7 +46,12 @@ const ArtificialIntelligence = () => {
         title={
           <Heading
             onClose={() => {
+              setisPlaying(false);
+              setChatMessage("");
               setisChatOpen(false);
+              if (audio) {
+                audio.pause();
+              }
             }}
           />
         }
@@ -56,7 +61,12 @@ const ArtificialIntelligence = () => {
         width={500}
         height="90%"
         onClose={() => {
+          setisPlaying(false);
+          setChatMessage("");
           setisChatOpen(false);
+          if (audio) {
+            audio.pause();
+          }
         }}
         open={isChatOpen && detectMob()}
       >
@@ -70,12 +80,21 @@ const ArtificialIntelligence = () => {
         title={
           <Heading
             onClose={() => {
+              setisPlaying(false);
+              setChatMessage("");
               setisChatOpen(false);
+              if (audio) {
+                audio.pause();
+              }
             }}
           />
         }
         onOpenChange={(val) => {
           setisChatOpen(val);
+          setisPlaying(false);
+          if (audio) {
+            audio.pause();
+          }
         }}
         content={ChatContent}
         trigger="click"

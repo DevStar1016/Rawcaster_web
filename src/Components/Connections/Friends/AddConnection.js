@@ -55,6 +55,7 @@ const AddConnection = ({ open, close }) => {
     <Modal
       title="Add Connection"
       open={open}
+      className="modalSec"
       footer={[null]}
       closable
       onCancel={() => {
