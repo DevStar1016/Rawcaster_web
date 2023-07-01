@@ -147,7 +147,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                 <span class="material-symbols-outlined">arrow_forward</span>
               </Button>
             )}
-            <div className="d-none d-sm-block">
+            <div className="d-none d-md-block">
               {getisAddFriend(ele.friend_request_status) && (
                 <Button
                   type="primary"
@@ -167,7 +167,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
               type="primary"
               htmlType="Continue"
               size="large"
-              className={`d-block d-sm-none ${classes.connectBtn}`}
+              className={`d-block d-md-none ${classes.connectBtn}`}
               onClick={() => {
                 handleFriendRequest(ele);
               }}

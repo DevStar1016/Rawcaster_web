@@ -94,18 +94,21 @@ const ReferContainer = () => {
             );
           })}
         </ul>
-      </div> */}
+      </div>*/}
+      <div className={classes.cardsecParent}>
+        <div className={classes.cardSec}>
+          <p className={classes.value}>{ReferalData?.referral_count || 0}</p>
+          <p className={classes.text}>Total number of Valid Referrals Credit</p>
+        </div>
 
-      <div className={classes.cardSec}>
-        <p className={classes.value}>{ReferalData?.referral_count || 0}</p>
-        <p className={classes.text}>Total number of Valid Referrals Credit</p>
-      </div>
-
-      <div className={classes.cardSec}>
-        <p className={classes.value}>
-          {ReferalData?.referral_needed_count || 0}
-        </p>
-        <p className={classes.text}>Referrals Needed for Upgrade to Premium </p>
+        <div className={classes.cardSec}>
+          <p className={classes.value}>
+            {ReferalData?.referral_needed_count || 0}
+          </p>
+          <p className={classes.text}>
+            Referrals Needed for Upgrade to Premium{" "}
+          </p>
+        </div>
       </div>
     </div>
   );

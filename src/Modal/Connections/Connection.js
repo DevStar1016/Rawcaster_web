@@ -77,7 +77,7 @@ const ConnectionModal = ({
           {type} - {value?.filteredConnectionCount}
         </h2>
         <Row>
-          <Col sm={6}>
+          <Col sm={6} className={classes.modalInput}>
             <Select
               className={`${classes.locationSec} locationSearch`}
               showSearch
@@ -109,7 +109,7 @@ const ConnectionModal = ({
               })}
             </Select>
           </Col>
-          <Col sm={3}>
+          <Col sm={3} className={classes.modalInput}>
             <Select
               className={`${classes.locationSec} locationSearch`}
               showSearch

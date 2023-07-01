@@ -349,7 +349,7 @@ line-height: 26px;
 }
 .typingSec {
   align-items: center !important;
-  padding: 0px !important;
+
 }
 .typingSec .content {
   padding-bottom: 0px !important;
@@ -364,6 +364,7 @@ line-height: 26px;
 }
 .typingSec {
   width: 126px !important;
+ height: 50px;
 }
 .queryText{
   color: #fff !important;

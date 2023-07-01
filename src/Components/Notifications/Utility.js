@@ -186,7 +186,7 @@ export const NotificationsList = ({
               currentTarget.src = defaultprofileImg;
             }}
           />
-          <div style={{ minWidth: 250 }}>
+          <div style={{ width: "100%" }}>
             <p className={classes.userName}>{ele?.userName}</p>
             {ele.type === 11 && ele?.friend_request_status === 0 ? null : (
               <p className={classes.timeAgo}>{moment(createdTime).fromNow()}</p>

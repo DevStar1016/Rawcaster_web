@@ -1,14 +1,14 @@
 .loginbg { 
   /* background: url(../../assets/login_bg.jpg) center top  no-repeat; */
-  min-height: 100vh; float: left; width: 100%; display: flex;
+  min-height: calc(100vh - 40px); float: left; width: 100%; display: flex;
   font-family: 'DM Sans', sans-serif;
 }
 .verifybg { 
   min-height: 100%; float: left; width: 100%;
   font-family: 'DM Sans', sans-serif;
 }
-.loginSec { width: 50%; display: flex; margin-top: 40px; }
-.sliderSec { width: 50%; margin-top: 40px; background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%); justify-content: center;
+.loginSec { width: 50%; display: flex;height: calc(100vh - 40px); }
+.sliderSec { width: 50%; background: linear-gradient(155.44deg, #F99F47 6.16%, #F3748A 92.32%); justify-content: center;
    display: flex;  flex-direction: column; align-items: center;
    text-align: center;
    padding:10px 20px; }
@@ -192,7 +192,7 @@ cursor: pointer;
 .altSignBtn { justify-content: left; padding-left: 20px;}
 .loginSec, .loginbg, .sliderSec, .verifybg { display: block !important; width: 100% !important; }
 .subText { font-size: 15px; line-height: 23px !important; }
-.heading_h1 {font-size: 26px !important; line-height: 26px !important; margin-top: 10px !important; margin-bottom:10px !important; }
+.heading_h1 {font-size: 25px !important; line-height: 26px !important; margin-top: 10px !important; margin-bottom:10px !important; }
 .sliderSec { display: none !important; }
 .copyright { text-align: center;  }
 .copyright p { display: block !important; width: 100% !important; float: left; text-align: center; margin-top: 10px; } 

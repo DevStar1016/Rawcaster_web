@@ -509,7 +509,7 @@ const Nuggets = ({
                     )}
                   </div>
                 ) : (
-                  <div ref={rootRef}>
+                  <div className={classes.nuggetScroll} ref={rootRef}>
                     {NuggetsData?.map((ele, index) => {
                       return (
                         <Spin
