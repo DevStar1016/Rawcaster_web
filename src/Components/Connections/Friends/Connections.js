@@ -140,7 +140,7 @@ const Connections = () => {
   };
 
   return (
-    <div className={classes.myconnectioin} style={{height :`${friends.length * 60}px`}}>
+    <div className={classes.myconnectioin}>
       <input
         className={classes.textBox}
         onChange={(e) => setsearchInput(e.target.value)}

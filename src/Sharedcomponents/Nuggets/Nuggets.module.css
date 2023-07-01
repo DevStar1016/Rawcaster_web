@@ -329,12 +329,13 @@ border-radius: 30px;
 }
 .cmtSec .comtArea .textBox .inputSec textarea,
 .cmtSec .comtArea .textBox .inputSec textarea:focus {
-  width: calc(100% - 70px);
+  width: calc(100% - 55px);
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   height: 20px;
   resize: none;
+  overflow: hidden;
 }
 .cmtSec .comtArea .textBox .inputSec textarea::placeholder { color: #1D1C1C; opacity: .8 !important; font-weight: 400; }
 .cmtSec .comtArea .textBox .sendicon {
@@ -705,7 +706,7 @@ cursor: pointer;
   }
   .cmtSec .cmtText {
     max-width: 95%;
-    padding: 3px 14px;
+    padding: 10px 14px;
     border-radius: 30px;
     font-size: 13px;
   }

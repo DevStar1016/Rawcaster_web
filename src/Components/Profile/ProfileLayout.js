@@ -279,7 +279,7 @@ const ProfileLayout = ({
               </div>
             )}
           </div>
-          <div className="d-flex flex-row justify-content-between">
+          <div className="d-md-flex flex-row justify-content-between">
             <div className="d-flex flex-row align-items-baseline">
               {isAddFriend() && (
                 <div className="ms-3">
