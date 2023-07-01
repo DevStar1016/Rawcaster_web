@@ -4,6 +4,11 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
+    "@aws-amplify/core": "^5.5.2",
+    "@aws-amplify/storage": "^5.6.3",
+    "@aws-sdk/client-chime-sdk-messaging": "^3.360.0",
+    "@chatscope/chat-ui-kit-react": "^1.10.1",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@emoji-mart/data": "^1.1.2",
     "@reduxjs/toolkit": "^1.9.2",
     "@testing-library/jest-dom": "^5.16.5",
@@ -64,6 +69,7 @@
     "styled-components": "^5.3.11",
     "styled-system": "^5.1.5",
     "tui-image-editor": "^3.15.3",
+    "uuid": "^9.0.0",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },

@@ -30,9 +30,14 @@ const ModalLayout = () => {
   const dispatch = useDispatch();
   const [player, setplayer] = useState(null);
   const meetingManager = useMeetingManager();
-  const { roster } = useRosterState();
+  const { roster, ...others } = useRosterState();
+  console.log(roster, others, "esponse");
   const attendees = Object.values(roster);
-  const [isChatOpen, setisChatOpen] = useState(false);
+  const [isChatOpen, setisChatOpen] = useState({
+    show: false,
+    type: "",
+    id: "",
+  });
   const { loginModalShow, twostepVerifyModalshow } = useDashboard();
   const { isAccountActive, userSettings } = useAuth();
   const profileverifyStatus = useProfileVerifyModal();

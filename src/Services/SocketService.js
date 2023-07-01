@@ -1,7 +1,14 @@
 import { io } from "socket.io-client";
-import { socketURL } from "./ServiceConstants";
+import { ChimesocketURL, socketURL } from "./ServiceConstants";
 
 const socket = io(socketURL, {
+  transports: ["websocket"],
+  secure: false,
+  reconnection: true,
+  rejectUnauthorized: false,
+});
+
+const Chimesocket = io(ChimesocketURL, {
   transports: ["websocket"],
   secure: false,
   reconnection: true,
@@ -23,6 +30,12 @@ export default ConnectSocket;
 
 export const socketListen = socket;
 
+export const ChimesocketListen = Chimesocket;
+
 export const sendMessage = (data, type = "message") => {
   socket.emit(type, data);
+};
+
+export const ChimesendMessage = (data, type = "message") => {
+  Chimesocket.emit(type, data);
 };

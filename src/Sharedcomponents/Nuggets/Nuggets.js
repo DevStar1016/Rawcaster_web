@@ -16,7 +16,7 @@ import {
   useAuthToken,
   useNuggets,
 } from "../../Shared/Reduxfetcher";
-import { Empty, Spin } from "antd";
+import { Empty, FloatButton, Spin } from "antd";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
 import {
@@ -606,6 +606,7 @@ const Nuggets = ({
               </>
             )}
           </>
+          <FloatButton.BackTop />
         </div>
       )}
     </ListNuggetContext.Provider>

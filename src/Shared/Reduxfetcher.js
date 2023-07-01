@@ -19,6 +19,9 @@ export const useNuggets = () => {
 export const useFriends = () => {
   return useSelector((state) => state.dashboard.friendsList);
 };
+export const useGroups = () => {
+  return useSelector((state) => state.dashboard.groupsList);
+};
 
 export const useAuth = () => {
   return useSelector((state) => state.auth);

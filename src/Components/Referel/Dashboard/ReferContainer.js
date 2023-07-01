@@ -16,6 +16,7 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { useReferalContext } from "../../../Shared/Context";
 
 const shareMessage =
   "Hi, I have joined Rawcaster. A one-stop platform for all social media needs. I am asking all my friends and special people to join this platform to make it easier to reach everyone with content, personalized messages, Nuggets, and invitations to participate in my special events. I expect to see you there soon.\n";
@@ -57,7 +58,7 @@ const ShareList = [
 
 const ReferContainer = () => {
   const profileData = useAuthData();
-
+  const { ReferalData } = useReferalContext();
   const shareUrl = profileData?.referral_link || "";
   return (
     <div className={classes.centerSec}>
@@ -74,7 +75,7 @@ const ReferContainer = () => {
 
       <EmailReferalContainer />
 
-      <div className={classes.shareList}>
+      {/* <div className={classes.shareList}>
         <ul>
           {ShareList.map(({ Component, img, id }) => {
             return (
@@ -93,15 +94,17 @@ const ReferContainer = () => {
             );
           })}
         </ul>
-      </div>
+      </div> */}
 
       <div className={classes.cardSec}>
-        <p className={classes.value}>{0}</p>
+        <p className={classes.value}>{ReferalData?.referral_count || 0}</p>
         <p className={classes.text}>Total number of Valid Referrals Credit</p>
       </div>
 
       <div className={classes.cardSec}>
-        <p className={classes.value}>{0}</p>
+        <p className={classes.value}>
+          {ReferalData?.referral_needed_count || 0}
+        </p>
         <p className={classes.text}>Referrals Needed for Upgrade to Premium </p>
       </div>
     </div>

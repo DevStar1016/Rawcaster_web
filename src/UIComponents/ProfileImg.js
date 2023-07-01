@@ -63,6 +63,9 @@ const ProfileImg = ({
             style={{ cursor: "pointer" }}
             alt={BadgeTitle}
             src={getBadge().img}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           />
         )}
       </Tooltip>

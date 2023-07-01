@@ -1,4 +1,5 @@
 import axios from "axios";
+import chimeAxios from "./ChimeAxios";
 import { BASE_URL } from "./ServiceConstants";
 
 axios.defaults.baseURL = BASE_URL;
@@ -289,12 +290,16 @@ export const getFaqService = (data) => {
 
 // Meetings
 
-export const CreateMeeting = (data) => {
-  return axios.post("create_meeting", data);
+export const CreateMeeting = () => {
+  return chimeAxios.get("createmeeting");
 };
 
 export const JoinAttendeeMeeting = (data) => {
-  return axios.post("attendee_meeting", data);
+  return chimeAxios.post("joinmeeting", data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 // Profile Config
@@ -387,7 +392,17 @@ export const TextToAudioService = (data, token) => {
   });
 };
 
+// Get Referal List
+
+export const GetReferralListService = (data) => {
+  return axios.post(`getreferrallist`, data);
+};
+
 // Rawcaster Chat
+
+export const SendMessageService = (data) => {
+  return axios.post(`send_message`, data);
+};
 
 //QR Code
 

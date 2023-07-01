@@ -19,6 +19,15 @@ const Friends = ({ friend, searchInput }) => {
     <>
       <div
         className={classes.friendslist}
+        onClick={() => {
+          let finalData = {
+            dispatch,
+            navigate,
+            nuggetFormData,
+            user_id: friend.user_id,
+          };
+          handleProfileNavigate(finalData);
+        }}
         style={{
           position: "relative",
           display: decodeHtml(friend.display_name)
@@ -32,15 +41,6 @@ const Friends = ({ friend, searchInput }) => {
         <div className={classes.list}>
           <img
             src={friend?.profile_img ? friend?.profile_img : ""}
-            onClick={() => {
-              let finalData = {
-                dispatch,
-                navigate,
-                nuggetFormData,
-                user_id: friend.user_id,
-              };
-              handleProfileNavigate(finalData);
-            }}
             alt={decodeHtml(friend.display_name)}
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
@@ -92,9 +92,14 @@ const Friends = ({ friend, searchInput }) => {
             <img
               src={chatIcon}
               alt={"Chat"}
-              onClick={() => {
-                setisChatOpen("chat");
-              }}
+              // onClick={(event) => {
+              //   event.stopPropagation();
+              //   setisChatOpen({
+              //     show: true,
+              //     type: "friend",
+              //     id: friend.user_id,
+              //   });
+              // }}
             />
           </div>
         }
