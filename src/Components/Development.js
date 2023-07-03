@@ -20,6 +20,7 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import joeIco from "../Assets/Icons/png/add_friend.png";
 import { useAuthData } from "../Shared/Reduxfetcher";
 import { JSONtoformdata, getRawcaserToken } from "../Shared/Utility";
+import { ChimesocketListen } from "../Services/SocketService";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
@@ -28,6 +29,7 @@ const Development = () => {
   const [MemberId, setMemberId] = useState("");
   const [ChannelId, setChannelId] = useState("");
   const [MeetingId, setMeetingId] = useState("");
+  const textareaRef = useRef(null);
   // useEffect(() => {
 
   //   axios
@@ -36,6 +38,33 @@ const Development = () => {
   //       console.log(res.data);
   //     });
   // }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on("connect", (message) => {
+      console.log(message, "message.event");
+      // ...
+    });
+    ChimesocketListen.on("ping", (message) => {
+      console.log(message, "message.event");
+    });
+
+    ChimesocketListen.on("error", (error) => {
+      console.log(error, "message.event");
+    });
+
+    ChimesocketListen.on("reconnect", (attempt) => {
+      console.log(attempt, "message.event");
+    });
+
+    ChimesocketListen.on("reconnect_attempt", (attempt) => {
+      console.log(attempt, "message.event");
+    });
+
+    return () => {
+      ChimesocketListen.off("call");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const createChannel = () => {
     const data = {
@@ -85,6 +114,18 @@ const Development = () => {
       });
   };
 
+  const handleChange = () => {
+    textareaRef.current.style.height = "45px";
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  };
+
+  const handleSendMessage = () => {
+    // Perform the action when the send button is clicked
+    console.log("Sending message:", message);
+    // Reset the textarea
+    textareaRef.current.style.height = "45px";
+  };
+
   return (
     <div
       style={{
@@ -93,6 +134,21 @@ const Development = () => {
       }}
     >
       <div className="h-100 p-5 mt-5 m-auto w-100">
+        <div className={classes.whatsapp_textarea_wrapper}>
+          <textarea
+            ref={textareaRef}
+            className={classes.whatsapp_textarea}
+            placeholder="Type a message..."
+            // value={message}
+            rows="1"
+            onChange={handleChange}
+          />
+          <button className={classes.send_button} onClick={() => {}}>
+            <span class="material-symbols-outlined">send</span>
+          </button>
+        </div>
+      </div>
+      {/* <div className="h-100 p-5 mt-5 m-auto w-100">
         <div
           style={{
             height: "500px",
@@ -164,7 +220,7 @@ const Development = () => {
         >
           Join Meeting
         </button>
-      </div>
+      </div> */}
       {/* <div
         style={{
           background: "#563662",

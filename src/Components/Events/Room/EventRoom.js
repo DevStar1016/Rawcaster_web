@@ -22,16 +22,21 @@ const EventRoom = () => {
   const data = searchParams.get("meetingid");
 
   useEffect(() => {
-    ChimesocketListen.on(
-      "message",
-      (message) => {
-        switch (message.event) {
-          case CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:
-            console.log(message);
-        }
-      },
-      []
-    );
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (message) => {
+      console.log(message, "message.event");
+      // ...
+    });
+    // ChimesocketListen.on(
+    //   "event",
+    //   (message) => {
+    //     console.log(message, "message");
+    //     switch (message.event) {
+    //       case CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:
+    //         console.log(message, "message.event");
+    //     }
+    //   },
+    //   []
+    // );
     return () => {
       ChimesocketListen.off("call");
     };
@@ -43,15 +48,15 @@ const EventRoom = () => {
       const { Meeting } = response.data.result;
       const meetingSessionConfiguration = new MeetingSessionConfiguration(
         Meeting,
-        null
+        {}
       );
       const meetingOptions = {
         deviceLabels: DeviceLabels.AudioAndVideo,
       };
       try {
-        // await meetingManager.join(meetingSessionConfiguration, meetingOptions);
-        // await meetingManager.start();
-        handleJoin(Meeting.MeetingId);
+        await meetingManager.join(meetingSessionConfiguration, meetingOptions);
+        await meetingManager.start();
+        // handleJoin(Meeting.MeetingId);
       } catch (error) {
         console.log(error, "error");
       }

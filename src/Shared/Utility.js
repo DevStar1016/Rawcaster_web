@@ -27,6 +27,7 @@ import {
 import { message } from "antd";
 import { Typography } from "antd";
 import axios, { isCancel } from "axios";
+import { toast } from "react-hot-toast";
 
 // Auth
 
@@ -710,3 +711,18 @@ export function formatBytes(bytes) {
 
   return `${formattedSize} ${sizes[i]}`;
 }
+
+export const handleCopyText = (url) => {
+  return new Promise((resolve, reject) => {
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        resolve();
+
+        toast.success("Text copied to clipboard");
+      })
+      .catch((error) => {
+        console.error("Error copying text:", error);
+      });
+  });
+};

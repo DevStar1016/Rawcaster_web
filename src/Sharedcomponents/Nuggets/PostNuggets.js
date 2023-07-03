@@ -185,7 +185,6 @@ const PostNuggets = () => {
             return JSON.stringify({ friends: shareWithData });
           }
         };
-        console.log(getShareTypeData());
         formData.append("share_with", getShareTypeData());
       }
     }

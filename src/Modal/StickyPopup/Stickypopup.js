@@ -21,6 +21,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
   const [GroupDetails, setGroupDetails] = useState(null);
   const [PreviewData, setPreviewData] = useState(null);
   const [isTyping, setisTyping] = useState(null);
+  const [EditData, setEditData] = useState(null);
 
   useEffect(() => {
     setTimeout(() => {
@@ -101,6 +102,8 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     PreviewData,
     setisTyping,
     isTyping,
+    setEditData,
+    EditData,
   };
 
   return !isHidden ? (
