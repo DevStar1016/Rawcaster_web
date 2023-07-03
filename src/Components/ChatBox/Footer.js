@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classes from "./ChatBox.module.css";
 import { Layout } from "antd";
-import { ChatInput } from "../../Sharedcomponents/Chat/utility";
+import { ChatInput, ChatInputBox } from "../../Sharedcomponents/Chat/utility";
 import { useChatContext } from "../../Shared/Context";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { SendMessageService } from "../../Services/ApiService";
@@ -13,8 +13,14 @@ const Footer = () => {
   const token = useAuthToken();
   const userData = useAuthData();
   const [text, settext] = useState("");
-  const { setMessages, convertMessageFormat, setPreviewData, GroupDetails } =
-    useChatContext();
+  const {
+    setMessages,
+    convertMessageFormat,
+    setPreviewData,
+    GroupDetails,
+    EditData,
+    setEditData,
+  } = useChatContext();
 
   const sendMessage = (val, params = {}) => {
     let data = {
@@ -66,9 +72,11 @@ const Footer = () => {
   return (
     <Layout.Footer className={classes.footerSec}>
       <ChatInput
+        value={EditData}
         onInput={(val) => {
           settext(val);
         }}
+        isEdit={EditData}
         HandleSendMessage={(val) => {
           sendMessage(val);
           setMessages((pre) => [
@@ -85,6 +93,9 @@ const Footer = () => {
         }}
         cameraenabled
         fileuploadEnabled
+        onEditClose={() => {
+          setEditData(null);
+        }}
         onFileResult={(val, isCapture = false) => {
           setPreviewData({
             File: val,
@@ -110,6 +121,7 @@ const Footer = () => {
           ]);
         }}
       />
+      {/* <ChatInputBox /> */}
     </Layout.Footer>
   );
 };

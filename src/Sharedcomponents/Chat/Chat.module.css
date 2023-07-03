@@ -1,5 +1,11 @@
-.inSearch { padding: 0px !important;  background: #F1F2F5 !important; border: 0 !important; height: 45px; border-top-left-radius: 20px !important; border-bottom-left-radius: 20px !important; }
-.searchIcon { cursor: pointer; text-align: center;  z-index: 7; border-radius: 50px !important; background: #F2718D !important; width:45px; }
+.inSearch { padding: 0px !important;  background: #F1F2F5 !important; border: 0 !important; resize: none; vertical-align: middle !important;}
+.searchIcon { cursor: pointer; text-align: center;  z-index: 7; border-radius: 50px !important; background: #F2718D !important; width:50px; 
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 9px;
+max-height: 45px;
+}
 .searchIcon span {color: #fff; }
 .inSearch:focus {
     border: none !important;
@@ -13,30 +19,30 @@ align-items:center ;
 }
 .mic_icon {
     float: left;
-    width: 28px;
-    height: 28px;
-    background: #563662;
+    width: 25px;
+    height: 25px;
+    background: #FFFFFF;
     mask: url("../../Assets/Icons/svg/Mic_icon.svg") no-repeat center / contain;
     -webkit-mask:  url("../../Assets/Icons/svg/Mic_icon.svg") no-repeat center /
       contain;
-    margin: auto;
+      margin: auto;
       cursor: pointer;
 }
 .upload_icon {
   float: left;
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   background: #563662;
   mask: url("../../Assets/Icons/svg/Chats/file_upload.svg") no-repeat center / contain;
   -webkit-mask:  url("../../Assets/Icons/svg/Chats/file_upload.svg") no-repeat center /
     contain;
-  margin:  auto 10px;
+  margin:  auto 0px;
     cursor: pointer;
 }
 .camera_icon {
   float: left;
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   background: #563662;
   mask: url("../../Assets/Icons/svg/Chats/camera_icon.svg") no-repeat center / contain;
   -webkit-mask:  url("../../Assets/Icons/svg/Chats/camera_icon.svg") no-repeat center /
@@ -289,7 +295,36 @@ margin-bottom: 5px !important;
   text-align: center;
   margin-bottom: 0px !important;
 }
+.whatsapp_textarea_wrapper {
+  display: flex;
+  align-items: end;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+   border-radius: 30px;
+   width: 100%;
+}
+.whatsapp_textarea_wrapper .emojiIcon {
+  cursor: pointer;
+ padding-left: 10px;
+ padding-bottom: 10px;
+}
+.whatsapp_textarea {
+  width: 100%;
+  max-height: 100px;
+  border: none;
+  font-size: 16px;
+  resize: none;
+  display:inline-block;
+  vertical-align:middle;
+  outline: none;
+  overflow-y: scroll !important;
+  margin: auto 15px;
+}
 
+
+
+.send_button:hover {
+  background-color: #f2f2f2;
+}
 .moreIcon {
   color: transparent !important;
 }
@@ -297,4 +332,25 @@ margin-bottom: 5px !important;
   color: black !important;
   cursor: pointer;
   margin-top: 10px;
+}
+.editContainer {
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+.editContainer i {
+  cursor: pointer;
+}
+.editContainer span {
+  max-width: 300px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+          line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }

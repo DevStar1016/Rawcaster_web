@@ -13,15 +13,17 @@ import classes from "./Chat.module.css";
 import moment from "moment";
 import ChatIcon from "../../Assets/Icons/svg/chat_icon.svg";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
-import { Timer, formatBytes } from "../../Shared/Utility";
+import { Timer, formatBytes, handleCopyText } from "../../Shared/Utility";
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
 import { Dropdown, Image } from "antd";
 import { useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import useAutosizeTextArea from "../ReactHooks/useAutosizeTextArea";
 
 export const ChatInput = ({
+  value = "",
   onInput,
   HandleSendMessage,
   onAudioResult,
@@ -31,11 +33,13 @@ export const ChatInput = ({
   isSendOnly = false,
   onSendResponse,
   onFileResult,
-  isGroup = true,
+  isEdit = false,
+  onEditClose,
 }) => {
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const textareaRef = useRef(null);
   const [isEmoji, setisEmoji] = useState(false);
   const fileRef = useRef(null);
   const videoRef = useRef(null);
@@ -59,6 +63,14 @@ export const ChatInput = ({
       }
     }, 120000);
   };
+
+  useEffect(() => {
+    if (value && value !== "") {
+      setChatMessage(value);
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [value]);
 
   const onRecordStop = (url, blob) => {
     if (isSend.current) {
@@ -170,11 +182,23 @@ export const ChatInput = ({
           characters
         </p>
       )}
-      {!IsRecording ? (
-        <div className={classes.ContentSec}>
-          <InputGroup
-            className={`${classes.chatinputSec} ${isSendOnly ? "w-100" : ""}`}
+      {isEdit && (
+        <div className={classes.editContainer}>
+          <span>{value}</span>
+          <i
+            class="material-symbols-outlined"
+            onClick={() => {
+              setChatMessage("");
+              onEditClose();
+            }}
           >
+            cancel
+          </i>
+        </div>
+      )}
+      {!IsRecording ? (
+        <div className="d-flex flex-row">
+          <div className={classes.whatsapp_textarea_wrapper}>
             <i
               className={`material-symbols-outlined ${classes.emojiIcon}`}
               onClick={() => {
@@ -183,18 +207,21 @@ export const ChatInput = ({
             >
               mood
             </i>
-            <Form.Control
-              className={classes.inSearch}
-              placeholder="Type or ask question here..."
-              aria-label="Type or ask question here..."
+            <textarea
+              ref={textareaRef}
+              className={classes.whatsapp_textarea}
+              placeholder="Type a message..."
               value={ChatMessage}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !disabled) {
-                  HandleSendMessage(ChatMessage);
-                  setChatMessage("");
-                }
-              }}
+              rows="1"
+              // onKeyDown={(e) => {
+              //   if (e.key === "Enter" && !disabled) {
+              //     HandleSendMessage(ChatMessage);
+              //     setChatMessage("");
+              //   }
+              // }}
               onChange={(e) => {
+                textareaRef.current.style.height = "auto";
+                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
                 if (onInput) {
                   onInput(e.target.value);
                 }
@@ -210,35 +237,37 @@ export const ChatInput = ({
                 }
               }}
             />
-
-            {!isSendOnly && fileuploadEnabled && (
-              <>
-                <i
-                  className={classes.upload_icon}
-                  onClick={() => {
-                    fileRef?.current.click();
-                  }}
-                />
-                <input
-                  ref={fileRef}
-                  type="file"
-                  name="file"
-                  id="chat_file"
-                  onClick={(event) => {
-                    event.target.value = null;
-                  }}
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length !== 0) {
-                      if (onFileResult) {
-                        onFileResult(e.target.files[0]);
+            {!isSendOnly &&
+              fileuploadEnabled &&
+              !isEdit &&
+              ChatMessage === "" && (
+                <>
+                  <i
+                    className={classes.upload_icon}
+                    onClick={() => {
+                      fileRef?.current.click();
+                    }}
+                  />
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    name="file"
+                    id="chat_file"
+                    onClick={(event) => {
+                      event.target.value = null;
+                    }}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length !== 0) {
+                        if (onFileResult) {
+                          onFileResult(e.target.files[0]);
+                        }
                       }
-                    }
-                  }}
-                  style={{ display: "none" }}
-                />
-              </>
-            )}
-            {!isSendOnly && cameraenabled && (
+                    }}
+                    style={{ display: "none" }}
+                  />
+                </>
+              )}
+            {!isSendOnly && cameraenabled && !isEdit && ChatMessage === "" && (
               <i
                 className={classes.camera_icon}
                 onClick={() => {
@@ -246,13 +275,39 @@ export const ChatInput = ({
                 }}
               />
             )}
-
-            {ChatMessage === "" && !isSendOnly ? (
-              <InputGroup.Text className={classes.searchIcon}>
-                <img src={ChatIcon} />
-              </InputGroup.Text>
+            {isEdit ? (
+              <div
+                className={classes.searchIcon}
+                onClick={() => {
+                  setisEmoji(false);
+                  if (isSendOnly) {
+                    if (onSendResponse) {
+                      onSendResponse(ChatMessage);
+                    }
+                    setChatMessage("");
+                  } else if (!disabled) {
+                    HandleSendMessage(ChatMessage);
+                    setChatMessage("");
+                  }
+                }}
+              >
+                <span
+                  className={`material-symbols-outlined ${classes.SendIcon}`}
+                >
+                  done
+                </span>
+              </div>
+            ) : ChatMessage === "" && !isSendOnly ? (
+              <div className={classes.searchIcon}>
+                <i
+                  className={classes.mic_icon}
+                  onClick={() => {
+                    handleAllowMicPermission();
+                  }}
+                />
+              </div>
             ) : (
-              <InputGroup.Text
+              <div
                 className={classes.searchIcon}
                 onClick={() => {
                   setisEmoji(false);
@@ -272,18 +327,17 @@ export const ChatInput = ({
                 >
                   send
                 </span>
-              </InputGroup.Text>
+              </div>
             )}
-          </InputGroup>
-
-          {!isSendOnly && (
+          </div>
+          {/* {!isSendOnly && !isEdit && (
             <i
               className={classes.mic_icon}
               onClick={() => {
                 handleAllowMicPermission();
               }}
             />
-          )}
+          )} */}
         </div>
       ) : (
         <div className={classes.recordingBox}>
@@ -414,7 +468,7 @@ export const ChatInput = ({
 };
 
 export const MessageContent = (props) => {
-  const { Messages } = useChatContext();
+  const { Messages, setEditData } = useChatContext();
   const {
     message = null,
     user,
@@ -426,6 +480,7 @@ export const MessageContent = (props) => {
   } = props;
   const friends_list = useFriends();
   const loginUserData = useAuthData();
+
   const [isAvatarErr, setisAvatarErr] = useState(false);
 
   const isUser = (id) => {
@@ -566,11 +621,27 @@ export const MessageContent = (props) => {
   const items = [
     {
       key: "1",
-      label: <div>Copy</div>,
+      label: (
+        <div
+          onClick={() => {
+            handleCopyText(message);
+          }}
+        >
+          Copy
+        </div>
+      ),
     },
     {
       key: "2",
-      label: <div>Edit</div>,
+      label: (
+        <div
+          onClick={() => {
+            setEditData(message);
+          }}
+        >
+          Edit
+        </div>
+      ),
     },
     {
       key: "3",
@@ -649,6 +720,39 @@ export const MessageContent = (props) => {
             </span>
           </Dropdown>
         )}
+      </div>
+    </div>
+  );
+};
+
+export const ChatInputBox = () => {
+  const [isEmoji, setisEmoji] = useState(false);
+  const textareaRef = useRef(null);
+  const handleChange = () => {
+    textareaRef.current.style.height = "auto";
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  };
+
+  return (
+    <div className={classes.whatsapp_textarea_wrapper}>
+      <i
+        className={`material-symbols-outlined ${classes.emojiIcon}`}
+        onClick={() => {
+          setisEmoji(!isEmoji);
+        }}
+      >
+        mood
+      </i>
+      <textarea
+        ref={textareaRef}
+        className={classes.whatsapp_textarea}
+        placeholder="Type a message..."
+        // value={message}
+        rows="1"
+        onChange={handleChange}
+      />
+      <div className={classes.searchIcon}>
+        <img src={ChatIcon} />
       </div>
     </div>
   );

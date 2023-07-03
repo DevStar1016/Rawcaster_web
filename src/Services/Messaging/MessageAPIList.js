@@ -1,6 +1,7 @@
 import {
   ListChannelMessagesCommand,
   SendChannelMessageCommand,
+  UpdateChannelMessageCommand,
 } from "@aws-sdk/client-chime-sdk-messaging";
 import { chimeClient } from "./MessageService";
 
@@ -31,6 +32,12 @@ export async function listChannelMessages(
 
 export async function sendChannelMessage(params) {
   const command = new SendChannelMessageCommand(params);
+  const response = await chimeClient.send(command);
+  return response;
+}
+
+export async function updateChannelMessage(params) {
+  const command = new UpdateChannelMessageCommand(params);
   const response = await chimeClient.send(command);
   return response;
 }
