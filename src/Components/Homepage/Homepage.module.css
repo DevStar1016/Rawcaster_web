@@ -22,11 +22,13 @@
     border-radius: 10px;
     border: none;
     height: 60px;
-    text-align: center;
     width: 225px;
     font-weight: 500;
     font-size: 17px; 
     float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 30px auto 60px;
     padding:15px 20px;
      text-decoration: none;
@@ -87,7 +89,7 @@
   .homeContent h2 { color: #1D1C1C; font-family: 'Gilroy-Bold'; font-size: 27px; }
   .homeContent p { font-size: 17px; line-height: 24px;  color: #616060; font-family: 'DM Sans', sans-serif;}
   .homeContent .textSec img { margin-left: -40px; margin-top: -50px; max-width: 150px; }
-  .homeContent .getStarted { background: #563662 !important; border-radius: 12px; width: 200px; margin-top: 10px;}
+  .homeContent .getStarted { background: #563662 !important; border-radius: 12px; width: 200px; margin-top: 10px;  display: flex;justify-content: center;align-items: center;}
   .homeContent .getStarted:hover { background: #E26386 !important; color: #fff; }
   
   .platform { width: 1620px;max-width: 100%; padding: 50px 20px 0; margin: 0px auto 0px auto; }
@@ -167,8 +169,8 @@
     .homeContent { width: calc(100% - 60px); padding: 30px 0px 0px; }
     .downloadApp .textSec p { max-width: 100%;}
     .leftSec .contentSec {max-width: 100%;} 
-    .homeContent .imgSec, .homeContent .textSec, .platform .textSec, .downloadApp .textSec, .downloadApp .imgSec, .founder p, .founder .msgBox { width: 100%; display: block; float: unset; }
-    .homeContent .textSec { width: 100%;max-width: 100%; }
+    .homeContent .imgSec, .homeContent .textSec, .platform .textSec, .downloadApp .textSec, .downloadApp .imgSec, .founder p, .founder .msgBox { width: 100%; display: block;}
+    .homeContent .textSec { width: 100%;max-width: 100%; padding: 20px 0px; }
     .rightSec,.leftSec {width: 100%;display: none;} 
     .platform{float: left;}
     .leftSec,
@@ -187,6 +189,8 @@
    .welcomeSec {width: unset}
    .getStarted {float: left;margin-bottom: 20px;display: block;}
    .downloadApp .textSec .appImg{float: left;}
+   .platform .textSec{padding: 20px 0px;margin: 0;}
+   .leftSec {float: unset; padding: 0;}
    }
 
 
@@ -210,7 +214,7 @@
     .platform .textSec { margin: 0; }
     /* .platform .btnSec { margin: 10px auto; } */
     .platform h1 { font-size: 30px !important; line-height: 30px; }
-    .leftSec p { padding: 0 15px 0 0; }
+    /* .leftSec p { padding: 0 15px 0 0; } */
     .homeContent .textSec { padding-left: 0; padding-right: 0; }
    
     /* .leftSec,
@@ -231,14 +235,14 @@
     .leftSec h1 {font-size: 32px !important;line-height: 37px;margin-top: 20px;}
     .homeContent { width: 100%; padding: 20px; }
     .homeContent .textSec img {margin-left: -30px;margin-top: -20px;max-width: 110px;}
-    .platform { padding: 0;}
+    /* .platform { padding: 0;} */
     .founder { padding: 30px 20px; }
     .downloadApp .appImg {width: 280px; }
   }
 
 
   @media (max-width:575px) {
-    .homeContent { width:95%; padding: 0px; }
+    .homeContent { width:95%; padding: 0px;float: unset; }
     .userSec {width: 270px;padding: 15px; margin: 15px;}
     .founder .msgBox, .downloadApp {margin: 0 auto;width: 96% !important;padding: 15px;}
     .leftSec h1 {font-size: 22px !important;}
@@ -261,4 +265,9 @@
     .downloadApp .textSec h4 { font-size: 24px;text-align: left; }
     .bgart {padding: 25px 0px;}
     .platform {padding: 20px 10px; }
+    .getStarted {
+      height: 50px;
+      width: 160px;
+      font-size: 13px;
+    }
   }

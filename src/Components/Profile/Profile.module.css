@@ -374,6 +374,7 @@ margin-top: 0px !important;
     line-height: 30px;
   }
 
+
   
 }
 /* @media (max-width:768px) {
@@ -389,6 +390,10 @@ margin-top: 0px !important;
 .claimAccountSec { margin-bottom: 50px;}
 
 } */
+
+@media (max-width:768px) {
+  .claimBtnSec {margin-top: 0px !important;}
+}
 @media (max-width:575px) {
   .profileContainer {
     padding-left: 10px !important;
@@ -408,5 +413,5 @@ margin-top: 0px !important;
 .actionIcon { margin-top: 74px}
 .fullcontainer { padding-top: 0px;}
 .profileSec {width:110px;}
-.profilesSec{min-width: 100px;display: flex;justify-content: end;}
+.profilesSec{min-width: 100px;display: flex;justify-content: end;margin-top: 16px;}
 }
