@@ -77,6 +77,7 @@ const Post = ({
   onSaveCountResult,
 }) => {
   const source = useRef(null);
+  const contentRef = useRef(null);
   const Token = useAuthToken();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -103,11 +104,26 @@ const Post = ({
 
   const [ref] = useInView({
     onEnter: () => {
-      if (handleView && ele.viewed === 0) {
+      if (handleView && ele?.viewed === 0) {
         handleView(index);
       }
     },
   });
+
+  useEffect(() => {
+    if (contentRef) {
+      console.log(
+        contentRef?.current?.offsetHeight > 235,
+        "loggedd from useEffect",
+        ele?.content
+      );
+      if (contentRef?.current?.offsetHeight > 235) {
+        setiscollapse(true);
+      } else {
+        setiscollapse(false);
+      }
+    }
+  }, [contentRef]);
 
   const getNuggetDetail = () => {
     let nuggetDetailData = {
@@ -502,6 +518,9 @@ const Post = ({
       ele.media_list.length !== 0 || ele.metadata ? true : false;
     if (isvalidCollapse) {
       return false;
+    } else if (contentRef?.current?.offsetHeight > 235) {
+      console.log("loggedd");
+      return false;
     } else if (!isvalidContent) {
       return true;
     } else {
@@ -733,7 +752,13 @@ const Post = ({
             <div className={`${classes.ReadoutSec} py-2`}></div>
           )}
           <div className={classes.contentSec} ref={ref}>
-            <div className={classes.feedsSec}>
+            <div
+              ref={contentRef}
+              onClick={() => {
+                console.log(contentRef?.current?.offsetHeight > 235, "loggedd");
+              }}
+              className={classes.feedsSec}
+            >
               {ele && isValidData(ele?.content) && (
                 <p
                   style={{

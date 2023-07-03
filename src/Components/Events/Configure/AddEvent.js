@@ -402,8 +402,13 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           ];
           validateForm().then((res) => {
             let validatedKeys = Object.keys(res);
+            console.log(
+              compareArrays(validatedKeys, requiredFields),
+              "requiredFields"
+            );
 
             if (compareArrays(validatedKeys, requiredFields)) {
+              console.log("requiredFields true");
               handleSubmit();
             } else {
               setisNextPage(true);
@@ -562,7 +567,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 <TimeValueComponent
                   value={values.event_start_time}
                   onResult={(res) => {
-                    setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
+                    console.log(res, "dateString");
+
+                    // setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                     if (
                       moment().format("DD:MM:YYYY") ==
                       moment(values.event_start_date, "YYYY-MM-DD").format(

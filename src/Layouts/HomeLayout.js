@@ -16,7 +16,7 @@ import btmuser from "../Assets/Images/svg/btmuser.svg";
 import btmhome from "../Assets/Images/svg/btmhome.svg";
 import searchIcon from "../Assets/Icons/svg/topsearch.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutService } from "../Services/ApiService";
 import {
   DecryptionString,
@@ -53,6 +53,9 @@ const HomeLayout = () => {
   const params = useParams();
   const inputRef = useRef();
   const meetingManager = useMeetingManager();
+  const unReadCount = useSelector(
+    (state) => state.dashboard.notificationUnreadCount
+  );
   const [postModalShow, setpostModalShow] = useState(false);
   const [PostContent, setPostContent] = useState(null);
   const { pathname } = useLocation();
@@ -104,6 +107,7 @@ const HomeLayout = () => {
   };
 
   useEffect(() => {
+    console.log(unReadCount, "unReadCount");
     if (params) {
       setsearchData(DecryptionString(params.key));
     }
@@ -229,6 +233,7 @@ const HomeLayout = () => {
                         onReadCountChange={(count) => {
                           setTotalUnreadCount(count);
                         }}
+                        unReadCount={unReadCount}
                       />
                     </div>
                   </div>
