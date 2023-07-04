@@ -627,8 +627,8 @@ const Post = ({
                 src={ele?.user_image}
                 imgClassName={classes.profileimg}
                 badgeClassName={classes.badgeImg}
-                Badgetype={loginUserData?.user_status_id}
-                BadgeTitle={loginUserData?.user_status}
+                Badgetype={ele?.user_status_id}
+                BadgeTitle={ele?.user_status}
               />
               {/* <img src={ele?.user_image} alt="original_user_image" />
 

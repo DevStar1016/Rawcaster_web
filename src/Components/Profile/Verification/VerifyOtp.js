@@ -91,9 +91,11 @@ const VerifyOtp = () => {
   const handleContinue = (token = loginToken) => {
     dispatch(fetchuserInfobyToken(token)).then(({ payload }) => {
       if (state?.navigatePath) {
-        navigate(state?.navigatePath);
+        // navigate(state?.navigatePath);
+        window.location.assign(state?.navigatePath);
       } else {
-        navigate("/dashboard");
+        window.location.assign("/dashboard");
+        // navigate("/dashboard");
       }
       setverifiedModalShow(false);
     });

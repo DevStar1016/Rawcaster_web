@@ -4,9 +4,9 @@ import { isValidData } from "../Shared/Utility";
 
 const PollDateinputBox = ({ onSelectDate }) => {
   const [pollTime, setpollTime] = useState({
-    day: "",
-    hours: "",
-    minutes: "",
+    day: 1,
+    hours: 0,
+    minutes: 0,
   });
   const getValues = (length, increase) => {
     let timeval = [...Array(length)];

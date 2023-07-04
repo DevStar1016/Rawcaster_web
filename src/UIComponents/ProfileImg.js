@@ -24,7 +24,7 @@ const ProfileImg = ({
       case 2:
         return { img: Gold, title: "Gold Member" };
       case 3:
-        return { img: Diamond, title: "Premium Member" };
+        return { img: Gold, title: "Gold Member" };
       case 4:
         return { img: Diamond, title: "Diamond Elite Member" };
       case 5:

@@ -234,7 +234,7 @@ const Profile = () => {
           return 1;
         } else if (account_verify_type === 1) {
           return 2;
-        } else if (account_verify_type === 0 && user_status_id === 4) {
+        } else if (account_verify_type === 0) {
           return 3;
         }
         return 4;
