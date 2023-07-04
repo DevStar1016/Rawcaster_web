@@ -1,12 +1,14 @@
 import { Button, Input } from "antd";
 import { useFormik } from "formik";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { PostNuggetContext } from "../../Shared/Context";
 import PollDateinputBox from "../../Sharedcomponents/PollDateinputBox";
 import classes from "../Modal.module.css";
 import * as Yup from "yup";
 import { isArray } from "lodash";
+import LoginModal from "../Verification/LoginModal";
+import { useAuthData } from "../../Shared/Reduxfetcher";
 
 const schema = Yup.object().shape({
   content: Yup.string()
@@ -37,10 +39,13 @@ const schema = Yup.object().shape({
 
 const Postpoll = ({ setisPoll }) => {
   const context = useContext(PostNuggetContext);
+  const loginUserData = useAuthData();
   const [PollData, setPollData] = useState([
     { choiceData: "" },
     { choiceData: "" },
   ]);
+  const [LimitExceeds, setLimitExceeds] = useState(false);
+
   const { values, setFieldValue, handleSubmit, handleChange, errors, touched } =
     useFormik({
       initialValues: {
@@ -65,6 +70,14 @@ const Postpoll = ({ setisPoll }) => {
     }
   };
 
+  useEffect(() => {
+    if (values?.content?.length > 149) {
+      setLimitExceeds(true);
+    }
+  }, [values.content]);
+
+  const handleLimitExceedsClose = () => setLimitExceeds(false);
+
   return (
     <>
       <div className={classes.postTextcontent}>
@@ -76,6 +89,15 @@ const Postpoll = ({ setisPoll }) => {
           maxLength={150}
           onChange={handleChange("content")}
         />
+        {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+          <LoginModal
+            open={LimitExceeds}
+            close={handleLimitExceedsClose}
+            AIclose={true}
+            AIopen="Upgrade"
+            AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
+          />
+        )}
         {touched.content && <p className="ErrTxt">{errors?.content}</p>}
         <div className={classes.pollContainer}>
           <div className={classes.addSec}>

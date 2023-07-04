@@ -406,7 +406,7 @@ const HomeLayout = () => {
           <Outlet />
         </Content>
 
-        {loginUserData && loginUserData.user_status_id > 1 && (
+        {loginUserData && loginUserData.user_status_id > 0 && (
           <div className={classes.chatbotsec}>
             <ArtificialIntelligence />
           </div>

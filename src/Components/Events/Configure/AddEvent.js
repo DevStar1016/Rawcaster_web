@@ -630,6 +630,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               loginUserData?.user_status_id === 1 &&
                               ele.isprimary
                             }
+                            onChange={(e) => {
+                              setFieldValue(ele.type, e.target.checked);
+                            }}
                           >
                             {ele.title}
                           </Checkbox>
@@ -725,6 +728,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 <div>Upload customize (audio / video / image)</div>
 
                 <Button
+                  className={classes.uploadBtn}
                   onClick={() => {
                     document.getElementById("UploadMelody").click();
                   }}

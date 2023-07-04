@@ -36,26 +36,21 @@ const Notifications = () => {
   const handleNotification = (type, index, status) => {
     if (index === 0) {
       if (loginUserData?.is_email_id_verified === 0) {
-        if (loginUserData?.email_id && loginUserData?.email_id !== "") {
-          setredirectModal({
-            show: true,
-            msg: "Email id is not validated,Do you want to validate now?",
-            type: "email",
-          });
-
-          return;
-        }
+        setredirectModal({
+          show: true,
+          msg: "Email id is not validated,Do you want to validate now?",
+          type: "email",
+        });
+        return;
       }
     } else if (index === 1) {
       if (loginUserData?.is_mobile_no_verified === 0) {
-        if (loginUserData?.mobile && loginUserData?.mobile !== "") {
-          setredirectModal({
-            show: true,
-            msg: "Mobile Number is not validated,Do you want to validate now?",
-            type: "sms",
-          });
-          return;
-        }
+        setredirectModal({
+          show: true,
+          msg: "Mobile Number is not validated,Do you want to validate now?",
+          type: "sms",
+        });
+        return;
       }
     }
     if (status) {
@@ -65,27 +60,27 @@ const Notifications = () => {
     }
   };
 
-  const getDisabled = (index, type) => {
-    if (index === 0) {
-      if (loginUserData?.is_email_id_verified === 0) {
-        if (loginUserData?.email_id && loginUserData?.email_id === "") {
-          return;
-        } else {
-          return true;
-        }
-      }
-    } else if (index === 1) {
-      if (loginUserData?.is_mobile_no_verified === 0) {
-        if (loginUserData?.mobile && loginUserData?.mobile !== "") {
-          return;
-        } else {
-          return true;
-        }
-      }
-    } else {
-      return;
-    }
-  };
+  // const getDisabled = (index, type) => {
+  //   if (index === 0) {
+  //     if (loginUserData?.is_email_id_verified === 0) {
+  //       if (loginUserData?.email_id && loginUserData?.email_id === "") {
+  //         return;
+  //       } else {
+  //         return true;
+  //       }
+  //     }
+  //   } else if (index === 1) {
+  //     if (loginUserData?.is_mobile_no_verified === 0) {
+  //       if (loginUserData?.mobile && loginUserData?.mobile !== "") {
+  //         return;
+  //       } else {
+  //         return true;
+  //       }
+  //     }
+  //   } else {
+  //     return;
+  //   }
+  // };
 
   const handleSendOTP = (value) => {
     let finalData = {
@@ -97,7 +92,9 @@ const Notifications = () => {
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-          navigate("/verifyotp", { state: { type: value, ...res.data } });
+          navigate("/verifyotp", {
+            state: { navigatePath: "/setting", type: value, ...res.data },
+          });
         } else {
           toast.error(res.data.message);
         }
@@ -121,7 +118,7 @@ const Notifications = () => {
                       <Switch
                         size="small"
                         checked={elem.value === formikvalues[ele.type]}
-                        disabled={getDisabled(i, ele.type)}
+                        // disabled={getDisabled(i, ele.type)}
                         loading={updateValue.includes(ele.type)}
                         onChange={(e) => {
                           handleNotification(ele.type, i, e);
@@ -142,7 +139,15 @@ const Notifications = () => {
         closeBtnName="Later"
         Btnname={"Verify"}
         onSuccess={() => {
-          handleSendOTP(redirectModal.type);
+          if (!loginUserData?.email_id || !loginUserData?.mobile) {
+            navigate(
+              { pathname: "/profile" },
+              { state: { data: "redirectToOtp" } }
+            );
+          } else {
+            handleSendOTP(redirectModal.type);
+          }
+
           setredirectModal({ show: false, msg: "", type: "" });
         }}
         onClose={() => {

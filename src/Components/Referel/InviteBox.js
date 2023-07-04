@@ -132,8 +132,8 @@ const InviteBox = () => {
           }}
         >
           <div className={classes.iconSec}>
-            <img src={ReferalIcon} alt={"Dashboard"} />
-            <p>Dashboard</p>
+            <img src={ReferalIcon} alt={"Referrals Dashboard"} />
+            <p>Referrals Dashboard</p>
           </div>
           <span class="material-symbols-outlined">chevron_right</span>
         </div>

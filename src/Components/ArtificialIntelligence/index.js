@@ -7,14 +7,21 @@ import { Button, Drawer, Popover } from "antd";
 import { ChatBotContext } from "../../Shared/Context";
 import { detectMob } from "../../Shared/Utility";
 import { useLocation } from "react-router";
+import { useAuthData } from "../../Shared/Reduxfetcher";
+import LoginModal from "../../Modal/Verification/LoginModal";
+import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
+import { useDispatch } from "react-redux";
 
 const ArtificialIntelligence = () => {
   const { pathname } = useLocation();
+  const loginUserData = useAuthData();
+  const dispatch = useDispatch();
   const [ChatMessage, setChatMessage] = useState("");
   const [isChatOpen, setisChatOpen] = useState(false);
   const [Messages, setMessages] = useState([]);
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
+  const [getPremiumModal, setgetPremiumModal] = useState(false);
 
   const generateRandomId = () => {
     const randomId = Math.random().toString(36).substr(2, 9);
@@ -39,6 +46,16 @@ const ArtificialIntelligence = () => {
   useEffect(() => {
     setMessages([]);
   }, [pathname]);
+
+  const ChatAccessDenied = () => {
+    return (
+      <div style={{ padding: 10, paddingBottom: 0 }}>
+        <p>Only Premium Member have this Access</p>
+      </div>
+    );
+  };
+
+  const handlePremiumModalClose = () => setgetPremiumModal(false);
 
   return (
     <ChatBotContext.Provider value={values}>
@@ -97,17 +114,30 @@ const ArtificialIntelligence = () => {
           }
         }}
         content={ChatContent}
-        trigger="click"
+        trigger=""
       >
         <Button
           className={classes.ChatBotBtn}
           onClick={() => {
-            setisChatOpen(!isChatOpen);
+            if (loginUserData && loginUserData?.user_status_id > 1) {
+              setisChatOpen(!isChatOpen);
+            } else {
+              setgetPremiumModal((pre) => !pre);
+            }
           }}
         >
           <img height="35px" src={AIIcon} />
         </Button>
       </Popover>
+      {getPremiumModal && (
+        <LoginModal
+          open={getPremiumModal}
+          close={handlePremiumModalClose}
+          AIclose={true}
+          AIopen="Get Premium"
+          AImessgae="To access this feature become a premium member!"
+        />
+      )}
     </ChatBotContext.Provider>
   );
 };
