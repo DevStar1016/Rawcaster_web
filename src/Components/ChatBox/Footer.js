@@ -63,7 +63,6 @@ const Footer = () => {
             ...tempData[findIndex],
             message: val,
             isEdited: true,
-            created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
           };
           return tempData;
         });
@@ -130,6 +129,12 @@ const Footer = () => {
         }}
         cameraenabled
         fileuploadEnabled
+        onCameraResult={(val) => {
+          setPreviewData({
+            File: val,
+            display_type: val.type,
+          });
+        }}
         onEditClose={() => {
           setEditData(null);
         }}

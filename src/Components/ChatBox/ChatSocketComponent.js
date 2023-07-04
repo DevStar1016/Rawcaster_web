@@ -61,11 +61,13 @@ const ChatSocketComponent = () => {
 
               user_name: "me",
               user: ele.Sender.Arn,
-              created_at: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
+              created_at: moment(ele.CreatedTimestamp).format(
+                "YYYY-MM-DD HH:mm:ss"
+              ),
             }),
           };
         });
-        setMessages(finalResult);
+        setMessages(finalResult.reverse());
       })
       .catch((err) => {
         console.log(err);
@@ -78,11 +80,25 @@ const ChatSocketComponent = () => {
     switch (messageType) {
       case "CREATE_CHANNEL_MESSAGE":
         if (record.Sender.Arn !== userData.chime_user_id) {
+          const getvalidFileData = () => {
+            if (record.Metadata) {
+              const finalData = JSON.parse(record.Metadata);
+              return {
+                type: finalData.type,
+                file_path: finalData.file,
+                file: finalData?.web_file,
+              };
+            } else {
+              return {
+                type: "text",
+              };
+            }
+          };
           setMessages((pre) => [
             ...pre,
             {
               ...convertMessageFormat({
-                type: "text",
+                ...getvalidFileData(),
                 message: record.Content,
                 user_name: "Other",
                 user: record.Sender.Arn,

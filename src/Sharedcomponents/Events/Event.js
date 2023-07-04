@@ -26,6 +26,7 @@ import FaceBookIcon from "../../Assets/Icons/svg/facebook.svg";
 import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
 import TwitterIcon from "../../Assets/Icons/svg/twitterIcon.svg";
 import GmailIcon from "../../Assets/Icons/svg/gmail_icon.svg";
+import EventHandler from "./EventHandler";
 
 const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const { userSettings, loginUserData } = useAuth();
@@ -250,12 +251,11 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
           )}
         </div>
         {isNotExpired() && (
-          <Link className={classes.link}>
-            {isCreatedUser()
-              ? `Start ${ele.type === 2 ? "Talkshow" : "Event"}`
-              : `Join ${ele.type === 2 ? "Talkshow" : "Event"}`}
-            <span class="material-symbols-outlined">arrow_right_alt</span>
-          </Link>
+          <EventHandler
+            isHost={isCreatedUser()}
+            title={ele.type === 2 ? "Talkshow" : "Event"}
+            meetingId={ele.reference_id}
+          />
         )}
       </div>
     </div>

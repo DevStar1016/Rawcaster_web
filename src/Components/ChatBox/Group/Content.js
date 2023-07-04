@@ -66,7 +66,7 @@ const Content = () => {
         lastSection.items.push(message);
       }
     });
-    return sectionedMessages;
+    return sectionedMessages.reverse();
   };
 
   return (

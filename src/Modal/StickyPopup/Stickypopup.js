@@ -61,6 +61,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
         moment.utc().format("x") +
         "" +
         Math.floor(Math.random() * 10000 + 1);
+      console.log(file);
       let chatattachmentData = {
         token: token,
         refid: uniqueId,

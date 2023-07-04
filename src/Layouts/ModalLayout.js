@@ -30,8 +30,7 @@ const ModalLayout = () => {
   const dispatch = useDispatch();
   const [player, setplayer] = useState(null);
   const meetingManager = useMeetingManager();
-  const { roster, ...others } = useRosterState();
-  console.log(roster, others, "esponse");
+  const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const [isChatOpen, setisChatOpen] = useState({
     show: false,

@@ -9,7 +9,6 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
   const [FormattedTime, setFormattedTime] = useState("00:00");
 
   const handleTimeUpdate = () => {
-    console.log(audioRef.current.currentTime);
     setCurrentTime(audioRef.current.currentTime);
     setFormattedTime(
       moment.utc(audioRef.current.currentTime * 1000).format("mm:ss")
@@ -45,16 +44,10 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
     if (audioRef.current) {
       audioRef.current.load();
       audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
-      audioRef.current.addEventListener("loadeddata", () => {
-        const totalDuration = audioRef.duration;
-        getDuration().then((res) => {
-          console.log(res);
-        });
-        console.log("loadeddata Total duration:", totalDuration);
-      });
+
       audioRef.current.addEventListener("loadedmetadata", () => {
-        const totalDuration = audioRef.duration;
-        console.log("Total duration:", totalDuration);
+        const totalDuration = audioRef.current.duration;
+        console.log("Total duration:", totalDuration, audioRef);
       });
       audioRef.current.addEventListener("durationchange", handleTimeUpdate);
     }
@@ -64,11 +57,14 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
     <div className={classes.audio_slider_container}>
       <audio
         ref={audioRef}
+        src={url}
         onTimeUpdate={handleTimeUpdate}
+        onLoadedData={(e) => {
+          console.log(e.target.duration);
+        }}
         onLoadedMetadata={handleLoadedMetadata}
-      >
-        <source src={url} type="audio/mpeg" />
-      </audio>
+      />
+
       <div className="w-100 d-flex flex-row align-items-center justify-content-center">
         <div className={classes.pauseplaySec}>
           {!audioRef.current?.paused ? (

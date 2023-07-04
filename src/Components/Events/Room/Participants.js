@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Room.module.css";
 import { Layout } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { useEventLayout } from "../../../Layouts/EventLayout";
 import { useMainContext } from "../../../Shared/Context";
+import { ChimesocketListen } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 const { Header, Footer, Content } = Layout;
 
@@ -18,7 +20,12 @@ const Participants = () => {
     lineHeight: "64px",
     backgroundColor: "#7dbcea",
   };
-  console.log(attendees);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (message) => {
+      console.log(message);
+    });
+  }, []);
 
   return (
     <Layout className={classes.popupContainer}>

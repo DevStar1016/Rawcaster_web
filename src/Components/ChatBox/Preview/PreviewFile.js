@@ -10,6 +10,7 @@ import { sendChannelMessage } from "../../../Services/Messaging/MessageAPIList";
 
 const PreviewFile = () => {
   const [isEdit, setisEdit] = useState(false);
+  const [isFetchingUrl, setisFetchingUrl] = useState(false);
   const userData = useAuthData();
   const {
     GroupDetails,
@@ -24,36 +25,7 @@ const PreviewFile = () => {
     const validcontent = previewFile.type.split("/")[1];
 
     switch (true) {
-      case PreviewData.display_type.includes("doc"):
-        return (
-          <>
-            <div className={classes.actionSec}>
-              <Tooltip title="Delete" color={"red"}>
-                <div className={classes.deleteIcon}>
-                  <span
-                    class="material-symbols-rounded"
-                    onClick={() => {
-                      setPreviewData();
-                    }}
-                  >
-                    delete
-                  </span>
-                </div>
-              </Tooltip>
-            </div>
-            <div className={classes.previewImg}>
-              <div className={classes.fileSec}>
-                <i className={classes.file_icon} />
-
-                <h6>{previewFile.name}</h6>
-                {validcontent.toUpperCase()}
-                <br />
-                {formatBytes(previewFile.size)}
-              </div>
-            </div>
-          </>
-        );
-      case previewFile.type.includes("image"):
+      case PreviewData.display_type.includes("image"):
         return (
           <>
             <div className={classes.actionSec}>
@@ -87,7 +59,7 @@ const PreviewFile = () => {
             </div>
           </>
         );
-      case previewFile.type.includes("video"):
+      case PreviewData.display_type.includes("video"):
         return (
           <>
             <div className={classes.actionSec}>
@@ -108,6 +80,35 @@ const PreviewFile = () => {
               <video controls>
                 <source src={URL.createObjectURL(previewFile)} />
               </video>
+            </div>
+          </>
+        );
+      case PreviewData.display_type.includes("doc"):
+        return (
+          <>
+            <div className={classes.actionSec}>
+              <Tooltip title="Delete" color={"red"}>
+                <div className={classes.deleteIcon}>
+                  <span
+                    class="material-symbols-rounded"
+                    onClick={() => {
+                      setPreviewData();
+                    }}
+                  >
+                    delete
+                  </span>
+                </div>
+              </Tooltip>
+            </div>
+            <div className={classes.previewImg}>
+              <div className={classes.fileSec}>
+                <i className={classes.file_icon} />
+
+                <h6>{previewFile.name}</h6>
+                {validcontent.toUpperCase()}
+                <br />
+                {formatBytes(previewFile.size)}
+              </div>
             </div>
           </>
         );
@@ -168,14 +169,15 @@ const PreviewFile = () => {
       </div>
       <ChatInput
         isSendOnly
+        isSendLoading={isFetchingUrl}
         onSendResponse={(val) => {
+          setisFetchingUrl(true);
           convertUrlToFile(PreviewData.File)
             .then((res) => {
-              const validType = res.file.type.split("/")[0];
               const metaData = {
                 Metadata: JSON.stringify({
                   file: res.file_path,
-                  type: "doc",
+                  type: PreviewData.display_type,
                   web_file: {
                     name: res.file.name,
                     size: res.file.size,
@@ -189,7 +191,7 @@ const PreviewFile = () => {
                 ...pre,
                 {
                   ...convertMessageFormat({
-                    type: "doc",
+                    type: PreviewData.display_type,
                     message: val,
                     file: res.file,
                     file_path: res.file_path,
@@ -201,6 +203,9 @@ const PreviewFile = () => {
             })
             .catch((err) => {
               console.log(err);
+            })
+            .finally(() => {
+              setisFetchingUrl(false);
             });
         }}
       />

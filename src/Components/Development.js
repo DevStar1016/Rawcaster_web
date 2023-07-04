@@ -35,6 +35,9 @@ const Development = () => {
     ChimesocketListen.on("connect", (message) => {
       console.log("Connected to server");
     });
+    ChimesocketListen.on("joinSocket", (message) => {
+      console.log(message, "from createMeetingRoom");
+    });
     ChimesocketListen.on("createMeetingRoom", (message) => {
       console.log(message, "from createMeetingRoom");
     });

@@ -44,7 +44,7 @@ const SectionList = ({ HeaderComponent, RenderComponent, Data }) => {
               paddingLeft: 0,
             }}
           >
-            {section.items?.map((item, itemIndex) => (
+            {section.items?.reverse().map((item, itemIndex) => (
               <RenderComponent ele={item} index={itemIndex} />
             ))}
           </ul>

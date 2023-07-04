@@ -348,6 +348,40 @@ margin-bottom: 5px !important;
 .editContainer i {
   cursor: pointer;
 }
+.floating_menu_options {
+  position: absolute;
+  /* top: 100%; */
+  bottom: 8%;
+  left: 82%;
+  transform: translateX(-50%);
+  background-color:transparent;
+  border-radius: 4px;
+  padding: 8px;
+  z-index: 1;
+}
+.floating_menu_option {
+  background: none;
+  border: none;
+  padding: 5px;
+  text-align: left;
+  cursor: pointer;
+  background-color: #F2718D;
+  /* background-color: rgb(241, 240, 240); */
+  margin: 5px 0;
+  border-radius: 50%;
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.floating_menu_option  span {
+  color: #F1F2F5;
+  /* color: #F2718D; */
+  font-weight: 800;
+  padding-bottom: 0px !important;
+}
 .editContainer span {
   max-width: 300px;
   overflow: hidden;

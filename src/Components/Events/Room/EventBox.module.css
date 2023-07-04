@@ -1,6 +1,7 @@
 .mainContainer {
     display: flex;
     flex-direction: row;
+    width: 100%;
   }
   .video_grid  {
     display: block;
@@ -8,7 +9,6 @@
     width: 100%;
     overflow-y: scroll;
     background-color: #392342;
-    margin-top: 45px;
   
   }
 

@@ -26,7 +26,7 @@ import {
 } from "../../Shared/Utility";
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
-import { Dropdown, Image } from "antd";
+import { Dropdown, Image, Tooltip, message } from "antd";
 import { useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
@@ -35,6 +35,7 @@ import { uploadChatAttachmentService } from "../../Services/ApiService";
 export const ChatInput = ({
   value = "",
   onInput,
+  isSendLoading = false,
   HandleSendMessage,
   onAudioResult,
   disabled,
@@ -43,6 +44,7 @@ export const ChatInput = ({
   isSendOnly = false,
   onSendResponse,
   onFileResult,
+  onCameraResult,
   isEdit = false,
   onEditClose,
   onEdit,
@@ -51,10 +53,13 @@ export const ChatInput = ({
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const [messageApi, contextHolder] = message.useMessage();
+  const [isFloatingOpen, setisFloatingOpen] = useState(false);
   const [isFetchingUrl, setisFetchingUrl] = useState(false);
   const textareaRef = useRef(null);
   const [isEmoji, setisEmoji] = useState(false);
   const fileRef = useRef(null);
+  const ImagefileRef = useRef();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
@@ -90,7 +95,7 @@ export const ChatInput = ({
 
   const onRecordStop = (url, blob) => {
     if (isSend.current) {
-      const file = new File([blob], "blobtofile.png", {
+      const file = new File([blob], "blobtofile.mp3", {
         type: blob.type,
       });
       fetchAudioUrl(file);
@@ -301,12 +306,81 @@ export const ChatInput = ({
                 </>
               )}
             {!isSendOnly && cameraenabled && !isEdit && ChatMessage === "" && (
-              <i
-                className={classes.camera_icon}
-                onClick={() => {
-                  handleCameraPermission("Camera");
-                }}
-              />
+              <>
+                <i
+                  className={classes.camera_icon}
+                  onClick={() => {
+                    setisFloatingOpen(!isFloatingOpen);
+                    // handleCameraPermission("Camera");
+                  }}
+                />
+                {isFloatingOpen && (
+                  <div className={classes.floating_menu_options}>
+                    <Tooltip placement="left" title={"Capture Image"}>
+                      <button
+                        className={classes.floating_menu_option}
+                        onClick={() => {
+                          handleCameraPermission("Camera");
+                        }}
+                      >
+                        <span class="material-symbols-outlined">camera</span>
+                      </button>
+                    </Tooltip>
+
+                    <Tooltip placement="left" title={"Record Video"}>
+                      <button
+                        className={classes.floating_menu_option}
+                        onClick={() => {
+                          handleCameraPermission("Video");
+                        }}
+                      >
+                        <span class="material-symbols-outlined">videocam</span>
+                      </button>
+                    </Tooltip>
+                    <Tooltip placement="left" title={"Upload Image or Video"}>
+                      <button
+                        className={classes.floating_menu_option}
+                        onClick={() => {
+                          ImagefileRef.current.click();
+                        }}
+                      >
+                        <span class="material-symbols-outlined">
+                          attach_file
+                        </span>
+                      </button>
+                      <input
+                        ref={ImagefileRef}
+                        type="file"
+                        name="file"
+                        accept="image/*,video/*"
+                        onClick={(event) => {
+                          event.target.value = null;
+                        }}
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files.length !== 0) {
+                            const filterValidFiles = [
+                              ...Array.from(e.target.files),
+                            ].filter((fileInfo) =>
+                              ["video", "image"].includes(
+                                fileInfo.type.split("/")[0]
+                              )
+                            );
+                            if (filterValidFiles.length !== 0) {
+                              onCameraResult(filterValidFiles[0]);
+                            } else {
+                              messageApi.open({
+                                type: "warning",
+                                content: "Please Select Valid File",
+                              });
+                            }
+                          }
+                        }}
+                        style={{ display: "none" }}
+                      />
+                    </Tooltip>
+                  </div>
+                )}
+              </>
             )}
             {isEdit ? (
               <div
@@ -335,29 +409,43 @@ export const ChatInput = ({
                 />
               </div>
             ) : (
-              <div
-                className={classes.searchIcon}
-                onClick={() => {
-                  setisEmoji(false);
-                  if (isSendOnly) {
-                    if (onSendResponse) {
-                      onSendResponse(ChatMessage);
-                    }
-                    setChatMessage("");
-                  } else if (!disabled) {
-                    if (ChatMessage && ChatMessage.trim() !== "") {
-                      HandleSendMessage(ChatMessage);
-                      setChatMessage("");
-                    }
-                  }
-                }}
-              >
-                <span
-                  className={`material-symbols-outlined ${classes.SendIcon}`}
-                >
-                  send
-                </span>
-              </div>
+              <>
+                {isFetchingUrl || isSendLoading ? (
+                  <div className={classes.searchIcon}>
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      className={classes.loader}
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  </div>
+                ) : (
+                  <div
+                    className={classes.searchIcon}
+                    onClick={() => {
+                      setisEmoji(false);
+                      if (isSendOnly) {
+                        if (onSendResponse) {
+                          onSendResponse(ChatMessage);
+                        }
+                        setChatMessage("");
+                      } else if (!disabled) {
+                        if (ChatMessage && ChatMessage.trim() !== "") {
+                          HandleSendMessage(ChatMessage);
+                          setChatMessage("");
+                        }
+                      }
+                    }}
+                  >
+                    <span
+                      className={`material-symbols-outlined ${classes.SendIcon}`}
+                    >
+                      send
+                    </span>
+                  </div>
+                )}
+              </>
             )}
           </div>
           {/* {!isSendOnly && !isEdit && (
@@ -421,7 +509,7 @@ export const ChatInput = ({
             >
               delete
             </span>
-            {isFetchingUrl ? (
+            {isFetchingUrl || isSendLoading ? (
               <div className={classes.searchIcon}>
                 <Spinner
                   animation="border"
@@ -435,12 +523,14 @@ export const ChatInput = ({
               <InputGroup.Text
                 className={classes.searchIcon}
                 onClick={() => {
-                  if (!isFetchingUrl) {
+                  if (!isFetchingUrl && !isSendLoading) {
                     setisFetchingUrl(true);
                     if (mediaBlobUrl) {
-                      BlobUrlToFile(mediaBlobUrl).then((res) => {
-                        fetchAudioUrl(res);
-                      });
+                      BlobUrlToFile(mediaBlobUrl, "blobtofile.mp3").then(
+                        (res) => {
+                          fetchAudioUrl(res);
+                        }
+                      );
                     } else {
                       isSend.current = true;
                       stopRecording();
@@ -495,9 +585,8 @@ export const ChatInput = ({
           canvasRef={canvasRef}
           type={isCamera.type}
           onSuccess={(value) => {
-            console.log(value);
-            if (onFileResult) {
-              onFileResult(value);
+            if (onCameraResult) {
+              onCameraResult(value);
             }
           }}
           isPreviewEnabled={false}
@@ -574,8 +663,9 @@ export const MessageContent = (props) => {
   };
 
   const GetValidComponent = () => {
-    switch (type) {
-      case "image":
+    console.log(type);
+    switch (true) {
+      case type.includes("image"):
         return (
           <Image
             className={`${classes.chatimg}  ${message ? "mb-0" : ""} ${
@@ -587,7 +677,7 @@ export const MessageContent = (props) => {
             src={file_path}
           />
         );
-      case "video":
+      case type.includes("video"):
         return (
           <video
             controls
@@ -598,7 +688,7 @@ export const MessageContent = (props) => {
             <source src={file_path} />
           </video>
         );
-      case "audio":
+      case type.includes("audio"):
         return (
           <div className={classes.audioSec}>
             <div className={classes.audioplayer}>

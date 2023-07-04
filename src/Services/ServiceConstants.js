@@ -18,4 +18,13 @@ export const CHIME_SOCKET_EVENTS = {
   JOIN_SOCKET: "joinSocket",
   CREATE_MEETING_ROOM: "createMeetingRoom",
   JOIN_MEETING_ROOM: "joinMeetingRoom",
+  SEND_MESSAGE_TO_MEETING_ROOM: "sendMessageToMeetingRoom",
+  MEETING_ROOM_MSG: "meetingRoomMsg",
+  SEND_MESSAGE_TO_SINGLE_USER: "sendMessageToSingleUser",
+  SINGLE_USER_MSG: "singleUserMsg",
+  ALLOW_TO_JOIN_MEETING: "allowToJoinMeeting",
+  REJECT_TO_JOIN_MEETING: "rejectToJoinMeeting",
+  JOIN_REQUEST: "joinRequest",
+  JOIN_REQUEST_FROM_USER: "joinRequestFromUser",
+  JOIN_REQUEST_FROM_RESPONSE: "joinRequestResponse",
 };
