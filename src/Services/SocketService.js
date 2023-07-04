@@ -1,4 +1,4 @@
-import { io } from "socket.io-client";
+import { Manager, io } from "socket.io-client";
 import { ChimesocketURL, socketURL } from "./ServiceConstants";
 
 const socket = io(socketURL, {
@@ -9,11 +9,18 @@ const socket = io(socketURL, {
 });
 
 const Chimesocket = io(ChimesocketURL, {
-  transports: ["websocket"],
-  secure: false,
   reconnection: true,
+  secure: false,
+  transports: ["websocket"],
   rejectUnauthorized: false,
 });
+
+// const Chimesocket = io(ChimesocketURL, {
+//   transports: ["websocket"],
+//   secure: false,
+//   reconnection: true,
+//   rejectUnauthorized: false,
+// });
 
 const ConnectSocket = (props) => {
   if (props && props.user_id !== "") {

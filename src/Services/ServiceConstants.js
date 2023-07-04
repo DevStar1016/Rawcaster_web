@@ -5,7 +5,7 @@ export const BASE_URL = "http://192.168.1.108:8003/rawcaster";
 export const CHIME_BASE_URL = "https://devchimeapi.rawcaster.com/";
 // export const BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
 export const socketURL = "wss://dev.rawcaster.com:8118";
-export const ChimesocketURL = " http://34.239.41.21:5000";
+export const ChimesocketURL = "34.239.41.21:5000";
 // Socket Values
 
 export const SOCKET_EVENTS = {

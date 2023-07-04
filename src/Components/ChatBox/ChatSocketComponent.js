@@ -32,17 +32,39 @@ const ChatSocketComponent = () => {
   const listAllMessages = () => {
     listChannelMessages(GroupDetails?.group_arn, userData.chime_user_id)
       .then((res) => {
-        const finalResult = res.map((ele) => ({
-          ...convertMessageFormat({
-            type: "text",
-            message: ele.Content,
-            user_name: "me",
-            user: ele.Sender.Arn,
-            created_at: moment(ele.CreatedTimestamp).format(
-              "YYYY-MM-DD HH:mm:ss"
-            ),
-          }),
-        }));
+        const finalResult = res.map((ele) => {
+          const timestamp = ele.LastEditedTimestamp
+            ? ele.LastEditedTimestamp
+            : ele.CreatedTimestamp;
+
+          const getvalidFileData = () => {
+            if (ele.Metadata) {
+              const finalData = JSON.parse(ele.Metadata);
+              return {
+                type: finalData.type,
+                file_path: finalData.file,
+                file: finalData?.web_file,
+              };
+            } else {
+              return {
+                type: "text",
+              };
+            }
+          };
+          return {
+            ...convertMessageFormat({
+              ...getvalidFileData(),
+              isEdited: ele.LastEditedTimestamp !== undefined,
+              message_id: ele.MessageId,
+
+              message: ele.Content,
+
+              user_name: "me",
+              user: ele.Sender.Arn,
+              created_at: moment(timestamp).format("YYYY-MM-DD HH:mm:ss"),
+            }),
+          };
+        });
         setMessages(finalResult);
       })
       .catch((err) => {

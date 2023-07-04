@@ -28,6 +28,9 @@ align-items:center ;
       margin: auto;
       cursor: pointer;
 }
+.loader {
+  color: #FFFFFF !important;
+}
 .upload_icon {
   float: left;
   width: 32px;

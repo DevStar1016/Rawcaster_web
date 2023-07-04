@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
-import { useAuthData, useFriends } from "../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useFriends,
+} from "../../Shared/Reduxfetcher";
 import { useReactMediaRecorder } from "react-media-recorder";
 import {
   MediaPermissionsErrorType,
@@ -8,19 +12,25 @@ import {
   requestVideoPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import { toast } from "react-hot-toast";
-import { Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup, Spinner } from "react-bootstrap";
 import classes from "./Chat.module.css";
 import moment from "moment";
 import ChatIcon from "../../Assets/Icons/svg/chat_icon.svg";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
-import { Timer, formatBytes, handleCopyText } from "../../Shared/Utility";
+import {
+  BlobUrlToFile,
+  JSONtoformdata,
+  Timer,
+  formatBytes,
+  handleCopyText,
+} from "../../Shared/Utility";
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
 import { Dropdown, Image } from "antd";
 import { useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
-import useAutosizeTextArea from "../ReactHooks/useAutosizeTextArea";
+import { uploadChatAttachmentService } from "../../Services/ApiService";
 
 export const ChatInput = ({
   value = "",
@@ -35,10 +45,13 @@ export const ChatInput = ({
   onFileResult,
   isEdit = false,
   onEditClose,
+  onEdit,
 }) => {
+  const token = useAuthToken();
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const [isFetchingUrl, setisFetchingUrl] = useState(false);
   const textareaRef = useRef(null);
   const [isEmoji, setisEmoji] = useState(false);
   const fileRef = useRef(null);
@@ -65,25 +78,25 @@ export const ChatInput = ({
   };
 
   useEffect(() => {
+    textareaRef.current.style.height = "auto";
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  }, [ChatMessage]);
+
+  useEffect(() => {
     if (value && value !== "") {
       setChatMessage(value);
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [value]);
 
   const onRecordStop = (url, blob) => {
     if (isSend.current) {
-      setIsRecording(false);
-      onAudioResult({
-        user: 1,
-        type: "audio",
-        message: url,
-        created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-        read_out_url: null,
+      const file = new File([blob], "blobtofile.png", {
+        type: blob.type,
       });
+      fetchAudioUrl(file);
     } else {
       const audio = new Audio(url);
+
       setAudioElement(audio);
       audio.play();
     }
@@ -174,6 +187,26 @@ export const ChatInput = ({
     return `${minutes}:${formattedSeconds}`;
   }
 
+  const fetchAudioUrl = (file) => {
+    const formData = {
+      token,
+      chatattachment: file,
+    };
+    uploadChatAttachmentService(JSONtoformdata(formData))
+      .then((res) => {
+        onAudioResult({
+          user: 1,
+          type: "audio",
+          message: res.data.filepath,
+          created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+          read_out_url: null,
+        });
+      })
+      .finally(() => {
+        setisFetchingUrl(false);
+        setIsRecording(false);
+      });
+  };
   return (
     <>
       {!isChatContentValid && (
@@ -280,13 +313,8 @@ export const ChatInput = ({
                 className={classes.searchIcon}
                 onClick={() => {
                   setisEmoji(false);
-                  if (isSendOnly) {
-                    if (onSendResponse) {
-                      onSendResponse(ChatMessage);
-                    }
-                    setChatMessage("");
-                  } else if (!disabled) {
-                    HandleSendMessage(ChatMessage);
+                  if (!disabled) {
+                    onEdit(ChatMessage);
                     setChatMessage("");
                   }
                 }}
@@ -317,8 +345,10 @@ export const ChatInput = ({
                     }
                     setChatMessage("");
                   } else if (!disabled) {
-                    HandleSendMessage(ChatMessage);
-                    setChatMessage("");
+                    if (ChatMessage && ChatMessage.trim() !== "") {
+                      HandleSendMessage(ChatMessage);
+                      setChatMessage("");
+                    }
                   }
                 }}
               >
@@ -391,31 +421,44 @@ export const ChatInput = ({
             >
               delete
             </span>
-            <InputGroup.Text
-              className={classes.searchIcon}
-              onClick={() => {
-                if (mediaBlobUrl) {
-                  setIsRecording(false);
-                  onAudioResult({
-                    user: 1,
-                    type: "audio",
-                    message: mediaBlobUrl,
-                    created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-                    read_out_url: null,
-                  });
-                } else {
-                  isSend.current = true;
-                  stopRecording();
-                }
-                setAudioElement(null);
-                clearBlobUrl();
-                handleClose();
-              }}
-            >
-              <span className={`material-symbols-outlined ${classes.SendIcon}`}>
-                send
-              </span>
-            </InputGroup.Text>
+            {isFetchingUrl ? (
+              <div className={classes.searchIcon}>
+                <Spinner
+                  animation="border"
+                  role="status"
+                  className={classes.loader}
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              <InputGroup.Text
+                className={classes.searchIcon}
+                onClick={() => {
+                  if (!isFetchingUrl) {
+                    setisFetchingUrl(true);
+                    if (mediaBlobUrl) {
+                      BlobUrlToFile(mediaBlobUrl).then((res) => {
+                        fetchAudioUrl(res);
+                      });
+                    } else {
+                      isSend.current = true;
+                      stopRecording();
+                    }
+
+                    setAudioElement(null);
+                    clearBlobUrl();
+                    handleClose();
+                  }
+                }}
+              >
+                <span
+                  className={`material-symbols-outlined ${classes.SendIcon}`}
+                >
+                  send
+                </span>
+              </InputGroup.Text>
+            )}
           </div>
         </div>
       )}
@@ -477,6 +520,9 @@ export const MessageContent = (props) => {
     file_path = null,
     file,
     isGroup,
+    message_id,
+    isEdited,
+    onDelete,
   } = props;
   const friends_list = useFriends();
   const loginUserData = useAuthData();
@@ -552,7 +598,7 @@ export const MessageContent = (props) => {
             <source src={file_path} />
           </video>
         );
-      case "voice":
+      case "audio":
         return (
           <div className={classes.audioSec}>
             <div className={classes.audioplayer}>
@@ -573,7 +619,7 @@ export const MessageContent = (props) => {
         );
 
       default:
-        if (file) {
+        if (file && Object.keys(file).length !== 0) {
           const validcontent = file.type.split("/")[1];
           return (
             <div
@@ -584,6 +630,9 @@ export const MessageContent = (props) => {
             >
               <div
                 className={classes.filContainer}
+                onClick={() => {
+                  window.open(file_path, "_self");
+                }}
                 style={{
                   background: isUser(user) ? "#FFFFFF" : "#563662",
                 }}
@@ -636,7 +685,7 @@ export const MessageContent = (props) => {
       label: (
         <div
           onClick={() => {
-            setEditData(message);
+            setEditData({ msg: message, message_id: message_id });
           }}
         >
           Edit
@@ -645,7 +694,7 @@ export const MessageContent = (props) => {
     },
     {
       key: "3",
-      label: <div>Delete</div>,
+      label: <div onClick={onDelete}>Delete</div>,
     },
   ];
 
@@ -693,9 +742,18 @@ export const MessageContent = (props) => {
             )}
             <GetValidComponent />
 
-            {message && <p>{message}</p>}
-            {props.created_at && type !== "voice" && (
+            {message && message.trim() !== "null" && (
+              <p
+                style={{
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {message}
+              </p>
+            )}
+            {props.created_at && type !== "audio" && (
               <span className={classes.timestamp}>
+                {isEdited ? `edited - ` : ""}
                 {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
                   "hh:mm A"
                 )}

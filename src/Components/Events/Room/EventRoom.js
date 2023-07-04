@@ -21,48 +21,28 @@ const EventRoom = () => {
   const [searchParams] = useSearchParams();
   const data = searchParams.get("meetingid");
 
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (message) => {
-      console.log(message, "message.event");
-      // ...
-    });
-    // ChimesocketListen.on(
-    //   "event",
-    //   (message) => {
-    //     console.log(message, "message");
-    //     switch (message.event) {
-    //       case CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:
-    //         console.log(message, "message.event");
-    //     }
-    //   },
-    //   []
-    // );
-    return () => {
-      ChimesocketListen.off("call");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const handleCreate = async () => {
     const response = await CreateMeeting();
-    if (response.data.status === 200) {
-      const { Meeting } = response.data.result;
-      const meetingSessionConfiguration = new MeetingSessionConfiguration(
-        Meeting,
-        {}
-      );
-      const meetingOptions = {
-        deviceLabels: DeviceLabels.AudioAndVideo,
-      };
-      try {
-        await meetingManager.join(meetingSessionConfiguration, meetingOptions);
-        await meetingManager.start();
-        // handleJoin(Meeting.MeetingId);
-      } catch (error) {
-        console.log(error, "error");
-      }
-    } else {
-      console.log(response.data.msg);
-    }
+    console.log(response);
+    // if (response.data.status === 200) {
+    //   const { Meeting } = response.data.result;
+    //   const meetingSessionConfiguration = new MeetingSessionConfiguration(
+    //     Meeting,
+    //     {}
+    //   );
+    //   const meetingOptions = {
+    //     deviceLabels: DeviceLabels.AudioAndVideo,
+    //   };
+    //   try {
+    //     await meetingManager.join(meetingSessionConfiguration, meetingOptions);
+    //     await meetingManager.start();
+    //     // handleJoin(Meeting.MeetingId);
+    //   } catch (error) {
+    //     console.log(error, "error");
+    //   }
+    // } else {
+    //   console.log(response.data.msg);
+    // }
   };
 
   const handleJoin = async (data) => {
@@ -95,6 +75,17 @@ const EventRoom = () => {
     } else {
       if (!MeetingStatus) {
         handleCreate();
+        ChimesocketListen.on("connect", (message) => {
+          console.log(" ChimesocketListen Connected");
+          // ...
+        });
+        ChimesocketListen.on(
+          CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM,
+          (message) => {
+            console.log(message, "message.event");
+            // ...
+          }
+        );
       }
     }
   }, []);

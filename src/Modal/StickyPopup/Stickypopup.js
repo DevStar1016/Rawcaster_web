@@ -36,6 +36,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     user,
     file_path = null,
     created_at = null,
+    isEdited = false,
     ...rest
   }) => {
     return {
@@ -44,6 +45,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
       created_at: created_at
         ? created_at
         : moment().format("YYYY-MM-DD HH:mm:ss"),
+      isEdited,
       file_path,
       user_name,
       user,

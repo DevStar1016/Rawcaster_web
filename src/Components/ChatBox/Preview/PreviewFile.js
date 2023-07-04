@@ -4,13 +4,15 @@ import { ChatInput } from "../../../Sharedcomponents/Chat/utility";
 import { Layout, Tooltip } from "antd";
 import { useChatContext } from "../../../Shared/Context";
 import ImageEditModal from "../../../Modal/ImageEditModal";
-import { formatBytes } from "../../../Shared/Utility";
+import { filterValidObject, formatBytes } from "../../../Shared/Utility";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { sendChannelMessage } from "../../../Services/Messaging/MessageAPIList";
 
 const PreviewFile = () => {
   const [isEdit, setisEdit] = useState(false);
   const userData = useAuthData();
   const {
+    GroupDetails,
     PreviewData,
     setPreviewData,
     setMessages,
@@ -140,6 +142,25 @@ const PreviewFile = () => {
         );
     }
   };
+
+  const sendMessage = (val, params = {}) => {
+    let data = {
+      ...params,
+      Type: "STANDARD",
+      Persistence: "PERSISTENT",
+      ChannelArn: GroupDetails?.group_arn,
+      ChimeBearer: userData.chime_user_id,
+      Content: val,
+    };
+    sendChannelMessage(filterValidObject(data))
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Layout.Footer className={classes.footerSec}>
       <div className={classes.previewSec}>
@@ -151,11 +172,24 @@ const PreviewFile = () => {
           convertUrlToFile(PreviewData.File)
             .then((res) => {
               const validType = res.file.type.split("/")[0];
+              const metaData = {
+                Metadata: JSON.stringify({
+                  file: res.file_path,
+                  type: "doc",
+                  web_file: {
+                    name: res.file.name,
+                    size: res.file.size,
+                    type: res.file.type,
+                  },
+                }),
+              };
+              sendMessage(val && val !== "" ? val : " null", metaData);
+
               setMessages((pre) => [
                 ...pre,
                 {
                   ...convertMessageFormat({
-                    type: validType,
+                    type: "doc",
                     message: val,
                     file: res.file,
                     file_path: res.file_path,

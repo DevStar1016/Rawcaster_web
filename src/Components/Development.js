@@ -30,89 +30,19 @@ const Development = () => {
   const [ChannelId, setChannelId] = useState("");
   const [MeetingId, setMeetingId] = useState("");
   const textareaRef = useRef(null);
-  // useEffect(() => {
-
-  //   axios
-  //     .post("192.168.1.246:4500/chime/create-channel", formdata)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     });
-  // }, []);
 
   useEffect(() => {
     ChimesocketListen.on("connect", (message) => {
-      console.log(message, "message.event");
-      // ...
+      console.log("Connected to server");
     });
-    ChimesocketListen.on("ping", (message) => {
-      console.log(message, "message.event");
+    ChimesocketListen.on("createMeetingRoom", (message) => {
+      console.log(message, "from createMeetingRoom");
     });
-
-    ChimesocketListen.on("error", (error) => {
-      console.log(error, "message.event");
-    });
-
-    ChimesocketListen.on("reconnect", (attempt) => {
-      console.log(attempt, "message.event");
-    });
-
-    ChimesocketListen.on("reconnect_attempt", (attempt) => {
-      console.log(attempt, "message.event");
-    });
-
-    return () => {
-      ChimesocketListen.off("call");
-    };
+    // return () => {
+    //   ChimesocketListen.off("call");
+    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const createChannel = () => {
-    const data = {
-      group_name: "test",
-      chime_bearer: userData.chat_user_id,
-    };
-    axios
-      .post(
-        "http://192.168.1.108:8003/rawcaster/create_channel",
-        JSONtoformdata(data)
-      )
-      .then((res) => {
-        console.log(res.data, "res.data.ChannelArn");
-        setChannelId(res.data.ChannelArn);
-      });
-  };
-
-  const addmembertoChannel = () => {
-    const data = {
-      channel_arn: ChannelId,
-      chime_bearer: userData.chat_user_id,
-      member_id: JSON.stringify([MemberId]),
-    };
-    axios
-      .post(
-        "http://192.168.1.108:8003/rawcaster/addmembers",
-        JSONtoformdata(data)
-      )
-      .then((res) => {
-        console.log(res.data, "res.data.ChannelArn");
-      });
-  };
-
-  const sendMessageToChannel = () => {
-    const data = {
-      channel_arn: ChannelId,
-      chime_bearer: userData.chat_user_id,
-      message: "message",
-    };
-    axios
-      .post(
-        "http://192.168.1.108:8003/rawcaster/send_message",
-        JSONtoformdata(data)
-      )
-      .then((res) => {
-        console.log(res.data);
-      });
-  };
 
   const handleChange = () => {
     textareaRef.current.style.height = "45px";
@@ -133,7 +63,7 @@ const Development = () => {
         // height: "100vh",
       }}
     >
-      <div className="h-100 p-5 mt-5 m-auto w-100">
+      {/* <div className="h-100 p-5 mt-5 m-auto w-100">
         <div className={classes.whatsapp_textarea_wrapper}>
           <textarea
             ref={textareaRef}
@@ -147,7 +77,7 @@ const Development = () => {
             <span class="material-symbols-outlined">send</span>
           </button>
         </div>
-      </div>
+      </div> */}
       {/* <div className="h-100 p-5 mt-5 m-auto w-100">
         <div
           style={{
@@ -190,7 +120,7 @@ const Development = () => {
             List members of Channel
           </button>
         </div>
-      </div>
+      </div> */}
       <div className="h-100 p-5 mt-5 m-auto w-100">
         <button
           className="mx-2"
@@ -220,7 +150,7 @@ const Development = () => {
         >
           Join Meeting
         </button>
-      </div> */}
+      </div>
       {/* <div
         style={{
           background: "#563662",
