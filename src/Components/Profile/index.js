@@ -84,6 +84,7 @@ const Profile = () => {
     getOthersProfileService(JSONtoformdata(otherprofileValue))
       .then((res) => {
         if (res.data.status === 1) {
+          console.log(res.data.profile, "res.data.profile");
           setprofileData(res.data.profile);
           if (res.data.profile.lock_nugget === 1) {
             getprofile();

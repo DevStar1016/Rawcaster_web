@@ -14,18 +14,27 @@ import {
   ViewNotificationService,
 } from "../../Services/ApiService";
 import moment from "moment";
+import { useDispatch } from "react-redux";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { NotificationContext } from "../../Shared/Context";
 import { toast } from "react-hot-toast";
 import classes from "./Notification.module.css";
+import { handleNotificationUnreadCount } from "../../Store/Redux/Reducer/DashboardReducer";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
-const Notification = ({ className, src, onReadCountChange }) => {
+const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
   const loginuserData = useAuthData();
+  const dispatch = useDispatch();
   const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
   const [isPopupOpen, setisPopupOpen] = useState(false);
   const token = useAuthToken();
   const { userSettings } = useAuth();
   const [markallAsRead, setmarkallAsRead] = useState(false);
+
+  useEffect(() => {
+    console.log(unReadCount, "TotalUnreadCount redux");
+    setTotalUnreadCount(unReadCount);
+  }, [unReadCount]);
 
   const getTimeZone = (date) => {
     return utctoUserTimezone(date, userSettings?.time_zone);
@@ -40,8 +49,15 @@ const Notification = ({ className, src, onReadCountChange }) => {
       ListNotificationService(JSONtoformdata(finalData))
         .then((res) => {
           if (res.data.status === 1) {
+            console.log(
+              res.data.total_unread_count,
+              "TotalUnreadCount from api"
+            );
             onReadCountChange(res.data.total_unread_count);
-            setTotalUnreadCount(res.data.total_unread_count);
+            // setTotalUnreadCount(res.data.total_unread_count);
+            dispatch(
+              handleNotificationUnreadCount(res.data.total_unread_count)
+            );
             const result = res.data.notification_list;
             const today = moment().format("YYYY-MM-DD HH:mm:ss");
             const yesterday = moment()
@@ -120,8 +136,16 @@ const Notification = ({ className, src, onReadCountChange }) => {
       ViewNotificationService(JSONtoformdata(filterValidObject(ViewData)))
         .then(({ data }) => {
           if (data.status === 1) {
+            console.log(data, "handleViewNotification");
             resolve(notification_id);
             setmarkallAsRead();
+            dispatch(handleNotificationUnreadCount(0));
+            dispatch(
+              handleLoginData({
+                ...loginuserData,
+                unread_notification_count: 0,
+              })
+            );
           } else {
             toast.error(data.msg);
           }
@@ -135,6 +159,7 @@ const Notification = ({ className, src, onReadCountChange }) => {
     if (loginuserData) {
       onReadCountChange(loginuserData?.unread_notification_count);
       setTotalUnreadCount(loginuserData?.unread_notification_count);
+      console.log(loginuserData, "TotalUnreadCount loginuserDATA");
     }
   }, [loginuserData]);
 

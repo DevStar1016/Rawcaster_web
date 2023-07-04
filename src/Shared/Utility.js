@@ -130,6 +130,7 @@ export const ConvertAddresstoLatLng = (address) => {
 // Common Utility
 
 export const decodeHtml = (data) => {
+  console.log(decode(data)?.length, "datalength");
   return decode(data);
 };
 

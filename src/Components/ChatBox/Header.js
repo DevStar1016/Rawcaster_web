@@ -40,30 +40,62 @@ const Header = () => {
     return;
   };
 
-  const getGroupDisplayData = () => {
-    const displayedData = getData()?.group_members_list.slice(0, 2); // Get the first 2 objects
-    const remainingData = getData()?.group_members_list.slice(2); // Get the remaining objects
-    const displayName = displayedData?.map((ele) => {
-      if (parseInt(loginuserData.user_id) !== ele.user_id) {
-        return ele.display_name.split(" ")[0] || "";
-      }
-      return "";
-    });
-    let displayData;
+  // const getGroupDisplayData = () => {
+  //   const displayedData = getData()?.group_members_list.slice(0, 2); // Get the first 2 objects
+  //   const remainingData = getData()?.group_members_list.slice(2); // Get the remaining objects
+  //   const displayName = displayedData?.map((ele) => {
+  //     if (parseInt(loginuserData.user_id) !== ele.user_id) {
+  //       return ele.display_name.split(" ")[0] || "";
+  //     }
+  //     return "";
+  //   });
+  //   let displayData;
 
-    if (remainingData.length > 0) {
-      if (remainingData.length === 1) {
-        displayData = [
-          "You",
-          ...displayName,
-          remainingData[0].display_name,
-        ].toString();
+  //   if (remainingData.length > 0) {
+  //     if (remainingData.length === 1) {
+  //       displayData = [
+  //         "You",
+  //         ...displayName,
+  //         remainingData[0].display_name,
+  //       ].toString();
+  //     } else {
+  //       displayData =
+  //         "You ," + displayName.toString() + ` +${remainingData.length} Others`;
+  //     }
+  //   } else {
+  //     displayData = "You ," + displayName.toString();
+  //   }
+  //   return displayData;
+  // };
+
+  const getGroupDisplayData = () => {
+    const GroupMembers = getData()?.group_members_list;
+    const withoutCurrentUser = GroupMembers?.filter(
+      (ele) =>
+        parseInt(ele?.user_id, 10) !== parseInt(loginuserData.user_id, 10)
+    );
+    let displayData = "";
+
+    if (withoutCurrentUser.length > 0) {
+      const lengthyText =
+        withoutCurrentUser[0].display_name?.toString()?.length > 25;
+      if (withoutCurrentUser.length === 1) {
+        displayData = lengthyText
+          ? `You , ${withoutCurrentUser[0].display_name
+              ?.toString()
+              ?.slice(20)} ...`
+          : `You , ${withoutCurrentUser[0].display_name?.toString()}`;
       } else {
-        displayData =
-          "You ," + displayName.toString() + ` +${remainingData.length} Others`;
+        displayData = lengthyText
+          ? "You ," +
+            withoutCurrentUser[0].display_name?.toString()?.slice(0, 20) +
+            `...`
+          : "You ," +
+            withoutCurrentUser[0].display_name?.toString() +
+            ` +${withoutCurrentUser.length - 1} Others`;
       }
     } else {
-      displayData = "You ," + displayName.toString();
+      displayData = "You";
     }
     return displayData;
   };
