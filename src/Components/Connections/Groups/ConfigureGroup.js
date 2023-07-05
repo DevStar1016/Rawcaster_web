@@ -407,6 +407,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       onCancel={() => {
         handleClose();
       }}
+     
     >
       <ConfigureGroupContext.Provider
         value={{

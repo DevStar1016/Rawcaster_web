@@ -174,7 +174,7 @@ padding: 4px;
     -webkit-mask-position: left bottom;
     transition: mask-position 0.3s, -webkit-mask-position 0.3s;
   }
-  .connectionsLists {overflow: auto;max-height: 255px;}
+  .connectionsLists {overflow: auto;max-height: calc(100vh - 715px);}
   .groupLists:hover,
   .connectionsLists:hover {
     mask-position: left top;
