@@ -127,6 +127,12 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
 
   return (
     <div
+      onClick={() => {
+        navigate(`/viewevent/${ele.event_id}`);
+      }}
+      style={{
+        cursor: "pointer",
+      }}
       className={`${classes.eventItem} ${
         isOthers ? classes.othersEventItem : ""
       }`}
@@ -134,9 +140,6 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
       <img
         className={classes.eventImg}
         src={ele?.banner_image !== "" ? ele?.banner_image : eventList}
-        onClick={() => {
-          navigate(`/viewevent/${ele.event_id}`);
-        }}
         alt="Banner_img"
         onError={({ currentTarget }) => {
           currentTarget.onerror = null;
@@ -170,12 +173,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         >
           <div className="d-flex flex-row justify-content-between">
             <Tooltip title={decodeHtml(ele.event_name)}>
-              <h3
-                style={{ maxWidth: isCreatedUser() ? "180px" : "" }}
-                onClick={() => {
-                  navigate(`/viewevent/${ele.event_id}`);
-                }}
-              >
+              <h3 style={{ maxWidth: isCreatedUser() ? "180px" : "" }}>
                 {decodeHtml(ele.event_name)}
               </h3>
             </Tooltip>
@@ -184,14 +182,16 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
                 <div className={classes.iconBg}>
                   <i
                     className={classes.editIcon}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleEdit(ele);
                     }}
                   ></i>
                 </div>
                 <div
                   className={classes.iconBg}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     Modal.confirm({
                       title: "Confirmation",
                       okText: "Delete",

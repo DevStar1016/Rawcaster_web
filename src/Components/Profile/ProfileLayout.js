@@ -29,6 +29,7 @@ import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const ProfileLayout = ({
   children,
@@ -258,6 +259,10 @@ const ProfileLayout = ({
               src={profileData?.profile_image}
               alt="Profile"
               className={classes.profileImg}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src = defaultprofileImg;
+              }}
             />
             {isLoginUser && (
               <div

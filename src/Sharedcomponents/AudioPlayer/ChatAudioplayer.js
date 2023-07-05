@@ -44,7 +44,6 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.load();
       audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
 
       audioRef.current.addEventListener("loadedmetadata", () => {
@@ -61,15 +60,15 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
         ref={audioRef}
         src={url}
         onTimeUpdate={handleTimeUpdate}
-        onLoadedData={(e) => {
-          console.log(e.target?.duration);
-        }}
+        // onLoadedData={(e) => {
+        //   console.log(e.target?.duration);
+        // }}
         onLoadedMetadata={handleLoadedMetadata}
       />
 
       <div className="w-100 d-flex flex-row align-items-center justify-content-center">
         <div className={classes.pauseplaySec}>
-          {!audioRef.current?.paused ? (
+          {audioRef.current && !audioRef.current?.paused ? (
             <i
               className={classes.pause_icon}
               onClick={() => {
@@ -91,7 +90,9 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
             className={classes.audio_slider}
             min={0}
             max={100}
-            value={((currentTime / duration) * 100).toFixed(0)}
+            value={
+              audioRef.current ? ((currentTime / duration) * 100).toFixed(0) : 0
+            }
             onChange={handleSliderChange}
             style={{
               background: `linear-gradient(to right, #563662 0%, #563662 ${(

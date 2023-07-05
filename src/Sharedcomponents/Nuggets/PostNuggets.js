@@ -91,6 +91,7 @@ const PostNuggets = () => {
   }, [PostContent]);
 
   const EditNugget = (val) => {
+    console.log(deletedMedia);
     if (NuggetData.length === 0 && !isValidData(val.content)) {
       toast.error("Sorry! Nuggets content or Media can not be empty.");
       return;

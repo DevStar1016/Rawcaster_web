@@ -235,7 +235,7 @@ const InviteBox = () => {
       >
         <div className={classes.iconSec}>
           <img src={FansIcon} alt={"Invite fans"} />
-          <p>Invite fans</p>
+          <p>Invite friends</p>
         </div>
         <span class="material-symbols-outlined">chevron_right</span>
       </div>

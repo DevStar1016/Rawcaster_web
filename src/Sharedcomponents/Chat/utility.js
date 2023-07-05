@@ -689,7 +689,7 @@ export const MessageContent = (props) => {
           </video>
         );
       case type.includes("audio"):
-        return (
+        return file_path ? (
           <div className={classes.audioSec}>
             <div className={classes.audioplayer}>
               <ChatAudioplayer
@@ -706,7 +706,7 @@ export const MessageContent = (props) => {
               />
             </div>
           </div>
-        );
+        ) : null;
 
       default:
         if (file && Object.keys(file).length !== 0) {

@@ -14,7 +14,8 @@ const EventHandler = ({ title, isHost, meetingId }) => {
   const userData = useAuthData();
   const meetingManager = useMeetingManager();
 
-  const handleJoinEvent = async () => {
+  const handleJoinEvent = async (e) => {
+    e.stopPropagation();
     const formData = {
       MeetingId: meetingId,
       userId: userData?.user_id,
@@ -57,7 +58,12 @@ const EventHandler = ({ title, isHost, meetingId }) => {
     }
   };
   return (
-    <div className={classes.link} onClick={() => handleJoinEvent()}>
+    <div
+      className={classes.link}
+      onClick={(e) => {
+        handleJoinEvent(e);
+      }}
+    >
       {isHost ? `Start ${title}` : `Join ${title}`}
       <span class="material-symbols-outlined">arrow_right_alt</span>
     </div>

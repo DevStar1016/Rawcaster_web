@@ -517,10 +517,16 @@ const Postmodal = ({ visible, onClose }) => {
                       <div
                         className={classes.overlay}
                         onClick={() => {
+                          setdeletedMedia((pre) => {
+                            if (pre.length !== 0) {
+                              return [ele.media_id];
+                            } else {
+                              return [...pre, ele.media_id];
+                            }
+                          });
                           setpreviewMedia((pre) =>
                             pre.filter((elem) => elem.media_id !== ele.media_id)
                           );
-                          setdeletedMedia((pre) => [...pre, ele.media_id]);
                         }}
                       >
                         {/* <img
