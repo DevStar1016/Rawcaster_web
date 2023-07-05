@@ -461,7 +461,7 @@ export const ChatInput = ({
         <div className={classes.recordingBox}>
           <div className={classes.RecordingTimeSec}>
             {AudioElement ? (
-              <>{AudioElement ? formatTime(AudioElement.currentTime) : null}</>
+              <>{AudioElement ? formatTime(AudioElement?.currentTime) : null}</>
             ) : (
               <>{getValidNumber(minutes) + `:` + getValidNumber(seconds)}</>
             )}

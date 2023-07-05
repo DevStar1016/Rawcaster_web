@@ -55,7 +55,7 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
             size="large"
             className={classes.reportBtn}
           >
-            {AIopen ? AIopen : "Login"}
+            {AIopen ? "Upgrade" : "Login"}
           </Button>
         </div>
       </div>

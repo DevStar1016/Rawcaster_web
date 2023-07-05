@@ -4,30 +4,30 @@ import classes from "./SectionList.module.css";
 const SectionList = ({ HeaderComponent, RenderComponent, Data }) => {
   const [activeSection, setActiveSection] = useState(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollPosition = window.scrollY;
 
-      // Find the index of the section in view
-      let activeIndex = 0;
-      Data.forEach((section, index) => {
-        const sectionElement = document.getElementById(`section-${index}`);
-        const sectionTop = sectionElement.offsetTop;
-        const sectionHeight = sectionElement.offsetHeight;
+  //     // Find the index of the section in view
+  //     let activeIndex = 0;
+  //     Data.forEach((section, index) => {
+  //       const sectionElement = document.getElementById(`section-${index}`);
+  //       const sectionTop = sectionElement.offsetTop;
+  //       const sectionHeight = sectionElement.offsetHeight;
 
-        if (scrollPosition >= sectionTop - sectionHeight * 0.5) {
-          activeIndex = index;
-        }
-      });
+  //       if (scrollPosition >= sectionTop - sectionHeight * 0.5) {
+  //         activeIndex = index;
+  //       }
+  //     });
 
-      setActiveSection(activeIndex);
-    };
+  //     setActiveSection(activeIndex);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [Data]);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [Data]);
 
   return (
     <div>

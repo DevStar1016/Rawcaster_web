@@ -186,10 +186,29 @@ margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10000;
+  transition: 1s;
+
 }
+.dateSecSticky:not(:nth-last-child(1)) {
+  position: sticky;
+  top: 8px;
+  }
+  .dateSecSticky>p{
+transition: 1s; 
+ }
 .dateSec p {
   padding: 2px 7px;
   border-radius: 30px;
   background-color: #ae567b43;
   font-size: 11px;
+}
+
+@keyframes  Hide{
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
