@@ -363,6 +363,20 @@ margin-top: 7px;
   font-weight: 500;
 
 }
+
+.alertContainer>div>div>div:nth-child(1) {
+  font-weight: 700;
+}
+
+.alertContainer>div>div>div:nth-child(2) {
+  font-weight: 500;
+  color: rgba(0,0,0,0.9);
+}
+.alertContainer>div{
+  background-color: rgba(242, 113, 141, 0.1);
+    border: 1px solid rgb(242, 113, 141);
+}
+
 @media (max-width:1100px) {
   .eventSec { 
     width: 600px;

@@ -1,4 +1,13 @@
-import { Button, Dropdown, Input, Modal, Tooltip, message } from "antd";
+import {
+  Alert,
+  Button,
+  Dropdown,
+  Input,
+  Modal,
+  Space,
+  Tooltip,
+  message,
+} from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import classes from "../Modal.module.css";
 import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
@@ -136,7 +145,7 @@ const Postmodal = ({ visible, onClose }) => {
     var t = val;
     if (t.match(regex)) {
       let url = t.match(regex);
-      let addHttp = url[url.length - 1].replace(
+      let addHttp = url[url.length - 1]?.replace(
         /^(?:(.*:)?\/\/)?(.*)/i,
         (match, schemma, nonSchemmaUrl) =>
           schemma ? match : `http://${nonSchemmaUrl}`
@@ -398,7 +407,7 @@ const Postmodal = ({ visible, onClose }) => {
                 onPaste={(event) => {
                   const pastedText = event.clipboardData.getData("text/plain");
                   const selectedText = window.getSelection().toString();
-                  const updatedText = textinputRef.current.value.replace(
+                  const updatedText = textinputRef.current?.value?.replace(
                     selectedText,
                     pastedText
                   );
@@ -411,6 +420,7 @@ const Postmodal = ({ visible, onClose }) => {
                     setFieldValue("content", e.target.value);
                     getLinkInfo(e.target.value);
                     setisPostContentValid(true);
+                    setLimitExceeds(false);
                   } else {
                     setFieldValue(
                       "content",
@@ -422,15 +432,13 @@ const Postmodal = ({ visible, onClose }) => {
                   }
                 }}
               />
-              {LimitExceeds && loginUserData?.user_status_id !== 4 && (
-                <LoginModal
+              {/* <LoginModal
                   open={LimitExceeds}
-                  close={handleLimitExceedsClose}
-                  AIclose={true}
-                  AIopen="Upgrade"
+                 close={handleLimitExceedsClose}
+                   AIclose={true}
+                 AIopen="Upgrade"
                   AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
-                />
-              )}
+                 /> */}
               <img
                 width="24px"
                 alt="Add Emoji"
@@ -446,6 +454,42 @@ const Postmodal = ({ visible, onClose }) => {
                 characters
               </p>
             )}
+            <div
+              style={{ paddingTop: "20px" }}
+              className={classes.alertContainer}
+              id="Alertdiv"
+            >
+              {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+                <Alert
+                  message="Upgrade Your Plan"
+                  description="You have reached your character limit, to increase the limit upgrade your membership!"
+                  type="info"
+                  action={
+                    <Space direction="vertical">
+                      <Button
+                        size="small"
+                        className={classes.upgradeBtn}
+                        type="primary"
+                        onClick={() => {
+                          window.location.assign("/membership");
+                        }}
+                      >
+                        Upgrade
+                      </Button>
+                      <Button
+                        className={classes.LaterBtn}
+                        onClick={handleLimitExceedsClose}
+                        size="small"
+                        danger
+                        type="primary"
+                      >
+                        Later
+                      </Button>
+                    </Space>
+                  }
+                />
+              )}
+            </div>
             {showEmojis && (
               <div
                 className={classes.emojiPicker}
