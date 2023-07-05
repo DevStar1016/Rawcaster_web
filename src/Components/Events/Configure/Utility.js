@@ -704,7 +704,7 @@ export function compareArrays(arr1, arr2) {
     return undefined;
   });
   if (checkError?.length > 0) {
-    return true;
+    return checkError;
   } else {
     return false;
   }
