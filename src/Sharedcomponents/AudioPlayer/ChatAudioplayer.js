@@ -9,22 +9,24 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
   const [FormattedTime, setFormattedTime] = useState("00:00");
 
   const handleTimeUpdate = () => {
-    setCurrentTime(audioRef.current.currentTime);
+    setCurrentTime(audioRef.current?.currentTime);
     setFormattedTime(
-      moment.utc(audioRef.current.currentTime * 1000).format("mm:ss")
+      moment.utc(audioRef.current?.currentTime * 1000).format("mm:ss")
     );
   };
 
   const handleLoadedMetadata = () => {
-    if (!isNaN(audioRef.current.duration)) {
-      setDuration(audioRef.current.duration);
+    if (audioRef.current && !isNaN(audioRef.current?.duration)) {
+      setDuration(audioRef.current?.duration);
     }
   };
 
   const handleSliderChange = (e) => {
     const newTime = (parseInt(e.target.value) / 100) * duration;
     setCurrentTime(newTime);
-    audioRef.current.currentTime = newTime;
+    if (audioRef.current.currentTime) {
+      audioRef.current.currentTime = newTime;
+    }
   };
 
   async function getDuration() {
@@ -46,7 +48,7 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
       audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
 
       audioRef.current.addEventListener("loadedmetadata", () => {
-        const totalDuration = audioRef.current.duration;
+        const totalDuration = audioRef.current?.duration;
         console.log("Total duration:", totalDuration, audioRef);
       });
       audioRef.current.addEventListener("durationchange", handleTimeUpdate);
@@ -60,7 +62,7 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
         src={url}
         onTimeUpdate={handleTimeUpdate}
         onLoadedData={(e) => {
-          console.log(e.target.duration);
+          console.log(e.target?.duration);
         }}
         onLoadedMetadata={handleLoadedMetadata}
       />

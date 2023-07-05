@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MessageContent } from "../../../Sharedcomponents/Chat/utility";
 import { Layout } from "antd";
 import classes from "../ChatBox.module.css";
@@ -12,6 +12,8 @@ import SectionList from "../../../Sharedcomponents/SectionList";
 
 const Content = () => {
   const userdata = useAuthData();
+  const [headerScrolling, setheaderScrolling] = useState(false);
+  const [scroll, setscroll] = useState(0);
   const { Messages, isTyping, GroupDetails, EditData, setMessages } =
     useChatContext();
   const { isChatOpen } = useMainContext();
@@ -69,6 +71,16 @@ const Content = () => {
     return sectionedMessages.reverse();
   };
 
+  useEffect(() => {
+    setheaderScrolling(true);
+    const timeout = setTimeout(() => {
+      clearTimeout(timeout);
+      if (scroll === document.getElementById("scrollContainer").scrollTop) {
+        setheaderScrolling(false);
+      }
+    }, 500);
+  }, [scroll]);
+
   return (
     <MessageList
       typingIndicator={
@@ -89,7 +101,16 @@ const Content = () => {
       }
       className={classes.MessagesList}
     >
-      <Layout.Content className={classes.mainContainer}>
+      <Layout.Content
+        onScroll={(event) => {
+          const listboxNode = event.currentTarget;
+          const { scrollTop, scrollHeight, clientHeight } = listboxNode;
+          console.log(scrollTop, "eventevent scroll");
+          if (scrollTop + clientHeight < scrollHeight - 5) setscroll(scrollTop);
+        }}
+        id="scrollContainer"
+        className={classes.mainContainer}
+      >
         <div className={`${classes.endToEndSec} mb-1`}>
           <i className={classes.rawcaster_icon} />
           Messages and calls are end-to-end encrypted. No one outside of this
@@ -100,7 +121,14 @@ const Content = () => {
             <SectionList
               Data={getValidSectionComponent()}
               HeaderComponent={({ children, id, className }) => (
-                <div className={classes.dateSec} id={id}>
+                <div
+                  className={
+                    headerScrolling
+                      ? `${classes.dateSec} ${classes.dateSecSticky}`
+                      : classes.dateSec
+                  }
+                  id={id}
+                >
                   <p className={className}>{children}</p>
                 </div>
               )}
@@ -108,12 +136,13 @@ const Content = () => {
                 <MessageContent
                   {...ele}
                   index={index}
-                  isGroup={isChatOpen.type == "group"}
+                  isGroup={isChatOpen?.type == "group"}
                   onDelete={() => {
                     console.log("test", ele);
-                    handleDelete(ele.message_id);
+                    handleDelete(ele?.message_id);
                   }}
                 />
+                // <div>hello user</div>
               )}
             />
           )}
