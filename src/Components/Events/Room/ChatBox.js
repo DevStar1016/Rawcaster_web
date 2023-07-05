@@ -6,8 +6,6 @@ import ChatIcon from "../../../Assets/Icons/svg/chat_icon.svg";
 import { Form, InputGroup } from "react-bootstrap";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import EmojiPicker from "../../../UIComponents/EmojiPicker";
-import { useEventLayout } from "../../../Layouts/EventLayout";
-import { ChatBubble } from "amazon-chime-sdk-component-library-react";
 
 const { Header, Footer, Content } = Layout;
 

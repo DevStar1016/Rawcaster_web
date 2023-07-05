@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Referel.module.css";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuthToken, useNuggets } from "../../Shared/Reduxfetcher";
 import {
   InfluencerFollowService,
   InfluencerListService,
@@ -10,11 +10,17 @@ import {
   decodeHtml,
   getAuthToken,
   getAuthenticated,
+  handleProfileNavigate,
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 
 const SuggestedAccounts = () => {
+  const { nuggetFormData } = useNuggets();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = useAuthToken();
   const [influencerList, setinfluencerList] = useState();
   const getInfluencerList = () => {
@@ -63,7 +69,18 @@ const SuggestedAccounts = () => {
       <div className={classes.scrollSec}>
         {influencerList?.map((ele) => {
           return (
-            <div className={classes.refuserList}>
+            <div
+              className={classes.refuserList}
+              onClick={() => {
+                let finalData = {
+                  dispatch,
+                  navigate,
+                  nuggetFormData,
+                  user_id: ele.user_id,
+                };
+                handleProfileNavigate(finalData);
+              }}
+            >
               <div className={classes.suggAcc}>
                 <img
                   src={ele?.profile_img}
@@ -86,7 +103,8 @@ const SuggestedAccounts = () => {
               </div>
               <div
                 className={classes.becameFan}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   handleBecomeFan(ele);
                 }}
               >

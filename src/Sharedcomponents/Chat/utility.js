@@ -784,6 +784,14 @@ export const MessageContent = (props) => {
     },
     {
       key: "3",
+      label: <div onClick={onDelete}>Forward</div>,
+    },
+    {
+      key: "4",
+      label: <div onClick={onDelete}>Select</div>,
+    },
+    {
+      key: "5",
       label: <div onClick={onDelete}>Delete</div>,
     },
   ];
@@ -794,81 +802,88 @@ export const MessageContent = (props) => {
         isUser(user) ? classes.MessageContainer : classes.receiverConteiner
       } ${isUser(user) ? "br_top_right" : "br_top_left"}`}
     >
-      <div className={classes.msgBox}>
-        {isGroup && (
-          <div className={classes.avatar}>
-            {getmessageType() !== "first" ? (
-              <div
-                style={{
-                  height: 30,
-                  width: 30,
-                }}
-              ></div>
-            ) : (
-              <img
-                src={
-                  isUser(user)
-                    ? loginUserData?.profile_image
-                    : getUserData().profile_img
-                }
-                onError={(e) => {
-                  setisAvatarErr(true);
-                }}
-              />
-            )}
-          </div>
-        )}
-        <div
-          key={index}
-          className={`${classes.chatbox_message} ${
-            isUser(user) ? classes.user_chatbox_message : ""
-          } ${getBorderType()}`}
-        >
-          <div className={classes.content}>
-            {!isUser(user) && isGroup && getUserData().display_name && (
-              <p className={classes.userNameSec}>
-                {getUserData().display_name}
-              </p>
-            )}
-            <GetValidComponent />
+      <Dropdown
+        menu={{ items }}
+        placement="bottomRight"
+        arrow
+        trigger={["contextMenu"]}
+      >
+        <div className={classes.msgBox}>
+          {isGroup && (
+            <div className={classes.avatar}>
+              {getmessageType() !== "first" ? (
+                <div
+                  style={{
+                    height: 30,
+                    width: 30,
+                  }}
+                ></div>
+              ) : (
+                <img
+                  src={
+                    isUser(user)
+                      ? loginUserData?.profile_image
+                      : getUserData().profile_img
+                  }
+                  onError={(e) => {
+                    setisAvatarErr(true);
+                  }}
+                />
+              )}
+            </div>
+          )}
+          <div
+            key={index}
+            className={`${classes.chatbox_message} ${
+              isUser(user) ? classes.user_chatbox_message : ""
+            } ${getBorderType()}`}
+          >
+            <div className={classes.content}>
+              {!isUser(user) && isGroup && getUserData().display_name && (
+                <p className={classes.userNameSec}>
+                  {getUserData().display_name}
+                </p>
+              )}
+              <GetValidComponent />
 
-            {message && message.trim() !== "null" && (
-              <p
+              {message && message.trim() !== "null" && (
+                <p
+                  style={{
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {message}
+                </p>
+              )}
+              {props.created_at && type !== "audio" && (
+                <span className={classes.timestamp}>
+                  {isEdited ? `edited - ` : ""}
+                  {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                    "hh:mm A"
+                  )}
+                </span>
+              )}
+            </div>
+          </div>
+          {isUser(user) && (
+            <Dropdown
+              menu={{ items }}
+              placement="bottomRight"
+              arrow
+              trigger={["click"]}
+            >
+              <span
+                className={`material-symbols-outlined ${classes.moreIcon}`}
                 style={{
-                  whiteSpace: "pre-line",
+                  color: "black",
                 }}
               >
-                {message}
-              </p>
-            )}
-            {props.created_at && type !== "audio" && (
-              <span className={classes.timestamp}>
-                {isEdited ? `edited - ` : ""}
-                {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
-                  "hh:mm A"
-                )}
+                more_vert
               </span>
-            )}
-          </div>
+            </Dropdown>
+          )}
         </div>
-        {isUser(user) && (
-          <Dropdown
-            menu={{ items }}
-            placement="bottomRight"
-            arrow
-            trigger={["click"]}
-          >
-            <span
-              className={`material-symbols-outlined ${classes.moreIcon}`}
-              style={{
-                color: "black",
-              }}
-            >
-              more_vert
-            </span>
-          </Dropdown>
-        )}
-      </div>
+      </Dropdown>
     </div>
   );
 };
