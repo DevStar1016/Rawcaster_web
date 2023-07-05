@@ -1,4 +1,5 @@
 import {
+  DeleteChannelMessageCommand,
   ListChannelMessagesCommand,
   SendChannelMessageCommand,
   UpdateChannelMessageCommand,
@@ -17,6 +18,7 @@ export async function listChannelMessages(
     ChimeBearer: userId,
     SubChannelId: subChannelId,
   };
+
   const command = new ListChannelMessagesCommand(params);
   const response = await chimeClient.send(command);
 
@@ -31,6 +33,7 @@ export async function listChannelMessages(
 }
 
 export async function sendChannelMessage(params) {
+  console.log(params, "params");
   const command = new SendChannelMessageCommand(params);
   const response = await chimeClient.send(command);
   return response;
@@ -38,6 +41,12 @@ export async function sendChannelMessage(params) {
 
 export async function updateChannelMessage(params) {
   const command = new UpdateChannelMessageCommand(params);
+  const response = await chimeClient.send(command);
+  return response;
+}
+
+export async function deleteChannelMessage(params) {
+  const command = new DeleteChannelMessageCommand(params);
   const response = await chimeClient.send(command);
   return response;
 }

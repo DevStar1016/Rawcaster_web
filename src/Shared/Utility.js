@@ -130,6 +130,7 @@ export const ConvertAddresstoLatLng = (address) => {
 // Common Utility
 
 export const decodeHtml = (data) => {
+  console.log(decode(data)?.length, "datalength");
   return decode(data);
 };
 
@@ -724,5 +725,37 @@ export const handleCopyText = (url) => {
       .catch((error) => {
         console.error("Error copying text:", error);
       });
+  });
+};
+
+export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(blobUrl, {
+        responseType: "blob",
+      });
+      const getFileType = (url = blobUrl) => {
+        const extension = url.substring(url.lastIndexOf(".") + 1);
+        const imageExtensions = ["jpg", "jpeg", "png", "gif"];
+        const videoExtensions = ["mp4", "avi", "mov"];
+        const audioExtensions = ["mp3", "wav", "ogg"];
+
+        if (imageExtensions.includes(extension)) {
+          return `image/${extension}`;
+        } else if (videoExtensions.includes(extension)) {
+          return `video/${extension}`;
+        } else if (audioExtensions.includes(extension)) {
+          return `audio/${extension}`;
+        } else {
+          return response.data.type;
+        }
+      };
+      const file = new File([response.data], fileName, {
+        type: getFileType(),
+      });
+      resolve(file);
+    } catch (error) {
+      reject("Error converting Blob URL to File:", error);
+    }
   });
 };

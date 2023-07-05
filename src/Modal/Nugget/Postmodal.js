@@ -33,6 +33,7 @@ import ImageCropModal from "../ImageCropModal";
 import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
 import { parseInt } from "lodash";
 import ImageEditModal from "../ImageEditModal";
+import LoginModal from "../Verification/LoginModal";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -76,6 +77,7 @@ const Postmodal = ({ visible, onClose }) => {
   const [NuggetImg, setNuggetImg] = useState();
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
+  const [LimitExceeds, setLimitExceeds] = useState(false);
 
   const [oldUrl, setOldurl] = useState("");
   const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
@@ -175,6 +177,8 @@ const Postmodal = ({ visible, onClose }) => {
       return 0;
     }
   };
+
+  const handleLimitExceedsClose = () => setLimitExceeds(false);
 
   return (
     <Modal
@@ -414,9 +418,19 @@ const Postmodal = ({ visible, onClose }) => {
                     );
                     getLinkInfo(e.target.value.slice(0, getNuggetTextLength()));
                     setisPostContentValid(false);
+                    setLimitExceeds(true);
                   }
                 }}
               />
+              {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+                <LoginModal
+                  open={LimitExceeds}
+                  close={handleLimitExceedsClose}
+                  AIclose={true}
+                  AIopen="Upgrade"
+                  AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
+                />
+              )}
               <img
                 width="24px"
                 alt="Add Emoji"

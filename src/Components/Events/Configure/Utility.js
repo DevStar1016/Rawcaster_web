@@ -694,10 +694,25 @@ export const AudioVideoSettings = ({ values, setFieldValue }) => {
 };
 
 export function compareArrays(arr1, arr2) {
-  for (let key in arr1) {
-    if (arr2.includes(key)) {
-      return true;
+  const checkError = arr2?.filter((item, index) => {
+    const CommonItemIndex = arr1?.findIndex((item1, index1) =>
+      item?.includes(item1)
+    );
+    if (CommonItemIndex !== -1) {
+      return item;
     }
+    return undefined;
+  });
+  if (checkError?.length > 0) {
+    return true;
+  } else {
+    return false;
   }
-  return false;
+
+  // for (let key in arr1) {
+  //   if (arr2.includes(key)) {
+  //     return true;
+  //   }
+  // }
+  // return false;
 }
