@@ -10,13 +10,23 @@ import { toast } from "react-hot-toast";
 import moment from "moment";
 import SectionList from "../../../Sharedcomponents/SectionList";
 
-const Content = () => {
+const Content = ({ getContents }) => {
   const userdata = useAuthData();
   const [headerScrolling, setheaderScrolling] = useState(false);
   const [scroll, setscroll] = useState(0);
-  const { Messages, isTyping, GroupDetails, EditData, setMessages } =
-    useChatContext();
+  const {
+    Messages,
+    isTyping,
+    GroupDetails,
+    EditData,
+    setMessages,
+    setSelectAllMessages,
+    SelectAllMessages,
+  } = useChatContext();
   const { isChatOpen } = useMainContext();
+
+  const [selectedMessages, setSelectedMessages] = useState([]);
+
   console.log(Messages);
 
   const handleDelete = (id) => {
@@ -81,6 +91,17 @@ const Content = () => {
     }, 500);
   }, [scroll]);
 
+  useEffect(() => {
+    console.log(selectedMessages, "selectedMessages");
+    getContents(selectedMessages);
+  }, [selectedMessages]);
+
+  useEffect(() => {
+    setSelectedMessages([]);
+  }, [SelectAllMessages]);
+
+  const closeSelection = () => setSelectAllMessages(false);
+
   return (
     <MessageList
       typingIndicator={
@@ -141,6 +162,18 @@ const Content = () => {
                     console.log("test", ele);
                     handleDelete(ele?.message_id);
                   }}
+                  onSelectedMessage={(value) => {
+                    setSelectedMessages((pre) => {
+                      const temp = [...pre];
+                      if (temp?.includes(value)) {
+                        return temp?.filter((item) => item !== value);
+                      }
+                      return [...temp, value];
+                    });
+                  }}
+                  selectedMessages={selectedMessages}
+                  SelectAllMessages={SelectAllMessages}
+                  setSelectAllMessages={setSelectAllMessages}
                 />
                 // <div>hello user</div>
               )}

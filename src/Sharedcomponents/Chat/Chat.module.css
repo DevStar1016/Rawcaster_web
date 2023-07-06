@@ -120,6 +120,7 @@ align-items:center ;
      border-radius: 50% !important;
 }
   .MessageContainer {
+    position: relative;
     display: flex;
     flex-direction: column;
     /* max-height: 400px;
@@ -213,8 +214,10 @@ overflow: hidden;
 
 .user_chatbox_message .avatar {
     margin-right: 0px !important;
+    margin-top: auto;
+    margin-bottom: auto;
    
-    object-fit: cover;
+    /* object-fit: cover; */
 }
 .user_chatbox_message  .userNameSec {
   width: 100%;
@@ -390,4 +393,11 @@ margin-bottom: 5px !important;
           line-clamp: 1; 
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
+}
+.SelectedMessage {
+  position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0;
 }
