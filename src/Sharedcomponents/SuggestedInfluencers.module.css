@@ -50,6 +50,11 @@
     margin-right: 10px;
  }
  .altSignBtn a, .altSignBtn a:hover {color: #000;}
+ .advideoSec{
+   height: 180px;
+   max-height: 180px;
+ }
+
  .advideoSec h1 { font-size: 19px; font-weight: 600; color: #1D1C1C; margin-bottom: 5px; }
  .advideoSec video { width: 100%;border-radius: 11px; }
  .advideoSec p { margin-bottom: 15px; font-size: 13px; }

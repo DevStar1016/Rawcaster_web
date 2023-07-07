@@ -112,19 +112,21 @@ const Post = ({
   });
 
   useEffect(() => {
-    if (contentRef) {
+    if (ele) {
       console.log(
-        contentRef?.current?.offsetHeight > 235,
+        ele?.content?.split("\n"),
         "loggedd from useEffect",
         ele?.content
       );
-      if (contentRef?.current?.offsetHeight > 235) {
+      if (ele?.content?.split("\n")?.length > 10) {
+        setiscollapse(true);
+      } else if (ele?.content?.length > 500) {
         setiscollapse(true);
       } else {
         setiscollapse(false);
       }
     }
-  }, [contentRef]);
+  }, []);
 
   const getNuggetDetail = () => {
     let nuggetDetailData = {
@@ -514,23 +516,26 @@ const Post = ({
       ele.poll_option?.length > 2 &&
       contentTextRef?.current?.offsetHeight > 75
     ) {
-      return true;
+      return false;
     } else if (
       ele.poll_option?.length > 0 &&
       contentTextRef?.current?.offsetHeight > 100
     ) {
-      return true;
+      return false;
     }
     return true;
   };
 
   const isCollapse = () => {
+    console.log(ele, "iscollapse element");
     let isvalidCollapse =
       ele.media_list.length !== 0 || ele.metadata ? true : false;
     if (isvalidCollapse) {
       return false;
-    } else if (contentRef?.current?.offsetHeight > 235) {
-      console.log("loggedd");
+    }
+    if (ele?.content?.split("\n")?.length > 10) {
+      return false;
+    } else if (ele?.content?.length > 300 && ele?.poll_option?.length > 1) {
       return false;
     } else if (!isvalidContent) {
       return true;
@@ -639,6 +644,10 @@ const Post = ({
       });
     }
   };
+
+  useEffect(() => {
+    console.log("rendering");
+  }, []);
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (
@@ -789,9 +798,21 @@ const Post = ({
                     wordBreak: "break-word",
                   }}
                   ref={contentTextRef}
+                  onClick={() => {
+                    console.log(
+                      ele?.content?.length,
+                      isCollapse(),
+                      iscollapse,
+                      ele?.content?.split("\n")?.length > 10,
+                      ele?.content?.length > 300 &&
+                        ele?.poll_option?.length > 1,
+                      !isvalidContent,
+                      "contentlength"
+                    );
+                  }}
                 >
                   <ReadMore
-                    isReadMore={false}
+                    isReadMore={isReadMore()}
                     isLinkopenModal={isLinkopenModal}
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}

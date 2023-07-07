@@ -124,7 +124,7 @@ const ReferalDashboard = () => {
                   </div> */}
                 </div>
               ) : null}
-              <Connections maxHeight={"50vh"} />
+              <Connections referral={true} maxHeight={"50vh"} />
             </div>
           </Col>
         </Row>

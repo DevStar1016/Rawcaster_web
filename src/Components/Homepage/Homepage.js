@@ -216,7 +216,10 @@ const Homepage = () => {
         </h5>
 
         <div className={classes.deskSlide}>
-          <OwlCarousel className={`owl-theme ${classes.customCarousel}`} {...carouselOptions}>
+          <OwlCarousel
+            className={`owl-theme ${classes.customCarousel}`}
+            {...carouselOptions}
+          >
             <div className={classes.userSec}>
               <p>
                 Rawcaster is the epitome of what a social media platform should
