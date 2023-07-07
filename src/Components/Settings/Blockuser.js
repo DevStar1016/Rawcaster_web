@@ -180,13 +180,13 @@ const Blockuser = () => {
               }
             }}
           >
-            <span class="material-icons">search</span>
+            <span className="material-icons">search</span>
           </InputGroup.Text>
         </InputGroup>
         {query && (
           <div className={classes.resetSec}>
             <span
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setQuery("");
                 getBlockedUserData();

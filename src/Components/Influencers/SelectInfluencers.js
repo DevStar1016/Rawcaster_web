@@ -240,7 +240,7 @@ const SelectInfluencers = () => {
                     );
                   }}
                 >
-                  <span class="material-icons">search</span>
+                  <span className="material-icons">search</span>
                 </InputGroup.Text>
               </InputGroup>
             </div>
@@ -378,7 +378,7 @@ const SelectInfluencers = () => {
                   {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
                     <Link className={classes.selectedBtn}>
                       Selected{" "}
-                      <span class="material-symbols-outlined">done</span>
+                      <span className="material-symbols-outlined">done</span>
                     </Link>
                   ) : (
                     <>
@@ -393,7 +393,7 @@ const SelectInfluencers = () => {
                           }}
                         >
                           Become a Fan{" "}
-                          <span class="material-icons">arrow_forward</span>
+                          <span className="material-icons">arrow_forward</span>
                         </Link>
                       )}
                     </>
@@ -418,7 +418,7 @@ const SelectInfluencers = () => {
                 }}
               >
                 View more
-                <span class="material-symbols-outlined">arrow_forward</span>
+                <span className="material-symbols-outlined">arrow_forward</span>
               </p>
             )}
           </div>

@@ -141,9 +141,9 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
               disabled={isThumb}
             >
               {isPlaying ? (
-                <span class="material-symbols-outlined">pause</span>
+                <span className="material-symbols-outlined">pause</span>
               ) : (
-                <span class="material-symbols-outlined">play_arrow</span>
+                <span className="material-symbols-outlined">play_arrow</span>
               )}
             </button>
           </div>

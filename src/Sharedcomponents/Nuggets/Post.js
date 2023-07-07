@@ -349,7 +349,8 @@ const Post = ({
               }}
               className={classes.dropdownItem}
             >
-              <span class="material-symbols-outlined">block</span> Block User
+              <span className="material-symbols-outlined">block</span> Block
+              User
             </div>
           ),
         },
@@ -362,7 +363,8 @@ const Post = ({
               }}
               className={classes.dropdownItem}
             >
-              <span class="material-symbols-outlined">report</span> Report Abuse
+              <span className="material-symbols-outlined">report</span> Report
+              Abuse
             </div>
           ),
         },
@@ -392,7 +394,8 @@ const Post = ({
               }}
               className={classes.dropdownItem}
             >
-              <span class="material-symbols-outlined">block</span> Block User
+              <span className="material-symbols-outlined">block</span> Block
+              User
             </div>
           ),
         },
@@ -405,7 +408,8 @@ const Post = ({
               }}
               className={classes.dropdownItem}
             >
-              <span class="material-symbols-outlined">report</span> Report Abuse
+              <span className="material-symbols-outlined">report</span> Report
+              Abuse
             </div>
           ),
         },
@@ -418,7 +422,8 @@ const Post = ({
               }}
               className={classes.dropdownItem}
             >
-              <span class="material-symbols-outlined">group</span>Become a Fan
+              <span className="material-symbols-outlined">group</span>Become a
+              Fan
             </div>
           ),
         },
@@ -726,7 +731,7 @@ const Post = ({
                   {dateToShortDate(ele.created_date, userSettings?.time_zone)}
                 </Tooltip>
               )}
-              <i class="material-icons">fiber_manual_record</i>
+              <i className="material-icons">fiber_manual_record</i>
               {ele?.total_views} Views{" "}
               {ele?.share_type === 3 || ele?.share_type === 4 ? (
                 <Tooltip
@@ -742,16 +747,16 @@ const Post = ({
                     );
                   }}
                 >
-                  <i class="material-icons">fiber_manual_record</i>
+                  <i className="material-icons">fiber_manual_record</i>
                   {getDataValueById(SHARED_TYPE, ele?.share_type)}
                 </Tooltip>
               ) : (
                 <>
-                  <i class="material-icons">fiber_manual_record</i>
+                  <i className="material-icons">fiber_manual_record</i>
                   {getDataValueById(SHARED_TYPE, ele?.share_type)}
                 </>
               )}
-              <i class="material-icons">fiber_manual_record</i>
+              <i className="material-icons">fiber_manual_record</i>
               {ele?.follow_count} Fans
             </p>
           </div>
@@ -765,7 +770,7 @@ const Post = ({
               }}
             >
               <div className={classes.dropMenu}>
-                <span class="material-icons">more_horiz</span>
+                <span className="material-icons">more_horiz</span>
               </div>
             </Dropdown>
           )}
@@ -784,13 +789,7 @@ const Post = ({
             <div className={`${classes.ReadoutSec} py-2`}></div>
           )}
           <div className={classes.contentSec} ref={ref}>
-            <div
-              ref={contentRef}
-              onClick={() => {
-                console.log(contentRef?.current?.offsetHeight > 235, "loggedd");
-              }}
-              className={classes.feedsSec}
-            >
+            <div ref={contentRef} className={classes.feedsSec}>
               {ele && isValidData(ele?.content) && (
                 <p
                   style={{
@@ -894,6 +893,7 @@ const Post = ({
                   <ImageGrid
                     imgArray={ele.media_list}
                     muted={muted}
+                    downloadable={1}
                     mutenuggetaudio={setmuted}
                     onPlay={() => {
                       let dashboardPlayer = document.getElementById(
@@ -1106,7 +1106,7 @@ const Post = ({
                       }}
                     >
                       <p>
-                        <i class="material-symbols-outlined">expand_more</i>
+                        <i className="material-symbols-outlined">expand_more</i>
                       </p>
                     </div>
                   ) : (
@@ -1117,7 +1117,7 @@ const Post = ({
                       }}
                     >
                       <p>
-                        <i class="material-symbols-outlined">expand_less</i>
+                        <i className="material-symbols-outlined">expand_less</i>
                       </p>
                     </div>
                   )}

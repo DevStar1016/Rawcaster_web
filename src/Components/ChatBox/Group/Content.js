@@ -27,8 +27,6 @@ const Content = ({ getContents }) => {
 
   const [selectedMessages, setSelectedMessages] = useState([]);
 
-  console.log(Messages);
-
   const handleDelete = (id) => {
     const params = {
       ChannelArn: GroupDetails?.group_arn,
@@ -81,15 +79,15 @@ const Content = ({ getContents }) => {
     return sectionedMessages.reverse();
   };
 
-  useEffect(() => {
-    setheaderScrolling(true);
-    const timeout = setTimeout(() => {
-      clearTimeout(timeout);
-      if (scroll === document.getElementById("scrollContainer").scrollTop) {
-        setheaderScrolling(false);
-      }
-    }, 500);
-  }, [scroll]);
+  // useEffect(() => {
+  //   setheaderScrolling(true);
+  //   const timeout = setTimeout(() => {
+  //     clearTimeout(timeout);
+  //     if (scroll === document.getElementById("scrollContainer").scrollTop) {
+  //       setheaderScrolling(false);
+  //     }
+  //   }, 500);
+  // }, [scroll]);
 
   useEffect(() => {
     console.log(selectedMessages, "selectedMessages");
@@ -126,7 +124,6 @@ const Content = ({ getContents }) => {
         onScroll={(event) => {
           const listboxNode = event.currentTarget;
           const { scrollTop, scrollHeight, clientHeight } = listboxNode;
-          console.log(scrollTop, "eventevent scroll");
           if (scrollTop + clientHeight < scrollHeight - 5) setscroll(scrollTop);
         }}
         id="scrollContainer"

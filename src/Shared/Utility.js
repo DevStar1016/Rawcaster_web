@@ -1,6 +1,7 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
 import {
+  AES_KEY,
   ENCRIPTION_STRING,
   GECODE_API_KEY,
   GOOGLE_CLIENT_ID,
@@ -28,6 +29,7 @@ import { message } from "antd";
 import { Typography } from "antd";
 import axios, { isCancel } from "axios";
 import { toast } from "react-hot-toast";
+import { AES, enc } from "crypto-js";
 
 // Auth
 
@@ -331,7 +333,7 @@ export const isAccountValid = (userData) => {
 //   return (
 //     <Linkify options={{ render: renderLink }}>
 //       <div>
-//         <span class={textClass} ref={ref}>
+//         <span className={textClass} ref={ref}>
 //           {children}
 //         </span>
 //         {showLink && (
@@ -575,7 +577,6 @@ export const fetchGoogleContacts = async () => {
       });
       resolve(response.result.otherContacts);
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -809,4 +810,29 @@ export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
       reject("Error converting Blob URL to File:", error);
     }
   });
+};
+
+export const downloadurl = (url) => {
+  var file_path = url;
+  var a = document.createElement("A");
+  a.href = file_path;
+  a.download = file_path.substr(file_path.lastIndexOf("/") + 1);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+// OBJECT TO STRING
+
+export const EncryptObjectToString = (objectToEncrypt, secretKey = AES_KEY) => {
+  const stringToEncrypt = JSON.stringify(objectToEncrypt);
+  const encrypted = AES.encrypt(stringToEncrypt, secretKey).toString();
+  return encrypted;
+};
+
+export const DecryptStringToObject = (encryptedString, secretKey = AES_KEY) => {
+  const decryptedBytes = AES.decrypt(encryptedString, secretKey);
+  const decryptedString = decryptedBytes.toString(enc.Utf8);
+  const decryptedObject = JSON.parse(decryptedString);
+  return decryptedObject;
 };

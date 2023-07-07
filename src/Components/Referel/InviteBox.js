@@ -135,7 +135,7 @@ const InviteBox = () => {
             <img src={ReferalIcon} alt={"Referrals Dashboard"} />
             <p>Referrals Dashboard</p>
           </div>
-          <span class="material-symbols-outlined">chevron_right</span>
+          <span className="material-symbols-outlined">chevron_right</span>
         </div>
 
         <div
@@ -154,9 +154,9 @@ const InviteBox = () => {
             <p>Contacts</p>
           </div>
           {isGmailOpen ? (
-            <span class="material-symbols-outlined">expand_more</span>
+            <span className="material-symbols-outlined">expand_more</span>
           ) : (
-            <span class="material-symbols-outlined">chevron_right</span>
+            <span className="material-symbols-outlined">chevron_right</span>
           )}
         </div>
 
@@ -186,7 +186,7 @@ const InviteBox = () => {
                       </div>
                     </div>
                     {SentedEmails.includes(ele.email) ? (
-                      <span class="material-symbols-outlined">done</span>
+                      <span className="material-symbols-outlined">done</span>
                     ) : (
                       <div
                         className={classes.inviteBtn}
@@ -222,7 +222,7 @@ const InviteBox = () => {
               <img src={img} alt={title} />
               <p>{title}</p>
             </div>
-            <span class="material-symbols-outlined">chevron_right</span>
+            <span className="material-symbols-outlined">chevron_right</span>
           </div>
         </Component>
       ))}
@@ -237,7 +237,7 @@ const InviteBox = () => {
           <img src={FansIcon} alt={"Invite fans"} />
           <p>Invite friends</p>
         </div>
-        <span class="material-symbols-outlined">chevron_right</span>
+        <span className="material-symbols-outlined">chevron_right</span>
       </div>
 
       {/* <GmailListModal

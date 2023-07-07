@@ -33,7 +33,6 @@ export async function listChannelMessages(
 }
 
 export async function sendChannelMessage(params) {
-  console.log(params, "params");
   const command = new SendChannelMessageCommand(params);
   const response = await chimeClient.send(command);
   return response;

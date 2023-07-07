@@ -9,6 +9,7 @@ import { Carousel } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { useMainContext } from "../../Shared/Context";
+import { downloadurl } from "../../Shared/Utility";
 
 const ImageGrid = ({
   imgArray,
@@ -140,7 +141,7 @@ const ImageGrid = ({
             controlsList="nodownload"
             style={{ width: "100%", height: "100%", borderRadius: 10 }}
           ></video>
-          <span class={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
+          <span className={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
             play_circle
           </span>
         </>
@@ -149,7 +150,7 @@ const ImageGrid = ({
       return (
         <>
           <div className={classes.musicIcon}>
-            <span class="material-symbols-outlined">music_note</span>
+            <span className="material-symbols-outlined">music_note</span>
           </div>
         </>
       );
@@ -738,7 +739,14 @@ const ImageGrid = ({
             <div className={classes.nuggets_popup}>
               {downloadable === 1 && (
                 <i
+                  style={{
+                    marginTop: 13,
+                    cursor: "pointer",
+                    zIndex: 25,
+                  }}
                   onClick={() => {
+                    downloadurl(imgArray[ActiveModalIndex]?.path);
+
                     //   utility.downloadHandler(downloadPath);
                   }}
                   className={`material-icons ${classes.download_icon}`}
@@ -758,11 +766,13 @@ const ImageGrid = ({
                   }}
                   nextIcon={
                     ActiveModalIndex !== imgArray.length - 1 ? (
-                      <b class="arrow next ">›</b>
+                      <b className="arrow next ">›</b>
                     ) : null
                   }
                   prevIcon={
-                    ActiveModalIndex !== 0 ? <b class="arrow prev">‹</b> : null
+                    ActiveModalIndex !== 0 ? (
+                      <b className="arrow prev">‹</b>
+                    ) : null
                   }
                 >
                   {imgArray.map((ele, index) => {

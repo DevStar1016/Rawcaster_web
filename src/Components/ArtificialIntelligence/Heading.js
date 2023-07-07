@@ -9,7 +9,7 @@ const Heading = ({ onClose }) => {
         <img src={ChatProfile} />
         <p>Rawcaster AI</p>
       </div>
-      <span class="material-symbols-outlined" onClick={onClose}>
+      <span className="material-symbols-outlined" onClick={onClose}>
         close
       </span>
     </div>

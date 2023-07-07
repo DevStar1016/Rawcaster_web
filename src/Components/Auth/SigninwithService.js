@@ -108,14 +108,12 @@ const SigninwithService = ({ type }) => {
             discoveryDocs="claims_supported"
             access_type="offline"
             onResolve={({ provider, data }) => {
-              console.log(data, "data");
               let resultVal = {
                 signin_type: 5,
                 first_name: data.name,
                 display_name: data.name,
                 email_id: data.email,
               };
-              console.log(resultVal, "resultVal");
               HandleSignup(resultVal);
               dispatch(handleLoading(true));
             }}

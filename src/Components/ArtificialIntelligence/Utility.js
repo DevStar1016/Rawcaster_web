@@ -125,13 +125,13 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
         handleStopAudio();
       }}
     >
-      <i class="material-symbols-outlined">mic_off</i>Stop
+      <i className="material-symbols-outlined">mic_off</i>Stop
     </p>
   ) : (
     <>
       {isFetchingurl ? (
         <p className={`mx-2 ${classes.fetchingSec}`}>
-          <div class="dot_typing"></div>
+          <div className="dot_typing"></div>
         </p>
       ) : (
         <p
@@ -319,9 +319,9 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
             <div className={`${classes.playSec}`}>
               <button onClick={isPlaying ? handlePause : handlePlay}>
                 {isPlaying ? (
-                  <span class="material-symbols-outlined">pause</span>
+                  <span className="material-symbols-outlined">pause</span>
                 ) : (
-                  <span class="material-symbols-outlined">play_arrow</span>
+                  <span className="material-symbols-outlined">play_arrow</span>
                 )}
               </button>
             </div>
@@ -524,7 +524,7 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
           </div>
           <div className={classes.ActionSec}>
             <span
-              class={`material-symbols-outlined ${classes.closeIcon}`}
+              className={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
                 handleClose();
                 clearBlobUrl();

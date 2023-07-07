@@ -103,7 +103,9 @@ const EventLayout = () => {
                       color: "white",
                     }}
                   >
-                    <span class="material-symbols-outlined">expand_less</span>
+                    <span className="material-symbols-outlined">
+                      expand_less
+                    </span>
                   </div>
                 </Dropdown>
               </div>
@@ -142,7 +144,9 @@ const EventLayout = () => {
                       color: "white",
                     }}
                   >
-                    <span class="material-symbols-outlined">expand_less</span>
+                    <span className="material-symbols-outlined">
+                      expand_less
+                    </span>
                   </div>
                 </Dropdown>
               </div>
@@ -183,7 +187,7 @@ const EventLayout = () => {
               setisPinEnabled(!isPinEnabled);
             }}
           >
-            <i class="material-symbols-outlined">grid_view</i>
+            <i className="material-symbols-outlined">grid_view</i>
             View
           </div>
           <div className={styles.Actionsec}>

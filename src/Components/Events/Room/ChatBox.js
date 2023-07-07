@@ -44,7 +44,7 @@ const ChatBox = () => {
           </div>
           <div>
             <i
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               //   onClick={() => {
               //     setisChatorParticipant(null);
               //   }}
@@ -107,7 +107,7 @@ const ChatBox = () => {
         <div className={classes.ContentSec}>
           <InputGroup className={classes.chatinputSec}>
             <span
-              class="material-symbols-outlined my-auto ms-1"
+              className="material-symbols-outlined my-auto ms-1"
               onClick={() => {
                 setisEmoji(!isEmoji);
               }}

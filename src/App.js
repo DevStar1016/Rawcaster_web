@@ -10,6 +10,7 @@ import {
   MeetingProvider,
   lightTheme,
 } from "amazon-chime-sdk-component-library-react";
+import withErrorBoundary from "./Sharedcomponents/withErrorBoundary";
 
 function App() {
   const { isLoading } = useDashboard();
@@ -27,4 +28,4 @@ function App() {
   );
 }
 
-export default App;
+export default withErrorBoundary(App);

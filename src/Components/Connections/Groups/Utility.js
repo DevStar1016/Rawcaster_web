@@ -118,7 +118,7 @@ export const GroupHeader = () => {
                 }}
               />
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 style={{ display: getValidConnections() ? "" : "none" }}
                 onClick={() => {
                   setisAddMember(false);
@@ -141,7 +141,7 @@ export const GroupHeader = () => {
               <Tooltip title="Exit and Delete" color={"red"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       Modal.confirm({
                         title: "Confirmation",
@@ -166,7 +166,7 @@ export const GroupHeader = () => {
               <Tooltip title="Add Connection" color={"#F2718D"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     style={{ display: getValidConnections() ? "" : "none" }}
                     onClick={() => {
                       setisAddMember(true);
@@ -184,7 +184,7 @@ export const GroupHeader = () => {
               <Tooltip title="Report and Exit Group" color={"#fc8403"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       setisReport(true);
                     }}
@@ -216,7 +216,7 @@ export const GroupHeader = () => {
                     });
                   }}
                 >
-                  <span class="material-symbols-outlined">logout</span>
+                  <span className="material-symbols-outlined">logout</span>
                 </div>
               </Tooltip>
             </>
@@ -230,7 +230,7 @@ export const GroupHeader = () => {
                 onClick={() => {
                   setisReport(true);
                 }}
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 style={{
                   color: "#fc8403",
                   fontWeight: 500,
@@ -272,7 +272,7 @@ export const GroupHeader = () => {
           }}
         >
           <div className={classes.overLaySec}>
-            <span class="material-symbols-outlined">upload</span>
+            <span className="material-symbols-outlined">upload</span>
           </div>
           <img
             src={
@@ -461,7 +461,7 @@ export const SelectConnections = () => {
               }}
             />
             <InputGroup.Text className={classes.searchIcon}>
-              <span class="material-icons">search</span>
+              <span className="material-icons">search</span>
             </InputGroup.Text>
           </InputGroup>
 
@@ -563,7 +563,7 @@ export const SelectConnections = () => {
                   }}
                 >
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     style={{
                       display: SelectedConnections.includes(ele.user_id)
                         ? ""
@@ -646,7 +646,7 @@ export const EditGroupMembers = () => {
                 }}
               />
               <InputGroup.Text className={classes.searchIcon}>
-                <span class="material-icons">search</span>
+                <span className="material-icons">search</span>
               </InputGroup.Text>
             </InputGroup>
           )}
@@ -786,7 +786,7 @@ export const EditGroupMembers = () => {
                               }}
                             >
                               <span
-                                class="material-symbols-outlined"
+                                className="material-symbols-outlined"
                                 onClick={() => {
                                   Modal.confirm({
                                     title: "Confirmation",

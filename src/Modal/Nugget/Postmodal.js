@@ -233,8 +233,8 @@ const Postmodal = ({ visible, onClose }) => {
             }}
           >
             <p className={classes.onlymeBtn}>
-              <span class="material-icons">lock</span> {ShareType}{" "}
-              <span class="material-icons">arrow_drop_down</span>
+              <span className="material-icons">lock</span> {ShareType}{" "}
+              <span className="material-icons">arrow_drop_down</span>
             </p>
           </Dropdown>
           <div
@@ -248,7 +248,7 @@ const Postmodal = ({ visible, onClose }) => {
             }}
           >
             <span
-              class="material-symbols-outlined mx-2"
+              className="material-symbols-outlined mx-2"
               onClick={() => {
                 setGrouporConnectionModal({
                   show: true,
@@ -530,7 +530,7 @@ const Postmodal = ({ visible, onClose }) => {
                   className={classes.clsBtn}
                   onClick={() => setMetaData(null)}
                 >
-                  <span class="material-icons">close</span>
+                  <span className="material-icons">close</span>
                 </div>
                 <p className={classes.title}>{MetaData.title}</p>
                 {MetaData.image && MetaData.image !== "" ? (
@@ -578,7 +578,7 @@ const Postmodal = ({ visible, onClose }) => {
                 alt="more"
                 style={{ width: "20px", height: "20px" }}
               /> */}
-                        <span class="material-icons">delete</span>
+                        <span className="material-icons">delete</span>
                       </div>
                     </div>
                   );
@@ -609,7 +609,7 @@ const Postmodal = ({ visible, onClose }) => {
                             );
                           }}
                         >
-                          <span class="material-icons">delete</span>
+                          <span className="material-icons">delete</span>
                         </div>
                       </div>
                       {getURL().media_type.includes("image") && (
@@ -619,7 +619,9 @@ const Postmodal = ({ visible, onClose }) => {
                             setNuggetImg({ ele: ele, index: index });
                           }}
                         >
-                          <span class="material-symbols-outlined">edit</span>
+                          <span className="material-symbols-outlined">
+                            edit
+                          </span>
                         </div>
                       )}
                     </>

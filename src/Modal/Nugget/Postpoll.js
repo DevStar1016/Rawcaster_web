@@ -106,7 +106,7 @@ const Postpoll = ({ setisPoll }) => {
           <div className={classes.addSec}>
             {PollData.length !== 4 && (
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 onClick={() => {
                   let tmpData = [...PollData, { choiceData: "" }];
                   setFieldValue("poll_option", tmpData);
@@ -156,7 +156,7 @@ const Postpoll = ({ setisPoll }) => {
                               setFieldValue("poll_option", tmpData);
                             }}
                           >
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                               cancel
                             </span>
                           </div>

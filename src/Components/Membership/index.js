@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classes from "./Membership.module.css";
 import valuedMember from "../../Assets/Images/svg/valuedMember.svg";
 import premiumMember from "../../Assets/Images/svg/premiumMember.png";
@@ -8,6 +8,7 @@ import { useAuthData } from "../../Shared/Reduxfetcher";
 
 const Membership = () => {
   const userData = useAuthData();
+  const [ActiveTab, setActiveTab] = useState(1);
   const getBadge = () => {
     switch (userData?.user_status_id) {
       case 1:
@@ -22,6 +23,28 @@ const Membership = () => {
         return 4;
     }
   };
+
+  const getMemberShipAmount = () => {
+    if (ActiveTab === 1) {
+      return {
+        title: "Monthly",
+        amount: {
+          valued: "Free",
+          premium: "3",
+          diamond: "7",
+        },
+      };
+    } else {
+      return {
+        title: "Annually",
+        amount: {
+          valued: "Free",
+          premium: "30",
+          diamond: "79.99",
+        },
+      };
+    }
+  };
   return (
     <div className={`mainWrapper ${classes.memberSec}`}>
       <h1>Plans & Pricing</h1>
@@ -30,6 +53,25 @@ const Membership = () => {
         to help you scale.
       </h2>
 
+      <div className={classes.tabContainer}>
+        <div
+          className={`${classes.tab} ${ActiveTab === 1 ? classes.active : ""}`}
+          onClick={() => {
+            setActiveTab(1);
+          }}
+        >
+          Monthly
+        </div>
+        <div
+          className={`${classes.tab} ${ActiveTab === 2 ? classes.active : ""}`}
+          onClick={() => {
+            setActiveTab(2);
+          }}
+        >
+          Annually
+        </div>
+      </div>
+
       <div className="row">
         <div className="col-md-4">
           <div className={classes.packageSec}>
@@ -37,7 +79,7 @@ const Membership = () => {
               <div className={classes.leftText}>
                 <h5>Valued Member</h5>
                 <h3>Free</h3>
-                <p>Annually</p>
+                <p>{getMemberShipAmount().title}</p>
               </div>
               <img src={valuedMember} alt="valued_member_logo" />
             </div>
@@ -64,8 +106,8 @@ const Membership = () => {
             <div className={classes.top}>
               <div className={classes.leftText}>
                 <h5>Premium</h5>
-                <h3>$30</h3>
-                <p>Annually</p>
+                <h3>${getMemberShipAmount().amount.premium}</h3>
+                <p>{getMemberShipAmount().title}</p>
               </div>
               <img src={premiumMember} alt="premium_member_logo" />
             </div>
@@ -99,8 +141,8 @@ const Membership = () => {
             <div className={classes.top}>
               <div className={classes.leftText}>
                 <h5>Diamond</h5>
-                <h3>$79.99</h3>
-                <p>Annually</p>
+                <h3>${getMemberShipAmount().amount.diamond}</h3>
+                <p>{getMemberShipAmount().title}</p>
               </div>
               <img src={diamondMember} alt="diamond_member_logo" />
             </div>
