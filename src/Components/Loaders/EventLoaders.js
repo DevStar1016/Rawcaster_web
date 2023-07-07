@@ -6,7 +6,7 @@ const EventLoaders = () => {
   return (
     <div className={`${classes.eventItem}`}>
       <Skeleton.Node active={true} className={classes.eventImg}>
-        <span class="material-symbols-outlined">image</span>
+        <span className="material-symbols-outlined">image</span>
       </Skeleton.Node>
       <div className={classes.contentSec}>
         <Skeleton loading={true}>

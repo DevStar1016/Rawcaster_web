@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import classes from "./Audioplayer.module.css";
 import moment from "moment";
-import { useGlobalAudioPlayer } from "react-use-audio-player";
 const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
+  const [audioUrl, setAudioUrl] = useState("");
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [Duration, setDuration] = useState(0);
   const [FormattedTime, setFormattedTime] = useState("00:00");
-  const { load, duration, getPosition } = useGlobalAudioPlayer();
+  const duration = 0;
 
   const handleTimeUpdate = () => {
     setCurrentTime(audioRef.current?.currentTime);
@@ -16,11 +16,9 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
     );
   };
 
-  const handleLoadedMetadata = () => {
-    setDuration(duration);
-    load(url, {
-      autoplay: false,
-    });
+  const handleLoadedMetadata = async () => {
+    console.log(audioRef.current.duration);
+    setDuration(audioRef.current.duration);
   };
 
   const handleSliderChange = (e) => {
@@ -32,30 +30,62 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
   };
 
   useEffect(() => {
-    console.log(currentTime, "getduration current");
+    const audio = new Audio();
+    audio.src = url;
+    audio.addEventListener("loadedmetadata", () => {
+      setAudioUrl(audio.src);
+    });
+
+    return () => {
+      audio.removeEventListener("loadedmetadata", () => {
+        setAudioUrl(audio.src);
+      });
+    };
+  }, [url]);
+
+  useEffect(() => {
     if (currentTime) {
       setFormattedTime(moment.utc(currentTime * 1000).format("mm:ss"));
     }
   }, [currentTime]);
 
-  useEffect(() => {
-    if (url) {
-      load(url, {
-        autoplay: false,
-      });
-      console.log(duration, "getduration");
-    }
-  }, [url]);
+  // useEffect(() => {
+  //   if (url) {
+  //     load(url, {
+  //       autoplay: false,
+  //     });
+  //     console.log(duration, "getduration");
+  //   }
+  // }, [url]);
 
-  return (
-    <div className={classes.audio_slider_container}>
+  const AudioPlayer = memo(({ src }) => {
+    const handleLoadedMetadata = async (event) => {
+      const { duration } = event.target;
+      console.log(isNaN(duration));
+      if (isFinite(duration)) {
+        console.log(duration, "duration");
+      }
+    };
+    return (
       <audio
         ref={audioRef}
         id="audionugget"
-        src={url}
+        src={src}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
+        onLoadedData={(e) => {
+          console.log(e);
+        }}
+        onError={(error) => {
+          console.log(error);
+        }}
       />
+    );
+  });
+
+  return (
+    <div className={classes.audio_slider_container}>
+      <AudioPlayer src={audioUrl} />
 
       <div className="w-100 d-flex flex-row align-items-center justify-content-center">
         <div className={classes.pauseplaySec}>

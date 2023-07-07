@@ -40,7 +40,7 @@ const BeforeAuthEvents = () => {
                   }}
                 >
                   Login/Signup to continue{" "}
-                  <span class="material-icons">arrow_forward</span>
+                  <span className="material-icons">arrow_forward</span>
                 </Link>
               </div>
             </div>

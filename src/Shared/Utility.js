@@ -333,7 +333,7 @@ export const isAccountValid = (userData) => {
 //   return (
 //     <Linkify options={{ render: renderLink }}>
 //       <div>
-//         <span class={textClass} ref={ref}>
+//         <span className={textClass} ref={ref}>
 //           {children}
 //         </span>
 //         {showLink && (
@@ -577,7 +577,6 @@ export const fetchGoogleContacts = async () => {
       });
       resolve(response.result.otherContacts);
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -762,7 +761,6 @@ export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
 };
 
 export const downloadurl = (url) => {
-  console.log(url);
   var file_path = url;
   var a = document.createElement("A");
   a.href = file_path;

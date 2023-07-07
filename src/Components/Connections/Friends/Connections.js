@@ -153,7 +153,7 @@ const Connections = () => {
         My Connections <span>({friends.length})</span>
         {friends.length !== 0 && !isFriendsLoading ? (
           <i
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setisAddFriend(true);
             }}

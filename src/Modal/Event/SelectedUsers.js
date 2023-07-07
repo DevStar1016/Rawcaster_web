@@ -23,7 +23,7 @@ const SelectedUsers = ({
       onCancel={close}
       closeIcon={
         <div className={styles.modalCloseIcon}>
-          <span class="material-symbols-outlined">close</span>
+          <span className="material-symbols-outlined">close</span>
         </div>
       }
     >
@@ -58,7 +58,7 @@ const SelectedUsers = ({
                     <p>{decodeHtml(group.group_name)}</p>
                   </div>
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       setGroups(group.group_id);
                     }}
@@ -92,7 +92,7 @@ const SelectedUsers = ({
                     <p>{decodeHtml(friend.display_name)}</p>
                   </div>
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       setfriends(friend.user_id);
                     }}

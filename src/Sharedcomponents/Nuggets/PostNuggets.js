@@ -85,13 +85,11 @@ const PostNuggets = () => {
 
   useEffect(() => {
     if (PostContent) {
-      console.log(PostContent.slice(0, getNuggetTextLength()).length);
       setFieldValue("content", PostContent.slice(0, getNuggetTextLength()));
     }
   }, [PostContent]);
 
   const EditNugget = (val) => {
-    console.log(deletedMedia);
     if (NuggetData.length === 0 && !isValidData(val.content)) {
       toast.error("Sorry! Nuggets content or Media can not be empty.");
       return;

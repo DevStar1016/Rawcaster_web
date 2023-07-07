@@ -133,7 +133,7 @@ const ChatDocument = ({
             setNuggetData((pre) => pre.filter((ele, i) => i !== index));
           }}
         >
-          <span class="material-icons">delete</span>
+          <span className="material-icons">delete</span>
         </div>
       </div>
       {getURL().media_type.includes("image") && (
@@ -144,7 +144,7 @@ const ChatDocument = ({
             setNuggetImg({ ele: ele, index: index });
           }}
         >
-          <span class="material-symbols-outlined">edit</span>
+          <span className="material-symbols-outlined">edit</span>
         </div>
       )}
     </>

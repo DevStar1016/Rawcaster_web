@@ -107,7 +107,6 @@ const HomeLayout = () => {
   };
 
   useEffect(() => {
-    console.log(unReadCount, "unReadCount");
     if (params) {
       setsearchData(DecryptionString(params.key));
     }
@@ -141,7 +140,7 @@ const HomeLayout = () => {
               user_id: null,
               page_number: 1,
             };
-            console.log(filterData);
+
             filterData.formData = filterValidObject(filterData.formData);
             dispatch(handleResetNuggets());
             dispatch(handleNuggetFormData(filterValidObject(filterData)));

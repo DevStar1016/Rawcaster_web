@@ -257,7 +257,7 @@ const DashboardSignup = () => {
             <Connections />
           </div>
         )}
-        {isChatOpen.show && (
+        {/* {isChatOpen.show && (
           // <LinkDeviceModal
           //   open={isChatOpen}
           //   close={() => {
@@ -276,7 +276,7 @@ const DashboardSignup = () => {
               });
             }}
           />
-        )}
+        )} */}
       </div>
     </>
   );

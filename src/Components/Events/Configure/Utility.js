@@ -565,7 +565,7 @@ export const Connections = ({ onResult, values }) => {
           ></input>
           <i
             style={{ cursor: "pointer" }}
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setFriendSearchInput((p) => !p);
             }}
@@ -714,7 +714,7 @@ export const Groups = ({ onResult, values }) => {
           ></input>
           <i
             style={{ cursor: "pointer" }}
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setGroupSearchInput((p) => !p);
             }}

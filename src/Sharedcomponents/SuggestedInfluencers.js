@@ -115,7 +115,7 @@ const SuggestedInfluencers = () => {
             dispatch(handleloginModalShow(true));
           }}
         >
-          See More <span class="material-icons">arrow_forward</span>
+          See More <span className="material-icons">arrow_forward</span>
         </div>
       )}
     </div>

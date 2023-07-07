@@ -36,9 +36,9 @@ const Participants = () => {
             <p>Participants</p>
           </div>
           <div>
-            <i class="material-symbols-outlined">search</i>
+            <i className="material-symbols-outlined">search</i>
             <i
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setisChatorParticipant(null);
               }}
@@ -50,9 +50,9 @@ const Participants = () => {
         <div className={classes.GlobalSettingContainer}>
           <div className={classes.itemName}>Global Settings</div>
           <div className={classes.itemAction}>
-            <span class="material-symbols-outlined">volume_up</span>
-            <span class="material-symbols-outlined">mic</span>
-            <span class="material-symbols-outlined">videocam</span>
+            <span className="material-symbols-outlined">volume_up</span>
+            <span className="material-symbols-outlined">mic</span>
+            <span className="material-symbols-outlined">videocam</span>
           </div>
         </div>
       </Header>
@@ -67,10 +67,10 @@ const Participants = () => {
               {ele.externalUserId === "Me" ? (
                 <div className={classes.hostIcon}>HOST</div>
               ) : (
-                <span class="material-symbols-outlined">volume_up</span>
+                <span className="material-symbols-outlined">volume_up</span>
               )}
-              <span class="material-symbols-outlined">mic</span>
-              <span class="material-symbols-outlined">videocam</span>
+              <span className="material-symbols-outlined">mic</span>
+              <span className="material-symbols-outlined">videocam</span>
             </div>
           </div>
         ))}
@@ -117,10 +117,10 @@ const Participants = () => {
                   </div>
                   <div className={classes.itemAction}>
                     <div className={classes.greenicon}>
-                      <i class="material-symbols-outlined">done</i>
+                      <i className="material-symbols-outlined">done</i>
                     </div>
                     <div className={classes.redicon}>
-                      <i class="material-symbols-outlined">close</i>
+                      <i className="material-symbols-outlined">close</i>
                     </div>
                   </div>
                 </div>

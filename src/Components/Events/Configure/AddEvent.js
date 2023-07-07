@@ -252,7 +252,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       return (
         <div className={classes.headingSec}>
           <span
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setisNextPage(false);
             }}

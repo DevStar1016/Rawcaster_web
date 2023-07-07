@@ -120,7 +120,9 @@ const AddConnection = ({ open, close }) => {
                       HandleSendRequest(ele.user_ref_id, ele.user_id);
                     }}
                   >
-                    <span class="material-symbols-outlined">person_add</span>
+                    <span className="material-symbols-outlined">
+                      person_add
+                    </span>
                   </div>
                 ) : null}
               </div>

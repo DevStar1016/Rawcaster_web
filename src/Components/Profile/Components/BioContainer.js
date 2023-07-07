@@ -149,7 +149,7 @@ const BioContainer = ({ isLoginuser }) => {
         <h2>
           About {profileData?.first_name}{" "}
           {selectedCategory.length !== 0 && (
-            <i class="material-icons">fiber_manual_record</i>
+            <i className="material-icons">fiber_manual_record</i>
           )}
           <Tooltip title={getLabelValue().toString()}>
             <span>{getLabelValue().toString()}</span>
@@ -163,7 +163,7 @@ const BioContainer = ({ isLoginuser }) => {
               handleSubmit();
             }}
           >
-            <i class="material-symbols-outlined">done</i>
+            <i className="material-symbols-outlined">done</i>
           </div>
         ) : (
           <div
@@ -300,7 +300,7 @@ const BioContainer = ({ isLoginuser }) => {
               {BecameFanStatus === "" ? (
                 <div className={classes.becomeSec}>
                   <p>Become a Fan </p>
-                  <i class="material-symbols-outlined">arrow_forward</i>
+                  <i className="material-symbols-outlined">arrow_forward</i>
                 </div>
               ) : (
                 BecameFanStatus === "pending" && (

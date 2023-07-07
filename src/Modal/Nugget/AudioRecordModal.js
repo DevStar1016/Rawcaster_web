@@ -218,7 +218,7 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
               handleStartMic();
             }}
           >
-            <span class="material-symbols-outlined">mic</span> Start
+            <span className="material-symbols-outlined">mic</span> Start
           </button>
         )}
       </div>

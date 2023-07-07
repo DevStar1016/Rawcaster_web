@@ -232,7 +232,7 @@ const ProfileLayout = ({
               <Spin size="small" className={classes.loader} />
             ) : (
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 onClick={() => {
                   coverRef?.current.click();
                 }}
@@ -273,7 +273,7 @@ const ProfileLayout = ({
                   <Spin size="small" className={classes.loader} />
                 ) : (
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       profileRef?.current.click();
                     }}
@@ -346,7 +346,7 @@ const ProfileLayout = ({
                   }}
                 >
                   <div style={{ cursor: "pointer" }}>
-                    <span class="material-icons">more_horiz</span>
+                    <span className="material-icons">more_horiz</span>
                   </div>
                 </Dropdown>
               )}

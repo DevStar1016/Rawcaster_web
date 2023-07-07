@@ -32,7 +32,6 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
   const [markallAsRead, setmarkallAsRead] = useState(false);
 
   useEffect(() => {
-    console.log(unReadCount, "TotalUnreadCount redux");
     setTotalUnreadCount(unReadCount);
   }, [unReadCount]);
 
@@ -136,7 +135,6 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
       ViewNotificationService(JSONtoformdata(filterValidObject(ViewData)))
         .then(({ data }) => {
           if (data.status === 1) {
-            console.log(data, "handleViewNotification");
             resolve(notification_id);
             setmarkallAsRead();
             dispatch(handleNotificationUnreadCount(0));
@@ -159,7 +157,6 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
     if (loginuserData) {
       onReadCountChange(loginuserData?.unread_notification_count);
       setTotalUnreadCount(loginuserData?.unread_notification_count);
-      console.log(loginuserData, "TotalUnreadCount loginuserDATA");
     }
   }, [loginuserData]);
 

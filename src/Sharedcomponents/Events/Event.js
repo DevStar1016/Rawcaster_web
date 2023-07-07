@@ -66,7 +66,6 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const isNotExpired = () => {
     const momenttimezone = require("moment-timezone");
     const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
-    console.log(ele.start_date_time, currentTime);
     if (moment(ele.start_date_time).isBefore(currentTime)) {
       return false;
     }
@@ -206,7 +205,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
                     });
                   }}
                 >
-                  <i class="material-symbols-outlined">delete</i>
+                  <i className="material-symbols-outlined">delete</i>
                 </div>
               </div>
             )}
@@ -233,11 +232,11 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
             </p>
           ) : (
             <p className={classes.iconsec}>
-              <span class="material-symbols-outlined">calendar_today</span>{" "}
+              <span className="material-symbols-outlined">calendar_today</span>{" "}
               {moment(
                 utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
               ).format("DD MMM YYYY")}
-              <span class="material-symbols-outlined">schedule</span>{" "}
+              <span className="material-symbols-outlined">schedule</span>{" "}
               {moment(
                 utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
               ).format("hh:mm A") +

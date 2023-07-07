@@ -135,7 +135,7 @@ const AgreedusersListModal = ({ open, close, formData }) => {
                           HandleSendRequest(ele.user_ref_id, ele.user_id);
                         }}
                       >
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                           person_add
                         </span>
                       </div>

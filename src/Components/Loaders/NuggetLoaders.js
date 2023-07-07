@@ -10,7 +10,7 @@ const NuggetLoaders = ({ loading }) => {
         <Skeleton active={loading} />
       </div>
       <Skeleton.Node active={loading} className={classes.nuggetImg}>
-        <span class="material-symbols-outlined">image</span>
+        <span className="material-symbols-outlined">image</span>
       </Skeleton.Node>
     </div>
   );

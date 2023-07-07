@@ -141,7 +141,7 @@ const ImageGrid = ({
             controlsList="nodownload"
             style={{ width: "100%", height: "100%", borderRadius: 10 }}
           ></video>
-          <span class={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
+          <span className={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
             play_circle
           </span>
         </>
@@ -150,7 +150,7 @@ const ImageGrid = ({
       return (
         <>
           <div className={classes.musicIcon}>
-            <span class="material-symbols-outlined">music_note</span>
+            <span className="material-symbols-outlined">music_note</span>
           </div>
         </>
       );
@@ -766,11 +766,13 @@ const ImageGrid = ({
                   }}
                   nextIcon={
                     ActiveModalIndex !== imgArray.length - 1 ? (
-                      <b class="arrow next ">›</b>
+                      <b className="arrow next ">›</b>
                     ) : null
                   }
                   prevIcon={
-                    ActiveModalIndex !== 0 ? <b class="arrow prev">‹</b> : null
+                    ActiveModalIndex !== 0 ? (
+                      <b className="arrow prev">‹</b>
+                    ) : null
                   }
                 >
                   {imgArray.map((ele, index) => {

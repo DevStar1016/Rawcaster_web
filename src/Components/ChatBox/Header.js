@@ -155,9 +155,9 @@ const Header = () => {
         </div>
         {SelectedContents?.length === 0 ? (
           <div>
-            <span class="material-symbols-outlined">more_vert</span>
+            <span className="material-symbols-outlined">more_vert</span>
             <span
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setisChatOpen(false);
               }}
@@ -168,13 +168,13 @@ const Header = () => {
         ) : (
           <div>
             <span className={classes.copyBtn}>
-              <span onClick={copy} class="material-symbols-outlined">
+              <span onClick={copy} className="material-symbols-outlined">
                 content_copy
               </span>
             </span>
-            <span class="material-symbols-outlined">delete</span>
+            <span className="material-symbols-outlined">delete</span>
             <span
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setSelectAllMessages(false);
               }}

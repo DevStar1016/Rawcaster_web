@@ -151,7 +151,6 @@ export const ChatInput = ({
   const handleCameraPermission = (type) => {
     requestVideoPermissions()
       .then(() => {
-        console.log("isCamera");
         setisCamera({ show: true, type: type });
       })
       .catch((err) => {
@@ -224,7 +223,7 @@ export const ChatInput = ({
         <div className={classes.editContainer}>
           <span>{value}</span>
           <i
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setChatMessage("");
               onEditClose();
@@ -323,7 +322,9 @@ export const ChatInput = ({
                           handleCameraPermission("Camera");
                         }}
                       >
-                        <span class="material-symbols-outlined">camera</span>
+                        <span className="material-symbols-outlined">
+                          camera
+                        </span>
                       </button>
                     </Tooltip>
 
@@ -334,7 +335,9 @@ export const ChatInput = ({
                           handleCameraPermission("Video");
                         }}
                       >
-                        <span class="material-symbols-outlined">videocam</span>
+                        <span className="material-symbols-outlined">
+                          videocam
+                        </span>
                       </button>
                     </Tooltip>
                     <Tooltip placement="left" title={"Upload Image or Video"}>
@@ -344,7 +347,7 @@ export const ChatInput = ({
                           ImagefileRef.current.click();
                         }}
                       >
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                           attach_file
                         </span>
                       </button>
@@ -471,7 +474,7 @@ export const ChatInput = ({
               <>
                 {AudioElement && AudioElement?.paused ? (
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       AudioElement.play();
                     }}
@@ -480,7 +483,7 @@ export const ChatInput = ({
                   </span>
                 ) : (
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       AudioElement.pause();
                     }}
@@ -491,7 +494,7 @@ export const ChatInput = ({
               </>
             ) : (
               <span
-                class="material-symbols-rounded"
+                className="material-symbols-rounded"
                 onClick={() => {
                   isSend.current = false;
                   stopRecording();
@@ -501,7 +504,7 @@ export const ChatInput = ({
               </span>
             )}
             <span
-              class={`material-symbols-outlined ${classes.closeIcon}`}
+              className={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
                 handleClose();
                 clearBlobUrl();
@@ -667,7 +670,6 @@ export const MessageContent = (props) => {
   };
 
   const GetValidComponent = () => {
-    console.log(type);
     switch (true) {
       case type.includes("image"):
         return (
@@ -795,7 +797,6 @@ export const MessageContent = (props) => {
       label: (
         <div
           onClick={() => {
-            console.log("clicked");
             setSelectAllMessages(true);
             onSelectedMessage(message);
           }}
@@ -809,10 +810,6 @@ export const MessageContent = (props) => {
       label: <div onClick={onDelete}>Delete</div>,
     },
   ];
-
-  useEffect(() => {
-    console.log(SelectAllMessages, "SelectAllMessagesSelectAllMessages");
-  }, [SelectAllMessages]);
 
   return (
     <div

@@ -37,7 +37,7 @@ const EventModal = ({
       cancelButtonProps={{ disabled: loading }}
       closeIcon={
         <div className={styles.modalCloseIcon}>
-          <span class="material-symbols-outlined">close</span>
+          <span className="material-symbols-outlined">close</span>
         </div>
       }
     >

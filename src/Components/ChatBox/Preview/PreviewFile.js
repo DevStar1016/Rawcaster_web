@@ -32,7 +32,7 @@ const PreviewFile = () => {
               <Tooltip title="Delete" color={"red"}>
                 <div className={classes.deleteIcon}>
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       setPreviewData();
                     }}
@@ -44,7 +44,7 @@ const PreviewFile = () => {
               <Tooltip title="Edit" color={"orange"}>
                 <div>
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       setisEdit(true);
                     }}
@@ -66,7 +66,7 @@ const PreviewFile = () => {
               <Tooltip title="Delete" color={"red"}>
                 <div className={classes.deleteIcon}>
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       setPreviewData();
                     }}
@@ -90,7 +90,7 @@ const PreviewFile = () => {
               <Tooltip title="Delete" color={"red"}>
                 <div className={classes.deleteIcon}>
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       setPreviewData();
                     }}
@@ -119,7 +119,7 @@ const PreviewFile = () => {
               <Tooltip title="Delete" color={"red"}>
                 <div className={classes.deleteIcon}>
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       setPreviewData();
                     }}

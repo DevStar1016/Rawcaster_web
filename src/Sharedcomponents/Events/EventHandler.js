@@ -23,12 +23,12 @@ const EventHandler = ({ title, isHost, meetingId }) => {
   return (
     <div
       className={classes.link}
-      onClick={(e) => {
-        handleJoinEvent(e);
-      }}
+      // onClick={(e) => {
+      //   handleJoinEvent(e);
+      // }}
     >
       {isHost ? `Start ${title}` : `Join ${title}`}
-      <span class="material-symbols-outlined">arrow_right_alt</span>
+      <span className="material-symbols-outlined">arrow_right_alt</span>
     </div>
   );
 };

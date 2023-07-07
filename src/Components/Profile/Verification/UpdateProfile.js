@@ -276,7 +276,7 @@ const UpdateProfile = () => {
                 navigate(-1);
               }}
             >
-              <span class="material-symbols-outlined">arrow_back</span>
+              <span className="material-symbols-outlined">arrow_back</span>
             </Link>
           </div>
           <div className={classes.linkSec}>
