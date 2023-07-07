@@ -197,14 +197,14 @@ export const NotificationsList = ({
             <p className={classes.headingContent}>{ele?.content}</p>
             {ele.event_start_time && (
               <div className={classes.iconsec}>
-                <i class="material-symbols-outlined">calendar_today</i>{" "}
+                <i className="material-symbols-outlined">calendar_today</i>{" "}
                 {moment(
                   utctoUserTimezone(
                     ele.event_start_time,
                     userSettings?.time_zone
                   )
                 ).format("DD MMM YYYY")}
-                <i class="material-symbols-outlined">schedule</i>{" "}
+                <i className="material-symbols-outlined">schedule</i>{" "}
                 {moment(
                   utctoUserTimezone(
                     ele.event_start_time,
@@ -229,7 +229,7 @@ export const NotificationsList = ({
               )}
             </div>
             <span
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               style={{ display: ele.poll_option ? "none" : "" }}
               onClick={() => {
                 handleDelete(ele);
@@ -259,7 +259,7 @@ export const NotificationsList = ({
                 handleRequest(sendData);
               }}
             >
-              <i class="material-symbols-outlined">done</i>
+              <i className="material-symbols-outlined">done</i>
             </div>
 
             <div
@@ -273,7 +273,7 @@ export const NotificationsList = ({
                 handleRequest(sendData);
               }}
             >
-              <i class="material-symbols-outlined">close</i>
+              <i className="material-symbols-outlined">close</i>
             </div>
           </div>
         </div>

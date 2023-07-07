@@ -6,7 +6,11 @@ import Connections from "../../Connections/Friends/Connections";
 import { Col, Row } from "react-bootstrap";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { Tooltip } from "antd";
-import { JSONtoformdata, decodeHtml } from "../../../Shared/Utility";
+import {
+  JSONtoformdata,
+  decodeHtml,
+  handleCopyText,
+} from "../../../Shared/Utility";
 import copyImg from "../../../Assets/Icons/svg/copy.svg";
 import { toast } from "react-hot-toast";
 import { ReferalContext } from "../../../Shared/Context";
@@ -19,18 +23,6 @@ const ReferalDashboard = () => {
   const [ReferalData, setReferalData] = useState(null);
 
   const shareUrl = userData?.referral_link || "";
-
-  const handleCopyText = () => {
-    navigator.clipboard
-      .writeText(shareUrl)
-      .then(() => {
-        setisCopied(true);
-        toast.success("Text copied to clipboard");
-      })
-      .catch((error) => {
-        console.error("Error copying text:", error);
-      });
-  };
 
   const getReferalData = () => {
     const Data = {
@@ -86,7 +78,9 @@ const ReferalDashboard = () => {
                     ) : (
                       <img
                         onClick={() => {
-                          handleCopyText();
+                          handleCopyText(shareUrl).then(() => {
+                            setisCopied(true);
+                          });
                         }}
                         className={classes.copyIcon}
                         src={copyImg}

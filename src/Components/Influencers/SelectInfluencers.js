@@ -29,8 +29,11 @@ const SelectInfluencers = () => {
 
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [influencerList, setinfluencerList] = useState([]);
+  const [previousInfluencerList, setpreviousInfluencerList] = useState([]);
   const [SelectedInfluencersList, setSelectedInfluencersList] = useState([]);
   const [isLoadMore, setisLoadMore] = useState(null);
+  const [SelectAllInfluencer, setSelectAllInfluencer] = useState(false);
+  const [influencersCount, setinfluencersCount] = useState(0);
 
   const [SearchValues, setSearchValues] = useState({
     search_key: "",
@@ -47,6 +50,7 @@ const SelectInfluencers = () => {
       category: category,
       search_key: search_key,
     };
+    setpreviousInfluencerList(influencerList);
     InfluencerListService(JSONtoformdata(filterValidObject(influencerData)))
       .then((res) => {
         if (res.data.status === 1) {
@@ -55,6 +59,7 @@ const SelectInfluencers = () => {
             pageNum: res.data.current_page_no,
             total_page: res.data.total_pages,
           }));
+          setinfluencersCount(res?.data?.total_influencer_count);
           if (res.data.current_page_no === 1) {
             setinfluencerList(res.data.users_list);
           } else {
@@ -62,6 +67,7 @@ const SelectInfluencers = () => {
           }
         } else {
           setinfluencerList([]);
+          setinfluencersCount(0);
           setSearchValues((pre) => ({
             ...pre,
             pageNum: 1,
@@ -99,6 +105,58 @@ const SelectInfluencers = () => {
     }
   }, [loginUserData]);
 
+  useEffect(() => {
+    if (SelectAllInfluencer) {
+      const tempPreviousInfluencersList = [...previousInfluencerList];
+      const tempInfluencersList = [...influencerList];
+      const tempSelectedInfluencers = tempPreviousInfluencersList?.filter(
+        (item, index) => {
+          const find = SelectedInfluencersList?.findIndex((item1) =>
+            item?.user_ref_id?.includes(item1)
+          );
+          if (find === -1) {
+            return item;
+          }
+          return undefined;
+        }
+      );
+      if (tempSelectedInfluencers?.length > 0) {
+        const tempSelectedInfluencers1 = tempInfluencersList?.filter(
+          (item, index) => {
+            const find = tempSelectedInfluencers?.findIndex((item1) =>
+              item?.user_ref_id?.includes(item1?.user_ref_id)
+            );
+            if (find === -1) {
+              return item;
+            }
+            return undefined;
+          }
+        );
+        setSelectedInfluencersList(
+          tempSelectedInfluencers1?.map((ele) => ele?.user_ref_id)
+        );
+      } else {
+        setSelectedInfluencersList(
+          tempInfluencersList?.map((ele) => ele?.user_ref_id)
+        );
+      }
+    }
+  }, [influencerList]);
+
+  const handleSelectAllInfluencers = (type) => {
+    if (type) {
+      const tempInfluencersList = [...influencerList];
+      const tempSelectedInfluencers = tempInfluencersList?.map(
+        (ele) => ele?.user_ref_id
+      );
+      setSelectedInfluencersList(tempSelectedInfluencers);
+      setSelectAllInfluencer(true);
+    } else {
+      setSelectedInfluencersList([]);
+      setSelectAllInfluencer(false);
+    }
+  };
+
   const getSelectData = (listData = []) => {
     return listData.map((value) => ({
       ...value,
@@ -113,6 +171,8 @@ const SelectInfluencers = () => {
         token: loginUserData?.token,
         auth_code: getAuthToken(loginUserData?.token),
         follow_userid: JSON.stringify(selectedFansList),
+        select_all:
+          SelectedInfluencersList?.length === influencerList?.length ? 1 : 0,
       };
       InfluencerFollowService(JSONtoformdata(becameFanData))
         .then((res) => {
@@ -180,7 +240,7 @@ const SelectInfluencers = () => {
                     );
                   }}
                 >
-                  <span class="material-icons">search</span>
+                  <span className="material-icons">search</span>
                 </InputGroup.Text>
               </InputGroup>
             </div>
@@ -204,31 +264,55 @@ const SelectInfluencers = () => {
         </Row>
         <Row gutter={10}>
           <Col sm={12}>
-            Selected Influencers ({SelectedInfluencersList.length})
+            Selected Influencers (
+            {SelectAllInfluencer
+              ? influencersCount -
+                (influencerList?.length - SelectedInfluencersList?.length)
+              : SelectedInfluencersList.length}
+            )
           </Col>
-          <Col sm={12} className="text-end">
-            <p
-              className={
-                SelectedInfluencersList.length !== 0
-                  ? classes.activebecameFanBtn
-                  : classes.becameFanBtn
-              }
-              onClick={() => {
-                if (SelectedInfluencersList.length !== 0) {
-                  dispatch(handleLoading(true));
-                  HandleupdateFans()
-                    .then((res) => {
-                      navigate("/dashboard");
-                    })
-                    .catch((err) => {});
+          <Col className={classes.selectAllContainer} sm={12}>
+            <Col>
+              {SelectedInfluencersList?.length !== influencerList?.length ? (
+                <p
+                  onClick={() => {
+                    handleSelectAllInfluencers(true);
+                  }}
+                >
+                  Select All
+                </p>
+              ) : (
+                <p
+                  onClick={() => {
+                    handleSelectAllInfluencers(false);
+                  }}
+                >{`UnSelect All (${influencersCount})`}</p>
+              )}
+            </Col>
+            <Col className="text-end">
+              <p
+                className={
+                  SelectedInfluencersList.length !== 0
+                    ? classes.activebecameFanBtn
+                    : classes.becameFanBtn
                 }
-              }}
-            >
-              Become a Fan{" "}
-              <span className={`material-icons ${classes.rightarrow}`}>
-                arrow_forward
-              </span>
-            </p>
+                onClick={() => {
+                  if (SelectedInfluencersList.length !== 0) {
+                    dispatch(handleLoading(true));
+                    HandleupdateFans()
+                      .then((res) => {
+                        navigate("/dashboard");
+                      })
+                      .catch((err) => {});
+                  }
+                }}
+              >
+                Become a Fan{" "}
+                <span className={`material-icons ${classes.rightarrow}`}>
+                  arrow_forward
+                </span>
+              </p>
+            </Col>
           </Col>
         </Row>
 
@@ -243,7 +327,7 @@ const SelectInfluencers = () => {
                         src={ele.profile_img}
                         imgClassName={classes.profileimg}
                         badgeClassName={classes.diamond}
-                        Badgetype={8}
+                        Badgetype={ele?.user_status_id}
                       />
 
                       <p className={classes.counts}>{ele.followers}</p>
@@ -294,7 +378,7 @@ const SelectInfluencers = () => {
                   {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
                     <Link className={classes.selectedBtn}>
                       Selected{" "}
-                      <span class="material-symbols-outlined">done</span>
+                      <span className="material-symbols-outlined">done</span>
                     </Link>
                   ) : (
                     <>
@@ -309,7 +393,7 @@ const SelectInfluencers = () => {
                           }}
                         >
                           Become a Fan{" "}
-                          <span class="material-icons">arrow_forward</span>
+                          <span className="material-icons">arrow_forward</span>
                         </Link>
                       )}
                     </>
@@ -334,7 +418,7 @@ const SelectInfluencers = () => {
                 }}
               >
                 View more
-                <span class="material-symbols-outlined">arrow_forward</span>
+                <span className="material-symbols-outlined">arrow_forward</span>
               </p>
             )}
           </div>

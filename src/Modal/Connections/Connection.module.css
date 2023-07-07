@@ -20,7 +20,7 @@
   grid-gap: 10px; /* adjust as needed */
   margin: 20px 0;
   padding-top: 20px;
-max-height: 300px;
+max-height: 350px;
 overflow-y: auto;
 }
 .listSec .list { width: 100%; float: left; text-align: center; font-size: 12px; cursor: pointer;  position: relative;}

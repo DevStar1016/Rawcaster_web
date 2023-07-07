@@ -115,6 +115,13 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
     justify-content: center; margin-bottom: 0;
 }
 .loadmoreSec p span { padding-left: 5px; font-size: 19px; }
+.selectAllContainer{
+    display: flex;
+    justify-content: end;
+}
+.selectAllContainer>div:nth-child(1){
+    cursor: pointer;
+}
 @media (max-width:768px) {
 .headerSec { display: block; width: 100%; float: left;}
 .headerSec h1 { width: 100%; margin: auto; text-align: center; font-size: 25px; line-height: 26px; }   

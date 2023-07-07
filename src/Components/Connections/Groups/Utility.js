@@ -1,4 +1,8 @@
-import { decodeHtml } from "../../../Shared/Utility";
+import {
+  decodeHtml,
+  getAspectRatio,
+  isValidImageFile,
+} from "../../../Shared/Utility";
 import classes from "./Groups.module.css";
 import { useAuthData, useFriends } from "../../../Shared/Reduxfetcher";
 import { useEffect, useState } from "react";
@@ -18,6 +22,7 @@ import uploadImg from "../../../Assets/Icons/png/upload.png";
 import tickIcon from "../../../Assets/Icons/png/tick.png";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import ReportGroup from "../../../Modal/Report/ReportGroup";
+import ImageCropModal from "../../../Modal/ImageCropModal";
 
 export const GroupHeader = () => {
   const {
@@ -41,6 +46,7 @@ export const GroupHeader = () => {
   } = useConfigureGroupContext();
   const [isLogoEditable, setisLogoEditable] = useState(true);
   const [isReport, setisReport] = useState(false);
+  const [tempGroupImage, settempGroupImage] = useState(null);
 
   useEffect(() => {
     if (groupId) {
@@ -60,25 +66,43 @@ export const GroupHeader = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(values?.group_name, "getimagevalue src");
+  }, [values?.group_icon]);
+
   const onChangeImage = (event) => {
-    const imageFile = event.target.files[0];
-    if (!imageFile) {
-      toast.error("Please select image.");
-    } else if (!imageFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
-      toast.error("Please select valid image format (jpg,jpeg,png) .");
-    } else if (imageFile.size > 1 * 1024 * 1024) {
-      toast.error("Image size is too big (max 1MB)");
-    } else {
-      if (GroupData && GroupData.group_category === 1) {
-        const editData = {
-          group_name: values.group_name,
-          group_icon: imageFile,
-        };
-        HandleModifyGroup(editData, false);
-        return;
+    console.log(event, "Edit GroupEdit Group");
+
+    if (event.target.files && event.target.files.length !== 0) {
+      if (isValidImageFile(event.target.files[0])) {
+        console.log(event.target.files[0], "getimagevalue onchnage");
+        settempGroupImage({
+          type: "groupIcon",
+          src: event.target.files[0],
+          ratio: getAspectRatio(150, 150),
+        });
+      } else {
+        toast.error("Please Select Valid Image");
       }
-      setFieldValue("group_icon", imageFile);
     }
+    // const imageFile = event.target.files[0];
+    // if (!imageFile) {
+    //   toast.error("Please select image.");
+    // } else if (!imageFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
+    //   toast.error("Please select valid image format (jpg,jpeg,png) .");
+    // } else if (imageFile.size > 1 * 1024 * 1024) {
+    //   toast.error("Image size is too big (max 1MB)");
+    // } else {
+    //   if (GroupData && GroupData.group_category === 1) {
+    //     const editData = {
+    //       group_name: values.group_name,
+    //       group_icon: imageFile,
+    //     };
+    //     HandleModifyGroup(editData, false);
+    //     return;
+    //   }
+    //   setFieldValue("group_icon", imageFile);
+    // }
   };
 
   const HeaderActions = () => {
@@ -94,7 +118,7 @@ export const GroupHeader = () => {
                 }}
               />
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 style={{ display: getValidConnections() ? "" : "none" }}
                 onClick={() => {
                   setisAddMember(false);
@@ -117,7 +141,7 @@ export const GroupHeader = () => {
               <Tooltip title="Exit and Delete" color={"red"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       Modal.confirm({
                         title: "Confirmation",
@@ -142,7 +166,7 @@ export const GroupHeader = () => {
               <Tooltip title="Add Connection" color={"#F2718D"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     style={{ display: getValidConnections() ? "" : "none" }}
                     onClick={() => {
                       setisAddMember(true);
@@ -160,7 +184,7 @@ export const GroupHeader = () => {
               <Tooltip title="Report and Exit Group" color={"#fc8403"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       setisReport(true);
                     }}
@@ -192,7 +216,7 @@ export const GroupHeader = () => {
                     });
                   }}
                 >
-                  <span class="material-symbols-outlined">logout</span>
+                  <span className="material-symbols-outlined">logout</span>
                 </div>
               </Tooltip>
             </>
@@ -206,7 +230,7 @@ export const GroupHeader = () => {
                 onClick={() => {
                   setisReport(true);
                 }}
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 style={{
                   color: "#fc8403",
                   fontWeight: 500,
@@ -248,15 +272,17 @@ export const GroupHeader = () => {
           }}
         >
           <div className={classes.overLaySec}>
-            <span class="material-symbols-outlined">upload</span>
+            <span className="material-symbols-outlined">upload</span>
           </div>
           <img
             src={
-              values.group_icon && values.group_icon !== ""
+              values?.group_icon && values.group_icon !== ""
                 ? typeof values.group_icon === "string"
                   ? values.group_icon
                   : URL.createObjectURL(values.group_icon)
                 : uploadImg
+              // "https://dev.rawcaster.com/rawadmin/uploads/group/default.png"
+              // uploadImg
             }
             style={{ borderRadius: "2px" }}
             alt="gropup-icon"
@@ -329,6 +355,51 @@ export const GroupHeader = () => {
           setisReport(false);
         }}
       />
+      {tempGroupImage?.src && (
+        <ImageCropModal
+          open={tempGroupImage?.src}
+          validsize={5}
+          src={URL.createObjectURL(tempGroupImage?.src)}
+          ratio={tempGroupImage?.ratio}
+          onSuccess={(val) => {
+            // handleUpdateProfile(val);
+            // setisUploading(profileImg.type);
+            // setprofileImg({
+            //   type: "",
+            //   src: "",
+            //   ratio: "",
+            // });
+            // setFieldValue("group_icon", {
+            //   type: "groupIcon",
+            //   src: val,
+            //   ratio: getAspectRatio(150, 150),
+            // });
+            if (GroupData.group_category !== 2) {
+              console.log("getimagevalue logged");
+              const editData = {
+                group_name: values.group_name,
+                group_icon: val,
+              };
+              HandleModifyGroup(editData, false);
+              settempGroupImage("");
+              return;
+            }
+
+            setFieldValue("group_icon", val);
+            settempGroupImage("");
+            console.log(val, "getimagevalue");
+          }}
+          onFailure={() => {
+            console.log("getimagevalue failure");
+            settempGroupImage("");
+            // setprofileImg({
+            //   type: "",
+            //   src: "",
+            //   ratio: "",
+            // });
+          }}
+        />
+      )}
     </div>
   );
 };
@@ -390,7 +461,7 @@ export const SelectConnections = () => {
               }}
             />
             <InputGroup.Text className={classes.searchIcon}>
-              <span class="material-icons">search</span>
+              <span className="material-icons">search</span>
             </InputGroup.Text>
           </InputGroup>
 
@@ -492,7 +563,7 @@ export const SelectConnections = () => {
                   }}
                 >
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     style={{
                       display: SelectedConnections.includes(ele.user_id)
                         ? ""
@@ -575,7 +646,7 @@ export const EditGroupMembers = () => {
                 }}
               />
               <InputGroup.Text className={classes.searchIcon}>
-                <span class="material-icons">search</span>
+                <span className="material-icons">search</span>
               </InputGroup.Text>
             </InputGroup>
           )}
@@ -715,7 +786,7 @@ export const EditGroupMembers = () => {
                               }}
                             >
                               <span
-                                class="material-symbols-outlined"
+                                className="material-symbols-outlined"
                                 onClick={() => {
                                   Modal.confirm({
                                     title: "Confirmation",

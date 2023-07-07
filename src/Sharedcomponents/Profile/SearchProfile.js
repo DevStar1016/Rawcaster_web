@@ -144,7 +144,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                 }}
               >
                 Become a Fan{" "}
-                <span class="material-symbols-outlined">arrow_forward</span>
+                <span className="material-symbols-outlined">arrow_forward</span>
               </Button>
             )}
             <div className="d-none d-md-block">
@@ -159,7 +159,9 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                   }}
                 >
                   Request to connect{" "}
-                  <span class="material-symbols-outlined">arrow_forward</span>
+                  <span className="material-symbols-outlined">
+                    arrow_forward
+                  </span>
                 </Button>
               )}
             </div>
@@ -172,7 +174,7 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                 handleFriendRequest(ele);
               }}
             >
-              <span class="material-symbols-outlined">add</span>
+              <span className="material-symbols-outlined">add</span>
             </Button>
           </div>
         </div>

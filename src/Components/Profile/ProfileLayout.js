@@ -29,6 +29,7 @@ import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const ProfileLayout = ({
   children,
@@ -231,7 +232,7 @@ const ProfileLayout = ({
               <Spin size="small" className={classes.loader} />
             ) : (
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 onClick={() => {
                   coverRef?.current.click();
                 }}
@@ -258,6 +259,10 @@ const ProfileLayout = ({
               src={profileData?.profile_image}
               alt="Profile"
               className={classes.profileImg}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src = defaultprofileImg;
+              }}
             />
             {isLoginUser && (
               <div
@@ -268,7 +273,7 @@ const ProfileLayout = ({
                   <Spin size="small" className={classes.loader} />
                 ) : (
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       profileRef?.current.click();
                     }}
@@ -279,7 +284,7 @@ const ProfileLayout = ({
               </div>
             )}
           </div>
-          <div className="d-flex flex-row justify-content-between">
+          <div className="d-md-flex flex-row justify-content-between">
             <div className="d-flex flex-row align-items-baseline">
               {isAddFriend() && (
                 <div className="ms-3">
@@ -341,7 +346,7 @@ const ProfileLayout = ({
                   }}
                 >
                   <div style={{ cursor: "pointer" }}>
-                    <span class="material-icons">more_horiz</span>
+                    <span className="material-icons">more_horiz</span>
                   </div>
                 </Dropdown>
               )}

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Room.module.css";
 import { Layout } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { useEventLayout } from "../../../Layouts/EventLayout";
 import { useMainContext } from "../../../Shared/Context";
+import { ChimesocketListen } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 const { Header, Footer, Content } = Layout;
 
@@ -18,7 +20,12 @@ const Participants = () => {
     lineHeight: "64px",
     backgroundColor: "#7dbcea",
   };
-  console.log(attendees);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (message) => {
+      console.log(message);
+    });
+  }, []);
 
   return (
     <Layout className={classes.popupContainer}>
@@ -29,9 +36,9 @@ const Participants = () => {
             <p>Participants</p>
           </div>
           <div>
-            <i class="material-symbols-outlined">search</i>
+            <i className="material-symbols-outlined">search</i>
             <i
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setisChatorParticipant(null);
               }}
@@ -43,9 +50,9 @@ const Participants = () => {
         <div className={classes.GlobalSettingContainer}>
           <div className={classes.itemName}>Global Settings</div>
           <div className={classes.itemAction}>
-            <span class="material-symbols-outlined">volume_up</span>
-            <span class="material-symbols-outlined">mic</span>
-            <span class="material-symbols-outlined">videocam</span>
+            <span className="material-symbols-outlined">volume_up</span>
+            <span className="material-symbols-outlined">mic</span>
+            <span className="material-symbols-outlined">videocam</span>
           </div>
         </div>
       </Header>
@@ -60,10 +67,10 @@ const Participants = () => {
               {ele.externalUserId === "Me" ? (
                 <div className={classes.hostIcon}>HOST</div>
               ) : (
-                <span class="material-symbols-outlined">volume_up</span>
+                <span className="material-symbols-outlined">volume_up</span>
               )}
-              <span class="material-symbols-outlined">mic</span>
-              <span class="material-symbols-outlined">videocam</span>
+              <span className="material-symbols-outlined">mic</span>
+              <span className="material-symbols-outlined">videocam</span>
             </div>
           </div>
         ))}
@@ -110,10 +117,10 @@ const Participants = () => {
                   </div>
                   <div className={classes.itemAction}>
                     <div className={classes.greenicon}>
-                      <i class="material-symbols-outlined">done</i>
+                      <i className="material-symbols-outlined">done</i>
                     </div>
                     <div className={classes.redicon}>
-                      <i class="material-symbols-outlined">close</i>
+                      <i className="material-symbols-outlined">close</i>
                     </div>
                   </div>
                 </div>

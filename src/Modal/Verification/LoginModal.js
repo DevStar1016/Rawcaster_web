@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { removeSessionStorageData } from "../../Store/Storage";
 import classes from "../Modal.module.css";
 
-const LoginModal = ({ open, close }) => {
+const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
   const navigate = useNavigate();
 
   return (
@@ -15,7 +15,11 @@ const LoginModal = ({ open, close }) => {
           alt="Rawcaster"
           src={require("../../Assets/Images/png/rawcater_logo.png")}
         />
-        <p>You need to Login / Signup Rawcaster Account</p>
+        <p>
+          {AImessgae
+            ? AImessgae
+            : "You need to Login / Signup Rawcaster Account"}
+        </p>
 
         <div className={classes.actionBtn}>
           <Button
@@ -23,8 +27,12 @@ const LoginModal = ({ open, close }) => {
             type="primary"
             htmlType="button"
             onClick={() => {
-              removeSessionStorageData("influencerData");
-              close();
+              if (AIclose) {
+                close();
+              } else {
+                removeSessionStorageData("influencerData");
+                close();
+              }
             }}
             size="large"
             className={classes.cancelBtn}
@@ -34,15 +42,20 @@ const LoginModal = ({ open, close }) => {
           <Button
             type="primary"
             onClick={() => {
-              navigate("/login");
-              close();
+              if (AIopen) {
+                close();
+                window.location.assign("/membership");
+              } else {
+                navigate("/login");
+                close();
+              }
             }}
             style={{ marginLeft: "10px" }}
             htmlType="Continue"
             size="large"
             className={classes.reportBtn}
           >
-            Login
+            {AIopen ? "Upgrade" : "Login"}
           </Button>
         </div>
       </div>

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import PlacesAutocomplete from "react-places-autocomplete";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getProfileService,
   resendOtpService,
@@ -37,6 +37,7 @@ import { GENDER_TYPE } from "../../../Shared/Constant";
 const UpdateProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { state } = useLocation();
   const loginUserData = useAuthData();
   const loginToken = useAuthToken();
   const [IsValidCredentials, setIsValidCredentials] = useState({
@@ -141,8 +142,19 @@ const UpdateProfile = () => {
 
           if (isNext) {
             HandleprofileUpdate(profileData);
+          } else if (
+            state?.data === "redirectToOtp" &&
+            profileData?.is_mobile_no_verified === 0 &&
+            profileData?.mobile
+          ) {
+            handleSendOTP("sms", true);
+          } else if (
+            state?.data === "redirectToOtp" &&
+            profileData?.is_email_id_verified === 0 &&
+            profileData?.email_id
+          ) {
+            handleSendOTP("email", true);
           }
-
           setIsValidCredentials({
             email: profileData.is_email_id_verified === 1,
             mobile: profileData.is_mobile_no_verified === 1,
@@ -170,7 +182,7 @@ const UpdateProfile = () => {
     }
   };
 
-  const handleSendOTP = (value) => {
+  const handleSendOTP = (value, navigateFrom) => {
     let finalData = {
       auth_code: getAuthToken("Rawcaster"),
       token: loginUserData?.token,
@@ -180,7 +192,13 @@ const UpdateProfile = () => {
       .then((res) => {
         if (res.data.status === 1) {
           toast.success(res.data.msg);
-          navigate("/verifyotp", { state: { type: value, ...res.data } });
+          if (navigateFrom) {
+            navigate("/verifyotp", {
+              state: { navigatePath: "/setting", type: value, ...res.data },
+            });
+          } else {
+            navigate("/verifyotp", { state: { type: value, ...res.data } });
+          }
         } else {
           toast.error(res.data.message);
         }
@@ -258,7 +276,7 @@ const UpdateProfile = () => {
                 navigate(-1);
               }}
             >
-              <span class="material-symbols-outlined">arrow_back</span>
+              <span className="material-symbols-outlined">arrow_back</span>
             </Link>
           </div>
           <div className={classes.linkSec}>

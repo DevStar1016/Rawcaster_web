@@ -110,7 +110,7 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
             handleRequest(1);
           }}
         >
-          <i class="material-symbols-outlined">done</i>
+          <i className="material-symbols-outlined">done</i>
         </div>
         <div
           className={classes.redicon}
@@ -118,7 +118,7 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
             handleRequest(2);
           }}
         >
-          <i class="material-symbols-outlined">close</i>
+          <i className="material-symbols-outlined">close</i>
         </div>
       </div>
     </div>

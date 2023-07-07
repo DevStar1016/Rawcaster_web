@@ -59,7 +59,7 @@ const Friends = ({ friend, searchInput }) => {
           {friend.online == 1 ? (
             <div className={classes.userlogedin_icon}>
               <i
-                class="material-icons"
+                className="material-icons"
                 style={{
                   display:
                     friend.login_from_app === 1 ? "inline-block" : "none",
@@ -69,7 +69,7 @@ const Friends = ({ friend, searchInput }) => {
                 phone_iphone
               </i>
               <i
-                class="material-icons"
+                className="material-icons"
                 style={{
                   display:
                     friend.login_from_web === 1 ? "inline-block" : "none",
@@ -92,14 +92,14 @@ const Friends = ({ friend, searchInput }) => {
             <img
               src={chatIcon}
               alt={"Chat"}
-              // onClick={(event) => {
-              //   event.stopPropagation();
-              //   setisChatOpen({
-              //     show: true,
-              //     type: "friend",
-              //     id: friend.user_id,
-              //   });
-              // }}
+              onClick={(event) => {
+                event.stopPropagation();
+                setisChatOpen({
+                  show: true,
+                  type: "friend",
+                  id: friend.user_id,
+                });
+              }}
             />
           </div>
         }

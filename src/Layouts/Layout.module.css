@@ -143,8 +143,11 @@ padding: 2px 1px;
   border: none; 
   height: 55px; 
   float: right; 
-  text-align: center; text-decoration: none;
-  width: 200px; font-weight: 500; font-size: 17px; padding-top: 14px; 
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px; font-weight: 500; font-size: 17px; 
 }
 .contactSupport a:hover, .contactSupport:hover { background: #563662; color: #fff; }
 .leftSec {

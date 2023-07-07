@@ -1,6 +1,7 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
 import {
+  AES_KEY,
   ENCRIPTION_STRING,
   GECODE_API_KEY,
   GOOGLE_CLIENT_ID,
@@ -27,6 +28,8 @@ import {
 import { message } from "antd";
 import { Typography } from "antd";
 import axios, { isCancel } from "axios";
+import { toast } from "react-hot-toast";
+import { AES, enc } from "crypto-js";
 
 // Auth
 
@@ -330,7 +333,7 @@ export const isAccountValid = (userData) => {
 //   return (
 //     <Linkify options={{ render: renderLink }}>
 //       <div>
-//         <span class={textClass} ref={ref}>
+//         <span className={textClass} ref={ref}>
 //           {children}
 //         </span>
 //         {showLink && (
@@ -574,7 +577,6 @@ export const fetchGoogleContacts = async () => {
       });
       resolve(response.result.otherContacts);
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -588,10 +590,12 @@ export const ReadMore = ({
   setisLinkopenModal,
   isReadMoreValid,
   onExpand,
+  partialHeight,
 }) => {
   const { Paragraph } = Typography;
   const [OnEllipsis, setOnEllipsis] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [readMore, setReadmore] = useState(false);
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -641,6 +645,54 @@ export const ReadMore = ({
             </span>
           )}
         </>
+      ) : children?.split("\n")?.length > partialHeight ? (
+        <>
+          <Paragraph
+            className="ReadMoreText"
+            // ellipsis={true}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              console.log(
+                children
+                  ?.split("\n")
+                  ?.filter((ele, index) => index < partialHeight)
+                  .join("\n"),
+                "childrenchildren"
+              );
+            }}
+          >
+            {readMore
+              ? children
+              : children
+                  ?.split("\n")
+                  ?.filter((ele, index) => index < partialHeight)
+                  .join("\n")
+                  .concat("...")}
+          </Paragraph>
+          {children?.split("\n")?.length > partialHeight && (
+            <>
+              {!readMore ? (
+                <span
+                  style={{ color: "#e26386", cursor: "pointer" }}
+                  onClick={() => {
+                    setReadmore(true);
+                  }}
+                >
+                  Read More
+                </span>
+              ) : (
+                <span
+                  style={{ color: "#e26386", cursor: "pointer" }}
+                  onClick={() => {
+                    setReadmore(false);
+                  }}
+                >
+                  Read Less
+                </span>
+              )}
+            </>
+          )}
+        </>
       ) : (
         <>
           <Paragraph
@@ -652,7 +704,9 @@ export const ReadMore = ({
                 isReadMoreValid();
                 setOnEllipsis(status);
               },
+              expandable: true,
             }}
+            // ellipsis={true}
             style={{ cursor: "pointer" }}
           >
             {children}
@@ -710,3 +764,75 @@ export function formatBytes(bytes) {
 
   return `${formattedSize} ${sizes[i]}`;
 }
+
+export const handleCopyText = (url) => {
+  return new Promise((resolve, reject) => {
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        resolve();
+
+        toast.success("Text copied to clipboard");
+      })
+      .catch((error) => {
+        console.error("Error copying text:", error);
+      });
+  });
+};
+
+export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(blobUrl, {
+        responseType: "blob",
+      });
+      const getFileType = (url = blobUrl) => {
+        const extension = url.substring(url.lastIndexOf(".") + 1);
+        const imageExtensions = ["jpg", "jpeg", "png", "gif"];
+        const videoExtensions = ["mp4", "avi", "mov"];
+        const audioExtensions = ["mp3", "wav", "ogg"];
+
+        if (imageExtensions.includes(extension)) {
+          return `image/${extension}`;
+        } else if (videoExtensions.includes(extension)) {
+          return `video/${extension}`;
+        } else if (audioExtensions.includes(extension)) {
+          return `audio/${extension}`;
+        } else {
+          return response.data.type;
+        }
+      };
+      const file = new File([response.data], fileName, {
+        type: getFileType(),
+      });
+      resolve(file);
+    } catch (error) {
+      reject("Error converting Blob URL to File:", error);
+    }
+  });
+};
+
+export const downloadurl = (url) => {
+  var file_path = url;
+  var a = document.createElement("A");
+  a.href = file_path;
+  a.download = file_path.substr(file_path.lastIndexOf("/") + 1);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+// OBJECT TO STRING
+
+export const EncryptObjectToString = (objectToEncrypt, secretKey = AES_KEY) => {
+  const stringToEncrypt = JSON.stringify(objectToEncrypt);
+  const encrypted = AES.encrypt(stringToEncrypt, secretKey).toString();
+  return encrypted;
+};
+
+export const DecryptStringToObject = (encryptedString, secretKey = AES_KEY) => {
+  const decryptedBytes = AES.decrypt(encryptedString, secretKey);
+  const decryptedString = decryptedBytes.toString(enc.Utf8);
+  const decryptedObject = JSON.parse(decryptedString);
+  return decryptedObject;
+};

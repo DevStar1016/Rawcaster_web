@@ -20,7 +20,7 @@ const ClaimAccountModal = ({ visible, onClose, msg }) => {
       <div className={classes.header}>
         Claim request{" "}
         <span
-          class="material-symbols-outlined"
+          className="material-symbols-outlined"
           onClick={() => {
             onClose();
           }}

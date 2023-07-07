@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
-import { useAuthData, useFriends } from "../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useFriends,
+} from "../../Shared/Reduxfetcher";
 import { useReactMediaRecorder } from "react-media-recorder";
 import {
   MediaPermissionsErrorType,
@@ -8,21 +12,30 @@ import {
   requestVideoPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import { toast } from "react-hot-toast";
-import { Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup, Spinner } from "react-bootstrap";
 import classes from "./Chat.module.css";
 import moment from "moment";
 import ChatIcon from "../../Assets/Icons/svg/chat_icon.svg";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
-import { Timer, formatBytes } from "../../Shared/Utility";
+import {
+  BlobUrlToFile,
+  JSONtoformdata,
+  Timer,
+  formatBytes,
+  handleCopyText,
+} from "../../Shared/Utility";
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
-import { Dropdown, Image } from "antd";
+import { Checkbox, Dropdown, Image, Radio, Tooltip, message } from "antd";
 import { useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { uploadChatAttachmentService } from "../../Services/ApiService";
 
 export const ChatInput = ({
+  value = "",
   onInput,
+  isSendLoading = false,
   HandleSendMessage,
   onAudioResult,
   disabled,
@@ -31,13 +44,22 @@ export const ChatInput = ({
   isSendOnly = false,
   onSendResponse,
   onFileResult,
-  isGroup = true,
+  onCameraResult,
+  isEdit = false,
+  onEditClose,
+  onEdit,
 }) => {
+  const token = useAuthToken();
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
   });
+  const [messageApi, contextHolder] = message.useMessage();
+  const [isFloatingOpen, setisFloatingOpen] = useState(false);
+  const [isFetchingUrl, setisFetchingUrl] = useState(false);
+  const textareaRef = useRef(null);
   const [isEmoji, setisEmoji] = useState(false);
   const fileRef = useRef(null);
+  const ImagefileRef = useRef();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
@@ -60,18 +82,26 @@ export const ChatInput = ({
     }, 120000);
   };
 
+  useEffect(() => {
+    textareaRef.current.style.height = "auto";
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  }, [ChatMessage]);
+
+  useEffect(() => {
+    if (value && value !== "") {
+      setChatMessage(value);
+    }
+  }, [value]);
+
   const onRecordStop = (url, blob) => {
     if (isSend.current) {
-      setIsRecording(false);
-      onAudioResult({
-        user: 1,
-        type: "audio",
-        message: url,
-        created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-        read_out_url: null,
+      const file = new File([blob], "blobtofile.mp3", {
+        type: blob.type,
       });
+      fetchAudioUrl(file);
     } else {
       const audio = new Audio(url);
+
       setAudioElement(audio);
       audio.play();
     }
@@ -121,7 +151,6 @@ export const ChatInput = ({
   const handleCameraPermission = (type) => {
     requestVideoPermissions()
       .then(() => {
-        console.log("isCamera");
         setisCamera({ show: true, type: type });
       })
       .catch((err) => {
@@ -162,6 +191,26 @@ export const ChatInput = ({
     return `${minutes}:${formattedSeconds}`;
   }
 
+  const fetchAudioUrl = (file) => {
+    const formData = {
+      token,
+      chatattachment: file,
+    };
+    uploadChatAttachmentService(JSONtoformdata(formData))
+      .then((res) => {
+        onAudioResult({
+          user: 1,
+          type: "audio",
+          message: res.data.filepath,
+          created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+          read_out_url: null,
+        });
+      })
+      .finally(() => {
+        setisFetchingUrl(false);
+        setIsRecording(false);
+      });
+  };
   return (
     <>
       {!isChatContentValid && (
@@ -170,11 +219,23 @@ export const ChatInput = ({
           characters
         </p>
       )}
-      {!IsRecording ? (
-        <div className={classes.ContentSec}>
-          <InputGroup
-            className={`${classes.chatinputSec} ${isSendOnly ? "w-100" : ""}`}
+      {isEdit && (
+        <div className={classes.editContainer}>
+          <span>{value}</span>
+          <i
+            className="material-symbols-outlined"
+            onClick={() => {
+              setChatMessage("");
+              onEditClose();
+            }}
           >
+            cancel
+          </i>
+        </div>
+      )}
+      {!IsRecording ? (
+        <div className="d-flex flex-row">
+          <div className={classes.whatsapp_textarea_wrapper}>
             <i
               className={`material-symbols-outlined ${classes.emojiIcon}`}
               onClick={() => {
@@ -183,18 +244,21 @@ export const ChatInput = ({
             >
               mood
             </i>
-            <Form.Control
-              className={classes.inSearch}
-              placeholder="Type or ask question here..."
-              aria-label="Type or ask question here..."
+            <textarea
+              ref={textareaRef}
+              className={classes.whatsapp_textarea}
+              placeholder="Type a message..."
               value={ChatMessage}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !disabled) {
-                  HandleSendMessage(ChatMessage);
-                  setChatMessage("");
-                }
-              }}
+              rows="1"
+              // onKeyDown={(e) => {
+              //   if (e.key === "Enter" && !disabled) {
+              //     HandleSendMessage(ChatMessage);
+              //     setChatMessage("");
+              //   }
+              // }}
               onChange={(e) => {
+                textareaRef.current.style.height = "auto";
+                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
                 if (onInput) {
                   onInput(e.target.value);
                 }
@@ -210,59 +274,124 @@ export const ChatInput = ({
                 }
               }}
             />
-
-            {!isSendOnly && fileuploadEnabled && (
+            {!isSendOnly &&
+              fileuploadEnabled &&
+              !isEdit &&
+              ChatMessage === "" && (
+                <>
+                  <i
+                    className={classes.upload_icon}
+                    onClick={() => {
+                      fileRef?.current.click();
+                    }}
+                  />
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    name="file"
+                    id="chat_file"
+                    onClick={(event) => {
+                      event.target.value = null;
+                    }}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length !== 0) {
+                        if (onFileResult) {
+                          onFileResult(e.target.files[0]);
+                        }
+                      }
+                    }}
+                    style={{ display: "none" }}
+                  />
+                </>
+              )}
+            {!isSendOnly && cameraenabled && !isEdit && ChatMessage === "" && (
               <>
                 <i
-                  className={classes.upload_icon}
+                  className={classes.camera_icon}
                   onClick={() => {
-                    fileRef?.current.click();
+                    setisFloatingOpen(!isFloatingOpen);
+                    // handleCameraPermission("Camera");
                   }}
                 />
-                <input
-                  ref={fileRef}
-                  type="file"
-                  name="file"
-                  id="chat_file"
-                  onClick={(event) => {
-                    event.target.value = null;
-                  }}
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length !== 0) {
-                      if (onFileResult) {
-                        onFileResult(e.target.files[0]);
-                      }
-                    }
-                  }}
-                  style={{ display: "none" }}
-                />
+                {isFloatingOpen && (
+                  <div className={classes.floating_menu_options}>
+                    <Tooltip placement="left" title={"Capture Image"}>
+                      <button
+                        className={classes.floating_menu_option}
+                        onClick={() => {
+                          handleCameraPermission("Camera");
+                        }}
+                      >
+                        <span className="material-symbols-outlined">
+                          camera
+                        </span>
+                      </button>
+                    </Tooltip>
+
+                    <Tooltip placement="left" title={"Record Video"}>
+                      <button
+                        className={classes.floating_menu_option}
+                        onClick={() => {
+                          handleCameraPermission("Video");
+                        }}
+                      >
+                        <span className="material-symbols-outlined">
+                          videocam
+                        </span>
+                      </button>
+                    </Tooltip>
+                    <Tooltip placement="left" title={"Upload Image or Video"}>
+                      <button
+                        className={classes.floating_menu_option}
+                        onClick={() => {
+                          ImagefileRef.current.click();
+                        }}
+                      >
+                        <span className="material-symbols-outlined">
+                          attach_file
+                        </span>
+                      </button>
+                      <input
+                        ref={ImagefileRef}
+                        type="file"
+                        name="file"
+                        accept="image/*,video/*"
+                        onClick={(event) => {
+                          event.target.value = null;
+                        }}
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files.length !== 0) {
+                            const filterValidFiles = [
+                              ...Array.from(e.target.files),
+                            ].filter((fileInfo) =>
+                              ["video", "image"].includes(
+                                fileInfo.type.split("/")[0]
+                              )
+                            );
+                            if (filterValidFiles.length !== 0) {
+                              onCameraResult(filterValidFiles[0]);
+                            } else {
+                              messageApi.open({
+                                type: "warning",
+                                content: "Please Select Valid File",
+                              });
+                            }
+                          }
+                        }}
+                        style={{ display: "none" }}
+                      />
+                    </Tooltip>
+                  </div>
+                )}
               </>
             )}
-            {!isSendOnly && cameraenabled && (
-              <i
-                className={classes.camera_icon}
-                onClick={() => {
-                  handleCameraPermission("Camera");
-                }}
-              />
-            )}
-
-            {ChatMessage === "" && !isSendOnly ? (
-              <InputGroup.Text className={classes.searchIcon}>
-                <img src={ChatIcon} />
-              </InputGroup.Text>
-            ) : (
-              <InputGroup.Text
+            {isEdit ? (
+              <div
                 className={classes.searchIcon}
                 onClick={() => {
                   setisEmoji(false);
-                  if (isSendOnly) {
-                    if (onSendResponse) {
-                      onSendResponse(ChatMessage);
-                    }
-                    setChatMessage("");
-                  } else if (!disabled) {
-                    HandleSendMessage(ChatMessage);
+                  if (!disabled) {
+                    onEdit(ChatMessage);
                     setChatMessage("");
                   }
                 }}
@@ -270,26 +399,72 @@ export const ChatInput = ({
                 <span
                   className={`material-symbols-outlined ${classes.SendIcon}`}
                 >
-                  send
+                  done
                 </span>
-              </InputGroup.Text>
+              </div>
+            ) : ChatMessage === "" && !isSendOnly ? (
+              <div className={classes.searchIcon}>
+                <i
+                  className={classes.mic_icon}
+                  onClick={() => {
+                    handleAllowMicPermission();
+                  }}
+                />
+              </div>
+            ) : (
+              <>
+                {isFetchingUrl || isSendLoading ? (
+                  <div className={classes.searchIcon}>
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      className={classes.loader}
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  </div>
+                ) : (
+                  <div
+                    className={classes.searchIcon}
+                    onClick={() => {
+                      setisEmoji(false);
+                      if (isSendOnly) {
+                        if (onSendResponse) {
+                          onSendResponse(ChatMessage);
+                        }
+                        setChatMessage("");
+                      } else if (!disabled) {
+                        if (ChatMessage && ChatMessage.trim() !== "") {
+                          HandleSendMessage(ChatMessage);
+                          setChatMessage("");
+                        }
+                      }
+                    }}
+                  >
+                    <span
+                      className={`material-symbols-outlined ${classes.SendIcon}`}
+                    >
+                      send
+                    </span>
+                  </div>
+                )}
+              </>
             )}
-          </InputGroup>
-
-          {!isSendOnly && (
+          </div>
+          {/* {!isSendOnly && !isEdit && (
             <i
               className={classes.mic_icon}
               onClick={() => {
                 handleAllowMicPermission();
               }}
             />
-          )}
+          )} */}
         </div>
       ) : (
         <div className={classes.recordingBox}>
           <div className={classes.RecordingTimeSec}>
             {AudioElement ? (
-              <>{AudioElement ? formatTime(AudioElement.currentTime) : null}</>
+              <>{AudioElement ? formatTime(AudioElement?.currentTime) : null}</>
             ) : (
               <>{getValidNumber(minutes) + `:` + getValidNumber(seconds)}</>
             )}
@@ -299,7 +474,7 @@ export const ChatInput = ({
               <>
                 {AudioElement && AudioElement?.paused ? (
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       AudioElement.play();
                     }}
@@ -308,7 +483,7 @@ export const ChatInput = ({
                   </span>
                 ) : (
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       AudioElement.pause();
                     }}
@@ -319,7 +494,7 @@ export const ChatInput = ({
               </>
             ) : (
               <span
-                class="material-symbols-rounded"
+                className="material-symbols-rounded"
                 onClick={() => {
                   isSend.current = false;
                   stopRecording();
@@ -329,7 +504,7 @@ export const ChatInput = ({
               </span>
             )}
             <span
-              class={`material-symbols-outlined ${classes.closeIcon}`}
+              className={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
                 handleClose();
                 clearBlobUrl();
@@ -337,31 +512,46 @@ export const ChatInput = ({
             >
               delete
             </span>
-            <InputGroup.Text
-              className={classes.searchIcon}
-              onClick={() => {
-                if (mediaBlobUrl) {
-                  setIsRecording(false);
-                  onAudioResult({
-                    user: 1,
-                    type: "audio",
-                    message: mediaBlobUrl,
-                    created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-                    read_out_url: null,
-                  });
-                } else {
-                  isSend.current = true;
-                  stopRecording();
-                }
-                setAudioElement(null);
-                clearBlobUrl();
-                handleClose();
-              }}
-            >
-              <span className={`material-symbols-outlined ${classes.SendIcon}`}>
-                send
-              </span>
-            </InputGroup.Text>
+            {isFetchingUrl || isSendLoading ? (
+              <div className={classes.searchIcon}>
+                <Spinner
+                  animation="border"
+                  role="status"
+                  className={classes.loader}
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              <InputGroup.Text
+                className={classes.searchIcon}
+                onClick={() => {
+                  if (!isFetchingUrl && !isSendLoading) {
+                    setisFetchingUrl(true);
+                    if (mediaBlobUrl) {
+                      BlobUrlToFile(mediaBlobUrl, "blobtofile.mp3").then(
+                        (res) => {
+                          fetchAudioUrl(res);
+                        }
+                      );
+                    } else {
+                      isSend.current = true;
+                      stopRecording();
+                    }
+
+                    setAudioElement(null);
+                    clearBlobUrl();
+                    handleClose();
+                  }
+                }}
+              >
+                <span
+                  className={`material-symbols-outlined ${classes.SendIcon}`}
+                >
+                  send
+                </span>
+              </InputGroup.Text>
+            )}
           </div>
         </div>
       )}
@@ -398,9 +588,8 @@ export const ChatInput = ({
           canvasRef={canvasRef}
           type={isCamera.type}
           onSuccess={(value) => {
-            console.log(value);
-            if (onFileResult) {
-              onFileResult(value);
+            if (onCameraResult) {
+              onCameraResult(value);
             }
           }}
           isPreviewEnabled={false}
@@ -414,7 +603,7 @@ export const ChatInput = ({
 };
 
 export const MessageContent = (props) => {
-  const { Messages } = useChatContext();
+  const { Messages, setEditData } = useChatContext();
   const {
     message = null,
     user,
@@ -423,9 +612,17 @@ export const MessageContent = (props) => {
     file_path = null,
     file,
     isGroup,
+    message_id,
+    isEdited,
+    onDelete,
+    onSelectedMessage,
+    selectedMessages,
+    SelectAllMessages,
+    setSelectAllMessages,
   } = props;
   const friends_list = useFriends();
   const loginUserData = useAuthData();
+
   const [isAvatarErr, setisAvatarErr] = useState(false);
 
   const isUser = (id) => {
@@ -473,8 +670,8 @@ export const MessageContent = (props) => {
   };
 
   const GetValidComponent = () => {
-    switch (type) {
-      case "image":
+    switch (true) {
+      case type.includes("image"):
         return (
           <Image
             className={`${classes.chatimg}  ${message ? "mb-0" : ""} ${
@@ -486,7 +683,7 @@ export const MessageContent = (props) => {
             src={file_path}
           />
         );
-      case "video":
+      case type.includes("video"):
         return (
           <video
             controls
@@ -497,14 +694,14 @@ export const MessageContent = (props) => {
             <source src={file_path} />
           </video>
         );
-      case "voice":
-        return (
+      case type.includes("audio"):
+        return file_path ? (
           <div className={classes.audioSec}>
             <div className={classes.audioplayer}>
               <ChatAudioplayer
                 textColor={isUser(user) ? "#FFFFFF" : "#000000"}
                 url={file_path}
-                time={moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                time={moment(props?.created_at, "YYYY-MM-DD HH:mm:ss").format(
                   "hh:mm A"
                 )}
               />
@@ -515,10 +712,10 @@ export const MessageContent = (props) => {
               />
             </div>
           </div>
-        );
+        ) : null;
 
       default:
-        if (file) {
+        if (file && Object.keys(file).length !== 0) {
           const validcontent = file.type.split("/")[1];
           return (
             <div
@@ -529,6 +726,9 @@ export const MessageContent = (props) => {
             >
               <div
                 className={classes.filContainer}
+                onClick={() => {
+                  window.open(file_path, "_self");
+                }}
                 style={{
                   background: isUser(user) ? "#FFFFFF" : "#563662",
                 }}
@@ -566,15 +766,48 @@ export const MessageContent = (props) => {
   const items = [
     {
       key: "1",
-      label: <div>Copy</div>,
+      label: (
+        <div
+          onClick={() => {
+            handleCopyText(message);
+          }}
+        >
+          Copy
+        </div>
+      ),
     },
     {
       key: "2",
-      label: <div>Edit</div>,
+      label: (
+        <div
+          onClick={() => {
+            setEditData({ msg: message, message_id: message_id });
+          }}
+        >
+          Edit
+        </div>
+      ),
     },
     {
       key: "3",
-      label: <div>Delete</div>,
+      label: <div onClick={onDelete}>Forward</div>,
+    },
+    {
+      key: "4",
+      label: (
+        <div
+          onClick={() => {
+            setSelectAllMessages(true);
+            onSelectedMessage(message);
+          }}
+        >
+          Select
+        </div>
+      ),
+    },
+    {
+      key: "5",
+      label: <div onClick={onDelete}>Delete</div>,
     },
   ];
 
@@ -583,72 +816,136 @@ export const MessageContent = (props) => {
       className={`${
         isUser(user) ? classes.MessageContainer : classes.receiverConteiner
       } ${isUser(user) ? "br_top_right" : "br_top_left"}`}
+      onClick={() => {
+        if (isUser(user) && SelectAllMessages) {
+          onSelectedMessage(message);
+        }
+      }}
     >
-      <div className={classes.msgBox}>
-        {isGroup && (
-          <div className={classes.avatar}>
-            {getmessageType() !== "first" ? (
-              <div
-                style={{
-                  height: 30,
-                  width: 30,
-                }}
-              ></div>
-            ) : (
-              <img
-                src={
-                  isUser(user)
-                    ? loginUserData?.profile_image
-                    : getUserData().profile_img
-                }
-                onError={(e) => {
-                  setisAvatarErr(true);
-                }}
-              />
-            )}
-          </div>
-        )}
-        <div
-          key={index}
-          className={`${classes.chatbox_message} ${
-            isUser(user) ? classes.user_chatbox_message : ""
-          } ${getBorderType()}`}
-        >
-          <div className={classes.content}>
-            {!isUser(user) && isGroup && getUserData().display_name && (
-              <p className={classes.userNameSec}>
-                {getUserData().display_name}
-              </p>
-            )}
-            <GetValidComponent />
-
-            {message && <p>{message}</p>}
-            {props.created_at && type !== "voice" && (
-              <span className={classes.timestamp}>
-                {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
-                  "hh:mm A"
-                )}
-              </span>
-            )}
-          </div>
-        </div>
-        {isUser(user) && (
-          <Dropdown
-            menu={{ items }}
-            placement="bottomRight"
-            arrow
-            trigger={["click"]}
+      <Dropdown
+        menu={{ items }}
+        placement="bottomRight"
+        arrow
+        trigger={["contextMenu"]}
+      >
+        <div className={classes.msgBox}>
+          {isGroup && (
+            <div className={classes.avatar}>
+              {getmessageType() !== "first" ? (
+                <div
+                  style={{
+                    height: 30,
+                    width: 30,
+                  }}
+                ></div>
+              ) : (
+                <img
+                  src={
+                    isUser(user)
+                      ? loginUserData?.profile_image
+                      : getUserData().profile_img
+                  }
+                  onError={(e) => {
+                    setisAvatarErr(true);
+                  }}
+                />
+              )}
+            </div>
+          )}
+          <div
+            key={index}
+            className={`${classes.chatbox_message} ${
+              isUser(user) ? classes.user_chatbox_message : ""
+            } ${getBorderType()}`}
           >
-            <span
-              className={`material-symbols-outlined ${classes.moreIcon}`}
-              style={{
-                color: "black",
-              }}
+            <div className={classes.content}>
+              {!isUser(user) && isGroup && getUserData().display_name && (
+                <p className={classes.userNameSec}>
+                  {getUserData().display_name}
+                </p>
+              )}
+              <GetValidComponent />
+
+              {message && message.trim() !== "null" && (
+                <p
+                  style={{
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {message}
+                </p>
+              )}
+              {props.created_at && type !== "audio" && (
+                <span className={classes.timestamp}>
+                  {isEdited ? `edited - ` : ""}
+                  {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                    "hh:mm A"
+                  )}
+                </span>
+              )}
+            </div>
+          </div>
+          {isUser(user) && (
+            <Dropdown
+              menu={{ items }}
+              placement="bottomRight"
+              arrow
+              trigger={["click"]}
             >
-              more_vert
-            </span>
-          </Dropdown>
-        )}
+              <span
+                className={`material-symbols-outlined ${classes.moreIcon}`}
+                style={{
+                  color: "black",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                more_vert
+              </span>
+            </Dropdown>
+          )}
+        </div>
+      </Dropdown>
+
+      {isUser(user) && SelectAllMessages && (
+        <Checkbox
+          className={classes.SelectedMessage}
+          checked={selectedMessages?.includes(message)}
+        />
+      )}
+    </div>
+  );
+};
+
+export const ChatInputBox = () => {
+  const [isEmoji, setisEmoji] = useState(false);
+  const textareaRef = useRef(null);
+  const handleChange = () => {
+    textareaRef.current.style.height = "auto";
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  };
+
+  return (
+    <div className={classes.whatsapp_textarea_wrapper}>
+      <i
+        className={`material-symbols-outlined ${classes.emojiIcon}`}
+        onClick={() => {
+          setisEmoji(!isEmoji);
+        }}
+      >
+        mood
+      </i>
+      <textarea
+        ref={textareaRef}
+        className={classes.whatsapp_textarea}
+        placeholder="Type a message..."
+        // value={message}
+        rows="1"
+        onChange={handleChange}
+      />
+      <div className={classes.searchIcon}>
+        <img src={ChatIcon} />
       </div>
     </div>
   );

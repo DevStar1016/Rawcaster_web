@@ -380,7 +380,7 @@ const Settings = () => {
         </div>
         <div className={classes.settingmobMenu}>
           <span
-            class="material-icons"
+            className="material-icons"
             onClick={() => setvisibleSideBar((p) => !p)}
           >
             menu

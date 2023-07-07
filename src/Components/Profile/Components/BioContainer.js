@@ -19,6 +19,7 @@ import {
 import { toast } from "react-hot-toast";
 import shieldIcon from "../../../Assets/Icons/svg/claim_account_white.svg";
 import { useNavigate } from "react-router";
+import LoginModal from "../../../Modal/Verification/LoginModal";
 
 const BioContainer = ({ isLoginuser }) => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const BioContainer = ({ isLoginuser }) => {
   const { isSuccess, loginUserData } = useAuth();
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [BecameFanStatus, setBecameFanStatus] = useState("");
+  const [verifyProfilePopup, setverifyProfilePopup] = useState(false);
 
   const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues: {
@@ -53,6 +55,10 @@ const BioContainer = ({ isLoginuser }) => {
       return replaceBiodataHandler(profileData);
     }
   };
+
+  useEffect(() => {
+    console.log(loginUserData, "loginUserDataloginUserData");
+  }, [loginUserData]);
 
   useEffect(() => {
     if (profileData && influencerCategory.length !== 0) {
@@ -135,6 +141,7 @@ const BioContainer = ({ isLoginuser }) => {
   const getLabelValue = () => {
     return selectedCategory.map((ele) => ele.value);
   };
+  const handleVerifyPopupClose = () => setverifyProfilePopup(false);
 
   return (
     <div className={classes.profileIntro}>
@@ -142,7 +149,7 @@ const BioContainer = ({ isLoginuser }) => {
         <h2>
           About {profileData?.first_name}{" "}
           {selectedCategory.length !== 0 && (
-            <i class="material-icons">fiber_manual_record</i>
+            <i className="material-icons">fiber_manual_record</i>
           )}
           <Tooltip title={getLabelValue().toString()}>
             <span>{getLabelValue().toString()}</span>
@@ -156,7 +163,7 @@ const BioContainer = ({ isLoginuser }) => {
               handleSubmit();
             }}
           >
-            <i class="material-symbols-outlined">done</i>
+            <i className="material-symbols-outlined">done</i>
           </div>
         ) : (
           <div
@@ -235,8 +242,13 @@ const BioContainer = ({ isLoginuser }) => {
                 DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
               }`}
               onClickCapture={() => {
-                if (DiamondVerifyType === 3) {
+                if (
+                  DiamondVerifyType === 3 &&
+                  loginUserData?.user_status_id === 4
+                ) {
                   navigate("/verifyaccount");
+                } else {
+                  setverifyProfilePopup((pre) => !pre);
                 }
               }}
               disabled={DiamondVerifyType === 2}
@@ -260,6 +272,15 @@ const BioContainer = ({ isLoginuser }) => {
               )}
             </Button>
           )}
+          {verifyProfilePopup && (
+            <LoginModal
+              open={verifyProfilePopup}
+              close={handleVerifyPopupClose}
+              AIclose={true}
+              AIopen="Get Diamond"
+              AImessgae="To access this feature become a diamond member!"
+            />
+          )}
 
           {!profileData || isLoginuser || profileData?.follow ? null : (
             <Button
@@ -279,7 +300,7 @@ const BioContainer = ({ isLoginuser }) => {
               {BecameFanStatus === "" ? (
                 <div className={classes.becomeSec}>
                   <p>Become a Fan </p>
-                  <i class="material-symbols-outlined">arrow_forward</i>
+                  <i className="material-symbols-outlined">arrow_forward</i>
                 </div>
               ) : (
                 BecameFanStatus === "pending" && (

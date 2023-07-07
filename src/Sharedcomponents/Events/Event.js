@@ -1,5 +1,5 @@
 import { Modal, Popover, Tooltip } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
@@ -26,6 +26,7 @@ import FaceBookIcon from "../../Assets/Icons/svg/facebook.svg";
 import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
 import TwitterIcon from "../../Assets/Icons/svg/twitterIcon.svg";
 import GmailIcon from "../../Assets/Icons/svg/gmail_icon.svg";
+import EventHandler from "./EventHandler";
 
 const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const { userSettings, loginUserData } = useAuth();
@@ -65,7 +66,6 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const isNotExpired = () => {
     const momenttimezone = require("moment-timezone");
     const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
-    console.log(ele.start_date_time, currentTime);
     if (moment(ele.start_date_time).isBefore(currentTime)) {
       return false;
     }
@@ -126,6 +126,12 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
 
   return (
     <div
+      onClick={() => {
+        navigate(`/viewevent/${ele.event_id}`);
+      }}
+      style={{
+        cursor: "pointer",
+      }}
       className={`${classes.eventItem} ${
         isOthers ? classes.othersEventItem : ""
       }`}
@@ -133,9 +139,6 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
       <img
         className={classes.eventImg}
         src={ele?.banner_image !== "" ? ele?.banner_image : eventList}
-        onClick={() => {
-          navigate(`/viewevent/${ele.event_id}`);
-        }}
         alt="Banner_img"
         onError={({ currentTarget }) => {
           currentTarget.onerror = null;
@@ -169,12 +172,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         >
           <div className="d-flex flex-row justify-content-between">
             <Tooltip title={decodeHtml(ele.event_name)}>
-              <h3
-                style={{ maxWidth: isCreatedUser() ? "180px" : "" }}
-                onClick={() => {
-                  navigate(`/viewevent/${ele.event_id}`);
-                }}
-              >
+              <h3 style={{ maxWidth: isCreatedUser() ? "180px" : "" }}>
                 {decodeHtml(ele.event_name)}
               </h3>
             </Tooltip>
@@ -183,14 +181,16 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
                 <div className={classes.iconBg}>
                   <i
                     className={classes.editIcon}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleEdit(ele);
                     }}
                   ></i>
                 </div>
                 <div
                   className={classes.iconBg}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     Modal.confirm({
                       title: "Confirmation",
                       okText: "Delete",
@@ -205,7 +205,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
                     });
                   }}
                 >
-                  <i class="material-symbols-outlined">delete</i>
+                  <i className="material-symbols-outlined">delete</i>
                 </div>
               </div>
             )}
@@ -232,11 +232,11 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
             </p>
           ) : (
             <p className={classes.iconsec}>
-              <span class="material-symbols-outlined">calendar_today</span>{" "}
+              <span className="material-symbols-outlined">calendar_today</span>{" "}
               {moment(
                 utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
               ).format("DD MMM YYYY")}
-              <span class="material-symbols-outlined">schedule</span>{" "}
+              <span className="material-symbols-outlined">schedule</span>{" "}
               {moment(
                 utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
               ).format("hh:mm A") +
@@ -250,12 +250,11 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
           )}
         </div>
         {isNotExpired() && (
-          <Link className={classes.link}>
-            {isCreatedUser()
-              ? `Start ${ele.type === 2 ? "Talkshow" : "Event"}`
-              : `Join ${ele.type === 2 ? "Talkshow" : "Event"}`}
-            <span class="material-symbols-outlined">arrow_right_alt</span>
-          </Link>
+          <EventHandler
+            isHost={isCreatedUser()}
+            title={ele.type === 2 ? "Talkshow" : "Event"}
+            meetingId={ele.event_id}
+          />
         )}
       </div>
     </div>

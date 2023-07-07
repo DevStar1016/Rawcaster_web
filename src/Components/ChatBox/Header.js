@@ -10,7 +10,14 @@ import { useAuthData, useFriends, useGroups } from "../../Shared/Reduxfetcher";
 
 const Header = () => {
   const { isChatOpen, setisChatOpen } = useMainContext();
-  const { setGroupDetails, GroupDetails } = useChatContext();
+  const {
+    setGroupDetails,
+    GroupDetails,
+    SelectedContents,
+    removeselection,
+    setSelectAllMessages,
+    SelectAllMessages,
+  } = useChatContext();
   const loginuserData = useAuthData();
   const friends = useFriends();
   const groups = useGroups();
@@ -40,30 +47,62 @@ const Header = () => {
     return;
   };
 
-  const getGroupDisplayData = () => {
-    const displayedData = getData()?.group_members_list.slice(0, 2); // Get the first 2 objects
-    const remainingData = getData()?.group_members_list.slice(2); // Get the remaining objects
-    const displayName = displayedData?.map((ele) => {
-      if (parseInt(loginuserData.user_id) !== ele.user_id) {
-        return ele.display_name.split(" ")[0] || "";
-      }
-      return "";
-    });
-    let displayData;
+  // const getGroupDisplayData = () => {
+  //   const displayedData = getData()?.group_members_list.slice(0, 2); // Get the first 2 objects
+  //   const remainingData = getData()?.group_members_list.slice(2); // Get the remaining objects
+  //   const displayName = displayedData?.map((ele) => {
+  //     if (parseInt(loginuserData.user_id) !== ele.user_id) {
+  //       return ele.display_name.split(" ")[0] || "";
+  //     }
+  //     return "";
+  //   });
+  //   let displayData;
 
-    if (remainingData.length > 0) {
-      if (remainingData.length === 1) {
-        displayData = [
-          "You",
-          ...displayName,
-          remainingData[0].display_name,
-        ].toString();
+  //   if (remainingData.length > 0) {
+  //     if (remainingData.length === 1) {
+  //       displayData = [
+  //         "You",
+  //         ...displayName,
+  //         remainingData[0].display_name,
+  //       ].toString();
+  //     } else {
+  //       displayData =
+  //         "You ," + displayName.toString() + ` +${remainingData.length} Others`;
+  //     }
+  //   } else {
+  //     displayData = "You ," + displayName.toString();
+  //   }
+  //   return displayData;
+  // };
+
+  const getGroupDisplayData = () => {
+    const GroupMembers = getData()?.group_members_list;
+    const withoutCurrentUser = GroupMembers?.filter(
+      (ele) =>
+        parseInt(ele?.user_id, 10) !== parseInt(loginuserData.user_id, 10)
+    );
+    let displayData = "";
+
+    if (withoutCurrentUser.length > 0) {
+      const lengthyText =
+        withoutCurrentUser[0].display_name?.toString()?.length > 25;
+      if (withoutCurrentUser.length === 1) {
+        displayData = lengthyText
+          ? `You , ${withoutCurrentUser[0].display_name
+              ?.toString()
+              ?.slice(20)} ...`
+          : `You , ${withoutCurrentUser[0].display_name?.toString()}`;
       } else {
-        displayData =
-          "You ," + displayName.toString() + ` +${remainingData.length} Others`;
+        displayData = lengthyText
+          ? "You ," +
+            withoutCurrentUser[0].display_name?.toString()?.slice(0, 20) +
+            `...`
+          : "You ," +
+            withoutCurrentUser[0].display_name?.toString() +
+            ` +${withoutCurrentUser.length - 1} Others`;
       }
     } else {
-      displayData = "You ," + displayName.toString();
+      displayData = "You";
     }
     return displayData;
   };
@@ -73,6 +112,19 @@ const Header = () => {
       setGroupDetails(getData());
     }
   }, [GroupDetails]);
+
+  useEffect(() => {
+    console.log(SelectedContents, "SelectedContents from header");
+  }, [SelectedContents]);
+
+  function copy() {
+    const el = document.createElement("input");
+    el.value = SelectedContents.join(" ");
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  }
 
   return (
     <>
@@ -101,17 +153,36 @@ const Header = () => {
             {getData().group_members_list && <p>{getGroupDisplayData()}</p>}
           </div>
         </div>
-        <div>
-          <span class="material-symbols-outlined">more_vert</span>
-          <span
-            class="material-symbols-outlined"
-            onClick={() => {
-              setisChatOpen(false);
-            }}
-          >
-            close
-          </span>
-        </div>
+        {SelectedContents?.length === 0 ? (
+          <div>
+            <span className="material-symbols-outlined">more_vert</span>
+            <span
+              className="material-symbols-outlined"
+              onClick={() => {
+                setisChatOpen(false);
+              }}
+            >
+              close
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span className={classes.copyBtn}>
+              <span onClick={copy} className="material-symbols-outlined">
+                content_copy
+              </span>
+            </span>
+            <span className="material-symbols-outlined">delete</span>
+            <span
+              className="material-symbols-outlined"
+              onClick={() => {
+                setSelectAllMessages(false);
+              }}
+            >
+              close
+            </span>
+          </div>
+        )}
       </Layout.Header>
     </>
   );

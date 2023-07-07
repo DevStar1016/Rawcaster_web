@@ -274,7 +274,7 @@ const CommentsList = ({ index }) => {
                           </div>
                         </div>
                         <span
-                          class={`material-symbols-outlined ${classes.closeIcon}`}
+                          className={`material-symbols-outlined ${classes.closeIcon}`}
                           onClick={() => {
                             setisActiveEdit(null);
                           }}
@@ -334,7 +334,7 @@ const CommentsList = ({ index }) => {
                                 trigger={["click"]}
                               >
                                 <div className={classes.moreBtn}>
-                                  <i class="material-symbols-outlined">
+                                  <i className="material-symbols-outlined">
                                     more_horiz
                                   </i>
                                 </div>

@@ -16,7 +16,7 @@ import btmuser from "../Assets/Images/svg/btmuser.svg";
 import btmhome from "../Assets/Images/svg/btmhome.svg";
 import searchIcon from "../Assets/Icons/svg/topsearch.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutService } from "../Services/ApiService";
 import {
   DecryptionString,
@@ -53,6 +53,9 @@ const HomeLayout = () => {
   const params = useParams();
   const inputRef = useRef();
   const meetingManager = useMeetingManager();
+  const unReadCount = useSelector(
+    (state) => state.dashboard.notificationUnreadCount
+  );
   const [postModalShow, setpostModalShow] = useState(false);
   const [PostContent, setPostContent] = useState(null);
   const { pathname } = useLocation();
@@ -137,7 +140,7 @@ const HomeLayout = () => {
               user_id: null,
               page_number: 1,
             };
-            console.log(filterData);
+
             filterData.formData = filterValidObject(filterData.formData);
             dispatch(handleResetNuggets());
             dispatch(handleNuggetFormData(filterValidObject(filterData)));
@@ -229,6 +232,7 @@ const HomeLayout = () => {
                         onReadCountChange={(count) => {
                           setTotalUnreadCount(count);
                         }}
+                        unReadCount={unReadCount}
                       />
                     </div>
                   </div>
@@ -277,12 +281,6 @@ const HomeLayout = () => {
                 </div>
                 <Dropdown
                   placement="bottomRight"
-                  re
-                  // disabledArea={[
-                  //   {
-                  //     element: document.getElementById("badgeImage"),
-                  //   },
-                  // ]}
                   menu={{
                     items: [
                       {
@@ -401,7 +399,7 @@ const HomeLayout = () => {
           <Outlet />
         </Content>
 
-        {loginUserData && loginUserData.user_status_id > 1 && (
+        {loginUserData && loginUserData.user_status_id > 0 && (
           <div className={classes.chatbotsec}>
             <ArtificialIntelligence />
           </div>

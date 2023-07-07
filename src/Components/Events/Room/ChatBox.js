@@ -6,8 +6,6 @@ import ChatIcon from "../../../Assets/Icons/svg/chat_icon.svg";
 import { Form, InputGroup } from "react-bootstrap";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import EmojiPicker from "../../../UIComponents/EmojiPicker";
-import { useEventLayout } from "../../../Layouts/EventLayout";
-import { ChatBubble } from "amazon-chime-sdk-component-library-react";
 
 const { Header, Footer, Content } = Layout;
 
@@ -46,7 +44,7 @@ const ChatBox = () => {
           </div>
           <div>
             <i
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               //   onClick={() => {
               //     setisChatorParticipant(null);
               //   }}
@@ -109,7 +107,7 @@ const ChatBox = () => {
         <div className={classes.ContentSec}>
           <InputGroup className={classes.chatinputSec}>
             <span
-              class="material-symbols-outlined my-auto ms-1"
+              className="material-symbols-outlined my-auto ms-1"
               onClick={() => {
                 setisEmoji(!isEmoji);
               }}

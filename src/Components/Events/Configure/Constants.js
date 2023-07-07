@@ -77,7 +77,7 @@ export const EventSettings = [
     isprimary: false,
   },
   {
-    title: "Allow participant to share screeng",
+    title: "Allow participant to share screen",
     description:
       "When enabled, any participant in the event can share their screen during meeting.",
     type: "user_screenshare",

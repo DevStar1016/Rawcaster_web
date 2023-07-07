@@ -1,4 +1,13 @@
-import { Button, Dropdown, Input, Modal, Tooltip, message } from "antd";
+import {
+  Alert,
+  Button,
+  Dropdown,
+  Input,
+  Modal,
+  Space,
+  Tooltip,
+  message,
+} from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import classes from "../Modal.module.css";
 import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
@@ -33,6 +42,7 @@ import ImageCropModal from "../ImageCropModal";
 import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
 import { parseInt } from "lodash";
 import ImageEditModal from "../ImageEditModal";
+import LoginModal from "../Verification/LoginModal";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -76,6 +86,7 @@ const Postmodal = ({ visible, onClose }) => {
   const [NuggetImg, setNuggetImg] = useState();
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
+  const [LimitExceeds, setLimitExceeds] = useState(false);
 
   const [oldUrl, setOldurl] = useState("");
   const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
@@ -134,7 +145,7 @@ const Postmodal = ({ visible, onClose }) => {
     var t = val;
     if (t.match(regex)) {
       let url = t.match(regex);
-      let addHttp = url[url.length - 1].replace(
+      let addHttp = url[url.length - 1]?.replace(
         /^(?:(.*:)?\/\/)?(.*)/i,
         (match, schemma, nonSchemmaUrl) =>
           schemma ? match : `http://${nonSchemmaUrl}`
@@ -175,6 +186,8 @@ const Postmodal = ({ visible, onClose }) => {
       return 0;
     }
   };
+
+  const handleLimitExceedsClose = () => setLimitExceeds(false);
 
   return (
     <Modal
@@ -220,8 +233,8 @@ const Postmodal = ({ visible, onClose }) => {
             }}
           >
             <p className={classes.onlymeBtn}>
-              <span class="material-icons">lock</span> {ShareType}{" "}
-              <span class="material-icons">arrow_drop_down</span>
+              <span className="material-icons">lock</span> {ShareType}{" "}
+              <span className="material-icons">arrow_drop_down</span>
             </p>
           </Dropdown>
           <div
@@ -235,7 +248,7 @@ const Postmodal = ({ visible, onClose }) => {
             }}
           >
             <span
-              class="material-symbols-outlined mx-2"
+              className="material-symbols-outlined mx-2"
               onClick={() => {
                 setGrouporConnectionModal({
                   show: true,
@@ -394,7 +407,7 @@ const Postmodal = ({ visible, onClose }) => {
                 onPaste={(event) => {
                   const pastedText = event.clipboardData.getData("text/plain");
                   const selectedText = window.getSelection().toString();
-                  const updatedText = textinputRef.current.value.replace(
+                  const updatedText = textinputRef.current?.value?.replace(
                     selectedText,
                     pastedText
                   );
@@ -407,6 +420,7 @@ const Postmodal = ({ visible, onClose }) => {
                     setFieldValue("content", e.target.value);
                     getLinkInfo(e.target.value);
                     setisPostContentValid(true);
+                    setLimitExceeds(false);
                   } else {
                     setFieldValue(
                       "content",
@@ -414,9 +428,17 @@ const Postmodal = ({ visible, onClose }) => {
                     );
                     getLinkInfo(e.target.value.slice(0, getNuggetTextLength()));
                     setisPostContentValid(false);
+                    setLimitExceeds(true);
                   }
                 }}
               />
+              {/* <LoginModal
+                  open={LimitExceeds}
+                 close={handleLimitExceedsClose}
+                   AIclose={true}
+                 AIopen="Upgrade"
+                  AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
+                 /> */}
               <img
                 width="24px"
                 alt="Add Emoji"
@@ -432,6 +454,42 @@ const Postmodal = ({ visible, onClose }) => {
                 characters
               </p>
             )}
+            <div
+              style={{ paddingTop: "20px" }}
+              className={classes.alertContainer}
+              id="Alertdiv"
+            >
+              {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+                <Alert
+                  message="Upgrade Your Plan"
+                  description="You have reached your character limit, to increase the limit upgrade your membership!"
+                  type="info"
+                  action={
+                    <Space direction="vertical">
+                      <Button
+                        size="small"
+                        className={classes.upgradeBtn}
+                        type="primary"
+                        onClick={() => {
+                          window.location.assign("/membership");
+                        }}
+                      >
+                        Upgrade
+                      </Button>
+                      <Button
+                        className={classes.LaterBtn}
+                        onClick={handleLimitExceedsClose}
+                        size="small"
+                        danger
+                        type="primary"
+                      >
+                        Later
+                      </Button>
+                    </Space>
+                  }
+                />
+              )}
+            </div>
             {showEmojis && (
               <div
                 className={classes.emojiPicker}
@@ -472,7 +530,7 @@ const Postmodal = ({ visible, onClose }) => {
                   className={classes.clsBtn}
                   onClick={() => setMetaData(null)}
                 >
-                  <span class="material-icons">close</span>
+                  <span className="material-icons">close</span>
                 </div>
                 <p className={classes.title}>{MetaData.title}</p>
                 {MetaData.image && MetaData.image !== "" ? (
@@ -503,10 +561,16 @@ const Postmodal = ({ visible, onClose }) => {
                       <div
                         className={classes.overlay}
                         onClick={() => {
+                          setdeletedMedia((pre) => {
+                            if (pre.length !== 0) {
+                              return [ele.media_id];
+                            } else {
+                              return [...pre, ele.media_id];
+                            }
+                          });
                           setpreviewMedia((pre) =>
                             pre.filter((elem) => elem.media_id !== ele.media_id)
                           );
-                          setdeletedMedia((pre) => [...pre, ele.media_id]);
                         }}
                       >
                         {/* <img
@@ -514,7 +578,7 @@ const Postmodal = ({ visible, onClose }) => {
                 alt="more"
                 style={{ width: "20px", height: "20px" }}
               /> */}
-                        <span class="material-icons">delete</span>
+                        <span className="material-icons">delete</span>
                       </div>
                     </div>
                   );
@@ -545,7 +609,7 @@ const Postmodal = ({ visible, onClose }) => {
                             );
                           }}
                         >
-                          <span class="material-icons">delete</span>
+                          <span className="material-icons">delete</span>
                         </div>
                       </div>
                       {getURL().media_type.includes("image") && (
@@ -555,7 +619,9 @@ const Postmodal = ({ visible, onClose }) => {
                             setNuggetImg({ ele: ele, index: index });
                           }}
                         >
-                          <span class="material-symbols-outlined">edit</span>
+                          <span className="material-symbols-outlined">
+                            edit
+                          </span>
                         </div>
                       )}
                     </>

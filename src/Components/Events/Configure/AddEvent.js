@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, DatePicker, Form, Input, TimePicker } from "antd";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  DatePicker,
+  Form,
+  Input,
+  Space,
+  TimePicker,
+} from "antd";
 import { Col, Row } from "react-bootstrap";
 import classes from "../Events.module.css";
 import { useAuth, useAuthToken } from "../../../Shared/Reduxfetcher";
@@ -10,6 +19,7 @@ import {
   EventLayoutComponent,
   EventMelodyComponent,
   EventTypeComponent,
+  Groups,
   InviteEmailComponent,
   TimeValueComponent,
   compareArrays,
@@ -36,6 +46,7 @@ import {
 } from "../../../Shared/Utility";
 import { useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
+import LoginModal from "../../../Modal/Verification/LoginModal";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -43,6 +54,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { userSettings, loginUserData } = useAuth();
   const [isCreating, setisCreating] = useState(false);
   const [isNextPage, setisNextPage] = useState(false);
+  const [upgradePlanPopup, setupgradePlanPopup] = useState(false);
   const [SelectedTime, setSelectedTime] = useState(
     moment().add(10, "minutes").format("HH:mm")
   );
@@ -145,22 +157,51 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           "Invite Friends Test",
           "Please Select Connections",
           function (value) {
-            const { event_type, event_invite_mails } = this.parent;
+            const { event_type, event_invite_mails, event_invite_groups } =
+              this.parent;
             if (parseInt(event_type) === 2) {
-              if (!event_invite_mails) {
+              if (!event_invite_mails && !event_invite_groups) {
+                return value;
+              } else if (
+                JSON.parse(event_invite_mails).length === 0 &&
+                JSON.parse(event_invite_groups).length === 0
+              ) {
                 return value;
               }
             }
-
             return true;
           }
         ),
+      event_invite_groups: yup
+        .string()
+        .test("Invite Groups Test", "Please Select Groups", function (value) {
+          const { event_type, event_invite_mails, event_invite_friends } =
+            this.parent;
+          if (parseInt(event_type) === 2) {
+            if (!event_invite_mails && !event_invite_friends) {
+              return value;
+            } else if (
+              JSON.parse(event_invite_mails).length === 0 &&
+              JSON.parse(event_invite_friends).length === 0
+            ) {
+              return value;
+            }
+          }
+
+          return true;
+        }),
       event_invite_mails: yup
         .string()
         .test("Mail Test", "Please Enter Invite Users", function (value) {
-          const { event_type, event_invite_friends } = this.parent;
+          const { event_type, event_invite_friends, event_invite_groups } =
+            this.parent;
           if (parseInt(event_type) === 2) {
-            if (!event_invite_friends) {
+            if (!event_invite_friends && !event_invite_groups) {
+              return value;
+            } else if (
+              JSON.parse(event_invite_friends).length === 0 &&
+              JSON.parse(event_invite_groups).length === 0
+            ) {
               return value;
             }
           }
@@ -177,6 +218,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       }
     },
   });
+
+  useEffect(() => {
+    console.log(userSettings, "userSettingsuserSettings");
+  }, [userSettings]);
 
   const handleCloseEvent = () => {
     resetForm();
@@ -207,7 +252,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       return (
         <div className={classes.headingSec}>
           <span
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setisNextPage(false);
             }}
@@ -372,6 +417,21 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }
   }, [data, userSettings]);
 
+  const handleUpgradePopupClose = () => setupgradePlanPopup(false);
+
+  const scrollToUpgrade = (value = 0) => {
+    const scrollHeight = document.getElementById("eventForm").scrollHeight;
+    document
+      .getElementById("eventForm")
+      .scrollTo({ top: scrollHeight, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (upgradePlanPopup) {
+      scrollToUpgrade();
+    }
+  }, [upgradePlanPopup]);
+
   return (
     <EventModal
       open={isEventOpen}
@@ -402,9 +462,34 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           ];
           validateForm().then((res) => {
             let validatedKeys = Object.keys(res);
+            console.log(
+              compareArrays(validatedKeys, requiredFields),
+              "requiredFields"
+            );
 
             if (compareArrays(validatedKeys, requiredFields)) {
+              const ErrorArray = compareArrays(validatedKeys, requiredFields);
+              console.log(
+                ErrorArray,
+                "ErrorArrayErrorArray",
+                document.getElementById("eventForm").scrollHeight
+              );
               handleSubmit();
+              if (
+                loginUserData?.user_status_id !== 4 &&
+                (ErrorArray?.includes("event_duration") ||
+                  ErrorArray?.includes("event_participants"))
+              ) {
+                if (upgradePlanPopup) {
+                  scrollToUpgrade();
+                } else {
+                  setupgradePlanPopup(true);
+                }
+
+                // document.getElementById("Alertdiv")?.focus();
+              }
+
+              console.log("requiredFields true");
             } else {
               setisNextPage(true);
             }
@@ -418,6 +503,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       <Form
         layout="vertical"
         autoComplete="off"
+        id="eventForm"
         className={`${classes.eventBody} eventBody`}
       >
         {isNextPage ? (
@@ -449,7 +535,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                       </p>
                     )}
                   </Col>
-                  <Col>
+                  <Col sm={12}>
                     <Connections
                       values={values.event_invite_friends}
                       onResult={(val) => {
@@ -467,6 +553,28 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     {touched.event_invite_friends && (
                       <p className="ErrTxt mb-3">
                         {errors?.event_invite_friends}
+                      </p>
+                    )}
+                  </Col>
+                  <Col>
+                    <Groups
+                      values={values.event_invite_groups}
+                      onResult={(val) => {
+                        console.log(val);
+                        let finRes = val.map((ele) => ele.group_id);
+                        if (finRes.length !== 0) {
+                          setFieldValue(
+                            "event_invite_groups",
+                            JSON.stringify(finRes)
+                          );
+                        } else {
+                          setFieldValue("event_invite_groups", "");
+                        }
+                      }}
+                    />
+                    {touched.event_invite_groups && (
+                      <p className="ErrTxt mb-3">
+                        {errors?.event_invite_groups}
                       </p>
                     )}
                   </Col>
@@ -562,7 +670,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 <TimeValueComponent
                   value={values.event_start_time}
                   onResult={(res) => {
-                    setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
+                    console.log(res, "dateString");
+
+                    // setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                     if (
                       moment().format("DD:MM:YYYY") ==
                       moment(values.event_start_date, "YYYY-MM-DD").format(
@@ -616,13 +726,31 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   {EventSettings.map((ele) => {
                     return (
                       <Col sm={6}>
-                        <div className={classes.chkboxSec}>
+                        <div
+                          onClick={(e) => {
+                            console.log("logged from e");
+                            if (
+                              loginUserData?.user_status_id === 1 &&
+                              ele.isprimary
+                            ) {
+                              if (upgradePlanPopup) {
+                                scrollToUpgrade();
+                              } else {
+                                setupgradePlanPopup(true);
+                              }
+                            }
+                          }}
+                          className={classes.chkboxSec}
+                        >
                           <Checkbox
                             checked={values[ele.type]}
                             disabled={
                               loginUserData?.user_status_id === 1 &&
                               ele.isprimary
                             }
+                            onChange={(e) => {
+                              setFieldValue(ele.type, e.target.checked);
+                            }}
                           >
                             {ele.title}
                           </Checkbox>
@@ -649,10 +777,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   />
                 </Form.Item>
                 {touched.event_participants && (
-                  <p className="ErrTxt mb-3">{errors?.event_participants}</p>
+                  <p className="ErrTxt ">{errors?.event_participants}</p>
                 )}
               </Col>
-              <Col sm={3}>
+              <Col style={{ position: "relative" }} sm={3}>
                 <Form.Item
                   label="Duration"
                   colon={false}
@@ -688,7 +816,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   />
                 </Form.Item>
                 {touched.event_duration && (
-                  <p className="ErrTxt mb-3">{errors?.event_duration}</p>
+                  <p style={{ position: "absolute" }} className="ErrTxt ">
+                    {errors?.event_duration}
+                  </p>
                 )}
               </Col>
               <Col sm={3}>
@@ -718,6 +848,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 <div>Upload customize (audio / video / image)</div>
 
                 <Button
+                  className={classes.uploadBtn}
                   onClick={() => {
                     document.getElementById("UploadMelody").click();
                   }}
@@ -759,6 +890,68 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 values={values}
                 setFieldValue={setFieldValue}
               />
+
+              <div className={classes.alertContainer} id="Alertdiv">
+                {upgradePlanPopup && (
+                  <Alert
+                    message="Upgrade Your Plan"
+                    description={
+                      errors?.event_participants
+                        ? `To add more than ${userSettings?.max_event_participants_count} participants upgrade your membership!`
+                        : errors?.event_duration
+                        ? `To host event for longer than ${
+                            userSettings?.max_event_duration === 1
+                              ? `${userSettings?.max_event_duration} hour`
+                              : `${userSettings?.max_event_duration} hours`
+                          } upgrade your membership!`
+                        : "To access this feature upgrade your membership!"
+                    }
+                    type="info"
+                    action={
+                      <Space direction="vertical">
+                        <Button
+                          size="small"
+                          style={{
+                            background: "#f2718d",
+                            color: "#fff",
+                            width: " 88px",
+                            fontSize: "13px",
+                            padding: 0,
+                            textAlign: "center",
+                            minHeight: "32px",
+                          }}
+                          type="primary"
+                          onClick={() => {
+                            window.location.assign("/membership");
+                          }}
+                        >
+                          Upgrade
+                        </Button>
+                        <Button
+                          style={{
+                            border: "1px solid #f2718d",
+                            background: "transparent",
+                            color: "#f2718d",
+                            width: " 88px",
+                            fontSize: "13px",
+                            padding: 0,
+                            textAlign: "center",
+                            minHeight: "32px",
+                          }}
+                          onClick={() => {
+                            setupgradePlanPopup(false);
+                          }}
+                          size="small"
+                          danger
+                          type="primary"
+                        >
+                          Later
+                        </Button>
+                      </Space>
+                    }
+                  />
+                )}
+              </div>
             </Row>
           </>
         )}

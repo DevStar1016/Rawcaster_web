@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from "react";
 import classes from "./ChatBox.module.css";
 import { Layout } from "antd";
-import { ChatInput } from "../../Sharedcomponents/Chat/utility";
+import { ChatInput, ChatInputBox } from "../../Sharedcomponents/Chat/utility";
 import { useChatContext } from "../../Shared/Context";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { SendMessageService } from "../../Services/ApiService";
-import { JSONtoformdata } from "../../Shared/Utility";
-import { sendChannelMessage } from "../../Services/Messaging/MessageAPIList";
+import { JSONtoformdata, filterValidObject } from "../../Shared/Utility";
+import {
+  sendChannelMessage,
+  updateChannelMessage,
+} from "../../Services/Messaging/MessageAPIList";
 import { debounce } from "lodash";
+import moment from "moment";
 
 const Footer = () => {
   const token = useAuthToken();
   const userData = useAuthData();
   const [text, settext] = useState("");
-  const { setMessages, convertMessageFormat, setPreviewData, GroupDetails } =
-    useChatContext();
+  const {
+    setMessages,
+    convertMessageFormat,
+    setPreviewData,
+    GroupDetails,
+    EditData,
+    setEditData,
+  } = useChatContext();
 
   const sendMessage = (val, params = {}) => {
     let data = {
@@ -25,9 +35,38 @@ const Footer = () => {
       ChimeBearer: userData.chime_user_id,
       Content: val,
     };
-    sendChannelMessage(data)
+    sendChannelMessage(filterValidObject(data))
       .then((res) => {
         console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const editMessage = (val) => {
+    const params = {
+      ChannelArn: GroupDetails?.group_arn,
+      MessageId: EditData?.message_id,
+      Content: val,
+      ChimeBearer: userData.chime_user_id,
+    };
+    updateChannelMessage(params)
+      .then((res) => {
+        console.log(res);
+        setMessages((pre) => {
+          let findIndex = pre.findIndex(
+            (ele) => ele.message_id === EditData?.message_id
+          );
+          let tempData = [...pre];
+          tempData[findIndex] = {
+            ...tempData[findIndex],
+            message: val,
+            isEdited: true,
+          };
+          return tempData;
+        });
+        setEditData(null);
       })
       .catch((err) => {
         console.log(err);
@@ -66,9 +105,11 @@ const Footer = () => {
   return (
     <Layout.Footer className={classes.footerSec}>
       <ChatInput
+        value={EditData?.msg || ""}
         onInput={(val) => {
           settext(val);
         }}
+        isEdit={EditData}
         HandleSendMessage={(val) => {
           sendMessage(val);
           setMessages((pre) => [
@@ -83,8 +124,20 @@ const Footer = () => {
             },
           ]);
         }}
+        onEdit={(val) => {
+          editMessage(val);
+        }}
         cameraenabled
         fileuploadEnabled
+        onCameraResult={(val) => {
+          setPreviewData({
+            File: val,
+            display_type: val.type,
+          });
+        }}
+        onEditClose={() => {
+          setEditData(null);
+        }}
         onFileResult={(val, isCapture = false) => {
           setPreviewData({
             File: val,
@@ -93,9 +146,13 @@ const Footer = () => {
         }}
         onAudioResult={(val) => {
           const metaData = {
-            Metadata: { file: val.message, type: "audio" },
+            Metadata: JSON.stringify({
+              file: val.message,
+              type: "audio",
+              web_file: val.file,
+            }),
           };
-          sendMessage(val, metaData);
+          sendMessage("null", metaData);
           setMessages((pre) => [
             ...pre,
             {

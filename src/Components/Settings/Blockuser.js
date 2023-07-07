@@ -14,6 +14,7 @@ import {
   blockunblockuserService,
   listallblockedusersService,
 } from "../../Services/ApiService";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const Blockuser = () => {
   const { friendsList } = useDashboard();
@@ -21,6 +22,7 @@ const Blockuser = () => {
   const [blockUserList, setblockUserList] = useState([]);
   const [blockuser, setblockuser] = useState([]);
   const [query, setQuery] = useState(null);
+  const [isSearchEnabled, setisSearchEnabled] = useState(true);
 
   const getBlockedUserData = (search_key = null) => {
     let blockuserData = {
@@ -35,7 +37,10 @@ const Blockuser = () => {
           setblockUserList([]);
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setisSearchEnabled(false);
+      });
   };
 
   useEffect(() => {
@@ -53,7 +58,10 @@ const Blockuser = () => {
           getBlockedUserData();
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setblockuser(null);
+      });
   };
 
   const handleunblockuser = (user_id) => {
@@ -68,7 +76,10 @@ const Blockuser = () => {
           getBlockedUserData();
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setblockuser(null);
+      });
   };
 
   return (
@@ -90,6 +101,7 @@ const Blockuser = () => {
               minWidth: "200px",
               backgroundColor: "#F1F2F5",
             }}
+            value={blockuser}
             dropdownStyle={{ backgroundColor: "#F1F2F5" }}
             placeholder="Search to Connection"
             optionLabelProp="label"
@@ -156,24 +168,25 @@ const Blockuser = () => {
             aria-label="User name"
             value={query}
             onChange={(e) => {
+              setisSearchEnabled(true);
               setQuery(e.target.value);
             }}
           />
           <InputGroup.Text
             className={classes.searchIcon}
             onClick={() => {
-              if (query !== "") {
+              if (isSearchEnabled) {
                 getBlockedUserData(query);
               }
             }}
           >
-            <span class="material-icons">search</span>
+            <span className="material-icons">search</span>
           </InputGroup.Text>
         </InputGroup>
         {query && (
           <div className={classes.resetSec}>
             <span
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setQuery("");
                 getBlockedUserData();
@@ -194,6 +207,10 @@ const Blockuser = () => {
                   src={friend.profile_img}
                   className={classes.userimg}
                   alt={"User_img"}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src = defaultprofileImg;
+                  }}
                 ></img>
                 <span className="mr-3"></span>
                 <span className={classes.display_name}>
@@ -209,7 +226,7 @@ const Blockuser = () => {
                   handleunblockuser(friend.user_id);
                 }}
               >
-                UnBlock
+                Unblock
               </Button>
             </div>
           );

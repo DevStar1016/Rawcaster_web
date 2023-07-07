@@ -127,7 +127,7 @@ const SearchFriends = ({
             }
           }}
         >
-          <span class="material-icons">search</span>
+          <span className="material-icons">search</span>
         </InputGroup.Text>
       </InputGroup>
     </div>

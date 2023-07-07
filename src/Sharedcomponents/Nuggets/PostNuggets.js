@@ -85,7 +85,6 @@ const PostNuggets = () => {
 
   useEffect(() => {
     if (PostContent) {
-      console.log(PostContent.slice(0, getNuggetTextLength()).length);
       setFieldValue("content", PostContent.slice(0, getNuggetTextLength()));
     }
   }, [PostContent]);
@@ -185,7 +184,6 @@ const PostNuggets = () => {
             return JSON.stringify({ friends: shareWithData });
           }
         };
-        console.log(getShareTypeData());
         formData.append("share_with", getShareTypeData());
       }
     }
