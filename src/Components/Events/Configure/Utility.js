@@ -617,6 +617,154 @@ export const Connections = ({ onResult, values }) => {
   );
 };
 
+export const Groups = ({ onResult, values }) => {
+  const { groupsList } = useDashboard();
+  const [filterGroupList, setFilterGroupList] = useState([...groupsList]);
+  const [selectedGroupList, setSelectedGroupList] = useState([]);
+  const [selectedListVisible, setSelectedListVisible] = useState(false);
+  const [GroupSearchInput, setGroupSearchInput] = useState(false);
+
+  const selectGroupHandler = (data) => {
+    setSelectedGroupList((prev) => [...prev, data]);
+    const search = document.getElementById("Groupsearch").value;
+    var filterData = groupsList.filter((f) => {
+      return (
+        decodeHtml(f.group_name).toLowerCase().includes(search.toLowerCase()) &&
+        !selectedGroupList.includes(f) &&
+        f.group_id !== data.group_id
+      );
+    });
+    setFilterGroupList([...filterData]);
+  };
+
+  const selectedListOpenHandler = (type) => {
+    setSelectedListVisible(true);
+  };
+
+  const selectAllGroupsHandler = () => {
+    if (selectedGroupList.length === groupsList.length) {
+      setSelectedGroupList([]);
+      const search = document.getElementById("Groupsearch").value;
+      var filterData = groupsList.filter((f) => {
+        return decodeHtml(f.group_name)
+          .toLowerCase()
+          .includes(search.toLowerCase());
+      });
+      setFilterGroupList([...filterData]);
+    } else {
+      setSelectedGroupList(groupsList);
+      setFilterGroupList([]);
+    }
+  };
+
+  const GroupFilterHandler = (search) => {
+    var filterData = groupsList.filter((f) => {
+      return (
+        decodeHtml(f.group_name).toLowerCase().includes(search.toLowerCase()) &&
+        !selectedGroupList.includes(f)
+      );
+    });
+    setFilterGroupList([...filterData]);
+  };
+
+  useEffect(() => {
+    onResult(selectedGroupList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedGroupList]);
+
+  useEffect(() => {
+    if (values && selectedGroupList.length === 0) {
+      let finResult = groupsList.filter((ele) => values.includes(ele.group_id));
+      setSelectedGroupList(finResult);
+      let otherData = groupsList.filter(
+        (ele) => !values.includes(ele.group_id)
+      );
+      setFilterGroupList([...otherData]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
+
+  return (
+    <div className={classes.Groupsdiv}>
+      <div style={{ margin: 2 }} className={classes.headerSec}>
+        <div className="d-flex flex-row">
+          <div className={classes.lableTxt}> Groups</div>
+          {selectedGroupList.length > 0 ? (
+            <span
+              style={{ color: "rgb(35, 71, 135)", cursor: "pointer" }}
+              onClick={() => {
+                selectedListOpenHandler(4);
+              }}
+            >
+              ({selectedGroupList.length})
+            </span>
+          ) : null}
+        </div>
+
+        <div style={{ float: "right" }} className={classes.searchSec}>
+          <input
+            id="Groupsearch"
+            type="text"
+            style={{
+              display: GroupSearchInput ? "inline" : "none",
+              height: "17px",
+            }}
+            className={classes.search}
+            onChange={(e) => GroupFilterHandler(e.target.value)}
+          ></input>
+          <i
+            style={{ cursor: "pointer" }}
+            class="material-symbols-outlined"
+            onClick={() => {
+              setGroupSearchInput((p) => !p);
+            }}
+          >
+            search
+          </i>
+
+          <span className={classes.invite_txt} onClick={selectAllGroupsHandler}>
+            {groupsList.length === selectedGroupList.length &&
+            selectedGroupList.length > 0
+              ? "Remove all"
+              : "Invite All"}
+          </span>
+        </div>
+      </div>
+      <div style={{ marginTop: "6px", clear: "both" }}>
+        {filterGroupList.slice(0, 10).map((f) => {
+          return (
+            <span
+              style={{ cursor: "pointer" }}
+              className={classes.displayuser}
+              onClick={() => selectGroupHandler(f)}
+            >
+              {decodeHtml(f.group_name)}
+            </span>
+          );
+        })}
+      </div>
+      <SelectedUsers
+        open={selectedListVisible}
+        Groups={selectedGroupList}
+        type={2}
+        setGroups={(id) => {
+          console.log(id);
+          const findData = selectedGroupList.find((ele) => ele.group_id === id);
+          if (findData) {
+            setFilterGroupList((pre) => [...pre, findData]);
+          }
+          setSelectedGroupList((pre) =>
+            pre.filter((ele) => ele.group_id !== id)
+          );
+        }}
+        close={() => {
+          setSelectedListVisible(false);
+        }}
+      />
+    </div>
+  );
+};
+
 export const getValidarrayData = (data) => {
   if (data) {
     let finalData = "";

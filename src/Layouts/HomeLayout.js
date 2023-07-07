@@ -282,12 +282,6 @@ const HomeLayout = () => {
                 </div>
                 <Dropdown
                   placement="bottomRight"
-                  re
-                  // disabledArea={[
-                  //   {
-                  //     element: document.getElementById("badgeImage"),
-                  //   },
-                  // ]}
                   menu={{
                     items: [
                       {

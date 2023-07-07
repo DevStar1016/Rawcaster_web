@@ -19,7 +19,12 @@ import {
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import joeIco from "../Assets/Icons/png/add_friend.png";
 import { useAuthData } from "../Shared/Reduxfetcher";
-import { JSONtoformdata, getRawcaserToken } from "../Shared/Utility";
+import {
+  DecryptStringToObject,
+  EncryptObjectToString,
+  JSONtoformdata,
+  getRawcaserToken,
+} from "../Shared/Utility";
 import { ChimesocketListen } from "../Services/SocketService";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
@@ -58,6 +63,19 @@ const Development = () => {
     // Reset the textarea
     textareaRef.current.style.height = "45px";
   };
+
+  const myObject = {
+    name: "John Doe",
+    age: 30,
+    dept: "John DoeJohn DoeJohn DoeJohn DoeJohn DoeJohn Doe",
+  };
+  const secretKey = "mySecretKey";
+
+  const encryptedString = EncryptObjectToString(myObject);
+  console.log("Encrypted String:", encryptedString);
+
+  const decryptedObject = DecryptStringToObject(encryptedString);
+  console.log("Decrypted Object:", decryptedObject);
 
   return (
     <div

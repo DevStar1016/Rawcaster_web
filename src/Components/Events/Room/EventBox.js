@@ -8,8 +8,10 @@ import {
   LocalVideo,
   RemoteVideo,
   useAttendeeStatus,
+  useAudioVideo,
   useContentShareState,
   useLocalVideo,
+  useMeetingManager,
   useRemoteVideoTileState,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
@@ -19,11 +21,12 @@ import ChatBox from "./ChatBox";
 const EventBox = () => {
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
-  console.log(attendees, "attendees");
+  console.log(attendees);
   const { isVideoEnabled } = useLocalVideo();
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
   const { isPinEnabled, isChatorParticipant } = useEventLayout();
+  const audioVideo = useAudioVideo();
   const getContainerClassName = () => {
     switch (attendees.length) {
       case 1:

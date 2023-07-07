@@ -9,6 +9,7 @@ import { Carousel } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { useMainContext } from "../../Shared/Context";
+import { downloadurl } from "../../Shared/Utility";
 
 const ImageGrid = ({
   imgArray,
@@ -738,7 +739,14 @@ const ImageGrid = ({
             <div className={classes.nuggets_popup}>
               {downloadable === 1 && (
                 <i
+                  style={{
+                    marginTop: 13,
+                    cursor: "pointer",
+                    zIndex: 25,
+                  }}
                   onClick={() => {
+                    downloadurl(imgArray[ActiveModalIndex]?.path);
+
                     //   utility.downloadHandler(downloadPath);
                   }}
                   className={`material-icons ${classes.download_icon}`}

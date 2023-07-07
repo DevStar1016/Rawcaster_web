@@ -1,5 +1,5 @@
 import { Modal, Popover, Tooltip } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
@@ -254,7 +254,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
           <EventHandler
             isHost={isCreatedUser()}
             title={ele.type === 2 ? "Talkshow" : "Event"}
-            meetingId={ele.reference_id}
+            meetingId={ele.event_id}
           />
         )}
       </div>

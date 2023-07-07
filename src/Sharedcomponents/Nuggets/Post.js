@@ -752,13 +752,7 @@ const Post = ({
             <div className={`${classes.ReadoutSec} py-2`}></div>
           )}
           <div className={classes.contentSec} ref={ref}>
-            <div
-              ref={contentRef}
-              onClick={() => {
-                console.log(contentRef?.current?.offsetHeight > 235, "loggedd");
-              }}
-              className={classes.feedsSec}
-            >
+            <div ref={contentRef} className={classes.feedsSec}>
               {ele && isValidData(ele?.content) && (
                 <p
                   style={{
@@ -848,6 +842,7 @@ const Post = ({
                   <ImageGrid
                     imgArray={ele.media_list}
                     muted={muted}
+                    downloadable={1}
                     mutenuggetaudio={setmuted}
                     onPlay={() => {
                       let dashboardPlayer = document.getElementById(
