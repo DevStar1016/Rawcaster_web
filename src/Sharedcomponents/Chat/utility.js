@@ -26,7 +26,7 @@ import {
 } from "../../Shared/Utility";
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
-import { Dropdown, Image, Tooltip, message } from "antd";
+import { Checkbox, Dropdown, Image, Radio, Tooltip, message } from "antd";
 import { useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
@@ -612,6 +612,10 @@ export const MessageContent = (props) => {
     message_id,
     isEdited,
     onDelete,
+    onSelectedMessage,
+    selectedMessages,
+    SelectAllMessages,
+    setSelectAllMessages,
   } = props;
   const friends_list = useFriends();
   const loginUserData = useAuthData();
@@ -695,7 +699,7 @@ export const MessageContent = (props) => {
               <ChatAudioplayer
                 textColor={isUser(user) ? "#FFFFFF" : "#000000"}
                 url={file_path}
-                time={moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                time={moment(props?.created_at, "YYYY-MM-DD HH:mm:ss").format(
                   "hh:mm A"
                 )}
               />
@@ -788,7 +792,17 @@ export const MessageContent = (props) => {
     },
     {
       key: "4",
-      label: <div onClick={onDelete}>Select</div>,
+      label: (
+        <div
+          onClick={() => {
+            console.log("clicked");
+            setSelectAllMessages(true);
+            onSelectedMessage(message);
+          }}
+        >
+          Select
+        </div>
+      ),
     },
     {
       key: "5",
@@ -796,11 +810,20 @@ export const MessageContent = (props) => {
     },
   ];
 
+  useEffect(() => {
+    console.log(SelectAllMessages, "SelectAllMessagesSelectAllMessages");
+  }, [SelectAllMessages]);
+
   return (
     <div
       className={`${
         isUser(user) ? classes.MessageContainer : classes.receiverConteiner
       } ${isUser(user) ? "br_top_right" : "br_top_left"}`}
+      onClick={() => {
+        if (isUser(user)) {
+          onSelectedMessage(message);
+        }
+      }}
     >
       <Dropdown
         menu={{ items }}
@@ -877,6 +900,9 @@ export const MessageContent = (props) => {
                 style={{
                   color: "black",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               >
                 more_vert
               </span>
@@ -884,6 +910,13 @@ export const MessageContent = (props) => {
           )}
         </div>
       </Dropdown>
+
+      {isUser(user) && SelectAllMessages && (
+        <Checkbox
+          className={classes.SelectedMessage}
+          checked={selectedMessages?.includes(message)}
+        />
+      )}
     </div>
   );
 };

@@ -10,7 +10,7 @@ const Membership = () => {
   const userData = useAuthData();
   const [ActiveTab, setActiveTab] = useState(1);
   const getBadge = () => {
-    switch (userData.user_status_id) {
+    switch (userData?.user_status_id) {
       case 1:
         return 1;
       case 2:

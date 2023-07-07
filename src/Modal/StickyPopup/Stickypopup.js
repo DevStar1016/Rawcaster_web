@@ -22,6 +22,8 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
   const [PreviewData, setPreviewData] = useState(null);
   const [isTyping, setisTyping] = useState(null);
   const [EditData, setEditData] = useState(null);
+  const [SelectedContents, setSelectedContents] = useState([]);
+  const [SelectAllMessages, setSelectAllMessages] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -107,6 +109,9 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     isTyping,
     setEditData,
     EditData,
+    SelectedContents,
+    SelectAllMessages,
+    setSelectAllMessages,
   };
 
   return !isHidden ? (
@@ -123,7 +128,12 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
             <PreviewFile />
           ) : (
             <>
-              <Content />
+              <Content
+                getContents={(contents, close) => {
+                  setSelectedContents(contents);
+                  console.log(contents, "contents");
+                }}
+              />
               <Footer />
             </>
           )}

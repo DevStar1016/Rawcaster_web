@@ -10,7 +10,14 @@ import { useAuthData, useFriends, useGroups } from "../../Shared/Reduxfetcher";
 
 const Header = () => {
   const { isChatOpen, setisChatOpen } = useMainContext();
-  const { setGroupDetails, GroupDetails } = useChatContext();
+  const {
+    setGroupDetails,
+    GroupDetails,
+    SelectedContents,
+    removeselection,
+    setSelectAllMessages,
+    SelectAllMessages,
+  } = useChatContext();
   const loginuserData = useAuthData();
   const friends = useFriends();
   const groups = useGroups();
@@ -106,6 +113,19 @@ const Header = () => {
     }
   }, [GroupDetails]);
 
+  useEffect(() => {
+    console.log(SelectedContents, "SelectedContents from header");
+  }, [SelectedContents]);
+
+  function copy() {
+    const el = document.createElement("input");
+    el.value = SelectedContents.join(" ");
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  }
+
   return (
     <>
       <Layout.Header className={classes.chatboxHeader}>
@@ -133,17 +153,34 @@ const Header = () => {
             {getData().group_members_list && <p>{getGroupDisplayData()}</p>}
           </div>
         </div>
-        <div>
-          <span class="material-symbols-outlined">more_vert</span>
-          <span
-            class="material-symbols-outlined"
-            onClick={() => {
-              setisChatOpen(false);
-            }}
-          >
-            close
-          </span>
-        </div>
+        {SelectedContents?.length === 0 ? (
+          <div>
+            <span class="material-symbols-outlined">more_vert</span>
+            <span
+              class="material-symbols-outlined"
+              onClick={() => {
+                setisChatOpen(false);
+              }}
+            >
+              close
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span onClick={copy} class="material-symbols-outlined">
+              content_copy
+            </span>
+            <span class="material-symbols-outlined">delete</span>
+            <span
+              class="material-symbols-outlined"
+              onClick={() => {
+                setSelectAllMessages(false);
+              }}
+            >
+              close
+            </span>
+          </div>
+        )}
       </Layout.Header>
     </>
   );
