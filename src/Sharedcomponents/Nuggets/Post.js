@@ -78,6 +78,7 @@ const Post = ({
 }) => {
   const source = useRef(null);
   const contentRef = useRef(null);
+  const contentTextRef = useRef(null);
   const Token = useAuthToken();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -505,10 +506,20 @@ const Post = ({
   };
 
   const isReadMore = () => {
+    console.log(ele, "readmoreelement");
+
     if (ele.media_list.length !== 0) {
       return false;
-    } else if (ele.poll_option?.length !== 0) {
-      return false;
+    } else if (
+      ele.poll_option?.length > 2 &&
+      contentTextRef?.current?.offsetHeight > 75
+    ) {
+      return true;
+    } else if (
+      ele.poll_option?.length > 0 &&
+      contentTextRef?.current?.offsetHeight > 100
+    ) {
+      return true;
     }
     return true;
   };
@@ -588,6 +599,18 @@ const Post = ({
         return 4;
       } else if (ele.poll_option?.length === 2) {
         return 5;
+      }
+    }
+  };
+
+  const getHeightofLines = () => {
+    if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
+      if (ele.poll_option?.length === 4) {
+        return 75;
+      } else if (ele.poll_option?.length === 3) {
+        return 85;
+      } else if (ele.poll_option?.length === 2) {
+        return 100;
       }
     }
   };
@@ -765,12 +788,14 @@ const Post = ({
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
                   }}
+                  ref={contentTextRef}
                 >
                   <ReadMore
-                    isReadMore={isReadMore()}
+                    isReadMore={false}
                     isLinkopenModal={isLinkopenModal}
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
+                    partialHeight={getNumberofLines()}
                     onExpand={(status) => {
                       setiscollapse(status);
                     }}
