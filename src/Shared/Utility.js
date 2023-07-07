@@ -590,10 +590,12 @@ export const ReadMore = ({
   setisLinkopenModal,
   isReadMoreValid,
   onExpand,
+  partialHeight,
 }) => {
   const { Paragraph } = Typography;
   const [OnEllipsis, setOnEllipsis] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [readMore, setReadmore] = useState(false);
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -643,6 +645,54 @@ export const ReadMore = ({
             </span>
           )}
         </>
+      ) : children?.split("\n")?.length > partialHeight ? (
+        <>
+          <Paragraph
+            className="ReadMoreText"
+            // ellipsis={true}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              console.log(
+                children
+                  ?.split("\n")
+                  ?.filter((ele, index) => index < partialHeight)
+                  .join("\n"),
+                "childrenchildren"
+              );
+            }}
+          >
+            {readMore
+              ? children
+              : children
+                  ?.split("\n")
+                  ?.filter((ele, index) => index < partialHeight)
+                  .join("\n")
+                  .concat("...")}
+          </Paragraph>
+          {children?.split("\n")?.length > partialHeight && (
+            <>
+              {!readMore ? (
+                <span
+                  style={{ color: "#e26386", cursor: "pointer" }}
+                  onClick={() => {
+                    setReadmore(true);
+                  }}
+                >
+                  Read More
+                </span>
+              ) : (
+                <span
+                  style={{ color: "#e26386", cursor: "pointer" }}
+                  onClick={() => {
+                    setReadmore(false);
+                  }}
+                >
+                  Read Less
+                </span>
+              )}
+            </>
+          )}
+        </>
       ) : (
         <>
           <Paragraph
@@ -654,7 +704,9 @@ export const ReadMore = ({
                 isReadMoreValid();
                 setOnEllipsis(status);
               },
+              expandable: true,
             }}
+            // ellipsis={true}
             style={{ cursor: "pointer" }}
           >
             {children}
