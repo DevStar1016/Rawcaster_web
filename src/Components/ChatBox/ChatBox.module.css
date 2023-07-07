@@ -204,6 +204,13 @@ transition: 1s;
   font-size: 11px;
 }
 
+.copyBtn>span:active{
+  font-size: 20px;
+}
+.copyBtn>span{
+  transition: 0.1s;
+}
+
 @keyframes  Hide{
   0% {
     opacity: 0;

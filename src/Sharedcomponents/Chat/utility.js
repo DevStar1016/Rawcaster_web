@@ -820,7 +820,7 @@ export const MessageContent = (props) => {
         isUser(user) ? classes.MessageContainer : classes.receiverConteiner
       } ${isUser(user) ? "br_top_right" : "br_top_left"}`}
       onClick={() => {
-        if (isUser(user)) {
+        if (isUser(user) && SelectAllMessages) {
           onSelectedMessage(message);
         }
       }}

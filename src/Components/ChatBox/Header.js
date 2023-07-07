@@ -167,8 +167,10 @@ const Header = () => {
           </div>
         ) : (
           <div>
-            <span onClick={copy} class="material-symbols-outlined">
-              content_copy
+            <span className={classes.copyBtn}>
+              <span onClick={copy} class="material-symbols-outlined">
+                content_copy
+              </span>
             </span>
             <span class="material-symbols-outlined">delete</span>
             <span
