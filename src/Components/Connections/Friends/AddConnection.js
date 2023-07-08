@@ -1,21 +1,32 @@
-import { Modal, Spin } from "antd";
+import { Empty, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import { sendFriendRequestsService } from "../../../Services/ApiService";
 import { friendRequestSocket } from "../../../Services/SocketList";
-import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../../Shared/Reduxfetcher";
 import {
   decodeHtml,
   getAuthToken,
   getisAddFriend,
+  handleProfileNavigate,
   JSONtoformdata,
 } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import SearchFriends from "../Components/SearchFriends";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { HandleBecameaFan } from "../../../Shared/SharedAPIs";
+import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const AddConnection = ({ open, close }) => {
   const token = useAuthToken();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nuggetFormData } = useNuggets();
   const profileData = useAuthData();
   const [isLoading, setisLoading] = useState(false);
   const [ProfileList, setProfileList] = useState([]);
@@ -46,6 +57,7 @@ const AddConnection = ({ open, close }) => {
           let tempData = [...ProfileList];
           tempData[find] = { ...tempData[find], friend_request_status: 0 };
           setProfileList(tempData);
+          toast.success("Successfully connection request send");
         }
       })
       .catch((err) => {});
@@ -77,57 +89,78 @@ const AddConnection = ({ open, close }) => {
             setProfileList(val);
           }}
         />
-        <div className={classes.profileSec}>
+        <div
+          style={ProfileList?.length === 0 ? { justifyContent: "center" } : {}}
+          className={classes.profileSec}
+        >
           {isLoading ? <Spin /> : null}
-          {ProfileList.map((ele) => (
-            <div className={classes.profileData}>
-              <div className={classes.leftSec}>
-                <img
-                  src={ele.profile_img}
-                  alt={decodeHtml(ele.display_name)}
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null; // prevents looping
-                    currentTarget.src = defaultprofileImg;
+          {ProfileList?.length > 0
+            ? ProfileList.map((ele) => (
+                <div
+                  onClick={() => {
+                    let finalData = {
+                      dispatch,
+                      navigate,
+                      nuggetFormData,
+                      user_id: ele?.user_id,
+                    };
+                    handleProfileNavigate(finalData);
                   }}
-                />
-                <div className={classes.nameSec}>
-                  <p>{decodeHtml(ele.display_name)}</p>
-                  {/* <span>@TheTweetOfGod</span> */}
+                  className={classes.profileData}
+                >
+                  <div className={classes.leftSec}>
+                    <img
+                      src={ele.profile_img}
+                      alt={decodeHtml(ele.display_name)}
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null; // prevents looping
+                        currentTarget.src = defaultprofileImg;
+                      }}
+                    />
+                    <div className={classes.nameSec}>
+                      <p>{decodeHtml(ele.display_name)}</p>
+                      {/* <span>@TheTweetOfGod</span> */}
+                    </div>
+                  </div>
+                  <div className={classes.rightSec}>
+                    {ele.follow === false && (
+                      <div
+                        className={classes.becameFanBtn}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          HandleBecameaFan(token, ele.user_ref_id).then(() => {
+                            let find = ProfileList.findIndex(
+                              (elem) => elem.user_id === ele.user_id
+                            );
+                            let tempData = [...ProfileList];
+                            tempData[find] = {
+                              ...tempData[find],
+                              follow: true,
+                            };
+                            setProfileList(tempData);
+                          });
+                        }}
+                      >
+                        +
+                      </div>
+                    )}
+                    {getisAddFriend(ele.friend_request_status) ? (
+                      <div
+                        className={classes.addFriendSec}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          HandleSendRequest(ele.user_ref_id, ele.user_id);
+                        }}
+                      >
+                        <span className="material-symbols-outlined">
+                          person_add
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-              <div className={classes.rightSec}>
-                {ele.follow === false && (
-                  <div
-                    className={classes.becameFanBtn}
-                    onClick={() => {
-                      HandleBecameaFan(token, ele.user_ref_id).then(() => {
-                        let find = ProfileList.findIndex(
-                          (elem) => elem.user_id === ele.user_id
-                        );
-                        let tempData = [...ProfileList];
-                        tempData[find] = { ...tempData[find], follow: true };
-                        setProfileList(tempData);
-                      });
-                    }}
-                  >
-                    +
-                  </div>
-                )}
-                {getisAddFriend(ele.friend_request_status) ? (
-                  <div
-                    className={classes.addFriendSec}
-                    onClick={() => {
-                      HandleSendRequest(ele.user_ref_id, ele.user_id);
-                    }}
-                  >
-                    <span className="material-symbols-outlined">
-                      person_add
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          ))}
+              ))
+            : !isLoading && <Empty />}
         </div>
       </div>
     </Modal>

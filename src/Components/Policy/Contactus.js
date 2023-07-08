@@ -87,7 +87,7 @@ const Contactus = () => {
             </Form.Item>
 
             <p className={classes.label}>Email Address</p>
-            <Form.Item name="name">
+            <Form.Item name="email_id">
               <Input
                 className={classes.textBox}
                 placeholder="Email Address"

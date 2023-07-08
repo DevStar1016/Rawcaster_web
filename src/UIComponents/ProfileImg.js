@@ -8,6 +8,10 @@ import MicroInfluencerImg from "../Assets/Icons/svg/Micro_influencer.svg";
 import MacroInfluencerImg from "../Assets/Icons/svg/Macro_influencer.svg";
 import MegaInfluencerImg from "../Assets/Icons/svg/Mega_Influencer.svg";
 import { Tooltip } from "antd";
+import { useDispatch } from "react-redux";
+import { useNuggets } from "../Shared/Reduxfetcher";
+import { useNavigate } from "react-router";
+import { handleProfileNavigate } from "../Shared/Utility";
 
 const ProfileImg = ({
   isLoggedIn = true,
@@ -16,7 +20,12 @@ const ProfileImg = ({
   BadgeTitle = "",
   imgClassName,
   badgeClassName,
+  user,
 }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nuggetFormData } = useNuggets();
+
   const getBadge = () => {
     switch (Badgetype) {
       case 1:
@@ -48,6 +57,16 @@ const ProfileImg = ({
         onError={({ currentTarget }) => {
           currentTarget.onerror = null; // prevents looping
           currentTarget.src = userImg;
+        }}
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          let finalData = {
+            dispatch,
+            navigate,
+            nuggetFormData,
+            user_id: user?.user_id,
+          };
+          handleProfileNavigate(finalData);
         }}
       />
       <Tooltip

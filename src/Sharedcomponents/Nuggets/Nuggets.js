@@ -596,9 +596,10 @@ const Nuggets = ({
                         </Spin>
                       );
                     })}
+                    {loading && <NuggetLoaders loading={true} />}
                     {(loading || getHasNextPage()) && (
                       <div ref={sentryRef}>
-                        <NuggetLoaders loading={true} />
+                        <div>{/* <NuggetLoaders loading={true} /> */}</div>
                       </div>
                     )}
                   </div>

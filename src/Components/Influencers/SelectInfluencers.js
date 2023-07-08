@@ -228,9 +228,15 @@ const SelectInfluencers = () => {
                       search_key: e.target.value,
                     }));
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      document.getElementById("searchInfluencer").click();
+                    }
+                  }}
                 />
                 <InputGroup.Text
                   className={classes.searchIcon}
+                  id="searchInfluencer"
                   onClick={() => {
                     dispatch(handleLoading(true));
                     getInfluencerList(

@@ -662,6 +662,7 @@ const Post = ({
               <ProfileImg
                 isLoggedIn={loginUserData}
                 src={ele?.user_image}
+                user={ele}
                 imgClassName={classes.profileimg}
                 badgeClassName={classes.badgeImg}
                 Badgetype={ele?.user_status_id}
