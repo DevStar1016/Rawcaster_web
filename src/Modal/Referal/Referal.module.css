@@ -204,8 +204,8 @@
     width: 180px;
   }
   .submitbtn:hover {
-    background: #fff;
-    color: #1d1c1c;
+    background: #F2718D;
+    color: #1d1c1c !important;
     border: none;
   }
   .tags {

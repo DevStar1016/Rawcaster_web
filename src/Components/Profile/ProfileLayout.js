@@ -85,6 +85,7 @@ const ProfileLayout = ({
         if (res.data.status === 1) {
           dispatch(fetchuserInfobyToken(loginToken)).then(({ payload }) => {
             setisUploading(false);
+            toast.success("Successfully Updated");
           });
         } else {
           toast.error(res.data.msg);

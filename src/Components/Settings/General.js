@@ -143,6 +143,7 @@ const General = () => {
                     defaultValue={formikvalues[ele.keyword]}
                     className={classes.online_status}
                     onChange={(e) => {
+                      setFieldValue([ele.groupkeyword], []);
                       if (
                         e.target.value === ele.groupid ||
                         e.target.value === ele.friendid

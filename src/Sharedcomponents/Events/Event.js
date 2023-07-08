@@ -158,7 +158,12 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         </div>
       </div>
       {!isOthers && (
-        <div className={classes.share}>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className={classes.share}
+        >
           <Popover placement="leftTop" content={content} trigger="hover">
             <img src={shareicon} alt={"Share icon"} />
           </Popover>

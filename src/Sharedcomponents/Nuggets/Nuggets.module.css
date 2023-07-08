@@ -630,6 +630,10 @@ cursor: pointer;
   align-items: center;
   border-right: 1px solid gray;
   }
+
+  .dNoneExpand>a{
+display: none;
+  }
   /* .nuggetScroll{
     overflow-x: auto;
     height: calc(100vh - 240px);
