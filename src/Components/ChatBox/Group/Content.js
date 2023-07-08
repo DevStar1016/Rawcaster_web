@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MessageContent } from "../../../Sharedcomponents/Chat/utility";
-import { Layout } from "antd";
+import { Layout, Modal } from "antd";
 import classes from "../ChatBox.module.css";
 import { useChatContext, useMainContext } from "../../../Shared/Context";
 import { MessageList, TypingIndicator } from "@chatscope/chat-ui-kit-react";
@@ -79,16 +79,6 @@ const Content = ({ getContents }) => {
     return sectionedMessages.reverse();
   };
 
-  // useEffect(() => {
-  //   setheaderScrolling(true);
-  //   const timeout = setTimeout(() => {
-  //     clearTimeout(timeout);
-  //     if (scroll === document.getElementById("scrollContainer").scrollTop) {
-  //       setheaderScrolling(false);
-  //     }
-  //   }, 500);
-  // }, [scroll]);
-
   useEffect(() => {
     console.log(selectedMessages, "selectedMessages");
     getContents(selectedMessages);
@@ -120,15 +110,7 @@ const Content = ({ getContents }) => {
       }
       className={classes.MessagesList}
     >
-      <Layout.Content
-        onScroll={(event) => {
-          const listboxNode = event.currentTarget;
-          const { scrollTop, scrollHeight, clientHeight } = listboxNode;
-          if (scrollTop + clientHeight < scrollHeight - 5) setscroll(scrollTop);
-        }}
-        id="scrollContainer"
-        className={classes.mainContainer}
-      >
+      <Layout.Content id="scrollContainer" className={classes.mainContainer}>
         <div className={`${classes.endToEndSec} mb-1`}>
           <i className={classes.rawcaster_icon} />
           Messages and calls are end-to-end encrypted. No one outside of this
@@ -156,8 +138,22 @@ const Content = ({ getContents }) => {
                   index={index}
                   isGroup={isChatOpen?.type == "group"}
                   onDelete={() => {
-                    console.log("test", ele);
-                    handleDelete(ele?.message_id);
+                    Modal.confirm({
+                      title: "Confirmation",
+                      okText: "Yes",
+                      cancelText: "No",
+                      okButtonProps: {
+                        danger: true,
+                      },
+                      content: (
+                        <div>
+                          Are you sure Do you Want to Delete This Message ?
+                        </div>
+                      ),
+                      onOk: () => {
+                        handleDelete(ele?.message_id);
+                      },
+                    });
                   }}
                   onSelectedMessage={(value) => {
                     setSelectedMessages((pre) => {
@@ -172,7 +168,6 @@ const Content = ({ getContents }) => {
                   SelectAllMessages={SelectAllMessages}
                   setSelectAllMessages={setSelectAllMessages}
                 />
-                // <div>hello user</div>
               )}
             />
           )}

@@ -22,8 +22,14 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const General = () => {
-  const { formikvalues, setFieldValue, setupdateValue, updateValue } =
-    useSettingsContext();
+  const {
+    formikvalues,
+    setFieldValue,
+    setupdateValue,
+    updateValue,
+    setValues,
+    handleupdate,
+  } = useSettingsContext();
   const dispatch = useDispatch();
   const token = useAuthToken();
   const { loginUserData, userSettings } = useAuth();
@@ -41,20 +47,25 @@ const General = () => {
     });
   }, []);
 
-  const handleGroupListUpdateService = (key, value) => {
+  const handleGroupListUpdateService = (key, value, type) => {
     let finalData = {
-      token: token,
       profile_field_name: key,
+      [key]: type,
       groupid: JSON.stringify(value),
     };
+    setValues((pre) => ({
+      ...pre,
+      ...finalData,
+    }));
+    handleupdate(finalData);
 
-    grouplistupdateService(JSONtoformdata(finalData))
-      .then((res) => {
-        if (res.data.status === 1) {
-          setupdateValue(key, 3);
-        }
-      })
-      .catch((err) => {});
+    // grouplistupdateService(JSONtoformdata(finalData))
+    //   .then((res) => {
+    //     if (res.data.status === 1) {
+    //       setupdateValue(key, 3);
+    //     }
+    //   })
+    //   .catch((err) => {});
   };
 
   return (
@@ -111,6 +122,19 @@ const General = () => {
             />
           </div>
           {SettingsList.map((ele) => {
+            const getGroupList = () => {
+              const filteredData = groupsList.filter((elem) =>
+                formikvalues[ele.groupkeyword]?.includes(elem.group_id)
+              );
+              return filteredData.map((ele) => ele.group_name);
+            };
+            const getFriendList = () => {
+              const filteredData = friendsList.filter((elem) =>
+                formikvalues[ele.groupkeyword]?.includes(elem.user_id)
+              );
+              return filteredData.map((ele) => ele.display_name);
+            };
+
             return (
               <>
                 <div>
@@ -159,7 +183,7 @@ const General = () => {
                       maxTagCount={"responsive"}
                       className={classes.connectionselectBox}
                       placeholder="Search group"
-                      value={formikvalues[ele.groupkeyword]}
+                      value={getGroupList()}
                       onChange={(val) => {
                         setFieldValue([ele.groupkeyword], val);
                       }}
@@ -208,7 +232,8 @@ const General = () => {
                       onClick={() => {
                         handleGroupListUpdateService(
                           ele.keyword,
-                          formikvalues[ele.groupkeyword]
+                          formikvalues[ele.groupkeyword],
+                          5
                         );
                       }}
                     >
@@ -223,7 +248,7 @@ const General = () => {
                       maxTagCount={"responsive"}
                       className={classes.connectionselectBox}
                       placeholder="Search Connection"
-                      value={formikvalues[ele.groupkeyword]}
+                      value={getFriendList()}
                       onChange={(val) => {
                         setFieldValue([ele.groupkeyword], val);
                       }}
@@ -276,7 +301,8 @@ const General = () => {
                       onClick={() => {
                         handleGroupListUpdateService(
                           ele.keyword,
-                          formikvalues[ele.groupkeyword]
+                          formikvalues[ele.groupkeyword],
+                          3
                         );
                       }}
                     >

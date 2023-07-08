@@ -73,7 +73,9 @@ const SigninwithService = ({ type }) => {
           delete finalVal["name"];
           setCookieData("rawcaster_user_token", finalVal);
           dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
-            if (getSessionStorageData("influencerData")) {
+            if (res.data.first_time === 1) {
+              navigate("/selectinfluencers");
+            } else if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
             } else if (res.data.first_time === 1) {

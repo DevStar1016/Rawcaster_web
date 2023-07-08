@@ -41,6 +41,7 @@ import {
   JSONtoformdata,
   decodeHtml,
   filterValidObject,
+  getUtcToSystemTime,
   userTimezonetoUtc,
   utctoUserTimezone,
 } from "../../../Shared/Utility";
@@ -357,17 +358,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           setValues({
             event_title: decodeHtml(eventData?.event_name),
             event_type: eventData?.event_type_id,
-            event_start_date: moment(
-              utctoUserTimezone(
-                eventData?.start_date_time,
-                userSettings?.time_zone
-              )
+            event_start_date: getUtcToSystemTime(
+              eventData?.start_date_time
             ).format("YYYY-MM-DD"),
-            event_start_time: moment(
-              utctoUserTimezone(
-                eventData?.start_date_time,
-                userSettings?.time_zone
-              )
+            event_start_time: getUtcToSystemTime(
+              eventData?.start_date_time
             ).format("HH:mm"),
             event_message: eventData?.message,
             waiting_room: eventData?.waiting_room,

@@ -822,6 +822,12 @@ export const downloadurl = (url) => {
   document.body.removeChild(a);
 };
 
+export const getUtcToSystemTime = (dateTime) => {
+  return moment(dateTime, "YYYY-MM-DD HH:mm:ss")
+    .subtract(-moment().utcOffset(), "minutes")
+    .toDate();
+};
+
 // OBJECT TO STRING
 
 export const EncryptObjectToString = (objectToEncrypt, secretKey = AES_KEY) => {

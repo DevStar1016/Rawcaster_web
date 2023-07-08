@@ -41,13 +41,15 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
   };
 
   const HandlegetNuggetContentAudio = () => {
+    console.log("test");
     if (PlayerSource.current) {
       isRequestCancel = true;
       PlayerSource.current.cancel("Request Cancelled");
     }
-    if (!PlayerSource.current) {
-      PlayerSource.current = axios.CancelToken.source();
-    }
+
+    // if (!PlayerSource.current) {
+    PlayerSource.current = axios.CancelToken.source();
+    // }
 
     if (audio) {
       audio.pause();
@@ -85,6 +87,9 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
         } else {
           toast.error(res.data.msg);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       })
       .finally(() => {
         PlayerSource.current = null;

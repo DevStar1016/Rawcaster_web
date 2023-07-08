@@ -262,7 +262,7 @@
 }
 
 
-.audio_slider_container>div{
+/* .audio_slider_container>div{
   padding: 15px 25px;
   width:  250px;
   margin-left: 12px;
@@ -317,7 +317,7 @@ display: none;}
 }
 .audio_slider_container>div>div>div:nth-child(1)>div:nth-child(2)>div>div:nth-child(1){
   background: white;
-}
+} */
 
 
 .pausePlay{

@@ -113,11 +113,6 @@ const Post = ({
 
   useEffect(() => {
     if (ele) {
-      console.log(
-        ele?.content?.split("\n"),
-        "loggedd from useEffect",
-        ele?.content
-      );
       if (ele?.content?.split("\n")?.length > 10) {
         setiscollapse(true);
       } else if (ele?.content?.length > 500) {
@@ -513,8 +508,6 @@ const Post = ({
   };
 
   const isReadMore = () => {
-    console.log(ele, "readmoreelement");
-
     if (ele.media_list.length !== 0) {
       return false;
     } else if (
@@ -532,7 +525,6 @@ const Post = ({
   };
 
   const isCollapse = () => {
-    console.log(ele, "iscollapse element");
     let isvalidCollapse =
       ele.media_list.length !== 0 || ele.metadata ? true : false;
     if (isvalidCollapse) {

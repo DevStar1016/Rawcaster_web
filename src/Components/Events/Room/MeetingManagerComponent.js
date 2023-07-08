@@ -8,53 +8,60 @@ import {
   JoinAttendeeMeeting,
   viewEventsService,
 } from "../../../Services/ApiService";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useMainContext } from "../../../Shared/Context";
+import { JSONtoformdata } from "../../../Shared/Utility";
 
 const MeetingManagerComponent = () => {
-  const location = useLocation();
+  const { event_id } = useParams();
   const token = useAuthToken();
   const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const event_id = queryParams.get("meeting_id");
   const userData = useAuthData();
   const { meetingManager } = useMainContext();
 
   const configureMeetingManager = async (meetingId, isHost) => {
     const formData = {
-      MeetingId: meetingId,
-      userId: userData?.user_id,
+      token,
+      meeting_id: meetingId,
     };
-    const response = await JoinAttendeeMeeting(formData);
-    if (response.data.status === 200) {
-      const { Attendee, meeting } = response.data.result;
-      const meetingSessionConfiguration = new MeetingSessionConfiguration(
-        meeting,
-        Attendee
-      );
-      if (isHost) {
-        ChimesendMessage(
-          { meetingId: meetingId, hostId: userData.user_id },
-          CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
-        );
-      } else {
-        ChimesendMessage(
-          { meetingId: meetingId },
-          CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
-        );
-      }
-      const meetingOptions = {
-        deviceLabels: DeviceLabels.AudioAndVideo,
-      };
-      try {
-        await meetingManager.join(meetingSessionConfiguration, meetingOptions);
-        await meetingManager.start();
-      } catch (error) {
-        console.log(error, "errorData");
-      }
-    } else {
-      console.log(response.data);
-    }
+    JoinAttendeeMeeting(JSONtoformdata(formData))
+      .then(async (response) => {
+        if (response.data.status === 1) {
+          const { attendee, meeting } = response.data;
+          const meetingSessionConfiguration = new MeetingSessionConfiguration(
+            meeting,
+            attendee
+          );
+          if (isHost) {
+            ChimesendMessage(
+              { meetingId: meetingId, hostId: userData.user_id },
+              CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
+            );
+          } else {
+            ChimesendMessage(
+              { meetingId: meetingId },
+              CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+            );
+          }
+          const meetingOptions = {
+            deviceLabels: DeviceLabels.AudioAndVideo,
+          };
+          try {
+            await meetingManager.join(
+              meetingSessionConfiguration,
+              meetingOptions
+            );
+            await meetingManager.start();
+          } catch (error) {
+            console.log(error, "errorData");
+          }
+        } else {
+          navigate(-1);
+        }
+      })
+      .catch((err) => {
+        navigate(-1);
+      });
   };
 
   useEffect(() => {

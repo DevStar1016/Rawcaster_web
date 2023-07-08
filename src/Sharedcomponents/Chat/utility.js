@@ -623,8 +623,8 @@ export const MessageContent = (props) => {
   const friends_list = useFriends();
   const loginUserData = useAuthData();
 
-  const [isAvatarErr, setisAvatarErr] = useState(false);
-
+  // const [isAvatarErr, setisAvatarErr] = useState(false);
+  console.log(user);
   const isUser = (id) => {
     if (id === loginUserData?.chime_user_id) {
       return true;
@@ -845,9 +845,9 @@ export const MessageContent = (props) => {
                       ? loginUserData?.profile_image
                       : getUserData().profile_img
                   }
-                  onError={(e) => {
-                    setisAvatarErr(true);
-                  }}
+                  // onError={(e) => {
+                  //   setisAvatarErr(true);
+                  // }}
                 />
               )}
             </div>

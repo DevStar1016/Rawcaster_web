@@ -9,7 +9,7 @@ export const EventRoute = [
     errorElement: <NotFound />,
     children: [
       {
-        path: "/room",
+        path: "/room/:event_id",
         element: <EventRoom />,
       },
     ],

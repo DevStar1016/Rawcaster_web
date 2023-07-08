@@ -1,5 +1,4 @@
 import axios from "axios";
-import chimeAxios from "./ChimeAxios";
 import { BASE_URL } from "./ServiceConstants";
 
 axios.defaults.baseURL = BASE_URL;
@@ -290,16 +289,8 @@ export const getFaqService = (data) => {
 
 // Meetings
 
-export const CreateMeeting = () => {
-  return chimeAxios.get("createmeeting");
-};
-
 export const JoinAttendeeMeeting = (data) => {
-  return chimeAxios.post("joinmeeting", data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return axios.post("join_meeting", data);
 };
 
 // Profile Config
