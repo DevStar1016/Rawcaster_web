@@ -311,7 +311,18 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_id: data?.event_id,
       event_start_date: utcDateTime.format("YYYY-MM-DD"),
       event_start_time: utcDateTime.format("HH:mm"),
+      event_invite_mails: values?.event_invite_mails?.includes("[")
+        ? JSON.parse(values?.event_invite_mails)?.join(", ")
+        : values?.event_invite_mails,
     };
+
+    console.log(
+      values?.event_invite_mails?.includes("[")
+        ? JSON.parse(values?.event_invite_mails)?.join(", ")
+        : values?.event_invite_mails,
+      "liveEventDataliveEventData",
+      values.event_invite_mails
+    );
     function isFile(obj) {
       return (
         obj &&
@@ -352,7 +363,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       viewEventsService(JSONtoformdata(eventdata))
         .then((res) => {
           let eventData = res.data.event_detail;
-          console.log(eventData);
           setValues((pre) => ({
             ...pre,
             event_title: decodeHtml(eventData?.event_name),

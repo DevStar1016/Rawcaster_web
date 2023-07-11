@@ -520,6 +520,8 @@ const Post = ({
       contentTextRef?.current?.offsetHeight > 100
     ) {
       return false;
+    } else if (ele?.content?.split("\n")?.length > 10) {
+      return false;
     }
     return true;
   };
@@ -602,6 +604,8 @@ const Post = ({
       } else if (ele.poll_option?.length === 2) {
         return 5;
       }
+    } else if (ele?.content?.split("\n")?.length > 10) {
+      return 10;
     }
   };
 
@@ -789,13 +793,14 @@ const Post = ({
                   ref={contentTextRef}
                   onClick={() => {
                     console.log(
-                      ele?.content?.length,
-                      isCollapse(),
-                      iscollapse,
+                      // ele?.content?.length,
+                      // isCollapse(),
+                      // iscollapse,
                       ele?.content?.split("\n")?.length > 10,
-                      ele?.content?.length > 300 &&
-                        ele?.poll_option?.length > 1,
-                      !isvalidContent,
+                      isReadMore(),
+                      // ele?.content?.length > 300 &&
+                      //   ele?.poll_option?.length > 1,
+                      // !isvalidContent,
                       "contentlength"
                     );
                   }}
