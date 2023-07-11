@@ -12,6 +12,7 @@ import {
   getLayoutData,
   getMelodyData,
 } from "../../../Shared/DropdownApis";
+import { useAddEventContext } from "../../../Shared/Context";
 
 export const EventTypeComponent = ({
   onResult,
@@ -779,7 +780,9 @@ export const getValidarrayData = (data) => {
   }
 };
 
-export const AudioVideoSettings = ({ values, setFieldValue }) => {
+export const AudioVideoSettings = () => {
+  const { values, setFieldValue } = useAddEventContext();
+  console.log(values);
   return (
     <div className="mt-2">
       <div className={classes.audioSetting}>

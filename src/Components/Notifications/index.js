@@ -193,14 +193,14 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
         </Popover>
       </div>
 
-      {detectMob() && (
-        <div className="onlyMob">
-          <div className={classes.mobNotification}>
-            <Header />
-            <ContentLayout />
-          </div>
+      {/* {detectMob() && ( */}
+      <div className="onlyMob">
+        <div className={classes.mobNotification}>
+          <Header />
+          <ContentLayout />
         </div>
-      )}
+      </div>
+      {/* )} */}
     </NotificationContext.Provider>
   );
 };

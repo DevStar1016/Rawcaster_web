@@ -6,12 +6,21 @@ import {
   DefaultMessagingSession,
   MessagingSessionConfiguration,
 } from "amazon-chime-sdk-js";
+import { ChimeSDKMeetingsClient } from "@aws-sdk/client-chime-sdk-meetings";
 
 let Session = null;
 const logger = new ConsoleLogger("SDK Chat Demo", LogLevel.INFO);
 let messageUpdateCallbacks = [];
 
 export const chimeClient = new ChimeSDKMessagingClient({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: "AKIAYFYE6EFYG6RJOPMF",
+    secretAccessKey: "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",
+  },
+});
+
+export const chimemeetingClient = new ChimeSDKMeetingsClient({
   region: "us-east-1",
   credentials: {
     accessKeyId: "AKIAYFYE6EFYG6RJOPMF",

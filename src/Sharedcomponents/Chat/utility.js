@@ -624,7 +624,6 @@ export const MessageContent = (props) => {
   const loginUserData = useAuthData();
 
   // const [isAvatarErr, setisAvatarErr] = useState(false);
-  console.log(user);
   const isUser = (id) => {
     if (id === loginUserData?.chime_user_id) {
       return true;

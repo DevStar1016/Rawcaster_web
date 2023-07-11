@@ -135,7 +135,6 @@ const Content = ({ elem }) => {
   };
 
   const getHasNextPage = () => {
-    console.log(Pages.totalPages, pageRef.current);
     return Pages.totalPages && pageRef.current !== Pages.totalPages;
   };
 

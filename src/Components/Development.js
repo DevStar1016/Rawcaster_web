@@ -1,81 +1,150 @@
 import React, { useEffect, useRef, useState } from "react";
-import { List, QRCode, message } from "antd";
-import VirtualList from "rc-virtual-list";
-import ChatBox from "./Events/Room/ChatBox";
-import { RosterAttendee } from "amazon-chime-sdk-component-library-react";
-import StickyPopup from "../Modal/StickyPopup/Stickypopup";
-import classes from "./Dev.module.css";
-import ChatAudioplayer from "../Sharedcomponents/AudioPlayer/ChatAudioplayer";
-import axios from "axios";
 import {
-  Avatar,
-  ChatContainer,
-  MainContainer,
-  Message,
-  MessageList,
-  MessageSeparator,
-  TypingIndicator,
-} from "@chatscope/chat-ui-kit-react";
+  DeviceLabels,
+  useRosterState,
+} from "amazon-chime-sdk-component-library-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import joeIco from "../Assets/Icons/png/add_friend.png";
 import { useAuthData } from "../Shared/Reduxfetcher";
+
+import { ChimesendMessage } from "../Services/SocketService";
+import { useMainContext } from "../Shared/Context";
 import {
-  DecryptStringToObject,
-  EncryptObjectToString,
-  JSONtoformdata,
-  getRawcaserToken,
-} from "../Shared/Utility";
-import { ChimesocketListen } from "../Services/SocketService";
+  CreateAttendeeForMeeting,
+  CreateMeeting,
+  GetMeeting,
+} from "../Services/Messaging/MessageAPIList";
+import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
+import {
+  ConsoleLogger,
+  DefaultDeviceController,
+  DefaultMeetingSession,
+  MeetingSessionConfiguration,
+} from "amazon-chime-sdk-js";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
 const Development = () => {
-  let userData = getRawcaserToken();
-  const [MemberId, setMemberId] = useState("");
-  const [ChannelId, setChannelId] = useState("");
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
   const [MeetingId, setMeetingId] = useState("");
-  const textareaRef = useRef(null);
+  const { meetingManager } = useMainContext();
+  const userData = useAuthData();
 
-  useEffect(() => {
-    ChimesocketListen.on("connect", (message) => {
-      console.log("Connected to server");
-    });
-    ChimesocketListen.on("joinSocket", (message) => {
-      console.log(message, "from createMeetingRoom");
-    });
-    ChimesocketListen.on("createMeetingRoom", (message) => {
-      console.log(message, "from createMeetingRoom");
-    });
-    // return () => {
-    //   ChimesocketListen.off("call");
-    // };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  function generateClientRequestToken() {
+    const timestamp = new Date().getTime();
+    const randomSuffix = Math.floor(Math.random() * 1000);
+    const clientRequestToken = `Meeting-${timestamp}-${randomSuffix}`;
 
-  const handleChange = () => {
-    textareaRef.current.style.height = "45px";
-    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    return clientRequestToken;
+  }
+
+  const CreateMeetingManager = () => {
+    const input = {
+      ClientRequestToken: generateClientRequestToken(),
+      ExternalMeetingId: userData?.user_id.toString(),
+      MediaRegion: "us-east-1",
+    };
+    CreateMeeting(input).then((res) => {
+      setMeetingId(res.Meeting.MeetingId);
+      console.log(res);
+    });
   };
 
-  const handleSendMessage = () => {
-    // Perform the action when the send button is clicked
-    console.log("Sending message:", message);
-    // Reset the textarea
-    textareaRef.current.style.height = "45px";
+  const observer = {
+    eventDidReceive(name, attributes) {
+      console.log(name, "name");
+      switch (name) {
+        case "audioInputFailed":
+          console.error(
+            `Failed to choose microphone: ${attributes.audioInputErrorMessage} in `,
+            attributes
+          );
+          break;
+        case "videoInputFailed":
+          console.error(
+            `Failed to choose camera: ${attributes.videoInputErrorMessage} in `,
+            attributes
+          );
+          break;
+        case "meetingStartFailed":
+          console.error(
+            `Failed to start a meeting: ${attributes.meetingErrorMessage} in `,
+            attributes
+          );
+          break;
+        case "meetingFailed":
+          console.error(
+            `Failed during a meeting: ${attributes.meetingErrorMessage} in `,
+            attributes
+          );
+          break;
+        default:
+          break;
+      }
+    },
   };
 
-  const myObject = {
-    name: "John Doe",
-    age: 30,
-    dept: "John DoeJohn DoeJohn DoeJohn DoeJohn DoeJohn Doe",
+  const configureMeetingManager = async (meetingId, isHost) => {
+    const meetinginput = {
+      MeetingId: meetingId,
+    };
+    const attendeeinput = {
+      MeetingId: meetingId,
+      ExternalUserId: userData?.user_id.toString(),
+      Tags: [
+        {
+          Key: "userData",
+          Value: {
+            name: userData?.display_name,
+            image: userData?.profile_image,
+            isHost: isHost,
+          },
+        },
+      ],
+    };
+    Promise.all([
+      CreateAttendeeForMeeting(attendeeinput),
+      GetMeeting(meetinginput),
+    ]).then(async (res) => {
+      const attendee = res[0].Attendee;
+      const meeting = res[1].Meeting;
+      const meetingSessionConfiguration = new MeetingSessionConfiguration(
+        meeting,
+        attendee
+      );
+      const logger = new ConsoleLogger({ level: "info" });
+      // Set up a device controller
+      const deviceController = new DefaultDeviceController(logger);
+
+      const meetingSession = new DefaultMeetingSession(
+        meetingSessionConfiguration,
+        logger,
+        deviceController
+      );
+      meetingSession.audioVideo.addObserver(observer);
+
+      if (isHost) {
+        ChimesendMessage(
+          { meetingId: meetingId, hostId: userData.user_id },
+          CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
+        );
+      } else {
+        ChimesendMessage(
+          { meetingId: meetingId },
+          CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+        );
+      }
+      const meetingOptions = {
+        deviceLabels: DeviceLabels.AudioAndVideo,
+      };
+      try {
+        await meetingManager.join(meetingSessionConfiguration, meetingOptions);
+        await meetingManager.start();
+      } catch (error) {
+        console.log(error, "errorData");
+      }
+    });
   };
-  const secretKey = "mySecretKey";
-
-  const encryptedString = EncryptObjectToString(myObject);
-  console.log("Encrypted String:", encryptedString);
-
-  const decryptedObject = DecryptStringToObject(encryptedString);
-  console.log("Decrypted Object:", decryptedObject);
 
   return (
     <div
@@ -84,71 +153,11 @@ const Development = () => {
         // height: "100vh",
       }}
     >
-      {/* <div className="h-100 p-5 mt-5 m-auto w-100">
-        <div className={classes.whatsapp_textarea_wrapper}>
-          <textarea
-            ref={textareaRef}
-            className={classes.whatsapp_textarea}
-            placeholder="Type a message..."
-            // value={message}
-            rows="1"
-            onChange={handleChange}
-          />
-          <button className={classes.send_button} onClick={() => {}}>
-            <span class="material-symbols-outlined">send</span>
-          </button>
-        </div>
-      </div> */}
-      {/* <div className="h-100 p-5 mt-5 m-auto w-100">
-        <div
-          style={{
-            height: "500px",
-          }}
-        >
-          <button
-            onClick={() => {
-              createChannel();
-            }}
-          >
-            Create Channel
-          </button>
-          <input
-            placeholder="Member"
-            value={MemberId}
-            onChange={(e) => {
-              setMemberId(e.target.value);
-            }}
-          />
-          <input
-            placeholder="Channel"
-            value={ChannelId}
-            onChange={(e) => {
-              setChannelId(e.target.value);
-            }}
-          />
-          <button
-            onClick={() => {
-              addmembertoChannel();
-            }}
-          >
-            Add members to Channel
-          </button>
-          <button
-            onClick={() => {
-              sendMessageToChannel();
-            }}
-          >
-            List members of Channel
-          </button>
-        </div>
-      </div> */}
       <div className="h-100 p-5 mt-5 m-auto w-100">
         <button
           className="mx-2"
           onClick={() => {
-            window.open("/room", "_blank", {
-              popup: true,
-            });
+            CreateMeetingManager();
           }}
         >
           Create Meeting
@@ -164,37 +173,17 @@ const Development = () => {
         <button
           className="mx-2"
           onClick={() => {
-            window.open(`/room?meetingid=${MeetingId}`, "_blank", {
-              popup: true,
-            });
+            configureMeetingManager(MeetingId, true);
+            // window.open(`/room?meetingid=${MeetingId}`, "_blank", {
+            //   popup: true,
+            // });
           }}
         >
           Join Meeting
         </button>
+        <button>Get Tags</button>
       </div>
-      {/* <div
-        style={{
-          background: "#563662",
-          height: "100%",
-          width: "20%",
-          margin: "auto",
-        }}
-      >
-        <button onClick={() => setOpen(true)}>Open</button>
-      </div> */}
-      {/* 
-      <div
-        style={{
-          background: "#563662",
-          height: "100%",
-          width: "20%",
-          margin: "auto",
-        }}
-      >
-        <ChatBox />
-      </div> */}
-      <ChatAudioplayer url="https://rawcaster.s3.us-west-2.amazonaws.com/chat/attachment_70611688595304.mp3" />
-      {/* <StickyPopup /> */}
+
       <br />
     </div>
   );

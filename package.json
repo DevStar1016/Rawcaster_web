@@ -6,6 +6,7 @@
     "@ant-design/icons": "^5.0.1",
     "@aws-amplify/core": "^5.5.2",
     "@aws-amplify/storage": "^5.6.3",
+    "@aws-sdk/client-chime-sdk-meetings": "^3.363.0",
     "@aws-sdk/client-chime-sdk-messaging": "^3.360.0",
     "@chatscope/chat-ui-kit-react": "^1.10.1",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",

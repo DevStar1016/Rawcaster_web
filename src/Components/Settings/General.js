@@ -126,13 +126,13 @@ const General = () => {
               const filteredData = groupsList.filter((elem) =>
                 formikvalues[ele.groupkeyword]?.includes(elem.group_id)
               );
-              return filteredData.map((ele) => ele.group_name);
+              return filteredData.map((ele) => ele.group_id);
             };
             const getFriendList = () => {
               const filteredData = friendsList.filter((elem) =>
                 formikvalues[ele.groupkeyword]?.includes(elem.user_id)
               );
-              return filteredData.map((ele) => ele.display_name);
+              return filteredData.map((ele) => ele.user_id);
             };
 
             return (
@@ -185,7 +185,9 @@ const General = () => {
                       className={classes.connectionselectBox}
                       placeholder="Search group"
                       value={getGroupList()}
-                      onChange={(val) => {
+                      onChange={(val, value) => {
+                        console.log(value);
+                        console.log(formikvalues[ele.groupkeyword]);
                         setFieldValue([ele.groupkeyword], val);
                       }}
                       optionLabelProp="label"

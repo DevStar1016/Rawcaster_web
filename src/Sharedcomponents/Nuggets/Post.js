@@ -642,9 +642,6 @@ const Post = ({
     }
   };
 
-  useEffect(() => {
-    console.log("rendering");
-  }, []);
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (

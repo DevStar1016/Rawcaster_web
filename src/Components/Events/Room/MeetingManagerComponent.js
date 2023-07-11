@@ -11,6 +11,10 @@ import {
 import { useNavigate, useParams } from "react-router";
 import { useMainContext } from "../../../Shared/Context";
 import { JSONtoformdata } from "../../../Shared/Utility";
+import {
+  CreateAttendeeForMeeting,
+  GetMeeting,
+} from "../../../Services/Messaging/MessageAPIList";
 
 const MeetingManagerComponent = () => {
   const { event_id } = useParams();
@@ -20,48 +24,96 @@ const MeetingManagerComponent = () => {
   const { meetingManager } = useMainContext();
 
   const configureMeetingManager = async (meetingId, isHost) => {
-    const formData = {
-      token,
-      meeting_id: meetingId,
+    const meetinginput = {
+      MeetingId: meetingId,
     };
-    JoinAttendeeMeeting(JSONtoformdata(formData))
-      .then(async (response) => {
-        if (response.data.status === 1) {
-          const { attendee, meeting } = response.data;
-          const meetingSessionConfiguration = new MeetingSessionConfiguration(
-            meeting,
-            attendee
-          );
-          if (isHost) {
-            ChimesendMessage(
-              { meetingId: meetingId, hostId: userData.user_id },
-              CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
-            );
-          } else {
-            ChimesendMessage(
-              { meetingId: meetingId },
-              CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
-            );
-          }
-          const meetingOptions = {
-            deviceLabels: DeviceLabels.AudioAndVideo,
-          };
-          try {
-            await meetingManager.join(
-              meetingSessionConfiguration,
-              meetingOptions
-            );
-            await meetingManager.start();
-          } catch (error) {
-            console.log(error, "errorData");
-          }
-        } else {
-          navigate(-1);
-        }
-      })
-      .catch((err) => {
-        navigate(-1);
-      });
+    const attendeeinput = {
+      MeetingId: meetingId,
+      ExternalUserId: userData?.user_id,
+      Tags: [
+        {
+          Key: "Name",
+          Value: userData?.display_name,
+        },
+        {
+          Key: "Image",
+          Value: userData?.profile_image,
+        },
+        {
+          Key: "Host",
+          Value: isHost,
+        },
+      ],
+    };
+    Promise.all([
+      CreateAttendeeForMeeting(attendeeinput),
+      GetMeeting(meetinginput),
+    ]).then(async (res) => {
+      const attendee = res[0].Attendee;
+      const meeting = res[1].Meeting;
+      const meetingSessionConfiguration = new MeetingSessionConfiguration(
+        meeting,
+        attendee
+      );
+      if (isHost) {
+        ChimesendMessage(
+          { meetingId: meetingId, hostId: userData.user_id },
+          CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
+        );
+      } else {
+        ChimesendMessage(
+          { meetingId: meetingId },
+          CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+        );
+      }
+      const meetingOptions = {
+        deviceLabels: DeviceLabels.AudioAndVideo,
+      };
+      try {
+        await meetingManager.join(meetingSessionConfiguration, meetingOptions);
+        await meetingManager.start();
+      } catch (error) {
+        console.log(error, "errorData");
+      }
+    });
+    // JoinAttendeeMeeting(JSONtoformdata(formData))
+    //   .then(async (response) => {
+    //     if (response.data.status === 1) {
+    //       const { attendee, meeting } = response.data;
+    //       const meetingSessionConfiguration = new MeetingSessionConfiguration(
+    //         meeting,
+    //         attendee
+    //       );
+    //       if (isHost) {
+    //         ChimesendMessage(
+    //           { meetingId: meetingId, hostId: userData.user_id },
+    //           CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
+    //         );
+    //       } else {
+    //         ChimesendMessage(
+    //           { meetingId: meetingId },
+    //           CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+    //         );
+    //       }
+    //       const meetingOptions = {
+    //         deviceLabels: DeviceLabels.AudioAndVideo,
+    //       };
+    //       try {
+    //         await meetingManager.join(
+    //           meetingSessionConfiguration,
+    //           meetingOptions
+    //         );
+    //         await meetingManager.start();
+    //       } catch (error) {
+    //         console.log(error, "errorData");
+    //       }
+    //     } else {
+    //       navigate(-1);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     navigate(-1);
+    //   });
   };
 
   useEffect(() => {
