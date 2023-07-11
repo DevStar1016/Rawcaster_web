@@ -122,6 +122,15 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
 .selectAllContainer>div:nth-child(1){
     cursor: pointer;
 }
+
+.clearIcon{
+    position: absolute;
+    bottom: -8px;
+    right: 15px;
+}
+.clearIcon>span{
+    font-size: 15px;
+}
 @media (max-width:768px) {
 .headerSec { display: block; width: 100%; float: left;}
 .headerSec h1 { width: 100%; margin: auto; text-align: center; font-size: 25px; line-height: 26px; }   

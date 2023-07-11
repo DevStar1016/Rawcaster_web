@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Empty, Modal } from "antd";
 import React, { useState } from "react";
 import { decodeHtml } from "../../Shared/Utility";
 import classes from "./Event.module.css";
@@ -37,37 +37,39 @@ const SelectedUsers = ({
         />
         {type === 2 ? (
           <div className="mt-3">
-            {Groups?.map((group, index) => {
-              return (
-                <div
-                  className={classes.friendslist}
-                  style={{
-                    position: "relative",
-                    display: decodeHtml(group.group_name)
-                      .toLowerCase()
-                      .includes(searchInput.toLowerCase())
-                      ? "flex"
-                      : "none",
-                  }}
-                >
-                  <div className={classes.profileSec}>
-                    <img
-                      src={group.group_icon}
-                      alt={decodeHtml(group.group_name)}
-                    />
-                    <p>{decodeHtml(group.group_name)}</p>
-                  </div>
-                  <span
-                    className="material-symbols-outlined"
-                    onClick={() => {
-                      setGroups(group.group_id);
+            {Groups?.length > 0 &&
+              Groups?.map((group, index) => {
+                return (
+                  <div
+                    className={classes.friendslist}
+                    style={{
+                      position: "relative",
+                      display: decodeHtml(group.group_name)
+                        .toLowerCase()
+                        .includes(searchInput.toLowerCase())
+                        ? "flex"
+                        : "none",
                     }}
                   >
-                    close
-                  </span>
-                </div>
-              );
-            })}
+                    <div className={classes.profileSec}>
+                      <img
+                        src={group.group_icon}
+                        alt={decodeHtml(group.group_name)}
+                      />
+                      <p>{decodeHtml(group.group_name)}</p>
+                    </div>
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => {
+                        setGroups(group.group_id);
+                      }}
+                    >
+                      close
+                    </span>
+                  </div>
+                );
+              })}
+            {Groups.length === 0 && <Empty />}
           </div>
         ) : (
           <div className="mt-3">

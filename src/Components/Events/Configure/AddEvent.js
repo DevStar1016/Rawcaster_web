@@ -56,6 +56,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const [isCreating, setisCreating] = useState(false);
   const [isNextPage, setisNextPage] = useState(false);
   const [upgradePlanPopup, setupgradePlanPopup] = useState(false);
+  const [userMailList, setuserMailList] = useState([]);
   const [SelectedTime, setSelectedTime] = useState(
     moment().add(10, "minutes").format("HH:mm")
   );
@@ -94,6 +95,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_invite_mails: "",
       event_invite_friends: "",
       event_invite_groups: "",
+      delete_invite_mails: [],
     },
     enableReinitialize: false,
     validationSchema: yup.object().shape({
@@ -312,17 +314,12 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_start_date: utcDateTime.format("YYYY-MM-DD"),
       event_start_time: utcDateTime.format("HH:mm"),
       event_invite_mails: values?.event_invite_mails?.includes("[")
-        ? JSON.parse(values?.event_invite_mails)?.join(", ")
+        ? JSON.parse(values?.event_invite_mails)?.join(",")
         : values?.event_invite_mails,
+      delete_invite_mails: values.delete_invite_mails?.join(","),
     };
 
-    console.log(
-      values?.event_invite_mails?.includes("[")
-        ? JSON.parse(values?.event_invite_mails)?.join(", ")
-        : values?.event_invite_mails,
-      "liveEventDataliveEventData",
-      values.event_invite_mails
-    );
+    console.log(liveEventData, "liveEventDataliveEventData");
     function isFile(obj) {
       return (
         obj &&
@@ -400,6 +397,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                 eventData?.invite_groups_id
               ),
             }));
+            setuserMailList(eventData?.invite_mails);
           } catch (error) {
             console.log(error, "error");
           }
@@ -546,6 +544,13 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         value={values.event_invite_mails}
                         onResult={(val) => {
                           setFieldValue("event_invite_mails", val.toString());
+                        }}
+                        userMailList={userMailList}
+                        setuserMailList={(val) => {
+                          setFieldValue("delete_invite_mails", [
+                            ...values.delete_invite_mails,
+                            val,
+                          ]);
                         }}
                       />
                       {touched.event_invite_mails && (

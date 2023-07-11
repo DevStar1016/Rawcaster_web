@@ -254,6 +254,7 @@ const SelectInfluencers = () => {
           <Col md={8} xs={24}>
             <div className="influencerSelect">
               <Select
+                allowClear
                 placeholder="Select Category"
                 className={classes.selectCategory}
                 options={getSelectData(influencerCategory)}
@@ -264,6 +265,12 @@ const SelectInfluencers = () => {
                   }));
                   getInfluencerList(1, val.id, SearchValues.search_key);
                 }}
+                onClear={getInfluencerList}
+                clearIcon={
+                  <span style={{}} className={classes.clearIcon}>
+                    <span class="material-symbols-outlined">close</span>
+                  </span>
+                }
               />
             </div>
           </Col>

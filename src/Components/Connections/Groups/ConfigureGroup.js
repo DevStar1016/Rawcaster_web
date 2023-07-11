@@ -322,7 +322,11 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           );
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          if (typeof res?.data?.msg === "string") {
+            toast.error(res.data.msg);
+          } else {
+            toast.error("Something went wrong");
+          }
         }
       })
       .catch((err) => {

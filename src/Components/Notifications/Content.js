@@ -95,6 +95,7 @@ const Content = ({ elem }) => {
               (ele) => ele.notification_id !== notification_id
             ),
           }));
+          getNotificationList();
         } else {
           toast.error(data.msg);
         }

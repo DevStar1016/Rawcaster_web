@@ -182,7 +182,12 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
               </h3>
             </Tooltip>
             {isNotExpired() && isCreatedUser() && (
-              <div className={classes.editSec}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className={classes.editSec}
+              >
                 <div className={classes.iconBg}>
                   <i
                     className={classes.editIcon}

@@ -278,7 +278,12 @@ export const BannerComponent = ({ onResult, value, size = null }) => {
   );
 };
 
-export const InviteEmailComponent = ({ onResult, value }) => {
+export const InviteEmailComponent = ({
+  onResult,
+  value,
+  setuserMailList,
+  userMailList,
+}) => {
   const [externalMailId, setExternalMailId] = useState([]);
 
   const addExtMailHandler = (data) => {
@@ -311,7 +316,11 @@ export const InviteEmailComponent = ({ onResult, value }) => {
     }
   };
 
-  const removeExtMailHandler = (index) => {
+  const removeExtMailHandler = (index, v1, v2, mail) => {
+    if (userMailList?.includes(mail)) {
+      setuserMailList(mail);
+    }
+    console.log(mail, "externalMailId");
     let mailList = [...externalMailId];
     if (mailList.length > index) {
       mailList.splice(index, 1);
@@ -356,7 +365,12 @@ export const InviteEmailComponent = ({ onResult, value }) => {
               className={classes.displayuser + " pointer"}
               style={{ cursor: "pointer" }}
               onClick={() =>
-                removeExtMailHandler(index, setExternalMailId, externalMailId)
+                removeExtMailHandler(
+                  index,
+                  setExternalMailId,
+                  externalMailId,
+                  m
+                )
               }
             >
               {m}
