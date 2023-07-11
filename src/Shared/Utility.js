@@ -824,9 +824,10 @@ export const downloadurl = (url) => {
 };
 
 export const getUtcToSystemTime = (dateTime) => {
-  return moment(dateTime, "YYYY-MM-DD HH:mm:ss")
-    .subtract(-moment().utcOffset(), "minutes")
-    .toDate();
+  return moment(dateTime, "YYYY-MM-DD HH:mm:ss").subtract(
+    -moment().utcOffset(),
+    "minutes"
+  );
 };
 
 // OBJECT TO STRING

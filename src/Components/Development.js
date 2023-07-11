@@ -24,6 +24,7 @@ import {
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
 const Development = () => {
+  let meetingSession;
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const [MeetingId, setMeetingId] = useState("");
@@ -51,37 +52,48 @@ const Development = () => {
   };
 
   const observer = {
-    eventDidReceive(name, attributes) {
-      console.log(name, "name");
-      switch (name) {
-        case "audioInputFailed":
-          console.error(
-            `Failed to choose microphone: ${attributes.audioInputErrorMessage} in `,
-            attributes
-          );
-          break;
-        case "videoInputFailed":
-          console.error(
-            `Failed to choose camera: ${attributes.videoInputErrorMessage} in `,
-            attributes
-          );
-          break;
-        case "meetingStartFailed":
-          console.error(
-            `Failed to start a meeting: ${attributes.meetingErrorMessage} in `,
-            attributes
-          );
-          break;
-        case "meetingFailed":
-          console.error(
-            `Failed during a meeting: ${attributes.meetingErrorMessage} in `,
-            attributes
-          );
-          break;
-        default:
-          break;
-      }
+    audioVideoDidStart: () => {
+      // Get the attendee IDs and external user IDs for all attendees
+      const attendeeIds = meetingSession.audioVideo
+        .getAllAttendees()
+        .map((attendee) => attendee.attendeeId);
+      const externalUserIds = meetingSession.audioVideo
+        .getAllAttendees()
+        .map((attendee) => attendee.externalUserId);
+      console.log(attendeeIds, externalUserIds, "attendeeIds, externalUserIds");
+      // Call a function to get attendee tags
     },
+    // eventDidReceive(name, attributes) {
+    //   console.log(name, "name");
+    //   switch (name) {
+    //     case "audioInputFailed":
+    //       console.error(
+    //         `Failed to choose microphone: ${attributes.audioInputErrorMessage} in `,
+    //         attributes
+    //       );
+    //       break;
+    //     case "videoInputFailed":
+    //       console.error(
+    //         `Failed to choose camera: ${attributes.videoInputErrorMessage} in `,
+    //         attributes
+    //       );
+    //       break;
+    //     case "meetingStartFailed":
+    //       console.error(
+    //         `Failed to start a meeting: ${attributes.meetingErrorMessage} in `,
+    //         attributes
+    //       );
+    //       break;
+    //     case "meetingFailed":
+    //       console.error(
+    //         `Failed during a meeting: ${attributes.meetingErrorMessage} in `,
+    //         attributes
+    //       );
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // },
   };
 
   const configureMeetingManager = async (meetingId, isHost) => {
@@ -116,7 +128,7 @@ const Development = () => {
       // Set up a device controller
       const deviceController = new DefaultDeviceController(logger);
 
-      const meetingSession = new DefaultMeetingSession(
+      meetingSession = new DefaultMeetingSession(
         meetingSessionConfiguration,
         logger,
         deviceController
