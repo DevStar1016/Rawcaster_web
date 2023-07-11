@@ -353,39 +353,45 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         .then((res) => {
           let eventData = res.data.event_detail;
           console.log(eventData);
-          setValues((pre) => ({
-            ...pre,
-            event_title: decodeHtml(eventData?.event_name),
-            event_type: eventData?.event_type_id,
-            event_start_date: getUtcToSystemTime(
-              eventData?.start_date_time
-            ).format("YYYY-MM-DD"),
-            event_start_time: getUtcToSystemTime(
-              eventData?.start_date_time
-            ).format("HH:mm"),
-            event_message: eventData?.message,
-            waiting_room: eventData?.waiting_room,
-            join_before_host: eventData?.join_before_host,
-            sound_notify: eventData?.sound_notify,
-            user_screenshare: eventData?.user_screenshare,
-            event_participants: eventData?.no_of_participants,
-            event_duration: moment(eventData?.duration, "HH:mm:ss").format(
-              "HH:mm"
-            ),
-            event_layout: eventData?.event_layout_id,
-            event_melody_id: eventData?.event_melody_id,
-            event_melody: eventData?.melodies,
-            event_host_audio: eventData?.default_host_audio,
-            event_host_video: eventData?.default_host_video,
-            event_guest_audio: eventData?.default_guest_audio,
-            event_guest_video: eventData?.default_guest_video,
-            event_banner: eventData?.banner_image,
-            event_invite_mails: getValidarrayData(eventData?.invite_mails),
-            event_invite_friends: getValidarrayData(
-              eventData?.invite_friends_id
-            ),
-            event_invite_groups: getValidarrayData(eventData?.invite_groups_id),
-          }));
+          try {
+            setValues((pre) => ({
+              ...pre,
+              event_title: decodeHtml(eventData?.event_name),
+              event_type: eventData?.event_type_id,
+              event_start_date: getUtcToSystemTime(
+                eventData?.start_date_time
+              )?.format("YYYY-MM-DD"),
+              event_start_time: getUtcToSystemTime(
+                eventData?.start_date_time
+              )?.format("HH:mm"),
+              event_message: eventData?.message,
+              waiting_room: eventData?.waiting_room,
+              join_before_host: eventData?.join_before_host,
+              sound_notify: eventData?.sound_notify,
+              user_screenshare: eventData?.user_screenshare,
+              event_participants: eventData?.no_of_participants,
+              event_duration: moment(eventData?.duration, "HH:mm:ss").format(
+                "HH:mm"
+              ),
+              event_layout: eventData?.event_layout_id,
+              event_melody_id: eventData?.event_melody_id,
+              event_melody: eventData?.melodies,
+              event_host_audio: eventData?.default_host_audio,
+              event_host_video: eventData?.default_host_video,
+              event_guest_audio: eventData?.default_guest_audio,
+              event_guest_video: eventData?.default_guest_video,
+              event_banner: eventData?.banner_image,
+              event_invite_mails: getValidarrayData(eventData?.invite_mails),
+              event_invite_friends: getValidarrayData(
+                eventData?.invite_friends_id
+              ),
+              event_invite_groups: getValidarrayData(
+                eventData?.invite_groups_id
+              ),
+            }));
+          } catch (error) {
+            console.log(error, "error");
+          }
         })
         .catch((err) => {});
     } else {
