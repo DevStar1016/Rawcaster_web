@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./ChatBox.module.css";
 import {
   defaultGroupImg,
@@ -7,6 +7,8 @@ import {
 import { useChatContext, useMainContext } from "../../Shared/Context";
 import { Layout } from "antd";
 import { useAuthData, useFriends, useGroups } from "../../Shared/Reduxfetcher";
+import ConfigureGroup from "../Connections/Groups/ConfigureGroup";
+import { toast } from "react-hot-toast";
 
 const Header = () => {
   const { isChatOpen, setisChatOpen } = useMainContext();
@@ -17,10 +19,16 @@ const Header = () => {
     removeselection,
     setSelectAllMessages,
     SelectAllMessages,
+    receiverMessage,
   } = useChatContext();
   const loginuserData = useAuthData();
   const friends = useFriends();
   const groups = useGroups();
+
+  const [isConfigureGroup, setisConfigureGroup] = useState({
+    show: false,
+    group_id: null,
+  });
 
   const getData = () => {
     if (isChatOpen.type === "friend") {
@@ -124,12 +132,20 @@ const Header = () => {
     el.select();
     document.execCommand("copy");
     document.body.removeChild(el);
+
+    toast.success("Text copied to clipboard");
+    setSelectAllMessages(false);
   }
 
   return (
     <>
       <Layout.Header className={classes.chatboxHeader}>
-        <div className={classes.groupintroSec}>
+        <div
+          onClick={() => {
+            setisConfigureGroup({ show: true, group_id: isChatOpen?.id });
+          }}
+          className={classes.groupintroSec}
+        >
           <img
             src={getData()?.icon || ""}
             onError={({ currentTarget }) => {
@@ -172,7 +188,9 @@ const Header = () => {
                 content_copy
               </span>
             </span>
-            <span className="material-symbols-outlined">delete</span>
+            {receiverMessage?.length === 0 && (
+              <span className="material-symbols-outlined">delete</span>
+            )}
             <span
               className="material-symbols-outlined"
               onClick={() => {
@@ -182,6 +200,15 @@ const Header = () => {
               close
             </span>
           </div>
+        )}
+        {isConfigureGroup.show && (
+          <ConfigureGroup
+            open={isConfigureGroup.show}
+            groupId={isConfigureGroup.group_id}
+            close={() => {
+              setisConfigureGroup({ show: false, group_id: null });
+            }}
+          />
         )}
       </Layout.Header>
     </>

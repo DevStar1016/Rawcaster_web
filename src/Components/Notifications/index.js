@@ -136,6 +136,7 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
           if (data.status === 1) {
             resolve(notification_id);
             setmarkallAsRead();
+
             dispatch(handleNotificationUnreadCount(0));
             dispatch(
               handleLoginData({
@@ -143,6 +144,8 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
                 unread_notification_count: 0,
               })
             );
+
+            getNotificationList();
           } else {
             toast.error(data.msg);
           }

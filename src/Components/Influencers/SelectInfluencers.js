@@ -173,6 +173,7 @@ const SelectInfluencers = () => {
         follow_userid: JSON.stringify(selectedFansList),
         select_all:
           SelectedInfluencersList?.length === influencerList?.length ? 1 : 0,
+        category: SearchValues?.category,
       };
       InfluencerFollowService(JSONtoformdata(becameFanData))
         .then((res) => {
@@ -299,7 +300,7 @@ const SelectInfluencers = () => {
                   onClick={() => {
                     handleSelectAllInfluencers(false);
                   }}
-                >{`UnSelect All (${influencersCount})`}</p>
+                >{`UnSelect All`}</p>
               )}
             </Col>
             <Col className="text-end">

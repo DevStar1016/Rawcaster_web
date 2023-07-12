@@ -603,7 +603,7 @@ export const ChatInput = ({
 };
 
 export const MessageContent = (props) => {
-  const { Messages, setEditData } = useChatContext();
+  const { Messages, setEditData, setreceiverMessage } = useChatContext();
   const {
     message = null,
     user,
@@ -797,7 +797,7 @@ export const MessageContent = (props) => {
         <div
           onClick={() => {
             setSelectAllMessages(true);
-            onSelectedMessage(message);
+            // onSelectedMessage(message);
           }}
         >
           Select
@@ -818,8 +818,18 @@ export const MessageContent = (props) => {
       onClick={() => {
         if (isUser(user) && SelectAllMessages) {
           onSelectedMessage(message);
+        } else if (SelectAllMessages) {
+          onSelectedMessage(message);
+          setreceiverMessage((pre) => {
+            let temp = [...pre];
+            if (temp?.includes(message)) {
+              return temp.filter((ele) => ele !== message);
+            }
+            return [...temp, message];
+          });
         }
       }}
+      style={!isUser(user) && SelectAllMessages ? { paddingLeft: "25px" } : {}}
     >
       <Dropdown
         menu={{ items }}
@@ -907,7 +917,7 @@ export const MessageContent = (props) => {
         </div>
       </Dropdown>
 
-      {isUser(user) && SelectAllMessages && (
+      {SelectAllMessages && (
         <Checkbox
           className={classes.SelectedMessage}
           checked={selectedMessages?.includes(message)}

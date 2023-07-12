@@ -241,6 +241,7 @@ padding: 4px;
     float: left;
     display: flex;
     align-items: center; width: 100%;
+    cursor: pointer;
   }
  .list:hover { background-color:#F6F6F6; border-radius: 8px; }
  .list span.disName,.list .groupdisName {

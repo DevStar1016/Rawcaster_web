@@ -25,6 +25,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
   const [EditData, setEditData] = useState(null);
   const [SelectedContents, setSelectedContents] = useState([]);
   const [SelectAllMessages, setSelectAllMessages] = useState(false);
+  const [receiverMessage, setreceiverMessage] = useState([]);
   const [isConfigureGroup, setisConfigureGroup] = useState({
     show: false,
     group_id: null,
@@ -117,6 +118,8 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     SelectAllMessages,
     setSelectAllMessages,
     setisConfigureGroup,
+    receiverMessage,
+    setreceiverMessage,
   };
 
   return !isHidden ? (

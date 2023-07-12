@@ -112,20 +112,20 @@ const Viewevent = () => {
                   alt={decodeHtml(ViewEventData.original_user_name)}
                 ></img>
               </div>
+              <Tooltip
+                placement="bottom"
+                title={decodeHtml(ViewEventData.original_user_name)}
+              >
+                <div className={classes.user_name}>
+                  {decodeHtml(ViewEventData.original_user_name)?.length > 25
+                    ? `${decodeHtml(ViewEventData.original_user_name)?.slice(
+                        0,
+                        22
+                      )}...`
+                    : decodeHtml(ViewEventData.original_user_name)}
+                </div>
+              </Tooltip>
             </div>
-            <Tooltip
-              placement="left"
-              title={decodeHtml(ViewEventData.original_user_name)}
-            >
-              <div className={classes.user_name}>
-                {decodeHtml(ViewEventData.original_user_name)?.length > 25
-                  ? `${decodeHtml(ViewEventData.original_user_name)?.slice(
-                      0,
-                      22
-                    )}...`
-                  : decodeHtml(ViewEventData.original_user_name)}
-              </div>
-            </Tooltip>
           </div>
         </div>
       ) : (

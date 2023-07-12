@@ -13,9 +13,9 @@ const Header = () => {
       </div>
       <div
         className={classes.markSec}
-        style={{ display: !TotalUnreadCount ? "none" : "" }}
+        style={{ display: !UnReadCount ? "none" : "" }}
         onClick={() => {
-          if (TotalUnreadCount !== 0) {
+          if (UnReadCount !== 0) {
             handleViewNotification(null, 1);
           }
         }}

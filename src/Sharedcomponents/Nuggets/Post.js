@@ -75,6 +75,7 @@ const Post = ({
   isCommentShow = false,
   onDelete,
   onSaveCountResult,
+  Opened,
 }) => {
   const source = useRef(null);
   const contentRef = useRef(null);
@@ -120,6 +121,11 @@ const Post = ({
       } else {
         setiscollapse(false);
       }
+    }
+  }, []);
+  useEffect(() => {
+    if (Opened) {
+      setiscollapse(true);
     }
   }, []);
 
@@ -529,6 +535,10 @@ const Post = ({
   const isCollapse = () => {
     let isvalidCollapse =
       ele.media_list.length !== 0 || ele.metadata ? true : false;
+
+    if (Opened) {
+      return false;
+    }
     if (isvalidCollapse) {
       return false;
     }
@@ -1004,7 +1014,9 @@ const Post = ({
                     >
                       <i className={`${classes.commentIcon}`} />
                     </p>
-                    <span>{ele.total_comments}</span>
+                    <span>
+                      {Opened ? CommentList?.length : ele.total_comments}
+                    </span>
                   </div>
 
                   {ele?.poll_option?.length === 0 && (

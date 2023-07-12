@@ -13,6 +13,7 @@ import { Spinner } from "react-bootstrap";
 import { NuggetSEO, PollNuggetSEO } from "../../Components/SEO/SEOContent";
 import Seo from "../../Components/SEO/Seo";
 import { ListNuggetContext } from "../../Shared/Context";
+
 const ViewNugget = () => {
   const { nugID } = useParams();
   const ReadSource = useRef(null);
@@ -86,6 +87,7 @@ const ViewNugget = () => {
               isCommentShow={true}
               ele={NuggetData}
               muted={false}
+              Opened={true}
               setmuted={(status) => {}}
               handleLike={(like) => {
                 let tempData = { ...NuggetData };
@@ -96,6 +98,14 @@ const ViewNugget = () => {
                     like === 1
                       ? tempData.total_likes + 1
                       : tempData.total_likes - 1,
+                };
+                setNuggetData(tempData);
+              }}
+              handleSave={(save) => {
+                let tempData = { ...NuggetData };
+                tempData = {
+                  ...tempData,
+                  saved: save === 1 ? true : false,
                 };
                 setNuggetData(tempData);
               }}
