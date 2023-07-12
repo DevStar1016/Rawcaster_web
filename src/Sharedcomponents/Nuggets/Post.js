@@ -118,6 +118,11 @@ const Post = ({
         setiscollapse(true);
       } else if (ele?.content?.length > 500) {
         setiscollapse(true);
+      } else if (
+        (ele?.content?.length > 300 && ele?.poll_option?.length > 1) ||
+        (ele?.content?.split("\n").length > 3 && ele?.poll_option?.length > 1)
+      ) {
+        setiscollapse(true);
       } else {
         setiscollapse(false);
       }
@@ -514,7 +519,7 @@ const Post = ({
   };
 
   const isReadMore = () => {
-    if (ele.media_list.length !== 0) {
+    if (ele.media_list?.length !== 0) {
       return false;
     } else if (
       ele.poll_option?.length > 2 &&
@@ -534,7 +539,7 @@ const Post = ({
 
   const isCollapse = () => {
     let isvalidCollapse =
-      ele.media_list.length !== 0 || ele.metadata ? true : false;
+      ele.media_list?.length !== 0 || ele.metadata ? true : false;
 
     if (Opened) {
       return false;
@@ -544,7 +549,10 @@ const Post = ({
     }
     if (ele?.content?.split("\n")?.length > 10) {
       return false;
-    } else if (ele?.content?.length > 300 && ele?.poll_option?.length > 1) {
+    } else if (
+      (ele?.content?.length > 300 && ele?.poll_option?.length > 1) ||
+      (ele?.content?.split("\n").length > 3 && ele?.poll_option?.length > 1)
+    ) {
       return false;
     } else if (!isvalidContent) {
       return true;
@@ -654,6 +662,16 @@ const Post = ({
         }
       });
     }
+  };
+
+  const getcommentLength = (data) => {
+    let count = 0;
+    const commentlength = data?.map((item, index) => {
+      count += item?.reply?.length;
+      return item;
+    });
+
+    return count + data?.length;
   };
 
   return (
@@ -835,7 +853,9 @@ const Post = ({
                 </p>
               )}
 
-              {ele.media_list && ele.media_list.length === 0 && ele.metadata ? (
+              {ele.media_list &&
+              ele.media_list?.length === 0 &&
+              ele.metadata ? (
                 <div
                   className={classes.metaLink}
                   onClick={() => {
@@ -1015,7 +1035,9 @@ const Post = ({
                       <i className={`${classes.commentIcon}`} />
                     </p>
                     <span>
-                      {Opened ? CommentList?.length : ele.total_comments}
+                      {Opened
+                        ? getcommentLength(CommentList)
+                        : ele?.total_comments}
                     </span>
                   </div>
 
