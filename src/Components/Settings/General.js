@@ -236,7 +236,10 @@ const General = () => {
                         handleGroupListUpdateService(
                           ele.keyword,
                           formikvalues[ele.groupkeyword],
-                          5
+                          ele?.keyword === "public_nugget_display" ||
+                            ele?.keyword === "public_event_display"
+                            ? 5
+                            : 3
                         );
                       }}
                     >
