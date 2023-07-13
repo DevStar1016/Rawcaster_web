@@ -20,7 +20,7 @@ const ViewNugget = () => {
   const navigate = useNavigate();
   const nugget_id = nugID ? DecryptionString(nugID) : null;
   const Token = useAuthToken();
-  const [NuggetData, setNuggetData] = useState();
+  const [NuggetData, setNuggetData] = useState({});
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
 
@@ -32,6 +32,7 @@ const ViewNugget = () => {
     getNuggetDetailService(JSONtoformdata(nuggetDetailData))
       .then((res) => {
         if (res.data.status === 1) {
+          console.log("dgfgsgfrd");
           setNuggetData(res.data.nugget_detail);
         } else {
           navigate(-1);
@@ -50,7 +51,7 @@ const ViewNugget = () => {
   }, [Token, nugget_id]);
 
   const getOriginalName = () => {
-    if (NuggetData?.poll_option.length !== 0) {
+    if (NuggetData?.poll_option?.length !== 0) {
       return PollNuggetSEO(
         NuggetData?.original_user_name
           ? decodeHtml(NuggetData.original_user_name)

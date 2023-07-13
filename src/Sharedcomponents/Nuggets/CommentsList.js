@@ -392,7 +392,7 @@ const CommentsList = ({ index }) => {
                                 .getElementById(
                                   `replytxtInput_${elem.comment_id}`
                                 )
-                                .focus();
+                                ?.focus();
                             }}
                           >
                             <img src={replyicon} alt="reply_icon" /> Reply
