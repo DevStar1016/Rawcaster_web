@@ -82,22 +82,22 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* {detectMob() && ( */}
-      <div className={classes.webScreeen}>
-        <div className={classes.fullcontainer}>
-          {dashboardMenu === "event" && <Events />}
-          {dashboardMenu === "notification" && (
-            <Notification
-              onReadCountChange={() => {
-                console.log("test");
-              }}
-            />
-          )}
-          {dashboardMenu === "nugget" && <Nuggets />}
-          {dashboardMenu === "usermenu" && <DashboardSignup />}
+      {detectMob() && (
+        <div className={classes.webScreeen}>
+          <div className={classes.fullcontainer}>
+            {dashboardMenu === "event" && <Events />}
+            {dashboardMenu === "notification" && (
+              <Notification
+                onReadCountChange={() => {
+                  console.log("test");
+                }}
+              />
+            )}
+            {dashboardMenu === "nugget" && <Nuggets />}
+            {dashboardMenu === "usermenu" && <DashboardSignup />}
+          </div>
         </div>
-      </div>
-      {/* // )} */}
+      )}
     </div>
   );
 };

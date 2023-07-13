@@ -36,10 +36,11 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
     audioElement.id = nugget_id;
     setAudio(audioElement);
     setplayer(audioElement);
-    audioElement.play();
+    console.log(nugget_id);
     setisPlaying(nugget_id);
+    audioElement.play();
   };
-
+  console.log(isPlaying, "isPlaying");
   const HandlegetNuggetContentAudio = () => {
     console.log("test");
     if (PlayerSource.current) {
@@ -112,7 +113,6 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       });
       audio.addEventListener("pause", () => {
         audio.pause();
-        setisPlaying(null);
       });
     }
 

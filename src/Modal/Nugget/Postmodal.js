@@ -26,23 +26,20 @@ import {
 import { SHARED_TYPE } from "../../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
 import { toast } from "react-hot-toast";
-import { detectMob, getAspectRatio } from "../../Shared/Utility";
+import { detectMob } from "../../Shared/Utility";
 import {
   MediaPermissionsErrorType,
   requestAudioPermissions,
   requestVideoPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import Postpoll from "./Postpoll";
-import data from "@emoji-mart/data";
-import { Picker } from "emoji-mart";
+
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 import { sendMessage, socketListen } from "../../Services/SocketService";
-import ImageCropModal from "../ImageCropModal";
 import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
 import { parseInt } from "lodash";
 import ImageEditModal from "../ImageEditModal";
-import LoginModal from "../Verification/LoginModal";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -64,17 +61,9 @@ const Postmodal = ({ visible, onClose }) => {
     setdeletedMedia,
   } = useContext(PostNuggetContext);
   const { setPostContent } = useGlobalContext();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   const { isEdit } = useListNuggetContext();
   const textinputRef = useRef(null);
-  new Picker({
-    parent: document.querySelector("#picker"),
-    data: data,
-    emojiButtonSize: 50,
-    emojiSize: 38,
-    emojiButtonColors: ["rgba(102, 51, 153, .2)"],
-    icons: "solid",
-  });
   const [isAudioModal, setisAudioModal] = useState(false);
   const loginUserData = useAuthData();
   const ImageRef = useRef();

@@ -180,7 +180,7 @@ const Post = ({
   };
 
   useEffect(() => {
-    if (isCommentShow) {
+    if (isCommentShow && ele) {
       setisCommentLoading(true);
       setCommentList([]);
       setComments(ele.nugget_id);
