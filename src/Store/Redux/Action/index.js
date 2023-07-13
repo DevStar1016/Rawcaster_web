@@ -5,6 +5,7 @@ import {
   listAllFriendGroupsService,
   listAllFriendsService,
   listNuggetsService,
+  viewEventsService,
 } from "../../../Services/ApiService";
 import {
   JSONtoformdata,
@@ -179,6 +180,27 @@ export const fetchuserInfobyToken = createAsyncThunk(
         dispatch(fetchFrindsbyId(token));
         dispatch(fetchgroupsbyId({ token: token, user_id: finalData.user_id }));
         return { token: token, ...finalData };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+);
+
+export const fetchActiveEventData = createAsyncThunk(
+  "dashboard/fetchActiveEventData",
+  async (res) => {
+    const { token, ref_id } = res;
+    let profileData = {
+      token: token,
+      event_id: ref_id,
+    };
+    try {
+      const { data } = await viewEventsService(JSONtoformdata(profileData));
+      if (data.status === 1) {
+        return data.event_detail;
       } else {
         return null;
       }

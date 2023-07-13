@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchFrindsbyId, fetchgroupsbyId } from "../Action";
+import {
+  fetchActiveEventData,
+  fetchFrindsbyId,
+  fetchgroupsbyId,
+} from "../Action";
 
 const initialState = {
   isLoading: false,
@@ -21,6 +25,7 @@ const initialState = {
   },
   meetingData: null,
   notificationUnreadCount: 0,
+  ActiveEventData: null,
 };
 
 export const { actions, reducer } = createSlice({
@@ -98,6 +103,9 @@ export const { actions, reducer } = createSlice({
     handleNotificationUnreadCount: (state, action) => {
       state.notificationUnreadCount = action.payload;
     },
+    handleClearActiveEvent: (state, action) => {
+      state.ActiveEventData = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchFrindsbyId.fulfilled, (state, action) => {
@@ -113,6 +121,12 @@ export const { actions, reducer } = createSlice({
     });
     builder.addCase(fetchgroupsbyId.rejected, (state, action) => {
       state.isGroupLoading = false;
+    });
+    builder.addCase(fetchActiveEventData.fulfilled, (state, action) => {
+      state.ActiveEventData = action.payload;
+    });
+    builder.addCase(fetchActiveEventData.rejected, (state, action) => {
+      state.ActiveEventData = null;
     });
   },
 });
@@ -134,6 +148,7 @@ export const {
   handleDeleteGroupData,
   handleMeetingData,
   handleNotificationUnreadCount,
+  handleClearActiveEvent,
 } = actions;
 
 export default reducer;
