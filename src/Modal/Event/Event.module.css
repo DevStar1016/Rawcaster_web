@@ -46,3 +46,22 @@
     border-radius: 20px;
 
   }
+
+  .videoHeader{
+    justify-self: center;
+    font-size: 20px;
+    color: #563662;
+    font-weight: 600;
+  }
+
+  .startBtn{
+    width: fit-content;
+    justify-self: center;
+    margin: 15px 0px 0px 0px;
+  }
+
+  .videoPlayer{
+    max-width: 100%;
+    justify-self: center;
+    width: 382px;
+  }
