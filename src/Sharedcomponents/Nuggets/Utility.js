@@ -15,7 +15,6 @@ import {
   handleNuggetTranslateUpdate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import axios from "axios";
-import { useLocation } from "react-router";
 
 let isRequestCancel = false;
 
@@ -40,9 +39,8 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
     setisPlaying(nugget_id);
     audioElement.play();
   };
-  console.log(isPlaying, "isPlaying");
+
   const HandlegetNuggetContentAudio = () => {
-    console.log("test");
     if (PlayerSource.current) {
       isRequestCancel = true;
       PlayerSource.current.cancel("Request Cancelled");

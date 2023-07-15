@@ -2,8 +2,9 @@ import { Button, Form, Input, Tag, message } from "antd";
 import { inviteToRawcasterService } from "../../Services/ApiService";
 import { JSONtoformdata, getAuthToken } from "../../Shared/Utility";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { useState } from "react";
 import classes from "./Referal.module.css";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export const handleSendEmail = (token, contacts) => {
   let promise = new Promise((resolve, reject) => {
@@ -28,24 +29,48 @@ export const handleSendEmail = (token, contacts) => {
 
 export const EmailReferalContainer = ({ close }) => {
   const token = useAuthToken();
-  const [selectedEmails, setselectedEmail] = useState([]);
-  const [tempEmail, setTempEmail] = useState("");
+
+  const {
+    values,
+    setFieldValue,
+    setValues,
+    resetForm,
+    handleSubmit,
+    touched,
+    errors,
+  } = useFormik({
+    initialValues: {
+      EmailList: [],
+      emailInput: "",
+    },
+    validationSchema: Yup.object().shape({
+      EmailList: Yup.array()
+        .min(1, "Please input your email")
+        .of(
+          Yup.string()
+            .email("Please input your valid email")
+            .required("Please input your email")
+        ),
+    }),
+    onSubmit: (value) => {
+      handleInviteFriends(value.EmailList);
+    },
+  });
 
   const handleInviteFriends = (contacts) => {
     handleSendEmail(token, contacts).then(() => {
       if (close) {
         close();
       }
-
-      setselectedEmail([]);
-      setTempEmail("");
+      resetForm();
     });
   };
 
   const handleCloseTag = (index) => {
-    let tempSelected = [...selectedEmails];
-    let filterTags = tempSelected.filter((ele, ind) => !(ind === index));
-    setselectedEmail(filterTags);
+    setValues((pre) => ({
+      ...pre,
+      EmailList: pre.EmailList.filter((ele, ind) => !(ind === index)),
+    }));
   };
 
   const addExtMailHandler = (data) => {
@@ -65,8 +90,10 @@ export const EmailReferalContainer = ({ close }) => {
       }
     });
     if (newMail.length > 0) {
-      setTempEmail("");
-      setselectedEmail((prev) => [...prev, ...newMail]);
+      setValues((pre) => ({
+        EmailList: [...pre.EmailList, ...newMail],
+        emailInput: "",
+      }));
     }
   };
   return (
@@ -83,24 +110,12 @@ export const EmailReferalContainer = ({ close }) => {
         <Form
           name="normal_login"
           className="login-form"
-          // initialValues={{ remember: true }}
-          onFinish={() => handleInviteFriends(selectedEmails)}
+          onFinish={() => {
+            handleSubmit();
+          }}
         >
-          <Form.Item
-            name="email"
-            className="errormsg"
-            rules={[
-              () => ({
-                validator(rule, value) {
-                  if (!value && selectedEmails.length !== 0) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject("Please input your email");
-                },
-              }),
-            ]}
-          >
-            {selectedEmails.map((ele, ind) => (
+          <Form.Item name="email" className="errormsg">
+            {values.EmailList.map((ele, ind) => (
               <Tag
                 key={ind}
                 className={classes.tags}
@@ -117,8 +132,8 @@ export const EmailReferalContainer = ({ close }) => {
               placeholder="Your friend’s email..."
               autoComplete="off"
               id="extmail"
-              value={tempEmail}
-              onChange={(e) => setTempEmail(e.target.value)}
+              value={values.emailInput}
+              onChange={(e) => setFieldValue("emailInput", e.target.value)}
               onKeyPress={(e) => {
                 const x = e.keyCode || e.which;
                 // alert(x);
@@ -131,6 +146,9 @@ export const EmailReferalContainer = ({ close }) => {
                 addExtMailHandler(e.target.value);
               }}
             />
+            {touched.EmailList && errors.EmailList && (
+              <div className="ErrTxt">{errors.EmailList}</div>
+            )}
           </Form.Item>
           <Form.Item>
             <Button block htmlType="submit" className={classes.submitbtn}>

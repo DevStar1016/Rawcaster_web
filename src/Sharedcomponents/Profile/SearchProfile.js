@@ -104,6 +104,9 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
 
   return (
     <div
+      style={{
+        cursor: "pointer",
+      }}
       onClick={() => {
         let finalData = {
           dispatch,

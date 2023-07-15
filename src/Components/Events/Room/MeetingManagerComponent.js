@@ -3,17 +3,18 @@ import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 import React, { useEffect } from "react";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { ChimesendMessage } from "../../../Services/SocketService";
 import {
-  JoinAttendeeMeeting,
-  viewEventsService,
-} from "../../../Services/ApiService";
-import { useNavigate, useParams } from "react-router";
+  ChimesendMessage,
+  ChimesocketListen,
+} from "../../../Services/SocketService";
+import { JoinAttendeeMeeting } from "../../../Services/ApiService";
+import { useNavigate } from "react-router";
 import { useMainContext } from "../../../Shared/Context";
 import { JSONtoformdata } from "../../../Shared/Utility";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
 
 const MeetingManagerComponent = () => {
-  const { event_id } = useParams();
+  const { EventData } = useLayoutContect();
   const token = useAuthToken();
   const navigate = useNavigate();
   const userData = useAuthData();
@@ -65,27 +66,12 @@ const MeetingManagerComponent = () => {
   };
 
   useEffect(() => {
-    if (userData && token && meetingManager.meetingStatus === 0) {
-      let formData = new FormData();
-      formData.append("token", token);
-      formData.append("event_id", event_id);
-      viewEventsService(formData)
-        .then((response) => {
-          if (response.data.status === 1) {
-            const eventdetails = response.data.event_detail;
-            const isHost =
-              parseInt(userData?.user_id) ===
-              parseInt(eventdetails?.original_user_id);
-            configureMeetingManager(eventdetails.chime_meeting_id, isHost);
-          } else {
-            navigate(-1);
-          }
-        })
-        .catch((error) => {
-          navigate(-1);
-        });
+    if (EventData) {
+      const isHost =
+        parseInt(userData?.user_id) === parseInt(EventData?.original_user_id);
+      configureMeetingManager(EventData.chime_meeting_id, isHost);
     }
-  }, [event_id, token, userData]);
+  }, [EventData]);
 
   return <div></div>;
 };

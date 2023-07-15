@@ -16,6 +16,11 @@ import { getfollowerfollowingService } from "../../../Components/Profile/Compone
 import { handlenuggetToken } from "../Reducer/NuggetsReducer";
 import { handleToken } from "../Reducer/AuthReducer";
 import { connectChimeMessaging } from "../../../Services/Messaging/MessageService";
+import {
+  ChimesendMessage,
+  ChimesocketListen,
+} from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 // Connections
 
@@ -179,6 +184,11 @@ export const fetchuserInfobyToken = createAsyncThunk(
         dispatch(handlenuggetToken(token));
         dispatch(fetchFrindsbyId(token));
         dispatch(fetchgroupsbyId({ token: token, user_id: finalData.user_id }));
+        ChimesocketListen.connect();
+        ChimesendMessage(
+          { userId: finalData.user_id },
+          CHIME_SOCKET_EVENTS.JOIN_SOCKET
+        );
         return { token: token, ...finalData };
       } else {
         return null;

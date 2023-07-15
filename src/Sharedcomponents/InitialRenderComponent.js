@@ -16,8 +16,8 @@ const InitialRenderComponent = () => {
   axios.interceptors.response.use(
     function (response) {
       if (response.data.status === -1) {
-        // RemoveToken(dispatch);
-        // window.location.reload();
+        RemoveToken(dispatch);
+        window.location.reload();
       }
       return response;
     },
@@ -25,7 +25,6 @@ const InitialRenderComponent = () => {
       if (!error.message.includes("Request Cancelled")) {
         ErrorHandling(error);
       }
-      return Promise.reject(error);
     }
   );
 

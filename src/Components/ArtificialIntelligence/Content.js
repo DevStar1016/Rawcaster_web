@@ -12,8 +12,15 @@ import { ChatInput } from "../../Sharedcomponents/Chat/utility";
 
 const ChatContent = () => {
   const token = useAuthToken();
-  const { Messages, setMessages, isChatOpen, audio, setisPlaying } =
-    useChatBotContext();
+  const {
+    Messages,
+    setMessages,
+    isChatOpen,
+    audio,
+    setisPlaying,
+    setisAudioToTextConvert,
+    isAudioToTextConvert,
+  } = useChatBotContext();
 
   const [isTyping, setisTyping] = useState(false);
   const [ChatEnabled, setChatEnabled] = useState(true);
@@ -61,6 +68,7 @@ const ChatContent = () => {
         }, 1000);
       })
       .finally(() => {
+        setisAudioToTextConvert(false);
         setChatEnabled(true);
         setisTyping(false);
       });
@@ -114,7 +122,7 @@ const ChatContent = () => {
   return (
     <div className={classes.Content}>
       <div className={classes.MessageBox}>
-        {isTyping ? (
+        {isTyping || isAudioToTextConvert ? (
           <div
             className={`${classes.chatbox_message} ${classes.typingSec} mb-2`}
           >
@@ -123,7 +131,9 @@ const ChatContent = () => {
             </div>
             <div className={classes.content}>
               <p>
-                <TypingContainer />
+                <TypingContainer
+                  text={isAudioToTextConvert ? "Convert Audio to Text" : null}
+                />
               </p>
             </div>
           </div>
@@ -153,6 +163,7 @@ const ChatContent = () => {
           }
         }}
         onAudioResult={async (val) => {
+          setisAudioToTextConvert(true);
           setMessages((pre) => [
             { ...val, read_out_url: null, isshareavailble: false },
             ...pre,

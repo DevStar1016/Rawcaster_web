@@ -50,7 +50,7 @@ const Postpoll = ({ setisPoll }) => {
     useFormik({
       initialValues: {
         content: "",
-        poll_option: [],
+        poll_option: [{ choiceData: "" }, { choiceData: "" }],
         duration: "",
       },
       validateOnMount: true,

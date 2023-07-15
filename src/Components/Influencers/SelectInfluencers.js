@@ -207,10 +207,19 @@ const SelectInfluencers = () => {
         <div className={classes.btnSec}>
           <button
             onClick={() => {
-              navigate("/dashboard");
+              if (SelectedInfluencersList.length === 0) {
+                navigate("/dashboard");
+              } else {
+                HandleupdateFans()
+                  .then((res) => {
+                    navigate("/dashboard");
+                  })
+                  .catch((err) => {});
+              }
             }}
           >
-            Skip this
+            {SelectedInfluencersList.length === 0 ? "Skip this" : "Next"}
+            <span class="material-symbols-outlined">arrow_forward</span>
           </button>
         </div>
       </div>
@@ -277,7 +286,7 @@ const SelectInfluencers = () => {
           </Col>
         </Row>
         <Row gutter={10}>
-          <Col sm={12}>
+          <Col sm={12} className={classes.selectInfluencerText}>
             Selected Influencers (
             {SelectAllInfluencer
               ? influencersCount -
@@ -322,9 +331,9 @@ const SelectInfluencers = () => {
                 }}
               >
                 Become a Fan{" "}
-                <span className={`material-icons ${classes.rightarrow}`}>
+                {/* <span className={`material-icons ${classes.rightarrow}`}>
                   arrow_forward
-                </span>
+                </span> */}
               </p>
             </Col>
           </Col>

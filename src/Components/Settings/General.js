@@ -14,7 +14,10 @@ import {
 import { getValidDisplayData } from "./Utility";
 import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
 import { grouplistupdateService } from "../../Services/ApiService";
-import { defaultprofileImg } from "../../Shared/CommonConstants";
+import {
+  defaultGroupImg,
+  defaultprofileImg,
+} from "../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import {
   handleRemoveReadoutURL,
@@ -214,6 +217,10 @@ const General = () => {
                                 style={{ borderRadius: "16px" }}
                                 width="32px"
                                 height="32px"
+                                onError={({ currentTarget }) => {
+                                  currentTarget.onerror = null; // prevents looping
+                                  currentTarget.src = defaultGroupImg;
+                                }}
                               ></img>
                               <span
                                 style={{

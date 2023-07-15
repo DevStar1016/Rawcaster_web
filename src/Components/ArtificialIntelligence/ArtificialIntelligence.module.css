@@ -363,7 +363,7 @@ line-height: 26px;
   width: 25px;
 }
 .typingSec {
-  width: 126px !important;
+  /* width: 126px !important; */
  height: 50px;
 }
 .queryText{

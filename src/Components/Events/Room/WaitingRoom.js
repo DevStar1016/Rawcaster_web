@@ -2,22 +2,22 @@ import React, { useState } from "react";
 import classes from "./WaitingRoom.module.css";
 import { useDashboard } from "../../../Shared/Reduxfetcher";
 import { useLoaderData } from "react-router";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
 
 const WaitingRoom = () => {
-  const albums = useLoaderData();
-  console.log(albums, "albumsalbums");
-  const { ActiveEventData } = useDashboard();
+  const { EventData } = useLayoutContect();
+
   const [audioPlay, setaudioPlay] = useState(false);
   const [loading, setloading] = useState(false);
   return (
     <div className={classes.contactBg}>
-      <h1 className={classes.heading_h1}>{ActiveEventData?.eventName || ""}</h1>
+      <h1 className={classes.heading_h1}>{EventData?.event_name || ""}</h1>
       <div className={classes.container}>
         {!loading ? (
           <>
             <div style={{ textAlign: "center", marginTop: 10 }}>
               <span style={{ fontSize: 16, fontWeight: "bold" }}>
-                {ActiveEventData?.waiting_room === 1
+                {EventData?.waiting_room === 1
                   ? "Please wait for a moment while host approves your request."
                   : "Please wait for a moment, host not available yet.."}
               </span>
@@ -28,7 +28,7 @@ const WaitingRoom = () => {
               />
             </div>
             <div style={{ textAlign: "center" }}>
-              {ActiveEventData?.melodies.type === 3 ? (
+              {EventData?.melodies.type === 3 ? (
                 <React.Fragment>
                   <img
                     src={
@@ -71,19 +71,19 @@ const WaitingRoom = () => {
                     style={{ display: "none" }}
                   >
                     {" "}
-                    <source src={ActiveEventData?.melodies.path} />
+                    <source src={EventData?.melodies.path} />
                   </video>
                 </React.Fragment>
               ) : null}
 
-              {ActiveEventData?.melodies.type === 1 ? (
+              {EventData?.melodies.type === 1 ? (
                 <img
-                  src={ActiveEventData?.melodies.path}
+                  src={EventData?.melodies.path}
                   alt="more"
                   style={{ maxHeight: "300px", maxWidth: "100%" }}
                 />
               ) : null}
-              {ActiveEventData?.melodies.type === 2 ? (
+              {EventData?.melodies.type === 2 ? (
                 <video
                   width="100%"
                   controls
@@ -94,7 +94,7 @@ const WaitingRoom = () => {
                   id="waitingroomid"
                   loop
                 >
-                  <source src={ActiveEventData?.melodies.path} />
+                  <source src={EventData?.melodies.path} />
                 </video>
               ) : null}
             </div>

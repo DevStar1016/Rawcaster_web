@@ -293,6 +293,14 @@ export const JoinAttendeeMeeting = (data) => {
   return axios.post("join_meeting", data);
 };
 
+export const getAttendeesFromMeetingService = (data) => {
+  return axios.post("attendees", data);
+};
+
+export const DeleteMeetingService = (data) => {
+  return axios.post("delete_meeting", data);
+};
+
 // Profile Config
 
 export const FollowandunfollowService = (data) => {

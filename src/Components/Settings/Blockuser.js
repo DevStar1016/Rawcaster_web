@@ -52,6 +52,10 @@ const Blockuser = () => {
     getBlockedUserData();
   }, []);
 
+  const getFriendslist = async () => {
+    dispatch(fetchFrindsbyId(token));
+  };
+
   const handleBlockMultipleuser = (user_id) => {
     let blockData = {
       token: token,
@@ -68,10 +72,6 @@ const Blockuser = () => {
       .finally(() => {
         setblockuser([]);
       });
-  };
-  const getFriendslist = async () => {
-    const listFriend = await dispatch(fetchFrindsbyId(token));
-    dispatch(handleFriendsList(listFriend?.payload));
   };
 
   const handleunblockuser = (user_id) => {
