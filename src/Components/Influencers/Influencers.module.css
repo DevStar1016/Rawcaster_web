@@ -153,6 +153,14 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
 .clearIcon>span{
     font-size: 15px;
 }
+
+.selectAllCheck{
+    margin-right: 10px;
+}
+.selectAllChecked>span>span{
+    background: linear-gradient(91.19deg, #E26C89 1.82%, #82456F 97.17%) !important;
+    border-color:#563662 !important;
+}
 @media (max-width:768px) {
 .headerSec { display: block; width: 100%; float: left;}
 .headerSec h1 { width: 100%; margin: auto; text-align: center; font-size: 25px; line-height: 26px; }   

@@ -538,7 +538,7 @@ margin-bottom: 0px !important;
 
 .ant-checkbox-checked .ant-checkbox-inner {
   background-color: #f4c117 !important;
-  border-color: #f4c117 !important;
+  border-color: #f4c117 ;
 }
 .ant-checkbox-wrapper:hover span::after {
   border-color: none !important;
