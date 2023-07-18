@@ -48,14 +48,14 @@ const Group = ({ group, searchInput, onClick }) => {
         </div>
         <div
           className={`${classes.friendsmenu}`}
-          onClick={(event) => {
-            event.stopPropagation();
-            setisChatOpen({
-              show: true,
-              type: "group",
-              id: group.group_id,
-            });
-          }}
+          // onClick={(event) => {
+          //   event.stopPropagation();
+          //   setisChatOpen({
+          //     show: true,
+          //     type: "group",
+          //     id: group.group_id,
+          //   });
+          // }}
         >
           <img src={chatIcon} alt={"Group Chat"} />
         </div>

@@ -15,16 +15,16 @@ const EventHandler = ({ title, isHost, meetingId }) => {
     if (isHost) {
       setopenModal(true);
     } else {
-      dispatch(
-        fetchActiveEventData({
-          token,
-          ref_id: meetingId,
-        })
-      ).then(({ payload }) => {
-        window.open(`/waitingroom/${meetingId}`, "_blank", {
-          popup: true,
-        });
-      });
+      // dispatch(
+      //   fetchActiveEventData({
+      //     token,
+      //     ref_id: meetingId,
+      //   })
+      // ).then(({ payload }) => {
+      //   window.open(`/waitingroom/${meetingId}`, "_blank", {
+      //     popup: true,
+      //   });
+      // });
     }
   };
 
@@ -51,16 +51,16 @@ const EventHandler = ({ title, isHost, meetingId }) => {
           onStart={(e) => {
             e.stopPropagation();
             setopenModal(false);
-            dispatch(
-              fetchActiveEventData({
-                token,
-                ref_id: meetingId,
-              })
-            ).then(({ payload }) => {
-              window.open(`/room/${meetingId}`, "_blank", {
-                popup: true,
-              });
-            });
+            // dispatch(
+            //   fetchActiveEventData({
+            //     token,
+            //     ref_id: meetingId,
+            //   })
+            // ).then(({ payload }) => {
+            //   window.open(`/room/${meetingId}`, "_blank", {
+            //     popup: true,
+            //   });
+            // });
           }}
         />
       )}

@@ -365,9 +365,7 @@ const SelectInfluencers = () => {
                   if (SelectedInfluencersList.length !== 0) {
                     dispatch(handleLoading(true));
                     HandleupdateFans()
-                      .then((res) => {
-                        navigate("/dashboard");
-                      })
+                      .then((res) => {})
                       .catch((err) => {});
                   }
                 }}
