@@ -26,7 +26,7 @@ const SelectInfluencers = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserData = useAuthData();
-
+  const [isBecomeFanSent, setisBecomeFanSent] = useState(false);
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [influencerList, setinfluencerList] = useState([]);
   const [previousInfluencerList, setpreviousInfluencerList] = useState([]);
@@ -181,6 +181,7 @@ const SelectInfluencers = () => {
       InfluencerFollowService(JSONtoformdata(becameFanData))
         .then((res) => {
           if (res.data.status === 1) {
+            setisBecomeFanSent(true);
             getInfluencerList(
               SearchValues.pageNum,
               SearchValues.category,
@@ -210,7 +211,7 @@ const SelectInfluencers = () => {
         <div className={classes.btnSec}>
           <button
             onClick={() => {
-              if (SelectedInfluencersList.length === 0) {
+              if (SelectedInfluencersList.length === 0 || isBecomeFanSent) {
                 navigate("/dashboard");
               } else {
                 HandleupdateFans()
@@ -221,7 +222,9 @@ const SelectInfluencers = () => {
               }
             }}
           >
-            {SelectedInfluencersList.length === 0 ? "Skip this" : "Next"}
+            {SelectedInfluencersList.length === 0 && !isBecomeFanSent
+              ? "Skip this"
+              : "Next"}
             <span class="material-symbols-outlined">arrow_forward</span>
           </button>
         </div>
