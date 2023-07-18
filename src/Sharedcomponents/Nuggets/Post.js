@@ -674,6 +674,14 @@ const Post = ({
     return count + data?.length;
   };
 
+  const getisDownloadable = () => {
+    if (ele && ele?.share_type === 1) {
+      return 1;
+    } else {
+      return 2;
+    }
+  };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (
@@ -918,7 +926,7 @@ const Post = ({
                   <ImageGrid
                     imgArray={ele.media_list}
                     muted={muted}
-                    downloadable={1}
+                    downloadable={getisDownloadable()}
                     mutenuggetaudio={setmuted}
                     onPlay={() => {
                       let dashboardPlayer = document.getElementById(
