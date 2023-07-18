@@ -37,6 +37,7 @@ const ChatContent = () => {
           audio.pause();
           setisPlaying(false);
         }
+
         if (audio_file) {
           setMessages((pre) => {
             let tempData = [...pre];
@@ -44,6 +45,11 @@ const ChatContent = () => {
               tempData[0] = {
                 ...tempData[0],
                 query: res.data.query,
+              };
+            } else {
+              tempData[0] = {
+                ...tempData[0],
+                query: null,
               };
             }
 
@@ -122,7 +128,7 @@ const ChatContent = () => {
   return (
     <div className={classes.Content}>
       <div className={classes.MessageBox}>
-        {isTyping || isAudioToTextConvert ? (
+        {isTyping ? (
           <div
             className={`${classes.chatbox_message} ${classes.typingSec} mb-2`}
           >
@@ -131,9 +137,7 @@ const ChatContent = () => {
             </div>
             <div className={classes.content}>
               <p>
-                <TypingContainer
-                  text={isAudioToTextConvert ? "Convert Audio to Text" : null}
-                />
+                <TypingContainer />
               </p>
             </div>
           </div>
@@ -165,7 +169,12 @@ const ChatContent = () => {
         onAudioResult={async (val) => {
           setisAudioToTextConvert(true);
           setMessages((pre) => [
-            { ...val, read_out_url: null, isshareavailble: false },
+            {
+              ...val,
+              read_out_url: null,
+              isshareavailble: false,
+              query: "Converting Audio to Text...",
+            },
             ...pre,
           ]);
           const file = await blobUrlToFile(val.message);

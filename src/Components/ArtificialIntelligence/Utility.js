@@ -310,20 +310,26 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
       >
         <div className={`${classes.content} ${classes.audioContent}`}>
           <div className={classes.audioSec}>
-            <div className={classes.audioplayer}>
-              <ChatAudioplayer
-                textColor={isUser(user) ? "#FFFFFF" : "#000000"}
-                url={url}
-                time={moment(created_at, "YYYY-MM-DD HH:mm:ss").format(
-                  "hh:mm A"
-                )}
-              />
+            <div className="d-flex flex-row">
+              <div className={classes.audioplayer}>
+                <ChatAudioplayer
+                  textColor={isUser(user) ? "#FFFFFF" : "#000000"}
+                  url={url}
+                  time={moment(created_at, "YYYY-MM-DD HH:mm:ss").format(
+                    "hh:mm A"
+                  )}
+                />
+              </div>
+
+              <div className={classes.audioAvatar}>
+                <img
+                  src={
+                    isUser(user) ? loginUserData?.profile_image : ChatProfile
+                  }
+                />
+              </div>
             </div>
-          </div>
-          <div className={classes.audioAvatar}>
-            <img
-              src={isUser(user) ? loginUserData?.profile_image : ChatProfile}
-            />
+            {query && <div className={classes.queryText}>{query}</div>}
           </div>
         </div>
       </div>

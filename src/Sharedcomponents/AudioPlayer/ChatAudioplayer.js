@@ -2,6 +2,7 @@ import React, { memo, useEffect, useRef, useState } from "react";
 import classes from "./Audioplayer.module.css";
 import moment from "moment";
 import ReactPlayer from "react-player";
+import { Spinner } from "react-bootstrap";
 
 const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
   const [audioUrl, setAudioUrl] = useState("");
@@ -9,6 +10,7 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setisPlaying] = useState(false);
   const [FormattedTime, setFormattedTime] = useState("00:00");
+  const [isBuffering, setisBuffering] = useState(false);
   const duration = 0;
 
   const handleSliderChange = (e) => {
@@ -51,7 +53,11 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
           setisPlaying(false);
         }}
         onBuffer={() => {
+          setisBuffering(true);
           setisPlaying(false);
+        }}
+        onBufferEnd={() => {
+          setisBuffering(false);
         }}
         onPlay={() => {
           setisPlaying(true);
@@ -65,23 +71,29 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
       {/* <AudioPlayer src={audioUrl} /> */}
 
       <div className="w-100 d-flex flex-row align-items-center justify-content-center">
-        <div className={classes.pauseplaySec}>
-          {isPlaying ? (
-            <i
-              className={classes.pause_icon}
-              onClick={() => {
-                setisPlaying(false);
-              }}
-            />
-          ) : (
-            <i
-              className={classes.play_icon}
-              onClick={() => {
-                setisPlaying(true);
-              }}
-            />
-          )}
-        </div>
+        {isBuffering ? (
+          <div className={classes.spinnerSec}>
+            <Spinner animation="border" />
+          </div>
+        ) : (
+          <div className={classes.pauseplaySec}>
+            {isPlaying ? (
+              <i
+                className={classes.pause_icon}
+                onClick={() => {
+                  setisPlaying(false);
+                }}
+              />
+            ) : (
+              <i
+                className={classes.play_icon}
+                onClick={() => {
+                  setisPlaying(true);
+                }}
+              />
+            )}
+          </div>
+        )}
         <div className={classes.sliderSec}>
           <input
             type="range"
@@ -116,43 +128,6 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
           </div>
         </div>
       </div>
-
-      {/* <ReactAudioPlayer src={url} controls /> */}
-      {/* <div className={classes.audioPlayer}>
-        <audio src={url}></audio>
-        <div className={classes.controls}>
-          <button className={`playerButton ${classes.playerButton}`}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="#3D3132"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-          <input
-            type="range"
-            className={`timeline ${classes.timeline}`}
-            max="100"
-            value="0"
-          />
-        </div>
-      </div>
-
-      {/* <AudioPlayer
-        // autoPlay
-        src={url}
-        onPlay={(e) => console.log("onPlay")}
-        // other props here
-        showJumpControls={false}
-        showFilledProgress={false}
-        loop={false}
-        showFilledVolume={false}
-      /> */}
     </div>
   );
 };
