@@ -80,7 +80,18 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
 
   return (
     <div key={"request" + request.friend_request_id}>
-      <div className={classes.list}>
+      <div
+        onClick={() => {
+          let finalData = {
+            dispatch,
+            navigate,
+            nuggetFormData,
+            user_id: request.user_id,
+          };
+          handleProfileNavigate(finalData);
+        }}
+        className={classes.list}
+      >
         <img
           src={request.profile_img ? request.profile_img : ""}
           onClick={() => {
@@ -106,7 +117,8 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
 
         <div
           className={classes.greenicon}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             handleRequest(1);
           }}
         >
@@ -114,7 +126,8 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
         </div>
         <div
           className={classes.redicon}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             handleRequest(2);
           }}
         >

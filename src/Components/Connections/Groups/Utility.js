@@ -1,10 +1,15 @@
 import {
   decodeHtml,
   getAspectRatio,
+  handleProfileNavigate,
   isValidImageFile,
 } from "../../../Shared/Utility";
 import classes from "./Groups.module.css";
-import { useAuthData, useFriends } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useFriends,
+  useNuggets,
+} from "../../../Shared/Reduxfetcher";
 import { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { useConfigureGroupContext } from "../../../Shared/Context";
@@ -23,6 +28,8 @@ import tickIcon from "../../../Assets/Icons/png/tick.png";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import ReportGroup from "../../../Modal/Report/ReportGroup";
 import ImageCropModal from "../../../Modal/ImageCropModal";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 export const GroupHeader = () => {
   const {
@@ -487,8 +494,11 @@ export const SelectConnections = () => {
         <div className={classes.ConnectionList}>
           {getSearchData()?.map((ele) => (
             <div
-              className="d-flex flex-row justify-content-between align-items-center"
-              style={{ cursor: "pointer" }}
+              className={`d-flex flex-row justify-content-between align-items-center ${classes.addFriends}`}
+              style={{
+                background:
+                  SelectedConnections.includes(ele.user_id) && "#e6f4ff",
+              }}
               onClick={() => {
                 let findValue = SelectedConnections.find(
                   (elem) => elem === ele.user_id
@@ -560,6 +570,8 @@ export const SelectConnections = () => {
                       .includes(searchInput.toLowerCase())
                       ? "block"
                       : "none",
+                    paddingRight: "10px",
+                    paddingTop: "3px",
                   }}
                 >
                   <span
@@ -588,6 +600,9 @@ export const SelectConnections = () => {
 
 export const EditGroupMembers = () => {
   const userData = useAuthData();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nuggetFormData } = useNuggets();
   const {
     isOwner,
     GroupMembers,
@@ -719,6 +734,15 @@ export const EditGroupMembers = () => {
                 <div className="d-flex flex-row justify-content-between align-items-center">
                   <div
                     className={classes.friends}
+                    onClick={() => {
+                      let finalData = {
+                        dispatch,
+                        navigate,
+                        nuggetFormData,
+                        user_id: ele?.user_id,
+                      };
+                      handleProfileNavigate(finalData);
+                    }}
                     style={{
                       position: "relative",
                       padding: "10px 0px",
@@ -787,7 +811,8 @@ export const EditGroupMembers = () => {
                             >
                               <span
                                 className="material-symbols-outlined"
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   Modal.confirm({
                                     title: "Confirmation",
                                     okText: "Yes",

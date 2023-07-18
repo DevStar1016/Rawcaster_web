@@ -1,6 +1,6 @@
 import { Modal, Popover, Tooltip } from "antd";
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
@@ -158,7 +158,12 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         </div>
       </div>
       {!isOthers && (
-        <div className={classes.share}>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className={classes.share}
+        >
           <Popover placement="leftTop" content={content} trigger="hover">
             <img src={shareicon} alt={"Share icon"} />
           </Popover>
@@ -177,7 +182,12 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
               </h3>
             </Tooltip>
             {isNotExpired() && isCreatedUser() && (
-              <div className={classes.editSec}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className={classes.editSec}
+              >
                 <div className={classes.iconBg}>
                   <i
                     className={classes.editIcon}

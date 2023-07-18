@@ -28,7 +28,7 @@ const ContentLayout = () => {
       <Tabs
         defaultActiveKey="1"
         tabPosition={"top"}
-      //  style={{ width: 370 }}
+        //  style={{ width: 370 }}
         items={TabsValues}
         activeKey={selectedIndex}
         onChange={(key) => {

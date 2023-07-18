@@ -1,7 +1,6 @@
 import React from "react";
 import classes from "./EventBox.module.css";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
-import { useEventLayout } from "../../../Layouts/EventLayout";
 import { useMainContext } from "../../../Shared/Context";
 import {
   ContentShare,
@@ -17,16 +16,16 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
+import { useEventLayout } from "./EventValidaton";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
 
 const EventBox = () => {
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
-  console.log(attendees);
   const { isVideoEnabled } = useLocalVideo();
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
-  const { isPinEnabled, isChatorParticipant } = useEventLayout();
-  const audioVideo = useAudioVideo();
+  const { isPinEnabled, isChatorParticipant } = useLayoutContect();
   const getContainerClassName = () => {
     switch (attendees.length) {
       case 1:

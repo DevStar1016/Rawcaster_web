@@ -17,6 +17,7 @@ const ConnectionModal = ({
   value,
   userType,
   getConnectionList,
+  filters,
 }) => {
   const [LocationList, setLocationList] = useState([]);
 
@@ -76,89 +77,91 @@ const ConnectionModal = ({
         <h2>
           {type} - {value?.filteredConnectionCount}
         </h2>
-        <Row>
-          <Col sm={6} className={classes.modalInput}>
-            <Select
-              className={`${classes.locationSec} locationSearch`}
-              showSearch
-              placeholder="Location"
-              allowClear
-              onClear={() => {
-                setFieldValue("location", "");
-                let finalValue = {
-                  ...values,
-                  location: "",
-                };
-                getConnectionList(filterValidObject(finalValue));
-              }}
-              onSelect={(value) => {
-                setFieldValue("location", value);
-                let finalValue = {
-                  ...values,
-                  location: value,
-                };
-                getConnectionList(filterValidObject(finalValue));
-              }}
-            >
-              {LocationList.map((ele) => {
-                return (
-                  <Select.Option key={ele.id} value={ele.name}>
-                    {ele.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Col>
-          <Col sm={3} className={classes.modalInput}>
-            <Select
-              className={`${classes.locationSec} locationSearch`}
-              showSearch
-              placeholder="Gender"
-              allowClear
-              onClear={() => {
-                setFieldValue("gender", "");
-                let finalValue = {
-                  ...values,
-                  gender: "",
-                };
-                getConnectionList(filterValidObject(finalValue));
-              }}
-              onSelect={(val, { key }) => {
-                setFieldValue("gender", parseInt(key));
-                let finalValue = {
-                  ...values,
-                  gender: parseInt(key),
-                };
-                getConnectionList(filterValidObject(finalValue));
-              }}
-            >
-              <Select.Option key={1} value={"Male"}>
-                Male
-              </Select.Option>
-              <Select.Option key={2} value={"Female"}>
-                Female
-              </Select.Option>
-            </Select>
-          </Col>
-          <Col sm={3}>
-            <InputNumber
-              min={1}
-              className={`${classes.locationSec} locationSearch ${classes.ageSec}`}
-              maxLength={2}
-              defaultValue={values.age}
-              placeholder="Age"
-              onKeyDown={(e) => {
-                if (e.key.match(/[0-9]/g)) {
-                } else {
-                  e.preventDefault();
-                }
-              }}
-              onChange={(value) => {
-                AgeProcess(value);
-              }}
-            />
-          </Col>
-        </Row>
+        {!filters && (
+          <Row>
+            <Col sm={6} className={classes.modalInput}>
+              <Select
+                className={`${classes.locationSec} locationSearch`}
+                showSearch
+                placeholder="Location"
+                allowClear
+                onClear={() => {
+                  setFieldValue("location", "");
+                  let finalValue = {
+                    ...values,
+                    location: "",
+                  };
+                  getConnectionList(filterValidObject(finalValue));
+                }}
+                onSelect={(value) => {
+                  setFieldValue("location", value);
+                  let finalValue = {
+                    ...values,
+                    location: value,
+                  };
+                  getConnectionList(filterValidObject(finalValue));
+                }}
+              >
+                {LocationList.map((ele) => {
+                  return (
+                    <Select.Option key={ele.id} value={ele.name}>
+                      {ele.name}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Col>
+            <Col sm={3} className={classes.modalInput}>
+              <Select
+                className={`${classes.locationSec} locationSearch`}
+                showSearch
+                placeholder="Gender"
+                allowClear
+                onClear={() => {
+                  setFieldValue("gender", "");
+                  let finalValue = {
+                    ...values,
+                    gender: "",
+                  };
+                  getConnectionList(filterValidObject(finalValue));
+                }}
+                onSelect={(val, { key }) => {
+                  setFieldValue("gender", parseInt(key));
+                  let finalValue = {
+                    ...values,
+                    gender: parseInt(key),
+                  };
+                  getConnectionList(filterValidObject(finalValue));
+                }}
+              >
+                <Select.Option key={1} value={"Male"}>
+                  Male
+                </Select.Option>
+                <Select.Option key={2} value={"Female"}>
+                  Female
+                </Select.Option>
+              </Select>
+            </Col>
+            <Col sm={3}>
+              <InputNumber
+                min={1}
+                className={`${classes.locationSec} locationSearch ${classes.ageSec}`}
+                maxLength={2}
+                defaultValue={values.age}
+                placeholder="Age"
+                onKeyDown={(e) => {
+                  if (e.key.match(/[0-9]/g)) {
+                  } else {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(value) => {
+                  AgeProcess(value);
+                }}
+              />
+            </Col>
+          </Row>
+        )}
 
         <div className={classes.listSec}>
           {value.filteredConnections?.map((ele) => {

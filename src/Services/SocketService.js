@@ -44,5 +44,7 @@ export const sendMessage = (data, type = "message") => {
 };
 
 export const ChimesendMessage = (data, type = "message") => {
-  Chimesocket.emit(type, data);
+  Chimesocket.emit(type, data, () => {
+    console.log("Message Emitted");
+  });
 };

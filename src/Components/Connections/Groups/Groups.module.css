@@ -179,3 +179,14 @@ display: block;
     -webkit-mask: url("../../../Assets/Icons/svg/lock_icon.svg") no-repeat center /
       contain;
   }
+
+  .addFriends{
+    border-radius: 100px;
+    padding: 0px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .addFriends:hover{
+    background: #ebebeb ;
+  }

@@ -337,7 +337,10 @@ flex-direction: row;
   cursor: pointer;
   color: red;
 }
-
+.audioSec {
+  display: flex;
+  flex-direction: column;
+}
 .RecordingTimeSec {
   padding: 10px  !important;
   font-family: 'DM Sans';
@@ -363,12 +366,28 @@ line-height: 26px;
   width: 25px;
 }
 .typingSec {
-  width: 126px !important;
+  /* width: 126px !important; */
  height: 50px;
 }
 .queryText{
+  margin-top: 2px;
+  font-size: 12px;
   color: #fff !important;
   padding: 0px 5px !important;
+}
+
+.audioContent{
+  display: flex;
+  padding:  10px;
+  align-items: center;
+  justify-content: center;
+}.audioContainer{
+border-radius: 20px;
+}
+.audioAvatar>img{
+width : 44px;
+height: 44px;
+border-radius: 50%;
 }
 
 @media (max-width: 768px) {

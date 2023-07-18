@@ -12,8 +12,15 @@ import { ChatInput } from "../../Sharedcomponents/Chat/utility";
 
 const ChatContent = () => {
   const token = useAuthToken();
-  const { Messages, setMessages, isChatOpen, audio, setisPlaying } =
-    useChatBotContext();
+  const {
+    Messages,
+    setMessages,
+    isChatOpen,
+    audio,
+    setisPlaying,
+    setisAudioToTextConvert,
+    isAudioToTextConvert,
+  } = useChatBotContext();
 
   const [isTyping, setisTyping] = useState(false);
   const [ChatEnabled, setChatEnabled] = useState(true);
@@ -30,6 +37,7 @@ const ChatContent = () => {
           audio.pause();
           setisPlaying(false);
         }
+
         if (audio_file) {
           setMessages((pre) => {
             let tempData = [...pre];
@@ -37,6 +45,11 @@ const ChatContent = () => {
               tempData[0] = {
                 ...tempData[0],
                 query: res.data.query,
+              };
+            } else {
+              tempData[0] = {
+                ...tempData[0],
+                query: null,
               };
             }
 
@@ -61,6 +74,7 @@ const ChatContent = () => {
         }, 1000);
       })
       .finally(() => {
+        setisAudioToTextConvert(false);
         setChatEnabled(true);
         setisTyping(false);
       });
@@ -153,8 +167,14 @@ const ChatContent = () => {
           }
         }}
         onAudioResult={async (val) => {
+          setisAudioToTextConvert(true);
           setMessages((pre) => [
-            { ...val, read_out_url: null, isshareavailble: false },
+            {
+              ...val,
+              read_out_url: null,
+              isshareavailble: false,
+              query: "Converting Audio to Text...",
+            },
             ...pre,
           ]);
           const file = await blobUrlToFile(val.message);

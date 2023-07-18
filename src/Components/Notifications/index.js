@@ -14,7 +14,7 @@ import {
   ViewNotificationService,
 } from "../../Services/ApiService";
 import moment from "moment";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { NotificationContext } from "../../Shared/Context";
 import { toast } from "react-hot-toast";
@@ -24,6 +24,9 @@ import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
 const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
   const loginuserData = useAuthData();
+  const UnReadCount = useSelector(
+    (state) => state.dashboard.notificationUnreadCount
+  );
   const dispatch = useDispatch();
   const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
   const [isPopupOpen, setisPopupOpen] = useState(false);
@@ -48,10 +51,6 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
       ListNotificationService(JSONtoformdata(finalData))
         .then((res) => {
           if (res.data.status === 1) {
-            console.log(
-              res.data.total_unread_count,
-              "TotalUnreadCount from api"
-            );
             onReadCountChange(res.data.total_unread_count);
             // setTotalUnreadCount(res.data.total_unread_count);
             dispatch(
@@ -137,6 +136,7 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
           if (data.status === 1) {
             resolve(notification_id);
             setmarkallAsRead();
+
             dispatch(handleNotificationUnreadCount(0));
             dispatch(
               handleLoginData({
@@ -144,6 +144,8 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
                 unread_notification_count: 0,
               })
             );
+
+            getNotificationList();
           } else {
             toast.error(data.msg);
           }
@@ -166,6 +168,7 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
     markallAsRead,
     setmarkallAsRead,
     TotalUnreadCount,
+    UnReadCount,
   };
 
   return (
@@ -180,7 +183,7 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
           align="end"
           // open={isPopupOpen}
         >
-          <Badge count={TotalUnreadCount} overflowCount={99} color="#F2718D">
+          <Badge count={UnReadCount} overflowCount={99} color="#F2718D">
             <img
               src={src}
               alt="Notification_logo"
@@ -193,14 +196,14 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
         </Popover>
       </div>
 
-      {detectMob() && (
-        <div className="onlyMob">
-          <div className={classes.mobNotification}>
-            <Header />
-            <ContentLayout />
-          </div>
+      {/* {detectMob() && ( */}
+      <div className="onlyMob">
+        <div className={classes.mobNotification}>
+          <Header />
+          <ContentLayout />
         </div>
-      )}
+      </div>
+      {/* )} */}
     </NotificationContext.Provider>
   );
 };

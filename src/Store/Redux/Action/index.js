@@ -5,6 +5,7 @@ import {
   listAllFriendGroupsService,
   listAllFriendsService,
   listNuggetsService,
+  viewEventsService,
 } from "../../../Services/ApiService";
 import {
   JSONtoformdata,
@@ -15,6 +16,11 @@ import { getfollowerfollowingService } from "../../../Components/Profile/Compone
 import { handlenuggetToken } from "../Reducer/NuggetsReducer";
 import { handleToken } from "../Reducer/AuthReducer";
 import { connectChimeMessaging } from "../../../Services/Messaging/MessageService";
+import {
+  ChimesendMessage,
+  ChimesocketListen,
+} from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 // Connections
 
@@ -106,7 +112,6 @@ export const fetchNuggetsbyId = createAsyncThunk(
     };
     try {
       const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
-      console.log(data);
       if (data.status === 1) {
         let resultData = {
           current_page_no: data.current_page_no,
@@ -179,7 +184,33 @@ export const fetchuserInfobyToken = createAsyncThunk(
         dispatch(handlenuggetToken(token));
         dispatch(fetchFrindsbyId(token));
         dispatch(fetchgroupsbyId({ token: token, user_id: finalData.user_id }));
+        ChimesocketListen.connect();
+        ChimesendMessage(
+          { userId: finalData.user_id },
+          CHIME_SOCKET_EVENTS.JOIN_SOCKET
+        );
         return { token: token, ...finalData };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+);
+
+export const fetchActiveEventData = createAsyncThunk(
+  "dashboard/fetchActiveEventData",
+  async (res) => {
+    const { token, ref_id } = res;
+    let profileData = {
+      token: token,
+      event_id: ref_id,
+    };
+    try {
+      const { data } = await viewEventsService(JSONtoformdata(profileData));
+      if (data.status === 1) {
+        return data.event_detail;
       } else {
         return null;
       }

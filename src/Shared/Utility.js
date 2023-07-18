@@ -30,6 +30,7 @@ import { Typography } from "antd";
 import axios, { isCancel } from "axios";
 import { toast } from "react-hot-toast";
 import { AES, enc } from "crypto-js";
+import classes from "../Sharedcomponents/Nuggets/Nuggets.module.css";
 
 // Auth
 
@@ -696,7 +697,7 @@ export const ReadMore = ({
       ) : (
         <>
           <Paragraph
-            className="ReadMoreText"
+            className={`ReadMoreText ${classes.dNoneExpand}`}
             ellipsis={{
               rows: parseInt(partialShowLines),
               onExpand: onExpand,
@@ -820,6 +821,13 @@ export const downloadurl = (url) => {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+};
+
+export const getUtcToSystemTime = (dateTime) => {
+  return moment(dateTime, "YYYY-MM-DD HH:mm:ss").subtract(
+    -moment().utcOffset(),
+    "minutes"
+  );
 };
 
 // OBJECT TO STRING

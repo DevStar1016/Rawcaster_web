@@ -10,6 +10,7 @@ import ChatSocketComponent from "../../Components/ChatBox/ChatSocketComponent";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { uploadChatAttachmentService } from "../../Services/ApiService";
 import { JSONtoformdata } from "../../Shared/Utility";
+import ConfigureGroup from "../../Components/Connections/Groups/ConfigureGroup";
 
 const { Header } = Layout;
 
@@ -24,6 +25,11 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
   const [EditData, setEditData] = useState(null);
   const [SelectedContents, setSelectedContents] = useState([]);
   const [SelectAllMessages, setSelectAllMessages] = useState(false);
+  const [receiverMessage, setreceiverMessage] = useState([]);
+  const [isConfigureGroup, setisConfigureGroup] = useState({
+    show: false,
+    group_id: null,
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -111,6 +117,9 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     SelectedContents,
     SelectAllMessages,
     setSelectAllMessages,
+    setisConfigureGroup,
+    receiverMessage,
+    setreceiverMessage,
   };
 
   return !isHidden ? (
@@ -130,7 +139,6 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
               <Content
                 getContents={(contents, close) => {
                   setSelectedContents(contents);
-                  console.log(contents, "contents");
                 }}
               />
               <Footer />
@@ -138,6 +146,15 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
           )}
         </Layout>
       </div>
+      {isConfigureGroup.show && (
+        <ConfigureGroup
+          open={isConfigureGroup.show}
+          groupId={isConfigureGroup.group_id}
+          close={() => {
+            setisConfigureGroup({ show: false, group_id: null });
+          }}
+        />
+      )}
     </ChatContext.Provider>
   ) : (
     <></>

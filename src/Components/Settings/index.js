@@ -77,6 +77,8 @@ const Settings = () => {
     lock_my_influencer: 0,
     live_event_banner: "",
     talkshow_event_banner: "",
+    profile_field_name: "",
+    groupid: "",
     read_out_language_id: "",
   });
 

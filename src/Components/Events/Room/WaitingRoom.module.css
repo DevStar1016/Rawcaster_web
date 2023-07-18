@@ -1,0 +1,26 @@
+.contactBg {
+    /* background: url(../../assets/contact_bg.jpg) center top no-repeat; */
+    min-height: calc(100% - 171px);
+    float: left;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .heading_h1 {
+
+    font-size: 34px !important;
+    margin-top: 5%;
+    margin-bottom: 5px !important;
+    font-weight: 700;
+    text-align: center;
+    text-align: center;
+    font-family: "Helvetica";
+  }
+  .container {
+  max-width: 620px;
+  margin: 40px auto 50px auto;
+  background: #fff;
+  padding: 25px 35px;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 8px;
+}

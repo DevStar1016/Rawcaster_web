@@ -25,7 +25,6 @@ const InitialRenderComponent = () => {
       if (!error.message.includes("Request Cancelled")) {
         ErrorHandling(error);
       }
-      return Promise.reject(error);
     }
   );
 

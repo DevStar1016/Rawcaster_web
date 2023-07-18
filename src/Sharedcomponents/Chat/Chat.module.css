@@ -163,6 +163,7 @@ border-radius: 10px;
 overflow: hidden;
 }
   .receiverConteiner {
+    position: relative !important;
     width: 100%;
     display: flex;
     align-items:flex-start;

@@ -9,14 +9,15 @@ import { detectMob } from "../../Shared/Utility";
 import { useLocation } from "react-router";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import LoginModal from "../../Modal/Verification/LoginModal";
-import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
-import { useDispatch } from "react-redux";
+// import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
+// import { useDispatch } from "react-redux";
 
 const ArtificialIntelligence = () => {
   const { pathname } = useLocation();
   const loginUserData = useAuthData();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [ChatMessage, setChatMessage] = useState("");
+  const [isAudioToTextConvert, setisAudioToTextConvert] = useState(false);
   const [isChatOpen, setisChatOpen] = useState(false);
   const [Messages, setMessages] = useState([]);
   const [audio, setAudio] = useState(null);
@@ -41,19 +42,21 @@ const ArtificialIntelligence = () => {
     generateRandomId,
     ChatMessage,
     setChatMessage,
+    setisAudioToTextConvert,
+    isAudioToTextConvert,
   };
 
   useEffect(() => {
     setMessages([]);
   }, [pathname]);
 
-  const ChatAccessDenied = () => {
-    return (
-      <div style={{ padding: 10, paddingBottom: 0 }}>
-        <p>Only Premium Member have this Access</p>
-      </div>
-    );
-  };
+  // const ChatAccessDenied = () => {
+  //   return (
+  //     <div style={{ padding: 10, paddingBottom: 0 }}>
+  //       <p>Only Premium Member have this Access</p>
+  //     </div>
+  //   );
+  // };
 
   const handlePremiumModalClose = () => setgetPremiumModal(false);
 

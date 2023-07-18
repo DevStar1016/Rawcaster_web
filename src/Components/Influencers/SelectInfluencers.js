@@ -1,4 +1,4 @@
-import { Col, Row, Select, Spin, Tooltip } from "antd";
+import { Checkbox, Col, Row, Select, Spin, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Influencers.module.css";
@@ -81,6 +81,9 @@ const SelectInfluencers = () => {
         setisLoadMore(null);
       });
   };
+  useEffect(() => {
+    console.log(SelectedInfluencersList, "SelectedInfluencersList");
+  }, [SelectedInfluencersList]);
 
   const getCategoryList = () => {
     let influencerData = {
@@ -173,6 +176,7 @@ const SelectInfluencers = () => {
         follow_userid: JSON.stringify(selectedFansList),
         select_all:
           SelectedInfluencersList?.length === influencerList?.length ? 1 : 0,
+        category: SearchValues?.category,
       };
       InfluencerFollowService(JSONtoformdata(becameFanData))
         .then((res) => {
@@ -206,10 +210,19 @@ const SelectInfluencers = () => {
         <div className={classes.btnSec}>
           <button
             onClick={() => {
-              navigate("/dashboard");
+              if (SelectedInfluencersList.length === 0) {
+                navigate("/dashboard");
+              } else {
+                HandleupdateFans()
+                  .then((res) => {
+                    navigate("/dashboard");
+                  })
+                  .catch((err) => {});
+              }
             }}
           >
-            Skip this
+            {SelectedInfluencersList.length === 0 ? "Skip this" : "Next"}
+            <span class="material-symbols-outlined">arrow_forward</span>
           </button>
         </div>
       </div>
@@ -228,9 +241,15 @@ const SelectInfluencers = () => {
                       search_key: e.target.value,
                     }));
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      document.getElementById("searchInfluencer").click();
+                    }
+                  }}
                 />
                 <InputGroup.Text
                   className={classes.searchIcon}
+                  id="searchInfluencer"
                   onClick={() => {
                     dispatch(handleLoading(true));
                     getInfluencerList(
@@ -248,6 +267,7 @@ const SelectInfluencers = () => {
           <Col md={8} xs={24}>
             <div className="influencerSelect">
               <Select
+                allowClear
                 placeholder="Select Category"
                 className={classes.selectCategory}
                 options={getSelectData(influencerCategory)}
@@ -257,13 +277,58 @@ const SelectInfluencers = () => {
                     category: val.id,
                   }));
                   getInfluencerList(1, val.id, SearchValues.search_key);
+                  setSelectedInfluencersList([]);
+                  setSelectAllInfluencer(false);
                 }}
+                onClear={getInfluencerList}
+                clearIcon={
+                  <span style={{}} className={classes.clearIcon}>
+                    <span class="material-symbols-outlined">close</span>
+                  </span>
+                }
               />
             </div>
           </Col>
         </Row>
         <Row gutter={10}>
-          <Col sm={12}>
+          <Col sm={12} className={classes.selectInfluencerText}>
+            <Tooltip
+              title={
+                influencerList?.length === 0
+                  ? ""
+                  : SelectedInfluencersList?.length !== influencerList?.length
+                  ? "Select All"
+                  : "Unselect All"
+              }
+              destroyTooltipOnHide={influencerList?.length === 0}
+            >
+              <Checkbox
+                className={
+                  SelectedInfluencersList?.length !== influencerList?.length ||
+                  influencerList?.length === 0
+                    ? classes.selectAllCheck
+                    : `${classes.selectAllChecked} ${classes.selectAllCheck}`
+                }
+                onClick={() => {
+                  if (
+                    SelectedInfluencersList?.length !==
+                      influencerList?.length ||
+                    influencerList?.length === 0
+                  ) {
+                    handleSelectAllInfluencers(true);
+                  } else {
+                    handleSelectAllInfluencers(false);
+                  }
+                }}
+                checked={
+                  SelectedInfluencersList?.length !== influencerList?.length ||
+                  influencerList?.length === 0
+                    ? false
+                    : true
+                }
+                disabled={influencerList?.length === 0}
+              />
+            </Tooltip>{" "}
             Selected Influencers (
             {SelectAllInfluencer
               ? influencersCount -
@@ -272,7 +337,7 @@ const SelectInfluencers = () => {
             )
           </Col>
           <Col className={classes.selectAllContainer} sm={12}>
-            <Col>
+            {/* <Col>
               {SelectedInfluencersList?.length !== influencerList?.length ? (
                 <p
                   onClick={() => {
@@ -286,9 +351,9 @@ const SelectInfluencers = () => {
                   onClick={() => {
                     handleSelectAllInfluencers(false);
                   }}
-                >{`UnSelect All (${influencersCount})`}</p>
+                >{`UnSelect All`}</p>
               )}
-            </Col>
+            </Col> */}
             <Col className="text-end">
               <p
                 className={
@@ -308,9 +373,9 @@ const SelectInfluencers = () => {
                 }}
               >
                 Become a Fan{" "}
-                <span className={`material-icons ${classes.rightarrow}`}>
+                {/* <span className={`material-icons ${classes.rightarrow}`}>
                   arrow_forward
-                </span>
+                </span> */}
               </p>
             </Col>
           </Col>

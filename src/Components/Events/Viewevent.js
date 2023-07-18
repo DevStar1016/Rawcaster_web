@@ -13,6 +13,7 @@ import moment from "moment";
 import { Spinner } from "react-bootstrap";
 import Seo from "../SEO/Seo";
 import { EventSEO } from "../SEO/SEOContent";
+import { Tooltip } from "antd";
 
 const Viewevent = () => {
   const { userSettings } = useAuth();
@@ -41,7 +42,6 @@ const Viewevent = () => {
         });
     }
   }, [event_id, token]);
-
   return (
     <div className={classes.eventContainer}>
       <Seo
@@ -93,25 +93,38 @@ const Viewevent = () => {
             ></img>
           </div>
 
-          <div className={classes.eventDetail}>
-            <p>
-              Maximun Participants : {ViewEventData.no_of_participants} | Total
-              Duration : {eventDisplayDuration(ViewEventData.duration)}
-            </p>
-          </div>
+          {ViewEventData?.type === 1 && (
+            <div className={classes.eventDetail}>
+              <p>
+                Maximun Participants : {ViewEventData.no_of_participants} |
+                Total Duration : {eventDisplayDuration(ViewEventData.duration)}
+              </p>
+            </div>
+          )}
           <div className={classes.eventMes}>
             <p>{ViewEventData.message}</p>
           </div>
-
-          <div className={classes.eventHost}>
-            <div>
-              <img
-                src={ViewEventData.original_user_image}
-                alt={decodeHtml(ViewEventData.original_user_name)}
-              ></img>
-            </div>
-            <div className={classes.user_name}>
-              {decodeHtml(ViewEventData.original_user_name)}
+          <div>
+            <div className={classes.eventHost}>
+              <div>
+                <img
+                  src={ViewEventData.original_user_image}
+                  alt={decodeHtml(ViewEventData.original_user_name)}
+                ></img>
+              </div>
+              <Tooltip
+                placement="bottom"
+                title={decodeHtml(ViewEventData.original_user_name)}
+              >
+                <div className={classes.user_name}>
+                  {decodeHtml(ViewEventData.original_user_name)?.length > 25
+                    ? `${decodeHtml(ViewEventData.original_user_name)?.slice(
+                        0,
+                        22
+                      )}...`
+                    : decodeHtml(ViewEventData.original_user_name)}
+                </div>
+              </Tooltip>
             </div>
           </div>
         </div>

@@ -22,6 +22,8 @@ import { sendMessage } from "../../Services/SocketService";
 import { respondToFriendRequestsService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
+import ConfigureGroup from "../Connections/Groups/ConfigureGroup";
 
 const HomePageIds = [2, 4];
 const UserPageIds = [5, 3];
@@ -101,6 +103,10 @@ export const NotificationsList = ({
     null,
     userSettings
   );
+  const [isConfigureGroup, setisConfigureGroup] = useState({
+    show: false,
+    group_id: null,
+  });
 
   const handleRequest = (formData) => {
     let respondData = {
@@ -186,7 +192,18 @@ export const NotificationsList = ({
               currentTarget.src = defaultprofileImg;
             }}
           />
-          <div style={{ width: "100%" }}>
+          <div
+            onClick={() => {
+              if (type === 4) {
+                if (ele?.group_id) {
+                  setisConfigureGroup({ show: true, group_id: ele?.group_id });
+                } else {
+                  toast.error("Group not found");
+                }
+              }
+            }}
+            style={{ width: "100%" }}
+          >
             <p className={classes.userName}>{ele?.userName}</p>
             {ele.type === 11 && ele?.friend_request_status === 0 ? null : (
               <p className={classes.timeAgo}>{moment(createdTime).fromNow()}</p>
@@ -287,6 +304,16 @@ export const NotificationsList = ({
           isVoted
           created_date={ele.created_datetime}
           VoteTiming={"0:0:0"}
+        />
+      )}
+
+      {isConfigureGroup.show && (
+        <ConfigureGroup
+          open={isConfigureGroup.show}
+          groupId={isConfigureGroup.group_id}
+          close={() => {
+            setisConfigureGroup({ show: false, group_id: null });
+          }}
         />
       )}
     </div>

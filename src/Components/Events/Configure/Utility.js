@@ -12,6 +12,7 @@ import {
   getLayoutData,
   getMelodyData,
 } from "../../../Shared/DropdownApis";
+import { useAddEventContext } from "../../../Shared/Context";
 
 export const EventTypeComponent = ({
   onResult,
@@ -277,7 +278,12 @@ export const BannerComponent = ({ onResult, value, size = null }) => {
   );
 };
 
-export const InviteEmailComponent = ({ onResult, value }) => {
+export const InviteEmailComponent = ({
+  onResult,
+  value,
+  setuserMailList,
+  userMailList,
+}) => {
   const [externalMailId, setExternalMailId] = useState([]);
 
   const addExtMailHandler = (data) => {
@@ -310,7 +316,11 @@ export const InviteEmailComponent = ({ onResult, value }) => {
     }
   };
 
-  const removeExtMailHandler = (index) => {
+  const removeExtMailHandler = (index, v1, v2, mail) => {
+    if (userMailList?.includes(mail)) {
+      setuserMailList(mail);
+    }
+    console.log(mail, "externalMailId");
     let mailList = [...externalMailId];
     if (mailList.length > index) {
       mailList.splice(index, 1);
@@ -355,7 +365,12 @@ export const InviteEmailComponent = ({ onResult, value }) => {
               className={classes.displayuser + " pointer"}
               style={{ cursor: "pointer" }}
               onClick={() =>
-                removeExtMailHandler(index, setExternalMailId, externalMailId)
+                removeExtMailHandler(
+                  index,
+                  setExternalMailId,
+                  externalMailId,
+                  m
+                )
               }
             >
               {m}
@@ -779,7 +794,9 @@ export const getValidarrayData = (data) => {
   }
 };
 
-export const AudioVideoSettings = ({ values, setFieldValue }) => {
+export const AudioVideoSettings = () => {
+  const { values, setFieldValue } = useAddEventContext();
+  console.log(values);
   return (
     <div className="mt-2">
       <div className={classes.audioSetting}>

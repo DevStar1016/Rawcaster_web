@@ -75,6 +75,7 @@ const Post = ({
   isCommentShow = false,
   onDelete,
   onSaveCountResult,
+  Opened,
 }) => {
   const source = useRef(null);
   const contentRef = useRef(null);
@@ -112,14 +113,26 @@ const Post = ({
   });
 
   useEffect(() => {
-    if (contentRef) {
-      if (contentRef?.current?.offsetHeight > 235) {
+    if (ele) {
+      if (ele?.content?.split("\n")?.length > 10) {
+        setiscollapse(true);
+      } else if (ele?.content?.length > 500) {
+        setiscollapse(true);
+      } else if (
+        (ele?.content?.length > 300 && ele?.poll_option?.length > 1) ||
+        (ele?.content?.split("\n").length > 3 && ele?.poll_option?.length > 1)
+      ) {
         setiscollapse(true);
       } else {
         setiscollapse(false);
       }
     }
-  }, [contentRef]);
+  }, []);
+  useEffect(() => {
+    if (Opened) {
+      setiscollapse(true);
+    }
+  }, []);
 
   const getNuggetDetail = () => {
     let nuggetDetailData = {
@@ -167,7 +180,7 @@ const Post = ({
   };
 
   useEffect(() => {
-    if (isCommentShow) {
+    if (isCommentShow && ele) {
       setisCommentLoading(true);
       setCommentList([]);
       setComments(ele.nugget_id);
@@ -506,30 +519,40 @@ const Post = ({
   };
 
   const isReadMore = () => {
-    console.log(ele, "readmoreelement");
-
-    if (ele.media_list.length !== 0) {
+    if (ele.media_list?.length !== 0) {
       return false;
     } else if (
       ele.poll_option?.length > 2 &&
       contentTextRef?.current?.offsetHeight > 75
     ) {
-      return true;
+      return false;
     } else if (
       ele.poll_option?.length > 0 &&
       contentTextRef?.current?.offsetHeight > 100
     ) {
-      return true;
+      return false;
+    } else if (ele?.content?.split("\n")?.length > 10) {
+      return false;
     }
     return true;
   };
 
   const isCollapse = () => {
     let isvalidCollapse =
-      ele.media_list.length !== 0 || ele.metadata ? true : false;
+      ele.media_list?.length !== 0 || ele.metadata ? true : false;
+
+    if (Opened) {
+      return false;
+    }
     if (isvalidCollapse) {
       return false;
-    } else if (contentRef?.current?.offsetHeight > 235) {
+    }
+    if (ele?.content?.split("\n")?.length > 10) {
+      return false;
+    } else if (
+      (ele?.content?.length > 300 && ele?.poll_option?.length > 1) ||
+      (ele?.content?.split("\n").length > 3 && ele?.poll_option?.length > 1)
+    ) {
       return false;
     } else if (!isvalidContent) {
       return true;
@@ -599,6 +622,8 @@ const Post = ({
       } else if (ele.poll_option?.length === 2) {
         return 5;
       }
+    } else if (ele?.content?.split("\n")?.length > 10) {
+      return 10;
     }
   };
 
@@ -638,6 +663,17 @@ const Post = ({
       });
     }
   };
+
+  const getcommentLength = (data) => {
+    let count = 0;
+    const commentlength = data?.map((item, index) => {
+      count += item?.reply?.length;
+      return item;
+    });
+
+    return count + data?.length;
+  };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (
@@ -647,6 +683,7 @@ const Post = ({
               <ProfileImg
                 isLoggedIn={loginUserData}
                 src={ele?.user_image}
+                user={ele}
                 imgClassName={classes.profileimg}
                 badgeClassName={classes.badgeImg}
                 Badgetype={ele?.user_status_id}
@@ -782,9 +819,22 @@ const Post = ({
                     wordBreak: "break-word",
                   }}
                   ref={contentTextRef}
+                  onClick={() => {
+                    console.log(
+                      // ele?.content?.length,
+                      // isCollapse(),
+                      // iscollapse,
+                      ele?.content?.split("\n")?.length > 10,
+                      isReadMore(),
+                      // ele?.content?.length > 300 &&
+                      //   ele?.poll_option?.length > 1,
+                      // !isvalidContent,
+                      "contentlength"
+                    );
+                  }}
                 >
                   <ReadMore
-                    isReadMore={false}
+                    isReadMore={isReadMore()}
                     isLinkopenModal={isLinkopenModal}
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
@@ -803,7 +853,9 @@ const Post = ({
                 </p>
               )}
 
-              {ele.media_list && ele.media_list.length === 0 && ele.metadata ? (
+              {ele.media_list &&
+              ele.media_list?.length === 0 &&
+              ele.metadata ? (
                 <div
                   className={classes.metaLink}
                   onClick={() => {
@@ -982,7 +1034,11 @@ const Post = ({
                     >
                       <i className={`${classes.commentIcon}`} />
                     </p>
-                    <span>{ele.total_comments}</span>
+                    <span>
+                      {Opened
+                        ? getcommentLength(CommentList)
+                        : ele?.total_comments}
+                    </span>
                   </div>
 
                   {ele?.poll_option?.length === 0 && (

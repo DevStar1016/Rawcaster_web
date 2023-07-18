@@ -3,82 +3,75 @@ import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 import React, { useEffect } from "react";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { ChimesendMessage } from "../../../Services/SocketService";
 import {
-  JoinAttendeeMeeting,
-  viewEventsService,
-} from "../../../Services/ApiService";
-import { useLocation, useNavigate } from "react-router";
+  ChimesendMessage,
+  ChimesocketListen,
+} from "../../../Services/SocketService";
+import { JoinAttendeeMeeting } from "../../../Services/ApiService";
+import { useNavigate } from "react-router";
 import { useMainContext } from "../../../Shared/Context";
+import { JSONtoformdata } from "../../../Shared/Utility";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
 
 const MeetingManagerComponent = () => {
-  const location = useLocation();
+  const { EventData } = useLayoutContect();
   const token = useAuthToken();
   const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const event_id = queryParams.get("meeting_id");
   const userData = useAuthData();
   const { meetingManager } = useMainContext();
 
-  const configureMeetingManager = async (meetingId, isHost) => {
-    const formData = {
-      MeetingId: meetingId,
-      userId: userData?.user_id,
+  const configureMeetingManager = async (meeting_id, isHost) => {
+    const attendeeinput = {
+      meeting_id,
+      token,
     };
-    const response = await JoinAttendeeMeeting(formData);
-    if (response.data.status === 200) {
-      const { Attendee, meeting } = response.data.result;
-      const meetingSessionConfiguration = new MeetingSessionConfiguration(
-        meeting,
-        Attendee
-      );
-      if (isHost) {
-        ChimesendMessage(
-          { meetingId: meetingId, hostId: userData.user_id },
-          CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
-        );
-      } else {
-        ChimesendMessage(
-          { meetingId: meetingId },
-          CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
-        );
-      }
-      const meetingOptions = {
-        deviceLabels: DeviceLabels.AudioAndVideo,
-      };
-      try {
-        await meetingManager.join(meetingSessionConfiguration, meetingOptions);
-        await meetingManager.start();
-      } catch (error) {
-        console.log(error, "errorData");
-      }
-    } else {
-      console.log(response.data);
-    }
+    JoinAttendeeMeeting(JSONtoformdata(attendeeinput))
+      .then(async (response) => {
+        if (response.data.status === 1) {
+          const { attendee, meeting } = response.data;
+          const meetingSessionConfiguration = new MeetingSessionConfiguration(
+            meeting,
+            attendee
+          );
+          if (isHost) {
+            ChimesendMessage(
+              { meetingId: meeting_id, hostId: userData.user_id },
+              CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
+            );
+          } else {
+            ChimesendMessage(
+              { meetingId: meeting_id },
+              CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+            );
+          }
+          const meetingOptions = {
+            deviceLabels: DeviceLabels.AudioAndVideo,
+          };
+          try {
+            await meetingManager.join(
+              meetingSessionConfiguration,
+              meetingOptions
+            );
+            await meetingManager.start();
+          } catch (error) {
+            console.log(error, "errorData");
+          }
+        } else {
+          navigate(-1);
+        }
+      })
+      .catch((err) => {
+        navigate(-1);
+      });
   };
 
   useEffect(() => {
-    if (userData && token && meetingManager.meetingStatus === 0) {
-      let formData = new FormData();
-      formData.append("token", token);
-      formData.append("event_id", event_id);
-      viewEventsService(formData)
-        .then((response) => {
-          if (response.data.status === 1) {
-            const eventdetails = response.data.event_detail;
-            const isHost =
-              parseInt(userData?.user_id) ===
-              parseInt(eventdetails?.original_user_id);
-            configureMeetingManager(eventdetails.chime_meeting_id, isHost);
-          } else {
-            navigate(-1);
-          }
-        })
-        .catch((error) => {
-          navigate(-1);
-        });
+    if (EventData) {
+      const isHost =
+        parseInt(userData?.user_id) === parseInt(EventData?.original_user_id);
+      configureMeetingManager(EventData.chime_meeting_id, isHost);
     }
-  }, [event_id, token, userData]);
+  }, [EventData]);
 
   return <div></div>;
 };

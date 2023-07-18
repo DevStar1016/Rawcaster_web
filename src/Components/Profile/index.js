@@ -268,7 +268,7 @@ const Profile = () => {
         description={ProfileSEO(profileData?.first_name ?? "User").description}
       />
       <div>
-        <div className={`mainWrapper ${classes.profilePage}`}>
+        <div className={`mainWrapper`}>
           <ProfileLayout
             profileData={profileData}
             isFansEnabled

@@ -114,7 +114,13 @@ const DashboardSignup = () => {
       <div className={classes.beforeloginSec}>
         {loginUserData === null && isSuccess ? (
           <div className={classes.inpad}>
-            <div className={classes.advideoSec}>
+            <div
+              style={{
+                height: "inherit",
+                maxHeight: "inherit",
+              }}
+              className={classes.advideoSec}
+            >
               <video
                 width="100%"
                 height="100%"
@@ -257,7 +263,7 @@ const DashboardSignup = () => {
             <Connections />
           </div>
         )}
-        {/* {isChatOpen.show && (
+        {isChatOpen.show && (
           // <LinkDeviceModal
           //   open={isChatOpen}
           //   close={() => {
@@ -276,7 +282,7 @@ const DashboardSignup = () => {
               });
             }}
           />
-        )} */}
+        )}
       </div>
     </>
   );
