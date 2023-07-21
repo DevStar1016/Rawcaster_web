@@ -5,7 +5,12 @@ import VideoThumb from "../../Assets/Images/Video_preview.jpg";
 import { useDispatch } from "react-redux";
 import classes from "./Event.module.css";
 
-export default function EventStartModal({ openmodal, close, onStart }) {
+export default function EventStartModal({
+  openmodal,
+  close,
+  onStart,
+  type = "Start Hosting",
+}) {
   const dispatch = useDispatch();
   const [Controlls, setControlls] = useState(false);
 
@@ -50,7 +55,7 @@ export default function EventStartModal({ openmodal, close, onStart }) {
             <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
           </video>
           <Button className={classes.startBtn} onClick={onStart}>
-            Start Hosting
+            {type}
           </Button>
         </div>
       </div>

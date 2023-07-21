@@ -149,7 +149,7 @@ color: #FFFFFF !important;
 .actionIcon { margin-top: 94px; margin-left: 10px; float: left; }
 .actionIcon img { margin-right:8px; height: 25px; }
 
-.fullcontainer { position: relative; width: 100%; float: left; margin: auto;  max-width: 1350px;height: calc(100vh - 120px); }
+.fullcontainer { position: relative; width: 100%; float: left; margin: auto;  max-width: 1350px; }
 
 .profileevent, .rightProfiles {
     width: 310px;
