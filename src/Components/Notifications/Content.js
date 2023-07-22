@@ -136,7 +136,7 @@ const Content = ({ elem }) => {
   };
 
   const getHasNextPage = () => {
-    return Pages.totalPages && pageRef.current !== Pages.totalPages;
+    return Pages.totalPages && pageRef.current < Pages.totalPages;
   };
 
   const [sentryRef, { rootRef }] = useInfiniteScroll({
@@ -168,9 +168,34 @@ const Content = ({ elem }) => {
     };
   }, []);
 
+  useEffect(() => {
+    console.log(
+      NotificationList?.older?.length,
+      NotificationList.today.length,
+      NotificationList.yesterday.length,
+      Pages,
+      getHasNextPage(),
+      NotificationList,
+      "notificationlists"
+    );
+    if (
+      Pages?.totalPages > Pages.Page &&
+      NotificationList?.older?.length +
+        NotificationList.today.length +
+        NotificationList.yesterday.length <
+        9
+    ) {
+      console.log("notificationlists api called");
+      getFansData(Pages.Page);
+    }
+  }, [NotificationList]);
+
   return (
     <div className={classes.listSec} ref={containerRef}>
-      {Pages.totalPages === 0 && (
+      {NotificationList?.older?.length +
+        NotificationList.today.length +
+        NotificationList.yesterday.length ===
+        0 && (
         <div className={classes.noResultSec}>
           <Empty description="No Notifications" />
         </div>
@@ -190,6 +215,13 @@ const Content = ({ elem }) => {
               }}
               handleDelete={(ele) => {
                 handleDeleteNotification(ele.notification_id);
+                setNotificationList((pre) => {
+                  let temp = [...pre.today];
+                  temp = temp?.filter(
+                    (item) => item?.notification_id !== ele.notification_id
+                  );
+                  return { ...pre, today: temp };
+                });
               }}
               handleView={(ele) => {
                 ViewNotification(ele.notification_id);
@@ -213,6 +245,13 @@ const Content = ({ elem }) => {
               }}
               handleDelete={(ele) => {
                 handleDeleteNotification(ele.notification_id);
+                setNotificationList((pre) => {
+                  let temp = [...pre.yesterday];
+                  temp = temp?.filter(
+                    (item) => item?.notification_id !== ele.notification_id
+                  );
+                  return { ...pre, yesterday: temp };
+                });
               }}
               handleView={(ele) => {
                 ViewNotification(ele.notification_id);
@@ -236,6 +275,13 @@ const Content = ({ elem }) => {
               }}
               handleDelete={(ele) => {
                 handleDeleteNotification(ele.notification_id);
+                setNotificationList((pre) => {
+                  let temp = [...pre.older];
+                  temp = temp?.filter(
+                    (item) => item?.notification_id !== ele.notification_id
+                  );
+                  return { ...pre, older: temp };
+                });
               }}
               handleView={(ele) => {
                 ViewNotification(ele.notification_id);
