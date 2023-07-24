@@ -47,7 +47,6 @@ import {
 } from "../../../Shared/Utility";
 import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
-import LoginModal from "../../../Modal/Verification/LoginModal";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
@@ -360,9 +359,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         handleCloseEvent();
       });
   };
-  console.log(values, "datadatadata");
+
   useEffect(() => {
-    console.log(data, "datadatadatadata");
     if (data) {
       let eventdata = {
         token: token,
@@ -371,7 +369,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       viewEventsService(JSONtoformdata(eventdata))
         .then((res) => {
           let eventData = res.data.event_detail;
-          console.log(eventData);
           try {
             setValues((pre) => ({
               ...pre,
@@ -415,7 +412,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         })
         .catch((err) => {});
     } else {
-      console.log("test");
       if (userSettings && !data) {
         setValues((pre) => ({
           ...pre,
@@ -438,8 +434,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }
   }, [data, userSettings]);
 
-  const handleUpgradePopupClose = () => setupgradePlanPopup(false);
-
   const scrollToUpgrade = (value = 0) => {
     const scrollHeight = document.getElementById("eventForm").scrollHeight;
     document
@@ -452,7 +446,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       scrollToUpgrade();
     }
   }, [upgradePlanPopup]);
-  console.log("testtttttt");
+
   return (
     <AddEventContext.Provider
       value={{

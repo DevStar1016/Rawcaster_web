@@ -4,6 +4,8 @@ export const GECODE_API_KEY = "AIzaSyBOEl17DNwCcE0sR9LGJh72rBGF_vDfk1c";
 export const ENCRIPTION_STRING = "rawcaster@!@#$QWERTxcvbn";
 export const DEFAULT_VIDEO =
   "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";
+export const DEFAULT_VIDEO_RAWCASTER =
+  "https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_47841690153307.mp4#t=0.001";
 
 export const GOOGLE_CLIENT_ID =
   "749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com";
@@ -44,12 +46,6 @@ export const SHARED_TYPE = [
   { id: 2, key: 2, Value: "Only me", label: "Only me" },
   { id: 3, key: 3, Value: "Groups", label: "Groups" },
   { id: 4, key: 4, Value: "Specific Connection", label: "Specific Connection" },
-  // {
-  //   id: 5,
-  //   key: 5,
-  //   Value: "both Group and Individual",
-  //   label: "both Group and Individual",
-  // },
   { id: 6, key: 6, Value: "Connections", label: "Connections" },
   { id: 7, key: 7, Value: "My Fans", label: "My Fans" },
 ];
