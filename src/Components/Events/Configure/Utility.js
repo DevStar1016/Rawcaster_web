@@ -283,8 +283,10 @@ export const InviteEmailComponent = ({
   value,
   setuserMailList,
   userMailList,
+  onDeleteData,
 }) => {
   const [externalMailId, setExternalMailId] = useState([]);
+  const [DeleteMailId, setDeleteMailId] = useState([]);
 
   const addExtMailHandler = (data) => {
     let maildata = data.trim();
@@ -320,7 +322,15 @@ export const InviteEmailComponent = ({
     if (userMailList?.includes(mail)) {
       setuserMailList(mail);
     }
-    console.log(mail, "externalMailId");
+    setDeleteMailId((pre) => {
+      if (pre.length === 0) {
+        onDeleteData([mail]);
+        return [mail];
+      } else {
+        onDeleteData([...pre, mail]);
+        return [...pre, mail];
+      }
+    });
     let mailList = [...externalMailId];
     if (mailList.length > index) {
       mailList.splice(index, 1);
@@ -480,12 +490,13 @@ export const TimeValueComponent = ({ onResult, value }) => {
   );
 };
 
-export const Connections = ({ onResult, values }) => {
+export const Connections = ({ onResult, values, onDeleteData }) => {
   const { friendsList } = useDashboard();
   const [filterFriendList, setFilterFriendList] = useState([...friendsList]);
   const [selectedFriendList, setSelectedFriendList] = useState([]);
   const [selectedListVisible, setSelectedListVisible] = useState(false);
   const [friendSearchInput, setFriendSearchInput] = useState(false);
+  const [DeleteMailId, setDeleteMailId] = useState([]);
 
   const selectFriendHandler = (data) => {
     setSelectedFriendList((prev) => [...prev, data]);
@@ -616,6 +627,15 @@ export const Connections = ({ onResult, values }) => {
         open={selectedListVisible}
         friends={selectedFriendList}
         setfriends={(id) => {
+          setDeleteMailId((pre) => {
+            if (pre.length === 0) {
+              onDeleteData([id]);
+              return [id];
+            } else {
+              onDeleteData([...pre, id]);
+              return [...pre, id];
+            }
+          });
           const findData = selectedFriendList.find((ele) => ele.user_id === id);
           if (findData) {
             setFilterFriendList((pre) => [...pre, findData]);
@@ -632,12 +652,13 @@ export const Connections = ({ onResult, values }) => {
   );
 };
 
-export const Groups = ({ onResult, values }) => {
+export const Groups = ({ onResult, values, onDeleteData }) => {
   const { groupsList } = useDashboard();
   const [filterGroupList, setFilterGroupList] = useState([...groupsList]);
   const [selectedGroupList, setSelectedGroupList] = useState([]);
   const [selectedListVisible, setSelectedListVisible] = useState(false);
   const [GroupSearchInput, setGroupSearchInput] = useState(false);
+  const [DeleteMailId, setDeleteMailId] = useState([]);
 
   const selectGroupHandler = (data) => {
     setSelectedGroupList((prev) => [...prev, data]);
@@ -763,7 +784,15 @@ export const Groups = ({ onResult, values }) => {
         Groups={selectedGroupList}
         type={2}
         setGroups={(id) => {
-          console.log(id);
+          setDeleteMailId((pre) => {
+            if (pre.length === 0) {
+              onDeleteData([id]);
+              return [id];
+            } else {
+              onDeleteData([...pre, id]);
+              return [...pre, id];
+            }
+          });
           const findData = selectedGroupList.find((ele) => ele.group_id === id);
           if (findData) {
             setFilterGroupList((pre) => [...pre, findData]);

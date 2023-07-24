@@ -47,7 +47,6 @@ import {
 } from "../../../Shared/Utility";
 import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
-import LoginModal from "../../../Modal/Verification/LoginModal";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
@@ -97,7 +96,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_invite_mails: "",
       event_invite_friends: "",
       event_invite_groups: "",
-      delete_invite_mails: [],
+      delete_invite_mails: "",
+      delete_invite_groups: "",
+      delete_invite_friends: "",
     },
     enableReinitialize: false,
     validationSchema: yup.object().shape({
@@ -358,9 +359,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         handleCloseEvent();
       });
   };
-  console.log(values, "datadatadata");
+
   useEffect(() => {
-    console.log(data, "datadatadatadata");
     if (data) {
       let eventdata = {
         token: token,
@@ -369,7 +369,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       viewEventsService(JSONtoformdata(eventdata))
         .then((res) => {
           let eventData = res.data.event_detail;
-          console.log(eventData);
           try {
             setValues((pre) => ({
               ...pre,
@@ -413,7 +412,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         })
         .catch((err) => {});
     } else {
-      console.log("test");
       if (userSettings && !data) {
         setValues((pre) => ({
           ...pre,
@@ -436,8 +434,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }
   }, [data, userSettings]);
 
-  const handleUpgradePopupClose = () => setupgradePlanPopup(false);
-
   const scrollToUpgrade = (value = 0) => {
     const scrollHeight = document.getElementById("eventForm").scrollHeight;
     document
@@ -450,7 +446,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       scrollToUpgrade();
     }
   }, [upgradePlanPopup]);
-  console.log("testtttttt");
+
   return (
     <AddEventContext.Provider
       value={{
@@ -554,12 +550,23 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         onResult={(val) => {
                           setFieldValue("event_invite_mails", val.toString());
                         }}
+                        onDeleteData={(delete_arr) => {
+                          if (delete_arr.length !== 0) {
+                            setFieldValue(
+                              "delete_invite_mails",
+                              JSON.stringify(delete_arr)
+                            );
+                          } else {
+                            setFieldValue("delete_invite_mails", "");
+                          }
+                        }}
                         userMailList={userMailList}
                         setuserMailList={(val) => {
-                          setFieldValue("delete_invite_mails", [
-                            ...values.delete_invite_mails,
-                            val,
-                          ]);
+                          console.log(val);
+                          // setFieldValue("delete_invite_mails", [
+                          //   ...values.delete_invite_mails,
+                          //   val,
+                          // ]);
                         }}
                       />
                       {touched.event_invite_mails && (
@@ -571,6 +578,16 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     <Col sm={12}>
                       <Connections
                         values={values.event_invite_friends}
+                        onDeleteData={(delete_arr) => {
+                          if (delete_arr.length !== 0) {
+                            setFieldValue(
+                              "delete_invite_friends",
+                              JSON.stringify(delete_arr)
+                            );
+                          } else {
+                            setFieldValue("delete_invite_friends", "");
+                          }
+                        }}
                         onResult={(val) => {
                           let finRes = val.map((ele) => ele.user_id);
                           if (finRes.length !== 0) {
@@ -592,6 +609,16 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     <Col>
                       <Groups
                         values={values.event_invite_groups}
+                        onDeleteData={(delete_arr) => {
+                          if (delete_arr.length !== 0) {
+                            setFieldValue(
+                              "delete_invite_groups",
+                              JSON.stringify(delete_arr)
+                            );
+                          } else {
+                            setFieldValue("delete_invite_groups", "");
+                          }
+                        }}
                         onResult={(val) => {
                           console.log(val);
                           let finRes = val.map((ele) => ele.group_id);

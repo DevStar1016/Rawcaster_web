@@ -9,7 +9,7 @@ import william from "../../Assets/Images/png/william.png";
 import abel from "../../Assets/Images/png/abel.png";
 import OwlCarousel from "react-owl-carousel";
 import { Modal } from "antd";
-import { DEFAULT_VIDEO } from "../../Shared/Constant";
+import { DEFAULT_VIDEO, DEFAULT_VIDEO_RAWCASTER } from "../../Shared/Constant";
 import { useMainContext } from "../../Shared/Context";
 // import { Carousel } from '@trendyol-js/react-carousel';
 
@@ -373,7 +373,7 @@ const Homepage = () => {
             playsInline
             preload="metadata"
             controlsList="nodownload"
-            src={DEFAULT_VIDEO}
+            src={DEFAULT_VIDEO_RAWCASTER}
             type="video/mp4"
             onPlay={() => {
               console.log("test");

@@ -5,9 +5,13 @@ import VideoThumb from "../../Assets/Images/Video_preview.jpg";
 import { useDispatch } from "react-redux";
 import classes from "./Event.module.css";
 
-export default function EventStartModal({ openmodal, close, onStart }) {
+export default function EventStartModal({
+  openmodal,
+  close,
+  onStart,
+  type = "Start Hosting",
+}) {
   const dispatch = useDispatch();
-  const [Controlls, setControlls] = useState(false);
 
   return (
     <Modal
@@ -29,28 +33,19 @@ export default function EventStartModal({ openmodal, close, onStart }) {
             id="dashboard_signup_video"
             className={classes.videoPlayer}
             controls
-            // controls={Controlls}
             disablePictureInPicture
             playsInline
             autoPlay
             controlsList="nodownload"
             poster={VideoThumb}
-            // onPlayingCapture={() => {
-            //   if (player && player.id !== `dashboard_signup_video`) {
-            //     player.pause();
-            //   }
-            //   const video = document.getElementById(`dashboard_signup_video`);
-            //   setplayer(video);
-            // }}
             onPlayCapture={() => {
               dispatch(handlenuggetVideoPaused(true));
-              setControlls(true);
             }}
           >
-            <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
+            <source src="https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_47841690153307.mp4" />
           </video>
           <Button className={classes.startBtn} onClick={onStart}>
-            Start Hosting
+            {type}
           </Button>
         </div>
       </div>

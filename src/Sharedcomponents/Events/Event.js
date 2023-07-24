@@ -66,6 +66,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const isNotExpired = () => {
     const momenttimezone = require("moment-timezone");
     const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
+    console.log(currentTime, ele.start_date_time);
     if (moment(ele.start_date_time).isBefore(currentTime)) {
       return false;
     }

@@ -1,4 +1,4 @@
-import { Checkbox, Col, Row, Select, Spin, Tooltip } from "antd";
+import { Checkbox, Col, Empty, Row, Select, Spin, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Influencers.module.css";
@@ -55,7 +55,8 @@ const SelectInfluencers = () => {
       .then((res) => {
         if (res.data.status === 1) {
           setSearchValues((pre) => ({
-            ...pre,
+            search_key: "",
+            category: "",
             pageNum: res.data.current_page_no,
             total_page: res.data.total_pages,
           }));
@@ -69,7 +70,8 @@ const SelectInfluencers = () => {
           setinfluencerList([]);
           setinfluencersCount(0);
           setSearchValues((pre) => ({
-            ...pre,
+            search_key: "",
+            category: "",
             pageNum: 1,
             total_page: 1,
           }));
@@ -469,6 +471,7 @@ const SelectInfluencers = () => {
             );
           })}
         </Row>
+        {influencerList?.length === 0 && <Empty />}
         {SearchValues.pageNum !== SearchValues.total_page && (
           <div className={classes.loadmoreSec}>
             {isLoadMore === "load_more" ? (

@@ -92,14 +92,14 @@ const Friends = ({ friend, searchInput }) => {
             <img
               src={chatIcon}
               alt={"Chat"}
-              // onClick={(event) => {
-              //   event.stopPropagation();
-              //   setisChatOpen({
-              //     show: true,
-              //     type: "friend",
-              //     id: friend.user_id,
-              //   });
-              // }}
+              onClick={(event) => {
+                event.stopPropagation();
+                setisChatOpen({
+                  show: true,
+                  type: "friend",
+                  id: friend.user_id,
+                });
+              }}
             />
           </div>
         }

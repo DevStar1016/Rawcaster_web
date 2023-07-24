@@ -62,6 +62,9 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       event_invite_mails: "",
       event_invite_friends: "",
       event_invite_groups: "",
+      delete_invite_mails: "",
+      delete_invite_groups: "",
+      delete_invite_friends: "",
     },
     validationSchema: yup.object().shape({
       event_title: yup.string().required(`Event Title is Required !`),
@@ -243,7 +246,6 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     }
   }, [data]);
 
-  console.log("testtttttt");
   return (
     <AddEventContext.Provider
       value={{
@@ -419,6 +421,16 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 <Col sm={12}>
                   <InviteEmailComponent
                     value={values.event_invite_mails}
+                    onDeleteData={(delete_arr) => {
+                      if (delete_arr.length !== 0) {
+                        setFieldValue(
+                          "delete_invite_mails",
+                          JSON.stringify(delete_arr)
+                        );
+                      } else {
+                        setFieldValue("delete_invite_mails", "");
+                      }
+                    }}
                     onResult={(val) => {
                       if (val.length !== 0) {
                         setFieldValue(
@@ -437,6 +449,16 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 <Col sm={12}>
                   <Connections
                     values={values.event_invite_friends}
+                    onDeleteData={(delete_arr) => {
+                      if (delete_arr.length !== 0) {
+                        setFieldValue(
+                          "delete_invite_friends",
+                          JSON.stringify(delete_arr)
+                        );
+                      } else {
+                        setFieldValue("delete_invite_friends", "");
+                      }
+                    }}
                     onResult={(val) => {
                       let finRes = val.map((ele) => ele.user_id);
                       if (finRes.length !== 0) {
@@ -458,6 +480,16 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                 <Col>
                   <Groups
                     values={values.event_invite_groups}
+                    onDeleteData={(delete_arr) => {
+                      if (delete_arr.length !== 0) {
+                        setFieldValue(
+                          "delete_invite_groups",
+                          JSON.stringify(delete_arr)
+                        );
+                      } else {
+                        setFieldValue("delete_invite_groups", "");
+                      }
+                    }}
                     onResult={(val) => {
                       let finRes = val.map((ele) => ele.group_id);
                       if (finRes.length !== 0) {
