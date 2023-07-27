@@ -27,6 +27,10 @@ export const useAuth = () => {
   return useSelector((state) => state.auth);
 };
 
+export const useNotification = () => {
+  return useSelector((state) => state.notification);
+};
+
 export const useProfileVerifyModal = () => {
   return useSelector((state) => state.dashboard.profileVerifyModalShow);
 };

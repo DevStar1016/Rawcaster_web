@@ -1,32 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./Notification.module.css";
 import { useNotificationContext } from "../../Shared/Context";
-import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
+import {
+  useAuth,
+  useAuthToken,
+  useNotification,
+} from "../../Shared/Reduxfetcher";
 import { NotificationsList } from "./Utility";
 import { DeleteNotificationService } from "../../Services/ApiService";
 import { JSONtoformdata } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Empty, Skeleton } from "antd";
 import useInfiniteScroll from "react-infinite-scroll-hook";
+import { fetchNotificationList } from "../../Store/Redux/Action";
+import { useDispatch } from "react-redux";
+import {
+  handleUpdateNotification,
+  handleViewUpdateNotification,
+} from "../../Store/Redux/Reducer/NotificationsReducer";
 
 const Content = ({ elem }) => {
+  const { Notifications, isLoading, isTabChange } = useNotification();
   const containerRef = useRef();
-  const pageRef = useRef(1);
-  const [loading, setloading] = useState(false);
+  const dispatch = useDispatch();
   const [isReachedEnd, setisReachedEnd] = useState(false);
   const { userSettings } = useAuth();
   const token = useAuthToken();
-  const { getNotificationList, handleViewNotification, markallAsRead } =
-    useNotificationContext();
-  const [Pages, setPages] = useState({
-    Page: 0,
-    totalPages: 0,
-  });
-  const [NotificationList, setNotificationList] = useState({
-    today: [],
-    yesterday: [],
-    older: [],
-  });
+  const { handleViewNotification } = useNotificationContext();
 
   const getFansData = (page = 1) => {
     if (userSettings && token) {
@@ -34,47 +34,9 @@ const Content = ({ elem }) => {
         page_number: page,
         notification_type: elem.id,
       };
-      getNotificationList(formData)
-        .then((res) => {
-          const { today, yesterday, older, total_pages, current_page_no, msg } =
-            res;
-          if (current_page_no === 1) {
-            setNotificationList({ today, yesterday, older });
-          } else if (current_page_no !== 0) {
-            if (today.length !== 0) {
-              setNotificationList((pre) => ({
-                ...pre,
-                today: [...pre.today, ...today],
-              }));
-            }
-            if (yesterday.length !== 0) {
-              setNotificationList((pre) => ({
-                ...pre,
-                yesterday: [...pre.yesterday, ...yesterday],
-              }));
-            }
-            if (older.length !== 0) {
-              setNotificationList((pre) => ({
-                ...pre,
-                older: [...pre.older, ...older],
-              }));
-            }
-          }
-          pageRef.current = current_page_no;
-          setPages({
-            Page: current_page_no,
-            totalPages: total_pages,
-          });
-        })
-        .finally(() => {
-          setisReachedEnd(false);
-          setloading(false);
-        });
+      dispatch(fetchNotificationList({ token, ...formData }));
     }
   };
-  useEffect(() => {
-    getFansData(1);
-  }, [userSettings, markallAsRead, token]);
 
   const handleDeleteNotification = (notification_id) => {
     const DeleteData = {
@@ -84,18 +46,7 @@ const Content = ({ elem }) => {
     DeleteNotificationService(JSONtoformdata(DeleteData))
       .then(({ data }) => {
         if (data.status === 1) {
-          setNotificationList((pre) => ({
-            older: pre.older.filter(
-              (ele) => ele.notification_id !== notification_id
-            ),
-            yesterday: pre.yesterday.filter(
-              (ele) => ele.notification_id !== notification_id
-            ),
-            today: pre.today.filter(
-              (ele) => ele.notification_id !== notification_id
-            ),
-          }));
-          getNotificationList();
+          dispatch(handleUpdateNotification(notification_id));
         } else {
           toast.error(data.msg);
         }
@@ -103,44 +54,29 @@ const Content = ({ elem }) => {
       .catch((err) => {});
   };
 
-  const viewUpdate = (array, id) => {
-    let findIndex = array.findIndex((ele) => ele.notification_id === id);
-    if (findIndex !== -1) {
-      let tempArray = [...array];
-      tempArray[findIndex].is_read = 1;
-      return tempArray;
-    } else {
-      return array;
-    }
-  };
-
   const ViewNotification = (notification_id, mark_all_as_read = null) => {
     handleViewNotification(notification_id, mark_all_as_read).then(() => {
-      setNotificationList((pre) => ({
-        older: viewUpdate(pre.older, notification_id),
-        yesterday: viewUpdate(pre.yesterday, notification_id),
-        today: viewUpdate(pre.today, notification_id),
-      }));
+      dispatch(handleViewUpdateNotification(notification_id));
     });
   };
 
   const loadMore = () => {
     if (!getHasNextPage()) {
-      setloading(false);
       setisReachedEnd(false);
-    } else if (isReachedEnd && getHasNextPage() && !loading) {
-      setloading(true);
-      pageRef.current = pageRef.current + 1;
-      getFansData(pageRef.current);
+    } else if (isReachedEnd && getHasNextPage() && !isLoading) {
+      getFansData(Notifications.current_page_no + 1);
     }
   };
 
   const getHasNextPage = () => {
-    return Pages.totalPages && pageRef.current < Pages.totalPages;
+    return (
+      Notifications.total_pages &&
+      Notifications.current_page_no < Notifications.total_pages
+    );
   };
 
-  const [sentryRef, { rootRef }] = useInfiniteScroll({
-    loading: loading,
+  const [sentryRef] = useInfiniteScroll({
+    loading: isLoading,
     hasNextPage: getHasNextPage(),
     onLoadMore: loadMore,
   });
@@ -150,7 +86,6 @@ const Content = ({ elem }) => {
     if (container) {
       const { scrollTop, clientHeight, scrollHeight } = container;
       if (scrollTop + clientHeight >= scrollHeight - 10) {
-        console.log("Reached End");
         setisReachedEnd(true);
       }
     }
@@ -165,63 +100,49 @@ const Content = ({ elem }) => {
       if (container) {
         container.removeEventListener("scroll", handleScroll);
       }
+      if (containerRef.current) {
+        containerRef.current = null;
+      }
     };
   }, []);
 
   useEffect(() => {
-    console.log(
-      NotificationList?.older?.length,
-      NotificationList.today.length,
-      NotificationList.yesterday.length,
-      Pages,
-      getHasNextPage(),
-      NotificationList,
-      "notificationlists"
-    );
     if (
-      Pages?.totalPages > Pages.Page &&
-      NotificationList?.older?.length +
-        NotificationList.today.length +
-        NotificationList.yesterday.length <
+      Notifications?.total_pages > Notifications.current_page_no &&
+      Notifications?.older?.length +
+        Notifications.today.length +
+        Notifications.yesterday.length <
         9
     ) {
-      console.log("notificationlists api called");
-      getFansData(Pages.Page);
+      getFansData(Notifications.current_page_no);
     }
-  }, [NotificationList]);
+  }, [Notifications]);
 
   return (
     <div className={classes.listSec} ref={containerRef}>
-      {NotificationList?.older?.length +
-        NotificationList.today.length +
-        NotificationList.yesterday.length ===
-        0 && (
-        <div className={classes.noResultSec}>
-          <Empty description="No Notifications" />
-        </div>
-      )}
-      {NotificationList.today.length !== 0 && (
+      {!isTabChange &&
+        !isLoading &&
+        Notifications?.older?.length +
+          Notifications.today.length +
+          Notifications.yesterday.length ===
+          0 && (
+          <div className={classes.noResultSec}>
+            <Empty description="No Notifications" />
+          </div>
+        )}
+      {!isTabChange && Notifications.today.length !== 0 && (
         <>
           <h3>Today</h3>
-          {NotificationList.today.map((ele) => (
+          {Notifications.today.map((ele) => (
             <NotificationsList
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {
-                let filteredList = NotificationList.filter(
-                  (ele) => ele.notification_id !== id
-                );
-                setNotificationList(filteredList);
+                dispatch(handleUpdateNotification(id));
               }}
               handleDelete={(ele) => {
                 handleDeleteNotification(ele.notification_id);
-                setNotificationList((pre) => {
-                  let temp = [...pre.today];
-                  temp = temp?.filter(
-                    (item) => item?.notification_id !== ele.notification_id
-                  );
-                  return { ...pre, today: temp };
-                });
+                dispatch(handleUpdateNotification(ele.notification_id));
               }}
               handleView={(ele) => {
                 ViewNotification(ele.notification_id);
@@ -230,28 +151,19 @@ const Content = ({ elem }) => {
           ))}
         </>
       )}
-      {NotificationList.yesterday.length !== 0 && (
+      {!isTabChange && Notifications.yesterday.length !== 0 && (
         <>
           <h3>Yesterday</h3>
-          {NotificationList.yesterday.map((ele) => (
+          {Notifications.yesterday.map((ele) => (
             <NotificationsList
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {
-                let filteredList = NotificationList.filter(
-                  (ele) => ele.notification_id !== id
-                );
-                setNotificationList(filteredList);
+                dispatch(handleUpdateNotification(id));
               }}
               handleDelete={(ele) => {
                 handleDeleteNotification(ele.notification_id);
-                setNotificationList((pre) => {
-                  let temp = [...pre.yesterday];
-                  temp = temp?.filter(
-                    (item) => item?.notification_id !== ele.notification_id
-                  );
-                  return { ...pre, yesterday: temp };
-                });
+                dispatch(handleUpdateNotification(ele.notification_id));
               }}
               handleView={(ele) => {
                 ViewNotification(ele.notification_id);
@@ -260,28 +172,19 @@ const Content = ({ elem }) => {
           ))}
         </>
       )}
-      {NotificationList.older.length !== 0 && (
+      {!isTabChange && Notifications.older.length !== 0 && (
         <>
           <h3>Older</h3>
-          {NotificationList.older.map((ele) => (
+          {Notifications.older.map((ele) => (
             <NotificationsList
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {
-                let filteredList = NotificationList.filter(
-                  (ele) => ele.notification_id !== id
-                );
-                setNotificationList(filteredList);
+                dispatch(handleUpdateNotification(id));
               }}
               handleDelete={(ele) => {
                 handleDeleteNotification(ele.notification_id);
-                setNotificationList((pre) => {
-                  let temp = [...pre.older];
-                  temp = temp?.filter(
-                    (item) => item?.notification_id !== ele.notification_id
-                  );
-                  return { ...pre, older: temp };
-                });
+                dispatch(handleUpdateNotification(ele.notification_id));
               }}
               handleView={(ele) => {
                 ViewNotification(ele.notification_id);
@@ -290,7 +193,7 @@ const Content = ({ elem }) => {
           ))}
         </>
       )}
-      {loading || getHasNextPage() ? (
+      {isLoading || getHasNextPage() || isTabChange ? (
         <div className="text-center py-2" ref={sentryRef}>
           <Skeleton active />
         </div>

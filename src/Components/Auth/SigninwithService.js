@@ -136,25 +136,6 @@ const SigninwithService = ({ type }) => {
         </Col>
 
         <Col sm={6}>
-          {/* <AppleLogin
-                    clientId={APPLE_API_KEY}
-                    redirectURI={PRIMARY_REDIRECT_URI}
-                    scope={"name email"}
-                    responseMode="form_post"
-                    render={({ onClick }) => {
-                      return (
-                        <button
-                          className={classes.altSignBtn}
-                          onClick={onClick}
-                        >
-                          <img src={AppleIcon} /> Signup with Apple
-                        </button>
-                      );
-                    }}
-                    callback={(value) => {
-                      console.log(value, "==>value");
-                    }}
-                  /> */}
           <LoginSocialApple
             client_id={APPLE_API_KEY}
             scope={"name email"}

@@ -5,6 +5,10 @@ import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import { Tabs } from "antd";
 import Content from "./Content";
+import { fetchNotificationList } from "../../Store/Redux/Action";
+import { useDispatch } from "react-redux";
+import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { handleTabChange } from "../../Store/Redux/Reducer/NotificationsReducer";
 
 let TabsValues = [
   { key: 0, id: 5, label: "Fans", children: null },
@@ -16,6 +20,8 @@ let TabsValues = [
 ];
 
 const ContentLayout = () => {
+  const dispatch = useDispatch();
+  const token = useAuthToken();
   const [selectedIndex, setselectedIndex] = useState(0);
   const handleChangeIndex = (index) => {
     setselectedIndex(index);
@@ -28,10 +34,20 @@ const ContentLayout = () => {
       <Tabs
         defaultActiveKey="1"
         tabPosition={"top"}
-        //  style={{ width: 370 }}
         items={TabsValues}
         activeKey={selectedIndex}
         onChange={(key) => {
+          const findId = TabsValues.find(
+            (ele) => parseInt(ele.key) === parseInt(key)
+          );
+          dispatch(handleTabChange(true));
+          dispatch(
+            fetchNotificationList({
+              token,
+              notification_type: findId.id,
+              page_number: 1,
+            })
+          );
           setselectedIndex(parseInt(key));
         }}
       />

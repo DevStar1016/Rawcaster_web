@@ -15,13 +15,6 @@ const Chimesocket = io(ChimesocketURL, {
   rejectUnauthorized: false,
 });
 
-// const Chimesocket = io(ChimesocketURL, {
-//   transports: ["websocket"],
-//   secure: false,
-//   reconnection: true,
-//   rejectUnauthorized: false,
-// });
-
 const ConnectSocket = (props) => {
   if (props && props.user_id !== "") {
     sendMessage({
@@ -44,6 +37,7 @@ export const sendMessage = (data, type = "message") => {
 };
 
 export const ChimesendMessage = (data, type = "message") => {
+  console.log(type, data);
   Chimesocket.emit(type, data, () => {
     console.log("Message Emitted");
   });

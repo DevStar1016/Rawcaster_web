@@ -38,7 +38,7 @@ const SuggestedAccounts = () => {
         if (res.data.status === 1) {
           setinfluencerList(res.data.users_list);
         } else {
-          toast.error(res.data.message);
+          setinfluencerList([]);
         }
       })
       .catch((err) => {})

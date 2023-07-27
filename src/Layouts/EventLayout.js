@@ -15,6 +15,7 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { Dropdown } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
+import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
 
 export const useLayoutContect = () => {
   return useOutletContext();
@@ -227,6 +228,7 @@ const EventLayout = () => {
           </div>
         </div>
       </div>
+      <MeetingManagerComponent />
     </div>
   );
 };
