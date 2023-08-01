@@ -90,7 +90,11 @@ const PostNuggets = () => {
   }, [PostContent]);
 
   const EditNugget = (val) => {
-    if (NuggetData.length === 0 && !isValidData(val.content)) {
+    if (
+      NuggetData.length === 0 &&
+      !isValidData(val.content) &&
+      previewMedia?.length === 0
+    ) {
       toast.error("Sorry! Nuggets content or Media can not be empty.");
       return;
     }
@@ -209,8 +213,8 @@ const PostNuggets = () => {
   const PostNuggetValues = {
     setFileValues(value, index) {
       if (isEdit) {
-        let getmediaids = previewMedia.map((ele) => ele.media_id);
-        setdeletedMedia(getmediaids);
+        // let getmediaids = previewMedia.map((ele) => ele.media_id);
+        // setdeletedMedia(getmediaids);
         setpreviewMedia([]);
         setNuggetData([...value]);
       } else if (index !== undefined) {
