@@ -1,17 +1,12 @@
-import { Manager, io } from "socket.io-client";
+import { io } from "socket.io-client";
 import { ChimesocketURL, socketURL } from "./ServiceConstants";
+
+// Default Socket Service
 
 const socket = io(socketURL, {
   transports: ["websocket"],
   secure: false,
   reconnection: true,
-  rejectUnauthorized: false,
-});
-
-const Chimesocket = io(ChimesocketURL, {
-  reconnection: true,
-  secure: false,
-  transports: ["websocket"],
   rejectUnauthorized: false,
 });
 
@@ -30,14 +25,22 @@ export default ConnectSocket;
 
 export const socketListen = socket;
 
-export const ChimesocketListen = Chimesocket;
-
 export const sendMessage = (data, type = "message") => {
   socket.emit(type, data);
 };
 
+// Amazon Chime Socket
+
+const Chimesocket = io(ChimesocketURL, {
+  reconnection: true,
+  secure: false,
+  transports: ["websocket"],
+  rejectUnauthorized: false,
+});
+
+export const ChimesocketListen = Chimesocket;
+
 export const ChimesendMessage = (data, type = "message") => {
-  console.log(type, data);
   Chimesocket.emit(type, data, () => {
     console.log("Message Emitted");
   });
