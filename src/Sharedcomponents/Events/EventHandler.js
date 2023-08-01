@@ -44,19 +44,20 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
           isLoading={isLoading}
           onStart={(e) => {
             e.stopPropagation();
-            setisLoading(true);
-            dispatch(
-              fetchActiveEventData({
-                token,
-                ref_id: meetingId,
-              })
-            ).then(({ payload }) => {
-              window.open(`/room/${meetingId}`, "_blank", {
-                popup: true,
-              });
-              setisLoading(false);
-              setopenModal({ show: false, type: "" });
-            });
+            setopenModal({ show: false, type: "" });
+            // setisLoading(true);
+            // dispatch(
+            //   fetchActiveEventData({
+            //     token,
+            //     ref_id: meetingId,
+            //   })
+            // ).then(({ payload }) => {
+            //   window.open(`/room/${meetingId}`, "_blank", {
+            //     popup: true,
+            //   });
+            //   setisLoading(false);
+            //   setopenModal({ show: false, type: "" });
+            // });
           }}
         />
       )}
