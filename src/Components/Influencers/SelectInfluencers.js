@@ -55,7 +55,7 @@ const SelectInfluencers = () => {
       .then((res) => {
         if (res.data.status === 1) {
           setSearchValues((pre) => ({
-            search_key: "",
+            search_key: pre?.search_key,
             category: "",
             pageNum: res.data.current_page_no,
             total_page: res.data.total_pages,
@@ -70,7 +70,7 @@ const SelectInfluencers = () => {
           setinfluencerList([]);
           setinfluencersCount(0);
           setSearchValues((pre) => ({
-            search_key: "",
+            search_key: pre?.search_key,
             category: "",
             pageNum: 1,
             total_page: 1,
@@ -396,6 +396,7 @@ const SelectInfluencers = () => {
                         imgClassName={classes.profileimg}
                         badgeClassName={classes.diamond}
                         Badgetype={ele?.user_status_id}
+                        user={ele}
                       />
 
                       <p className={classes.counts}>{ele.followers}</p>

@@ -27,4 +27,5 @@ export const CHIME_SOCKET_EVENTS = {
   JOIN_REQUEST: "joinRequest",
   JOIN_REQUEST_FROM_USER: "joinRequestFromUser",
   JOIN_REQUEST_FROM_RESPONSE: "joinRequestResponse",
+  JOIN_REQUEST_ANSWER: "joinRequestAnswer",
 };

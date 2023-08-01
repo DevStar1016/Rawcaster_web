@@ -705,7 +705,6 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
 
   useEffect(() => {
     onResult(selectedGroupList);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGroupList]);
 
   useEffect(() => {
@@ -717,7 +716,6 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
       );
       setFilterGroupList([...otherData]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
 
   return (
@@ -825,7 +823,7 @@ export const getValidarrayData = (data) => {
 
 export const AudioVideoSettings = () => {
   const { values, setFieldValue } = useAddEventContext();
-  console.log(values);
+
   return (
     <div className="mt-2">
       <div className={classes.audioSetting}>

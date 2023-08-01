@@ -78,10 +78,7 @@ const SocketComponent = () => {
     ChimesocketListen.on("connect", () => {
       console.log("Chime Socket Status", ChimesocketListen.connected);
     });
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_SOCKET, (value) => {
-      console.log("CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:", value);
-    });
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (value) => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (value) => {
       console.log("CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:", value);
     });
 

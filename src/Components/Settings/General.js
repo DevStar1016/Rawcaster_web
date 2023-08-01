@@ -356,7 +356,7 @@ const General = () => {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <p className={classes.smallheading}>Preference Language</p>
             <Select
               showSearch
@@ -386,7 +386,7 @@ const General = () => {
                 userSettings?.account_active_inactive === 0
               }
             />
-          </div>
+          </div> */}
           <div>
             <p className={classes.smallheading}>Readout Language</p>
             <Select

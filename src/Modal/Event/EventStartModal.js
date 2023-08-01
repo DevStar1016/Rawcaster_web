@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import classes from "./Event.module.css";
 
 export default function EventStartModal({
+  isLoading = false,
   openmodal,
   close,
   onStart,
@@ -44,9 +45,19 @@ export default function EventStartModal({
           >
             <source src="https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_47841690153307.mp4" />
           </video>
-          <Button className={classes.startBtn} onClick={onStart}>
-            {type}
-          </Button>
+          {isLoading ? (
+            <div style={{ textAlign: "center" }}>
+              <img
+                src={require("../../Assets/Images/Events/loader.gif")}
+                alt=""
+                style={{ width: "50%" }}
+              />
+            </div>
+          ) : (
+            <Button className={classes.startBtn} onClick={onStart}>
+              {type}
+            </Button>
+          )}
         </div>
       </div>
     </Modal>

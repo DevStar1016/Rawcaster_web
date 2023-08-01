@@ -48,7 +48,6 @@ import {
 import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
 import { ChimesendMessage } from "../../../Services/SocketService";
-import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -293,13 +292,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       .then((res) => {
         if (res.data.status === 1) {
           getEvents(ActiveEvent.key);
-          ChimesendMessage(
-            {
-              meetingId: res.data.event_detail.chime_meeting_id,
-              hostId: "test",
-            },
-            CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
-          );
+
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
@@ -730,8 +723,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   <TimeValueComponent
                     value={values.event_start_time}
                     onResult={(res) => {
-                      console.log(res, "dateString");
-
                       // setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                       if (
                         moment().format("DD:MM:YYYY") ==

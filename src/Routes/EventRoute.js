@@ -24,13 +24,9 @@ const HandleNavigate = () => {
       })
     ).then(({ payload }) => {
       setActiveEvent(payload);
-      window.open(
-        payload.is_host === 1 ? `/room/${ref_id}` : `/waitingroom/${ref_id}`,
-        "_blank",
-        {
-          popup: true,
-        }
-      );
+      window.open(`/room/${ref_id}`, "_blank", {
+        popup: true,
+      });
     });
   }, []);
 

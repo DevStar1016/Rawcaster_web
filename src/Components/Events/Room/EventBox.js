@@ -16,7 +16,6 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
-import { useEventLayout } from "./EventValidaton";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
 
 const EventBox = () => {

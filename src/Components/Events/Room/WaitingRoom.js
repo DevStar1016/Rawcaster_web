@@ -1,14 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./WaitingRoom.module.css";
-import { useDashboard } from "../../../Shared/Reduxfetcher";
-import { useLoaderData } from "react-router";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { ChimesocketListen } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { useMainContext } from "../../../Shared/Context";
+import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
+import { DeviceLabels } from "amazon-chime-sdk-component-library-react";
+import { toast } from "react-hot-toast";
 
-const WaitingRoom = () => {
-  const { EventData } = useLayoutContect();
-
+const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
   const [audioPlay, setaudioPlay] = useState(false);
   const [loading, setloading] = useState(false);
+  const { meetingManager } = useMainContext();
+
+  const handleJoinMeeting = async (message) => {
+    const { Attendee, meeting } = message.result;
+    const meetingSessionConfiguration = new MeetingSessionConfiguration(
+      meeting,
+      Attendee
+    );
+
+    const meetingOptions = {
+      deviceLabels: DeviceLabels.AudioAndVideo,
+    };
+    try {
+      await meetingManager.join(meetingSessionConfiguration, meetingOptions);
+      await meetingManager.start();
+      setisWaitingRoom(false);
+    } catch (error) {
+      toast.error("Unable to Connect The Meeting");
+    }
+  };
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (message) => {
+      if (message.status === 200) {
+        handleJoinMeeting(message);
+      } else {
+        toast.error("Unable to Connect The Meeting");
+      }
+    });
+  }, []);
+
   return (
     <div className={classes.contactBg}>
       <h1 className={classes.heading_h1}>{EventData?.event_name || ""}</h1>
