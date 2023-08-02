@@ -597,7 +597,7 @@ margin:0 6px;
   justify-content: center;
 }
 .CategorySec  {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 .CategorySec .TabSec {
   display: flex;
@@ -648,6 +648,9 @@ display: none;
     float: unset;
     position: relative;
 
+  }
+  .TabSec p {
+    padding: 0 30px 0 0 !important;
   }
 }
 @media (max-width: 768px) {
@@ -771,6 +774,6 @@ display: none;
 }
 @media (max-width:575px) {
   .TabSec p {
-    padding: 0 25px;
+    padding:0 25px 0 0 !important;
   }  
 }

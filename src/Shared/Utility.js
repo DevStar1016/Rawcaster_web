@@ -520,9 +520,11 @@ export const ErrorHandling = (error) => {
       }
     } else if (error.request) {
       handleErrorMsg("Unable to connect to the server !", resolve);
-    } else {
-      handleErrorMsg("Something went Wrong!", resolve);
     }
+    // else {
+    //   console.log("something went wrong");
+    //   handleErrorMsg("Something went Wrong!", resolve);
+    // }
   });
 };
 const handleErrorMsg = (msg, resolve) => {

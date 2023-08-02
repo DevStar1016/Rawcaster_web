@@ -10,33 +10,6 @@ import { isArray } from "lodash";
 import LoginModal from "../Verification/LoginModal";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 
-const schema = Yup.object().shape({
-  content: Yup.string()
-    .max(150, "Question cannot be longer than 150 characters")
-    .required("Question is required"),
-  duration: Yup.string().required("Poll Length is required"),
-  poll_option: Yup.array()
-    .of(
-      Yup.object().shape({
-        choiceData: Yup.string()
-          .trim("Choice cannot include leading and trailing spaces")
-          .strict(true)
-          .required("Choice is required"),
-      })
-    )
-    .test(
-      "has-required-users",
-      "At least two Choice are required",
-      function (value) {
-        return (
-          value.length >= 2 &&
-          value.slice(0, 2).every((user) => user.choiceData)
-        );
-      }
-    )
-    .min(2, "At least two Choice are required"),
-});
-
 const Postpoll = ({ setisPoll }) => {
   const context = useContext(PostNuggetContext);
   const loginUserData = useAuthData();
@@ -45,6 +18,35 @@ const Postpoll = ({ setisPoll }) => {
     { choiceData: "" },
   ]);
   const [LimitExceeds, setLimitExceeds] = useState(false);
+  const schema = Yup.object().shape({
+    content: Yup.string()
+      .max(
+        loginUserData?.nugget_content_length,
+        "Question cannot be longer than 150 characters"
+      )
+      .required("Question is required"),
+    duration: Yup.string().required("Poll Length is required"),
+    poll_option: Yup.array()
+      .of(
+        Yup.object().shape({
+          choiceData: Yup.string()
+            .trim("Choice cannot include leading and trailing spaces")
+            .strict(true)
+            .required("Choice is required"),
+        })
+      )
+      .test(
+        "has-required-users",
+        "At least two Choice are required",
+        function (value) {
+          return (
+            value.length >= 2 &&
+            value.slice(0, 2).every((user) => user.choiceData)
+          );
+        }
+      )
+      .min(2, "At least two Choice are required"),
+  });
 
   const { values, setFieldValue, handleSubmit, handleChange, errors, touched } =
     useFormik({
@@ -71,7 +73,7 @@ const Postpoll = ({ setisPoll }) => {
   };
 
   useEffect(() => {
-    if (values?.content?.length > 149) {
+    if (values?.content?.length > loginUserData?.nugget_content_length - 1) {
       setLimitExceeds(true);
     } else {
       setLimitExceeds(false);
@@ -88,7 +90,7 @@ const Postpoll = ({ setisPoll }) => {
           style={{ height: "auto" }}
           placeholder={`Ask a question...`}
           value={values.content}
-          maxLength={150}
+          maxLength={loginUserData?.nugget_content_length}
           onChange={handleChange("content")}
         />
         {/* {LimitExceeds && loginUserData?.user_status_id !== 4 && (

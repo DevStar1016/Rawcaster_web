@@ -10,6 +10,7 @@
     height: fit-content;
     position: -webkit-sticky;
     position: sticky;
+    padding: 8px 0;
 }
 .NuggetSec {
   /* width: 310px; */
@@ -64,10 +65,11 @@
     float: left;
     position: sticky; 
     padding-right: 10px;
-    padding-bottom: 74px;
+    /* padding-bottom: 74px; */
     height: calc(100vh - 70px);
     position: -webkit-sticky;
     position: sticky;
+    padding: 18px 0;
   }
   
 .inviteContainer {
@@ -76,12 +78,13 @@
   width: 100%;
   min-width: 300px;
   padding:15px 17px;
-  margin:13px 0 0 0;
+  /* margin:13px 0 0 0; */
   cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 14px;
 }
 .resultSec {
   border: 1px solid #E8EAEE;
