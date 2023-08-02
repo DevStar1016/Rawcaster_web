@@ -27,6 +27,7 @@ const EventValidaton = () => {
   const [RequestList, setRequestList] = useState([]);
   const [attendeesList, setattendeesList] = useState([]);
   const { meetingManager } = useMainContext();
+  const [isFetching, setisFetching] = useState(true);
 
   useEffect(() => {
     if (userData && token && meetingManager.meetingStatus === 0) {
@@ -75,6 +76,8 @@ const EventValidaton = () => {
     RequestRef,
     setattendeesList,
     attendeesList,
+    setisFetching,
+    isFetching,
   };
 
   return isWaitingRoom ? (

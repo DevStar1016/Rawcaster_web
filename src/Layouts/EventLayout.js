@@ -114,20 +114,33 @@ const EventLayout = () => {
                   <i
                     className={`${styles.video_off_icon} ${styles.icon}`}
                     onClick={() => {
-                      toggleVideo();
+                      toggleVideo()
+                        .then((res) => {
+                          console.log(res, "ididididid");
+                        })
+                        .catch((err) => {
+                          console.log(err, "ididididid");
+                        });
                     }}
                   ></i>
                 ) : (
                   <i
                     className={`${styles.video_icon} ${styles.icon}`}
                     onClick={() => {
-                      toggleVideo();
+                      toggleVideo()
+                        .then((res) => {
+                          console.log(res, "ididididid");
+                        })
+                        .catch((err) => {
+                          console.log(err, "ididididid");
+                        });
                     }}
                   ></i>
                 )}
                 <Dropdown
                   menu={{
                     items: DeviceList(videoinput.devices, async (id) => {
+                      console.log(id, "ididididid");
                       audiovideo.startVideoInput(id);
                     }),
                   }}

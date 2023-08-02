@@ -77,6 +77,7 @@ const ChatSocketComponent = () => {
   const messagesProcessor = async (message) => {
     const messageType = message?.headers["x-amz-chime-event-type"];
     const record = JSON.parse(message?.payload);
+    console.log(record, messageType);
     switch (messageType) {
       case "CREATE_CHANNEL_MESSAGE":
         if (record.Sender.Arn !== userData.chime_user_id) {

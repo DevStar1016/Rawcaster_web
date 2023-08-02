@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import classes from "./Room.module.css";
 import { Layout } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
-import { useMainContext } from "../../../Shared/Context";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
@@ -11,8 +10,7 @@ import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 const { Header, Footer, Content } = Layout;
 
 const Participants = () => {
-  const { attendees } = useMainContext();
-  const { setisChatorParticipant, setRequestList, RequestRef } =
+  const { setisChatorParticipant, setRequestList, RequestRef, attendeesList } =
     useLayoutContect();
 
   const headerStyle = {
@@ -70,14 +68,20 @@ const Participants = () => {
         </div>
       </Header>
       <Content className={classes.participantSec}>
-        {attendees.map((ele, index) => (
+        {attendeesList.map((ele, index) => (
           <div className={classes.participantContainer}>
             <div className={classes.itemName}>
-              <img src={defaultprofileImg} />
-              {ele.externalUserId}
+              <img
+                src={ele.image ? ele.image : ""}
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null;
+                  currentTarget.src = defaultprofileImg;
+                }}
+              />
+              {ele.name}
             </div>
             <div className={classes.itemAction}>
-              {ele.externalUserId === "Me" ? (
+              {ele.isHost ? (
                 <div className={classes.hostIcon}>HOST</div>
               ) : (
                 <span className="material-symbols-outlined">volume_up</span>
@@ -90,14 +94,7 @@ const Participants = () => {
       </Content>
       <Footer className={classes.footerSec}>
         <div className={classes.inviteContainer}>
-          <div
-            className={classes.inviteBtn}
-            // onClick={() => {
-            //   setinviteParticipantsCount((pre) => pre + 1);
-            // }}
-          >
-            Invite Participants
-          </div>
+          <div className={classes.inviteBtn}>Invite Participants</div>
         </div>
 
         {RequestRef.current.length !== 0 && (

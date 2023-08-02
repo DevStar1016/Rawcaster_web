@@ -1,32 +1,28 @@
 import React from "react";
 import classes from "./EventBox.module.css";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
-import { useMainContext } from "../../../Shared/Context";
 import {
   ContentShare,
   LocalVideo,
   RemoteVideo,
   useAttendeeStatus,
-  useAudioVideo,
   useContentShareState,
   useLocalVideo,
-  useMeetingManager,
   useRemoteVideoTileState,
-  useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { Spin } from "antd";
 
 const EventBox = () => {
-  const { roster } = useRosterState();
-  const attendees = Object.values(roster);
   const { isVideoEnabled } = useLocalVideo();
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
-  const { isPinEnabled, isChatorParticipant } = useLayoutContect();
+  const { isPinEnabled, isChatorParticipant, attendeesList, isFetching } =
+    useLayoutContect();
   const getContainerClassName = () => {
-    switch (attendees.length) {
+    switch (attendeesList.length) {
       case 1:
         return classes.full_container;
       case 2:
@@ -52,31 +48,32 @@ const EventBox = () => {
 
   const GetDisplayComponent = ({ ele }) => {
     const { muted, videoEnabled, sharingContent, signalStrength } =
-      useAttendeeStatus(ele.chimeAttendeeId);
-    if (videoEnabled || isVideoEnabled) {
-      const value = attendeeIdToTileId[ele.chimeAttendeeId];
+      useAttendeeStatus(ele.AttendeeId);
+    if (videoEnabled) {
+      const value = attendeeIdToTileId[ele.AttendeeId];
       if (value) {
         return (
           <RemoteVideo
             className={classes.Child}
-            name={ele.externalUserId}
-            nameplate={ele.externalUserId}
+            name={ele.name}
+            nameplate={ele.name}
             tileId={value}
           />
         );
       } else {
         if (isVideoEnabled) {
-          return (
-            <LocalVideo
-              className={classes.Child}
-              nameplate={ele.externalUserId}
-            />
-          );
+          return <LocalVideo className={classes.Child} nameplate={ele.name} />;
         } else {
           return (
             <div className={classes.Child}>
-              <img src={userImg} />
-              <p>{ele.externalUserId}</p>
+              <img
+                src={ele.image ? ele.image : ""}
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null;
+                  currentTarget.src = userImg;
+                }}
+              />
+              <p>{ele.name}</p>
             </div>
           );
         }
@@ -84,8 +81,14 @@ const EventBox = () => {
     } else {
       return (
         <div className={classes.Child}>
-          <img src={userImg} />
-          <p>{ele.externalUserId}</p>
+          <img
+            src={ele.image ? ele.image : ""}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null;
+              currentTarget.src = userImg;
+            }}
+          />
+          <p>{ele.name}</p>
         </div>
       );
     }
@@ -96,45 +99,53 @@ const EventBox = () => {
       <div
         className={classes.video_grid}
         style={{
-          width: isChatorParticipant ? "80" : "100%",
+          width: !isFetching && isChatorParticipant ? "80" : "100%",
         }}
       >
-        <div
-          className={
-            isPinEnabled && attendees.length >= 10
-              ? classes.isPinavailablePinSec
-              : classes.PinSec
-          }
-        >
-          {isPinEnabled && attendees.length >= 10 && (
-            <div className={classes.pinned_video}>
-              <img src={userImg} />
-              <p>{"Participant "}</p>
+        {isFetching ? (
+          <div className="h-100 w-100 d-flex justify-content-center align-items-center">
+            <Spin />
+          </div>
+        ) : (
+          <>
+            <div
+              className={
+                isPinEnabled && attendeesList.length >= 10
+                  ? classes.isPinavailablePinSec
+                  : classes.PinSec
+              }
+            >
+              {isPinEnabled && attendeesList.length >= 10 && (
+                <div className={classes.pinned_video}>
+                  <img src={userImg} />
+                  <p>{"Participant "}</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div
-          className={
-            isPinEnabled && attendees.length >= 10
-              ? classes.isPinavailableSec
-              : classes.ParticipantSec
-          }
-          style={{
-            overflow: "scroll",
-          }}
-        >
-          {isLocalUserSharing || sharingAttendeeId ? (
-            <div className={classes.full_container}>
-              <ContentShare className={classes.Child} />
+            <div
+              className={
+                isPinEnabled && attendeesList.length >= 10
+                  ? classes.isPinavailableSec
+                  : classes.ParticipantSec
+              }
+              style={{
+                overflow: "scroll",
+              }}
+            >
+              {isLocalUserSharing || sharingAttendeeId ? (
+                <div className={classes.full_container}>
+                  <ContentShare className={classes.Child} />
+                </div>
+              ) : (
+                <div className={`mx-auto ${getContainerClassName()}`}>
+                  {attendeesList.map((ele, index) => {
+                    return <GetDisplayComponent ele={ele} />;
+                  })}
+                </div>
+              )}
             </div>
-          ) : (
-            <div className={`mx-auto ${getContainerClassName()}`}>
-              {attendees.map((ele, index) => {
-                return <GetDisplayComponent ele={ele} />;
-              })}
-            </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
       {isChatorParticipant && (
         <div className={classes.participantsSec}>

@@ -67,9 +67,10 @@ export const EmailReferalContainer = ({ close }) => {
   };
 
   const handleCloseTag = (index) => {
+    console.log(index);
     setValues((pre) => ({
       ...pre,
-      EmailList: pre.EmailList.filter((ele, ind) => !(ind === index)),
+      EmailList: pre.EmailList.filter((ele, ind) => ind !== index),
     }));
   };
 
@@ -96,6 +97,7 @@ export const EmailReferalContainer = ({ close }) => {
       }));
     }
   };
+  console.log(values.EmailList, "values.EmailList");
   return (
     <div className={classes.centerSec}>
       <img
@@ -119,7 +121,7 @@ export const EmailReferalContainer = ({ close }) => {
               <Tag
                 key={ind}
                 className={classes.tags}
-                onClose={() => {
+                onClose={(e) => {
                   handleCloseTag(ind);
                 }}
                 closable

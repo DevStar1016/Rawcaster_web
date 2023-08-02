@@ -70,7 +70,7 @@ const General = () => {
     //   })
     //   .catch((err) => {});
   };
-
+  console.log(userSettings, "userSettings");
   return (
     <div>
       <h1>General</h1>
@@ -135,6 +135,7 @@ const General = () => {
               const filteredData = friendsList.filter((elem) =>
                 formikvalues[ele.groupkeyword]?.includes(elem.user_id)
               );
+
               return filteredData.map((ele) => ele.user_id);
             };
 
@@ -146,7 +147,25 @@ const General = () => {
                     defaultValue={formikvalues[ele.keyword]}
                     className={classes.online_status}
                     onChange={(e) => {
-                      setFieldValue([ele.groupkeyword], []);
+                      if (
+                        userSettings[ele.groupkeyword].length !== 0 &&
+                        e.target.value === ele.groupid
+                      ) {
+                        setFieldValue(
+                          [ele.groupkeyword],
+                          userSettings[ele.groupkeyword]
+                        );
+                      } else if (
+                        userSettings[ele.groupkeyword].length !== 0 &&
+                        e.target.value === ele.friendid
+                      ) {
+                        setFieldValue(
+                          [ele.groupkeyword],
+                          userSettings[ele.groupkeyword]
+                        );
+                      } else {
+                        setFieldValue([ele.groupkeyword], []);
+                      }
                       if (
                         e.target.value === ele.groupid ||
                         e.target.value === ele.friendid
