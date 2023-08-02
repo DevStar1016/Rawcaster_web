@@ -122,12 +122,12 @@ export const EmailReferalContainer = ({ close }) => {
             handleSubmit();
           }}
         >
-          <Form.Item name="email" className="errormsg">
+          <Form.Item className="errormsg">
             {values.EmailList.map((ele, ind) => (
               <Tag
                 key={ind}
                 className={classes.tags}
-                onClose={(e) => {
+                onClose={() => {
                   handleCloseTag(ind);
                 }}
                 closable
@@ -140,6 +140,7 @@ export const EmailReferalContainer = ({ close }) => {
               placeholder="Your friend’s email..."
               autoComplete="off"
               id="extmail"
+              name="emailInput"
               ref={inputref}
               value={values.emailInput ? values.emailInput : ""}
               onClick={() => {
@@ -161,7 +162,11 @@ export const EmailReferalContainer = ({ close }) => {
               }}
             />
             {touched.EmailList && errors.EmailList && (
-              <div className="ErrTxt">{errors.EmailList}</div>
+              <div className="ErrTxt">
+                {errors.EmailList?.includes("Please input your valid email")
+                  ? "Please input your valid email"
+                  : errors.EmailList}
+              </div>
             )}
           </Form.Item>
           <Form.Item>

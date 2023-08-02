@@ -330,16 +330,23 @@ const UpdateProfile = () => {
           <Row gutter={10}>
             <Col md={12} xs={24}>
               <p className={classes.label}>First Name</p>
-              <Form.Item name="first_name">
+              <Form.Item>
                 <Input
                   size="large"
+                  name="first_name"
                   className={classes.textBox}
                   placeholder="First Name"
                   maxLength={50}
                   status={
                     touched.first_name && errors.first_name ? "error" : ""
                   }
-                  value={values.first_name}
+                  value={values?.first_name ? values?.first_name : ""}
+                  onClick={() => {
+                    console.log(
+                      values?.first_name,
+                      "  profileprofileprofile first name"
+                    );
+                  }}
                   onChange={(e) => {
                     setFieldValue("first_name", e.target.value);
                   }}
@@ -351,9 +358,10 @@ const UpdateProfile = () => {
             </Col>
             <Col md={12} xs={24}>
               <p className={classes.label}>Last Name</p>
-              <Form.Item name="last_name">
+              <Form.Item>
                 <Input
                   size="large"
+                  name="last_name"
                   className={classes.textBox}
                   placeholder="Last Name"
                   maxLength={50}
@@ -370,8 +378,9 @@ const UpdateProfile = () => {
             </Col>
             <Col md={12} xs={24}>
               <p className={classes.label}>Display Name</p>
-              <Form.Item name="name">
+              <Form.Item>
                 <Input
+                  name="name"
                   size="large"
                   className={classes.textBox}
                   placeholder="Display Name"
@@ -388,8 +397,9 @@ const UpdateProfile = () => {
 
             <Col md={12} xs={24}>
               <p className={classes.label}>Gender</p>
-              <Form.Item name="gender" className="genderSelect">
+              <Form.Item className="genderSelect">
                 <Select
+                  name="gender"
                   className={classes.selectBox}
                   placeholder="Select Gender"
                   status={touched.gender && errors.gender ? "error" : ""}
@@ -425,7 +435,7 @@ const UpdateProfile = () => {
 
             <Col md={12} xs={24}>
               <p className={classes.label}>Location</p>
-              <Form.Item name="geo_location">
+              <Form.Item>
                 <PlacesAutocomplete
                   value={values.geo_location}
                   onChange={handleChange("geo_location")}
@@ -442,6 +452,7 @@ const UpdateProfile = () => {
                   }) => (
                     <div style={{ width: "100%", float: "left" }}>
                       <Input
+                        name="geo_location"
                         id="geoLocation"
                         size="large"
                         className={`${classes.textBox} ${classes.locationInputHeight}`}
@@ -517,8 +528,9 @@ const UpdateProfile = () => {
             </Col>
             <Col sm={12} xs={24}>
               <p className={classes.label}>Studied At</p>
-              <Form.Item name="name">
+              <Form.Item>
                 <Input
+                  name="studied_at"
                   size="large"
                   className={classes.textBox}
                   placeholder="Studied At"
@@ -538,8 +550,9 @@ const UpdateProfile = () => {
             </Col>
             <Col sm={12} xs={24}>
               <p className={classes.label}>Work At</p>
-              <Form.Item name="name">
+              <Form.Item>
                 <Input
+                  name="work_at"
                   size="large"
                   className={classes.textBox}
                   placeholder="Work At"
@@ -556,8 +569,9 @@ const UpdateProfile = () => {
 
             <Col sm={12} xs={24}>
               <p className={classes.label}>Mobile Number</p>
-              <Form.Item name="mobile">
+              <Form.Item>
                 <Input
+                  name="mobile_no"
                   maxLength={15}
                   className={`${classes.textBox}`}
                   placeholder="Mobile Number"
@@ -573,8 +587,9 @@ const UpdateProfile = () => {
             </Col>
             <Col sm={12} xs={24}>
               <p className={classes.label}>Email</p>
-              <Form.Item name="email_id">
+              <Form.Item>
                 <Input
+                  name="email_id"
                   size="large"
                   className={classes.textBox}
                   placeholder="Email"
