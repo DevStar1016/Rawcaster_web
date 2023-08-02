@@ -36,7 +36,7 @@ const Events = ({ ref = null, style = {} }) => {
   return (
     <div className={classes.eventSec} ref={ref} style={style}>
       {!detectMob() && (
-        <div className={`${classes.beforelogin} mb-3`}>
+        <div className={`${classes.beforelogin} mb-2`}>
           <Link
             className={DashboardfilterType === 0 ? classes.active : ""}
             onClick={() => {
