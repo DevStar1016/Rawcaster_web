@@ -1,10 +1,18 @@
 import {
+  CreateChannelMembershipCommand,
   DeleteChannelMessageCommand,
   ListChannelMessagesCommand,
   SendChannelMessageCommand,
   UpdateChannelMessageCommand,
 } from "@aws-sdk/client-chime-sdk-messaging";
 import { chimeClient } from "./MessageService";
+import {
+  CreateAttendeeCommand,
+  CreateMeetingCommand,
+  GetMeetingCommand,
+} from "@aws-sdk/client-chime-sdk-meetings";
+
+// Chat
 
 export async function listChannelMessages(
   channelArn,
@@ -33,7 +41,6 @@ export async function listChannelMessages(
 }
 
 export async function sendChannelMessage(params) {
-  console.log(params, "params");
   const command = new SendChannelMessageCommand(params);
   const response = await chimeClient.send(command);
   return response;
@@ -47,6 +54,14 @@ export async function updateChannelMessage(params) {
 
 export async function deleteChannelMessage(params) {
   const command = new DeleteChannelMessageCommand(params);
+  const response = await chimeClient.send(command);
+  return response;
+}
+
+// Testing
+
+export async function AddmemberToChannel(params) {
+  const command = new CreateChannelMembershipCommand(params);
   const response = await chimeClient.send(command);
   return response;
 }

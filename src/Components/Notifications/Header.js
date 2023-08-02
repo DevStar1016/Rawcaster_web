@@ -3,18 +3,19 @@ import classes from "./Notification.module.css";
 import { useNotificationContext } from "../../Shared/Context";
 
 const Header = () => {
-  const { handleViewNotification, TotalUnreadCount } = useNotificationContext();
+  const { handleViewNotification, TotalUnreadCount, UnReadCount } =
+    useNotificationContext();
   return (
     <div className={classes.headingSec}>
       <div className={classes.leftSec}>
         <h2>Notifications</h2>
-        {TotalUnreadCount !== 0 && <p>{TotalUnreadCount}</p>}
+        {UnReadCount !== 0 && <p>{UnReadCount}</p>}
       </div>
       <div
         className={classes.markSec}
-        style={{ display: !TotalUnreadCount ? "none" : "" }}
+        style={{ display: !UnReadCount ? "none" : "" }}
         onClick={() => {
-          if (TotalUnreadCount !== 0) {
+          if (UnReadCount !== 0) {
             handleViewNotification(null, 1);
           }
         }}

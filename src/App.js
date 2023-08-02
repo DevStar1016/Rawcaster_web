@@ -10,11 +10,11 @@ import {
   MeetingProvider,
   lightTheme,
 } from "amazon-chime-sdk-component-library-react";
+import withErrorBoundary from "./Sharedcomponents/withErrorBoundary";
 
 function App() {
   const { isLoading } = useDashboard();
   const router = createBrowserRouter(routerpaths, { basename: "/" });
-
   return (
     <ThemeProvider theme={lightTheme}>
       <MeetingProvider>
@@ -27,4 +27,4 @@ function App() {
   );
 }
 
-export default App;
+export default withErrorBoundary(App);

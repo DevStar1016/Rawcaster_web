@@ -1,4 +1,4 @@
-import { Button, Input } from "antd";
+import { Alert, Button, Input, Space } from "antd";
 import { useFormik } from "formik";
 import React, { useContext, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
@@ -50,7 +50,7 @@ const Postpoll = ({ setisPoll }) => {
     useFormik({
       initialValues: {
         content: "",
-        poll_option: [],
+        poll_option: [{ choiceData: "" }, { choiceData: "" }],
         duration: "",
       },
       validateOnMount: true,
@@ -73,6 +73,8 @@ const Postpoll = ({ setisPoll }) => {
   useEffect(() => {
     if (values?.content?.length > 149) {
       setLimitExceeds(true);
+    } else {
+      setLimitExceeds(false);
     }
   }, [values.content]);
 
@@ -89,7 +91,7 @@ const Postpoll = ({ setisPoll }) => {
           maxLength={150}
           onChange={handleChange("content")}
         />
-        {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+        {/* {LimitExceeds && loginUserData?.user_status_id !== 4 && (
           <LoginModal
             open={LimitExceeds}
             close={handleLimitExceedsClose}
@@ -97,13 +99,14 @@ const Postpoll = ({ setisPoll }) => {
             AIopen="Upgrade"
             AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
           />
-        )}
+        )} */}
+
         {touched.content && <p className="ErrTxt">{errors?.content}</p>}
         <div className={classes.pollContainer}>
           <div className={classes.addSec}>
             {PollData.length !== 4 && (
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 onClick={() => {
                   let tmpData = [...PollData, { choiceData: "" }];
                   setFieldValue("poll_option", tmpData);
@@ -153,7 +156,7 @@ const Postpoll = ({ setisPoll }) => {
                               setFieldValue("poll_option", tmpData);
                             }}
                           >
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                               cancel
                             </span>
                           </div>
@@ -201,7 +204,42 @@ const Postpoll = ({ setisPoll }) => {
             </div>
           </div>
         </div>
-
+        {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+          <div
+            style={{ paddingTop: "20px" }}
+            className={classes.alertContainer}
+            id="Alertdiv"
+          >
+            <Alert
+              message="Upgrade Your Plan"
+              description="You have reached your character limit, to increase the limit upgrade your membership!"
+              type="info"
+              action={
+                <Space direction="vertical">
+                  <Button
+                    size="small"
+                    className={classes.upgradeBtn}
+                    type="primary"
+                    onClick={() => {
+                      window.location.assign("/membership");
+                    }}
+                  >
+                    Upgrade
+                  </Button>
+                  <Button
+                    className={classes.LaterBtn}
+                    onClick={handleLimitExceedsClose}
+                    size="small"
+                    danger
+                    type="primary"
+                  >
+                    Later
+                  </Button>
+                </Space>
+              }
+            />
+          </div>
+        )}
         <Button
           className={classes.btnstyle}
           onClick={() => {

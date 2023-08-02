@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { socketListen } from "../../Services/SocketService";
+import { ChimesocketListen, socketListen } from "../../Services/SocketService";
 import { GROUP_CHAT_PROCESS_TYPE } from "../Connections/Groups/Constants";
 import { useDispatch } from "react-redux";
 import {
@@ -8,6 +8,7 @@ import {
   handleUpdateGroupData,
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import store from "../../Store/Redux/Config/Store";
+import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 
 const SocketComponent = () => {
   const dispatch = useDispatch();
@@ -74,6 +75,13 @@ const SocketComponent = () => {
   };
 
   useEffect(() => {
+    ChimesocketListen.on("connect", () => {
+      console.log("Chime Socket Status", ChimesocketListen.connected);
+    });
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (value) => {
+      console.log("CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:", value);
+    });
+
     socketListen.on("connect", () => {
       console.log("Socket connected");
     });
@@ -109,6 +117,7 @@ const SocketComponent = () => {
       },
       []
     );
+
     return () => {
       socketListen.off("call");
     };

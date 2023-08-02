@@ -87,7 +87,9 @@ const Login = () => {
             };
             delete finalVal["name"];
             setCookieData("rawcaster_user_token", finalVal);
-            if (getSessionStorageData("influencerData")) {
+            if (res.data.first_time === 1) {
+              navigate("/selectinfluencers");
+            } else if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
             } else {

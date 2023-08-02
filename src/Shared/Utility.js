@@ -1,6 +1,7 @@
 import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
 import {
+  AES_KEY,
   ENCRIPTION_STRING,
   GECODE_API_KEY,
   GOOGLE_CLIENT_ID,
@@ -28,6 +29,8 @@ import { message } from "antd";
 import { Typography } from "antd";
 import axios, { isCancel } from "axios";
 import { toast } from "react-hot-toast";
+import { AES, enc } from "crypto-js";
+import classes from "../Sharedcomponents/Nuggets/Nuggets.module.css";
 
 // Auth
 
@@ -130,7 +133,6 @@ export const ConvertAddresstoLatLng = (address) => {
 // Common Utility
 
 export const decodeHtml = (data) => {
-  console.log(decode(data)?.length, "datalength");
   return decode(data);
 };
 
@@ -332,7 +334,7 @@ export const isAccountValid = (userData) => {
 //   return (
 //     <Linkify options={{ render: renderLink }}>
 //       <div>
-//         <span class={textClass} ref={ref}>
+//         <span className={textClass} ref={ref}>
 //           {children}
 //         </span>
 //         {showLink && (
@@ -576,7 +578,6 @@ export const fetchGoogleContacts = async () => {
       });
       resolve(response.result.otherContacts);
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -590,10 +591,12 @@ export const ReadMore = ({
   setisLinkopenModal,
   isReadMoreValid,
   onExpand,
+  partialHeight,
 }) => {
   const { Paragraph } = Typography;
   const [OnEllipsis, setOnEllipsis] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [readMore, setReadmore] = useState(false);
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -643,10 +646,58 @@ export const ReadMore = ({
             </span>
           )}
         </>
-      ) : (
+      ) : children?.split("\n")?.length > partialHeight ? (
         <>
           <Paragraph
             className="ReadMoreText"
+            // ellipsis={true}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              console.log(
+                children
+                  ?.split("\n")
+                  ?.filter((ele, index) => index < partialHeight)
+                  .join("\n"),
+                "childrenchildren"
+              );
+            }}
+          >
+            {readMore
+              ? children
+              : children
+                  ?.split("\n")
+                  ?.filter((ele, index) => index < partialHeight)
+                  .join("\n")
+                  .concat("...")}
+          </Paragraph>
+          {children?.split("\n")?.length > partialHeight && (
+            <>
+              {!readMore ? (
+                <span
+                  style={{ color: "#e26386", cursor: "pointer" }}
+                  onClick={() => {
+                    setReadmore(true);
+                  }}
+                >
+                  Read More
+                </span>
+              ) : (
+                <span
+                  style={{ color: "#e26386", cursor: "pointer" }}
+                  onClick={() => {
+                    setReadmore(false);
+                  }}
+                >
+                  Read Less
+                </span>
+              )}
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <Paragraph
+            className={`ReadMoreText ${classes.dNoneExpand}`}
             ellipsis={{
               rows: parseInt(partialShowLines),
               onExpand: onExpand,
@@ -654,7 +705,9 @@ export const ReadMore = ({
                 isReadMoreValid();
                 setOnEllipsis(status);
               },
+              expandable: true,
             }}
+            // ellipsis={true}
             style={{ cursor: "pointer" }}
           >
             {children}
@@ -758,4 +811,36 @@ export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
       reject("Error converting Blob URL to File:", error);
     }
   });
+};
+
+export const downloadurl = (url) => {
+  var file_path = url;
+  var a = document.createElement("A");
+  a.href = file_path;
+  a.download = file_path.substr(file_path.lastIndexOf("/") + 1);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+export const getUtcToSystemTime = (dateTime) => {
+  return moment(dateTime, "YYYY-MM-DD HH:mm:ss").subtract(
+    -moment().utcOffset(),
+    "minutes"
+  );
+};
+
+// OBJECT TO STRING
+
+export const EncryptObjectToString = (objectToEncrypt, secretKey = AES_KEY) => {
+  const stringToEncrypt = JSON.stringify(objectToEncrypt);
+  const encrypted = AES.encrypt(stringToEncrypt, secretKey).toString();
+  return encrypted;
+};
+
+export const DecryptStringToObject = (encryptedString, secretKey = AES_KEY) => {
+  const decryptedBytes = AES.decrypt(encryptedString, secretKey);
+  const decryptedString = decryptedBytes.toString(enc.Utf8);
+  const decryptedObject = JSON.parse(decryptedString);
+  return decryptedObject;
 };

@@ -56,6 +56,13 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
   };
 
   const handleFriendRequest = (ele) => {
+    let finalData = {
+      dispatch,
+      navigate,
+      nuggetFormData,
+      user_id: ele.user_id,
+    };
+    console.log("friendrequest");
     let becameFanData = {
       token: token,
       auth_code: getAuthToken(token),
@@ -70,6 +77,8 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
             profile_img: profileData.profile_image,
             user_id: profileData.user_id,
           };
+
+          handleProfileNavigate(finalData);
           friendRequestSocket(ele.user_id, data);
           let findIndex = PeopleList.findIndex(
             (elem) => elem.user_id === ele.user_id
@@ -94,19 +103,22 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
   };
 
   return (
-    <div className={classes.profileContainer}>
-      <div
-        className={classes.leftSec}
-        onClick={() => {
-          let finalData = {
-            dispatch,
-            navigate,
-            nuggetFormData,
-            user_id: ele.user_id,
-          };
-          handleProfileNavigate(finalData);
-        }}
-      >
+    <div
+      style={{
+        cursor: "pointer",
+      }}
+      onClick={() => {
+        let finalData = {
+          dispatch,
+          navigate,
+          nuggetFormData,
+          user_id: ele.user_id,
+        };
+        handleProfileNavigate(finalData);
+      }}
+      className={classes.profileContainer}
+    >
+      <div className={classes.leftSec}>
         <img
           src={ele.profile_img}
           alt={decodeHtml(ele.display_name)}
@@ -133,18 +145,24 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
             <p>{decodeHtml(ele.display_name)}</p>
             {/* <span>@TheTweetOfGod</span> */}
           </div>
-          <div className={classes.actionBtn}>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className={classes.actionBtn}
+          >
             {!ele?.follow && (
               <Button
                 htmlType="Continue"
                 size="large"
                 className={classes.fanBtn}
-                onClickCapture={() => {
+                onClickCapture={(e) => {
+                  e.stopPropagation();
                   handleBecomeFan(ele);
                 }}
               >
                 Become a Fan{" "}
-                <span class="material-symbols-outlined">arrow_forward</span>
+                <span className="material-symbols-outlined">arrow_forward</span>
               </Button>
             )}
             <div className="d-none d-md-block">
@@ -154,12 +172,14 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
                   htmlType="Continue"
                   size="large"
                   className={` ${classes.connectBtn}`}
-                  onClick={() => {
+                  onClick={(e) => {
                     handleFriendRequest(ele);
                   }}
                 >
                   Request to connect{" "}
-                  <span class="material-symbols-outlined">arrow_forward</span>
+                  <span className="material-symbols-outlined">
+                    arrow_forward
+                  </span>
                 </Button>
               )}
             </div>
@@ -168,17 +188,18 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
               htmlType="Continue"
               size="large"
               className={`d-block d-md-none ${classes.connectBtn}`}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 handleFriendRequest(ele);
               }}
             >
-              <span class="material-symbols-outlined">add</span>
+              <span className="material-symbols-outlined">add</span>
             </Button>
           </div>
         </div>
         <div
           className={classes.bioSec}
-          onClick={() => {
+          onClick={(e) => {
             let finalData = {
               dispatch,
               navigate,

@@ -46,18 +46,21 @@ const Group = ({ group, searchInput, onClick }) => {
             </span>
           </div>
         </div>
-        <div
-          className={`${classes.friendsmenu}`}
-          onClick={(event) => {
-            event.stopPropagation();
-            setisChatOpen({
-              show: true,
-              type: "group",
-              id: group.group_id,
-            });
-          }}
-        >
-          <img src={chatIcon} alt={"Group Chat"} />
+        <div className={`${classes.friendsmenu}`}>
+          <img src={audiocall} alt={"audio call"} />
+          <img src={videocall} alt={"video call"} />
+          <img
+            src={chatIcon}
+            alt={"Group Chat"}
+            onClick={(event) => {
+              event.stopPropagation();
+              setisChatOpen({
+                show: true,
+                type: "group",
+                id: group.group_id,
+              });
+            }}
+          />
         </div>
       </div>
     </>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useNuggets } from "../../../Shared/Reduxfetcher";
 import { handleProfileNavigate } from "../../../Shared/Utility";
@@ -6,6 +6,7 @@ import classes from "../Profile.module.css";
 import { useProfileContext } from "../../../Shared/Context";
 import { useDispatch } from "react-redux";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
+import ConnectionModal from "../../../Modal/Connections/Connection";
 
 const FansThumb = () => {
   const { FansList, setFansList } = useProfileContext();
@@ -13,6 +14,7 @@ const FansThumb = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isSeeMore, setisSeeMore] = useState(false);
   return (
     <div className={classes.fansList}>
       {FansList.connections?.map((ele) => (
@@ -43,7 +45,30 @@ const FansThumb = () => {
         />
       ))}
       {FansList.connectionscount !== 0 && (
-        <div className={classes.count}>{FansList.connectionscount}</div>
+        <div
+          onClick={() => {
+            setisSeeMore(true);
+          }}
+          className={classes.count}
+        >
+          +{FansList.connectionscount}
+        </div>
+      )}
+
+      {isSeeMore && (
+        <ConnectionModal
+          type={"Fans"}
+          userType={""}
+          open={isSeeMore}
+          filters={true}
+          value={FansList}
+          onSuccess={() => {
+            setisSeeMore(false);
+          }}
+          onClose={() => {
+            setisSeeMore(false);
+          }}
+        />
       )}
     </div>
   );

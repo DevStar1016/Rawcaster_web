@@ -29,6 +29,7 @@ const ModalLayout = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [player, setplayer] = useState(null);
+  const [ActiveEvent, setActiveEvent] = useState(null);
   const meetingManager = useMeetingManager();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
@@ -74,6 +75,8 @@ const ModalLayout = () => {
         PlayerSource,
         setisChatOpen,
         isChatOpen,
+        setActiveEvent,
+        ActiveEvent,
       }}
     >
       <HelmetComponent />

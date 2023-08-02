@@ -32,7 +32,6 @@ const ConnectionsList = () => {
         }
       });
       findData = findData.filter((ele) => ele !== undefined);
-      console.log(findData);
       setFilteredList(findData);
       setConnectionData(friendsList);
     }

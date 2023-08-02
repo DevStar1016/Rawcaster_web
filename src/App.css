@@ -24,6 +24,9 @@ body {
 .inputsec input {
   height: 35px;
 }
+.ant-typography-expand {
+  display: none;
+}
 .textBox {
   -webkit-text-fill-color: inherit;
 -webkit-text-fill-color: initial;
@@ -535,7 +538,7 @@ margin-bottom: 0px !important;
 
 .ant-checkbox-checked .ant-checkbox-inner {
   background-color: #f4c117 !important;
-  border-color: #f4c117 !important;
+  border-color: #f4c117 ;
 }
 .ant-checkbox-wrapper:hover span::after {
   border-color: none !important;

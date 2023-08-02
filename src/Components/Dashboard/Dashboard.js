@@ -67,7 +67,7 @@ const Dashboard = () => {
               src={require("../../Assets/Images/png/mob-rlogo.png")}
             />
             Log in/Sign up to explore Rawcaster features{" "}
-            <span class="material-icons">arrow_forward</span>
+            <span className="material-icons">arrow_forward</span>
           </Link>
         </div>
       )}

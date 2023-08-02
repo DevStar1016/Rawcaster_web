@@ -242,7 +242,9 @@ const CameraModal = ({
             {type === "Camera" && (
               <div className={classes.btnSec}>
                 <button onClick={() => captureImage()}>
-                  <span class="material-symbols-outlined">photo_camera</span>
+                  <span className="material-symbols-outlined">
+                    photo_camera
+                  </span>
                 </button>
               </div>
             )}

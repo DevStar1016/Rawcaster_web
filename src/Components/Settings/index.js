@@ -77,6 +77,8 @@ const Settings = () => {
     lock_my_influencer: 0,
     live_event_banner: "",
     talkshow_event_banner: "",
+    profile_field_name: "",
+    groupid: "",
     read_out_language_id: "",
   });
 
@@ -380,7 +382,7 @@ const Settings = () => {
         </div>
         <div className={classes.settingmobMenu}>
           <span
-            class="material-icons"
+            className="material-icons"
             onClick={() => setvisibleSideBar((p) => !p)}
           >
             menu

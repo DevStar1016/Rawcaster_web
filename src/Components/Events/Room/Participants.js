@@ -3,17 +3,18 @@ import classes from "./Room.module.css";
 import { Layout } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
-import { useEventLayout } from "../../../Layouts/EventLayout";
 import { useMainContext } from "../../../Shared/Context";
-import { ChimesocketListen } from "../../../Services/SocketService";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 const { Header, Footer, Content } = Layout;
 
 const Participants = () => {
   const { attendees } = useMainContext();
-  const { setisChatorParticipant } = useEventLayout();
-  const [inviteParticipantsCount, setinviteParticipantsCount] = useState(0);
+  const { setisChatorParticipant, setRequestList, RequestRef } =
+    useLayoutContect();
+
   const headerStyle = {
     textAlign: "center",
     color: "#fff",
@@ -21,11 +22,23 @@ const Participants = () => {
     backgroundColor: "#7dbcea",
   };
 
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (message) => {
-      console.log(message);
-    });
-  }, []);
+  const handleAccept = (ele) => {
+    const value = { userId: ele.userId, meetingId: ele.meetingId };
+    ChimesendMessage(value, CHIME_SOCKET_EVENTS.ALLOW_TO_JOIN_MEETING);
+    setRequestList((pre) => pre.filter((elem) => elem.userId !== ele.userId));
+    RequestRef.current = RequestRef.current.filter(
+      (elem) => elem.userId !== ele.userId
+    );
+  };
+
+  const handleReject = (ele) => {
+    const value = { userId: ele.userId };
+    ChimesendMessage(value, CHIME_SOCKET_EVENTS.REJECT_TO_JOIN_MEETING);
+    setRequestList((pre) => pre.filter((elem) => elem.userId !== ele.userId));
+    RequestRef.current = RequestRef.current.filter(
+      (elem) => elem.userId !== ele.userId
+    );
+  };
 
   return (
     <Layout className={classes.popupContainer}>
@@ -36,9 +49,9 @@ const Participants = () => {
             <p>Participants</p>
           </div>
           <div>
-            <i class="material-symbols-outlined">search</i>
+            <i className="material-symbols-outlined">search</i>
             <i
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setisChatorParticipant(null);
               }}
@@ -50,9 +63,9 @@ const Participants = () => {
         <div className={classes.GlobalSettingContainer}>
           <div className={classes.itemName}>Global Settings</div>
           <div className={classes.itemAction}>
-            <span class="material-symbols-outlined">volume_up</span>
-            <span class="material-symbols-outlined">mic</span>
-            <span class="material-symbols-outlined">videocam</span>
+            <span className="material-symbols-outlined">volume_up</span>
+            <span className="material-symbols-outlined">mic</span>
+            <span className="material-symbols-outlined">videocam</span>
           </div>
         </div>
       </Header>
@@ -67,10 +80,10 @@ const Participants = () => {
               {ele.externalUserId === "Me" ? (
                 <div className={classes.hostIcon}>HOST</div>
               ) : (
-                <span class="material-symbols-outlined">volume_up</span>
+                <span className="material-symbols-outlined">volume_up</span>
               )}
-              <span class="material-symbols-outlined">mic</span>
-              <span class="material-symbols-outlined">videocam</span>
+              <span className="material-symbols-outlined">mic</span>
+              <span className="material-symbols-outlined">videocam</span>
             </div>
           </div>
         ))}
@@ -79,15 +92,15 @@ const Participants = () => {
         <div className={classes.inviteContainer}>
           <div
             className={classes.inviteBtn}
-            onClick={() => {
-              setinviteParticipantsCount((pre) => pre + 1);
-            }}
+            // onClick={() => {
+            //   setinviteParticipantsCount((pre) => pre + 1);
+            // }}
           >
             Invite Participants
           </div>
         </div>
 
-        {inviteParticipantsCount !== 0 && (
+        {RequestRef.current.length !== 0 && (
           <div
             style={{
               marginTop: 15,
@@ -100,7 +113,7 @@ const Participants = () => {
                 marginLeft: 10,
               }}
             >
-              Requests ({inviteParticipantsCount})
+              Requests ({RequestRef.current.length})
             </p>
             <div
               style={{
@@ -109,22 +122,34 @@ const Participants = () => {
                 overflowX: "hidden",
               }}
             >
-              {[...new Array(inviteParticipantsCount)].map((ele) => (
-                <div className={classes.participantContainer}>
-                  <div className={classes.itemName}>
-                    <img src={defaultprofileImg} />
-                    Rawcaster User
-                  </div>
-                  <div className={classes.itemAction}>
-                    <div className={classes.greenicon}>
-                      <i class="material-symbols-outlined">done</i>
+              {RequestRef.current.map((ele, index) => {
+                return (
+                  <div className={classes.participantContainer}>
+                    <div className={classes.itemName}>
+                      <img src={ele.user_img} alt={`request_${index}`} />
+                      {ele.user_name}
                     </div>
-                    <div className={classes.redicon}>
-                      <i class="material-symbols-outlined">close</i>
+                    <div className={classes.itemAction}>
+                      <div
+                        className={classes.greenicon}
+                        onClick={() => {
+                          handleAccept(ele);
+                        }}
+                      >
+                        <i className="material-symbols-outlined">done</i>
+                      </div>
+                      <div
+                        className={classes.redicon}
+                        onClick={() => {
+                          handleReject(ele);
+                        }}
+                      >
+                        <i className="material-symbols-outlined">close</i>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

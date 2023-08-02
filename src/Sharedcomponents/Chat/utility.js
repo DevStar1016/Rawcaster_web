@@ -26,7 +26,7 @@ import {
 } from "../../Shared/Utility";
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
-import { Dropdown, Image, Tooltip, message } from "antd";
+import { Checkbox, Dropdown, Image, Radio, Tooltip, message } from "antd";
 import { useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
@@ -151,7 +151,6 @@ export const ChatInput = ({
   const handleCameraPermission = (type) => {
     requestVideoPermissions()
       .then(() => {
-        console.log("isCamera");
         setisCamera({ show: true, type: type });
       })
       .catch((err) => {
@@ -224,7 +223,7 @@ export const ChatInput = ({
         <div className={classes.editContainer}>
           <span>{value}</span>
           <i
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setChatMessage("");
               onEditClose();
@@ -323,7 +322,9 @@ export const ChatInput = ({
                           handleCameraPermission("Camera");
                         }}
                       >
-                        <span class="material-symbols-outlined">camera</span>
+                        <span className="material-symbols-outlined">
+                          camera
+                        </span>
                       </button>
                     </Tooltip>
 
@@ -334,7 +335,9 @@ export const ChatInput = ({
                           handleCameraPermission("Video");
                         }}
                       >
-                        <span class="material-symbols-outlined">videocam</span>
+                        <span className="material-symbols-outlined">
+                          videocam
+                        </span>
                       </button>
                     </Tooltip>
                     <Tooltip placement="left" title={"Upload Image or Video"}>
@@ -344,7 +347,7 @@ export const ChatInput = ({
                           ImagefileRef.current.click();
                         }}
                       >
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                           attach_file
                         </span>
                       </button>
@@ -461,7 +464,7 @@ export const ChatInput = ({
         <div className={classes.recordingBox}>
           <div className={classes.RecordingTimeSec}>
             {AudioElement ? (
-              <>{AudioElement ? formatTime(AudioElement.currentTime) : null}</>
+              <>{AudioElement ? formatTime(AudioElement?.currentTime) : null}</>
             ) : (
               <>{getValidNumber(minutes) + `:` + getValidNumber(seconds)}</>
             )}
@@ -471,7 +474,7 @@ export const ChatInput = ({
               <>
                 {AudioElement && AudioElement?.paused ? (
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       AudioElement.play();
                     }}
@@ -480,7 +483,7 @@ export const ChatInput = ({
                   </span>
                 ) : (
                   <span
-                    class="material-symbols-rounded"
+                    className="material-symbols-rounded"
                     onClick={() => {
                       AudioElement.pause();
                     }}
@@ -491,7 +494,7 @@ export const ChatInput = ({
               </>
             ) : (
               <span
-                class="material-symbols-rounded"
+                className="material-symbols-rounded"
                 onClick={() => {
                   isSend.current = false;
                   stopRecording();
@@ -501,7 +504,7 @@ export const ChatInput = ({
               </span>
             )}
             <span
-              class={`material-symbols-outlined ${classes.closeIcon}`}
+              className={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
                 handleClose();
                 clearBlobUrl();
@@ -600,7 +603,7 @@ export const ChatInput = ({
 };
 
 export const MessageContent = (props) => {
-  const { Messages, setEditData } = useChatContext();
+  const { Messages, setEditData, setreceiverMessage } = useChatContext();
   const {
     message = null,
     user,
@@ -612,12 +615,15 @@ export const MessageContent = (props) => {
     message_id,
     isEdited,
     onDelete,
+    onSelectedMessage,
+    selectedMessages,
+    SelectAllMessages,
+    setSelectAllMessages,
   } = props;
   const friends_list = useFriends();
   const loginUserData = useAuthData();
 
-  const [isAvatarErr, setisAvatarErr] = useState(false);
-
+  // const [isAvatarErr, setisAvatarErr] = useState(false);
   const isUser = (id) => {
     if (id === loginUserData?.chime_user_id) {
       return true;
@@ -663,7 +669,6 @@ export const MessageContent = (props) => {
   };
 
   const GetValidComponent = () => {
-    console.log(type);
     switch (true) {
       case type.includes("image"):
         return (
@@ -689,13 +694,13 @@ export const MessageContent = (props) => {
           </video>
         );
       case type.includes("audio"):
-        return (
+        return file_path ? (
           <div className={classes.audioSec}>
             <div className={classes.audioplayer}>
               <ChatAudioplayer
                 textColor={isUser(user) ? "#FFFFFF" : "#000000"}
                 url={file_path}
-                time={moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                time={moment(props?.created_at, "YYYY-MM-DD HH:mm:ss").format(
                   "hh:mm A"
                 )}
               />
@@ -706,7 +711,7 @@ export const MessageContent = (props) => {
               />
             </div>
           </div>
-        );
+        ) : null;
 
       default:
         if (file && Object.keys(file).length !== 0) {
@@ -784,6 +789,23 @@ export const MessageContent = (props) => {
     },
     {
       key: "3",
+      label: <div onClick={onDelete}>Forward</div>,
+    },
+    {
+      key: "4",
+      label: (
+        <div
+          onClick={() => {
+            setSelectAllMessages(true);
+            // onSelectedMessage(message);
+          }}
+        >
+          Select
+        </div>
+      ),
+    },
+    {
+      key: "5",
       label: <div onClick={onDelete}>Delete</div>,
     },
   ];
@@ -793,82 +815,114 @@ export const MessageContent = (props) => {
       className={`${
         isUser(user) ? classes.MessageContainer : classes.receiverConteiner
       } ${isUser(user) ? "br_top_right" : "br_top_left"}`}
+      onClick={() => {
+        if (isUser(user) && SelectAllMessages) {
+          onSelectedMessage(message);
+        } else if (SelectAllMessages) {
+          onSelectedMessage(message);
+          setreceiverMessage((pre) => {
+            let temp = [...pre];
+            if (temp?.includes(message)) {
+              return temp.filter((ele) => ele !== message);
+            }
+            return [...temp, message];
+          });
+        }
+      }}
+      style={!isUser(user) && SelectAllMessages ? { paddingLeft: "25px" } : {}}
     >
-      <div className={classes.msgBox}>
-        {isGroup && (
-          <div className={classes.avatar}>
-            {getmessageType() !== "first" ? (
-              <div
-                style={{
-                  height: 30,
-                  width: 30,
-                }}
-              ></div>
-            ) : (
-              <img
-                src={
-                  isUser(user)
-                    ? loginUserData?.profile_image
-                    : getUserData().profile_img
-                }
-                onError={(e) => {
-                  setisAvatarErr(true);
-                }}
-              />
-            )}
-          </div>
-        )}
-        <div
-          key={index}
-          className={`${classes.chatbox_message} ${
-            isUser(user) ? classes.user_chatbox_message : ""
-          } ${getBorderType()}`}
-        >
-          <div className={classes.content}>
-            {!isUser(user) && isGroup && getUserData().display_name && (
-              <p className={classes.userNameSec}>
-                {getUserData().display_name}
-              </p>
-            )}
-            <GetValidComponent />
+      <Dropdown
+        menu={{ items }}
+        placement="bottomRight"
+        arrow
+        trigger={["contextMenu"]}
+      >
+        <div className={classes.msgBox}>
+          {isGroup && (
+            <div className={classes.avatar}>
+              {getmessageType() !== "first" ? (
+                <div
+                  style={{
+                    height: 30,
+                    width: 30,
+                  }}
+                ></div>
+              ) : (
+                <img
+                  src={
+                    isUser(user)
+                      ? loginUserData?.profile_image
+                      : getUserData().profile_img
+                  }
+                  // onError={(e) => {
+                  //   setisAvatarErr(true);
+                  // }}
+                />
+              )}
+            </div>
+          )}
+          <div
+            key={index}
+            className={`${classes.chatbox_message} ${
+              isUser(user) ? classes.user_chatbox_message : ""
+            } ${getBorderType()}`}
+          >
+            <div className={classes.content}>
+              {!isUser(user) && isGroup && getUserData().display_name && (
+                <p className={classes.userNameSec}>
+                  {getUserData().display_name}
+                </p>
+              )}
+              <GetValidComponent />
 
-            {message && message.trim() !== "null" && (
-              <p
+              {message && message.trim() !== "null" && (
+                <p
+                  style={{
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {message}
+                </p>
+              )}
+              {props.created_at && type !== "audio" && (
+                <span className={classes.timestamp}>
+                  {isEdited ? `edited - ` : ""}
+                  {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                    "hh:mm A"
+                  )}
+                </span>
+              )}
+            </div>
+          </div>
+          {isUser(user) && (
+            <Dropdown
+              menu={{ items }}
+              placement="bottomRight"
+              arrow
+              trigger={["click"]}
+            >
+              <span
+                className={`material-symbols-outlined ${classes.moreIcon}`}
                 style={{
-                  whiteSpace: "pre-line",
+                  color: "black",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
                 }}
               >
-                {message}
-              </p>
-            )}
-            {props.created_at && type !== "audio" && (
-              <span className={classes.timestamp}>
-                {isEdited ? `edited - ` : ""}
-                {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
-                  "hh:mm A"
-                )}
+                more_vert
               </span>
-            )}
-          </div>
+            </Dropdown>
+          )}
         </div>
-        {isUser(user) && (
-          <Dropdown
-            menu={{ items }}
-            placement="bottomRight"
-            arrow
-            trigger={["click"]}
-          >
-            <span
-              className={`material-symbols-outlined ${classes.moreIcon}`}
-              style={{
-                color: "black",
-              }}
-            >
-              more_vert
-            </span>
-          </Dropdown>
-        )}
-      </div>
+      </Dropdown>
+
+      {SelectAllMessages && (
+        <Checkbox
+          className={classes.SelectedMessage}
+          checked={selectedMessages?.includes(message)}
+        />
+      )}
     </div>
   );
 };

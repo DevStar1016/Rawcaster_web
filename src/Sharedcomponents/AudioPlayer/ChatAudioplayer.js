@@ -1,104 +1,109 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import classes from "./Audioplayer.module.css";
 import moment from "moment";
+import ReactPlayer from "react-player";
+import { Spinner } from "react-bootstrap";
 
 const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
+  const [audioUrl, setAudioUrl] = useState("");
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [isPlaying, setisPlaying] = useState(false);
   const [FormattedTime, setFormattedTime] = useState("00:00");
-
-  const handleTimeUpdate = () => {
-    setCurrentTime(audioRef.current.currentTime);
-    setFormattedTime(
-      moment.utc(audioRef.current.currentTime * 1000).format("mm:ss")
-    );
-  };
-
-  const handleLoadedMetadata = () => {
-    if (!isNaN(audioRef.current.duration)) {
-      setDuration(audioRef.current.duration);
-    }
-  };
+  const [isBuffering, setisBuffering] = useState(false);
+  const duration = 0;
 
   const handleSliderChange = (e) => {
-    const newTime = (parseInt(e.target.value) / 100) * duration;
-    setCurrentTime(newTime);
-    audioRef.current.currentTime = newTime;
+    const value = parseFloat(e.target.value);
+    setCurrentTime(value);
+    const player = audioRef.current;
+    const seekToSeconds = player.getDuration() * (value / 100);
+    player.seekTo(seekToSeconds);
   };
 
-  async function getDuration() {
-    return new Promise((resolve) => {
-      const audio = document.createElement("audio");
-      const source = document.createElement("source");
-      source.src = url; //--> blob URL
-      audio.preload = "metadata";
-      audio.appendChild(source);
-      audio.onloadedmetadata = function () {
-        resolve(audio.duration);
-      };
-    });
-  }
-
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.load();
-      audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
+    const audio = new Audio();
+    audio.src = url;
+    audio.addEventListener("loadedmetadata", () => {
+      setAudioUrl(audio.src);
+    });
 
-      audioRef.current.addEventListener("loadedmetadata", () => {
-        const totalDuration = audioRef.current.duration;
-        console.log("Total duration:", totalDuration, audioRef);
+    return () => {
+      audio.removeEventListener("loadedmetadata", () => {
+        setAudioUrl(audio.src);
       });
-      audioRef.current.addEventListener("durationchange", handleTimeUpdate);
-    }
-  }, [audioRef.current]);
+    };
+  }, [url]);
+
+  const handleProgress = (e) => {
+    const played = e.played * 100;
+    setCurrentTime(played);
+    const duration = moment.duration(e.playedSeconds, "seconds");
+    setFormattedTime(moment.utc(duration.asMilliseconds()).format("mm:ss"));
+  };
 
   return (
     <div className={classes.audio_slider_container}>
-      <audio
+      <ReactPlayer
         ref={audioRef}
-        src={url}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedData={(e) => {
-          console.log(e.target.duration);
+        url={audioUrl}
+        playing={isPlaying}
+        controls={false}
+        onEnded={() => {
+          setisPlaying(false);
         }}
-        onLoadedMetadata={handleLoadedMetadata}
+        onBuffer={() => {
+          setisBuffering(true);
+          setisPlaying(false);
+        }}
+        onBufferEnd={() => {
+          setisBuffering(false);
+        }}
+        onPlay={() => {
+          setisPlaying(true);
+        }}
+        onProgress={handleProgress}
+        style={{
+          display: "none",
+        }}
       />
 
+      {/* <AudioPlayer src={audioUrl} /> */}
+
       <div className="w-100 d-flex flex-row align-items-center justify-content-center">
-        <div className={classes.pauseplaySec}>
-          {!audioRef.current?.paused ? (
-            <i
-              className={classes.pause_icon}
-              onClick={() => {
-                audioRef.current?.pause();
-              }}
-            />
-          ) : (
-            <i
-              className={classes.play_icon}
-              onClick={() => {
-                audioRef.current?.play();
-              }}
-            />
-          )}
-        </div>
+        {isBuffering ? (
+          <div className={classes.spinnerSec}>
+            <Spinner animation="border" />
+          </div>
+        ) : (
+          <div className={classes.pauseplaySec}>
+            {isPlaying ? (
+              <i
+                className={classes.pause_icon}
+                onClick={() => {
+                  setisPlaying(false);
+                }}
+              />
+            ) : (
+              <i
+                className={classes.play_icon}
+                onClick={() => {
+                  setisPlaying(true);
+                }}
+              />
+            )}
+          </div>
+        )}
         <div className={classes.sliderSec}>
           <input
             type="range"
             className={classes.audio_slider}
             min={0}
             max={100}
-            value={((currentTime / duration) * 100).toFixed(0)}
+            value={currentTime}
             onChange={handleSliderChange}
             style={{
-              background: `linear-gradient(to right, #563662 0%, #563662 ${(
-                (currentTime / duration) *
-                100
-              ).toFixed(0)}%, #D4D8E3 ${(
-                (currentTime / duration) *
-                100
-              ).toFixed(0)}%, #D4D8E3 100%)`,
+              background: `linear-gradient(to right, #563662 ${currentTime}%, #D4D8E3 ${currentTime}%)`,
             }}
           />
           <div className={`${classes.timeSec} ${classes.chatTimeSec}`}>

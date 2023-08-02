@@ -14,7 +14,10 @@ import {
 import { getValidDisplayData } from "./Utility";
 import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
 import { grouplistupdateService } from "../../Services/ApiService";
-import { defaultprofileImg } from "../../Shared/CommonConstants";
+import {
+  defaultGroupImg,
+  defaultprofileImg,
+} from "../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import {
   handleRemoveReadoutURL,
@@ -22,8 +25,14 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const General = () => {
-  const { formikvalues, setFieldValue, setupdateValue, updateValue } =
-    useSettingsContext();
+  const {
+    formikvalues,
+    setFieldValue,
+    setupdateValue,
+    updateValue,
+    setValues,
+    handleupdate,
+  } = useSettingsContext();
   const dispatch = useDispatch();
   const token = useAuthToken();
   const { loginUserData, userSettings } = useAuth();
@@ -41,20 +50,25 @@ const General = () => {
     });
   }, []);
 
-  const handleGroupListUpdateService = (key, value) => {
+  const handleGroupListUpdateService = (key, value, type) => {
     let finalData = {
-      token: token,
       profile_field_name: key,
+      [key]: type,
       groupid: JSON.stringify(value),
     };
+    setValues((pre) => ({
+      ...pre,
+      ...finalData,
+    }));
+    handleupdate(finalData);
 
-    grouplistupdateService(JSONtoformdata(finalData))
-      .then((res) => {
-        if (res.data.status === 1) {
-          setupdateValue(key, 3);
-        }
-      })
-      .catch((err) => {});
+    // grouplistupdateService(JSONtoformdata(finalData))
+    //   .then((res) => {
+    //     if (res.data.status === 1) {
+    //       setupdateValue(key, 3);
+    //     }
+    //   })
+    //   .catch((err) => {});
   };
 
   return (
@@ -111,6 +125,19 @@ const General = () => {
             />
           </div>
           {SettingsList.map((ele) => {
+            const getGroupList = () => {
+              const filteredData = groupsList.filter((elem) =>
+                formikvalues[ele.groupkeyword]?.includes(elem.group_id)
+              );
+              return filteredData.map((ele) => ele.group_id);
+            };
+            const getFriendList = () => {
+              const filteredData = friendsList.filter((elem) =>
+                formikvalues[ele.groupkeyword]?.includes(elem.user_id)
+              );
+              return filteredData.map((ele) => ele.user_id);
+            };
+
             return (
               <>
                 <div>
@@ -119,6 +146,7 @@ const General = () => {
                     defaultValue={formikvalues[ele.keyword]}
                     className={classes.online_status}
                     onChange={(e) => {
+                      setFieldValue([ele.groupkeyword], []);
                       if (
                         e.target.value === ele.groupid ||
                         e.target.value === ele.friendid
@@ -159,8 +187,10 @@ const General = () => {
                       maxTagCount={"responsive"}
                       className={classes.connectionselectBox}
                       placeholder="Search group"
-                      value={formikvalues[ele.groupkeyword]}
-                      onChange={(val) => {
+                      value={getGroupList()}
+                      onChange={(val, value) => {
+                        console.log(value);
+                        console.log(formikvalues[ele.groupkeyword]);
                         setFieldValue([ele.groupkeyword], val);
                       }}
                       optionLabelProp="label"
@@ -187,6 +217,10 @@ const General = () => {
                                 style={{ borderRadius: "16px" }}
                                 width="32px"
                                 height="32px"
+                                onError={({ currentTarget }) => {
+                                  currentTarget.onerror = null; // prevents looping
+                                  currentTarget.src = defaultGroupImg;
+                                }}
                               ></img>
                               <span
                                 style={{
@@ -208,7 +242,11 @@ const General = () => {
                       onClick={() => {
                         handleGroupListUpdateService(
                           ele.keyword,
-                          formikvalues[ele.groupkeyword]
+                          formikvalues[ele.groupkeyword],
+                          ele?.keyword === "public_nugget_display" ||
+                            ele?.keyword === "public_event_display"
+                            ? 5
+                            : 3
                         );
                       }}
                     >
@@ -223,7 +261,7 @@ const General = () => {
                       maxTagCount={"responsive"}
                       className={classes.connectionselectBox}
                       placeholder="Search Connection"
-                      value={formikvalues[ele.groupkeyword]}
+                      value={getFriendList()}
                       onChange={(val) => {
                         setFieldValue([ele.groupkeyword], val);
                       }}
@@ -276,7 +314,8 @@ const General = () => {
                       onClick={() => {
                         handleGroupListUpdateService(
                           ele.keyword,
-                          formikvalues[ele.groupkeyword]
+                          formikvalues[ele.groupkeyword],
+                          3
                         );
                       }}
                     >
@@ -317,7 +356,7 @@ const General = () => {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <p className={classes.smallheading}>Preference Language</p>
             <Select
               showSearch
@@ -347,7 +386,7 @@ const General = () => {
                 userSettings?.account_active_inactive === 0
               }
             />
-          </div>
+          </div> */}
           <div>
             <p className={classes.smallheading}>Readout Language</p>
             <Select

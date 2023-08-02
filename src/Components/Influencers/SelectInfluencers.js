@@ -1,4 +1,4 @@
-import { Col, Row, Select, Spin, Tooltip } from "antd";
+import { Checkbox, Col, Empty, Row, Select, Spin, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Influencers.module.css";
@@ -26,7 +26,7 @@ const SelectInfluencers = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserData = useAuthData();
-
+  const [isBecomeFanSent, setisBecomeFanSent] = useState(false);
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [influencerList, setinfluencerList] = useState([]);
   const [previousInfluencerList, setpreviousInfluencerList] = useState([]);
@@ -55,7 +55,8 @@ const SelectInfluencers = () => {
       .then((res) => {
         if (res.data.status === 1) {
           setSearchValues((pre) => ({
-            ...pre,
+            search_key: pre?.search_key,
+            category: "",
             pageNum: res.data.current_page_no,
             total_page: res.data.total_pages,
           }));
@@ -69,7 +70,8 @@ const SelectInfluencers = () => {
           setinfluencerList([]);
           setinfluencersCount(0);
           setSearchValues((pre) => ({
-            ...pre,
+            search_key: pre?.search_key,
+            category: "",
             pageNum: 1,
             total_page: 1,
           }));
@@ -81,6 +83,9 @@ const SelectInfluencers = () => {
         setisLoadMore(null);
       });
   };
+  useEffect(() => {
+    console.log(SelectedInfluencersList, "SelectedInfluencersList");
+  }, [SelectedInfluencersList]);
 
   const getCategoryList = () => {
     let influencerData = {
@@ -173,10 +178,12 @@ const SelectInfluencers = () => {
         follow_userid: JSON.stringify(selectedFansList),
         select_all:
           SelectedInfluencersList?.length === influencerList?.length ? 1 : 0,
+        category: SearchValues?.category,
       };
       InfluencerFollowService(JSONtoformdata(becameFanData))
         .then((res) => {
           if (res.data.status === 1) {
+            setisBecomeFanSent(true);
             getInfluencerList(
               SearchValues.pageNum,
               SearchValues.category,
@@ -206,10 +213,21 @@ const SelectInfluencers = () => {
         <div className={classes.btnSec}>
           <button
             onClick={() => {
-              navigate("/dashboard");
+              if (SelectedInfluencersList.length === 0 || isBecomeFanSent) {
+                navigate("/dashboard");
+              } else {
+                HandleupdateFans()
+                  .then((res) => {
+                    navigate("/dashboard");
+                  })
+                  .catch((err) => {});
+              }
             }}
           >
-            Skip this
+            {SelectedInfluencersList.length === 0 && !isBecomeFanSent
+              ? "Skip this"
+              : "Next"}
+            <span class="material-symbols-outlined">arrow_forward</span>
           </button>
         </div>
       </div>
@@ -228,9 +246,15 @@ const SelectInfluencers = () => {
                       search_key: e.target.value,
                     }));
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      document.getElementById("searchInfluencer").click();
+                    }
+                  }}
                 />
                 <InputGroup.Text
                   className={classes.searchIcon}
+                  id="searchInfluencer"
                   onClick={() => {
                     dispatch(handleLoading(true));
                     getInfluencerList(
@@ -240,7 +264,7 @@ const SelectInfluencers = () => {
                     );
                   }}
                 >
-                  <span class="material-icons">search</span>
+                  <span className="material-icons">search</span>
                 </InputGroup.Text>
               </InputGroup>
             </div>
@@ -248,6 +272,7 @@ const SelectInfluencers = () => {
           <Col md={8} xs={24}>
             <div className="influencerSelect">
               <Select
+                allowClear
                 placeholder="Select Category"
                 className={classes.selectCategory}
                 options={getSelectData(influencerCategory)}
@@ -257,13 +282,58 @@ const SelectInfluencers = () => {
                     category: val.id,
                   }));
                   getInfluencerList(1, val.id, SearchValues.search_key);
+                  setSelectedInfluencersList([]);
+                  setSelectAllInfluencer(false);
                 }}
+                onClear={getInfluencerList}
+                clearIcon={
+                  <span style={{}} className={classes.clearIcon}>
+                    <span class="material-symbols-outlined">close</span>
+                  </span>
+                }
               />
             </div>
           </Col>
         </Row>
         <Row gutter={10}>
-          <Col sm={12}>
+          <Col sm={12} className={classes.selectInfluencerText}>
+            <Tooltip
+              title={
+                influencerList?.length === 0
+                  ? ""
+                  : SelectedInfluencersList?.length !== influencerList?.length
+                  ? "Select All"
+                  : "Unselect All"
+              }
+              destroyTooltipOnHide={influencerList?.length === 0}
+            >
+              <Checkbox
+                className={
+                  SelectedInfluencersList?.length !== influencerList?.length ||
+                  influencerList?.length === 0
+                    ? classes.selectAllCheck
+                    : `${classes.selectAllChecked} ${classes.selectAllCheck}`
+                }
+                onClick={() => {
+                  if (
+                    SelectedInfluencersList?.length !==
+                      influencerList?.length ||
+                    influencerList?.length === 0
+                  ) {
+                    handleSelectAllInfluencers(true);
+                  } else {
+                    handleSelectAllInfluencers(false);
+                  }
+                }}
+                checked={
+                  SelectedInfluencersList?.length !== influencerList?.length ||
+                  influencerList?.length === 0
+                    ? false
+                    : true
+                }
+                disabled={influencerList?.length === 0}
+              />
+            </Tooltip>{" "}
             Selected Influencers (
             {SelectAllInfluencer
               ? influencersCount -
@@ -272,7 +342,7 @@ const SelectInfluencers = () => {
             )
           </Col>
           <Col className={classes.selectAllContainer} sm={12}>
-            <Col>
+            {/* <Col>
               {SelectedInfluencersList?.length !== influencerList?.length ? (
                 <p
                   onClick={() => {
@@ -286,9 +356,9 @@ const SelectInfluencers = () => {
                   onClick={() => {
                     handleSelectAllInfluencers(false);
                   }}
-                >{`UnSelect All (${influencersCount})`}</p>
+                >{`UnSelect All`}</p>
               )}
-            </Col>
+            </Col> */}
             <Col className="text-end">
               <p
                 className={
@@ -300,17 +370,15 @@ const SelectInfluencers = () => {
                   if (SelectedInfluencersList.length !== 0) {
                     dispatch(handleLoading(true));
                     HandleupdateFans()
-                      .then((res) => {
-                        navigate("/dashboard");
-                      })
+                      .then((res) => {})
                       .catch((err) => {});
                   }
                 }}
               >
                 Become a Fan{" "}
-                <span className={`material-icons ${classes.rightarrow}`}>
+                {/* <span className={`material-icons ${classes.rightarrow}`}>
                   arrow_forward
-                </span>
+                </span> */}
               </p>
             </Col>
           </Col>
@@ -328,6 +396,7 @@ const SelectInfluencers = () => {
                         imgClassName={classes.profileimg}
                         badgeClassName={classes.diamond}
                         Badgetype={ele?.user_status_id}
+                        user={ele}
                       />
 
                       <p className={classes.counts}>{ele.followers}</p>
@@ -378,7 +447,7 @@ const SelectInfluencers = () => {
                   {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
                     <Link className={classes.selectedBtn}>
                       Selected{" "}
-                      <span class="material-symbols-outlined">done</span>
+                      <span className="material-symbols-outlined">done</span>
                     </Link>
                   ) : (
                     <>
@@ -393,7 +462,7 @@ const SelectInfluencers = () => {
                           }}
                         >
                           Become a Fan{" "}
-                          <span class="material-icons">arrow_forward</span>
+                          <span className="material-icons">arrow_forward</span>
                         </Link>
                       )}
                     </>
@@ -403,6 +472,7 @@ const SelectInfluencers = () => {
             );
           })}
         </Row>
+        {influencerList?.length === 0 && <Empty />}
         {SearchValues.pageNum !== SearchValues.total_page && (
           <div className={classes.loadmoreSec}>
             {isLoadMore === "load_more" ? (
@@ -418,7 +488,7 @@ const SelectInfluencers = () => {
                 }}
               >
                 View more
-                <span class="material-symbols-outlined">arrow_forward</span>
+                <span className="material-symbols-outlined">arrow_forward</span>
               </p>
             )}
           </div>

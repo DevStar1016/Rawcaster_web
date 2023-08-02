@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const TypingContainer = () => {
+const TypingContainer = ({ text = "Thinking" }) => {
   const [dots, setDots] = useState("");
 
   useEffect(() => {
@@ -16,7 +16,12 @@ const TypingContainer = () => {
 
     return () => clearInterval(intervalId);
   }, []);
-  return <span>Thinking{dots}</span>;
+  return (
+    <>
+      {text}
+      {dots}
+    </>
+  );
 };
 
 export default TypingContainer;

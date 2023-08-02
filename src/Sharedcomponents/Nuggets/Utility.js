@@ -15,7 +15,6 @@ import {
   handleNuggetTranslateUpdate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import axios from "axios";
-import { useLocation } from "react-router";
 
 let isRequestCancel = false;
 
@@ -36,8 +35,9 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
     audioElement.id = nugget_id;
     setAudio(audioElement);
     setplayer(audioElement);
-    audioElement.play();
+    console.log(nugget_id);
     setisPlaying(nugget_id);
+    audioElement.play();
   };
 
   const HandlegetNuggetContentAudio = () => {
@@ -45,9 +45,10 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       isRequestCancel = true;
       PlayerSource.current.cancel("Request Cancelled");
     }
-    if (!PlayerSource.current) {
-      PlayerSource.current = axios.CancelToken.source();
-    }
+
+    // if (!PlayerSource.current) {
+    PlayerSource.current = axios.CancelToken.source();
+    // }
 
     if (audio) {
       audio.pause();
@@ -86,6 +87,9 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
           toast.error(res.data.msg);
         }
       })
+      .catch((err) => {
+        console.log(err);
+      })
       .finally(() => {
         PlayerSource.current = null;
         setisFetchingurl(false);
@@ -107,7 +111,6 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       });
       audio.addEventListener("pause", () => {
         audio.pause();
-        setisPlaying(null);
       });
     }
 
@@ -127,14 +130,14 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
         handleStopAudio();
       }}
     >
-      <i class="material-symbols-outlined">mic_off</i>
+      <i className="material-symbols-outlined">mic_off</i>
       <p>Stop</p>
     </div>
   ) : (
     <>
       {isFetchingurl ? (
         <p className={`mx-2 ${classes.fetchingSec}`}>
-          <div class="dot_typing"></div>
+          <div className="dot_typing"></div>
         </p>
       ) : (
         <div
@@ -199,11 +202,11 @@ export const SeeTranslate = ({ nugget_id, translate_text = null }) => {
     >
       {isFetching ? (
         <p className={`mx-2 ${classes.fetchingSec}`}>
-          <div class="dot_typing"></div>
+          <div className="dot_typing"></div>
         </p>
       ) : (
         <>
-          <span class="material-symbols-rounded">g_translate</span>
+          <span className="material-symbols-rounded">g_translate</span>
           See {isTranslate ? "Original" : "Translation"}
         </>
       )}

@@ -88,7 +88,22 @@ const ReferalDashboard = () => {
                     style={{ width: "100px", borderRadius: "50px" }}
                     src={userData.profile_image}
                   />
-                  <p className={classes.name}>{decodeHtml(userData.name)}</p>
+
+                  <Tooltip placement="bottom" title={decodeHtml(userData.name)}>
+                    <p
+                      onClick={() => {
+                        console.log(
+                          decodeHtml(userData.name)?.length,
+                          "decodeHtml(userData.name)"
+                        );
+                      }}
+                      className={classes.name}
+                    >
+                      {decodeHtml(userData.name)?.length > 20
+                        ? `${decodeHtml(userData.name)?.slice(0, 17)}...`
+                        : decodeHtml(userData.name)}
+                    </p>
+                  </Tooltip>
                   <p className={classes.email}>{userData.email_id}</p>
                   {/* <div className={classes.userBlockRight}>
                     <Tooltip title="Events">
@@ -121,7 +136,7 @@ const ReferalDashboard = () => {
                   </div> */}
                 </div>
               ) : null}
-              <Connections maxHeight={"50vh"} />
+              <Connections referral={true} maxHeight={"50vh"} />
             </div>
        
       </div>

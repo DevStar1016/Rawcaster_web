@@ -57,6 +57,7 @@
     font-weight: 500;
     color: #1d1c1c;
     font-family: "DM Sans", sans-serif;
+    padding: 15px 20px;
   }
   .refSec .list {
     position: relative;
@@ -196,6 +197,7 @@
     float: left;
     width: 100%;
     border: 0.929px solid #ECECEC;
+    max-height: 220px;
   }
   .proBox .name {
     color: #1d1c1c;

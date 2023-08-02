@@ -20,6 +20,7 @@ import {
 import { JSONtoformdata, ReadMore, Timer } from "../../Shared/Utility";
 import { TextToAudioService } from "../../Services/ApiService";
 import axios from "axios";
+import ChatAudioplayer from "../../Sharedcomponents/AudioPlayer/ChatAudioplayer";
 
 export const isUser = (id) => {
   if (parseInt(id) === 1) {
@@ -125,13 +126,13 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
         handleStopAudio();
       }}
     >
-      <i class="material-symbols-outlined">mic_off</i>Stop
+      <i className="material-symbols-outlined">mic_off</i>Stop
     </p>
   ) : (
     <>
       {isFetchingurl ? (
         <p className={`mx-2 ${classes.fetchingSec}`}>
-          <div class="dot_typing"></div>
+          <div className="dot_typing"></div>
         </p>
       ) : (
         <p
@@ -305,6 +306,34 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
   return (
     <div className={classes.MessageContainer}>
       <div
+        className={`${classes.user_chatbox_message} ${classes.audioContainer}`}
+      >
+        <div className={`${classes.content} ${classes.audioContent}`}>
+          <div className={classes.audioSec}>
+            <div className="d-flex flex-row">
+              <div className={classes.audioplayer}>
+                <ChatAudioplayer
+                  textColor={isUser(user) ? "#FFFFFF" : "#000000"}
+                  url={url}
+                  time={moment(created_at, "YYYY-MM-DD HH:mm:ss").format(
+                    "hh:mm A"
+                  )}
+                />
+              </div>
+
+              <div className={classes.audioAvatar}>
+                <img
+                  src={
+                    isUser(user) ? loginUserData?.profile_image : ChatProfile
+                  }
+                />
+              </div>
+            </div>
+            {query && <div className={classes.queryText}>{query}</div>}
+          </div>
+        </div>
+      </div>
+      {/* <div
         className={`${classes.chatbox_message} ${
           isUser(user) ? classes.user_audio_message : ""
         } w-100`}
@@ -319,9 +348,9 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
             <div className={`${classes.playSec}`}>
               <button onClick={isPlaying ? handlePause : handlePlay}>
                 {isPlaying ? (
-                  <span class="material-symbols-outlined">pause</span>
+                  <span className="material-symbols-outlined">pause</span>
                 ) : (
-                  <span class="material-symbols-outlined">play_arrow</span>
+                  <span className="material-symbols-outlined">play_arrow</span>
                 )}
               </button>
             </div>
@@ -356,7 +385,7 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
             )}
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -524,7 +553,7 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
           </div>
           <div className={classes.ActionSec}>
             <span
-              class={`material-symbols-outlined ${classes.closeIcon}`}
+              className={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
                 handleClose();
                 clearBlobUrl();

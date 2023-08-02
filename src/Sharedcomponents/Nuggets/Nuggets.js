@@ -365,7 +365,7 @@ const Nuggets = ({
                     handleFilterType(0);
                   }}
                 >
-                  <span class="material-icons">home</span> For You
+                  <span className="material-icons">home</span> For You
                 </p>
                 <p
                   className={DashboardfilterType === 1 ? classes.activeSec : ""}
@@ -377,7 +377,7 @@ const Nuggets = ({
                     }
                   }}
                 >
-                  <span class="material-icons">people</span> Following
+                  <span className="material-icons">people</span> Following
                 </p>
               </div>
             </div>
@@ -425,7 +425,7 @@ const Nuggets = ({
                       }
                     }}
                   >
-                    <span class="material-icons">search</span>
+                    <span className="material-icons">search</span>
                   </InputGroup.Text>
                 </InputGroup>
               </div>
@@ -596,9 +596,10 @@ const Nuggets = ({
                         </Spin>
                       );
                     })}
+                    {loading && <NuggetLoaders loading={true} />}
                     {(loading || getHasNextPage()) && (
                       <div ref={sentryRef}>
-                        <NuggetLoaders loading={true} />
+                        <div>{/* <NuggetLoaders loading={true} /> */}</div>
                       </div>
                     )}
                   </div>

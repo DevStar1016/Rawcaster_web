@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./ChatBox.module.css";
 import {
   defaultGroupImg,
@@ -7,13 +7,28 @@ import {
 import { useChatContext, useMainContext } from "../../Shared/Context";
 import { Layout } from "antd";
 import { useAuthData, useFriends, useGroups } from "../../Shared/Reduxfetcher";
+import ConfigureGroup from "../Connections/Groups/ConfigureGroup";
+import { toast } from "react-hot-toast";
 
 const Header = () => {
   const { isChatOpen, setisChatOpen } = useMainContext();
-  const { setGroupDetails, GroupDetails } = useChatContext();
+  const {
+    setGroupDetails,
+    GroupDetails,
+    SelectedContents,
+    removeselection,
+    setSelectAllMessages,
+    SelectAllMessages,
+    receiverMessage,
+  } = useChatContext();
   const loginuserData = useAuthData();
   const friends = useFriends();
   const groups = useGroups();
+
+  const [isConfigureGroup, setisConfigureGroup] = useState({
+    show: false,
+    group_id: null,
+  });
 
   const getData = () => {
     if (isChatOpen.type === "friend") {
@@ -106,10 +121,31 @@ const Header = () => {
     }
   }, [GroupDetails]);
 
+  useEffect(() => {
+    console.log(SelectedContents, "SelectedContents from header");
+  }, [SelectedContents]);
+
+  function copy() {
+    const el = document.createElement("input");
+    el.value = SelectedContents.join(" ");
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+
+    toast.success("Text copied to clipboard");
+    setSelectAllMessages(false);
+  }
+
   return (
     <>
       <Layout.Header className={classes.chatboxHeader}>
-        <div className={classes.groupintroSec}>
+        <div
+          onClick={() => {
+            setisConfigureGroup({ show: true, group_id: isChatOpen?.id });
+          }}
+          className={classes.groupintroSec}
+        >
           <img
             src={getData()?.icon || ""}
             onError={({ currentTarget }) => {
@@ -133,17 +169,47 @@ const Header = () => {
             {getData().group_members_list && <p>{getGroupDisplayData()}</p>}
           </div>
         </div>
-        <div>
-          <span class="material-symbols-outlined">more_vert</span>
-          <span
-            class="material-symbols-outlined"
-            onClick={() => {
-              setisChatOpen(false);
+        {SelectedContents?.length === 0 ? (
+          <div>
+            <span className="material-symbols-outlined">more_vert</span>
+            <span
+              className="material-symbols-outlined"
+              onClick={() => {
+                setisChatOpen(false);
+              }}
+            >
+              close
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span className={classes.copyBtn}>
+              <span onClick={copy} className="material-symbols-outlined">
+                content_copy
+              </span>
+            </span>
+            {receiverMessage?.length === 0 && (
+              <span className="material-symbols-outlined">delete</span>
+            )}
+            <span
+              className="material-symbols-outlined"
+              onClick={() => {
+                setSelectAllMessages(false);
+              }}
+            >
+              close
+            </span>
+          </div>
+        )}
+        {isConfigureGroup.show && (
+          <ConfigureGroup
+            open={isConfigureGroup.show}
+            groupId={isConfigureGroup.group_id}
+            close={() => {
+              setisConfigureGroup({ show: false, group_id: null });
             }}
-          >
-            close
-          </span>
-        </div>
+          />
+        )}
       </Layout.Header>
     </>
   );

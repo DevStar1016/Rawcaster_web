@@ -30,7 +30,12 @@ import {
 } from "../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { useAuth, useAuthData, useNuggets } from "../Shared/Reduxfetcher";
+import {
+  useAuth,
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../Shared/Reduxfetcher";
 import {
   handledasboardTab,
   handleisGlobalSearch,
@@ -39,7 +44,7 @@ import {
   handleprofileVerifyModalShow,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
-import { fetchNuggetsbyId } from "../Store/Redux/Action";
+import { fetchNotificationList, fetchNuggetsbyId } from "../Store/Redux/Action";
 import {
   handleNuggetFormData,
   handleResetNuggets,
@@ -56,6 +61,7 @@ const HomeLayout = () => {
   const unReadCount = useSelector(
     (state) => state.dashboard.notificationUnreadCount
   );
+  const token = useAuthToken();
   const [postModalShow, setpostModalShow] = useState(false);
   const [PostContent, setPostContent] = useState(null);
   const { pathname } = useLocation();
@@ -107,7 +113,6 @@ const HomeLayout = () => {
   };
 
   useEffect(() => {
-    console.log(unReadCount, "unReadCount");
     if (params) {
       setsearchData(DecryptionString(params.key));
     }
@@ -141,7 +146,7 @@ const HomeLayout = () => {
               user_id: null,
               page_number: 1,
             };
-            console.log(filterData);
+
             filterData.formData = filterValidObject(filterData.formData);
             dispatch(handleResetNuggets());
             dispatch(handleNuggetFormData(filterValidObject(filterData)));
@@ -282,12 +287,6 @@ const HomeLayout = () => {
                 </div>
                 <Dropdown
                   placement="bottomRight"
-                  re
-                  // disabledArea={[
-                  //   {
-                  //     element: document.getElementById("badgeImage"),
-                  //   },
-                  // ]}
                   menu={{
                     items: [
                       {
@@ -371,6 +370,9 @@ const HomeLayout = () => {
               onClick={() => {
                 if (loginUserData) {
                   navigate("/dashboard");
+                  dispatch(
+                    fetchNotificationList({ token, notification_type: 5 })
+                  );
                   dispatch(handledasboardTab("notification"));
                 }
               }}

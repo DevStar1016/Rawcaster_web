@@ -62,7 +62,7 @@ const Referel = () => {
               handleFilterType(0);
             }}
           >
-            <span class="material-icons">home</span> For You
+            <span className="material-icons">home</span> For You
           </Link>
           <Link
             className={DashboardfilterType === 1 ? classes.active : ""}
@@ -74,7 +74,7 @@ const Referel = () => {
               }
             }}
           >
-            <span class="material-icons">people</span> Following
+            <span className="material-icons">people</span> Following
           </Link>
         </div>
         <SuggestedAccounts />

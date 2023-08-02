@@ -14,13 +14,20 @@ import {
   blockunblockuserService,
   listallblockedusersService,
 } from "../../Services/ApiService";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { toast } from "react-hot-toast";
+import { fetchFrindsbyId } from "../../Store/Redux/Action";
+import { useDispatch } from "react-redux";
+import { handleFriendsList } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const Blockuser = () => {
   const { friendsList } = useDashboard();
+  const dispatch = useDispatch();
   const token = useAuthToken();
   const [blockUserList, setblockUserList] = useState([]);
   const [blockuser, setblockuser] = useState([]);
   const [query, setQuery] = useState(null);
+  const [isSearchEnabled, setisSearchEnabled] = useState(true);
 
   const getBlockedUserData = (search_key = null) => {
     let blockuserData = {
@@ -35,12 +42,19 @@ const Blockuser = () => {
           setblockUserList([]);
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setisSearchEnabled(false);
+      });
   };
 
   useEffect(() => {
     getBlockedUserData();
   }, []);
+
+  const getFriendslist = async () => {
+    dispatch(fetchFrindsbyId(token));
+  };
 
   const handleBlockMultipleuser = (user_id) => {
     let blockData = {
@@ -51,9 +65,13 @@ const Blockuser = () => {
       .then((res) => {
         if (res.data.status === 1) {
           getBlockedUserData();
+          getFriendslist();
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setblockuser([]);
+      });
   };
 
   const handleunblockuser = (user_id) => {
@@ -68,7 +86,10 @@ const Blockuser = () => {
           getBlockedUserData();
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setblockuser([]);
+      });
   };
 
   return (
@@ -90,6 +111,7 @@ const Blockuser = () => {
               minWidth: "200px",
               backgroundColor: "#F1F2F5",
             }}
+            value={blockuser}
             dropdownStyle={{ backgroundColor: "#F1F2F5" }}
             placeholder="Search to Connection"
             optionLabelProp="label"
@@ -140,7 +162,11 @@ const Blockuser = () => {
             size="large"
             className={classes.blockBtn}
             onClick={() => {
-              handleBlockMultipleuser(JSON.stringify(blockuser));
+              if (blockuser?.length > 0) {
+                handleBlockMultipleuser(JSON.stringify(blockuser));
+              } else {
+                toast.error("Please select a user to block");
+              }
             }}
           >
             Block
@@ -156,24 +182,25 @@ const Blockuser = () => {
             aria-label="User name"
             value={query}
             onChange={(e) => {
+              setisSearchEnabled(true);
               setQuery(e.target.value);
             }}
           />
           <InputGroup.Text
             className={classes.searchIcon}
             onClick={() => {
-              if (query !== "") {
+              if (isSearchEnabled) {
                 getBlockedUserData(query);
               }
             }}
           >
-            <span class="material-icons">search</span>
+            <span className="material-icons">search</span>
           </InputGroup.Text>
         </InputGroup>
         {query && (
           <div className={classes.resetSec}>
             <span
-              class="material-symbols-outlined"
+              className="material-symbols-outlined"
               onClick={() => {
                 setQuery("");
                 getBlockedUserData();
@@ -194,6 +221,10 @@ const Blockuser = () => {
                   src={friend.profile_img}
                   className={classes.userimg}
                   alt={"User_img"}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null; // prevents looping
+                    currentTarget.src = defaultprofileImg;
+                  }}
                 ></img>
                 <span className="mr-3"></span>
                 <span className={classes.display_name}>
@@ -209,7 +240,7 @@ const Blockuser = () => {
                   handleunblockuser(friend.user_id);
                 }}
               >
-                UnBlock
+                Unblock
               </Button>
             </div>
           );

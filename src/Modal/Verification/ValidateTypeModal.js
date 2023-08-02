@@ -70,7 +70,7 @@ const ValidateTypeModal = ({ open, handleClose }) => {
                   handleSendOTP("email");
                 }}
               >
-                <span class="material-icons">mail_outline</span>
+                <span className="material-icons">mail_outline</span>
                 Get a verification code at{" "}
                 {getPartialHiddenEmail(loginUserData?.email_id)}
               </h3>
@@ -85,7 +85,7 @@ const ValidateTypeModal = ({ open, handleClose }) => {
                   handleSendOTP("sms");
                 }}
               >
-                <span class="material-icons">phone_iphone</span>
+                <span className="material-icons">phone_iphone</span>
                 Get a verification code at{" "}
                 {getPartialHiddenMobileNumber(loginUserData?.mobile)}
               </h3>

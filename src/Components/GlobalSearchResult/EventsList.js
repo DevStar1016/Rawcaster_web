@@ -17,6 +17,8 @@ import Event from "../../Sharedcomponents/Events/Event";
 import classes from "./GlobalSearch.module.css";
 import { Empty, Skeleton } from "antd";
 import useInfiniteScroll from "react-infinite-scroll-hook";
+import { ChimesocketListen } from "../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 
 let isRequestCancel = false;
 
@@ -36,6 +38,15 @@ const EventsList = () => {
     page: null,
     totalpage: null,
   });
+
+  useEffect(() => {
+    ChimesocketListen.on("connect", () => {
+      console.log(ChimesocketListen.connected, "Chime Socket");
+    });
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (message) => {
+      console.log(message, "CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM");
+    });
+  }, []);
 
   const getToken = () => {
     if (getAuthenticated()) {

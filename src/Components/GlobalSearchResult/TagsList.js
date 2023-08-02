@@ -231,7 +231,7 @@ const TagsList = () => {
                             trigger={["click"]}
                           >
                             <div className={classes.dropSec}>
-                              <span class="material-symbols-outlined">
+                              <span className="material-symbols-outlined">
                                 more_horiz
                               </span>
                             </div>

@@ -193,7 +193,7 @@ const ConnectionsList = ({
               borderRadius: 50,
             }}
           >
-            <img src={isLoading ? "" : userImg} alt="User_img" />
+            <img src={isLoading ? "" : userImg} />
           </Skeleton.Node>
           {isLoading ? null : (
             <Skeleton.Node

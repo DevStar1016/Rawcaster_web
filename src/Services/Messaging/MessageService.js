@@ -28,7 +28,6 @@ function generateUniqueID() {
 }
 
 export const subscribeToMessageUpdate = (callback) => {
-  console.log("Message listener subscribed!");
   messageUpdateCallbacks.push(callback);
 };
 

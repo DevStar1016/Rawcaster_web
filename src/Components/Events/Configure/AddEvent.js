@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, DatePicker, Form, Input, TimePicker } from "antd";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  DatePicker,
+  Form,
+  Input,
+  Space,
+  TimePicker,
+} from "antd";
 import { Col, Row } from "react-bootstrap";
 import classes from "../Events.module.css";
 import { useAuth, useAuthToken } from "../../../Shared/Reduxfetcher";
@@ -10,6 +19,7 @@ import {
   EventLayoutComponent,
   EventMelodyComponent,
   EventTypeComponent,
+  Groups,
   InviteEmailComponent,
   TimeValueComponent,
   compareArrays,
@@ -31,11 +41,13 @@ import {
   JSONtoformdata,
   decodeHtml,
   filterValidObject,
+  getUtcToSystemTime,
   userTimezonetoUtc,
   utctoUserTimezone,
 } from "../../../Shared/Utility";
-import { useEventContext } from "../../../Shared/Context";
+import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
+import { ChimesendMessage } from "../../../Services/SocketService";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -43,6 +55,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { userSettings, loginUserData } = useAuth();
   const [isCreating, setisCreating] = useState(false);
   const [isNextPage, setisNextPage] = useState(false);
+  const [upgradePlanPopup, setupgradePlanPopup] = useState(false);
+  const [userMailList, setuserMailList] = useState([]);
   const [SelectedTime, setSelectedTime] = useState(
     moment().add(10, "minutes").format("HH:mm")
   );
@@ -81,7 +95,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_invite_mails: "",
       event_invite_friends: "",
       event_invite_groups: "",
+      delete_invite_mails: "",
+      delete_invite_groups: "",
+      delete_invite_friends: "",
     },
+    enableReinitialize: false,
     validationSchema: yup.object().shape({
       event_title: yup.string().required(`Event Title is Required !`),
       event_type: yup.string().required(`Event Type is Required !`),
@@ -145,22 +163,51 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           "Invite Friends Test",
           "Please Select Connections",
           function (value) {
-            const { event_type, event_invite_mails } = this.parent;
+            const { event_type, event_invite_mails, event_invite_groups } =
+              this.parent;
             if (parseInt(event_type) === 2) {
-              if (!event_invite_mails) {
+              if (!event_invite_mails && !event_invite_groups) {
+                return value;
+              } else if (
+                JSON.parse(event_invite_mails).length === 0 &&
+                JSON.parse(event_invite_groups).length === 0
+              ) {
                 return value;
               }
             }
-
             return true;
           }
         ),
+      event_invite_groups: yup
+        .string()
+        .test("Invite Groups Test", "Please Select Groups", function (value) {
+          const { event_type, event_invite_mails, event_invite_friends } =
+            this.parent;
+          if (parseInt(event_type) === 2) {
+            if (!event_invite_mails && !event_invite_friends) {
+              return value;
+            } else if (
+              JSON.parse(event_invite_mails).length === 0 &&
+              JSON.parse(event_invite_friends).length === 0
+            ) {
+              return value;
+            }
+          }
+
+          return true;
+        }),
       event_invite_mails: yup
         .string()
         .test("Mail Test", "Please Enter Invite Users", function (value) {
-          const { event_type, event_invite_friends } = this.parent;
+          const { event_type, event_invite_friends, event_invite_groups } =
+            this.parent;
           if (parseInt(event_type) === 2) {
-            if (!event_invite_friends) {
+            if (!event_invite_friends && !event_invite_groups) {
+              return value;
+            } else if (
+              JSON.parse(event_invite_friends).length === 0 &&
+              JSON.parse(event_invite_groups).length === 0
+            ) {
               return value;
             }
           }
@@ -207,7 +254,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       return (
         <div className={classes.headingSec}>
           <span
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setisNextPage(false);
             }}
@@ -245,6 +292,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       .then((res) => {
         if (res.data.status === 1) {
           getEvents(ActiveEvent.key);
+
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
@@ -268,7 +316,13 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_id: data?.event_id,
       event_start_date: utcDateTime.format("YYYY-MM-DD"),
       event_start_time: utcDateTime.format("HH:mm"),
+      event_invite_mails: values?.event_invite_mails?.includes("[")
+        ? JSON.parse(values?.event_invite_mails)?.join(",")
+        : values?.event_invite_mails,
+      delete_invite_mails: values.delete_invite_mails?.join(","),
     };
+
+    console.log(liveEventData, "liveEventDataliveEventData");
     function isFile(obj) {
       return (
         obj &&
@@ -308,49 +362,50 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       viewEventsService(JSONtoformdata(eventdata))
         .then((res) => {
           let eventData = res.data.event_detail;
-
-          setValues({
-            event_title: decodeHtml(eventData?.event_name),
-            event_type: eventData?.event_type_id,
-            event_start_date: moment(
-              utctoUserTimezone(
-                eventData?.start_date_time,
-                userSettings?.time_zone
-              )
-            ).format("YYYY-MM-DD"),
-            event_start_time: moment(
-              utctoUserTimezone(
-                eventData?.start_date_time,
-                userSettings?.time_zone
-              )
-            ).format("HH:mm"),
-            event_message: eventData?.message,
-            waiting_room: eventData?.waiting_room,
-            join_before_host: eventData?.join_before_host,
-            sound_notify: eventData?.sound_notify,
-            user_screenshare: eventData?.user_screenshare,
-            event_participants: eventData?.no_of_participants,
-            event_duration: moment(eventData?.duration, "HH:mm:ss").format(
-              "HH:mm"
-            ),
-            event_layout: eventData?.event_layout_id,
-            event_melody_id: eventData?.event_melody_id,
-            event_melody: eventData?.melodies,
-            event_host_audio: eventData?.default_host_audio,
-            event_host_video: eventData?.default_host_video,
-            event_guest_audio: eventData?.default_guest_audio,
-            event_guest_video: eventData?.default_guest_video,
-            event_banner: eventData?.banner_image,
-            event_invite_mails: getValidarrayData(eventData?.invite_mails),
-            event_invite_friends: getValidarrayData(
-              eventData?.invite_friends_id
-            ),
-            event_invite_groups: getValidarrayData(eventData?.invite_groups_id),
-          });
+          try {
+            setValues((pre) => ({
+              ...pre,
+              event_title: decodeHtml(eventData?.event_name),
+              event_type: eventData?.event_type_id,
+              event_start_date: getUtcToSystemTime(
+                eventData?.start_date_time
+              )?.format("YYYY-MM-DD"),
+              event_start_time: getUtcToSystemTime(
+                eventData?.start_date_time
+              )?.format("HH:mm"),
+              event_message: eventData?.message,
+              waiting_room: eventData?.waiting_room,
+              join_before_host: eventData?.join_before_host,
+              sound_notify: eventData?.sound_notify,
+              user_screenshare: eventData?.user_screenshare,
+              event_participants: eventData?.no_of_participants,
+              event_duration: moment(eventData?.duration, "HH:mm:ss").format(
+                "HH:mm"
+              ),
+              event_layout: eventData?.event_layout_id,
+              event_melody_id: eventData?.event_melody_id,
+              event_melody: eventData?.melodies,
+              event_host_audio: eventData?.default_host_audio,
+              event_host_video: eventData?.default_host_video,
+              event_guest_audio: eventData?.default_guest_audio,
+              event_guest_video: eventData?.default_guest_video,
+              event_banner: eventData?.banner_image,
+              event_invite_mails: getValidarrayData(eventData?.invite_mails),
+              event_invite_friends: getValidarrayData(
+                eventData?.invite_friends_id
+              ),
+              event_invite_groups: getValidarrayData(
+                eventData?.invite_groups_id
+              ),
+            }));
+            setuserMailList(eventData?.invite_mails);
+          } catch (error) {
+            console.log(error, "error");
+          }
         })
         .catch((err) => {});
     } else {
-      if (userSettings) {
+      if (userSettings && !data) {
         setValues((pre) => ({
           ...pre,
           event_melody_id: userSettings?.melody,
@@ -372,409 +427,584 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }
   }, [data, userSettings]);
 
-  return (
-    <EventModal
-      open={isEventOpen}
-      Type={"Event"}
-      title={getTitle()}
-      hasNextPage={true}
-      isUpdate={data ? true : false}
-      loading={isCreating}
-      okBtnTitle={isNextPage ? null : "Next"}
-      onSuccess={() => {
-        if (isNextPage) {
-          handleSubmit();
-        } else {
-          let requiredFields = [
-            "event_title",
-            "event_type",
-            "event_start_date",
-            "event_start_time",
-            "event_participants",
-            "event_duration",
-            "event_layout",
-            "event_melody_id",
-            "event_melody",
-            "event_host_audio",
-            "event_host_video",
-            "event_guest_audio",
-            "event_guest_audio",
-          ];
-          validateForm().then((res) => {
-            let validatedKeys = Object.keys(res);
-            console.log(
-              compareArrays(validatedKeys, requiredFields),
-              "requiredFields"
-            );
+  const scrollToUpgrade = (value = 0) => {
+    const scrollHeight = document.getElementById("eventForm").scrollHeight;
+    document
+      .getElementById("eventForm")
+      .scrollTo({ top: scrollHeight, behavior: "smooth" });
+  };
 
-            if (compareArrays(validatedKeys, requiredFields)) {
-              console.log("requiredFields true");
-              handleSubmit();
-            } else {
-              setisNextPage(true);
-            }
-          });
-        }
-      }}
-      onClose={() => {
-        handleCloseEvent();
+  useEffect(() => {
+    if (upgradePlanPopup) {
+      scrollToUpgrade();
+    }
+  }, [upgradePlanPopup]);
+
+  return (
+    <AddEventContext.Provider
+      value={{
+        values,
+        setValues,
+        setFieldValue,
       }}
     >
-      <Form
-        layout="vertical"
-        autoComplete="off"
-        className={`${classes.eventBody} eventBody`}
+      <EventModal
+        open={isEventOpen}
+        Type={"Event"}
+        title={getTitle()}
+        hasNextPage={true}
+        isUpdate={data ? true : false}
+        loading={isCreating}
+        okBtnTitle={isNextPage ? null : "Next"}
+        onSuccess={() => {
+          if (isNextPage) {
+            handleSubmit();
+          } else {
+            let requiredFields = [
+              "event_title",
+              "event_type",
+              "event_start_date",
+              "event_start_time",
+              "event_participants",
+              "event_duration",
+              "event_layout",
+              "event_melody_id",
+              "event_melody",
+              "event_host_audio",
+              "event_host_video",
+              "event_guest_audio",
+              "event_guest_audio",
+            ];
+            validateForm().then((res) => {
+              let validatedKeys = Object.keys(res);
+              console.log(
+                compareArrays(validatedKeys, requiredFields),
+                "requiredFields"
+              );
+
+              if (compareArrays(validatedKeys, requiredFields)) {
+                const ErrorArray = compareArrays(validatedKeys, requiredFields);
+                console.log(
+                  ErrorArray,
+                  "ErrorArrayErrorArray",
+                  document.getElementById("eventForm").scrollHeight
+                );
+                handleSubmit();
+                if (
+                  loginUserData?.user_status_id !== 4 &&
+                  (ErrorArray?.includes("event_duration") ||
+                    ErrorArray?.includes("event_participants"))
+                ) {
+                  if (upgradePlanPopup) {
+                    scrollToUpgrade();
+                  } else {
+                    setupgradePlanPopup(true);
+                  }
+
+                  // document.getElementById("Alertdiv")?.focus();
+                }
+
+                console.log("requiredFields true");
+              } else {
+                setisNextPage(true);
+              }
+            });
+          }
+        }}
+        onClose={() => {
+          handleCloseEvent();
+        }}
       >
-        {isNextPage ? (
-          <>
-            <Row>
-              <Col sm={12}>
-                <BannerComponent
-                  value={values.event_banner}
-                  onResult={(val) => {
-                    setFieldValue("event_banner", val);
-                  }}
-                />
-                {touched.event_banner && (
-                  <p className="ErrTxt mb-3">{errors?.event_banner}</p>
+        <Form
+          layout="vertical"
+          autoComplete="off"
+          id="eventForm"
+          className={`${classes.eventBody} eventBody`}
+        >
+          {isNextPage ? (
+            <>
+              <Row>
+                <Col sm={12}>
+                  <BannerComponent
+                    value={values.event_banner}
+                    onResult={(val) => {
+                      setFieldValue("event_banner", val);
+                    }}
+                  />
+                  {touched.event_banner && (
+                    <p className="ErrTxt mb-3">{errors?.event_banner}</p>
+                  )}
+                </Col>
+                {parseInt(values.event_type) !== 3 && (
+                  <>
+                    <Col sm={12}>
+                      <InviteEmailComponent
+                        value={values.event_invite_mails}
+                        onResult={(val) => {
+                          setFieldValue("event_invite_mails", val.toString());
+                        }}
+                        onDeleteData={(delete_arr) => {
+                          if (delete_arr.length !== 0) {
+                            setFieldValue(
+                              "delete_invite_mails",
+                              JSON.stringify(delete_arr)
+                            );
+                          } else {
+                            setFieldValue("delete_invite_mails", "");
+                          }
+                        }}
+                        userMailList={userMailList}
+                        setuserMailList={(val) => {
+                          console.log(val);
+                          // setFieldValue("delete_invite_mails", [
+                          //   ...values.delete_invite_mails,
+                          //   val,
+                          // ]);
+                        }}
+                      />
+                      {touched.event_invite_mails && (
+                        <p className="ErrTxt mb-3">
+                          {errors?.event_invite_mails}
+                        </p>
+                      )}
+                    </Col>
+                    <Col sm={12}>
+                      <Connections
+                        values={values.event_invite_friends}
+                        onDeleteData={(delete_arr) => {
+                          if (delete_arr.length !== 0) {
+                            setFieldValue(
+                              "delete_invite_friends",
+                              JSON.stringify(delete_arr)
+                            );
+                          } else {
+                            setFieldValue("delete_invite_friends", "");
+                          }
+                        }}
+                        onResult={(val) => {
+                          let finRes = val.map((ele) => ele.user_id);
+                          if (finRes.length !== 0) {
+                            setFieldValue(
+                              "event_invite_friends",
+                              JSON.stringify(finRes)
+                            );
+                          } else {
+                            setFieldValue("event_invite_friends", "");
+                          }
+                        }}
+                      />
+                      {touched.event_invite_friends && (
+                        <p className="ErrTxt mb-3">
+                          {errors?.event_invite_friends}
+                        </p>
+                      )}
+                    </Col>
+                    <Col>
+                      <Groups
+                        values={values.event_invite_groups}
+                        onDeleteData={(delete_arr) => {
+                          if (delete_arr.length !== 0) {
+                            setFieldValue(
+                              "delete_invite_groups",
+                              JSON.stringify(delete_arr)
+                            );
+                          } else {
+                            setFieldValue("delete_invite_groups", "");
+                          }
+                        }}
+                        onResult={(val) => {
+                          console.log(val);
+                          let finRes = val.map((ele) => ele.group_id);
+                          if (finRes.length !== 0) {
+                            setFieldValue(
+                              "event_invite_groups",
+                              JSON.stringify(finRes)
+                            );
+                          } else {
+                            setFieldValue("event_invite_groups", "");
+                          }
+                        }}
+                      />
+                      {touched.event_invite_groups && (
+                        <p className="ErrTxt mb-3">
+                          {errors?.event_invite_groups}
+                        </p>
+                      )}
+                    </Col>
+                  </>
                 )}
-              </Col>
-              {parseInt(values.event_type) !== 3 && (
-                <>
-                  <Col sm={12}>
-                    <InviteEmailComponent
-                      value={values.event_invite_mails}
-                      onResult={(val) => {
-                        setFieldValue("event_invite_mails", val.toString());
-                      }}
+              </Row>
+            </>
+          ) : (
+            <>
+              <Row>
+                <Col sm={6}>
+                  <Form.Item
+                    label="Event Title"
+                    colon={false}
+                    className={classes.textBoxSec}
+                    initialValue={values.event_title}
+                  >
+                    <Input
+                      className={classes.textbox}
+                      defaultValue={values.event_title}
+                      value={values.event_title}
+                      maxLength={80}
+                      onChange={handleChange("event_title")}
                     />
-                    {touched.event_invite_mails && (
-                      <p className="ErrTxt mb-3">
-                        {errors?.event_invite_mails}
-                      </p>
-                    )}
-                  </Col>
-                  <Col>
-                    <Connections
-                      values={values.event_invite_friends}
-                      onResult={(val) => {
-                        let finRes = val.map((ele) => ele.user_id);
-                        if (finRes.length !== 0) {
-                          setFieldValue(
-                            "event_invite_friends",
-                            JSON.stringify(finRes)
-                          );
+                  </Form.Item>
+                  {touched.event_title && (
+                    <p className="ErrTxt mb-3">{errors?.event_title}</p>
+                  )}
+                </Col>
+                <Col sm={6}>
+                  <EventTypeComponent
+                    value={values.event_type}
+                    onResult={(val) => {
+                      setFieldValue("event_type", val.id);
+                    }}
+                  />
+                  {touched.event_type && (
+                    <p className="ErrTxt mb-3">{errors?.event_type}</p>
+                  )}
+                </Col>
+                <Col sm={6}>
+                  <Form.Item
+                    label="Date"
+                    colon={false}
+                    className={classes.textBoxSec}
+                  >
+                    <DatePicker
+                      showToday={false}
+                      className={classes.textbox}
+                      defaultValue={
+                        values?.event_start_date
+                          ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                          : undefined
+                      }
+                      value={
+                        values?.event_start_date
+                          ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                          : undefined
+                      }
+                      disabledDate={(current) => {
+                        return moment().add(-1, "days") >= current;
+                      }}
+                      allowClear={false}
+                      format={"YYYY-MM-DD"}
+                      onChange={(date, dateString) => {
+                        setFieldValue("event_start_date", dateString);
+                        if (
+                          moment(new Date()).format("DD:MM:YYYY") ==
+                          moment(dateString, "YYYY-MM-DD").format("DD:MM:YYYY")
+                        ) {
+                          if (
+                            !(
+                              moment().format("HH:mm") <
+                              moment(values.event_start_time, "HH:mm").format(
+                                "HH:mm"
+                              )
+                            )
+                          ) {
+                            setFieldValue("event_start_time", "");
+                          }
                         } else {
-                          setFieldValue("event_invite_friends", "");
+                          setFieldValue("event_start_time", SelectedTime);
                         }
                       }}
                     />
-                    {touched.event_invite_friends && (
-                      <p className="ErrTxt mb-3">
-                        {errors?.event_invite_friends}
-                      </p>
-                    )}
-                  </Col>
-                </>
-              )}
-            </Row>
-          </>
-        ) : (
-          <>
-            <Row>
-              <Col sm={6}>
-                <Form.Item
-                  label="Event Title"
-                  colon={false}
-                  className={classes.textBoxSec}
-                  initialValue={values.event_title}
-                >
-                  <Input
-                    className={classes.textbox}
-                    defaultValue={values.event_title}
-                    value={values.event_title}
-                    maxLength={80}
-                    onChange={handleChange("event_title")}
-                  />
-                </Form.Item>
-                {touched.event_title && (
-                  <p className="ErrTxt mb-3">{errors?.event_title}</p>
-                )}
-              </Col>
-              <Col sm={6}>
-                <EventTypeComponent
-                  value={values.event_type}
-                  onResult={(val) => {
-                    setFieldValue("event_type", val.id);
-                  }}
-                />
-                {touched.event_type && (
-                  <p className="ErrTxt mb-3">{errors?.event_type}</p>
-                )}
-              </Col>
-              <Col sm={6}>
-                <Form.Item
-                  label="Date"
-                  colon={false}
-                  className={classes.textBoxSec}
-                >
-                  <DatePicker
-                    showToday={false}
-                    className={classes.textbox}
-                    defaultValue={
-                      values?.event_start_date
-                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
-                        : undefined
-                    }
-                    value={
-                      values?.event_start_date
-                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
-                        : undefined
-                    }
-                    disabledDate={(current) => {
-                      return moment().add(-1, "days") >= current;
-                    }}
-                    allowClear={false}
-                    format={"YYYY-MM-DD"}
-                    onChange={(date, dateString) => {
-                      setFieldValue("event_start_date", dateString);
+                  </Form.Item>
+                  {touched.event_start_date && (
+                    <p className="ErrTxt mb-3">{errors?.event_start_date}</p>
+                  )}
+                </Col>
+                <Col sm={6}>
+                  <div className={classes.lableTxt}>Time</div>
+                  <TimeValueComponent
+                    value={values.event_start_time}
+                    onResult={(res) => {
+                      // setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                       if (
-                        moment(new Date()).format("DD:MM:YYYY") ==
-                        moment(dateString, "YYYY-MM-DD").format("DD:MM:YYYY")
+                        moment().format("DD:MM:YYYY") ==
+                        moment(values.event_start_date, "YYYY-MM-DD").format(
+                          "DD:MM:YYYY"
+                        )
                       ) {
                         if (
-                          !(
-                            moment().format("HH:mm") <
-                            moment(values.event_start_time, "HH:mm").format(
-                              "HH:mm"
-                            )
-                          )
+                          moment().add(10, "minutes").format("HH:mm") <=
+                          moment(res, "hh:mm A").format("HH:mm")
                         ) {
+                          setFieldValue(
+                            "event_start_time",
+                            moment(res, "hh:mm A").format("HH:mm")
+                          );
+                        } else {
                           setFieldValue("event_start_time", "");
                         }
                       } else {
-                        setFieldValue("event_start_time", SelectedTime);
-                      }
-                    }}
-                  />
-                </Form.Item>
-                {touched.event_start_date && (
-                  <p className="ErrTxt mb-3">{errors?.event_start_date}</p>
-                )}
-              </Col>
-              <Col sm={6}>
-                <div className={classes.lableTxt}>Time</div>
-                <TimeValueComponent
-                  value={values.event_start_time}
-                  onResult={(res) => {
-                    console.log(res, "dateString");
-
-                    // setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
-                    if (
-                      moment().format("DD:MM:YYYY") ==
-                      moment(values.event_start_date, "YYYY-MM-DD").format(
-                        "DD:MM:YYYY"
-                      )
-                    ) {
-                      if (
-                        moment().add(10, "minutes").format("HH:mm") <=
-                        moment(res, "hh:mm A").format("HH:mm")
-                      ) {
                         setFieldValue(
                           "event_start_time",
                           moment(res, "hh:mm A").format("HH:mm")
                         );
-                      } else {
-                        setFieldValue("event_start_time", "");
                       }
-                    } else {
-                      setFieldValue(
-                        "event_start_time",
-                        moment(res, "hh:mm A").format("HH:mm")
-                      );
-                    }
-                  }}
-                />
-                {touched.event_start_time && (
-                  <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
-                )}
-              </Col>
-              <Col sm={12}>
-                <Form.Item
-                  label="Event Description"
-                  colon={false}
-                  className={classes.textBoxSec}
-                  initialValue={values.event_message}
-                >
-                  <Input.TextArea
-                    className={`${classes.textbox} ${classes.textArea}`}
-                    defaultValue={values.event_message}
-                    value={values.event_message}
-                    maxLength={150}
-                    onChange={handleChange("event_message")}
+                    }}
                   />
-                </Form.Item>
-                {touched.event_message && (
-                  <p className="ErrTxt mb-3">{errors?.event_message}</p>
-                )}
-              </Col>
-              <div className="my-2">
-                <Row>
-                  {EventSettings.map((ele) => {
-                    return (
-                      <Col sm={6}>
-                        <div className={classes.chkboxSec}>
-                          <Checkbox
-                            checked={values[ele.type]}
-                            disabled={
-                              loginUserData?.user_status_id === 1 &&
-                              ele.isprimary
-                            }
-                            onChange={(e) => {
-                              setFieldValue(ele.type, e.target.checked);
+                  {touched.event_start_time && (
+                    <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
+                  )}
+                </Col>
+                <Col sm={12}>
+                  <Form.Item
+                    label="Event Description"
+                    colon={false}
+                    className={classes.textBoxSec}
+                    initialValue={values.event_message}
+                  >
+                    <Input.TextArea
+                      className={`${classes.textbox} ${classes.textArea}`}
+                      defaultValue={values.event_message}
+                      value={values.event_message}
+                      maxLength={150}
+                      onChange={handleChange("event_message")}
+                    />
+                  </Form.Item>
+                  {touched.event_message && (
+                    <p className="ErrTxt mb-3">{errors?.event_message}</p>
+                  )}
+                </Col>
+                <div className="my-2">
+                  <Row>
+                    {EventSettings.map((ele) => {
+                      return (
+                        <Col sm={6}>
+                          <div
+                            onClick={(e) => {
+                              if (
+                                loginUserData?.user_status_id === 1 &&
+                                ele.isprimary
+                              ) {
+                                if (upgradePlanPopup) {
+                                  scrollToUpgrade();
+                                } else {
+                                  setupgradePlanPopup(true);
+                                }
+                              }
+                            }}
+                            className={classes.chkboxSec}
+                          >
+                            <Checkbox
+                              checked={values[ele.type]}
+                              disabled={
+                                loginUserData?.user_status_id === 1 &&
+                                ele.isprimary
+                              }
+                              onChange={(e) => {
+                                setFieldValue(ele.type, e.target.checked);
+                              }}
+                            >
+                              {ele.title}
+                            </Checkbox>
+                          </div>
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                </div>
+                <Col sm={3}>
+                  <Form.Item
+                    label="Max Paticipants"
+                    colon={false}
+                    className={classes.textBoxSec}
+                  >
+                    <Input
+                      style={{ width: "100%" }}
+                      prefix={<UserOutlined />}
+                      className={classes.maxparticipantInput}
+                      defaultValue={values.event_participants}
+                      value={values.event_participants}
+                      maxLength={8}
+                      onChange={handleChange("event_participants")}
+                    />
+                  </Form.Item>
+                  {touched.event_participants && (
+                    <p className="ErrTxt ">{errors?.event_participants}</p>
+                  )}
+                </Col>
+                <Col style={{ position: "relative" }} sm={3}>
+                  <Form.Item
+                    label="Duration"
+                    colon={false}
+                    className={classes.textBoxSec}
+                    initialValue={values.event_title}
+                  >
+                    <TimePicker
+                      className={`${classes.onlytime} ${classes.textbox}`}
+                      format={"HH:mm"}
+                      clearIcon={null}
+                      showSecond={false}
+                      use12Hours={false}
+                      inputReadOnly
+                      showNow={false}
+                      value={
+                        values.event_duration
+                          ? moment(values.event_duration, "HH:mm")
+                          : ""
+                      }
+                      onSelect={(time) => {
+                        setFieldValue(
+                          "event_duration",
+                          moment(time).format("HH:mm")
+                        );
+                      }}
+                      hideDisabledOptions={true}
+                      minuteStep={15}
+                      disabledHours={() => {
+                        return [
+                          11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+                        ];
+                      }}
+                    />
+                  </Form.Item>
+                  {touched.event_duration && (
+                    <p style={{ position: "absolute" }} className="ErrTxt ">
+                      {errors?.event_duration}
+                    </p>
+                  )}
+                </Col>
+                <Col sm={3}>
+                  <EventLayoutComponent
+                    value={values.event_layout}
+                    onResult={(val) => {
+                      setFieldValue("event_layout", val.id);
+                    }}
+                  />
+                </Col>
+                <Col sm={3}>
+                  <EventMelodyComponent
+                    isCustomize={true}
+                    value={values.event_melody_id}
+                    onResult={(val) => {
+                      setFieldValue("event_melody_id", val.id);
+                    }}
+                  />
+                </Col>
+                <div
+                  id="addUploadMelodydiv"
+                  style={{
+                    display:
+                      parseInt(values.event_melody_id) === 0 ? "block" : "none",
+                  }}
+                >
+                  <div>Upload customize (audio / video / image)</div>
+
+                  <Button
+                    className={classes.uploadBtn}
+                    onClick={() => {
+                      document.getElementById("UploadMelody").click();
+                    }}
+                  >
+                    Upload
+                  </Button>
+                  <input
+                    type="file"
+                    id="UploadMelody"
+                    name="UploadMelody"
+                    style={{ display: "none" }}
+                    onChange={(event) => {
+                      if (event.target.files[0]) {
+                        setFieldValue("event_melody", event.target.files[0]);
+                      }
+                    }}
+                  ></input>
+                  {touched.event_melody && (
+                    <p className="ErrTxt mb-3">{errors?.event_melody}</p>
+                  )}
+                  <div>
+                    {values.event_melody !== "" ? (
+                      <span>
+                        {values.event_melody?.name}{" "}
+                        <span
+                          style={{ color: "red", cursor: "pointer" }}
+                          onClick={() => {
+                            setFieldValue("event_melody", "");
+                          }}
+                        >
+                          X
+                        </span>
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+
+                <AudioVideoSettings />
+
+                <div className={classes.alertContainer} id="Alertdiv">
+                  {upgradePlanPopup && (
+                    <Alert
+                      message="Upgrade Your Plan"
+                      description={
+                        errors?.event_participants
+                          ? `To add more than ${userSettings?.max_event_participants_count} participants upgrade your membership!`
+                          : errors?.event_duration
+                          ? `To host event for longer than ${
+                              userSettings?.max_event_duration === 1
+                                ? `${userSettings?.max_event_duration} hour`
+                                : `${userSettings?.max_event_duration} hours`
+                            } upgrade your membership!`
+                          : "To access this feature upgrade your membership!"
+                      }
+                      type="info"
+                      action={
+                        <Space direction="vertical">
+                          <Button
+                            size="small"
+                            style={{
+                              background: "#f2718d",
+                              color: "#fff",
+                              width: " 88px",
+                              fontSize: "13px",
+                              padding: 0,
+                              textAlign: "center",
+                              minHeight: "32px",
+                            }}
+                            type="primary"
+                            onClick={() => {
+                              window.location.assign("/membership");
                             }}
                           >
-                            {ele.title}
-                          </Checkbox>
-                        </div>
-                      </Col>
-                    );
-                  })}
-                </Row>
-              </div>
-              <Col sm={3}>
-                <Form.Item
-                  label="Max Paticipants"
-                  colon={false}
-                  className={classes.textBoxSec}
-                >
-                  <Input
-                    style={{ width: "100%" }}
-                    prefix={<UserOutlined />}
-                    className={classes.maxparticipantInput}
-                    defaultValue={values.event_participants}
-                    value={values.event_participants}
-                    maxLength={8}
-                    onChange={handleChange("event_participants")}
-                  />
-                </Form.Item>
-                {touched.event_participants && (
-                  <p className="ErrTxt mb-3">{errors?.event_participants}</p>
-                )}
-              </Col>
-              <Col sm={3}>
-                <Form.Item
-                  label="Duration"
-                  colon={false}
-                  className={classes.textBoxSec}
-                  initialValue={values.event_title}
-                >
-                  <TimePicker
-                    className={`${classes.onlytime} ${classes.textbox}`}
-                    format={"HH:mm"}
-                    clearIcon={null}
-                    showSecond={false}
-                    use12Hours={false}
-                    inputReadOnly
-                    showNow={false}
-                    value={
-                      values.event_duration
-                        ? moment(values.event_duration, "HH:mm")
-                        : ""
-                    }
-                    onSelect={(time) => {
-                      setFieldValue(
-                        "event_duration",
-                        moment(time).format("HH:mm")
-                      );
-                    }}
-                    hideDisabledOptions={true}
-                    minuteStep={15}
-                    disabledHours={() => {
-                      return [
-                        11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-                      ];
-                    }}
-                  />
-                </Form.Item>
-                {touched.event_duration && (
-                  <p className="ErrTxt mb-3">{errors?.event_duration}</p>
-                )}
-              </Col>
-              <Col sm={3}>
-                <EventLayoutComponent
-                  value={values.event_layout}
-                  onResult={(val) => {
-                    setFieldValue("event_layout", val.id);
-                  }}
-                />
-              </Col>
-              <Col sm={3}>
-                <EventMelodyComponent
-                  isCustomize={true}
-                  value={values.event_melody_id}
-                  onResult={(val) => {
-                    setFieldValue("event_melody_id", val.id);
-                  }}
-                />
-              </Col>
-              <div
-                id="addUploadMelodydiv"
-                style={{
-                  display:
-                    parseInt(values.event_melody_id) === 0 ? "block" : "none",
-                }}
-              >
-                <div>Upload customize (audio / video / image)</div>
-
-                <Button
-                  className={classes.uploadBtn}
-                  onClick={() => {
-                    document.getElementById("UploadMelody").click();
-                  }}
-                >
-                  Upload
-                </Button>
-                <input
-                  type="file"
-                  id="UploadMelody"
-                  name="UploadMelody"
-                  style={{ display: "none" }}
-                  onChange={(event) => {
-                    if (event.target.files[0]) {
-                      setFieldValue("event_melody", event.target.files[0]);
-                    }
-                  }}
-                ></input>
-                {touched.event_melody && (
-                  <p className="ErrTxt mb-3">{errors?.event_melody}</p>
-                )}
-                <div>
-                  {values.event_melody !== "" ? (
-                    <span>
-                      {values.event_melody?.name}{" "}
-                      <span
-                        style={{ color: "red", cursor: "pointer" }}
-                        onClick={() => {
-                          setFieldValue("event_melody", "");
-                        }}
-                      >
-                        X
-                      </span>
-                    </span>
-                  ) : null}
+                            Upgrade
+                          </Button>
+                          <Button
+                            style={{
+                              border: "1px solid #f2718d",
+                              background: "transparent",
+                              color: "#f2718d",
+                              width: " 88px",
+                              fontSize: "13px",
+                              padding: 0,
+                              textAlign: "center",
+                              minHeight: "32px",
+                            }}
+                            onClick={() => {
+                              setupgradePlanPopup(false);
+                            }}
+                            size="small"
+                            danger
+                            type="primary"
+                          >
+                            Later
+                          </Button>
+                        </Space>
+                      }
+                    />
+                  )}
                 </div>
-              </div>
-
-              <AudioVideoSettings
-                values={values}
-                setFieldValue={setFieldValue}
-              />
-            </Row>
-          </>
-        )}
-      </Form>
-    </EventModal>
+              </Row>
+            </>
+          )}
+        </Form>
+      </EventModal>
+    </AddEventContext.Provider>
   );
 };
 

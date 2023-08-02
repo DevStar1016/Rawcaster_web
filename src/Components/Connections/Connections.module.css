@@ -174,7 +174,8 @@ padding: 4px;
     -webkit-mask-position: left bottom;
     transition: mask-position 0.3s, -webkit-mask-position 0.3s;
   }
-  .connectionsLists {overflow: auto;max-height: calc(100vh - 715px);}
+  .connectionsLists {overflow: auto;max-height: 100%;
+    height: calc(100% - 80px);}
   .groupLists:hover,
   .connectionsLists:hover {
     mask-position: left top;
@@ -201,6 +202,10 @@ padding: 4px;
     padding:10px 0 6px 0;
     float: left;
     width: 100%;
+    height: calc((100vh - 267px)/2);
+  }
+  .myconnectioinReferral{
+    height: calc(100vh - 307px) !important;
   }
   .myconnectioin .textBox {
     margin-bottom: 6px;
@@ -236,6 +241,7 @@ padding: 4px;
     float: left;
     display: flex;
     align-items: center; width: 100%;
+    cursor: pointer;
   }
  .list:hover { background-color:#F6F6F6; border-radius: 8px; }
  .list span.disName,.list .groupdisName {
@@ -336,6 +342,7 @@ font-size: 14px;
   /* margin: 10px 0; */
   display: flex;
   flex-direction: row;
+  cursor: pointer;
 }
 .leftSec {
   width: 90%;

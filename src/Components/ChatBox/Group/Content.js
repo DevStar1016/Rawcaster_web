@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MessageContent } from "../../../Sharedcomponents/Chat/utility";
-import { Layout } from "antd";
+import { Layout, Modal } from "antd";
 import classes from "../ChatBox.module.css";
 import { useChatContext, useMainContext } from "../../../Shared/Context";
 import { MessageList, TypingIndicator } from "@chatscope/chat-ui-kit-react";
@@ -10,12 +10,22 @@ import { toast } from "react-hot-toast";
 import moment from "moment";
 import SectionList from "../../../Sharedcomponents/SectionList";
 
-const Content = () => {
+const Content = ({ getContents }) => {
   const userdata = useAuthData();
-  const { Messages, isTyping, GroupDetails, EditData, setMessages } =
-    useChatContext();
+  const [headerScrolling, setheaderScrolling] = useState(false);
+  const [scroll, setscroll] = useState(0);
+  const {
+    Messages,
+    isTyping,
+    GroupDetails,
+    EditData,
+    setMessages,
+    setSelectAllMessages,
+    SelectAllMessages,
+  } = useChatContext();
   const { isChatOpen } = useMainContext();
-  console.log(Messages);
+
+  const [selectedMessages, setSelectedMessages] = useState([]);
 
   const handleDelete = (id) => {
     const params = {
@@ -69,6 +79,17 @@ const Content = () => {
     return sectionedMessages.reverse();
   };
 
+  useEffect(() => {
+    console.log(selectedMessages, "selectedMessages");
+    getContents(selectedMessages);
+  }, [selectedMessages]);
+
+  useEffect(() => {
+    setSelectedMessages([]);
+  }, [SelectAllMessages]);
+
+  const closeSelection = () => setSelectAllMessages(false);
+
   return (
     <MessageList
       typingIndicator={
@@ -89,7 +110,7 @@ const Content = () => {
       }
       className={classes.MessagesList}
     >
-      <Layout.Content className={classes.mainContainer}>
+      <Layout.Content id="scrollContainer" className={classes.mainContainer}>
         <div className={`${classes.endToEndSec} mb-1`}>
           <i className={classes.rawcaster_icon} />
           Messages and calls are end-to-end encrypted. No one outside of this
@@ -100,7 +121,14 @@ const Content = () => {
             <SectionList
               Data={getValidSectionComponent()}
               HeaderComponent={({ children, id, className }) => (
-                <div className={classes.dateSec} id={id}>
+                <div
+                  className={
+                    headerScrolling
+                      ? `${classes.dateSec} ${classes.dateSecSticky}`
+                      : classes.dateSec
+                  }
+                  id={id}
+                >
                   <p className={className}>{children}</p>
                 </div>
               )}
@@ -108,11 +136,37 @@ const Content = () => {
                 <MessageContent
                   {...ele}
                   index={index}
-                  isGroup={isChatOpen.type == "group"}
+                  isGroup={isChatOpen?.type == "group"}
                   onDelete={() => {
-                    console.log("test", ele);
-                    handleDelete(ele.message_id);
+                    Modal.confirm({
+                      title: "Confirmation",
+                      okText: "Yes",
+                      cancelText: "No",
+                      okButtonProps: {
+                        danger: true,
+                      },
+                      content: (
+                        <div>
+                          Are you sure Do you Want to Delete This Message ?
+                        </div>
+                      ),
+                      onOk: () => {
+                        handleDelete(ele?.message_id);
+                      },
+                    });
                   }}
+                  onSelectedMessage={(value) => {
+                    setSelectedMessages((pre) => {
+                      const temp = [...pre];
+                      if (temp?.includes(value)) {
+                        return temp?.filter((item) => item !== value);
+                      }
+                      return [...temp, value];
+                    });
+                  }}
+                  selectedMessages={selectedMessages}
+                  SelectAllMessages={SelectAllMessages}
+                  setSelectAllMessages={setSelectAllMessages}
                 />
               )}
             />

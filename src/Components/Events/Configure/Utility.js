@@ -12,6 +12,7 @@ import {
   getLayoutData,
   getMelodyData,
 } from "../../../Shared/DropdownApis";
+import { useAddEventContext } from "../../../Shared/Context";
 
 export const EventTypeComponent = ({
   onResult,
@@ -277,8 +278,15 @@ export const BannerComponent = ({ onResult, value, size = null }) => {
   );
 };
 
-export const InviteEmailComponent = ({ onResult, value }) => {
+export const InviteEmailComponent = ({
+  onResult,
+  value,
+  setuserMailList,
+  userMailList,
+  onDeleteData,
+}) => {
   const [externalMailId, setExternalMailId] = useState([]);
+  const [DeleteMailId, setDeleteMailId] = useState([]);
 
   const addExtMailHandler = (data) => {
     let maildata = data.trim();
@@ -310,7 +318,19 @@ export const InviteEmailComponent = ({ onResult, value }) => {
     }
   };
 
-  const removeExtMailHandler = (index) => {
+  const removeExtMailHandler = (index, v1, v2, mail) => {
+    if (userMailList?.includes(mail)) {
+      setuserMailList(mail);
+    }
+    setDeleteMailId((pre) => {
+      if (pre.length === 0) {
+        onDeleteData([mail]);
+        return [mail];
+      } else {
+        onDeleteData([...pre, mail]);
+        return [...pre, mail];
+      }
+    });
     let mailList = [...externalMailId];
     if (mailList.length > index) {
       mailList.splice(index, 1);
@@ -355,7 +375,12 @@ export const InviteEmailComponent = ({ onResult, value }) => {
               className={classes.displayuser + " pointer"}
               style={{ cursor: "pointer" }}
               onClick={() =>
-                removeExtMailHandler(index, setExternalMailId, externalMailId)
+                removeExtMailHandler(
+                  index,
+                  setExternalMailId,
+                  externalMailId,
+                  m
+                )
               }
             >
               {m}
@@ -465,12 +490,13 @@ export const TimeValueComponent = ({ onResult, value }) => {
   );
 };
 
-export const Connections = ({ onResult, values }) => {
+export const Connections = ({ onResult, values, onDeleteData }) => {
   const { friendsList } = useDashboard();
   const [filterFriendList, setFilterFriendList] = useState([...friendsList]);
   const [selectedFriendList, setSelectedFriendList] = useState([]);
   const [selectedListVisible, setSelectedListVisible] = useState(false);
   const [friendSearchInput, setFriendSearchInput] = useState(false);
+  const [DeleteMailId, setDeleteMailId] = useState([]);
 
   const selectFriendHandler = (data) => {
     setSelectedFriendList((prev) => [...prev, data]);
@@ -565,7 +591,7 @@ export const Connections = ({ onResult, values }) => {
           ></input>
           <i
             style={{ cursor: "pointer" }}
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setFriendSearchInput((p) => !p);
             }}
@@ -601,12 +627,176 @@ export const Connections = ({ onResult, values }) => {
         open={selectedListVisible}
         friends={selectedFriendList}
         setfriends={(id) => {
+          setDeleteMailId((pre) => {
+            if (pre.length === 0) {
+              onDeleteData([id]);
+              return [id];
+            } else {
+              onDeleteData([...pre, id]);
+              return [...pre, id];
+            }
+          });
           const findData = selectedFriendList.find((ele) => ele.user_id === id);
           if (findData) {
             setFilterFriendList((pre) => [...pre, findData]);
           }
           setSelectedFriendList((pre) =>
             pre.filter((ele) => ele.user_id !== id)
+          );
+        }}
+        close={() => {
+          setSelectedListVisible(false);
+        }}
+      />
+    </div>
+  );
+};
+
+export const Groups = ({ onResult, values, onDeleteData }) => {
+  const { groupsList } = useDashboard();
+  const [filterGroupList, setFilterGroupList] = useState([...groupsList]);
+  const [selectedGroupList, setSelectedGroupList] = useState([]);
+  const [selectedListVisible, setSelectedListVisible] = useState(false);
+  const [GroupSearchInput, setGroupSearchInput] = useState(false);
+  const [DeleteMailId, setDeleteMailId] = useState([]);
+
+  const selectGroupHandler = (data) => {
+    setSelectedGroupList((prev) => [...prev, data]);
+    const search = document.getElementById("Groupsearch").value;
+    var filterData = groupsList.filter((f) => {
+      return (
+        decodeHtml(f.group_name).toLowerCase().includes(search.toLowerCase()) &&
+        !selectedGroupList.includes(f) &&
+        f.group_id !== data.group_id
+      );
+    });
+    setFilterGroupList([...filterData]);
+  };
+
+  const selectedListOpenHandler = (type) => {
+    setSelectedListVisible(true);
+  };
+
+  const selectAllGroupsHandler = () => {
+    if (selectedGroupList.length === groupsList.length) {
+      setSelectedGroupList([]);
+      const search = document.getElementById("Groupsearch").value;
+      var filterData = groupsList.filter((f) => {
+        return decodeHtml(f.group_name)
+          .toLowerCase()
+          .includes(search.toLowerCase());
+      });
+      setFilterGroupList([...filterData]);
+    } else {
+      setSelectedGroupList(groupsList);
+      setFilterGroupList([]);
+    }
+  };
+
+  const GroupFilterHandler = (search) => {
+    var filterData = groupsList.filter((f) => {
+      return (
+        decodeHtml(f.group_name).toLowerCase().includes(search.toLowerCase()) &&
+        !selectedGroupList.includes(f)
+      );
+    });
+    setFilterGroupList([...filterData]);
+  };
+
+  useEffect(() => {
+    onResult(selectedGroupList);
+  }, [selectedGroupList]);
+
+  useEffect(() => {
+    if (values && selectedGroupList.length === 0) {
+      let finResult = groupsList.filter((ele) => values.includes(ele.group_id));
+      setSelectedGroupList(finResult);
+      let otherData = groupsList.filter(
+        (ele) => !values.includes(ele.group_id)
+      );
+      setFilterGroupList([...otherData]);
+    }
+  }, [values]);
+
+  return (
+    <div className={classes.Groupsdiv}>
+      <div style={{ margin: 2 }} className={classes.headerSec}>
+        <div className="d-flex flex-row">
+          <div className={classes.lableTxt}> Groups</div>
+          {selectedGroupList.length > 0 ? (
+            <span
+              style={{ color: "rgb(35, 71, 135)", cursor: "pointer" }}
+              onClick={() => {
+                selectedListOpenHandler(4);
+              }}
+            >
+              ({selectedGroupList.length})
+            </span>
+          ) : null}
+        </div>
+
+        <div style={{ float: "right" }} className={classes.searchSec}>
+          <input
+            id="Groupsearch"
+            type="text"
+            style={{
+              display: GroupSearchInput ? "inline" : "none",
+              height: "17px",
+            }}
+            className={classes.search}
+            onChange={(e) => GroupFilterHandler(e.target.value)}
+          ></input>
+          <i
+            style={{ cursor: "pointer" }}
+            className="material-symbols-outlined"
+            onClick={() => {
+              setGroupSearchInput((p) => !p);
+            }}
+          >
+            search
+          </i>
+
+          <span className={classes.invite_txt} onClick={selectAllGroupsHandler}>
+            {groupsList.length === selectedGroupList.length &&
+            selectedGroupList.length > 0
+              ? "Remove all"
+              : "Invite All"}
+          </span>
+        </div>
+      </div>
+      <div style={{ marginTop: "6px", clear: "both" }}>
+        {filterGroupList.slice(0, 10).map((f) => {
+          return (
+            <span
+              style={{ cursor: "pointer" }}
+              className={classes.displayuser}
+              onClick={() => selectGroupHandler(f)}
+            >
+              {decodeHtml(f.group_name)}
+            </span>
+          );
+        })}
+      </div>
+      <SelectedUsers
+        open={selectedListVisible}
+        Groups={selectedGroupList}
+        type={2}
+        setGroups={(id) => {
+          setDeleteMailId((pre) => {
+            if (pre.length === 0) {
+              onDeleteData([id]);
+              return [id];
+            } else {
+              onDeleteData([...pre, id]);
+              return [...pre, id];
+            }
+          });
+          const findData = selectedGroupList.find((ele) => ele.group_id === id);
+          if (findData) {
+            setFilterGroupList((pre) => [...pre, findData]);
+          }
+          setSelectedGroupList((pre) =>
+            pre.filter((ele) => ele.group_id !== id)
           );
         }}
         close={() => {
@@ -631,7 +821,9 @@ export const getValidarrayData = (data) => {
   }
 };
 
-export const AudioVideoSettings = ({ values, setFieldValue }) => {
+export const AudioVideoSettings = () => {
+  const { values, setFieldValue } = useAddEventContext();
+
   return (
     <div className="mt-2">
       <div className={classes.audioSetting}>
@@ -704,7 +896,7 @@ export function compareArrays(arr1, arr2) {
     return undefined;
   });
   if (checkError?.length > 0) {
-    return true;
+    return checkError;
   } else {
     return false;
   }

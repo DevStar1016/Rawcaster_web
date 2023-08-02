@@ -11,7 +11,7 @@ import Friends from "../Components/Friends";
 import { SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Skeleton } from "antd";
 
-const Connections = () => {
+const Connections = ({ referral }) => {
   const dispatch = useDispatch();
   const Token = useAuthToken();
   const { friendsList, isFriendsLoading } = useDashboard();
@@ -140,7 +140,13 @@ const Connections = () => {
   };
 
   return (
-    <div className={classes.myconnectioin}>
+    <div
+      className={
+        referral
+          ? `${classes.myconnectioin} ${classes.myconnectioinReferral}`
+          : classes.myconnectioin
+      }
+    >
       <input
         className={classes.textBox}
         onChange={(e) => setsearchInput(e.target.value)}
@@ -153,7 +159,7 @@ const Connections = () => {
         My Connections <span>({friends.length})</span>
         {friends.length !== 0 && !isFriendsLoading ? (
           <i
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setisAddFriend(true);
             }}
@@ -167,6 +173,8 @@ const Connections = () => {
         className={
           requests.length === 0 && friends.length === 0 && !isFriendsLoading
             ? classes.connectionsEmpty
+            : referral
+            ? `${classes.connectionsLists} ${classes.connectionsListsReferral}`
             : classes.connectionsLists
         }
       >

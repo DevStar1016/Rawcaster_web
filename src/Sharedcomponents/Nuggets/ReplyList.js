@@ -300,7 +300,7 @@ const ReplyList = ({
                             </div>
                           </div>
                           <span
-                            class={`material-symbols-outlined ${classes.closeIcon}`}
+                            className={`material-symbols-outlined ${classes.closeIcon}`}
                             onClick={() => {
                               setisActiveEdit(null);
                             }}
@@ -354,7 +354,7 @@ const ReplyList = ({
                                   trigger={["click"]}
                                 >
                                   <div className={classes.moreBtn}>
-                                    <i class="material-symbols-outlined">
+                                    <i className="material-symbols-outlined">
                                       more_horiz
                                     </i>
                                   </div>
@@ -511,7 +511,7 @@ const ReplyList = ({
               </div>
             </div>
             <span
-              class={`material-symbols-outlined ${classes.replyClose}`}
+              className={`material-symbols-outlined ${classes.replyClose}`}
               onClick={() => {
                 setisReplyEnabled("");
               }}

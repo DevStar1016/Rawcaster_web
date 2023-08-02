@@ -73,7 +73,9 @@ const SigninwithService = ({ type }) => {
           delete finalVal["name"];
           setCookieData("rawcaster_user_token", finalVal);
           dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
-            if (getSessionStorageData("influencerData")) {
+            if (res.data.first_time === 1) {
+              navigate("/selectinfluencers");
+            } else if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");
               removeSessionStorageData("influencerData");
             } else if (res.data.first_time === 1) {
@@ -108,14 +110,12 @@ const SigninwithService = ({ type }) => {
             discoveryDocs="claims_supported"
             access_type="offline"
             onResolve={({ provider, data }) => {
-              console.log(data, "data");
               let resultVal = {
                 signin_type: 5,
                 first_name: data.name,
                 display_name: data.name,
                 email_id: data.email,
               };
-              console.log(resultVal, "resultVal");
               HandleSignup(resultVal);
               dispatch(handleLoading(true));
             }}
@@ -136,25 +136,6 @@ const SigninwithService = ({ type }) => {
         </Col>
 
         <Col sm={6}>
-          {/* <AppleLogin
-                    clientId={APPLE_API_KEY}
-                    redirectURI={PRIMARY_REDIRECT_URI}
-                    scope={"name email"}
-                    responseMode="form_post"
-                    render={({ onClick }) => {
-                      return (
-                        <button
-                          className={classes.altSignBtn}
-                          onClick={onClick}
-                        >
-                          <img src={AppleIcon} /> Signup with Apple
-                        </button>
-                      );
-                    }}
-                    callback={(value) => {
-                      console.log(value, "==>value");
-                    }}
-                  /> */}
           <LoginSocialApple
             client_id={APPLE_API_KEY}
             scope={"name email"}

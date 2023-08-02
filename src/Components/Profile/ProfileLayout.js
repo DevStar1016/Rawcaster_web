@@ -29,6 +29,7 @@ import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const ProfileLayout = ({
   children,
@@ -84,6 +85,7 @@ const ProfileLayout = ({
         if (res.data.status === 1) {
           dispatch(fetchuserInfobyToken(loginToken)).then(({ payload }) => {
             setisUploading(false);
+            toast.success("Successfully Updated");
           });
         } else {
           toast.error(res.data.msg);
@@ -231,7 +233,7 @@ const ProfileLayout = ({
               <Spin size="small" className={classes.loader} />
             ) : (
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 onClick={() => {
                   coverRef?.current.click();
                 }}
@@ -258,6 +260,10 @@ const ProfileLayout = ({
               src={profileData?.profile_image}
               alt="Profile"
               className={classes.profileImg}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src = defaultprofileImg;
+              }}
             />
             {isLoginUser && (
               <div
@@ -268,7 +274,7 @@ const ProfileLayout = ({
                   <Spin size="small" className={classes.loader} />
                 ) : (
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       profileRef?.current.click();
                     }}
@@ -341,7 +347,7 @@ const ProfileLayout = ({
                   }}
                 >
                   <div style={{ cursor: "pointer" }}>
-                    <span class="material-icons">more_horiz</span>
+                    <span className="material-icons">more_horiz</span>
                   </div>
                 </Dropdown>
               )}

@@ -1,10 +1,15 @@
 import {
   decodeHtml,
   getAspectRatio,
+  handleProfileNavigate,
   isValidImageFile,
 } from "../../../Shared/Utility";
 import classes from "./Groups.module.css";
-import { useAuthData, useFriends } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useFriends,
+  useNuggets,
+} from "../../../Shared/Reduxfetcher";
 import { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { useConfigureGroupContext } from "../../../Shared/Context";
@@ -23,6 +28,8 @@ import tickIcon from "../../../Assets/Icons/png/tick.png";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import ReportGroup from "../../../Modal/Report/ReportGroup";
 import ImageCropModal from "../../../Modal/ImageCropModal";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 export const GroupHeader = () => {
   const {
@@ -118,7 +125,7 @@ export const GroupHeader = () => {
                 }}
               />
               <span
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 style={{ display: getValidConnections() ? "" : "none" }}
                 onClick={() => {
                   setisAddMember(false);
@@ -141,7 +148,7 @@ export const GroupHeader = () => {
               <Tooltip title="Exit and Delete" color={"red"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       Modal.confirm({
                         title: "Confirmation",
@@ -166,7 +173,7 @@ export const GroupHeader = () => {
               <Tooltip title="Add Connection" color={"#F2718D"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     style={{ display: getValidConnections() ? "" : "none" }}
                     onClick={() => {
                       setisAddMember(true);
@@ -184,7 +191,7 @@ export const GroupHeader = () => {
               <Tooltip title="Report and Exit Group" color={"#fc8403"}>
                 <div className="d-flex justify-content-center">
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     onClick={() => {
                       setisReport(true);
                     }}
@@ -216,7 +223,7 @@ export const GroupHeader = () => {
                     });
                   }}
                 >
-                  <span class="material-symbols-outlined">logout</span>
+                  <span className="material-symbols-outlined">logout</span>
                 </div>
               </Tooltip>
             </>
@@ -230,7 +237,7 @@ export const GroupHeader = () => {
                 onClick={() => {
                   setisReport(true);
                 }}
-                class="material-symbols-outlined"
+                className="material-symbols-outlined"
                 style={{
                   color: "#fc8403",
                   fontWeight: 500,
@@ -272,7 +279,7 @@ export const GroupHeader = () => {
           }}
         >
           <div className={classes.overLaySec}>
-            <span class="material-symbols-outlined">upload</span>
+            <span className="material-symbols-outlined">upload</span>
           </div>
           <img
             src={
@@ -461,7 +468,7 @@ export const SelectConnections = () => {
               }}
             />
             <InputGroup.Text className={classes.searchIcon}>
-              <span class="material-icons">search</span>
+              <span className="material-icons">search</span>
             </InputGroup.Text>
           </InputGroup>
 
@@ -487,8 +494,11 @@ export const SelectConnections = () => {
         <div className={classes.ConnectionList}>
           {getSearchData()?.map((ele) => (
             <div
-              className="d-flex flex-row justify-content-between align-items-center"
-              style={{ cursor: "pointer" }}
+              className={`d-flex flex-row justify-content-between align-items-center ${classes.addFriends}`}
+              style={{
+                background:
+                  SelectedConnections.includes(ele.user_id) && "#e6f4ff",
+              }}
               onClick={() => {
                 let findValue = SelectedConnections.find(
                   (elem) => elem === ele.user_id
@@ -560,10 +570,12 @@ export const SelectConnections = () => {
                       .includes(searchInput.toLowerCase())
                       ? "block"
                       : "none",
+                    paddingRight: "10px",
+                    paddingTop: "3px",
                   }}
                 >
                   <span
-                    class="material-symbols-outlined"
+                    className="material-symbols-outlined"
                     style={{
                       display: SelectedConnections.includes(ele.user_id)
                         ? ""
@@ -588,6 +600,9 @@ export const SelectConnections = () => {
 
 export const EditGroupMembers = () => {
   const userData = useAuthData();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nuggetFormData } = useNuggets();
   const {
     isOwner,
     GroupMembers,
@@ -646,7 +661,7 @@ export const EditGroupMembers = () => {
                 }}
               />
               <InputGroup.Text className={classes.searchIcon}>
-                <span class="material-icons">search</span>
+                <span className="material-icons">search</span>
               </InputGroup.Text>
             </InputGroup>
           )}
@@ -719,6 +734,15 @@ export const EditGroupMembers = () => {
                 <div className="d-flex flex-row justify-content-between align-items-center">
                   <div
                     className={classes.friends}
+                    onClick={() => {
+                      let finalData = {
+                        dispatch,
+                        navigate,
+                        nuggetFormData,
+                        user_id: ele?.user_id,
+                      };
+                      handleProfileNavigate(finalData);
+                    }}
                     style={{
                       position: "relative",
                       padding: "10px 0px",
@@ -786,8 +810,9 @@ export const EditGroupMembers = () => {
                               }}
                             >
                               <span
-                                class="material-symbols-outlined"
-                                onClick={() => {
+                                className="material-symbols-outlined"
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   Modal.confirm({
                                     title: "Confirmation",
                                     okText: "Yes",

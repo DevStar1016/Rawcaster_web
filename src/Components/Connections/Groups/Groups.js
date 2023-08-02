@@ -42,7 +42,7 @@ const Groups = () => {
         My Groups <span>({groupsList.length})</span>
         {groupsList?.length !== 0 && !isGroupLoading ? (
           <i
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setisConfigureGroup({ show: true, group_id: null });
             }}

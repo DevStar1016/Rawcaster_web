@@ -119,7 +119,7 @@ const Eventslisting = ({
           >
             <div className={classes.dropmenu}>
               <span>{ActiveEvent.label}</span>
-              <i class="material-symbols-outlined">expand_more</i>
+              <i className="material-symbols-outlined">expand_more</i>
             </div>
           </Dropdown>
         </div>

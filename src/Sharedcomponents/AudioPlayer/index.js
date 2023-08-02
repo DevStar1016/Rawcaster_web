@@ -6,6 +6,7 @@ import AudioPause from "../../Assets/Images/png/audio_pause.png";
 import classes from "./Audioplayer.module.css";
 import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { useMainContext } from "../../Shared/Context";
+import { Spinner } from "react-bootstrap";
 
 const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   const { isNuggetMuted } = useDashboard();
@@ -16,9 +17,11 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setisMuted] = useState(false);
+  const [isBuffering, setisBuffering] = useState(false);
 
   useEffect(() => {
     const audioElement = new Audio(url);
+
     audioElement.id = audioId;
     setAudio(audioElement);
 
@@ -49,6 +52,15 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
       audio.addEventListener("timeupdate", handleTimeUpdate);
       audio.addEventListener("durationchange", handleDurationChange);
       audio.addEventListener("ended", handleEnded);
+      audio.addEventListener("loadstart", (e) => {
+        setisBuffering(true);
+      });
+      audio.addEventListener("waiting", () => {
+        setisBuffering(true);
+      });
+      audio.addEventListener("loadeddata", (e) => {
+        setisBuffering(false);
+      });
 
       return () => {
         audio.removeEventListener("pause", () => {
@@ -57,6 +69,12 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
         audio.removeEventListener("timeupdate", handleTimeUpdate);
         audio.removeEventListener("durationchange", handleDurationChange);
         audio.removeEventListener("ended", handleEnded);
+        audio.addEventListener("loadstart", (e) => {
+          setisBuffering(true);
+        });
+        audio.addEventListener("loadeddata", (e) => {
+          setisBuffering(false);
+        });
       };
     }
   }, [audio]);
@@ -132,20 +150,28 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
           <div
             className={`${classes.playSec} ${isThumb ? classes.thumbSec : ""}`}
           >
-            <div className={classes.overlaySec}>
-              {isPlaying ? <img src={AudioPlay} /> : <img src={AudioPause} />}
-            </div>
-            <button
-              onClick={isPlaying ? handlePause : handlePlay}
-              className={isPlaying ? classes.Playing : ""}
-              disabled={isThumb}
-            >
-              {isPlaying ? (
-                <span class="material-symbols-outlined">pause</span>
-              ) : (
-                <span class="material-symbols-outlined">play_arrow</span>
-              )}
-            </button>
+            {!isBuffering && (
+              <div className={classes.overlaySec}>
+                {isPlaying ? <img src={AudioPlay} /> : <img src={AudioPause} />}
+              </div>
+            )}
+            {isBuffering ? (
+              <div className={classes.spinnerSec}>
+                <Spinner animation="border" color="#FFFFFF" />
+              </div>
+            ) : (
+              <button
+                onClick={isPlaying ? handlePause : handlePlay}
+                className={isPlaying ? classes.Playing : ""}
+                disabled={isThumb}
+              >
+                {isPlaying ? (
+                  <span className="material-symbols-outlined">pause</span>
+                ) : (
+                  <span className="material-symbols-outlined">play_arrow</span>
+                )}
+              </button>
+            )}
           </div>
           {!isThumb && (
             <div className={classes.sliderSec}>

@@ -60,13 +60,14 @@ const ConfigureGroup = ({ groupId, close, open }) => {
     validationSchema: yup.object().shape({
       group_name: yup
         .string()
+        .required(`Please input your Group Name!`)
         .test(
           "Group Names test",
           "Group name does not include My Fans",
           function (value) {
             let invalidString = "My Fans";
             const lowerCaseStr =
-              invalidString.toLowerCase() === value.toLowerCase();
+              invalidString?.toLowerCase() === value?.toLowerCase();
             // const withoutSpaces =
             //   invalidString.replace(/\s+(?=\S+\s)/g, "") ===
             //   value.replace(/\s+(?=\S+\s)/g, "");
@@ -75,8 +76,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
             }
             return true;
           }
-        )
-        .required(`Please input your Group Name!`),
+        ),
       group_members: yup.string().required(`Please select Atleast One Member!`),
     }),
     onSubmit: (values) => {
@@ -322,7 +322,11 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           );
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          if (typeof res?.data?.msg === "string") {
+            toast.error(res.data.msg);
+          } else {
+            toast.error("Something went wrong");
+          }
         }
       })
       .catch((err) => {
@@ -407,7 +411,6 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       onCancel={() => {
         handleClose();
       }}
-     
     >
       <ConfigureGroupContext.Provider
         value={{

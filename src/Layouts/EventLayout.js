@@ -14,30 +14,29 @@ import {
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
 import { Dropdown } from "antd";
+import { useEventLayout } from "../Components/Events/Room/EventValidaton";
+import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
 
-export function useEventLayout() {
+export const useLayoutContect = () => {
   return useOutletContext();
-}
+};
 
 const EventLayout = () => {
-  const [isChatorParticipant, setisChatorParticipant] = useState(null);
-  const [isPinEnabled, setisPinEnabled] = useState(false);
+  const {
+    isChatorParticipant,
+    setisChatorParticipant,
+    isPinEnabled,
+    setisPinEnabled,
+    EventData,
+  } = useEventLayout();
   const { muted, toggleMute } = useToggleLocalMute();
   const audiovideo = useAudioVideo();
   const { toggleContentShare } = useContentShareControls();
   const { isLocalUserSharing } = useContentShareState();
-  const { devices, selectedDevice } = useAudioOutputs();
   const audioinput = useAudioInputs();
   const videoinput = useVideoInputs();
   const { tileId, isVideoEnabled, hasReachedVideoLimit, toggleVideo } =
     useLocalVideo();
-
-  const contectValues = {
-    isPinEnabled,
-    setisPinEnabled,
-    isChatorParticipant,
-    setisChatorParticipant,
-  };
 
   const DeviceList = (List, onSelect) => {
     return List.map((ele, index) => {
@@ -57,19 +56,15 @@ const EventLayout = () => {
     });
   };
 
-  const onSelect = (ele) => {
-    console.log(ele);
-  };
-
   return (
     <div>
       <div className={`${classes.topheader} ${classes.eventHeader}`}>
         <div className={classes.meetingHeader}>
           <img src={Rlogo} />
-          <h2>Rawcaster Meeting</h2>
+          <h2>{EventData?.event_name}</h2>
         </div>
       </div>
-      <Outlet context={contectValues} />
+      <Outlet context={useEventLayout()} />
       <div className={styles.BottomContainer}>
         <div className={styles.startContainer}>
           <div className="d-flex flex-row">
@@ -103,11 +98,13 @@ const EventLayout = () => {
                       color: "white",
                     }}
                   >
-                    <span class="material-symbols-outlined">expand_less</span>
+                    <span className="material-symbols-outlined">
+                      expand_less
+                    </span>
                   </div>
                 </Dropdown>
               </div>
-              {muted ? <>UnMute</> : <>Mute</>}
+              {muted ? <>Unmute</> : <>Mute</>}
             </div>
           </div>
           <div className="d-flex flex-row">
@@ -142,11 +139,13 @@ const EventLayout = () => {
                       color: "white",
                     }}
                   >
-                    <span class="material-symbols-outlined">expand_less</span>
+                    <span className="material-symbols-outlined">
+                      expand_less
+                    </span>
                   </div>
                 </Dropdown>
               </div>
-              {isVideoEnabled ? <>Stop Video</> : <>Start Video</>}
+              {isVideoEnabled ? <>Stop video</> : <>Start video</>}
             </div>
           </div>
         </div>
@@ -158,9 +157,6 @@ const EventLayout = () => {
             }}
             onClick={() => {
               toggleContentShare();
-              // toggleContentShare().then((res) => {
-              //   console.log(res, "===>res");
-              // });
             }}
           >
             <i
@@ -183,7 +179,7 @@ const EventLayout = () => {
               setisPinEnabled(!isPinEnabled);
             }}
           >
-            <i class="material-symbols-outlined">grid_view</i>
+            <i className="material-symbols-outlined">grid_view</i>
             View
           </div>
           <div className={styles.Actionsec}>
@@ -232,6 +228,7 @@ const EventLayout = () => {
           </div>
         </div>
       </div>
+      <MeetingManagerComponent />
     </div>
   );
 };
