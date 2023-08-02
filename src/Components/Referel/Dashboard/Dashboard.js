@@ -46,19 +46,16 @@ const ReferalDashboard = () => {
       }}
     >
       <div className={classes.fullcontainer}>
-        <Row>
-          <Col sm={3}>
+     
             <div className={classes.leftFull}>
               <ReferralsList />
             </div>
-          </Col>
-          <Col>
-            <div>
+       
+            <div className={classes.dashCenter}>
               <ReferContainer />
             </div>
-          </Col>
-          <Col sm={3}>
-            <div>
+  
+            <div className={classes.rightFull}>
               {userData ? (
                 <div className={classes.proBox}>
                   <Tooltip
@@ -141,8 +138,7 @@ const ReferalDashboard = () => {
               ) : null}
               <Connections referral={true} maxHeight={"50vh"} />
             </div>
-          </Col>
-        </Row>
+       
       </div>
     </ReferalContext.Provider>
   );
