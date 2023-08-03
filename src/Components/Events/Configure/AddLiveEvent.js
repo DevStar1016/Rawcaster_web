@@ -137,7 +137,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     setValues((pre) => ({
       ...pre,
       event_type: userSettings?.event_type,
-      event_banner: userSettings?.meeting_header_image,
+      event_banner: userSettings?.talkshow_event_banner,
     }));
   };
 
@@ -146,7 +146,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       setValues((pre) => ({
         ...pre,
         event_type: userSettings?.event_type,
-        event_banner: userSettings?.meeting_header_image,
+        event_banner: userSettings?.talkshow_event_banner,
       }));
     }
   }, [userSettings]);

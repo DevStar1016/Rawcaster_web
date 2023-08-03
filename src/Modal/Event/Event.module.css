@@ -65,3 +65,17 @@
     justify-self: center;
     width: 382px;
   }
+
+  .modalWrapper{
+    max-height: auto;
+    height: calc(100vh - 200px);
+  }
+
+  .modalWrapper>div:nth-child(2) ,  .modalWrapper>div:nth-child(2)>div:nth-last-child(1) , .modalWrapper>div:nth-child(2)>div:nth-last-child(1)>div{
+    height: 100% !important;
+  }
+
+  .connectionsContainer{
+    height:  calc(100% - 95px) !important;
+    overflow-y: auto;
+  }

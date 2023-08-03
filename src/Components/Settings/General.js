@@ -23,6 +23,7 @@ import {
   handleRemoveReadoutURL,
   handleRemoveTranslate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import { toast } from "react-hot-toast";
 
 const General = () => {
   const {
@@ -51,16 +52,22 @@ const General = () => {
   }, []);
 
   const handleGroupListUpdateService = (key, value, type) => {
-    let finalData = {
-      profile_field_name: key,
-      [key]: type,
-      groupid: JSON.stringify(value),
-    };
-    setValues((pre) => ({
-      ...pre,
-      ...finalData,
-    }));
-    handleupdate(finalData);
+    if (value?.length > 0) {
+      let finalData = {
+        profile_field_name: key,
+        [key]: type,
+        groupid: JSON.stringify(value),
+      };
+      setValues((pre) => ({
+        ...pre,
+        ...finalData,
+      }));
+      handleupdate(finalData);
+    } else {
+      toast.error(
+        `please select atleast one ${type === 3 ? "connection" : "group"}`
+      );
+    }
 
     // grouplistupdateService(JSONtoformdata(finalData))
     //   .then((res) => {
@@ -148,7 +155,7 @@ const General = () => {
                     className={classes.online_status}
                     onChange={(e) => {
                       if (
-                        userSettings[ele.groupkeyword].length !== 0 &&
+                        userSettings[ele.groupkeyword]?.length !== 0 &&
                         e.target.value === ele.groupid
                       ) {
                         setFieldValue(
@@ -156,7 +163,7 @@ const General = () => {
                           userSettings[ele.groupkeyword]
                         );
                       } else if (
-                        userSettings[ele.groupkeyword].length !== 0 &&
+                        userSettings[ele.groupkeyword]?.length !== 0 &&
                         e.target.value === ele.friendid
                       ) {
                         setFieldValue(
