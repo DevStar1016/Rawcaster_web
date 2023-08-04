@@ -92,7 +92,9 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
           dispatch(handleNuggetReadoutUrlUpdate(NuggetData));
           handleplayaudio(res?.data?.file_path);
         } else {
-          toast.error(res?.data?.msg);
+          if (res?.data?.msg) {
+            toast.error(res?.data?.msg);
+          }
         }
       })
       .catch((err) => {
