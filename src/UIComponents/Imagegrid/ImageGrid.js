@@ -11,13 +11,13 @@ import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { useMainContext } from "../../Shared/Context";
 import { downloadurl } from "../../Shared/Utility";
 
-const ImageGrid = ({
+function ImageGrid({
   imgArray,
   downloadable,
   isPreview = false,
   isThumb = false,
   onPlay,
-}) => {
+}) {
   const dispatch = useDispatch();
   const { nuggetVideoPaused, isNuggetMuted } = useNuggets();
   const { player, setplayer } = useMainContext();
@@ -450,10 +450,11 @@ const ImageGrid = ({
   return (
     <>
       {isThumb ? (
-        <>
-          <ImageOrVideoThumb data={imgArray[0]} />
-        </>
+        ImageOrVideoThumb({ data: imgArray[0] })
       ) : (
+        // <>
+        //   <ImageOrVideoThumb data={imgArray[0]} />
+        // </>
         <Fragment>
           <div style={{ position: "relative" }}>
             {imgArray.length === 1 ? (
@@ -790,6 +791,6 @@ const ImageGrid = ({
       )}
     </>
   );
-};
+}
 
 export default ImageGrid;

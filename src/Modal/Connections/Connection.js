@@ -21,7 +21,7 @@ const ConnectionModal = ({
 }) => {
   const [LocationList, setLocationList] = useState([]);
 
-  const { values, setFieldValue } = useFormik({
+  const { values, setFieldValue, resetForm, handleReset } = useFormik({
     initialValues: {
       location: "",
       gender: "",
@@ -70,6 +70,7 @@ const ConnectionModal = ({
         onSuccess();
       }}
       onCancel={() => {
+        getConnectionList(filterValidObject({}));
         onClose();
       }}
     >
@@ -150,13 +151,27 @@ const ConnectionModal = ({
                 defaultValue={values.age}
                 placeholder="Age"
                 onKeyDown={(e) => {
-                  if (e.key.match(/[0-9]/g)) {
-                  } else {
-                    e.preventDefault();
+                  if (
+                    !(
+                      e.key === "Backspace" ||
+                      e.key === "Delete" ||
+                      e.key === "ArrowLeft" ||
+                      e.key === "ArrowRight"
+                    )
+                  ) {
+                    if (e.key.match(/[0-9]/g)) {
+                    } else {
+                      e.preventDefault();
+                    }
                   }
                 }}
                 onChange={(value) => {
-                  AgeProcess(value);
+                  // AgeProcess(value);
+                  let finalValue = {
+                    ...values,
+                    age: value !== null ? parseInt(value) : undefined,
+                  };
+                  getConnectionList(filterValidObject(finalValue));
                 }}
               />
             </Col>
