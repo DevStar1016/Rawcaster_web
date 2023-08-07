@@ -340,12 +340,18 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_start_date: utcDateTime.format("YYYY-MM-DD"),
       event_start_time: utcDateTime.format("HH:mm"),
       event_invite_mails: values?.event_invite_mails?.includes("[")
-        ? JSON.parse(values?.event_invite_mails)?.join(",")
+        ? JSON.parse(values?.event_invite_mails)?.length > 0
+          ? JSON.parse(values?.event_invite_mails)?.join(",")
+          : values?.event_invite_mails
         : values?.event_invite_mails,
-      delete_invite_mails: values.delete_invite_mails?.join(","),
+      delete_invite_mails: values?.delete_invite_mails?.includes("[")
+        ? JSON.parse(values?.delete_invite_mails)?.length > 0
+          ? JSON.parse(values?.delete_invite_mails)?.join(",")
+          : values?.delete_invite_mails
+        : values?.delete_invite_mails,
     };
+    console.log("editandupdate api");
 
-    console.log(liveEventData, "liveEventDataliveEventData");
     function isFile(obj) {
       return (
         obj &&

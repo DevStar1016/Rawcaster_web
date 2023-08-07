@@ -116,7 +116,9 @@ const ArtificialIntelligence = () => {
             audio.pause();
           }
         }}
-        content={ChatContent}
+        content={() => {
+          return isChatOpen && <ChatContent />;
+        }}
         trigger=""
       >
         <Button

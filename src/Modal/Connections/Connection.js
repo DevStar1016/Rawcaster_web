@@ -1,4 +1,4 @@
-import { InputNumber, Modal, Select } from "antd";
+import { Empty, InputNumber, Modal, Select } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { filterValidObject, handleProfileNavigate } from "../../Shared/Utility";
 import classes from "./Connection.module.css";
@@ -75,9 +75,13 @@ const ConnectionModal = ({
       }}
     >
       <div className={classes.modalContainer}>
-        <h2>
-          {type} - {value?.filteredConnectionCount}
-        </h2>
+        {value?.filteredConnectionCount !== 0 ? (
+          <h2>
+            {type} - {value?.filteredConnectionCount}
+          </h2>
+        ) : (
+          <h2>{type}</h2>
+        )}
         {!filters && (
           <Row>
             <Col sm={6} className={classes.modalInput}>
@@ -190,6 +194,9 @@ const ConnectionModal = ({
             );
           })}
         </div>
+        {value.filteredConnections?.length === 0 && (
+          <Empty description="No data found" />
+        )}
       </div>
     </Modal>
   );
