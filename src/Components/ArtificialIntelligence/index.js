@@ -79,7 +79,8 @@ const ArtificialIntelligence = () => {
         placement={"bottom"}
         className="ai_chat"
         width={500}
-        height="90%"
+        // height="90%"
+        height="unset"
         onClose={() => {
           setisPlaying(false);
           setChatMessage("");

@@ -70,5 +70,6 @@ overflow-y: auto;
 }
 @media (max-width:575px) {
   .modalInput{ margin-bottom: 15px;}
-  .modalContainer h2{font-size: 20px;text-align: left;  }
+  .modalContainer h2{font-size: 20px;text-align: left;  }.listSec{
+    grid-template-columns: repeat(3, 1fr);  }
 }

@@ -152,7 +152,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         .mixed()
         .test("Event Melody test", "Please Upload Media", function (value) {
           const { event_melody_id } = this.parent;
-          if (parseInt(event_melody_id) === 0 && value !== "") {
+          if (parseInt(event_melody_id) === 0 && !value) {
             return false;
           }
           return true;
@@ -913,6 +913,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     isCustomize={true}
                     value={values.event_melody_id}
                     onResult={(val) => {
+                      if (parseInt(val.id) === 0) {
+                        setFieldValue("event_melody", "");
+                      }
                       setFieldValue("event_melody_id", val.id);
                     }}
                   />
@@ -949,7 +952,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     <p className="ErrTxt mb-3">{errors?.event_melody}</p>
                   )}
                   <div>
-                    {values.event_melody !== "" ? (
+                    {values.event_melody !== "" && values?.event_melody ? (
                       <span>
                         {values.event_melody?.name}{" "}
                         <span

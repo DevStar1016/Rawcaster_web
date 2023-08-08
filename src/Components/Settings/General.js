@@ -78,6 +78,24 @@ const General = () => {
     //   .catch((err) => {});
   };
   console.log(userSettings, "userSettings");
+
+  function RemoveDuplicates(data) {
+    // Create a Set to store unique objects
+    let uniqueId = [];
+
+    const uniqueArray = data?.filter((ele, index) => {
+      if (uniqueId?.includes(ele?.language_code)) {
+        uniqueId = [...uniqueId, ele?.language_code];
+
+        return undefined;
+      }
+      uniqueId = [...uniqueId, ele?.language_code];
+      return ele;
+    });
+    console.log(uniqueArray, "uniqueArrayuniqueArrayuniqueArray");
+    return uniqueArray;
+    // Use filter to iterate through the data and add unique objects to the Set
+  }
   return (
     <div>
       <h1>General</h1>
@@ -427,14 +445,16 @@ const General = () => {
                 "id"
               )}
               filterOption={(input, option) =>
-                (option?.label ?? "").includes(input)
+                (option?.label?.toLowerCase() ?? "").includes(
+                  input?.toLowerCase()
+                )
               }
               filterSort={(optionA, optionB) =>
                 (optionA?.label ?? "")
                   .toLowerCase()
                   .localeCompare((optionB?.label ?? "").toLowerCase())
               }
-              options={LanguagesList.read_out}
+              options={RemoveDuplicates(LanguagesList.read_out)}
               onChange={(_, { id }) => {
                 setupdateValue("read_out_language_id", id);
                 dispatch(handleRemoveReadoutURL());

@@ -14,7 +14,7 @@ import eventList from "../../Assets/Images/png/eventList.png";
 import { deleteEventService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import moment from "moment";
-import shareicon from "../../Assets/Icons/svg/shareicon.svg";
+import shareicon from "../../Assets/Icons/svg/shareiconblack.svg";
 import { SHARE_URL } from "../../Shared/Constant";
 import {
   EmailShareButton,
@@ -81,6 +81,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   }. The link for this Rawcaster event is :`;
 
   const shareUrl = SHARE_URL + eventType + ele.reference_id;
+  const subject = "Rawcaster Event Invitation";
 
   const content = (
     <div className={classes.socialmediashare}>
@@ -103,13 +104,24 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
         </TwitterShareButton>
       </p>
       <p>
-        <EmailShareButton
+        <a
+          className="video-email_button button-hover"
+          href={`https://mail.google.com/mail/?view=cm&fs=1&to=?&su=${encodeURIComponent(
+            subject
+          )}&body=${encodeURIComponent(shareMessage)} ${encodeURIComponent(
+            shareUrl
+          )}`}
+          target="_blank"
+        >
+          <img src={GmailIcon} alt="Facebook"></img>
+        </a>
+        {/* <EmailShareButton
           subject={"Rawcaster Event Invite"}
           body={shareMessage}
           url={shareUrl}
         >
           <img src={GmailIcon} alt="Facebook"></img>
-        </EmailShareButton>
+        </EmailShareButton> */}
       </p>
       <p>
         <WhatsappShareButton

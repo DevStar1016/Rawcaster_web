@@ -85,7 +85,10 @@
       max-width: 100%;
       padding-right: inherit;
       margin: auto;
-      padding-top: 60px;
+      /* padding-top: 60px; */
+   }
+   .beforeloginSec video {
+      max-height: 100%;
    }
    
 }
