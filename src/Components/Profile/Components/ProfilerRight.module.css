@@ -145,5 +145,8 @@ display: block;
 
 
   @media (max-width:768px) {
-.othersProfileThumb {  padding: 15px;}    
+.othersProfileThumb {  padding: 15px;}
+.profileThumb{
+  float: inherit;
+}    
   }

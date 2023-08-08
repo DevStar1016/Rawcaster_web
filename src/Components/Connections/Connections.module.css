@@ -425,6 +425,9 @@ top: 0;
 }
   @media (max-width:768px) {
   .groupLists { min-height: auto !important; }
-  .myconnectioin { max-height: inherit !important; height : calc((100vh - 110px)/2) }
+  .myconnectioin { max-height: inherit !important; height : calc((100vh - 110px)/2) ; float: inherit;}
+  .connectionsLists{
+    /* max-height: calc(100% - 120px); */
+  }
   .contactdiv .videoAd { display: none;}
   }

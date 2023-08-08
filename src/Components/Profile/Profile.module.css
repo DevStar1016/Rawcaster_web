@@ -387,7 +387,9 @@ margin-top: 0px !important;
     line-height: 30px;
   }
 
-
+.rightProfiles{
+  top: 0px !important;
+}
   
 }
 /* @media (max-width:768px) {
