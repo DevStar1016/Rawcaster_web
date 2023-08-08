@@ -33,6 +33,7 @@ const Eventslisting = ({
     key: 0,
   });
   const [isFetching, setisFetching] = useState(true);
+  const [EnableEvents, setEnableEvents] = useState(false);
 
   const getEvents = (event_type = 0) => {
     let eventData = {
@@ -58,6 +59,7 @@ const Eventslisting = ({
       .catch((err) => {})
       .finally(() => {
         setisFetching(false);
+        setEnableEvents(true);
       });
   };
 
@@ -81,48 +83,52 @@ const Eventslisting = ({
       }}
     >
       <>
-        <CreateEvent
-          isSearch={isSearchEnabled}
-          onSearchEnter={(val) => {
-            setSearchData(val);
-            let findData = EventListData.find((ele) =>
-              decodeHtml(ele.event_name)
-                .toLowerCase()
-                .includes(val.toLowerCase())
-            );
+        {EnableEvents && (
+          <CreateEvent
+            isSearch={isSearchEnabled}
+            onSearchEnter={(val) => {
+              setSearchData(val);
+              let findData = EventListData.find((ele) =>
+                decodeHtml(ele.event_name)
+                  .toLowerCase()
+                  .includes(val.toLowerCase())
+              );
 
-            if (findData) {
-              setisEmptyEvents(false);
-            } else {
-              setisEmptyEvents(true);
-            }
-          }}
-        />
-
-        <div className={classes.filterSec}>
-          <p>{parseInt(ActiveEvent.key) === 4 ? "Past" : "Future"} Events</p>
-          <Dropdown
-            menu={{
-              items: Dropdownlist,
-              onClick: (e) => {
-                let findValue = Dropdownlist.find(
-                  (ele) => parseInt(ele.key) === parseInt(e.key)
-                );
-                if (findValue) {
-                  setisFetching(true);
-                  getEvents(findValue.key);
-                  setActiveEvent(findValue);
-                }
-              },
+              if (findData) {
+                setisEmptyEvents(false);
+              } else {
+                setisEmptyEvents(true);
+              }
             }}
-            trigger={["click"]}
-          >
-            <div className={classes.dropmenu}>
-              <span>{ActiveEvent.label}</span>
-              <i className="material-symbols-outlined">expand_more</i>
-            </div>
-          </Dropdown>
-        </div>
+          />
+        )}
+
+        {EnableEvents && (
+          <div className={classes.filterSec}>
+            <p>{parseInt(ActiveEvent.key) === 4 ? "Past" : "Future"} Events</p>
+            <Dropdown
+              menu={{
+                items: Dropdownlist,
+                onClick: (e) => {
+                  let findValue = Dropdownlist.find(
+                    (ele) => parseInt(ele.key) === parseInt(e.key)
+                  );
+                  if (findValue) {
+                    setisFetching(true);
+                    getEvents(findValue.key);
+                    setActiveEvent(findValue);
+                  }
+                },
+              }}
+              trigger={["click"]}
+            >
+              <div className={classes.dropmenu}>
+                <span>{ActiveEvent.label}</span>
+                <i className="material-symbols-outlined">expand_more</i>
+              </div>
+            </Dropdown>
+          </div>
+        )}
         <div className="d-flex flex-column">
           {isFetching ? (
             <div className="mt-5 d-flex flex-column justify-content-center">

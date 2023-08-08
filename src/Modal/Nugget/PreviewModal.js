@@ -13,6 +13,12 @@ const PreviewModal = ({ url, onSuccess, onClose, previewurl }) => {
       media_id: url.lastModified,
     };
   };
+  // {
+  //   path: previewurl,
+  //   media_type: "audio",
+  //   media_file_type: "wav",
+  //   media_id: modified,
+  // }
 
   return (
     <div style={{ width: "100%" }}>

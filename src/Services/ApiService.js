@@ -226,9 +226,7 @@ export const getNuggetDetailService = (data) => {
 };
 
 export const getNuggetContentAudioService = (data, token) => {
-  return axios.post("nuggetcontentaudio", data, {
-    cancelToken: token,
-  });
+  return axios.post("nuggetcontentaudio", data, token);
 };
 
 export const getNuggetandCommentLikedUserListService = (data) => {

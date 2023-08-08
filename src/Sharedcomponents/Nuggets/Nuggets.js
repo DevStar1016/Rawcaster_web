@@ -44,6 +44,7 @@ const Nuggets = ({
   className = null,
 }) => {
   const containerRef = useRef(null);
+  const ReadoutRef = useRef(null);
   const pageRef = useRef(1);
   const viewRef = useRef([]);
   const dispatch = useDispatch();
@@ -249,10 +250,11 @@ const Nuggets = ({
     handleProgress(val) {
       return handleProgress(val);
     },
+    ReadoutRef,
   };
 
   const isValidPage = () => {
-    if (getAuthenticated() && isUserPostAvailable && loginuserData) {
+    if (getAuthenticated() && loginuserData) {
       if (parseInt(display_user_id) === parseInt(userData?.user_id)) {
         return true;
       } else if (!display_user_id) {
@@ -353,7 +355,13 @@ const Nuggets = ({
         >
           <>
             {isValidPage() && (
-              <>{Progress.show ? <PostProgress /> : <PostNuggets />}</>
+              <>
+                {Progress.show ? (
+                  <PostProgress />
+                ) : (
+                  <PostNuggets isUserPostAvailable={isUserPostAvailable} />
+                )}
+              </>
             )}
           </>
           {detectMob() && !display_user_id && !params?.key && (

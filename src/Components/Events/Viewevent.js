@@ -106,21 +106,19 @@ const Viewevent = () => {
           </div>
           <div>
             <div className={classes.eventHost}>
-              <div>
-                <img
-                  src={ViewEventData.original_user_image}
-                  alt={decodeHtml(ViewEventData.original_user_name)}
-                ></img>
-              </div>
+              <img
+                src={ViewEventData.original_user_image}
+                alt={decodeHtml(ViewEventData.original_user_name)}
+              />
               <Tooltip
                 placement="bottom"
                 title={decodeHtml(ViewEventData.original_user_name)}
               >
                 <div className={classes.user_name}>
-                  {decodeHtml(ViewEventData.original_user_name)?.length > 16
+                  {decodeHtml(ViewEventData.original_user_name)?.length > 25
                     ? `${decodeHtml(ViewEventData.original_user_name)?.slice(
                         0,
-                        13
+                        22
                       )}...`
                     : decodeHtml(ViewEventData.original_user_name)}
                 </div>

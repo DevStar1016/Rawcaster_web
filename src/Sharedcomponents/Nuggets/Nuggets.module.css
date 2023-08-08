@@ -490,7 +490,8 @@ border-radius: 30px;
   align-items: flex-end;
 }
 .othersnuggetSec {
-  width: 60%;
+  /* width: 60%; */
+  width : calc(100% - 620px);
    height: max-content !important;
 }
 .viewDetailNugget  {

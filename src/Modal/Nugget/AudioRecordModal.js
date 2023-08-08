@@ -19,18 +19,31 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
   const timerRef = useRef(null);
   const recordingRef = useRef(null);
   const [PreviewMedia, setPreviewMedia] = useState();
+  const [CloseAudio, setCloseAudio] = useState(false);
+  const [previewMediaData, setPreviewMediaData] = useState(null);
 
   const handleClose = () => {
     pause();
+    clearBlobUrl();
     setPreviewMedia();
+    setPreviewMediaData(null);
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.stop();
+        stream.getTracks().forEach((track) => track.stop());
         clearBlobUrl();
+        mediaRecorder.ondataavailable = (event) => {
+          // Handle the recorded data chunk here
+        };
+        stopRecording();
+        onClose();
       })
-      .catch((error) => {});
+      .catch((error) => {
+        stopRecording();
+        onClose();
+      });
   };
 
   const onRecordStart = () => {
@@ -42,10 +55,14 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
     }, 150000);
   };
   const onRecordStop = (url, blob) => {
-    const file = new File([blob], "RecordAudio.wav", {
-      type: blob.type,
-    });
-    setPreviewMedia({ file: file, url: url });
+    console.log(CloseAudio, "CloseAudioCloseAudio from recorder");
+    if (!CloseAudio) {
+      const file = new File([blob], "RecordAudio.wav", {
+        type: blob.type,
+      });
+      setPreviewMedia({ file: file, url: url });
+      return;
+    }
   };
 
   const {
@@ -55,21 +72,32 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
     clearBlobUrl,
     pauseRecording,
     resumeRecording,
+    mediaBlobUrl,
   } = useReactMediaRecorder({
     audio: true,
     stopStreamsOnStop: true,
     onStart: onRecordStart,
-    onStop: onRecordStop,
+    // onStop: onRecordStop,
   });
 
   useEffect(() => {
     recordingRef.current = status;
   }, [status]);
+  useEffect(() => {
+    setPreviewMediaData(mediaBlobUrl);
+    if (mediaBlobUrl) {
+      const audioFile = new File([mediaBlobUrl], "RecordAudio.wav", {
+        type: "audio/wav",
+      });
+      setPreviewMediaData({ file: audioFile, url: mediaBlobUrl });
+    }
+  }, [mediaBlobUrl]);
 
   const handleStartMic = () => {
     requestAudioPermissions()
       .then(() => {
         if (status === "idle" || status === "stopped") {
+          clearBlobUrl();
           startRecording();
         } else {
           stopRecording();
@@ -128,37 +156,40 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
       open={visible}
       width={"650px"}
       onCancel={() => {
+        setCloseAudio(true);
         handleClose();
-        setTimeout(() => {
-          onClose();
-        }, 1000);
       }}
     >
-      {PreviewMedia && (
+      {previewMediaData && !CloseAudio && (
         <Modal
           footer={null}
-          open={PreviewMedia}
+          open={previewMediaData}
           width={"650px"}
           className="CameraModal"
           onCancel={() => {
             setPreviewMedia();
+            setPreviewMediaData(null);
           }}
         >
           <PreviewModal
-            url={PreviewMedia.file}
-            previewurl={PreviewMedia.url}
+            url={previewMediaData.file}
+            modified={Date.now()}
+            previewurl={previewMediaData.url}
             onSuccess={(file) => {
               reset();
               pause();
               setPreviewMedia();
-              setTimeout(() => {
+              setPreviewMediaData(null);
+              const timeout = setTimeout(() => {
                 onSuccess(file);
                 clearBlobUrl();
                 onClose();
+                clearTimeout(timeout);
               }, 100);
             }}
             onClose={() => {
               setPreviewMedia();
+              setPreviewMediaData(null);
             }}
           />
         </Modal>
@@ -201,7 +232,8 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
               {status === "paused" ? "Resume" : "Pause"}
             </button>
             <button
-              onClick={async () => {
+              onClick={() => {
+                setCloseAudio(false);
                 handleStartMic();
               }}
             >
@@ -214,7 +246,8 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
         ) : (
           <button
             className={classes.recordSec}
-            onClick={async () => {
+            onClick={() => {
+              setCloseAudio(false);
               handleStartMic();
             }}
           >

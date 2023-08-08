@@ -15,16 +15,26 @@ const InitialRenderComponent = () => {
   const dispatch = useDispatch();
   axios.interceptors.response.use(
     function (response) {
-      if (response.data.status === -1) {
+      if (response?.data?.status === -1) {
         // RemoveToken(dispatch);
         // window.location.reload();
       }
       return response;
     },
     function (error) {
-      if (!error.message.includes("Request Cancelled")) {
+      if (!axios.isCancel(error) && error) {
+        console.log(error, "gettheerror iff");
+
         ErrorHandling(error);
+      } else {
+        console.log(error, "gettheerror else");
       }
+      // if (
+      //   !error.message.includes("Request Cancelled") &&
+      //   (error?.message || error.response)
+      // ) {
+
+      // }
     }
   );
 

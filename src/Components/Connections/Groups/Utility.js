@@ -312,7 +312,7 @@ export const GroupHeader = () => {
       </AndForm.Item>
 
       <AndForm.Item
-        name="group_name"
+        // name="group_name"
         style={{
           display: "inline-block",
           width: "100%",
@@ -321,6 +321,7 @@ export const GroupHeader = () => {
         }}
       >
         <Input
+          name="group_name"
           size="large"
           style={{ borderRadius: "10px", backgroundColor: "transparent" }}
           value={values.group_name}

@@ -38,6 +38,7 @@ const ReportGroup = ({ open, close, onSuccess, msg }) => {
       <div className={classes.ReportSec}>
         <TextArea
           rows={4}
+          maxLength={500}
           placeholder="Enter your message"
           value={values.message}
           onChange={handleChange("message")}

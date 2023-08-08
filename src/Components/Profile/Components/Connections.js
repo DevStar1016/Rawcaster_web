@@ -124,7 +124,7 @@ const ConnectionsList = ({
   };
 
   const getUnclaimedInfluencer = (val = {}) => {
-    getUnclaimedInfluencerData(loginToken)
+    getUnclaimedInfluencerData(loginToken, val)
       .then((res) => {
         let isFilterEnable = Object.keys(val).length !== 0;
         let finalObj = {
