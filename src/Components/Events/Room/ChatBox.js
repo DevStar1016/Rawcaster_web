@@ -1,29 +1,37 @@
 import React, { useState } from "react";
 import classes from "./Room.module.css";
 import styles from "../../../Layouts/MeetingLayout.module.css";
-import { Layout, Tag } from "antd";
+import { Dropdown, Layout, Tag } from "antd";
 import ChatIcon from "../../../Assets/Icons/svg/chat_icon.svg";
 import { Form, InputGroup } from "react-bootstrap";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import EmojiPicker from "../../../UIComponents/EmojiPicker";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { ChimesendMessage } from "../../../Services/SocketService";
+import { useEventLayout } from "./EventValidaton";
+import { DownOutlined } from "@ant-design/icons";
 
 const { Header, Footer, Content } = Layout;
 
 const ChatBox = () => {
-  //   const { setisChatorParticipant } = useEventLayout();
+  const { setisChatorParticipant } = useEventLayout();
+  const [SelectedMembers, setSelectedMembers] = useState({
+    key: 0,
+    label: "All",
+  });
+  const userData = useAuthData();
+  const {
+    EventMessages,
+    userdetails,
+    EventData,
+    setEventMessages,
+    useAttendeesList,
+  } = useLayoutContect();
+  const { attendees } = useAttendeesList();
   const [isEmoji, setisEmoji] = useState(false);
-  const [messages, setmessages] = useState([
-    {
-      user_id: 1,
-      message: "I commented on Figma, I want to add some fancy icons",
-      user_name: "Vasanth",
-    },
-    {
-      user_id: 2,
-      message: "I commented on Figma, I want to add some fancy icons",
-      user_name: "Vasanth",
-    },
-  ]);
+
   const [ChatMessage, setChatMessage] = useState("");
   const initialMessages = [
     { id: 1, message: "Yes" },
@@ -34,6 +42,74 @@ const ChatBox = () => {
     { id: 6, message: "Hold On" },
     { id: 7, message: "Thanks" },
   ];
+
+  const getDropdownmembers = () => {
+    const filter_current_user = attendees.filter(
+      (ele) => parseInt(ele.id) !== parseInt(userdetails?.id)
+    );
+    return filter_current_user.map((ele) => {
+      return { key: ele.id, label: ele.name };
+    });
+  };
+
+  const handleSendMessage = (message) => {
+    if (SelectedMembers.key === 0) {
+      setEventMessages((pre) => [
+        {
+          ...userdetails,
+          meetingId: EventData?.chime_meeting_id,
+          message: message ? message : ChatMessage,
+          isPrivate: false,
+        },
+        ...pre,
+      ]);
+      ChimesendMessage(
+        {
+          ...userdetails,
+          meetingId: EventData?.chime_meeting_id,
+          message: message ? message : ChatMessage,
+          isPrivate: false,
+        },
+        CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_MEETING_ROOM
+      );
+    }
+
+    setChatMessage("");
+    setisEmoji(false);
+  };
+
+  const handleSendPrivateMessage = (message) => {
+    const finduser = attendees.find(
+      (ele) => parseInt(ele.id) === parseInt(SelectedMembers.key)
+    );
+    if (finduser) {
+      setEventMessages((pre) => [
+        {
+          ...userdetails,
+          meetingId: EventData?.chime_meeting_id,
+          message: message ? message : ChatMessage,
+          isPrivate: true,
+          userId: finduser.id,
+          send_to: finduser,
+        },
+        ...pre,
+      ]);
+      ChimesendMessage(
+        {
+          ...userdetails,
+          meetingId: EventData?.chime_meeting_id,
+          message: message ? message : ChatMessage,
+          isPrivate: true,
+          userId: finduser.id,
+          send_to: finduser,
+        },
+        CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_SINGLE_USER
+      );
+      setChatMessage("");
+      setisEmoji(false);
+    }
+  };
+
   return (
     <Layout className={classes.popupContainer}>
       <Header className={classes.headerStyle}>
@@ -45,9 +121,9 @@ const ChatBox = () => {
           <div>
             <i
               className="material-symbols-outlined"
-              //   onClick={() => {
-              //     setisChatorParticipant(null);
-              //   }}
+              onClick={() => {
+                setisChatorParticipant(false);
+              }}
             >
               cancel
             </i>
@@ -56,46 +132,27 @@ const ChatBox = () => {
       </Header>
       <Content>
         <div className={classes.chatBox}>
-          {/* <ChatBubble
-            variant="incoming"
-            senderName="Jim Halpert"
-            time="9:47 AM"
-            css="margin: 1rem;"
-            showTail={true}
-          >
-            I've always been your biggest flan.
-          </ChatBubble>
-          <ChatBubble
-            variant="outgoing"
-            senderName="Ryan Howard"
-            time="9:45 AM"
-            css="margin: 1rem;"
-            showTail={true}
-          >
-            You should have put him in custardy.
-          </ChatBubble>
-          <ChatBubble
-            variant="incoming"
-            senderName="Fred Miller"
-            css="margin: 1rem;"
-            showTail={true}
-          >
-            This is an outgoing message with attachment
-          </ChatBubble> */}
-          {messages.map((ele) => (
+          {EventMessages.map((ele) => (
             <div
               className={`${classes.messageContainer} ${
-                ele.user_id === 1 && classes.usermessageContainer
+                ele.id === userData?.user_id && classes.usermessageContainer
               }`}
             >
+              {ele.isPrivate && (
+                <span className={classes.privateuser}>
+                  To {ele?.send_to?.name}
+                </span>
+              )}
               <div
                 className={`${classes.message} ${
-                  ele.user_id === 1 && classes.usermessage
+                  ele.id === userData?.user_id && classes.usermessage
                 }`}
               >
                 <img src={defaultprofileImg} />
                 <div className={classes.messagesec}>
-                  <span>Vasanth</span>
+                  <span>
+                    {ele.name + `${ele.isPrivate ? " (Private)" : ""} `}
+                  </span>
                   <p> {ele.message}</p>
                 </div>
               </div>
@@ -104,6 +161,25 @@ const ChatBox = () => {
         </div>
       </Content>
       <Footer className={classes.chatFooterSec}>
+        <Dropdown
+          menu={{
+            items: [{ key: 0, label: "All" }, ...getDropdownmembers()],
+            onClick: ({ key }) => {
+              const resultValue = [
+                { key: 0, label: "All" },
+                ...getDropdownmembers(),
+              ].find((ele) => parseInt(ele.key) === parseInt(key));
+              setSelectedMembers(resultValue);
+            },
+          }}
+        >
+          <div onClick={(e) => e.preventDefault()}>
+            <div className={classes.memberSec}>
+              {SelectedMembers?.label}
+              <DownOutlined color="#C4C4C4" />
+            </div>
+          </div>
+        </Dropdown>
         <div className={classes.ContentSec}>
           <InputGroup className={classes.chatinputSec}>
             <span
@@ -121,16 +197,11 @@ const ChatBox = () => {
               value={ChatMessage}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  setmessages((pre) => [
-                    {
-                      user_id: 1,
-                      message: ChatMessage,
-                      user_name: "Vasanth",
-                    },
-                    ...pre,
-                  ]);
-                  setChatMessage("");
-                  setisEmoji(false);
+                  if (SelectedMembers.key === 0) {
+                    handleSendMessage();
+                  } else {
+                    handleSendPrivateMessage();
+                  }
                 }
               }}
               onChange={(e) => {
@@ -146,16 +217,11 @@ const ChatBox = () => {
               <InputGroup.Text
                 className={classes.searchIcon}
                 onClick={() => {
-                  setmessages((pre) => [
-                    {
-                      user_id: 1,
-                      message: ChatMessage,
-                      user_name: "Vasanth",
-                    },
-                    ...pre,
-                  ]);
-                  setChatMessage("");
-                  setisEmoji(false);
+                  if (SelectedMembers.key === 0) {
+                    handleSendMessage();
+                  } else {
+                    handleSendPrivateMessage();
+                  }
                 }}
               >
                 <span
@@ -198,14 +264,11 @@ const ChatBox = () => {
               <Tag
                 className={classes.tag}
                 onClick={() => {
-                  setmessages((pre) => [
-                    {
-                      user_id: 1,
-                      message: ele.message,
-                      user_name: "Vasanth",
-                    },
-                    ...pre,
-                  ]);
+                  if (SelectedMembers.key === 0) {
+                    handleSendMessage(ele.message);
+                  } else {
+                    handleSendPrivateMessage(ele.message);
+                  }
                 }}
               >
                 {ele.message}

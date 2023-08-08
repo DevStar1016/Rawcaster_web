@@ -6,7 +6,7 @@ import { getAttendeesFromMeetingService } from "../../../Services/ApiService";
 import { useAuthToken } from "../../../Shared/Reduxfetcher";
 import { JSONtoformdata } from "../../../Shared/Utility";
 
-const MeetingManagerComponent = () => {
+const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
   const token = useAuthToken();
   const {
     setRequestList,
@@ -15,6 +15,7 @@ const MeetingManagerComponent = () => {
     attendeesList,
     EventData,
     setisFetching,
+    RaiseHandUsers,
   } = useLayoutContect();
 
   useEffect(() => {
@@ -29,6 +30,21 @@ const MeetingManagerComponent = () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER);
     };
   }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND, (data) => {
+      if (data.raise_hand) {
+        setRaiseHandUsers((pre) => [...pre, data]);
+      } else {
+        setRaiseHandUsers((pre) =>
+          pre.filter((ele) => ele.user_id !== data?.user_id)
+        );
+      }
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND);
+    };
+  }, [RaiseHandUsers]);
 
   const getAttendees = () => {
     const userData = {

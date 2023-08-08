@@ -119,12 +119,10 @@
     grid-template-columns: repeat(3, 2fr);
   }
   .participantsSec {
-    width: 25%;
+    min-width: 310px;
     background-color: #392342;
     display: flex;
     align-items: end;
-    margin-bottom: 11px;
-    padding-bottom: 7px;
     padding-right: 9px;
   }
   
@@ -174,5 +172,10 @@
     }
     .pinned_video {
       width:calc(100% - 30px);
+    }
+    .participantsSec {
+      padding: 0px !important;
+      margin:  0px !important;
+      width: 100%;
     }
   }

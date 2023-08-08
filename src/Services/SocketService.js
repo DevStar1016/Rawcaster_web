@@ -41,6 +41,7 @@ const Chimesocket = io(ChimesocketURL, {
 export const ChimesocketListen = Chimesocket;
 
 export const ChimesendMessage = (data, type = "message") => {
+  console.log(type, data, "user_data");
   Chimesocket.emit(type, data, () => {
     console.log("Message Emitted");
   });
