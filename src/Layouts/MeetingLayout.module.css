@@ -17,8 +17,8 @@
      width: 30%;
  }
  .endContainer {
-     display: flex;
-     flex-direction: row;
+     display: flex !important;
+     flex-direction: row !important;
      justify-content: end;
      width: 30%;
  }
@@ -47,8 +47,8 @@
  }
  .icon {
      float: left;
-     width: 22px;
-     height: 22px;
+     width: 25px;
+     height: 25px;
      background: #FFFFFF;
      margin-bottom: 3px;
  }
@@ -99,26 +99,74 @@
        background: red;
    }
    .chat_icon {
-       width: 18px;
-    height: 18px;
-    margin-bottom: 5px;
+    width: 23px;
+    height: 23px;
+
+
      mask: url("../Assets/Icons/svg/Events/chat.svg") no-repeat center / contain;
      -webkit-mask: url("../Assets/Icons/svg/Events/chat.svg") no-repeat center /
        contain;
    }
    .participant_icon {
+    width: 25px;
+    height: 25px;
      mask: url("../Assets/Icons/svg/Events/participants.svg") no-repeat center / contain;
      -webkit-mask: url("../Assets/Icons/svg/Events/participants.svg") no-repeat center /
        contain;
    }
    .raise_hand_icon {
-    /* width: 25px;
-    height: 25px; */
+    width: 25px;
+    height: 25px;
     margin-bottom: 3px;
-     mask: url("../Assets/Icons/svg/Events/raisehand_1.svg") no-repeat center / contain;
-     -webkit-mask: url("../Assets/Icons/svg/Events/raisehand_1.svg") no-repeat center /
+     mask: url("../Assets/Icons/svg/Events/raisehand.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/raisehand.svg") no-repeat center /
        contain;
+   }
+   .raise_hand_active_icon {
+    width: 25px;
+    height: 25px;
+    margin-bottom: 3px;
+     mask: url("../Assets/Icons/svg/Events/raisehand_active.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/raisehand_active.svg") no-repeat center /
+       contain;
+       background: #F2718D !important;
+   }
+   .raise_hand_active_icon_sm {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 3px;
+     mask: url("../Assets/Icons/svg/Events/raisehand_active.svg") no-repeat center / contain;
+     -webkit-mask: url("../Assets/Icons/svg/Events/raisehand_active.svg") no-repeat center /
+       contain;
+       background: #F2718D !important;
    }
    .DropdownBtn {
     margin: 10px 0;
+   }
+
+   .onlyMob {
+    display: none !important;
+   }
+   @media (max-width:768px) { 
+    .startContainer {
+        width: 40%;
+    }
+    .onlyMob {
+        display: flex !important;
+    }
+    .onlydes {
+        display: none !important;
+        width: 60%;
+    }
+    .participantContainer {
+        width: 100%;
+    }
+    .dropdownSec .icon {
+        width: 17px;
+        height: 17px;
+        margin-right: 10px;
+    }
+    .dropdownSec .spanicon {
+        font-size: 17px;
+    }
    }

@@ -5,24 +5,38 @@ import {
   ContentShare,
   LocalVideo,
   RemoteVideo,
-  useAttendeeStatus,
   useContentShareState,
   useLocalVideo,
   useRemoteVideoTileState,
+  useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
-import { Spin } from "antd";
+import { Alert, Button, Drawer, Spin } from "antd";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { Toast, ToastContainer } from "react-bootstrap";
 
 const EventBox = () => {
+  const userData = useAuthData();
   const { isVideoEnabled } = useLocalVideo();
+  const { roster } = useRosterState();
+  const {
+    isPinEnabled,
+    isChatorParticipant,
+
+    isFetching,
+    useAttendeesList,
+    notificationToast,
+    setnotificationToast,
+  } = useLayoutContect();
+  const { attendees } = useAttendeesList();
+
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
-  const { isPinEnabled, isChatorParticipant, attendeesList, isFetching } =
-    useLayoutContect();
+
   const getContainerClassName = () => {
-    switch (attendeesList.length) {
+    switch (attendees.length) {
       case 1:
         return classes.full_container;
       case 2:
@@ -47,13 +61,21 @@ const EventBox = () => {
   };
 
   const GetDisplayComponent = ({ ele }) => {
-    const { muted, videoEnabled, sharingContent, signalStrength } =
-      useAttendeeStatus(ele.AttendeeId);
-    if (videoEnabled) {
-      const value = attendeeIdToTileId[ele.AttendeeId];
-      if (value) {
+    const value = attendeeIdToTileId[ele.AttendeeId];
+    console.log(ele);
+    if (ele) {
+      if (parseInt(userData.user_id) === parseInt(ele.id) && isVideoEnabled) {
+        return (
+          <LocalVideo
+            id={ele.id}
+            className={classes.Child}
+            nameplate={`${ele.name} (You)`}
+          />
+        );
+      } else if (value) {
         return (
           <RemoteVideo
+            id={ele.id}
             className={classes.Child}
             name={ele.name}
             nameplate={ele.name}
@@ -61,37 +83,32 @@ const EventBox = () => {
           />
         );
       } else {
-        if (isVideoEnabled) {
-          return <LocalVideo className={classes.Child} nameplate={ele.name} />;
-        } else {
-          return (
-            <div className={classes.Child}>
-              <img
-                src={ele.image ? ele.image : ""}
-                onError={({ currentTarget }) => {
-                  currentTarget.onerror = null;
-                  currentTarget.src = userImg;
-                }}
-              />
-              <p>{ele.name}</p>
-            </div>
-          );
-        }
+        return (
+          <div className={classes.Child}>
+            <img
+              src={ele.image ? ele.image : ""}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = userImg;
+              }}
+            />
+            <p>{ele.name}</p>
+          </div>
+        );
       }
-    } else {
-      return (
-        <div className={classes.Child}>
-          <img
-            src={ele.image ? ele.image : ""}
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null;
-              currentTarget.src = userImg;
-            }}
-          />
-          <p>{ele.name}</p>
-        </div>
-      );
     }
+    return (
+      <div className={classes.Child}>
+        <img
+          src={ele?.image ? ele.image : ""}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null;
+            currentTarget.src = userImg;
+          }}
+        />
+        <p>{ele.name}</p>
+      </div>
+    );
   };
 
   return (
@@ -110,12 +127,12 @@ const EventBox = () => {
           <>
             <div
               className={
-                isPinEnabled && attendeesList.length >= 10
+                isPinEnabled && attendees.length >= 10
                   ? classes.isPinavailablePinSec
                   : classes.PinSec
               }
             >
-              {isPinEnabled && attendeesList.length >= 10 && (
+              {isPinEnabled && attendees.length >= 10 && (
                 <div className={classes.pinned_video}>
                   <img src={userImg} />
                   <p>{"Participant "}</p>
@@ -124,7 +141,7 @@ const EventBox = () => {
             </div>
             <div
               className={
-                isPinEnabled && attendeesList.length >= 10
+                isPinEnabled && attendees.length >= 10
                   ? classes.isPinavailableSec
                   : classes.ParticipantSec
               }
@@ -138,24 +155,79 @@ const EventBox = () => {
                 </div>
               ) : (
                 <div className={`mx-auto ${getContainerClassName()}`}>
-                  {attendeesList.map((ele, index) => {
-                    return <GetDisplayComponent ele={ele} />;
+                  {attendees.map((ele, index) => {
+                    return GetDisplayComponent({ ele });
                   })}
                 </div>
               )}
             </div>
           </>
         )}
+        <ToastContainer position="bottom-end" className="eventpopupContainer">
+          <Toast
+            onClose={() => {
+              setnotificationToast({
+                show: false,
+                msg: null,
+                title: null,
+              });
+            }}
+            show={notificationToast.show}
+          >
+            <Toast.Body
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              <Alert
+                message="Warning Text"
+                onClose={() => {
+                  setnotificationToast({
+                    show: false,
+                    msg: null,
+                    title: null,
+                  });
+                }}
+                action={
+                  <Button type="text" size="small" ghost>
+                    Done
+                  </Button>
+                }
+                closable
+              />
+            </Toast.Body>
+          </Toast>
+        </ToastContainer>
       </div>
-      {isChatorParticipant && (
-        <div className={classes.participantsSec}>
-          {isChatorParticipant === "participant" ? (
-            <Participants />
-          ) : isChatorParticipant === "chat" ? (
-            <ChatBox />
-          ) : null}
-        </div>
-      )}
+      <div className="onlydes">
+        {isChatorParticipant && (
+          <div className={classes.participantsSec}>
+            {isChatorParticipant === "participant" ? (
+              <Participants />
+            ) : isChatorParticipant === "chat" ? (
+              <ChatBox />
+            ) : null}
+          </div>
+        )}
+      </div>
+      <div className="onlyMob eventContainer">
+        <Drawer
+          placement={"bottom"}
+          closable={false}
+          open={isChatorParticipant}
+          key={"bottom"}
+          rootClassName="onlyMob"
+          className="meetingDrawer onlyMob"
+        >
+          <div className={classes.participantsSec}>
+            {isChatorParticipant === "participant" ? (
+              <Participants />
+            ) : isChatorParticipant === "chat" ? (
+              <ChatBox />
+            ) : null}
+          </div>
+        </Drawer>
+      </div>
     </div>
   );
 };

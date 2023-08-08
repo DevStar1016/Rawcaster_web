@@ -301,6 +301,10 @@ export const DeleteMeetingService = (data) => {
   return axios.post("delete_meeting", data);
 };
 
+export const ExitMeetingService = (data) => {
+  return axios.post("exit_meeting", data);
+};
+
 // Profile Config
 
 export const FollowandunfollowService = (data) => {

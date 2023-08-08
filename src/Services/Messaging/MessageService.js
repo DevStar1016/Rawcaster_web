@@ -1,4 +1,3 @@
-import React from "react";
 import { ChimeSDKMessagingClient } from "@aws-sdk/client-chime-sdk-messaging";
 import {
   LogLevel,
@@ -6,16 +5,21 @@ import {
   DefaultMessagingSession,
   MessagingSessionConfiguration,
 } from "amazon-chime-sdk-js";
+import {
+  CHIME_MESSAGING_ACCESS_KEY_ID,
+  CHIME_MESSAGING_SECRET_ACCESS_KEY,
+  CHIME_REGION,
+} from "../APIkeyID";
 
 let Session = null;
-const logger = new ConsoleLogger("SDK Chat Demo", LogLevel.INFO);
+const logger = new ConsoleLogger("RAWCASTER MESSAGING:", LogLevel.INFO);
 let messageUpdateCallbacks = [];
 
 export const chimeClient = new ChimeSDKMessagingClient({
-  region: "us-east-1",
+  region: CHIME_REGION,
   credentials: {
-    accessKeyId: "AKIAYFYE6EFYG6RJOPMF",
-    secretAccessKey: "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",
+    accessKeyId: CHIME_MESSAGING_ACCESS_KEY_ID,
+    secretAccessKey: CHIME_MESSAGING_SECRET_ACCESS_KEY,
   },
 });
 

@@ -5,12 +5,16 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { AddmemberToChannel } from "../Services/Messaging/MessageAPIList";
+import { Alert, Button, notification } from "antd";
+import { Toast, ToastContainer } from "react-bootstrap";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
 const Development = () => {
+  const [show, setShow] = useState(false);
   const [userId, setuserId] = useState("");
-
+  const [NotificationApi, notificationcontextHolder] =
+    notification.useNotification();
   const addMember = () => {
     const addMemberValue = {
       ChannelArn:
@@ -25,8 +29,13 @@ const Development = () => {
     });
   };
 
+  const handleClose = () => {
+    setShow(false);
+  };
+
   return (
     <div>
+      {notificationcontextHolder}
       <div className="h-100 p-5 mt-5 m-auto w-100">
         <button
           className="mx-2"
@@ -54,8 +63,36 @@ const Development = () => {
         >
           Join Meeting
         </button>
-        <button>Get Tags</button>
+        <button
+          onClick={() => {
+            setShow(!show);
+          }}
+        >
+          Get Tags
+        </button>
       </div>
+      <ToastContainer position="bottom-end" className="eventpopupContainer">
+        <Toast onClose={() => setShow(false)} show={show}>
+          <Toast.Body
+            style={{
+              backgroundColor: "transparent",
+            }}
+          >
+            <Alert
+              message="Warning Text"
+              onClose={() => {
+                setShow(false);
+              }}
+              action={
+                <Button type="text" size="small" ghost>
+                  Done
+                </Button>
+              }
+              closable
+            />
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
     </div>
     // <div
     //   style={{

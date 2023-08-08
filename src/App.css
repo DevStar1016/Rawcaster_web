@@ -590,6 +590,15 @@ margin-bottom: 12px !important;
     font-size: 16px !important;
 
 }
+.meetingDrawer .ant-drawer-body {
+padding: 0px !important;
+}
+.eventContainer .ant-drawer-content-wrapper {
+  height: 75% !important;
+}
+.ant-drawer-content-wrapper {
+  height: auto !important;
+}
 .claimrequestModal .ant-modal-content {
   padding: 0px !important;
 }
@@ -620,12 +629,28 @@ margin-bottom: 12px !important;
   } */
 
 
-
+  .ant-slider-horizontal  {
+    width: 100%;
+  }
+  .ant-notification-notice {
+    padding: 10px !important;
+  }
+  .ant-notification-notice-message {
+    margin-bottom: 4px !important;
+  }
+  .eventpopupContainer .toast {
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 8px !important;
+  }
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .onlydes { display: none; } 
   .onlyMob {
     display: block;
+  }
+  .eventContainer .ant-drawer-content-wrapper {
+    height: 75% !important;
   }
   .ant-modal-close-x { width: 30px; height: 30px; border-radius: 50px; display: flex; align-items: center; line-height: 16px !important; }
   .anticon-close svg { font-size: 12px; margin-top: -2px; }

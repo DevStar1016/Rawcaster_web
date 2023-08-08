@@ -1,17 +1,41 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import classes from "./Room.module.css";
-import { Layout } from "antd";
+import { Layout, Slider, message } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
-import { ChimesendMessage } from "../../../Services/SocketService";
+import {
+  ChimesendMessage,
+  ChimesocketListen,
+} from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import {
+  useAttendeeStatus,
+  useLocalVideo,
+  useRosterState,
+  useToggleLocalMute,
+} from "amazon-chime-sdk-component-library-react";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { Collapse, Form, InputGroup } from "react-bootstrap";
 
 const { Header, Footer, Content } = Layout;
 
 const Participants = () => {
-  const { setisChatorParticipant, setRequestList, RequestRef, attendeesList } =
-    useLayoutContect();
+  const { isVideoEnabled, toggleVideo } = useLocalVideo();
+  const [isSearchEnable, setisSearchEnable] = useState(false);
+  const [SpeakerState, setSpeakerState] = useState(false);
+  const { toggleMute } = useToggleLocalMute();
+  const [SearchData, setSearchData] = useState("");
+  const {
+    setisChatorParticipant,
+    setRequestList,
+    RequestRef,
+    isHost,
+    RaiseHandUsers,
+    useAttendeesList,
+  } = useLayoutContect();
+  const userdata = useAuthData();
+  const { attendees } = useAttendeesList();
 
   const headerStyle = {
     textAlign: "center",
@@ -38,38 +62,35 @@ const Participants = () => {
     );
   };
 
-  return (
-    <Layout className={classes.popupContainer}>
-      <Header style={headerStyle} className={classes.headerStyle}>
-        <div className={classes.popupHeader}>
-          <div>
-            <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            <p>Participants</p>
-          </div>
-          <div>
-            <i className="material-symbols-outlined">search</i>
-            <i
-              className="material-symbols-outlined"
-              onClick={() => {
-                setisChatorParticipant(null);
-              }}
-            >
-              cancel
-            </i>
-          </div>
-        </div>
-        <div className={classes.GlobalSettingContainer}>
-          <div className={classes.itemName}>Global Settings</div>
-          <div className={classes.itemAction}>
-            <span className="material-symbols-outlined">volume_up</span>
-            <span className="material-symbols-outlined">mic</span>
-            <span className="material-symbols-outlined">videocam</span>
-          </div>
-        </div>
-      </Header>
-      <Content className={classes.participantSec}>
-        {attendeesList.map((ele, index) => (
-          <div className={classes.participantContainer}>
+  const AttendeeComponent = ({ ele }) => {
+    const findAttendeeId = attendees.find(
+      (elem) => parseInt(elem.ExternalUserId) === parseInt(ele.id)
+    );
+
+    const { muted, videoEnabled } = useAttendeeStatus(
+      findAttendeeId?.AttendeeId || ""
+    );
+    const find_raise_hand = RaiseHandUsers.find(
+      (elem) => parseInt(elem.user_id) === parseInt(ele.id)
+    );
+
+    const ComponentRender = useMemo(() => {
+      const getVideoEnabled = () => {
+        if (userdata.user_id === ele.id) {
+          return isVideoEnabled;
+        }
+        return videoEnabled;
+      };
+      return (
+        <>
+          <div
+            className={classes.participantContainer}
+            style={{
+              display: ele.name.toLowerCase().includes(SearchData.toLowerCase())
+                ? ""
+                : "none",
+            }}
+          >
             <div className={classes.itemName}>
               <img
                 src={ele.image ? ele.image : ""}
@@ -81,16 +102,195 @@ const Participants = () => {
               {ele.name}
             </div>
             <div className={classes.itemAction}>
+              {find_raise_hand && (
+                <span className={styles.raise_hand_active_icon_sm} />
+              )}
               {ele.isHost ? (
                 <div className={classes.hostIcon}>HOST</div>
               ) : (
-                <span className="material-symbols-outlined">volume_up</span>
+                <span
+                  className="material-symbols-outlined"
+                  onClick={() => {
+                    if (SpeakerState !== ele.id) {
+                      setSpeakerState(ele.id);
+                    } else {
+                      setSpeakerState(false);
+                    }
+                  }}
+                >
+                  volume_up
+                </span>
               )}
-              <span className="material-symbols-outlined">mic</span>
-              <span className="material-symbols-outlined">videocam</span>
+              {muted ? (
+                <span
+                  class="material-symbols-outlined"
+                  onClick={() => {
+                    if (isHost && !ele.isHost) {
+                      const value = {
+                        userId: ele.id,
+                        audio: true,
+                      };
+                      ChimesendMessage(
+                        value,
+                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                      );
+                    } else if (userdata.user_id === ele.id) {
+                      toggleMute();
+                    }
+                  }}
+                >
+                  mic_off
+                </span>
+              ) : (
+                <span
+                  className="material-symbols-outlined"
+                  onClick={() => {
+                    if (isHost && !ele.isHost) {
+                      const value = { userId: ele.id, audio: false };
+                      ChimesendMessage(
+                        value,
+                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                      );
+                    } else if (userdata.user_id === ele.id) {
+                      toggleMute();
+                    }
+                  }}
+                >
+                  mic
+                </span>
+              )}
+              {!getVideoEnabled() ? (
+                <span
+                  class="material-symbols-outlined"
+                  onClick={() => {
+                    if (isHost && !ele.isHost) {
+                      const value = { userId: ele.id, video: true };
+                      ChimesendMessage(
+                        value,
+                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                      );
+                    } else if (userdata.user_id === ele.id) {
+                      toggleVideo();
+                    }
+                  }}
+                >
+                  videocam_off
+                </span>
+              ) : (
+                <span
+                  className="material-symbols-outlined"
+                  onClick={() => {
+                    if (isHost && !ele.isHost) {
+                      const value = {
+                        userId: ele.id,
+                        video: false,
+                      };
+                      ChimesendMessage(
+                        value,
+                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                      );
+                    } else if (userdata.user_id === ele.id) {
+                      toggleVideo();
+                    }
+                  }}
+                >
+                  videocam
+                </span>
+              )}
             </div>
           </div>
-        ))}
+          <Collapse in={SpeakerState === ele.id}>
+            <div
+              className={classes.speakerContainer}
+              style={{
+                background: "#f5f5f5",
+              }}
+            >
+              <div className={classes.speakerSec}>
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    color: "white",
+                  }}
+                  onClick={() => {
+                    if (SpeakerState !== ele.id) {
+                      setSpeakerState(ele.id);
+                    } else {
+                      setSpeakerState(false);
+                    }
+                  }}
+                >
+                  volume_up
+                </span>
+                <Slider defaultValue={30} tooltip />
+              </div>
+            </div>
+          </Collapse>
+        </>
+      );
+    }, [muted, videoEnabled, find_raise_hand, findAttendeeId, isVideoEnabled]);
+    return ComponentRender;
+  };
+
+  return (
+    <Layout className={classes.popupContainer}>
+      <Header style={headerStyle} className={classes.headerStyle}>
+        <div className={classes.popupHeader}>
+          <div>
+            <i className={`${styles.participant_icon} ${styles.icon}`}></i>
+            <p>Participants</p>
+          </div>
+          <div>
+            <i
+              className="material-symbols-outlined"
+              onClick={() => {
+                setisSearchEnable((pre) => !pre);
+              }}
+            >
+              search
+            </i>
+            <i
+              className="material-symbols-outlined"
+              onClick={() => {
+                setisChatorParticipant(null);
+              }}
+            >
+              cancel
+            </i>
+          </div>
+        </div>
+        <div>
+          <Collapse in={isSearchEnable} className={classes.filterSec}>
+            <InputGroup className="mb-2">
+              <Form.Control
+                className={`${classes.inSearch} ${classes.participantSearch}`}
+                placeholder="Search Participants by name"
+                aria-label="Search Participants by name"
+                onChange={(e) => {
+                  setSearchData(e.target.value);
+                }}
+              />
+              <InputGroup.Text
+                className={`${classes.searchIcon} ${classes.participantSearchIcon}`}
+              >
+                <span className="material-icons">search</span>
+              </InputGroup.Text>
+            </InputGroup>
+          </Collapse>
+        </div>
+        <div className={classes.GlobalSettingContainer}>
+          <div className={classes.itemName}>Global Settings</div>
+          <div className={classes.itemAction}>
+            <span className="material-symbols-outlined">volume_up</span>
+            <span className="material-symbols-outlined">mic</span>
+            <span className="material-symbols-outlined">videocam</span>
+          </div>
+        </div>
+      </Header>
+      <Content className={classes.participantSec}>
+        {attendees.map((ele, index) => {
+          return <AttendeeComponent ele={ele} />;
+        })}
       </Content>
       <Footer className={classes.footerSec}>
         <div className={classes.inviteContainer}>

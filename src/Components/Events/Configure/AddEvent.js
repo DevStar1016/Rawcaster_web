@@ -152,7 +152,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         .mixed()
         .test("Event Melody test", "Please Upload Media", function (value) {
           const { event_melody_id } = this.parent;
-          if (parseInt(event_melody_id) === 0 && value !== "") {
+          if (parseInt(event_melody_id) === 0 && value === "") {
             return false;
           }
           return true;

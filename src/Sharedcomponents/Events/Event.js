@@ -5,6 +5,7 @@ import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
   decodeHtml,
+  getusetId,
   shareEventDate,
   utctoUserTimezone,
   utctoUserTimezonewithAbbr,
@@ -36,7 +37,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
     ele.type === 1 ? "event/" : ele.type === 2 ? "talkshow/" : "golive/";
 
   const isCreatedUser = () => {
-    if (loginUserData?.user_id === ele?.original_user_id) {
+    if (loginUserData?.user_id === getusetId(ele?.original_user_id)) {
       return true;
     }
     return false;
