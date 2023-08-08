@@ -417,10 +417,14 @@ right: 0;
 top: 0;
 }
 @media (max-width:1100px) {
-  .connectionsLists { max-height: 228px;}
+  .connectionsLists { max-height: 228px;
+  }
+  .myconnectioin{
+    height: calc((100vh - 300px)/2);
+  }
 }
   @media (max-width:768px) {
   .groupLists { min-height: auto !important; }
-  .myconnectioin { max-height: inherit !important; }
+  .myconnectioin { max-height: inherit !important; height : calc((100vh - 110px)/2) }
   .contactdiv .videoAd { display: none;}
   }

@@ -390,7 +390,8 @@ margin-top: 7px;
 }
 @media (max-width:768px) {
   .eventSec {padding:15px; height: auto; }
-  .EventListSec { height: auto !important; }
+  .EventListSec {   height: calc(100vh - 270px);
+  }
 }
 @media (max-width:575px) {
 .eventShowBtn,.talkShowBtn{
