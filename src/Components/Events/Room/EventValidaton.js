@@ -13,12 +13,13 @@ import {
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import WaitingRoom from "./WaitingRoom";
 import { getusetId } from "../../../Shared/Utility";
-import { notification } from "antd";
+import { Button, notification } from "antd";
 import {
   useAudioVideo,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
+import { UserOutlined } from "@ant-design/icons";
 
 export function useEventLayout() {
   return useOutletContext();
@@ -45,6 +46,9 @@ const EventValidaton = () => {
     show: false,
     msg: null,
     title: null,
+    type: null,
+    buttons: [],
+    icon: null,
   });
 
   const handleExitMeeting = (userdetails) => {
@@ -117,6 +121,13 @@ const EventValidaton = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
       (user_data) => {
+        setnotificationToast({
+          show: true,
+          msg: `${user_data.name} Joined Meeting`,
+          title: null,
+          buttons: [<Button>View</Button>],
+          icon: <UserOutlined />,
+        });
         setattendeesList((pre) => [...pre, user_data]);
       }
     );
@@ -134,6 +145,8 @@ const EventValidaton = () => {
           show: true,
           msg: `${user_data.name} Lefted Meeting`,
           title: null,
+          buttons: [<Button>View</Button>],
+          icon: <UserOutlined />,
         });
 
         setattendeesList((pre) =>

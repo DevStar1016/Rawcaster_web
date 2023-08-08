@@ -21,7 +21,7 @@ import { useAuthData, useAuthToken } from "../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
 import { ChimesendMessage, ChimesocketListen } from "../Services/SocketService";
 import { toast } from "react-hot-toast";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import { ExclamationCircleFilled, MessageOutlined } from "@ant-design/icons";
 
 export const useLayoutContect = () => {
   return useOutletContext();
@@ -135,6 +135,8 @@ const EventLayout = () => {
         show: true,
         msg: data.message,
         title: `${data.name}`,
+        icon: <MessageOutlined />,
+        buttons: [],
       });
       setEventMessages((pre) => [data, ...pre]);
     });
@@ -149,6 +151,8 @@ const EventLayout = () => {
         show: true,
         msg: data.message,
         title: `${data.name} (Private)`,
+        icon: <MessageOutlined />,
+        buttons: [],
       });
 
       setEventMessages((pre) => [data, ...pre]);

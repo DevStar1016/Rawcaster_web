@@ -638,10 +638,15 @@ padding: 0px !important;
   .ant-notification-notice-message {
     margin-bottom: 4px !important;
   }
+  .eventpopupContainer {
+    bottom: 80px !important;
+   
+  }
   .eventpopupContainer .toast {
     background-color: transparent !important;
     border: none !important;
     border-radius: 8px !important;
+    box-shadow: none !important;
   }
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }

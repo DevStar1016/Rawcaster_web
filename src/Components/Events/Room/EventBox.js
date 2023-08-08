@@ -16,6 +16,7 @@ import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { Alert, Button, Drawer, Spin } from "antd";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { Toast, ToastContainer } from "react-bootstrap";
+import { MessageOutlined } from "@ant-design/icons";
 
 const EventBox = () => {
   const userData = useAuthData();
@@ -170,6 +171,9 @@ const EventBox = () => {
                 show: false,
                 msg: null,
                 title: null,
+                type: null,
+                buttons: [],
+                icon: null,
               });
             }}
             show={notificationToast.show}
@@ -180,19 +184,24 @@ const EventBox = () => {
               }}
             >
               <Alert
-                message="Warning Text"
+                icon={notificationToast.icon}
+                showIcon={notificationToast.icon}
+                style={{
+                  background: "#fff",
+                }}
+                message={notificationToast.title}
+                description={notificationToast.msg}
                 onClose={() => {
                   setnotificationToast({
                     show: false,
                     msg: null,
                     title: null,
+                    type: null,
+                    buttons: [],
+                    icon: null,
                   });
                 }}
-                action={
-                  <Button type="text" size="small" ghost>
-                    Done
-                  </Button>
-                }
+                action={<>{notificationToast.buttons.map((ele) => ele)}</>}
                 closable
               />
             </Toast.Body>
