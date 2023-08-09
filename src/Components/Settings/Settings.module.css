@@ -421,6 +421,9 @@
 .connectionselectBox input {
   height: 40px;
 }
+.videoAudioSetting{
+  display: inline;
+}
   @media (max-width: 768px) {
     .settingmobMenu {
       display: block;
@@ -478,6 +481,9 @@
     }
     .sidebar {
       width: 50%;
+    }
+    .videoAudioSetting{
+      display: block;
     }
   }
   

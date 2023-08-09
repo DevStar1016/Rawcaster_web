@@ -143,7 +143,7 @@ const ImageCropModal = ({
 
   return (
     <Modal
-    centered
+      centered
       closable={false}
       open={open}
       confirmLoading={confirmLoading}

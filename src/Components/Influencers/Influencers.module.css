@@ -140,6 +140,7 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
     display: flex;
     justify-content: start;
     align-items: center;
+    margin-bottom: 10px;
 }
 .selectAllContainer>div:nth-child(1){
     cursor: pointer;

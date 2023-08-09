@@ -184,7 +184,9 @@ const Post = ({
       setisCommentLoading(true);
       setCommentList([]);
       setComments(ele.nugget_id);
-      getCommentList(ele.nugget_id);
+      if (ele.nugget_id) {
+        getCommentList(ele.nugget_id);
+      }
     }
   }, [isCommentShow, ele.nugget_id]);
 

@@ -390,6 +390,11 @@ margin-top: 0px !important;
 .rightProfiles{
   top: 0px !important;
 }
+.fullcontainer { padding-top: 0px; float: inherit;}
+.profileIntro{
+  float: inherit;
+}
+
   
 }
 /* @media (max-width:768px) {
@@ -426,7 +431,6 @@ margin-top: 0px !important;
 }
 .fansList {  margin-top: 65px; margin-left: 0px; }
 .actionIcon { margin-top: 74px}
-.fullcontainer { padding-top: 0px;}
 .profileSec {width:110px;}
 .profilesSec{min-width: 100px;display: flex;justify-content: end;margin-top: 16px;}
 }

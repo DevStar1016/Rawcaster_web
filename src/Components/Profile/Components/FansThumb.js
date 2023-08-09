@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useNuggets } from "../../../Shared/Reduxfetcher";
-import { handleProfileNavigate } from "../../../Shared/Utility";
+import { detectMob, handleProfileNavigate } from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
 import { useProfileContext } from "../../../Shared/Context";
 import { useDispatch } from "react-redux";
@@ -15,9 +15,24 @@ const FansThumb = () => {
   const dispatch = useDispatch();
 
   const [isSeeMore, setisSeeMore] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth);
+  const getList = (data) => {
+    if (width < 767) {
+      return data?.filter((ele, ind) => ind < 3);
+    }
+    return data;
+  };
+  const updateWidthAndHeight = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateWidthAndHeight);
+    return () => window.removeEventListener("resize", updateWidthAndHeight);
+  }, []);
   return (
     <div className={classes.fansList}>
-      {FansList.connections?.map((ele) => (
+      {getList(FansList.connections)?.map((ele, index) => (
         <img
           className={classes.thumbImg}
           alt="User_img"
@@ -51,7 +66,10 @@ const FansThumb = () => {
           }}
           className={classes.count}
         >
-          +{FansList.connectionscount}
+          +
+          {width < 767 && FansList.connections?.length > 4
+            ? FansList.connectionscount + (FansList.connections?.length - 3)
+            : FansList.connectionscount}
         </div>
       )}
 

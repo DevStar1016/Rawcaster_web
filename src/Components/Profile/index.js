@@ -285,10 +285,15 @@ const Profile = () => {
 
                   top: detectMob()
                     ? 0
-                    : `calc(-${leftContainer.current?.offsetHeight / 2}px + ${
-                        document.getElementById("banner_container")
-                          ?.offsetHeight
+                    : `calc(-${
+                        leftContainer.current?.scrollHeight -
+                        window.innerHeight +
+                        20
                       }px)`,
+                  // `calc(-${leftContainer.current?.offsetHeight / 2}px + ${
+                  //     document.getElementById("banner_container")
+                  //       ?.offsetHeight
+                  //   }px)`
                 }}
                 className={`${classes.profileevent} ${
                   getisLoginUser() ? "" : classes.othersprofileEvent
@@ -302,7 +307,7 @@ const Profile = () => {
                       <div className={classes.rightProfiles}>
                         {ConnectionsType.map((ele) => {
                           return ele.id === 3 && getisLoginUser() ? (
-                            <Connections />
+                            <Connections profileClass={true} />
                           ) : (
                             <ConnectionsList
                               {...ele}
@@ -428,7 +433,7 @@ const Profile = () => {
                   >
                     {ConnectionsType.map((ele) => {
                       return ele.id === 3 ? (
-                        <Connections />
+                        <Connections profileClass={true} />
                       ) : (
                         <ConnectionsList {...ele} isMyProfile={true} />
                       );

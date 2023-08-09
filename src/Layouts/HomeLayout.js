@@ -13,6 +13,7 @@ import btmevent from "../Assets/Images/svg/btmevent.svg";
 import btmbell from "../Assets/Images/svg/btmbell.svg";
 import btmtv from "../Assets/Images/svg/btmtv.svg";
 import btmuser from "../Assets/Images/svg/btmuser.svg";
+import btmSetting from "../Assets/Images/svg/settings.svg";
 import btmhome from "../Assets/Images/svg/btmhome.svg";
 import searchIcon from "../Assets/Icons/svg/topsearch.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
@@ -388,15 +389,26 @@ const HomeLayout = () => {
             }}
           />
           <img
-            src={btmtv}
-            alt="talkshow_logo"
+            src={btmSetting}
+            alt="user_logo"
             style={{
-              opacity: loginUserData ? 1 : 0.5,
+              opacity: loginUserData ? 0.95 : 0.5,
+              width: "25px",
+            }}
+            onClick={() => {
+              navigate("/setting");
+              // let finalData = {
+              //   dispatch,
+              //   navigate,
+              //   nuggetFormData,
+              //   user_id: loginUserData?.user_id,
+              // };
+              // handleProfileNavigate(finalData);
             }}
           />
           <img
             src={btmuser}
-            alt="user_logo"
+            alt="talkshow_logo"
             onClick={() => {
               navigate("/dashboard");
               dispatch(handledasboardTab("usermenu"));

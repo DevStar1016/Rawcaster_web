@@ -137,7 +137,10 @@ const Eventslisting = ({
               })}
             </div>
           ) : (
-            <div className={classes.EventListSec}>
+            <div
+              style={EventListData?.length === 0 ? { height: "inherit" } : {}}
+              className={classes.EventListSec}
+            >
               {EventListData?.map((ele) => (
                 <div
                   style={{

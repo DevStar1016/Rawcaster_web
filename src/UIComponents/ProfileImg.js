@@ -66,7 +66,9 @@ const ProfileImg = ({
             nuggetFormData,
             user_id: user?.user_id,
           };
-          handleProfileNavigate(finalData);
+          if (user) {
+            handleProfileNavigate(finalData);
+          }
         }}
       />
       <Tooltip
