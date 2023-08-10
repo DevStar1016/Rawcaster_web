@@ -7,6 +7,7 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { AddmemberToChannel } from "../Services/Messaging/MessageAPIList";
 import { Alert, Button, notification } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
+import CommentBox from "./Events/Room/CommentBox";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
@@ -93,6 +94,7 @@ const Development = () => {
           </Toast.Body>
         </Toast>
       </ToastContainer>
+      <CommentBox />
     </div>
     // <div
     //   style={{
