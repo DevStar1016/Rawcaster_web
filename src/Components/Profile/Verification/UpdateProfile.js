@@ -14,10 +14,12 @@ import {
   ConvertAddresstoLatLng,
   decodeHtml,
   filterValidObject,
+  getAspectRatio,
   getAuthToken,
   getGeocodeData,
   getValidImageUrl,
   isValidData,
+  isValidImageFile,
   JSONtoformdata,
 } from "../../../Shared/Utility";
 import DateInputBox from "../../../Sharedcomponents/DateInputBox";
@@ -33,6 +35,7 @@ import { setLocalStorageData } from "../../../Store/Storage";
 import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
 import moment from "moment";
 import { GENDER_TYPE } from "../../../Shared/Constant";
+import ImageCropModal from "../../../Modal/ImageCropModal";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -45,6 +48,7 @@ const UpdateProfile = () => {
     mobile: false,
   });
   const [ProfileImage, setProfileImage] = useState("");
+  const [tempGroupImage, settempGroupImage] = useState(null);
 
   const validationSchema = yup.object().shape({
     first_name: yup.string().required(`Please input your First Name!`),
@@ -264,6 +268,17 @@ const UpdateProfile = () => {
     }
   }, [loginToken]);
 
+  const onChangeImage = (event) => {
+    if (event.target.files && event.target.files.length !== 0) {
+      if (isValidImageFile(event.target.files[0])) {
+        console.log(event.target.files[0], "getimagevalue onchnage");
+        settempGroupImage(event.target.files[0]);
+      } else {
+        toast.error("Please Select Valid Image");
+      }
+    }
+  };
+
   return (
     <Container>
       <Col xs={24} sm={24} md={24} lg={24} xl={16} style={{ margin: "auto" }}>
@@ -310,7 +325,8 @@ const UpdateProfile = () => {
                   name="profileImageUploadName"
                   style={{ display: "none" }}
                   onChange={(e) => {
-                    setProfileImage(e.target.files[0]);
+                    // setProfileImage(e.target.files[0]);
+                    onChangeImage(e);
                   }}
                   accept=".png,.jpg,.jpeg,"
                 ></input>
@@ -327,6 +343,21 @@ const UpdateProfile = () => {
               </div>
             </Col>
           </Row>
+          {tempGroupImage && (
+            <ImageCropModal
+              open={tempGroupImage}
+              validsize={5}
+              src={URL.createObjectURL(tempGroupImage)}
+              ratio={getAspectRatio(150, 150)}
+              onSuccess={(val) => {
+                setProfileImage(val);
+                settempGroupImage(null);
+              }}
+              onFailure={() => {
+                settempGroupImage(null);
+              }}
+            />
+          )}
           <Row gutter={10}>
             <Col md={12} xs={24}>
               <p className={classes.label}>First Name</p>

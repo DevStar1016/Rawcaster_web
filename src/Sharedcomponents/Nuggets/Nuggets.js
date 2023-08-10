@@ -615,7 +615,7 @@ const Nuggets = ({
               </>
             )}
           </>
-          <FloatButton.BackTop />
+          <FloatButton.BackTop className={classes.backToTop} />
         </div>
       )}
     </ListNuggetContext.Provider>

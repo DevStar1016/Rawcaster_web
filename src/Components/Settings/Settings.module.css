@@ -421,9 +421,21 @@
 .connectionselectBox input {
   height: 40px;
 }
+.videoAudioSetting{
+  display: inline;
+}
   @media (max-width: 768px) {
     .settingmobMenu {
       display: block;
+    }
+    .settingSec{
+      min-height: calc(100vh - 110px);
+    }
+    .melodyBox video {
+      max-width: 100%;
+    }
+    .blockuserSec{
+      max-width: 100%;
     }
   }
   
@@ -469,6 +481,9 @@
     }
     .sidebar {
       width: 50%;
+    }
+    .videoAudioSetting{
+      display: block;
     }
   }
   

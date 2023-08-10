@@ -94,7 +94,7 @@ const Event = () => {
 
           <div>
             <p className={`${classes.smallheading} mb-2`}>Default Event Type</p>
-            <div className="w-25">
+            <div className="col-sm-6 col-lg-3">
               <EventTypeComponent
                 isEnabledLabel={false}
                 value={formikvalues.event_type}
@@ -110,7 +110,7 @@ const Event = () => {
           </div>
 
           <div className={classes.audioSetting}>
-            Default Audio Settings
+            <p className={classes.videoAudioSetting}>Default Audio Settings</p>
             <div className={classes.audiosetting_btn}>
               <Switch
                 className="Greenbtn"
@@ -141,7 +141,7 @@ const Event = () => {
           </div>
 
           <div className={classes.audioSetting}>
-            Default Video Settings
+            <p className={classes.videoAudioSetting}> Default Video Settings</p>
             <div className={classes.audiosetting_btn}>
               <Switch
                 checkedChildren="On"

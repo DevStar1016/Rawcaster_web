@@ -8,6 +8,7 @@ import { AddmemberToChannel } from "../Services/Messaging/MessageAPIList";
 import { Alert, Button, notification } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
 import Reactions from "./Events/Components/Reactions";
+import CommentBox from "./Events/Room/CommentBox";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
@@ -95,6 +96,7 @@ const Development = () => {
         </Toast>
       </ToastContainer>
       <Reactions />
+      <CommentBox />
     </div>
     // <div
     //   style={{

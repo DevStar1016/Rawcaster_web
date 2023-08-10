@@ -11,7 +11,7 @@ import Friends from "../Components/Friends";
 import { SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Skeleton } from "antd";
 
-const Connections = ({ referral }) => {
+const Connections = ({ referral, profileClass }) => {
   const dispatch = useDispatch();
   const Token = useAuthToken();
   const { friendsList, isFriendsLoading } = useDashboard();
@@ -174,8 +174,12 @@ const Connections = ({ referral }) => {
           requests.length === 0 && friends.length === 0 && !isFriendsLoading
             ? classes.connectionsEmpty
             : referral
-            ? `${classes.connectionsLists} ${classes.connectionsListsReferral}`
-            : classes.connectionsLists
+            ? `${classes.connectionsLists} ${
+                classes.connectionsListsReferral
+              } ${profileClass ? classes.profileConnectlist : ""}`
+            : `${classes.connectionsLists} ${
+                profileClass ? classes.profileConnectlist : ""
+              }`
         }
       >
         {requests.length === 0 && friends.length === 0 && !isFriendsLoading ? (

@@ -1,4 +1,4 @@
-import { Form, Select, Switch, TimePicker } from "antd";
+import { Empty, Form, Select, Switch, TimePicker } from "antd";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -600,7 +600,11 @@ export const Connections = ({ onResult, values, onDeleteData }) => {
           </i>
 
           <span
-            className={classes.invite_txt}
+            className={
+              friendsList?.length === 0
+                ? `${classes.disabled} ${classes.invite_txt}`
+                : classes.invite_txt
+            }
             onClick={selectAllFriendsHandler}
           >
             {friendsList.length === selectedFriendList.length &&
@@ -610,6 +614,7 @@ export const Connections = ({ onResult, values, onDeleteData }) => {
           </span>
         </div>
       </div>
+      {friendsList?.length === 0 && <Empty />}
       <div style={{ marginTop: "6px", clear: "both" }}>
         {filterFriendList.slice(0, 10).map((f) => {
           return (
@@ -756,7 +761,14 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
             search
           </i>
 
-          <span className={classes.invite_txt} onClick={selectAllGroupsHandler}>
+          <span
+            className={
+              groupsList?.length === 0
+                ? `${classes.disabled} ${classes.invite_txt}`
+                : classes.invite_txt
+            }
+            onClick={selectAllGroupsHandler}
+          >
             {groupsList.length === selectedGroupList.length &&
             selectedGroupList.length > 0
               ? "Remove all"
@@ -764,6 +776,7 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
           </span>
         </div>
       </div>
+      {groupsList?.length === 0 && <Empty />}
       <div style={{ marginTop: "6px", clear: "both" }}>
         {filterGroupList.slice(0, 10).map((f) => {
           return (
@@ -827,7 +840,7 @@ export const AudioVideoSettings = () => {
   return (
     <div className="mt-2">
       <div className={classes.audioSetting}>
-        Default Audio Settings
+        <p className="mb-0">Default Audio Settings</p>
         <div className={classes.audiosetting_btn}>
           <Switch
             className="Greenbtn"
@@ -855,7 +868,7 @@ export const AudioVideoSettings = () => {
       </div>
 
       <div className={classes.audioSetting}>
-        Default Video Settings
+        <p className="mb-0">Default Video Settings</p>
         <div className={classes.audiosetting_btn}>
           <Switch
             checkedChildren="On"
