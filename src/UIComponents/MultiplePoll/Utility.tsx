@@ -1,10 +1,15 @@
-function manageVote(results, item, refs, theme) {
+function manageVote(results: Array<any>, item: any, refs: any, theme: any) {
   animateAnswers(results, refs, theme, item);
 }
 
-function animateAnswers(results, refs, theme, index) {
-  const answers = [];
-  let restOfAnswers = [];
+function animateAnswers(
+  results: Array<any>,
+  refs: any,
+  theme: any,
+  index: number
+) {
+  const answers: any[] = [];
+  let restOfAnswers: any[] = [];
 
   for (const result of results) {
     if (index !== undefined) {
@@ -39,7 +44,7 @@ function animateAnswers(results, refs, theme, index) {
   }
 
   // animate rest of answers (not clicked)
-  restOfAnswers.map((ele, index) => {
+  restOfAnswers.map((ele: any, index: number) => {
     if (answers[index]) {
       answers[index]?.animate(
         [

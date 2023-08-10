@@ -12,7 +12,13 @@ import {
   LineElement,
 } from "chart.js";
 
-const TagsChart = ({ Data }) => {
+type prop = {
+  Data: any;
+};
+
+type color = { context: string };
+
+const TagsChart = ({ Data }: prop) => {
   ChartJS.register(
     CategoryScale,
     PointElement,
@@ -36,7 +42,7 @@ const TagsChart = ({ Data }) => {
         grid: {
           drawOnChartArea: true,
           drawBorder: false,
-          color: function (context) {
+          color: function (context: any) {
             if (context.tick.value === 0) {
               return "#D6DADE";
             }
@@ -56,7 +62,7 @@ const TagsChart = ({ Data }) => {
         grid: {
           drawOnChartArea: true,
           drawBorder: false,
-          color: function (context) {
+          color: function (context: any) {
             if (context.tick.value === 0) {
               return "#D6DADE";
             }
@@ -105,7 +111,7 @@ const TagsChart = ({ Data }) => {
 
   const getLabels = () => {
     if (Data && Data.length !== 0) {
-      return Data.map((ele) => ele?.hours || 0);
+      return Data.map((ele: any) => ele?.hours || 0);
     } else {
       return [];
     }
@@ -113,7 +119,7 @@ const TagsChart = ({ Data }) => {
 
   const getValues = () => {
     if (Data && Data.length !== 0) {
-      return Data.map((ele) => ele?.total_nuggets || 0);
+      return Data.map((ele: any) => ele?.total_nuggets || 0);
     } else {
       return [];
     }
@@ -130,7 +136,7 @@ const TagsChart = ({ Data }) => {
       },
     ],
   };
-  return Data && Data.length !== 0 ? (
+  return Data && Data?.length !== 0 ? (
     <Line options={options} data={data} />
   ) : null;
 };

@@ -13,6 +13,21 @@ import { useNuggets } from "../Shared/Reduxfetcher";
 import { useNavigate } from "react-router";
 import { handleProfileNavigate } from "../Shared/Utility";
 
+type Props = {
+  isLoggedIn?: boolean;
+  src: string;
+  Badgetype: number;
+  BadgeTitle?: string;
+  imgClassName: string;
+  badgeClassName: string;
+  user: any;
+};
+
+type BadgeProp = {
+  img: string;
+  title: string;
+};
+
 const ProfileImg = ({
   isLoggedIn = true,
   src,
@@ -21,12 +36,12 @@ const ProfileImg = ({
   imgClassName,
   badgeClassName,
   user,
-}) => {
+}: Props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
 
-  const getBadge = () => {
+  const getBadge = (): BadgeProp | undefined => {
     switch (Badgetype) {
       case 1:
         return { img: Silver, title: "Valued Member" };
@@ -45,7 +60,7 @@ const ProfileImg = ({
       case 8:
         return { img: MegaInfluencerImg, title: "Mega/Celebrity Influencer" };
       default:
-        break;
+        return undefined;
     }
   };
   return (
@@ -54,7 +69,7 @@ const ProfileImg = ({
         className={imgClassName}
         src={isLoggedIn ? (src ? src : userImg) : userImg}
         alt={isLoggedIn ? (src ? src : userImg) : userImg}
-        onError={({ currentTarget }) => {
+        onError={({ currentTarget }: { currentTarget: any }) => {
           currentTarget.onerror = null; // prevents looping
           currentTarget.src = userImg;
         }}
@@ -83,7 +98,7 @@ const ProfileImg = ({
             id="badgeImage"
             style={{ cursor: "pointer" }}
             alt={BadgeTitle}
-            src={getBadge().img}
+            src={getBadge()?.img}
             onClick={(e) => {
               e.stopPropagation();
             }}

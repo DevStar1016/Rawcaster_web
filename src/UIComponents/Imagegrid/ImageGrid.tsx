@@ -11,13 +11,21 @@ import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { useMainContext } from "../../Shared/Context";
 import { downloadurl } from "../../Shared/Utility";
 
+type props = {
+  imgArray: Array<object | any>;
+  downloadable: number;
+  isPreview?: boolean;
+  isThumb?: boolean;
+  onPlay: any;
+};
+
 function ImageGrid({
   imgArray,
   downloadable,
   isPreview = false,
   isThumb = false,
   onPlay,
-}) {
+}: props) {
   const dispatch = useDispatch();
   const { nuggetVideoPaused, isNuggetMuted } = useNuggets();
   const { player, setplayer } = useMainContext();
@@ -27,26 +35,30 @@ function ImageGrid({
 
   const [ref] = useInView({
     threshold: 0.5,
-    onEnter: (entry) => {
+    onEnter: (entry: any) => {
       if (entry.target) {
-        setisPlaying(entry.target.id);
+        setisPlaying(entry?.target.id);
       }
     },
     onLeave: () => {
       if (imgArray && imgArray.length > 0) {
-        var v = document.getElementById(`videoSingleId${imgArray[0].media_id}`);
-        var a = document.getElementById(`audioSingleId${imgArray[0].media_id}`);
+        var v: any = document.getElementById(
+          `videoSingleId${imgArray[0]?.media_id}`
+        );
+        var a: any = document.getElementById(
+          `audioSingleId${imgArray[0]?.media_id}`
+        );
         if (v) {
-          v.pause();
+          v?.pause();
         }
         if (a) {
-          a.pause();
+          a?.pause();
         }
       }
     },
   });
 
-  function isValidImg(URL) {
+  function isValidImg(URL: string) {
     var tester = new Image();
     tester.onload = () => {
       return true;
@@ -58,7 +70,7 @@ function ImageGrid({
     return true;
   }
 
-  const getAspectRatio = (index) => {
+  const getAspectRatio = (index: number) => {
     const length = imgArray.length;
 
     if (length === 1) {
@@ -83,16 +95,18 @@ function ImageGrid({
   useEffect(() => {
     if (nuggetVideoPaused) {
       if (imgArray && imgArray.length > 0) {
-        var v = document.getElementById(`videoSingleId${imgArray[0].media_id}`);
+        var v: any = document.getElementById(
+          `videoSingleId${imgArray[0].media_id}`
+        );
         if (v) {
-          v.pause();
+          v?.pause();
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nuggetVideoPaused]);
 
-  const volumechanged = (event) => {
+  const volumechanged = (event: any) => {
     if (!isPreview) {
       dispatch(handleisNuggetMuted(event.target.muted));
     }
@@ -101,11 +115,11 @@ function ImageGrid({
   useEffect(() => {
     if (imgArray.length !== 0) {
       let filter = imgArray.filter(
-        (ele) => `videoSingleId${ele.media_id}` !== isPlaying
+        (ele: any) => `videoSingleId${ele?.media_id}` !== isPlaying
       );
       // eslint-disable-next-line  array-callback-return
       filter.map((ele) => {
-        let v = document.getElementById(`videoSingleId${ele.media_id}`);
+        let v: any = document.getElementById(`videoSingleId${ele.media_id}`);
         if (v) {
           v.pause();
         }
@@ -113,7 +127,7 @@ function ImageGrid({
     }
   }, [imgArray, isPlaying]);
 
-  const ImageOrVideoThumb = ({ data }) => {
+  const ImageOrVideoThumb = ({ data }: any) => {
     if (data.media_type === "image") {
       return isValidImg(data.path) ? (
         <img
@@ -133,7 +147,7 @@ function ImageGrid({
           <video
             preload="metadata"
             src={`${data.path}#t=0.001`}
-            type="video/mp4"
+            // type="video/mp4"
             className="selecedImages"
             controls={false}
             disablePictureInPicture
@@ -157,7 +171,7 @@ function ImageGrid({
     }
   };
 
-  const imageOrVideoSingle = (data, index) => {
+  const imageOrVideoSingle = (data: any, index: number) => {
     if (data.media_type === "image") {
       return isValidImg(data.path) ? (
         <img
@@ -203,7 +217,7 @@ function ImageGrid({
             playsInline
             controlsList="nodownload"
             muted={!isPreview && isNuggetMuted}
-            onPlayCapture={(e) => {
+            onPlayCapture={(e: any) => {
               if (player && player.id !== `videoSingleId${data.media_id}`) {
                 player.pause();
               }
@@ -226,8 +240,8 @@ function ImageGrid({
             }}
             preload="metadata"
             src={`${data.path}#t=0.001`}
-            type="video/mp4"
-            onVolumeChange={volumechanged.bind(this)}
+            // type="video/mp4"
+            onVolumeChange={volumechanged}
           ></video>
         </Fragment>
       );
@@ -244,7 +258,7 @@ function ImageGrid({
     }
   };
 
-  const imageOrVideoSingleGallery = (data, type = "view", i) => {
+  const imageOrVideoSingleGallery = (data: any, type = "view", i: any) => {
     if (data.media_type === "image") {
       return isValidImg(data.path) ? (
         <img
@@ -272,14 +286,14 @@ function ImageGrid({
           playsInline
           controlsList="nodownload"
           muted={isNuggetMuted}
-          onPlayCapture={(e) => {
+          onPlayCapture={(e: any) => {
             if (player && player.id !== `modal_video_${i}`) {
               player.pause();
             }
             const video = document.getElementById(`modal_video_${i}`);
             setplayer(video);
             // eslint-disable-next-line  array-callback-return
-            let findArray = imgArray.map((ele, i) => {
+            let findArray = imgArray?.map((ele: any, i: number) => {
               if (`modal_video_${i}` !== e.target.id) {
                 return `modal_video_${i}`;
               } else {
@@ -288,10 +302,10 @@ function ImageGrid({
               }
             });
             // eslint-disable-next-line  array-callback-return
-            findArray = findArray.filter((ele) => ele !== undefined);
+            findArray = findArray.filter((ele: any) => ele !== undefined);
             // eslint-disable-next-line  array-callback-return
-            findArray.map((ele) => {
-              let findVal = document.getElementById(ele);
+            findArray.map((ele: any) => {
+              let findVal: any = document.getElementById(ele);
 
               if (findVal) {
                 findVal.pause();
@@ -303,8 +317,8 @@ function ImageGrid({
             }
           }}
           src={`${data.path}#t=0.001`}
-          type="video/mp4"
-          onVolumeChange={volumechanged.bind(this)}
+          // type="video/mp4"
+          onVolumeChange={volumechanged}
         ></video>
       );
     } else if (data.media_type === "audio") {
@@ -313,13 +327,14 @@ function ImageGrid({
           <AudioPlayer
             url={data.path}
             audioId={`audioSingleId${data.media_id}`}
+            isPreview={undefined}
           />
         </>
       );
     }
   };
 
-  const imageOrVideoSingleBg = (data) => {
+  const imageOrVideoSingleBg = (data: any) => {
     if (data.media_type === "image") {
       return `url(
         ${data.path}
@@ -329,7 +344,7 @@ function ImageGrid({
     }
   };
 
-  const imageOrVideo = (data, isThumb) => {
+  const imageOrVideo = (data: any, isThumb: boolean) => {
     if (data.media_type === "image") {
       return (
         <Fragment>
@@ -366,9 +381,10 @@ function ImageGrid({
       return (
         <>
           <AudioPlayer
-            url={data.path}
+            url={data?.path}
             isThumb={isThumb}
             audioId={`audioSingleId${data.media_id}`}
+            isPreview={undefined}
           />
         </>
       );
@@ -397,23 +413,23 @@ function ImageGrid({
             playsInline
             controlsList="nodownload"
             muted={isNuggetMuted}
-            onVolumeChange={volumechanged.bind(this)}
+            onVolumeChange={volumechanged}
             src={`${data.path}#t=0.001`}
-            type="video/mp4"
+            // type="video/mp4"
           ></video>
         </Fragment>
       );
     }
   };
 
-  const openGallery = (index) => {
+  const openGallery = (index: number) => {
     setActiveModalIndex(index);
     // setdownloadPath(imgArray[index].path);
     // setIndex(index);
     setIsVisible(true);
   };
 
-  const ImageorSingleModal = (data, index) => {
+  const ImageorSingleModal = (data: any, index: number) => {
     if (data.media_type === "image") {
       return (
         <div key={index} style={{ height: "100%" }}>
@@ -722,14 +738,14 @@ function ImageGrid({
             className={`gallery_popup ${classes.GalleryImgModal}`}
             open={isVisible}
             onCancel={() => {
-              let findArray = imgArray.map((ele, i) => {
+              let findArray = imgArray?.map((ele: any, i: number) => {
                 return `modal_video_${i}`;
               });
               // eslint-disable-next-line  array-callback-return
-              findArray.map((ele) => {
-                let findVal = document.getElementById(ele);
+              findArray.map((ele: any) => {
+                let findVal: any = document.getElementById(ele);
                 if (findVal) {
-                  findVal.pause();
+                  findVal?.pause();
                 }
               });
               setIsVisible(false);
@@ -776,7 +792,7 @@ function ImageGrid({
                     ) : null
                   }
                 >
-                  {imgArray.map((ele, index) => {
+                  {imgArray?.map((ele: any, index: number) => {
                     return (
                       <Carousel.Item>
                         {ImageorSingleModal(ele, index)}
