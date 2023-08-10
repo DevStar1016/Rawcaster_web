@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
 import classes from "./Layout.module.css";
 import Rlogo from "../Assets/Icons/svg/Events/Rawcasterlogo.svg";
@@ -42,7 +42,8 @@ const EventLayout = () => {
   } = useEventLayout();
   const { confirm } = Modal;
   const token = useAuthToken();
-
+  const audioRef = useRef();
+  const videoRef = useRef();
   const [userdetails, setuserdetails] = useState(null);
   const userData = useAuthData();
   const { muted, toggleMute } = useToggleLocalMute();
@@ -109,26 +110,34 @@ const EventLayout = () => {
       async (message) => {
         console.log(message, "message");
         if (message.audio === false) {
-          toggleMute();
-          await audiovideo.stopAudioInput();
+          audioRef.current?.click();
+          if (muted) {
+            toggleMute();
+          }
         } else if (message.audio === true) {
           Modal.confirm({
             title: "Host requests that you unmute your microphone",
             onOk() {
-              audiovideo.startAudioInput();
-              toggleMute();
+              audioRef.current?.click();
+              if (muted) {
+                toggleMute();
+              }
             },
             onCancel() {},
           });
         } else if (message.video === false) {
-          toggleVideo();
-          await audiovideo.stopVideoInput();
+          videoRef.current?.click();
+          if (isVideoEnabled) {
+            toggleVideo();
+          }
         } else if (message.video === true) {
           Modal.confirm({
             title: "Host requests that you turn on camera",
             onOk() {
-              audiovideo.startVideoInput();
-              toggleVideo();
+              videoRef.current?.click();
+              if (!isVideoEnabled) {
+                toggleVideo();
+              }
             },
             onCancel() {},
           });
@@ -210,6 +219,7 @@ const EventLayout = () => {
                 {muted ? (
                   <i
                     className={`${styles.unmute_icon} ${styles.icon}`}
+                    ref={audioRef}
                     onClick={() => {
                       toggleMute();
                     }}
@@ -217,8 +227,8 @@ const EventLayout = () => {
                 ) : (
                   <i
                     className={`${styles.mute_icon} ${styles.icon}`}
+                    ref={audioRef}
                     onClick={async () => {
-                      await audiovideo.startAudioInput();
                       toggleMute();
                     }}
                   ></i>
@@ -251,6 +261,7 @@ const EventLayout = () => {
                 {isVideoEnabled ? (
                   <i
                     className={`${styles.video_off_icon} ${styles.icon}`}
+                    ref={videoRef}
                     onClick={() => {
                       toggleVideo();
                     }}

@@ -11,12 +11,14 @@ import {
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import {
   useAttendeeStatus,
+  useAudioVideo,
   useLocalVideo,
   useRosterState,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { Collapse, Form, InputGroup } from "react-bootstrap";
+import { DefaultModality } from "amazon-chime-sdk-js";
 
 const { Header, Footer, Content } = Layout;
 
@@ -34,6 +36,7 @@ const Participants = () => {
     RaiseHandUsers,
     useAttendeesList,
   } = useLayoutContect();
+  const audiovideo = useAudioVideo();
   const userdata = useAuthData();
   const { attendees } = useAttendeesList();
 
@@ -63,174 +66,166 @@ const Participants = () => {
   };
 
   const AttendeeComponent = ({ ele }) => {
-    const findAttendeeId = attendees.find(
-      (elem) => parseInt(elem.ExternalUserId) === parseInt(ele.id)
-    );
-
-    const { muted, videoEnabled } = useAttendeeStatus(
-      findAttendeeId?.AttendeeId || ""
-    );
+    const { muted, videoEnabled } = useAttendeeStatus(ele?.AttendeeId);
+    console.log(muted, videoEnabled);
     const find_raise_hand = RaiseHandUsers.find(
       (elem) => parseInt(elem.user_id) === parseInt(ele.id)
     );
 
-    const ComponentRender = useMemo(() => {
-      const isYou = parseInt(userdata.user_id) === parseInt(ele.id);
-      const getVideoEnabled = () => {
-        if (isYou) {
-          return isVideoEnabled;
-        }
-        return videoEnabled;
-      };
-      return (
-        <>
+    const isYou = parseInt(userdata.user_id) === parseInt(ele.id);
+    const getVideoEnabled = () => {
+      if (isYou) {
+        return isVideoEnabled;
+      }
+      return videoEnabled;
+    };
+    return (
+      <>
+        <div
+          className={classes.participantContainer}
+          style={{
+            display: ele.name.toLowerCase().includes(SearchData.toLowerCase())
+              ? ""
+              : "none",
+          }}
+        >
+          <div className={classes.itemName}>
+            <img
+              src={ele.image ? ele.image : ""}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = defaultprofileImg;
+              }}
+            />
+            {ele.name + `${isYou ? " (You)" : ""}`}
+          </div>
+          <div className={classes.itemAction}>
+            {find_raise_hand && (
+              <span className={styles.raise_hand_active_icon_sm} />
+            )}
+            {ele.isHost ? (
+              <div className={classes.hostIcon}>HOST</div>
+            ) : (
+              <span
+                className="material-symbols-outlined"
+                onClick={() => {
+                  if (SpeakerState !== ele.id) {
+                    setSpeakerState(ele.id);
+                  } else {
+                    setSpeakerState(false);
+                  }
+                }}
+              >
+                volume_up
+              </span>
+            )}
+            {muted ? (
+              <span
+                class="material-symbols-outlined"
+                onClick={() => {
+                  if (isHost && !ele.isHost) {
+                    const value = {
+                      userId: ele.id,
+                      audio: true,
+                    };
+                    ChimesendMessage(
+                      value,
+                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                    );
+                  } else if (userdata.user_id === ele.id) {
+                    toggleMute();
+                  }
+                }}
+              >
+                mic_off
+              </span>
+            ) : (
+              <span
+                className="material-symbols-outlined"
+                onClick={() => {
+                  if (isHost && !ele.isHost) {
+                    const value = { userId: ele.id, audio: false };
+                    ChimesendMessage(
+                      value,
+                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                    );
+                  } else if (userdata.user_id === ele.id) {
+                    toggleMute();
+                  }
+                }}
+              >
+                mic
+              </span>
+            )}
+            {!getVideoEnabled() ? (
+              <span
+                class="material-symbols-outlined"
+                onClick={() => {
+                  if (isHost && !ele.isHost) {
+                    const value = { userId: ele.id, video: true };
+                    ChimesendMessage(
+                      value,
+                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                    );
+                  } else if (userdata.user_id === ele.id) {
+                    toggleVideo();
+                  }
+                }}
+              >
+                videocam_off
+              </span>
+            ) : (
+              <span
+                className="material-symbols-outlined"
+                onClick={() => {
+                  if (isHost && !ele.isHost) {
+                    const value = {
+                      userId: ele.id,
+                      video: false,
+                    };
+                    ChimesendMessage(
+                      value,
+                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                    );
+                  } else if (userdata.user_id === ele.id) {
+                    toggleVideo();
+                  }
+                }}
+              >
+                videocam
+              </span>
+            )}
+          </div>
+        </div>
+        <Collapse in={SpeakerState === ele.id}>
           <div
-            className={classes.participantContainer}
+            className={classes.speakerContainer}
             style={{
-              display: ele.name.toLowerCase().includes(SearchData.toLowerCase())
-                ? ""
-                : "none",
+              background: "#f5f5f5",
             }}
           >
-            <div className={classes.itemName}>
-              <img
-                src={ele.image ? ele.image : ""}
-                onError={({ currentTarget }) => {
-                  currentTarget.onerror = null;
-                  currentTarget.src = defaultprofileImg;
+            <div className={classes.speakerSec}>
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  color: "white",
                 }}
-              />
-              {ele.name + `${isYou ? " (You)" : ""}`}
-            </div>
-            <div className={classes.itemAction}>
-              {find_raise_hand && (
-                <span className={styles.raise_hand_active_icon_sm} />
-              )}
-              {ele.isHost ? (
-                <div className={classes.hostIcon}>HOST</div>
-              ) : (
-                <span
-                  className="material-symbols-outlined"
-                  onClick={() => {
-                    if (SpeakerState !== ele.id) {
-                      setSpeakerState(ele.id);
-                    } else {
-                      setSpeakerState(false);
-                    }
-                  }}
-                >
-                  volume_up
-                </span>
-              )}
-              {muted ? (
-                <span
-                  class="material-symbols-outlined"
-                  onClick={() => {
-                    if (isHost && !ele.isHost) {
-                      const value = {
-                        userId: ele.id,
-                        audio: true,
-                      };
-                      ChimesendMessage(
-                        value,
-                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                      );
-                    } else if (userdata.user_id === ele.id) {
-                      toggleMute();
-                    }
-                  }}
-                >
-                  mic_off
-                </span>
-              ) : (
-                <span
-                  className="material-symbols-outlined"
-                  onClick={() => {
-                    if (isHost && !ele.isHost) {
-                      const value = { userId: ele.id, audio: false };
-                      ChimesendMessage(
-                        value,
-                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                      );
-                    } else if (userdata.user_id === ele.id) {
-                      toggleMute();
-                    }
-                  }}
-                >
-                  mic
-                </span>
-              )}
-              {!getVideoEnabled() ? (
-                <span
-                  class="material-symbols-outlined"
-                  onClick={() => {
-                    if (isHost && !ele.isHost) {
-                      const value = { userId: ele.id, video: true };
-                      ChimesendMessage(
-                        value,
-                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                      );
-                    } else if (userdata.user_id === ele.id) {
-                      toggleVideo();
-                    }
-                  }}
-                >
-                  videocam_off
-                </span>
-              ) : (
-                <span
-                  className="material-symbols-outlined"
-                  onClick={() => {
-                    if (isHost && !ele.isHost) {
-                      const value = {
-                        userId: ele.id,
-                        video: false,
-                      };
-                      ChimesendMessage(
-                        value,
-                        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                      );
-                    } else if (userdata.user_id === ele.id) {
-                      toggleVideo();
-                    }
-                  }}
-                >
-                  videocam
-                </span>
-              )}
+                onClick={() => {
+                  if (SpeakerState !== ele.id) {
+                    setSpeakerState(ele.id);
+                  } else {
+                    setSpeakerState(false);
+                  }
+                }}
+              >
+                volume_up
+              </span>
+              <Slider defaultValue={30} tooltip />
             </div>
           </div>
-          <Collapse in={SpeakerState === ele.id}>
-            <div
-              className={classes.speakerContainer}
-              style={{
-                background: "#f5f5f5",
-              }}
-            >
-              <div className={classes.speakerSec}>
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    color: "white",
-                  }}
-                  onClick={() => {
-                    if (SpeakerState !== ele.id) {
-                      setSpeakerState(ele.id);
-                    } else {
-                      setSpeakerState(false);
-                    }
-                  }}
-                >
-                  volume_up
-                </span>
-                <Slider defaultValue={30} tooltip />
-              </div>
-            </div>
-          </Collapse>
-        </>
-      );
-    }, [muted, videoEnabled, find_raise_hand, findAttendeeId, isVideoEnabled]);
-    return ComponentRender;
+        </Collapse>
+      </>
+    );
   };
 
   return (

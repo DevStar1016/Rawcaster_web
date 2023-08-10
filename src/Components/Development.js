@@ -7,8 +7,9 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { AddmemberToChannel } from "../Services/Messaging/MessageAPIList";
 import { Alert, Button, notification } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
-import Reactions from "./Events/Components/Reactions";
+
 import CommentBox from "./Events/Room/CommentBox";
+import Reactions from "./Events/Components/Reactions";
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
 
