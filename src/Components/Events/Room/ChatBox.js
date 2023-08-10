@@ -19,7 +19,7 @@ const ChatBox = () => {
   const { setisChatorParticipant } = useEventLayout();
   const [SelectedMembers, setSelectedMembers] = useState({
     key: 0,
-    label: "All",
+    label: "Everyone",
   });
   const userData = useAuthData();
   const {
@@ -163,10 +163,10 @@ const ChatBox = () => {
       <Footer className={classes.chatFooterSec}>
         <Dropdown
           menu={{
-            items: [{ key: 0, label: "All" }, ...getDropdownmembers()],
+            items: [{ key: 0, label: "Everyone" }, ...getDropdownmembers()],
             onClick: ({ key }) => {
               const resultValue = [
-                { key: 0, label: "All" },
+                { key: 0, label: "Everyone" },
                 ...getDropdownmembers(),
               ].find((ele) => parseInt(ele.key) === parseInt(key));
               setSelectedMembers(resultValue);

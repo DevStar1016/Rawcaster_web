@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Outlet, useNavigate, useOutletContext, useParams } from "react-router";
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+  useRouteLoaderData,
+} from "react-router";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { useMainContext } from "../../../Shared/Context";
 import {
@@ -29,7 +35,6 @@ const EventValidaton = () => {
   const RequestRef = useRef([]);
   const [EventData, setEventData] = useState(null);
   const [isChatorParticipant, setisChatorParticipant] = useState(null);
-
   const [isPinEnabled, setisPinEnabled] = useState(false);
   const navigate = useNavigate();
   const { event_id } = useParams();

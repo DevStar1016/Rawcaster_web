@@ -21,7 +21,6 @@ import { MessageOutlined } from "@ant-design/icons";
 const EventBox = () => {
   const userData = useAuthData();
   const { isVideoEnabled } = useLocalVideo();
-  const { roster } = useRosterState();
   const {
     isPinEnabled,
     isChatorParticipant,
@@ -63,9 +62,10 @@ const EventBox = () => {
 
   const GetDisplayComponent = ({ ele }) => {
     const value = attendeeIdToTileId[ele.AttendeeId];
+    const isYou = parseInt(userData.user_id) === parseInt(ele.id);
     console.log(ele);
     if (ele) {
-      if (parseInt(userData.user_id) === parseInt(ele.id) && isVideoEnabled) {
+      if (isYou && isVideoEnabled) {
         return (
           <LocalVideo
             id={ele.id}
@@ -93,7 +93,7 @@ const EventBox = () => {
                 currentTarget.src = userImg;
               }}
             />
-            <p>{ele.name}</p>
+            <p>{ele.name + `${isYou ? " (You)" : ""}`}</p>
           </div>
         );
       }
@@ -107,7 +107,7 @@ const EventBox = () => {
             currentTarget.src = userImg;
           }}
         />
-        <p>{ele.name}</p>
+        <p>{ele.name + `${isYou ? " (You)" : ""}`}</p>
       </div>
     );
   };
@@ -164,7 +164,7 @@ const EventBox = () => {
             </div>
           </>
         )}
-        <ToastContainer position="bottom-end" className="eventpopupContainer">
+        <ToastContainer position="top-end" className="eventpopupContainer">
           <Toast
             onClose={() => {
               setnotificationToast({
@@ -177,6 +177,8 @@ const EventBox = () => {
               });
             }}
             show={notificationToast.show}
+            autohide
+            delay={3000}
           >
             <Toast.Body
               style={{

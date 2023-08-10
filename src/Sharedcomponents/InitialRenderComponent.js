@@ -23,11 +23,7 @@ const InitialRenderComponent = () => {
     },
     function (error) {
       if (!axios.isCancel(error) && error) {
-        console.log(error, "gettheerror iff");
-
         ErrorHandling(error);
-      } else {
-        console.log(error, "gettheerror else");
       }
       // if (
       //   !error.message.includes("Request Cancelled") &&

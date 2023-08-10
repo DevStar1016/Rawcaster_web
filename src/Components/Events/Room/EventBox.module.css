@@ -2,8 +2,10 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+  
   }
   .video_grid  {
+    position: relative;
     display: block;
     height: calc(90vh - 10px) ;
     width: 100%;
@@ -153,6 +155,7 @@
   }
   
   @media (max-width:768px) {
+  
     .Half_container {
       flex-direction: column;
     }
@@ -166,7 +169,10 @@
     .grid_5_boxes {
       grid-template-columns: repeat(2, 2fr); /* Create three equal-width columns */
     }
-  
+    .Half_container ,.grid_3_boxes ,.grid_4_boxes,.grid_5_boxes,.grid_initial_3_boxes ,.grid_initial_4_boxes,.grid_initial_5_boxes {
+      height: 90% !important;
+          align-items: center;
+    }
     .grid_initial_5_boxes {
       grid-template-columns: repeat(2, 3fr);
     }

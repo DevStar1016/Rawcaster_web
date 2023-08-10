@@ -25,6 +25,7 @@ import {
 } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import moment from "moment";
+import { handleNotificationUnreadCount } from "../Reducer/DashboardReducer";
 
 // Connections
 
@@ -195,7 +196,9 @@ export const fetchuserInfobyToken = createAsyncThunk(
           user_id: getusetId(data.profile.user_id),
         };
         connectChimeMessaging({ userId: data.profile.chime_user_id });
-
+        dispatch(
+          handleNotificationUnreadCount(data.profile.unread_notification_count)
+        );
         dispatch(handleToken(token));
         dispatch(fetchuserSettingsbyToken(token));
         dispatch(handlenuggetToken(token));

@@ -5,6 +5,7 @@ import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { getAttendeesFromMeetingService } from "../../../Services/ApiService";
 import { useAuthToken } from "../../../Shared/Reduxfetcher";
 import { JSONtoformdata } from "../../../Shared/Utility";
+import { Button } from "antd";
 
 const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
   const token = useAuthToken();
@@ -16,12 +17,30 @@ const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
     EventData,
     setisFetching,
     RaiseHandUsers,
+    setnotificationToast,
+    setisChatorParticipant,
   } = useLayoutContect();
 
   useEffect(() => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
       (user_data) => {
+        setnotificationToast({
+          show: true,
+          msg: `${user_data?.user_name} wants to join this meeting`,
+          title: null,
+          type: null,
+          buttons: [
+            <Button
+              onClick={() => {
+                setisChatorParticipant("participant");
+              }}
+            >
+              View
+            </Button>,
+          ],
+          icon: null,
+        });
         RequestRef.current.push(user_data);
         setRequestList((pre) => [...pre, user_data]);
       }

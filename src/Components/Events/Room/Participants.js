@@ -75,8 +75,9 @@ const Participants = () => {
     );
 
     const ComponentRender = useMemo(() => {
+      const isYou = parseInt(userdata.user_id) === parseInt(ele.id);
       const getVideoEnabled = () => {
-        if (userdata.user_id === ele.id) {
+        if (isYou) {
           return isVideoEnabled;
         }
         return videoEnabled;
@@ -99,7 +100,7 @@ const Participants = () => {
                   currentTarget.src = defaultprofileImg;
                 }}
               />
-              {ele.name}
+              {ele.name + `${isYou ? " (You)" : ""}`}
             </div>
             <div className={classes.itemAction}>
               {find_raise_hand && (

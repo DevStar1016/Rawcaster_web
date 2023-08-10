@@ -14,7 +14,7 @@ import {
   useToggleLocalMute,
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
-import { Badge, Dropdown, Modal, message } from "antd";
+import { Badge, Button, Dropdown, Modal, message } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
 import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
 import { useAuthData, useAuthToken } from "../Shared/Reduxfetcher";
@@ -96,7 +96,10 @@ const EventLayout = () => {
         return { ...findAttendee, ...elem };
       }
     });
-
+    console.log(
+      attendees,
+      filterValidAttendees.filter((ele) => ele)
+    );
     return { attendees: filterValidAttendees.filter((ele) => ele) };
   };
 
@@ -104,22 +107,30 @@ const EventLayout = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
       async (message) => {
-        console.log(message, "CHIME_SOCKET_EVENTS");
+        console.log(message, "message");
         if (message.audio === false) {
           toggleMute();
           await audiovideo.stopAudioInput();
         } else if (message.audio === true) {
-          messageApi.open({
-            type: "warning",
-            content: "Please Enable Your Mic",
+          Modal.confirm({
+            title: "Host requests that you unmute your microphone",
+            onOk() {
+              audiovideo.startAudioInput();
+              toggleMute();
+            },
+            onCancel() {},
           });
         } else if (message.video === false) {
+          toggleVideo();
           await audiovideo.stopVideoInput();
-          setIsVideoEnabled(false);
         } else if (message.video === true) {
-          messageApi.open({
-            type: "warning",
-            content: "Please Enable Your Video",
+          Modal.confirm({
+            title: "Host requests that you turn on camera",
+            onOk() {
+              audiovideo.startVideoInput();
+              toggleVideo();
+            },
+            onCancel() {},
           });
         }
       }
