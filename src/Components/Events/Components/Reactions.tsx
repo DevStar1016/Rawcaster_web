@@ -7,15 +7,16 @@ const DELAY = 1000;
 const DURATION = 5000;
 const SIZE = 25;
 
-const random = (min, max) => Math.floor(Math.random() * (max - min) + min);
+const random = (min: any, max: any) =>
+  Math.floor(Math.random() * (max - min) + min);
 
 const Reactions = () => {
-  const [animatedEmoji, setAnimatedEmoji] = useState(); // To randomly set values in the objectConfig
-  const [flyingObjects, setFlyingObjects] = useState([]); // Used to manage all flying currently objects by the Fly component
+  const [animatedEmoji, setAnimatedEmoji] = useState<any>(); // To randomly set values in the objectConfig
+  const [flyingObjects, setFlyingObjects] = useState<any>([]); // Used to manage all flying currently objects by the Fly component
 
-  const onSelect = (emojiData) => {
+  const onSelect = (emojiData: any) => {
     const emoji = (
-      <em-emoji native={emojiData.native} size={SIZE} set="apple"></em-emoji>
+      <em-emoji native={emojiData.native} size={`${SIZE}`} set="apple" />
     );
     setAnimatedEmoji(emoji); // Setting the object which would fly in a moment
   };
@@ -61,12 +62,18 @@ const Reactions = () => {
     [animatedEmoji]
   ); // On animatedEmoji change we calculate new random values for the next flying object
 
+  const getFlyingObjects = () => {
+    return flyingObjects.map((ele: any) => {
+      return <em-emoji native={ele} size={`${SIZE}`} set="apple"></em-emoji>;
+    });
+  };
+
   return (
     <div className="App">
       <Fly
         objectToFly={animatedEmoji}
         objectConfig={objectConfig}
-        flyingObjects={flyingObjects}
+        flyingObjects={getFlyingObjects()}
         setFlyingObjects={setFlyingObjects}
       />
       <EmojiPicker
@@ -88,7 +95,6 @@ const Reactions = () => {
           onSelect(e);
         }}
       />
-      {/* <Picker set="apple" onSelect={onSelect} /> */}
     </div>
   );
 };
