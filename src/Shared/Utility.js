@@ -385,7 +385,7 @@ export function isValidImageFile(file) {
 
   const reader = new FileReader();
 
-  reader.readAsDataURL(file);
+  reader?.readAsDataURL(file);
 
   return new Promise((resolve, reject) => {
     reader.onload = () => {

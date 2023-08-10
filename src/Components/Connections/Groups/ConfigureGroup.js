@@ -170,7 +170,6 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           (ele) =>
             getusetId(parseInt(ele.user_id)) === parseInt(userData?.user_id)
         );
-        console.log(members, "setGroupMemberssetGroupMembers");
         if (findUser !== -1) {
           let removedObj = members.splice(findUser, 1)[0];
           members.splice(0, 0, removedObj);

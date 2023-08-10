@@ -150,6 +150,7 @@ padding: 4px;
     border: 1px dashed #afafaf;
     padding: 0;
     height: 250px;
+    max-height: calc(((100vh - 267px)/2) - 90px) !important;
     margin-top: 10px;
     display: flex;
     justify-content: center;

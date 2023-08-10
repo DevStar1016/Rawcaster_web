@@ -186,7 +186,7 @@ const Nuggets = ({
     if (isLocked || isLoading) {
       return;
     }
-    if (Nuggets?.length === 0) {
+    if (Nuggets?.length === 0 && token) {
       let finalData = {
         token: token ? token : "RAWCAST",
         formData: { page_number: 1, nugget_type: 0 },

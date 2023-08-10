@@ -15,7 +15,7 @@ const TermsandConditions = () => {
   })(document, "script", "termly-jssdk2");
   return (
     <div
-     className={classes.termsbg}
+      className={classes.termsbg}
       name="termly-embed"
       data-id="435d9ebf-27f8-44f1-85e7-a8250034c899"
       data-type="iframe"

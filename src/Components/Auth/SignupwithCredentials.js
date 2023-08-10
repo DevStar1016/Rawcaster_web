@@ -309,7 +309,13 @@ const SignupwithCredentials = () => {
             </Form>
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} alt="Rawcaster" />
+              <img
+                onClick={() => {
+                  navigate("/");
+                }}
+                src={RawcasterLogo}
+                alt="Rawcaster"
+              />
               <p>
                 © Copyright Rawcaster 2021
                 <br />

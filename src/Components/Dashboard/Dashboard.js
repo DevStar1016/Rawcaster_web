@@ -48,7 +48,7 @@ const Dashboard = () => {
       };
       dispatch(handleResetNuggets());
       dispatch(handleNuggetFormData(filterData));
-      dispatch(fetchNuggetsbyId(filterData));
+      // dispatch(fetchNuggetsbyId(filterData));
     }
   }, [pathname]);
   return (

@@ -198,7 +198,13 @@ const Login = () => {
             <SigninwithService type="Signin" />
 
             <div className={classes.copyright}>
-              <img src={RawcasterLogo} alt="Rawcaster Logo" />
+              <img
+                onClick={() => {
+                  navigate("/");
+                }}
+                src={RawcasterLogo}
+                alt="Rawcaster Logo"
+              />
               <p>
                 © Copyright Rawcaster 2021
                 <br />

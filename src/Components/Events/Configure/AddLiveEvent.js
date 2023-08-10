@@ -279,7 +279,13 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         .catch((err) => {});
     }
   }, [data]);
-
+  const getTitle = () => {
+    return (
+      <div className={classes.headingSec}>
+        {`${data ? "Update" : "Create"} `} Talk Show
+      </div>
+    );
+  };
   return (
     <AddEventContext.Provider
       value={{
@@ -289,6 +295,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       }}
     >
       <EventModal
+        title={getTitle()}
         open={isTalkshowOpen}
         isUpdate={data ? true : false}
         loading={isCreating}
