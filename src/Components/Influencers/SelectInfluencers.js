@@ -177,8 +177,16 @@ const SelectInfluencers = () => {
         auth_code: getAuthToken(loginUserData?.token),
         follow_userid: JSON.stringify(selectedFansList),
         select_all:
-          SelectedInfluencersList?.length === influencerList?.length ? 1 : 0,
+          SelectedInfluencersList?.length === influencerList?.length &&
+          influencerList?.filter(
+            (ele) => !SelectedInfluencersList?.includes(ele?.user_ref_id)
+          )?.length === 0
+            ? 1
+            : SelectedInfluencersList?.length > influencerList?.length
+            ? 1
+            : 0,
         category: SearchValues?.category,
+        search_key: SearchValues.search_key,
       };
       InfluencerFollowService(JSONtoformdata(becameFanData))
         .then((res) => {
@@ -309,16 +317,23 @@ const SelectInfluencers = () => {
             >
               <Checkbox
                 className={
-                  SelectedInfluencersList?.length !== influencerList?.length ||
-                  influencerList?.length === 0
+                  SelectedInfluencersList?.length < influencerList?.length ||
+                  influencerList?.length === 0 ||
+                  influencerList?.filter(
+                    (ele) =>
+                      !SelectedInfluencersList?.includes(ele?.user_ref_id)
+                  )?.length > 0
                     ? classes.selectAllCheck
                     : `${classes.selectAllChecked} ${classes.selectAllCheck}`
                 }
                 onClick={() => {
                   if (
-                    SelectedInfluencersList?.length !==
-                      influencerList?.length ||
-                    influencerList?.length === 0
+                    SelectedInfluencersList?.length < influencerList?.length ||
+                    influencerList?.length === 0 ||
+                    influencerList?.filter(
+                      (ele) =>
+                        !SelectedInfluencersList?.includes(ele?.user_ref_id)
+                    )?.length > 0
                   ) {
                     handleSelectAllInfluencers(true);
                   } else {
@@ -326,14 +341,18 @@ const SelectInfluencers = () => {
                   }
                 }}
                 checked={
-                  SelectedInfluencersList?.length !== influencerList?.length ||
-                  influencerList?.length === 0
+                  SelectedInfluencersList?.length < influencerList?.length ||
+                  influencerList?.length === 0 ||
+                  influencerList?.filter(
+                    (ele) =>
+                      !SelectedInfluencersList?.includes(ele?.user_ref_id)
+                  )?.length > 0
                     ? false
                     : true
                 }
                 disabled={influencerList?.length === 0}
               />
-            </Tooltip>{" "}
+            </Tooltip>
             Selected Influencers (
             {SelectAllInfluencer
               ? influencersCount -

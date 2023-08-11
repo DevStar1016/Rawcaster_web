@@ -16,7 +16,7 @@ import ConfigureGroup from "../Connections/Groups/ConfigureGroup";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { handleProfileNavigate } from "../../Shared/Utility";
+import { getusetId, handleProfileNavigate } from "../../Shared/Utility";
 
 const Header = () => {
   const { isChatOpen, setisChatOpen } = useMainContext();
@@ -97,7 +97,8 @@ const Header = () => {
     const GroupMembers = getData()?.group_members_list;
     const withoutCurrentUser = GroupMembers?.filter(
       (ele) =>
-        parseInt(ele?.user_id, 10) !== parseInt(loginuserData.user_id, 10)
+        getusetId(parseInt(ele?.user_id, 10)) !==
+        parseInt(loginuserData.user_id, 10)
     );
     let displayData = "";
 

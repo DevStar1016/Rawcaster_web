@@ -7,10 +7,25 @@ p.subhead a { color: #77EFFF; font-weight: 600; cursor: pointer; }
     font-weight: 700; text-align: center; } 
 .faq { background: #FAFAFA; width: 100%; padding:0px 15px; }
 .faq .contentSec { max-width: 1110px; margin: auto; margin-top: 20px !important; }
-.termsbg { min-height: calc(100vh - 107px); padding:0px 15px;}
+.termsbg { 
+    /* min-height: calc(100vh - 107px); */
+     padding:0px 15px;}
 
 .termsbg>div>div>iframe>#document>html>body>div>div{
     padding: 0 !important;
+}
+
+.termsbg svg {
+    display: none;
+}
+
+.Skeleton {
+    padding: 45px;
+    transform: translateY(80px);
+    position: relative;
+    /* z-index: 100000000; */
+    top: 0;
+     width: 100%; 
 }
 @media (max-width:768px) {
 .faq { padding: 30px 15px !important; } 
