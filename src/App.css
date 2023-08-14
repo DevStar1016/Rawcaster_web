@@ -582,7 +582,7 @@ margin-bottom: 12px !important;
   padding-top: 20px !important;
 }
 .onlyMob {
-  display: none;
+  display: none !important;
 }
 .influencerProgress .ant-progress-inner {
   width: 73px !important;
@@ -648,11 +648,15 @@ padding: 0px !important;
     border-radius: 8px !important;
     box-shadow: none !important;
   }
+  .ch-nameplate {
+    background:none !important;
+    backdrop-filter:unset !important
+  }
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
-  .onlydes { display: none; } 
+  .onlydes { display: none !important; } 
   .onlyMob {
-    display: block;
+    display: block !important;
   }
   .eventContainer .ant-drawer-content-wrapper {
     height: 75% !important;

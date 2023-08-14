@@ -12,33 +12,70 @@ import { ChimesendMessage } from "../../../Services/SocketService";
 import { useEventLayout } from "./EventValidaton";
 import { DownOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
 
 const { Header, Footer, Content } = Layout;
 
 const CommentBox = () => {
+  const {
+    EventMessages,
+    userdetails,
+    EventData,
+    setEventMessages,
+    useAttendeesList,
+    setisChatorParticipant,
+  } = useLayoutContect();
   const [isEmoji, setisEmoji] = useState(false);
   const [ChatMessage, setChatMessage] = useState("");
-  const [commentList, setCommentList] = useState([]);
 
-  useEffect(() => {
-    console.log(commentList, "ChatMessageChatMessage");
-  }, [commentList]);
+  const handleSendMessage = (message) => {
+    setEventMessages((pre) => [
+      {
+        ...userdetails,
+        meetingId: EventData?.chime_meeting_id,
+        message: message ? message : ChatMessage,
+        isPrivate: false,
+      },
+      ...pre,
+    ]);
+    ChimesendMessage(
+      {
+        ...userdetails,
+        meetingId: EventData?.chime_meeting_id,
+        message: message ? message : ChatMessage,
+        isPrivate: false,
+      },
+      CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_MEETING_ROOM
+    );
+
+    setChatMessage("");
+    setisEmoji(false);
+  };
+
   return (
-    <Layout className={classes.popupContainer}>
+    <Layout
+      className={`${classes.popupContainer} ${
+        EventData?.type === 2 ? classes.talkshowPopup : ""
+      }`}
+    >
       <Header className={classes.headerStyle}>
-        <div style={{ background: "#563662" }} className={classes.popupHeader}>
+        <div className={classes.popupHeader}>
           <div>
             <i className={`${styles.chat_icon} ${styles.icon} mx-2 mt-1`}></i>
-            <p>Comment Box</p>
+            <p>Comments</p>
           </div>
-          <div>
+          <div
+            onClick={() => {
+              setisChatorParticipant(false);
+            }}
+          >
             <i className="material-symbols-outlined">cancel</i>
           </div>
         </div>
       </Header>
-      <Content style={{ background: "#563662" }}>
+      <Content>
         <div className={classes.chatBox}>
-          {commentList?.map((ele) => (
+          {EventMessages?.map((ele) => (
             <div className={`${classes.messageContainer}`}>
               <div className={`${classes.message}`}>
                 <img src={defaultprofileImg} />
@@ -66,21 +103,12 @@ const CommentBox = () => {
             </span>
             <Form.Control
               className={classes.inSearch}
-              placeholder="Type your message here.."
-              aria-label="Type your message here.."
+              placeholder="Type your Comment here.."
+              aria-label="Type your Comment here.."
               value={ChatMessage}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  // if (SelectedMembers.key === 0) {
-                  //   handleSendMessage();
-                  // } else {
-                  //   handleSendPrivateMessage();
-                  // }
-                  setCommentList((pre) => [
-                    { message: ChatMessage, name: "demo", isPrivate: false },
-                    ...pre,
-                  ]);
-                  setChatMessage("");
+                  handleSendMessage();
                 }
               }}
               onChange={(e) => {
@@ -96,17 +124,7 @@ const CommentBox = () => {
               <InputGroup.Text
                 className={classes.searchIcon}
                 onClick={() => {
-                  //   if (SelectedMembers.key === 0) {
-                  //     handleSendMessage();
-                  //   } else {
-                  //     handleSendPrivateMessage();
-                  //   }
-
-                  setCommentList((pre) => [
-                    { message: ChatMessage, name: "demo", isPrivate: false },
-                    ...pre,
-                  ]);
-                  setChatMessage("");
+                  handleSendMessage();
                 }}
               >
                 <span

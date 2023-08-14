@@ -31,6 +31,7 @@ const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
       await meetingManager.start();
       setisWaitingRoom(false);
     } catch (error) {
+      console.log(error);
       toast.error("Unable to Connect The Meeting");
     }
   };

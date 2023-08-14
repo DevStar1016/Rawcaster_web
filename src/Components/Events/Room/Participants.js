@@ -10,6 +10,7 @@ import {
 } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import {
+  useActiveSpeakersState,
   useAttendeeStatus,
   useAudioVideo,
   useLocalVideo,
@@ -18,11 +19,17 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { Collapse, Form, InputGroup } from "react-bootstrap";
-import { DefaultModality } from "amazon-chime-sdk-js";
+import {
+  ConsoleLogger,
+  DefaultAudioVideoController,
+  DefaultModality,
+  LogLevel,
+} from "amazon-chime-sdk-js";
 
 const { Header, Footer, Content } = Layout;
 
 const Participants = () => {
+  const logger = new ConsoleLogger("RAWCASTER MEETING:", LogLevel.INFO);
   const { isVideoEnabled, toggleVideo } = useLocalVideo();
   const [isSearchEnable, setisSearchEnable] = useState(false);
   const [SpeakerState, setSpeakerState] = useState(false);
@@ -35,10 +42,12 @@ const Participants = () => {
     isHost,
     RaiseHandUsers,
     useAttendeesList,
+    attendeesList,
+    EventData,
   } = useLayoutContect();
-  const audiovideo = useAudioVideo();
   const userdata = useAuthData();
-  const { attendees } = useAttendeesList();
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
 
   const headerStyle = {
     textAlign: "center",
@@ -65,14 +74,15 @@ const Participants = () => {
     );
   };
 
-  const AttendeeComponent = ({ ele }) => {
-    const { muted, videoEnabled } = useAttendeeStatus(ele?.AttendeeId);
-    console.log(muted, videoEnabled);
-    const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(ele.id)
+  const AttendeeAction = ({ ele }) => {
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
     );
-
-    const isYou = parseInt(userdata.user_id) === parseInt(ele.id);
+    const { muted, videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
+    const find_raise_hand = RaiseHandUsers.find(
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+    );
+    const isYou = parseInt(userdata.user_id) === parseInt(findAttendee.id);
     const getVideoEnabled = () => {
       if (isYou) {
         return isVideoEnabled;
@@ -80,124 +90,138 @@ const Participants = () => {
       return videoEnabled;
     };
     return (
+      <div className={classes.itemAction}>
+        {find_raise_hand && (
+          <span className={styles.raise_hand_active_icon_sm} />
+        )}
+        {findAttendee.isHost ? (
+          <div className={classes.hostIcon}>HOST</div>
+        ) : (
+          <span
+            className="material-symbols-outlined"
+            onClick={() => {
+              if (SpeakerState !== findAttendee.id) {
+                setSpeakerState(findAttendee.id);
+              } else {
+                setSpeakerState(false);
+              }
+            }}
+          >
+            volume_up
+          </span>
+        )}
+        {muted ? (
+          <span
+            class="material-symbols-outlined"
+            onClick={() => {
+              if (isHost && !findAttendee.isHost) {
+                const value = {
+                  userId: findAttendee.id,
+                  audio: true,
+                };
+                ChimesendMessage(
+                  value,
+                  CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                );
+              } else if (userdata.user_id === findAttendee.id) {
+                toggleMute();
+              }
+            }}
+          >
+            mic_off
+          </span>
+        ) : (
+          <span
+            className="material-symbols-outlined"
+            onClick={() => {
+              if (isHost && !findAttendee.isHost) {
+                const value = { userId: findAttendee.id, audio: false };
+                ChimesendMessage(
+                  value,
+                  CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                );
+              } else if (userdata.user_id === findAttendee.id) {
+                toggleMute();
+              }
+            }}
+          >
+            mic
+          </span>
+        )}
+        {!getVideoEnabled() ? (
+          <span
+            class="material-symbols-outlined"
+            onClick={() => {
+              if (isHost && !findAttendee.isHost) {
+                const value = { userId: findAttendee.id, video: true };
+                ChimesendMessage(
+                  value,
+                  CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                );
+              } else if (userdata.user_id === findAttendee.id) {
+                toggleVideo();
+              }
+            }}
+          >
+            videocam_off
+          </span>
+        ) : (
+          <span
+            className="material-symbols-outlined"
+            onClick={() => {
+              if (isHost && !findAttendee.isHost) {
+                const value = {
+                  userId: findAttendee.id,
+                  video: false,
+                };
+                ChimesendMessage(
+                  value,
+                  CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                );
+              } else if (userdata.user_id === findAttendee.id) {
+                toggleVideo();
+              }
+            }}
+          >
+            videocam
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  const AttendeeComponent = ({ ele }) => {
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+    );
+
+    const isYou = parseInt(userdata.user_id) === parseInt(findAttendee.id);
+
+    return (
       <>
         <div
           className={classes.participantContainer}
           style={{
-            display: ele.name.toLowerCase().includes(SearchData.toLowerCase())
+            display: findAttendee.name
+              ?.toLowerCase()
+              .includes(SearchData?.toLowerCase())
               ? ""
               : "none",
           }}
         >
           <div className={classes.itemName}>
             <img
-              src={ele.image ? ele.image : ""}
+              src={findAttendee.image ? findAttendee.image : ""}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
                 currentTarget.src = defaultprofileImg;
               }}
             />
-            {ele.name + `${isYou ? " (You)" : ""}`}
+            {findAttendee.name + `${isYou ? " (You)" : ""}`}
           </div>
-          <div className={classes.itemAction}>
-            {find_raise_hand && (
-              <span className={styles.raise_hand_active_icon_sm} />
-            )}
-            {ele.isHost ? (
-              <div className={classes.hostIcon}>HOST</div>
-            ) : (
-              <span
-                className="material-symbols-outlined"
-                onClick={() => {
-                  if (SpeakerState !== ele.id) {
-                    setSpeakerState(ele.id);
-                  } else {
-                    setSpeakerState(false);
-                  }
-                }}
-              >
-                volume_up
-              </span>
-            )}
-            {muted ? (
-              <span
-                class="material-symbols-outlined"
-                onClick={() => {
-                  if (isHost && !ele.isHost) {
-                    const value = {
-                      userId: ele.id,
-                      audio: true,
-                    };
-                    ChimesendMessage(
-                      value,
-                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                    );
-                  } else if (userdata.user_id === ele.id) {
-                    toggleMute();
-                  }
-                }}
-              >
-                mic_off
-              </span>
-            ) : (
-              <span
-                className="material-symbols-outlined"
-                onClick={() => {
-                  if (isHost && !ele.isHost) {
-                    const value = { userId: ele.id, audio: false };
-                    ChimesendMessage(
-                      value,
-                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                    );
-                  } else if (userdata.user_id === ele.id) {
-                    toggleMute();
-                  }
-                }}
-              >
-                mic
-              </span>
-            )}
-            {!getVideoEnabled() ? (
-              <span
-                class="material-symbols-outlined"
-                onClick={() => {
-                  if (isHost && !ele.isHost) {
-                    const value = { userId: ele.id, video: true };
-                    ChimesendMessage(
-                      value,
-                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                    );
-                  } else if (userdata.user_id === ele.id) {
-                    toggleVideo();
-                  }
-                }}
-              >
-                videocam_off
-              </span>
-            ) : (
-              <span
-                className="material-symbols-outlined"
-                onClick={() => {
-                  if (isHost && !ele.isHost) {
-                    const value = {
-                      userId: ele.id,
-                      video: false,
-                    };
-                    ChimesendMessage(
-                      value,
-                      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                    );
-                  } else if (userdata.user_id === ele.id) {
-                    toggleVideo();
-                  }
-                }}
-              >
-                videocam
-              </span>
-            )}
-          </div>
+          <AttendeeAction ele={ele} />
         </div>
-        <Collapse in={SpeakerState === ele.id}>
+        <Collapse in={SpeakerState === findAttendee.id}>
           <div
             className={classes.speakerContainer}
             style={{
@@ -211,8 +235,8 @@ const Participants = () => {
                   color: "white",
                 }}
                 onClick={() => {
-                  if (SpeakerState !== ele.id) {
-                    setSpeakerState(ele.id);
+                  if (SpeakerState !== findAttendee.id) {
+                    setSpeakerState(findAttendee.id);
                   } else {
                     setSpeakerState(false);
                   }
@@ -220,7 +244,14 @@ const Participants = () => {
               >
                 volume_up
               </span>
-              <Slider defaultValue={30} tooltip />
+              <Slider
+                min={0}
+                max={1}
+                tooltip
+                onChange={(e) => {
+                  console.log(e, "activeSpeakersactiveSpeakers");
+                }}
+              />
             </div>
           </div>
         </Collapse>
@@ -229,7 +260,11 @@ const Participants = () => {
   };
 
   return (
-    <Layout className={classes.popupContainer}>
+    <Layout
+      className={`${classes.popupContainer} ${
+        EventData?.type === 2 ? classes.talkshowPopup : ""
+      }`}
+    >
       <Header style={headerStyle} className={classes.headerStyle}>
         <div className={classes.popupHeader}>
           <div>
@@ -285,7 +320,7 @@ const Participants = () => {
       </Header>
       <Content className={classes.participantSec}>
         {attendees.map((ele, index) => {
-          return <AttendeeComponent ele={ele} />;
+          return ele ? AttendeeComponent({ ele }) : null;
         })}
       </Content>
       <Footer className={classes.footerSec}>

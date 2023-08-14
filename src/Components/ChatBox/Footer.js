@@ -31,7 +31,7 @@ const Footer = () => {
       ...params,
       Type: "STANDARD",
       Persistence: "PERSISTENT",
-      ChannelArn: GroupDetails?.group_arn,
+      ChannelArn: GroupDetails?.channel_arn,
       ChimeBearer: userData.chime_user_id,
       Content: val,
     };
@@ -46,7 +46,7 @@ const Footer = () => {
 
   const editMessage = (val) => {
     const params = {
-      ChannelArn: GroupDetails?.group_arn,
+      ChannelArn: GroupDetails?.channel_arn,
       MessageId: EditData?.message_id,
       Content: val,
       ChimeBearer: userData.chime_user_id,
@@ -77,7 +77,7 @@ const Footer = () => {
     const content = JSON.stringify({ Typing: "Indicator" });
 
     const params = {
-      ChannelArn: GroupDetails?.group_arn,
+      ChannelArn: GroupDetails?.channel_arn,
       Content: content,
       Type: "CONTROL",
       Persistence: "NON_PERSISTENT",

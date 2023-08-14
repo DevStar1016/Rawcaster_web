@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Easing } from "react-native-web";
 import Fly from "react-flying-objects";
-import EmojiPicker from "../../../UIComponents/EmojiPicker";
+import classes from "./Reactions.module.css";
 
 const DELAY = 1000;
 const DURATION = 5000;
@@ -14,9 +14,54 @@ const Reactions = () => {
   const [animatedEmoji, setAnimatedEmoji] = useState<any>(); // To randomly set values in the objectConfig
   const [flyingObjects, setFlyingObjects] = useState<any>([]); // Used to manage all flying currently objects by the Fly component
 
-  const onSelect = (emojiData: any) => {
+  const animatedEmojiList = [
+    {
+      id: 1,
+      emoji: "💖",
+    },
+    {
+      id: 2,
+      emoji: "👍",
+    },
+    {
+      id: 3,
+      emoji: "🎉",
+    },
+    {
+      id: 4,
+      emoji: "👏",
+    },
+    {
+      id: 5,
+      emoji: "😂",
+    },
+    {
+      id: 6,
+      emoji: "😮",
+    },
+    {
+      id: 7,
+      emoji: "🥲",
+    },
+    {
+      id: 8,
+      emoji: "🤔",
+    },
+    {
+      id: 9,
+      emoji: "👎",
+    },
+  ];
+
+  const onSelect = (emojiData: string) => {
     const emoji = (
-      <em-emoji native={emojiData.native} size={`${SIZE}`} set="apple" />
+      <div
+        style={{
+          fontSize: 25,
+        }}
+      >
+        {emojiData}
+      </div>
     );
     setAnimatedEmoji(emoji); // Setting the object which would fly in a moment
   };
@@ -62,39 +107,37 @@ const Reactions = () => {
     [animatedEmoji]
   ); // On animatedEmoji change we calculate new random values for the next flying object
 
-  const getFlyingObjects = () => {
-    return flyingObjects.map((ele: any) => {
-      return <em-emoji native={ele} size={`${SIZE}`} set="apple"></em-emoji>;
-    });
-  };
-
   return (
-    <div className="App">
+    <div className={classes.reactionsContainer}>
       <Fly
         objectToFly={animatedEmoji}
         objectConfig={objectConfig}
-        flyingObjects={getFlyingObjects()}
+        flyingObjects={flyingObjects}
         setFlyingObjects={setFlyingObjects}
       />
-      <EmojiPicker
-        emojiButtonColors={["#364157"]}
-        emojiButtonRadius="8px"
-        skinTonePosition="none"
-        previewPosition="none"
-        categories={[
-          "people",
-          "nature",
-          "foods",
-          "activity",
-          "places",
-          "objects",
-          "symbols",
-          "flags",
-        ]}
-        onEmojiSelect={(e) => {
-          onSelect(e);
-        }}
-      />
+      <div className={classes.reactionsSec}>
+        {animatedEmojiList.map((ele) => (
+          <div
+            className={classes.emoji}
+            onClick={() => {
+              onSelect(ele.emoji);
+            }}
+          >
+            <div
+              style={{
+                fontSize: 25,
+              }}
+            >
+              {ele.emoji}
+            </div>
+            {/* <em-emoji
+              native={ele.emoji}
+              size={`${SIZE}`}
+              set="apple"
+            ></em-emoji> */}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -26,11 +26,13 @@ export async function listChannelMessages(
     ChimeBearer: userId,
     SubChannelId: subChannelId,
   };
+  console.log(params, "params");
 
   const command = new ListChannelMessagesCommand(params);
   const response = await chimeClient.send(command);
 
   const messageList = response.ChannelMessages;
+  console.log(messageList);
   return messageList.sort(function (a, b) {
     return a.CreatedTimestamp < b.CreatedTimestamp
       ? -1

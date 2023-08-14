@@ -96,8 +96,8 @@ const Development = () => {
           </Toast.Body>
         </Toast>
       </ToastContainer>
-      <Reactions />
-      <CommentBox />
+      {/* <Reactions />
+      <CommentBox /> */}
     </div>
     // <div
     //   style={{

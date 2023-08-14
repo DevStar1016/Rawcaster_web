@@ -367,6 +367,9 @@ opacity: 0.8;
   .memberSec svg {
     fill: #FFFFFF !important;
   }
+  .talkshowPopup {
+    height: 95vh !important;
+  }
   @media (max-width:768px) { 
 
     .popupContainer {

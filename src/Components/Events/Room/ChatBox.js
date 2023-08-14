@@ -111,7 +111,11 @@ const ChatBox = () => {
   };
 
   return (
-    <Layout className={classes.popupContainer}>
+    <Layout
+      className={`${classes.popupContainer} ${
+        EventData?.type === 2 ? classes.talkshowPopup : ""
+      }`}
+    >
       <Header className={classes.headerStyle}>
         <div className={classes.popupHeader}>
           <div>

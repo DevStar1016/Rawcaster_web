@@ -29,7 +29,7 @@ const Content = ({ getContents }) => {
 
   const handleDelete = (id) => {
     const params = {
-      ChannelArn: GroupDetails?.group_arn,
+      ChannelArn: GroupDetails?.channel_arn,
       MessageId: id,
       ChimeBearer: userdata.chime_user_id,
     };

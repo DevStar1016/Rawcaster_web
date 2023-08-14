@@ -1,37 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import classes from "./EventBox.module.css";
+import styles from "../../Events/Components/Menu.module.css";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
 import {
   ContentShare,
   LocalVideo,
   RemoteVideo,
+  useAttendeeStatus,
   useContentShareState,
   useLocalVideo,
+  useMeetingManager,
   useRemoteVideoTileState,
   useRosterState,
+  useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
-import { Alert, Button, Drawer, Spin } from "antd";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { Alert, Drawer, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
-import { MessageOutlined } from "@ant-design/icons";
+import Reactions from "../Components/Reactions";
+import CommentBox from "./CommentBox";
+import { ChimesendMessage } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
 
 const EventBox = () => {
   const userData = useAuthData();
-  const { isVideoEnabled } = useLocalVideo();
+  const { isVideoEnabled, toggleVideo } = useLocalVideo();
   const {
     isPinEnabled,
     isChatorParticipant,
-
+    isReactions,
     isFetching,
-    useAttendeesList,
     notificationToast,
     setnotificationToast,
+    attendeesList,
+    RaiseHandUsers,
   } = useLayoutContect();
-  const { attendees } = useAttendeesList();
-
+  const { muted, toggleMute } = useToggleLocalMute();
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
 
@@ -60,54 +69,199 @@ const EventBox = () => {
     }
   };
 
+  const EventBoxOptions = ({ isYou, ele }) => {
+    const { muted, videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
+    const getVideoEnabled = () => {
+      if (isYou) {
+        return isVideoEnabled;
+      }
+      return videoEnabled;
+    };
+    return (
+      <div className={classes.eventMenu}>
+        <div className={classes.eventOption}>
+          <Tooltip placement="topLeft" title={"Enable Mic"}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onClick={() => {
+                if (userData.isHost && !ele.isHost) {
+                  const value = {
+                    userId: parseInt(ele.externalUserId),
+                    audio: true,
+                  };
+                  ChimesendMessage(
+                    value,
+                    CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                  );
+                } else if (userData.user_id === parseInt(ele.externalUserId)) {
+                  toggleMute();
+                }
+              }}
+            >
+              {muted ? (
+                <span class="material-symbols-outlined"> mic_off</span>
+              ) : (
+                <span class="material-symbols-outlined"> mic</span>
+              )}
+            </div>
+          </Tooltip>
+          <Tooltip placement="topLeft" title={"Enable Video"}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onClick={() => {
+                if (userData.isHost && !ele.isHost) {
+                  const value = {
+                    userId: parseInt(ele.externalUserId),
+                    video: true,
+                  };
+                  ChimesendMessage(
+                    value,
+                    CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+                  );
+                } else if (userData.user_id === parseInt(ele.externalUserId)) {
+                  toggleVideo();
+                }
+              }}
+            >
+              {getVideoEnabled() ? (
+                <span class="material-symbols-outlined">videocam_off</span>
+              ) : (
+                <span class="material-symbols-outlined">videocam</span>
+              )}
+            </div>
+          </Tooltip>
+          {!isYou && (
+            <Tooltip placement="topLeft" title={"Remove user"}>
+              <div
+                className={classes.disabledIcon}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  class="material-symbols-outlined"
+                  style={{
+                    color: !userData?.isHost ? "grey" : "",
+                  }}
+                >
+                  cancel
+                </span>
+              </div>
+            </Tooltip>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const CustomNamePlate = ({ ele }) => {
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+    );
+    const { muted, videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
+    const find_raise_hand = RaiseHandUsers.find(
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+    );
+    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.id);
+    return (
+      <div>
+        <div className={classes.customNamePlate}>
+          {muted ? (
+            <i className={classes.name_plate_mic_off_icon}></i>
+          ) : (
+            <i className={classes.name_plate_mic_on_icon}></i>
+          )}
+          {`${findAttendee.name} ${isYou ? "(You)" : ""}`}
+        </div>
+        {find_raise_hand && (
+          <div className={classes.isRaiseHand}>
+            <i className={classes.raise_hand_active_icon}></i>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const GetDisplayComponent = ({ ele }) => {
-    const value = attendeeIdToTileId[ele.AttendeeId];
-    const isYou = parseInt(userData.user_id) === parseInt(ele.id);
-    console.log(ele);
-    if (ele) {
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+    );
+    const value = attendeeIdToTileId[ele.chimeAttendeeId];
+    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.id);
+    const find_raise_hand = RaiseHandUsers.find(
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+    );
+    if (findAttendee) {
       if (isYou && isVideoEnabled) {
         return (
-          <LocalVideo
-            id={ele.id}
-            className={classes.Child}
-            nameplate={`${ele.name} (You)`}
-          />
+          <div className={classes.Child}>
+            {findAttendee?.isHost && (
+              <div className={classes.hostLogo}>Host</div>
+            )}
+            <LocalVideo
+              id={ele.id}
+              className={classes.videoSec}
+              nameplate={<CustomNamePlate ele={ele} />}
+            ></LocalVideo>
+            <EventBoxOptions isYou={isYou} ele={ele} />
+          </div>
         );
       } else if (value) {
         return (
-          <RemoteVideo
-            id={ele.id}
-            className={classes.Child}
-            name={ele.name}
-            nameplate={ele.name}
-            tileId={value}
-          />
+          <div className={classes.Child}>
+            {findAttendee?.isHost && (
+              <div className={classes.hostLogo}>Host</div>
+            )}
+            <RemoteVideo
+              id={findAttendee.id}
+              className={classes.videoSec}
+              name={<CustomNamePlate ele={ele} />}
+              tileId={value}
+            />
+
+            <EventBoxOptions isYou={isYou} ele={ele} />
+          </div>
         );
       } else {
         return (
           <div className={classes.Child}>
+            {findAttendee?.isHost && (
+              <div className={classes.hostLogo}>Host</div>
+            )}
+            <EventBoxOptions isYou={isYou} ele={ele} />
             <img
-              src={ele.image ? ele.image : ""}
+              src={findAttendee.image ? findAttendee.image : ""}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
                 currentTarget.src = userImg;
               }}
             />
-            <p>{ele.name + `${isYou ? " (You)" : ""}`}</p>
+            <p>{findAttendee.name + `${isYou ? " (You)" : ""}`}</p>
           </div>
         );
       }
     }
     return (
       <div className={classes.Child}>
+        <EventBoxOptions isYou={isYou} ele={ele} />
         <img
-          src={ele?.image ? ele.image : ""}
+          src={findAttendee?.image ? findAttendee.image : ""}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null;
             currentTarget.src = userImg;
           }}
         />
-        <p>{ele.name + `${isYou ? " (You)" : ""}`}</p>
+        <p>{"User" + `${isYou ? " (You)" : ""}`}</p>
       </div>
     );
   };
@@ -120,6 +274,18 @@ const EventBox = () => {
           width: !isFetching && isChatorParticipant ? "80" : "100%",
         }}
       >
+        {isReactions && (
+          <div
+            style={{
+              position: "absolute",
+              height: "88%",
+              width: "100%",
+              zIndex: 13,
+            }}
+          >
+            <Reactions />
+          </div>
+        )}
         {isFetching ? (
           <div className="h-100 w-100 d-flex justify-content-center align-items-center">
             <Spin />
@@ -217,6 +383,8 @@ const EventBox = () => {
               <Participants />
             ) : isChatorParticipant === "chat" ? (
               <ChatBox />
+            ) : isChatorParticipant === "comment" ? (
+              <CommentBox />
             ) : null}
           </div>
         )}
@@ -235,6 +403,8 @@ const EventBox = () => {
               <Participants />
             ) : isChatorParticipant === "chat" ? (
               <ChatBox />
+            ) : isChatorParticipant === "comment" ? (
+              <CommentBox />
             ) : null}
           </div>
         </Drawer>

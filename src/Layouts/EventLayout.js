@@ -14,32 +14,23 @@ import {
   useToggleLocalMute,
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
-import { Badge, Button, Dropdown, Modal, message } from "antd";
+import { Modal, message } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
 import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
 import { useAuthData, useAuthToken } from "../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
-import { ChimesendMessage, ChimesocketListen } from "../Services/SocketService";
-import { toast } from "react-hot-toast";
-import { ExclamationCircleFilled, MessageOutlined } from "@ant-design/icons";
+import { ChimesocketListen } from "../Services/SocketService";
+import { MessageOutlined } from "@ant-design/icons";
+import EventMenu from "../Components/Events/Components/EventMenu";
+import TalkshowMenu from "../Components/Events/Components/TalkshowMenu";
 
 export const useLayoutContect = () => {
   return useOutletContext();
 };
 
 const EventLayout = () => {
-  const {
-    isChatorParticipant,
-    setisChatorParticipant,
-    isPinEnabled,
-    setisPinEnabled,
-    EventData,
-    attendeesList,
-    RequestRef,
-    handleExitMeeting,
-    notificationToast,
-    setnotificationToast,
-  } = useEventLayout();
+  const { EventData, attendeesList, notificationToast, setnotificationToast } =
+    useEventLayout();
   const { confirm } = Modal;
   const token = useAuthToken();
   const audioRef = useRef();
@@ -52,12 +43,14 @@ const EventLayout = () => {
   const { isLocalUserSharing } = useContentShareState();
   const audioinput = useAudioInputs();
   const videoinput = useVideoInputs();
+  const [isReactions, setisReactions] = useState(false);
   const [EventMessages, setEventMessages] = useState([]);
   const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isVideoEnabled, toggleVideo, setIsVideoEnabled } = useLocalVideo();
+  const [isNewMessage, setisNewMessage] = useState(false);
 
   const DeviceList = (List, onSelect) => {
     return List.map((ele, index) => {
@@ -89,18 +82,14 @@ const EventLayout = () => {
   }, [attendeesList]);
 
   const useAttendeesList = () => {
-    let filterValidAttendees = attendeesList.filter((elem) => {
-      let findAttendee = attendees.find(
-        (ele) => parseInt(ele.externalUserId) === elem.id
+    let filterValidAttendees = attendees.map((elem) => {
+      let findAttendee = attendeesList.find(
+        (ele) => parseInt(elem.externalUserId) === ele.id
       );
       if (findAttendee) {
-        return { ...findAttendee, ...elem };
+        return { ...findAttendee };
       }
     });
-    console.log(
-      attendees,
-      filterValidAttendees.filter((ele) => ele)
-    );
     return { attendees: filterValidAttendees.filter((ele) => ele) };
   };
 
@@ -151,13 +140,15 @@ const EventLayout = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (data) => {
-      setnotificationToast({
-        show: true,
-        msg: data.message,
-        title: `${data.name}`,
-        icon: <MessageOutlined />,
-        buttons: [],
-      });
+      if (EventData?.type !== 2) {
+        setnotificationToast({
+          show: true,
+          msg: data.message,
+          title: `${data.name}`,
+          icon: <MessageOutlined />,
+          buttons: [],
+        });
+      }
       setEventMessages((pre) => [data, ...pre]);
     });
     return () => {
@@ -167,14 +158,15 @@ const EventLayout = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG, (data) => {
-      setnotificationToast({
-        show: true,
-        msg: data.message,
-        title: `${data.name} (Private)`,
-        icon: <MessageOutlined />,
-        buttons: [],
-      });
-
+      if (EventData?.type !== 2) {
+        setnotificationToast({
+          show: true,
+          msg: data.message,
+          title: `${data.name} (Private)`,
+          icon: <MessageOutlined />,
+          buttons: [],
+        });
+      }
       setEventMessages((pre) => [data, ...pre]);
     });
     return () => {
@@ -182,15 +174,14 @@ const EventLayout = () => {
     };
   }, [EventMessages]);
 
-  const getisActiveRaiseHand = () => {
-    const findData = RaiseHandUsers.find((ele) => ele.id === userdetails?.id);
-    return findData;
-  };
-
   return (
-    <div>
+    <div className={`${EventData?.type === 2 ? classes.TalkshowHeader : ""}`}>
       {contextHolder}
-      <div className={`${classes.topheader} ${classes.eventHeader}`}>
+      <div
+        className={`${classes.topheader} ${classes.eventHeader} ${
+          EventData?.type === 2 ? classes.TalkshowHeader : ""
+        }`}
+      >
         <div className={classes.meetingHeader}>
           <img src={Rlogo} />
           <h2>{EventData?.event_name}</h2>
@@ -208,414 +199,30 @@ const EventLayout = () => {
           useAttendeesList,
           notificationToast,
           setnotificationToast,
+          isReactions,
+          setisReactions,
         }}
       />
-
-      <div className={styles.BottomContainer}>
-        <div className={styles.startContainer}>
-          <div className="d-flex flex-row">
-            <div className={styles.Actionsec}>
-              <div>
-                {muted ? (
-                  <i
-                    className={`${styles.unmute_icon} ${styles.icon}`}
-                    ref={audioRef}
-                    onClick={() => {
-                      toggleMute();
-                    }}
-                  ></i>
-                ) : (
-                  <i
-                    className={`${styles.mute_icon} ${styles.icon}`}
-                    ref={audioRef}
-                    onClick={async () => {
-                      toggleMute();
-                    }}
-                  ></i>
-                )}
-                <Dropdown
-                  menu={{
-                    items: DeviceList(audioinput.devices, async (id) => {
-                      audiovideo.startAudioInput(id);
-                    }),
-                  }}
-                  placement="top"
-                >
-                  <div
-                    style={{
-                      color: "white",
-                    }}
-                  >
-                    <span className="material-symbols-outlined">
-                      expand_less
-                    </span>
-                  </div>
-                </Dropdown>
-              </div>
-              {muted ? <>Unmute</> : <>Mute</>}
-            </div>
-          </div>
-          <div className="d-flex flex-row">
-            <div className={styles.Actionsec}>
-              <div>
-                {isVideoEnabled ? (
-                  <i
-                    className={`${styles.video_off_icon} ${styles.icon}`}
-                    ref={videoRef}
-                    onClick={() => {
-                      toggleVideo();
-                    }}
-                  ></i>
-                ) : (
-                  <i
-                    className={`${styles.video_icon} ${styles.icon}`}
-                    onClick={async () => {
-                      if (videoinput.devices.length !== 0) {
-                        await audiovideo.startVideoInput(videoinput.devices[0]);
-                        toggleVideo();
-                      }
-                    }}
-                  ></i>
-                )}
-                {videoinput.devices.length !== 0 && (
-                  <Dropdown
-                    menu={{
-                      items: DeviceList(videoinput.devices, async (id) => {
-                        console.log(id, "ididididid");
-                        audiovideo
-                          .startVideoInput(id)
-                          .then((res) => {
-                            console.log(res);
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
-                      }),
-                    }}
-                    placement="top"
-                  >
-                    <div
-                      // className={styles.DropdownBtn}
-                      style={{
-                        color: "white",
-                      }}
-                    >
-                      <span className="material-symbols-outlined">
-                        expand_less
-                      </span>
-                    </div>
-                  </Dropdown>
-                )}
-              </div>
-              {isVideoEnabled ? <>Stop video</> : <>Start video</>}
-            </div>
-          </div>
-        </div>
-        <div style={{ width: "40%" }} className="onlydes">
-          <div
-            className={styles.Actionsec}
-            style={{
-              color: isLocalUserSharing ? "#F2718D" : "#FFFFFF",
-            }}
-            onClick={() => {
-              toggleContentShare();
-            }}
-          >
-            <i
-              className={`${styles.present_icon} ${styles.icon}`}
-              style={{
-                background: isLocalUserSharing ? "#F2718D" : "#FFFFFF",
-              }}
-            ></i>
-            Present
-          </div>
-        </div>
-        <div className={`${styles.endContainer} ${styles.onlydes} onlydes`}>
-          {userdetails?.isHost && (
-            <div className={styles.Actionsec}>
-              <i className={`${styles.present_icon} ${styles.icon}`}></i>
-              Allow
-            </div>
-          )}
-          {userdetails?.isHost && (
-            <div
-              className={styles.Actionsec}
-              onClick={() => {
-                setisPinEnabled(!isPinEnabled);
-              }}
-            >
-              <i className="material-symbols-outlined">grid_view</i>
-              View
-            </div>
-          )}
-          <div
-            className={styles.Actionsec}
-            style={{
-              color: getisActiveRaiseHand() ? "#F2718D" : "#ffffff",
-            }}
-            onClick={() => {
-              if (getisActiveRaiseHand()) {
-                ChimesendMessage(
-                  {
-                    user_id: userdetails?.id,
-                    meetingId: EventData?.chime_meeting_id,
-                    raise_hand: false,
-                  },
-                  CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                );
-                setRaiseHandUsers((pre) =>
-                  pre.filter((ele) => ele.id !== userdetails?.id)
-                );
-              } else {
-                ChimesendMessage(
-                  {
-                    user_id: userdetails?.id,
-                    meetingId: EventData?.chime_meeting_id,
-                    raise_hand: true,
-                  },
-                  CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                );
-                setRaiseHandUsers((pre) => [...pre, userdetails]);
-              }
-            }}
-          >
-            <i
-              className={` ${
-                getisActiveRaiseHand()
-                  ? styles.raise_hand_active_icon
-                  : styles.raise_hand_icon
-              } ${styles.icon}`}
-            ></i>
-            Raise Hand
-          </div>
-
-          <div
-            className={styles.Actionsec}
-            onClick={() => {
-              if (isChatorParticipant === "participant") {
-                setisChatorParticipant(null);
-              } else {
-                setisChatorParticipant("participant");
-              }
-            }}
-          >
-            <Badge
-              size="small"
-              count={RequestRef.current?.length || 0}
-              offset={[5, 0]}
-            >
-              <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            </Badge>
-            Participant
-          </div>
-
-          <div
-            className={styles.Actionsec}
-            onClick={() => {
-              if (isChatorParticipant === "chat") {
-                setisChatorParticipant(null);
-              } else {
-                setisChatorParticipant("chat");
-              }
-            }}
-          >
-            <i className={`${styles.chat_icon} ${styles.icon}`}></i>
-            Chat
-          </div>
-          <div
-            className={styles.Actionsec}
-            style={{
-              color: "red",
-            }}
-            onClick={() => {
-              confirm({
-                title: "Are you sure Do you want to Exit Meeting?",
-                icon: <ExclamationCircleFilled />,
-                onOk() {
-                  handleExitMeeting(userdetails)
-                    .then(() => {
-                      ChimesendMessage(
-                        {
-                          name: userdetails?.name,
-                          userId: userdetails?.id,
-                          meetingId: EventData?.chime_meeting_id,
-                          isHost: userdetails?.isHost,
-                        },
-                        CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
-                      );
-                      window.close();
-                    })
-                    .catch(() => {
-                      toast.error("Unable to end Meeting !");
-                    });
-                },
-                onCancel() {},
-              });
-            }}
-          >
-            <span
-              className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
-            >
-              logout
-            </span>
-            {/* <i className={`${styles.exit_icon} `}></i> */}
-            Exit
-          </div>
-        </div>
-        <div className={`${styles.endContainer} ${styles.onlyMob} onlyMob`}>
-          <div
-            className={styles.Actionsec}
-            style={{
-              color: getisActiveRaiseHand() ? "#F2718D" : "#ffffff",
-            }}
-            onClick={() => {
-              if (getisActiveRaiseHand()) {
-                ChimesendMessage(
-                  {
-                    user_id: userdetails?.id,
-                    meetingId: EventData?.chime_meeting_id,
-                    raise_hand: false,
-                  },
-                  CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                );
-                setRaiseHandUsers((pre) =>
-                  pre.filter((ele) => ele.id !== userdetails?.id)
-                );
-              } else {
-                ChimesendMessage(
-                  {
-                    user_id: userdetails?.id,
-                    meetingId: EventData?.chime_meeting_id,
-                    raise_hand: true,
-                  },
-                  CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                );
-                setRaiseHandUsers((pre) => [...pre, userdetails]);
-              }
-            }}
-          >
-            <i
-              className={` ${
-                getisActiveRaiseHand()
-                  ? styles.raise_hand_active_icon
-                  : styles.raise_hand_icon
-              } ${styles.icon}`}
-            ></i>
-            Raise Hand
-          </div>
-          <div
-            className={styles.Actionsec}
-            onClick={() => {
-              if (isChatorParticipant === "participant") {
-                setisChatorParticipant(null);
-              } else {
-                setisChatorParticipant("participant");
-              }
-            }}
-          >
-            <Badge
-              size="small"
-              count={RequestRef.current?.length || 0}
-              offset={[5, 0]}
-            >
-              <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            </Badge>
-            Participant
-          </div>
-          <Dropdown
-            menu={{
-              items: [
-                // {
-                //   label: (
-                //     <div className={styles.dropdownSec}>
-                //       <i
-                //         className={`${styles.participant_icon} ${styles.icon}`}
-                //         style={{
-                //           background: "black",
-                //         }}
-                //       ></i>
-                //       Participant
-                //     </div>
-                //   ),
-                //   key: "0",
-                // },
-                {
-                  label: (
-                    <div
-                      className={styles.dropdownSec}
-                      onClick={() => {
-                        if (isChatorParticipant === "chat") {
-                          setisChatorParticipant(null);
-                        } else {
-                          setisChatorParticipant("chat");
-                        }
-                      }}
-                    >
-                      <i
-                        className={`${styles.chat_icon} ${styles.icon}`}
-                        style={{
-                          background: "black",
-                        }}
-                      ></i>
-                      Chat
-                    </div>
-                  ),
-                  key: "1",
-                },
-                {
-                  label: (
-                    <div
-                      className={styles.dropdownSec}
-                      style={{
-                        color: "red",
-                      }}
-                      onClick={() => {
-                        confirm({
-                          title: "Are you sure Do you want to Exit Meeting?",
-                          icon: <ExclamationCircleFilled />,
-                          onOk() {
-                            handleExitMeeting(userdetails)
-                              .then(() => {
-                                ChimesendMessage(
-                                  {
-                                    name: userdetails?.name,
-                                    userId: userdetails?.id,
-                                    meetingId: EventData?.chime_meeting_id,
-                                    isHost: userdetails?.isHost,
-                                  },
-                                  CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
-                                );
-                                window.close();
-                              })
-                              .catch(() => {
-                                toast.error("Unable to end Meeting !");
-                              });
-                          },
-                          onCancel() {},
-                        });
-                      }}
-                    >
-                      <span
-                        className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
-                      >
-                        logout
-                      </span>
-                      Exit
-                    </div>
-                  ),
-                  key: "2",
-                },
-              ],
-            }}
-            trigger={["click"]}
-          >
-            <div className={styles.Actionsec}>
-              <span class="material-symbols-outlined">more_horiz</span>
-              More
-            </div>
-          </Dropdown>
-        </div>
-      </div>
+      {EventData?.type === 2 ? (
+        <TalkshowMenu
+          setRaiseHandUsers={setRaiseHandUsers}
+          RaiseHandUsers={RaiseHandUsers}
+          audioRef={audioRef}
+          videoRef={videoRef}
+          userdetails={userdetails}
+          isReactions={isReactions}
+          setisReactions={setisReactions}
+          setisNewMessage={setisNewMessage}
+        />
+      ) : (
+        <EventMenu
+          setRaiseHandUsers={setRaiseHandUsers}
+          RaiseHandUsers={RaiseHandUsers}
+          audioRef={audioRef}
+          videoRef={videoRef}
+          userdetails={userdetails}
+        />
+      )}
 
       <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} />
     </div>
