@@ -13,7 +13,7 @@ import {
 } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Linkify from "linkify-react";
 import LinkOpenModal from "../Modal/Verification/LinkOpenModal";
 import moment from "moment";
@@ -365,6 +365,23 @@ export function detectMob() {
   return toMatch.some((toMatchItem) => {
     return navigator.userAgent.match(toMatchItem);
   });
+}
+
+export function useWindowWidth() {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return windowWidth;
 }
 
 export function getAspectRatio(height, width) {
@@ -848,20 +865,20 @@ export const DecryptStringToObject = (encryptedString, secretKey = AES_KEY) => {
 // Testing
 export const getusetId = (user_id) => {
   switch (user_id) {
-    case 88:
-      return 11;
-    case 67:
-      return 22;
-    case 21:
-      return 33;
-    case 728:
-      return 44;
-    case 164:
-      return 55;
-    case 684:
-      return 66;
-    case 682:
-      return 77;
+    // case 88:
+    //   return 11;
+    // case 67:
+    //   return 22;
+    // case 21:
+    //   return 33;
+    // case 728:
+    //   return 44;
+    // case 164:
+    //   return 55;
+    // case 684:
+    //   return 66;
+    // case 682:
+    //   return 77;
     default:
       return user_id;
   }

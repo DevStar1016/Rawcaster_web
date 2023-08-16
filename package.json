@@ -46,6 +46,7 @@
     "react-bootstrap": "^2.7.0",
     "react-bottom-scroll-listener": "^5.1.0",
     "react-chartjs-2": "^5.2.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-dom-confetti": "^0.2.0",
     "react-flying-objects": "^1.0.7",
