@@ -71,15 +71,21 @@
     color: #FFFFFF;
     /* box-shadow: 0px 0px 70px rgba(0, 0, 0, 0.2); */
   }
-  .Half_container .Child ,  .Half_container .videoSec {
+  .Half_container .Child  {
     display: block;
     width:calc(50% - 10px);
   }
-  .full_container .Child , .full_container .videoSec{
+  .Half_container .videoSec {
+    width:100%;
+  }
+  .full_container .Child {
     display: block;
     margin: 2px;
    width:calc(100% - 30px);
    background-color: #61dafb;
+  }
+  .full_container .videoSec {
+    width: 100%;
   }
   .grid_3_boxes,.grid_initial_3_boxes {
     width:calc(100% - 30px);
@@ -186,14 +192,28 @@ position: relative;
    justify-content: space-between;
   }
   .eventOption span {
-    padding: 10px;
+
     cursor: pointer;
     overflow: hidden !important;
     border-radius: 20px;
   }
+  .eventOption .iconSec {
+    padding: 7px 10px;
+    border-radius: 20px;
+  }
+  .eventOption .iconSec:first-child {
+    padding: 7px 15px;
+    padding-right: 10px !important;
+  }
+  .eventOption .iconSec:last-child {
+    padding:7px 15px;
+    padding-left: 10px !important;
+  }
+  .eventOption .icon {
+    margin: 0px !important;
+  }
 
-  .eventOption span:hover {
-    
+.eventOption .iconSec:hover{
     background-color: #ffffff32;
   }
   .disabledIcon span {
@@ -227,18 +247,18 @@ padding-right: 10px;
     height: 18px;
     margin-left: 5px;
     margin-right: 5px;
-     mask: url("../../../Assets/Icons/svg/Events/name_plate_mic_on.svg") no-repeat center / contain;
-     -webkit-mask: url("../../../Assets/Icons/svg/Events/name_plate_mic_on.svg") no-repeat center /
+     mask: url("../../../Assets/Icons/svg/Events/mute.svg") no-repeat center / contain;
+     -webkit-mask: url("../../../Assets/Icons/svg/Events/mute.svg") no-repeat center /
        contain;
        background : #F2718D;
    }
    .name_plate_mic_off_icon {
-    width: 20px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     margin-left: 5px;
     margin-right: 5px;
-     mask: url("../../../Assets/Icons/svg/Events/nameplate_mic_off.svg") no-repeat center / contain;
-     -webkit-mask: url("../../../Assets/Icons/svg/Events/nameplate_mic_off.svg") no-repeat center /
+     mask: url("../../../Assets/Icons/svg/Events/unmute.svg") no-repeat center / contain;
+     -webkit-mask: url("../../../Assets/Icons/svg/Events/unmute.svg") no-repeat center /
        contain;
        background : #F2718D;
    }
@@ -251,6 +271,17 @@ padding-right: 10px;
      -webkit-mask: url("../../../Assets/Icons/svg/Events/raisehand_active.svg") no-repeat center /
        contain;
        background: #000 !important;
+   }
+   .RaisehandContainer {
+  position:absolute;
+  bottom: 10px;
+  left: 10px;
+   }
+   .RaisehandContainer  .isRaiseHand {
+    padding: 9px 3px;
+    margin-left: 0px;
+    padding-right: 1px;
+    cursor: pointer;
    }
    .isRaiseHand {
 background-color: #FFFFFF;

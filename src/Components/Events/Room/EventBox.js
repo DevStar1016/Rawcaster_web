@@ -21,24 +21,28 @@ import { Alert, Drawer, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
 import Reactions from "../Components/Reactions";
 import CommentBox from "./CommentBox";
-import { ChimesendMessage } from "../../../Services/SocketService";
-import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  CameraComponent,
+  LocalCameraComponent,
+  LocalMicrophoneComponent,
+  MicrophoneComponent,
+} from "../Components/Utility";
 
 const EventBox = () => {
   const userData = useAuthData();
-  const { isVideoEnabled, toggleVideo } = useLocalVideo();
+  const { isVideoEnabled } = useLocalVideo();
   const {
     isPinEnabled,
     isChatorParticipant,
     isReactions,
     isFetching,
+    isHost,
     notificationToast,
     setnotificationToast,
     attendeesList,
     RaiseHandUsers,
   } = useLayoutContect();
-  const { muted, toggleMute } = useToggleLocalMute();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
@@ -70,78 +74,66 @@ const EventBox = () => {
   };
 
   const EventBoxOptions = ({ isYou, ele }) => {
-    const { muted, videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
-    const getVideoEnabled = () => {
-      if (isYou) {
-        return isVideoEnabled;
-      }
-      return videoEnabled;
-    };
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+    );
+
     return (
       <div className={classes.eventMenu}>
         <div className={classes.eventOption}>
           <Tooltip placement="topLeft" title={"Enable Mic"}>
             <div
+              className={classes.iconSec}
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onClick={() => {
-                if (userData.isHost && !ele.isHost) {
-                  const value = {
-                    userId: parseInt(ele.externalUserId),
-                    audio: true,
-                  };
-                  ChimesendMessage(
-                    value,
-                    CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                  );
-                } else if (userData.user_id === parseInt(ele.externalUserId)) {
-                  toggleMute();
-                }
-              }}
             >
-              {muted ? (
-                <span class="material-symbols-outlined"> mic_off</span>
+              {isYou ? (
+                <LocalMicrophoneComponent ref={null} className={classes.icon} />
               ) : (
-                <span class="material-symbols-outlined"> mic</span>
+                <MicrophoneComponent
+                  ele={ele}
+                  attendee={findAttendee}
+                  isHost={isHost}
+                  className={classes.icon}
+                />
               )}
             </div>
           </Tooltip>
           <Tooltip placement="topLeft" title={"Enable Video"}>
             <div
+              className={classes.iconSec}
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onClick={() => {
-                if (userData.isHost && !ele.isHost) {
-                  const value = {
-                    userId: parseInt(ele.externalUserId),
-                    video: true,
-                  };
-                  ChimesendMessage(
-                    value,
-                    CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-                  );
-                } else if (userData.user_id === parseInt(ele.externalUserId)) {
-                  toggleVideo();
-                }
-              }}
             >
-              {getVideoEnabled() ? (
-                <span class="material-symbols-outlined">videocam_off</span>
+              {isYou ? (
+                <LocalCameraComponent
+                  ref={null}
+                  setselectedDevice={null}
+                  selectedDevice={null}
+                  className={classes.icon}
+                />
               ) : (
-                <span class="material-symbols-outlined">videocam</span>
+                <CameraComponent
+                  ele={ele}
+                  attendee={findAttendee}
+                  isHost={isHost}
+                  className={classes.icon}
+                />
               )}
             </div>
           </Tooltip>
           {!isYou && (
             <Tooltip placement="topLeft" title={"Remove user"}>
               <div
-                className={classes.disabledIcon}
+                className={`${isHost ? "" : classes.disabledIcon} ${
+                  classes.iconSec
+                }`}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -151,7 +143,7 @@ const EventBox = () => {
                 <span
                   class="material-symbols-outlined"
                   style={{
-                    color: !userData?.isHost ? "grey" : "",
+                    color: !isHost ? "grey" : "",
                   }}
                 >
                   cancel
@@ -247,6 +239,13 @@ const EventBox = () => {
               }}
             />
             <p>{findAttendee.name + `${isYou ? " (You)" : ""}`}</p>
+            {find_raise_hand && (
+              <div className={classes.RaisehandContainer}>
+                <div className={classes.isRaiseHand}>
+                  <i className={classes.raise_hand_active_icon}></i>
+                </div>
+              </div>
+            )}
           </div>
         );
       }

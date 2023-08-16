@@ -125,9 +125,8 @@ border-bottom-right-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 10%;
   width: 100%;
-  padding-top: 10px;
+  margin: 10px 0;
 }
 .inviteContainer .inviteBtn {
   text-align: center;
@@ -370,6 +369,33 @@ opacity: 0.8;
   .talkshowPopup {
     height: 95vh !important;
   }
+  .videosmallIcon {
+    width: 25px !important;
+    height: 25px !important;
+    cursor: pointer;
+    margin-bottom: 0px !important;
+    margin-right: 0px !important;
+}
+.micsmallIcon {
+  width: 19px !important;
+  height: 19px !important;
+  cursor: pointer;
+  margin-left: 5px;
+  margin-bottom: 0px !important;
+}
+.speakersmallIcon {
+  width: 19px !important;
+  height: 19px !important;
+  cursor: pointer;
+  margin-bottom: 0px !important;
+  margin-left: 3px;
+}
+.moreIcon {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
   @media (max-width:768px) { 
 
     .popupContainer {

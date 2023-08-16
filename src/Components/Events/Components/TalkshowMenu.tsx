@@ -10,19 +10,20 @@ import {
 import { useEventLayout } from "../Room/EventValidaton";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { Dropdown, Modal } from "antd";
+import { Badge, Dropdown, Modal } from "antd";
 import MoreBottomSheet from "./MoreBottomSheet";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { toast } from "react-hot-toast";
+import { LocalCameraComponent, LocalMicrophoneComponent } from "./Utility";
 
 const TalkshowMenu = ({
-  audioRef,
-  videoRef,
   RaiseHandUsers,
   setRaiseHandUsers,
   userdetails,
   isReactions,
   setisReactions,
+  isNewMessage,
+  setisNewMessage,
 }) => {
   const {
     isChatorParticipant,
@@ -30,9 +31,8 @@ const TalkshowMenu = ({
     EventData,
     handleExitMeeting,
   }: any = useEventLayout();
-  const { confirm } = Modal;
-  const { isVideoEnabled, toggleVideo } = useLocalVideo();
-  const { muted, toggleMute } = useToggleLocalMute();
+  const { isVideoEnabled } = useLocalVideo();
+  const { muted } = useToggleLocalMute();
   const audiovideo = useAudioVideo();
   const audioinput = useAudioInputs();
   const videoinput = useVideoInputs();
@@ -71,23 +71,8 @@ const TalkshowMenu = ({
             !muted ? styles.activeiconContainer : ""
           }`}
         >
-          {muted ? (
-            <i
-              className={`${styles.unmute_icon} ${styles.icon}`}
-              ref={audioRef}
-              onClick={() => {
-                toggleMute();
-              }}
-            ></i>
-          ) : (
-            <i
-              className={`${styles.mute_icon} ${styles.icon}`}
-              ref={audioRef}
-              onClick={async () => {
-                toggleMute();
-              }}
-            ></i>
-          )}
+          <LocalMicrophoneComponent />
+
           <Dropdown
             menu={{
               selectable: true,
@@ -106,35 +91,13 @@ const TalkshowMenu = ({
         </div>
         <div
           className={`${styles.iconContainer} ${styles.switchIconSec} ${
-            isVideoEnabled ? styles.activeiconContainer : ""
-          }`}
+            styles.videoIconSec
+          } ${isVideoEnabled ? styles.activeiconContainer : ""}`}
         >
-          {!isVideoEnabled ? (
-            <i
-              className={`${styles.video_off_icon} ${styles.icon}`}
-              ref={videoRef}
-              onClick={() => {
-                toggleVideo();
-              }}
-            ></i>
-          ) : (
-            <i
-              className={`${styles.video_icon} ${styles.icon}`}
-              onClick={async () => {
-                if (videoinput.devices.length !== 0) {
-                  if (!selectedDevice) {
-                    await audiovideo?.startVideoInput(videoinput.devices[0]);
-                    setselectedDevice(videoinput.devices[0]);
-                  } else {
-                    await audiovideo?.startVideoInput(selectedDevice);
-                    setselectedDevice(selectedDevice);
-                  }
-
-                  toggleVideo();
-                }
-              }}
-            ></i>
-          )}
+          <LocalCameraComponent
+            selectedDevice={selectedDevice}
+            setselectedDevice={setselectedDevice}
+          />
           <Dropdown
             menu={{
               selectable: true,
@@ -196,7 +159,7 @@ const TalkshowMenu = ({
             className={`${styles.iconContainer} ${styles.EndIcon} onlydes`}
             onClick={() => {
               Modal.confirm({
-                title: "Are you sure Do you want to Stop Talkshow Streaming ?",
+                title: "Are you sure Do you want to Exit Talkshow Streaming ?",
                 icon: <ExclamationCircleFilled />,
                 onOk() {
                   handleExitMeeting(userdetails)
@@ -272,27 +235,31 @@ const TalkshowMenu = ({
             } ${styles.icon} `}
           ></i>
         </div>
-        <div
-          className={`${styles.iconContainer} onlydes ${
-            isChatorParticipant === "participant"
-              ? styles.activeiconContainer
-              : ""
-          }`}
-          onClick={() => {
-            if (isChatorParticipant === "participant") {
-              setisChatorParticipant(null);
-            } else {
-              setisChatorParticipant("participant");
-            }
-          }}
-        >
-          <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-        </div>
+        <Badge dot={isNewMessage === "participant"}>
+          <div
+            className={`${styles.iconContainer} onlydes ${
+              isChatorParticipant === "participant"
+                ? styles.activeiconContainer
+                : ""
+            }`}
+            onClick={() => {
+              if (isChatorParticipant === "participant") {
+                setisChatorParticipant(null);
+              } else {
+                setisChatorParticipant("participant");
+              }
+            }}
+          >
+            <i className={`${styles.participant_icon} ${styles.icon}`}></i>
+          </div>
+        </Badge>
+
         <div
           className={`${styles.iconContainer} onlydes  ${
             isChatorParticipant === "comment" ? styles.activeiconContainer : ""
           }`}
           onClick={() => {
+            setisNewMessage(false);
             if (isChatorParticipant === "comment") {
               setisChatorParticipant(null);
             } else {
@@ -300,7 +267,9 @@ const TalkshowMenu = ({
             }
           }}
         >
-          <i className={`${styles.chat_icon} ${styles.icon}`}></i>
+          <Badge dot={isNewMessage === "comment"}>
+            <i className={`${styles.chat_icon} ${styles.icon}`}></i>
+          </Badge>
         </div>
 
         <div
@@ -316,7 +285,7 @@ const TalkshowMenu = ({
           className={`${styles.iconContainer} ${styles.EndIcon} onlyMob`}
           onClick={() => {
             Modal.confirm({
-              title: "Are you sure Do you want to Exit Talkshow?",
+              title: "Are you sure Do you want to Exit Talkshow Streaming ?",
               icon: <ExclamationCircleFilled />,
               onOk() {
                 handleExitMeeting(userdetails)

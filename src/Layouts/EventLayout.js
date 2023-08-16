@@ -1,23 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
 import classes from "./Layout.module.css";
 import Rlogo from "../Assets/Icons/svg/Events/Rawcasterlogo.svg";
-import styles from "./MeetingLayout.module.css";
 import {
-  useAudioInputs,
-  useAudioOutputs,
-  useAudioVideo,
-  useContentShareControls,
-  useContentShareState,
   useLocalVideo,
   useRosterState,
   useToggleLocalMute,
-  useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
 import { Modal, message } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
 import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
-import { useAuthData, useAuthToken } from "../Shared/Reduxfetcher";
+import { useAuthData } from "../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
 import { ChimesocketListen } from "../Services/SocketService";
 import { MessageOutlined } from "@ant-design/icons";
@@ -29,20 +22,17 @@ export const useLayoutContect = () => {
 };
 
 const EventLayout = () => {
-  const { EventData, attendeesList, notificationToast, setnotificationToast } =
-    useEventLayout();
-  const { confirm } = Modal;
-  const token = useAuthToken();
-  const audioRef = useRef();
-  const videoRef = useRef();
+  const {
+    EventData,
+    attendeesList,
+    notificationToast,
+    setnotificationToast,
+    isChatorParticipant,
+  } = useEventLayout();
+
   const [userdetails, setuserdetails] = useState(null);
   const userData = useAuthData();
   const { muted, toggleMute } = useToggleLocalMute();
-  const audiovideo = useAudioVideo();
-  const { toggleContentShare } = useContentShareControls();
-  const { isLocalUserSharing } = useContentShareState();
-  const audioinput = useAudioInputs();
-  const videoinput = useVideoInputs();
   const [isReactions, setisReactions] = useState(false);
   const [EventMessages, setEventMessages] = useState([]);
   const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
@@ -51,24 +41,6 @@ const EventLayout = () => {
   const attendees = Object.values(roster);
   const { isVideoEnabled, toggleVideo, setIsVideoEnabled } = useLocalVideo();
   const [isNewMessage, setisNewMessage] = useState(false);
-
-  const DeviceList = (List, onSelect) => {
-    return List.map((ele, index) => {
-      return {
-        key: index + 1,
-        label: (
-          <div
-            target="_blank"
-            onClick={() => {
-              onSelect(ele.deviceId);
-            }}
-          >
-            {ele.label}
-          </div>
-        ),
-      };
-    });
-  };
 
   useEffect(() => {
     if (attendeesList) {
@@ -99,34 +71,22 @@ const EventLayout = () => {
       async (message) => {
         console.log(message, "message");
         if (message.audio === false) {
-          audioRef.current?.click();
-          if (muted) {
-            toggleMute();
-          }
+          toggleMute();
         } else if (message.audio === true) {
           Modal.confirm({
             title: "Host requests that you unmute your microphone",
             onOk() {
-              audioRef.current?.click();
-              if (muted) {
-                toggleMute();
-              }
+              toggleMute();
             },
             onCancel() {},
           });
         } else if (message.video === false) {
-          videoRef.current?.click();
-          if (isVideoEnabled) {
-            toggleVideo();
-          }
+          toggleVideo();
         } else if (message.video === true) {
           Modal.confirm({
             title: "Host requests that you turn on camera",
             onOk() {
-              videoRef.current?.click();
-              if (!isVideoEnabled) {
-                toggleVideo();
-              }
+              toggleVideo();
             },
             onCancel() {},
           });
@@ -136,7 +96,7 @@ const EventLayout = () => {
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
     };
-  }, [attendeesList]);
+  }, [attendeesList, muted, isVideoEnabled]);
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (data) => {
@@ -148,6 +108,10 @@ const EventLayout = () => {
           icon: <MessageOutlined />,
           buttons: [],
         });
+      } else {
+        if (isChatorParticipant !== "comment") {
+          setisNewMessage("comment");
+        }
       }
       setEventMessages((pre) => [data, ...pre]);
     });
@@ -207,19 +171,16 @@ const EventLayout = () => {
         <TalkshowMenu
           setRaiseHandUsers={setRaiseHandUsers}
           RaiseHandUsers={RaiseHandUsers}
-          audioRef={audioRef}
-          videoRef={videoRef}
           userdetails={userdetails}
           isReactions={isReactions}
           setisReactions={setisReactions}
+          isNewMessage={isNewMessage}
           setisNewMessage={setisNewMessage}
         />
       ) : (
         <EventMenu
           setRaiseHandUsers={setRaiseHandUsers}
           RaiseHandUsers={RaiseHandUsers}
-          audioRef={audioRef}
-          videoRef={videoRef}
           userdetails={userdetails}
         />
       )}

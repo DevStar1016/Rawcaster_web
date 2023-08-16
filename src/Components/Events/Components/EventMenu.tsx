@@ -16,13 +16,7 @@ import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { toast } from "react-hot-toast";
 
-const EventMenu = ({
-  audioRef,
-  userdetails,
-  RaiseHandUsers,
-  setRaiseHandUsers,
-  videoRef,
-}) => {
+const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
   const {
     isChatorParticipant,
     setisChatorParticipant,
@@ -74,7 +68,6 @@ const EventMenu = ({
               {muted ? (
                 <i
                   className={`${styles.unmute_icon} ${styles.icon}`}
-                  ref={audioRef}
                   onClick={() => {
                     toggleMute();
                   }}
@@ -82,7 +75,6 @@ const EventMenu = ({
               ) : (
                 <i
                   className={`${styles.mute_icon} ${styles.icon}`}
-                  ref={audioRef}
                   onClick={async () => {
                     toggleMute();
                   }}
@@ -114,7 +106,6 @@ const EventMenu = ({
               {isVideoEnabled ? (
                 <i
                   className={`${styles.video_off_icon} ${styles.icon}`}
-                  ref={videoRef}
                   onClick={() => {
                     toggleVideo();
                   }}
