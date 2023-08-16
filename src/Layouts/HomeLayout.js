@@ -384,8 +384,8 @@ const HomeLayout = () => {
             alt="home_logo"
             src={btmhome}
             onClick={() => {
-              navigate("/dashboard");
               dispatch(handledasboardTab("nugget"));
+              navigate("/dashboard");
             }}
           />
           <img

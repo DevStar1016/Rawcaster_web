@@ -24,8 +24,8 @@ import {
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Notifications";
-import { detectMob } from "../../Shared/Utility";
-import StickyPopup from "../../Modal/StickyPopup/Stickypopup";
+import * as rdd from "react-device-detect";
+import { useWindowWidth } from "../../Shared/Utility";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
@@ -35,6 +35,7 @@ const Dashboard = () => {
   const { dashboardMenu } = useDashboard();
   const { nuggetFormData } = useNuggets();
   const dispatch = useDispatch();
+  const WINDOW_WIDTH = useWindowWidth();
 
   useEffect(() => {
     if (loginToken === null) {
@@ -51,6 +52,7 @@ const Dashboard = () => {
       // dispatch(fetchNuggetsbyId(filterData));
     }
   }, [pathname]);
+  console.log(window.innerWidth);
   return (
     <div>
       {isSuccess && loginUserData === null && (
@@ -71,33 +73,29 @@ const Dashboard = () => {
           </Link>
         </div>
       )}
-      {!detectMob() && (
-        <div className={classes.mobScreen}>
-          <div className={classes.fullcontainer}>
-            <Events />
-            <Nuggets className={classes.NuggetsSec} />
 
-            <DashboardSignup />
-          </div>
+      <rdd.CustomView condition={WINDOW_WIDTH >= 1100}>
+        <div className={classes.fullcontainer}>
+          <Events />
+          <Nuggets />
+          <DashboardSignup />
         </div>
-      )}
+      </rdd.CustomView>
 
-      {detectMob() && (
-        <div className={classes.webScreeen}>
-          <div className={classes.fullcontainer}>
-            {dashboardMenu === "event" && <Events />}
-            {dashboardMenu === "notification" && (
-              <Notification
-                onReadCountChange={() => {
-                  console.log("test");
-                }}
-              />
-            )}
-            {dashboardMenu === "nugget" && <Nuggets />}
-            {dashboardMenu === "usermenu" && <DashboardSignup />}
-          </div>
+      <rdd.CustomView condition={WINDOW_WIDTH <= 1100}>
+        <div className={classes.fullcontainer}>
+          {dashboardMenu === "event" && <Events />}
+          {dashboardMenu === "notification" && (
+            <Notification
+              onReadCountChange={() => {
+                console.log("test");
+              }}
+            />
+          )}
+          {dashboardMenu === "nugget" && <Nuggets />}
+          {dashboardMenu === "usermenu" && <DashboardSignup />}
         </div>
-      )}
+      </rdd.CustomView>
     </div>
   );
 };

@@ -77,7 +77,7 @@ export const { actions, reducer } = createSlice({
       });
 
       findData = findData.filter((ele) => ele !== null);
-      if (findData.length !== 0) {
+      if (findData.length !== 0 && state.token) {
         let apiData = {
           token: state.token,
           nugget_id: JSON.stringify(findData),
