@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
 import classes from "./Layout.module.css";
 import Rlogo from "../Assets/Icons/svg/Events/Rawcasterlogo.svg";
-import styles from "./MeetingLayout.module.css";
 import {
-  useAudioInputs,
-  useAudioOutputs,
-  useAudioVideo,
-  useContentShareControls,
-  useContentShareState,
   useLocalVideo,
+  useRosterState,
   useToggleLocalMute,
-  useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
-import { Dropdown } from "antd";
+import { Modal, message } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
 import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
+import { useAuthData } from "../Shared/Reduxfetcher";
+import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
+import { ChimesocketListen } from "../Services/SocketService";
+import { MessageOutlined } from "@ant-design/icons";
+import EventMenu from "../Components/Events/Components/EventMenu";
+import TalkshowMenu from "../Components/Events/Components/TalkshowMenu";
 
 export const useLayoutContect = () => {
   return useOutletContext();
@@ -23,212 +23,169 @@ export const useLayoutContect = () => {
 
 const EventLayout = () => {
   const {
-    isChatorParticipant,
-    setisChatorParticipant,
-    isPinEnabled,
-    setisPinEnabled,
     EventData,
+    attendeesList,
+    notificationToast,
+    setnotificationToast,
+    isChatorParticipant,
   } = useEventLayout();
-  const { muted, toggleMute } = useToggleLocalMute();
-  const audiovideo = useAudioVideo();
-  const { toggleContentShare } = useContentShareControls();
-  const { isLocalUserSharing } = useContentShareState();
-  const audioinput = useAudioInputs();
-  const videoinput = useVideoInputs();
-  const { tileId, isVideoEnabled, hasReachedVideoLimit, toggleVideo } =
-    useLocalVideo();
 
-  const DeviceList = (List, onSelect) => {
-    return List.map((ele, index) => {
-      return {
-        key: index + 1,
-        label: (
-          <div
-            target="_blank"
-            onClick={() => {
-              onSelect(ele.deviceId);
-            }}
-          >
-            {ele.label}
-          </div>
-        ),
-      };
+  const [userdetails, setuserdetails] = useState(null);
+  const userData = useAuthData();
+  const { muted, toggleMute } = useToggleLocalMute();
+  const [isReactions, setisReactions] = useState(false);
+  const [EventMessages, setEventMessages] = useState([]);
+  const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
+  const { isVideoEnabled, toggleVideo, setIsVideoEnabled } = useLocalVideo();
+  const [isNewMessage, setisNewMessage] = useState(false);
+
+  useEffect(() => {
+    if (attendeesList) {
+      const findAttendee = attendeesList.find(
+        (ele) => parseInt(ele.id) === parseInt(userData.user_id)
+      );
+      if (findAttendee) {
+        setuserdetails(findAttendee);
+      }
+    }
+  }, [attendeesList]);
+
+  const useAttendeesList = () => {
+    let filterValidAttendees = attendees.map((elem) => {
+      let findAttendee = attendeesList.find(
+        (ele) => parseInt(elem.externalUserId) === ele.id
+      );
+      if (findAttendee) {
+        return { ...findAttendee };
+      }
     });
+    return { attendees: filterValidAttendees.filter((ele) => ele) };
   };
 
+  useEffect(() => {
+    ChimesocketListen.on(
+      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
+      async (message) => {
+        console.log(message, "message");
+        if (message.audio === false) {
+          toggleMute();
+        } else if (message.audio === true) {
+          Modal.confirm({
+            title: "Host requests that you unmute your microphone",
+            onOk() {
+              toggleMute();
+            },
+            onCancel() {},
+          });
+        } else if (message.video === false) {
+          toggleVideo();
+        } else if (message.video === true) {
+          Modal.confirm({
+            title: "Host requests that you turn on camera",
+            onOk() {
+              toggleVideo();
+            },
+            onCancel() {},
+          });
+        }
+      }
+    );
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
+    };
+  }, [attendeesList, muted, isVideoEnabled]);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (data) => {
+      if (EventData?.type !== 2) {
+        setnotificationToast({
+          show: true,
+          msg: data.message,
+          title: `${data.name}`,
+          icon: <MessageOutlined />,
+          buttons: [],
+        });
+      } else {
+        if (isChatorParticipant !== "comment") {
+          setisNewMessage("comment");
+        }
+      }
+      setEventMessages((pre) => [data, ...pre]);
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG);
+    };
+  }, [EventMessages]);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG, (data) => {
+      if (EventData?.type !== 2) {
+        setnotificationToast({
+          show: true,
+          msg: data.message,
+          title: `${data.name} (Private)`,
+          icon: <MessageOutlined />,
+          buttons: [],
+        });
+      }
+      setEventMessages((pre) => [data, ...pre]);
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG);
+    };
+  }, [EventMessages]);
+
   return (
-    <div>
-      <div className={`${classes.topheader} ${classes.eventHeader}`}>
+    <div className={`${EventData?.type === 2 ? classes.TalkshowHeader : ""}`}>
+      {contextHolder}
+      <div
+        className={`${classes.topheader} ${classes.eventHeader} ${
+          EventData?.type === 2 ? classes.TalkshowHeader : ""
+        }`}
+      >
         <div className={classes.meetingHeader}>
           <img src={Rlogo} />
           <h2>{EventData?.event_name}</h2>
         </div>
       </div>
-      <Outlet context={useEventLayout()} />
-      <div className={styles.BottomContainer}>
-        <div className={styles.startContainer}>
-          <div className="d-flex flex-row">
-            <div className={styles.Actionsec}>
-              <div>
-                {muted ? (
-                  <i
-                    className={`${styles.unmute_icon} ${styles.icon}`}
-                    onClick={() => {
-                      toggleMute();
-                    }}
-                  ></i>
-                ) : (
-                  <i
-                    className={`${styles.mute_icon} ${styles.icon}`}
-                    onClick={() => {
-                      toggleMute();
-                    }}
-                  ></i>
-                )}
-                <Dropdown
-                  menu={{
-                    items: DeviceList(audioinput.devices, async (id) => {
-                      audiovideo.startAudioInput(id);
-                    }),
-                  }}
-                  placement="top"
-                >
-                  <div
-                    style={{
-                      color: "white",
-                    }}
-                  >
-                    <span className="material-symbols-outlined">
-                      expand_less
-                    </span>
-                  </div>
-                </Dropdown>
-              </div>
-              {muted ? <>Unmute</> : <>Mute</>}
-            </div>
-          </div>
-          <div className="d-flex flex-row">
-            <div className={styles.Actionsec}>
-              <div>
-                {isVideoEnabled ? (
-                  <i
-                    className={`${styles.video_off_icon} ${styles.icon}`}
-                    onClick={() => {
-                      toggleVideo();
-                    }}
-                  ></i>
-                ) : (
-                  <i
-                    className={`${styles.video_icon} ${styles.icon}`}
-                    onClick={() => {
-                      toggleVideo();
-                    }}
-                  ></i>
-                )}
-                <Dropdown
-                  menu={{
-                    items: DeviceList(videoinput.devices, async (id) => {
-                      audiovideo.startVideoInput(id);
-                    }),
-                  }}
-                  placement="top"
-                >
-                  <div
-                    // className={styles.DropdownBtn}
-                    style={{
-                      color: "white",
-                    }}
-                  >
-                    <span className="material-symbols-outlined">
-                      expand_less
-                    </span>
-                  </div>
-                </Dropdown>
-              </div>
-              {isVideoEnabled ? <>Stop video</> : <>Start video</>}
-            </div>
-          </div>
-        </div>
-        <div style={{ width: "40%" }}>
-          <div
-            className={styles.Actionsec}
-            style={{
-              color: isLocalUserSharing ? "#F2718D" : "#FFFFFF",
-            }}
-            onClick={() => {
-              toggleContentShare();
-            }}
-          >
-            <i
-              className={`${styles.present_icon} ${styles.icon}`}
-              style={{
-                background: isLocalUserSharing ? "#F2718D" : "#FFFFFF",
-              }}
-            ></i>
-            Present
-          </div>
-        </div>
-        <div className={styles.endContainer}>
-          <div className={styles.Actionsec}>
-            <i className={`${styles.present_icon} ${styles.icon}`}></i>
-            Allow
-          </div>
-          <div
-            className={styles.Actionsec}
-            onClick={() => {
-              setisPinEnabled(!isPinEnabled);
-            }}
-          >
-            <i className="material-symbols-outlined">grid_view</i>
-            View
-          </div>
-          <div className={styles.Actionsec}>
-            <i className={`${styles.raise_hand_icon} ${styles.icon}`}></i>
-            Raise Hand
-          </div>
-          <div
-            className={styles.Actionsec}
-            onClick={() => {
-              if (isChatorParticipant === "participant") {
-                setisChatorParticipant(null);
-              } else {
-                setisChatorParticipant("participant");
-              }
-            }}
-          >
-            <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            Participant
-          </div>
-          <div
-            className={styles.Actionsec}
-            onClick={() => {
-              if (isChatorParticipant === "chat") {
-                setisChatorParticipant(null);
-              } else {
-                setisChatorParticipant("chat");
-              }
-            }}
-          >
-            <i className={`${styles.chat_icon} ${styles.icon}`}></i>
-            Chat
-          </div>
-          <div
-            className={styles.Actionsec}
-            style={{
-              color: "red",
-            }}
-          >
-            <span
-              className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
-            >
-              logout
-            </span>
-            {/* <i className={`${styles.exit_icon} `}></i> */}
-            Exit
-          </div>
-        </div>
-      </div>
-      <MeetingManagerComponent />
+      <Outlet
+        context={{
+          ...useEventLayout(),
+          isHost: userdetails?.isHost,
+          EventMessages,
+          userdetails,
+          setEventMessages,
+          RaiseHandUsers,
+          setRaiseHandUsers,
+          useAttendeesList,
+          notificationToast,
+          setnotificationToast,
+          isReactions,
+          setisReactions,
+        }}
+      />
+      {EventData?.type === 2 ? (
+        <TalkshowMenu
+          setRaiseHandUsers={setRaiseHandUsers}
+          RaiseHandUsers={RaiseHandUsers}
+          userdetails={userdetails}
+          isReactions={isReactions}
+          setisReactions={setisReactions}
+          isNewMessage={isNewMessage}
+          setisNewMessage={setisNewMessage}
+        />
+      ) : (
+        <EventMenu
+          setRaiseHandUsers={setRaiseHandUsers}
+          RaiseHandUsers={RaiseHandUsers}
+          userdetails={userdetails}
+        />
+      )}
+
+      <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} />
     </div>
   );
 };

@@ -20,11 +20,12 @@ const ImageEditModal = ({ open, initialFile, onSuccess, onFailure }) => {
     return { Bloburl: URL.createObjectURL(file), Blob: blob };
   }
 
-  function getBase64(file) {
+  function getBase64(fileData) {
+    const file = fileData?.File;
     var reader = new FileReader();
-    reader.readAsDataURL(file);
+    reader?.readAsDataURL(file);
     reader.onload = function () {
-      setInitialValue(reader.result);
+      setInitialValue(reader?.result);
     };
     reader.onerror = function (error) {
       setInitialValue("");

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import classes from "./WaitingRoom.module.css";
-import { ChimesocketListen } from "../../../Services/SocketService";
+import {
+  ChimesendMessage,
+  ChimesocketListen,
+} from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { useMainContext } from "../../../Shared/Context";
 import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
@@ -14,6 +17,7 @@ const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
 
   const handleJoinMeeting = async (message) => {
     const { Attendee, meeting } = message.result;
+
     const meetingSessionConfiguration = new MeetingSessionConfiguration(
       meeting,
       Attendee
@@ -27,6 +31,7 @@ const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
       await meetingManager.start();
       setisWaitingRoom(false);
     } catch (error) {
+      console.log(error);
       toast.error("Unable to Connect The Meeting");
     }
   };

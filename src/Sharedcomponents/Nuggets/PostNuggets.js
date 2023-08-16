@@ -33,7 +33,7 @@ import { useParams } from "react-router";
 import profileImg from "../../Assets/Images/svg/userImg.svg";
 import { isArray } from "lodash";
 
-const PostNuggets = () => {
+const PostNuggets = ({ isUserPostAvailable }) => {
   const { postModalShow, setpostModalShow, PostContent, setPostContent } =
     useGlobalContext();
   const { GetNuggetList, setisNuggetModify } = useListNuggetContext();
@@ -294,157 +294,159 @@ const PostNuggets = () => {
 
   return (
     <PostNuggetContext.Provider value={PostNuggetValues}>
-      <div
-        className={classes.postNuggets}
-        style={{ display: params.key ? "none" : "block" }}
-      >
-        <div className={classes.searchUser}>
-          <div className="d-flex flex-row">
-            <img
-              src={LoginUserData?.profile_image || profileImg}
-              className={classes.profileImg}
-              alt="Post_profileimg"
-              onError={({ currentTarget }) => {
-                currentTarget.onerror = null;
-                currentTarget.src = profileImg;
-              }}
-            />
-            <div
-              className="w-100"
-              onClick={() => {
-                if (isAccountValid(LoginUserData)) {
+      {isUserPostAvailable && (
+        <div
+          className={classes.postNuggets}
+          style={{ display: params.key ? "none" : "block" }}
+        >
+          <div className={classes.searchUser}>
+            <div className="d-flex flex-row">
+              <img
+                src={LoginUserData?.profile_image || profileImg}
+                className={classes.profileImg}
+                alt="Post_profileimg"
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null;
+                  currentTarget.src = profileImg;
+                }}
+              />
+              <div
+                className="w-100"
+                onClick={() => {
+                  if (isAccountValid(LoginUserData)) {
+                    setpostModalShow(true);
+                  } else {
+                    dispatch(
+                      handleprofileVerifyModalShow({
+                        show: true,
+                        msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                      })
+                    );
+                  }
+                }}
+              >
+                <Input
+                  placeholder={`hey ${LoginUserData?.name}, share some nuggets...`}
+                  className={classes.searchbar}
+                  readOnly={true}
+                />
+              </div>
+            </div>
+            <div className={classes.iconSec}>
+              <div
+                className={classes.item}
+                onClick={() => {
+                  if (isAccountValid(LoginUserData)) {
+                    if (VideoRef.current) {
+                      VideoRef.current.click();
+                    }
+                  } else {
+                    dispatch(
+                      handleprofileVerifyModalShow({
+                        show: true,
+                        msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                      })
+                    );
+                  }
+                }}
+              >
+                <img src={cameraIcon} alt="camera_icon" />
+                Video
+                <input
+                  ref={VideoRef}
+                  type="file"
+                  name="file"
+                  multiple
+                  id="nugget_video"
+                  accept="video/mp4"
+                  onClick={(event) => {
+                    event.target.value = null;
+                  }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length !== 0) {
+                      const filterValidFiles = [
+                        ...Array.from(e.target.files),
+                      ].filter((fileInfo) =>
+                        ["audio", "video", "image"].includes(
+                          fileInfo.type.split("/")[0]
+                        )
+                      );
+                      if (filterValidFiles.length !== 0) {
+                        PostNuggetValues.setFileValues(filterValidFiles);
+                      } else {
+                        messageApi.open({
+                          type: "warning",
+                          content: "Please Select Valid File",
+                        });
+                      }
+                    }
+                  }}
+                  style={{ display: "none" }}
+                />
+              </div>
+              <div
+                className={classes.item}
+                onClick={() => {
+                  if (isAccountValid(LoginUserData)) {
+                    if (ImageRef.current) {
+                      ImageRef.current.click();
+                    }
+                  } else {
+                    dispatch(
+                      handleprofileVerifyModalShow({
+                        show: true,
+                        msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
+                      })
+                    );
+                  }
+                }}
+              >
+                <img src={imageIcon} alt="Image_icon" /> Image
+                <input
+                  ref={ImageRef}
+                  type="file"
+                  name="file"
+                  multiple
+                  id="nugget_image"
+                  accept="image/png, image/gif, image/jpeg"
+                  onClick={(event) => {
+                    event.target.value = null;
+                  }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length !== 0) {
+                      const filterValidFiles = [
+                        ...Array.from(e.target.files),
+                      ].filter((fileInfo) =>
+                        ["audio", "video", "image"].includes(
+                          fileInfo.type.split("/")[0]
+                        )
+                      );
+                      if (filterValidFiles.length !== 0) {
+                        PostNuggetValues.setFileValues(filterValidFiles);
+                      } else {
+                        messageApi.open({
+                          type: "warning",
+                          content: "Please Select Valid File",
+                        });
+                      }
+                    }
+                  }}
+                  style={{ display: "none" }}
+                />
+              </div>
+              <div
+                className={classes.item}
+                onClick={() => {
+                  setisPoll(true);
                   setpostModalShow(true);
-                } else {
-                  dispatch(
-                    handleprofileVerifyModalShow({
-                      show: true,
-                      msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                    })
-                  );
-                }
-              }}
-            >
-              <Input
-                placeholder={`hey ${LoginUserData?.name}, share some nuggets...`}
-                className={classes.searchbar}
-                readOnly={true}
-              />
-            </div>
-          </div>
-          <div className={classes.iconSec}>
-            <div
-              className={classes.item}
-              onClick={() => {
-                if (isAccountValid(LoginUserData)) {
-                  if (VideoRef.current) {
-                    VideoRef.current.click();
-                  }
-                } else {
-                  dispatch(
-                    handleprofileVerifyModalShow({
-                      show: true,
-                      msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                    })
-                  );
-                }
-              }}
-            >
-              <img src={cameraIcon} alt="camera_icon" />
-              Video
-              <input
-                ref={VideoRef}
-                type="file"
-                name="file"
-                multiple
-                id="nugget_video"
-                accept="video/mp4"
-                onClick={(event) => {
-                  event.target.value = null;
                 }}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length !== 0) {
-                    const filterValidFiles = [
-                      ...Array.from(e.target.files),
-                    ].filter((fileInfo) =>
-                      ["audio", "video", "image"].includes(
-                        fileInfo.type.split("/")[0]
-                      )
-                    );
-                    if (filterValidFiles.length !== 0) {
-                      PostNuggetValues.setFileValues(filterValidFiles);
-                    } else {
-                      messageApi.open({
-                        type: "warning",
-                        content: "Please Select Valid File",
-                      });
-                    }
-                  }
-                }}
-                style={{ display: "none" }}
-              />
-            </div>
-            <div
-              className={classes.item}
-              onClick={() => {
-                if (isAccountValid(LoginUserData)) {
-                  if (ImageRef.current) {
-                    ImageRef.current.click();
-                  }
-                } else {
-                  dispatch(
-                    handleprofileVerifyModalShow({
-                      show: true,
-                      msg: "You need to complete your account validation before you can do this. Do you want to validate it now?",
-                    })
-                  );
-                }
-              }}
-            >
-              <img src={imageIcon} alt="Image_icon" /> Image
-              <input
-                ref={ImageRef}
-                type="file"
-                name="file"
-                multiple
-                id="nugget_image"
-                accept="image/png, image/gif, image/jpeg"
-                onClick={(event) => {
-                  event.target.value = null;
-                }}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length !== 0) {
-                    const filterValidFiles = [
-                      ...Array.from(e.target.files),
-                    ].filter((fileInfo) =>
-                      ["audio", "video", "image"].includes(
-                        fileInfo.type.split("/")[0]
-                      )
-                    );
-                    if (filterValidFiles.length !== 0) {
-                      PostNuggetValues.setFileValues(filterValidFiles);
-                    } else {
-                      messageApi.open({
-                        type: "warning",
-                        content: "Please Select Valid File",
-                      });
-                    }
-                  }
-                }}
-                style={{ display: "none" }}
-              />
-            </div>
-            <div
-              className={classes.item}
-              onClick={() => {
-                setisPoll(true);
-                setpostModalShow(true);
-              }}
-            >
-              <img src={pollIcon} alt="poll_icon" /> Poll
+              >
+                <img src={pollIcon} alt="poll_icon" /> Poll
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <Postmodal
         visible={postModalShow}

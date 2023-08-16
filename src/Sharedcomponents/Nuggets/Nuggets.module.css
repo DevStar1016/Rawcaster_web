@@ -490,7 +490,8 @@ border-radius: 30px;
   align-items: flex-end;
 }
 .othersnuggetSec {
-  width: 60%;
+  /* width: 60%; */
+  width : calc(100% - 620px);
    height: max-content !important;
 }
 .viewDetailNugget  {
@@ -597,7 +598,7 @@ margin:0 6px;
   justify-content: center;
 }
 .CategorySec  {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 .CategorySec .TabSec {
   display: flex;
@@ -639,6 +640,10 @@ display: none;
     height: calc(100vh - 240px);
     width: 100%;
   } */
+  .backToTop{
+    bottom: 100px;
+    right: 38px;
+  }
 @media (max-width:1100px) {
   .nuggetSec, .resultnuggetSec {
     padding:15px !important;
@@ -649,8 +654,25 @@ display: none;
     position: relative;
 
   }
+  .TabSec p {
+    padding: 0 30px 0 0 !important;
+  }
+  .mainPost>div {
+    padding : 0px 20px
+  }
+  .backToTop{
+    bottom: 130px;
+    right: 34px;
+
+  }
 }
 @media (max-width: 768px) {
+  .viewDetailNugget{
+    margin: 0px;
+  }
+  .mainPost>div {
+    padding : 20px 20px
+  }
   .nuggetSec {
     width: 100%;
     padding: 0 15px 0px 15px;
@@ -771,6 +793,11 @@ display: none;
 }
 @media (max-width:575px) {
   .TabSec p {
-    padding: 0 25px;
-  }  
+    margin:0 16px 0 0 !important;
+    padding-right: 8px !important;
+  } 
+  .inputSec textarea {
+    height: inherit;
+  } 
+
 }

@@ -23,6 +23,7 @@ import {
   handleRemoveReadoutURL,
   handleRemoveTranslate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import { toast } from "react-hot-toast";
 
 const General = () => {
   const {
@@ -51,16 +52,22 @@ const General = () => {
   }, []);
 
   const handleGroupListUpdateService = (key, value, type) => {
-    let finalData = {
-      profile_field_name: key,
-      [key]: type,
-      groupid: JSON.stringify(value),
-    };
-    setValues((pre) => ({
-      ...pre,
-      ...finalData,
-    }));
-    handleupdate(finalData);
+    if (value?.length > 0) {
+      let finalData = {
+        profile_field_name: key,
+        [key]: type,
+        groupid: JSON.stringify(value),
+      };
+      setValues((pre) => ({
+        ...pre,
+        ...finalData,
+      }));
+      handleupdate(finalData);
+    } else {
+      toast.error(
+        `please select atleast one ${type === 3 ? "connection" : "group"}`
+      );
+    }
 
     // grouplistupdateService(JSONtoformdata(finalData))
     //   .then((res) => {
@@ -70,7 +77,25 @@ const General = () => {
     //   })
     //   .catch((err) => {});
   };
+  console.log(userSettings, "userSettings");
 
+  function RemoveDuplicates(data) {
+    // Create a Set to store unique objects
+    let uniqueId = [];
+
+    const uniqueArray = data?.filter((ele, index) => {
+      if (uniqueId?.includes(ele?.language_code)) {
+        uniqueId = [...uniqueId, ele?.language_code];
+
+        return undefined;
+      }
+      uniqueId = [...uniqueId, ele?.language_code];
+      return ele;
+    });
+    console.log(uniqueArray, "uniqueArrayuniqueArrayuniqueArray");
+    return uniqueArray;
+    // Use filter to iterate through the data and add unique objects to the Set
+  }
   return (
     <div>
       <h1>General</h1>
@@ -135,6 +160,7 @@ const General = () => {
               const filteredData = friendsList.filter((elem) =>
                 formikvalues[ele.groupkeyword]?.includes(elem.user_id)
               );
+
               return filteredData.map((ele) => ele.user_id);
             };
 
@@ -146,7 +172,25 @@ const General = () => {
                     defaultValue={formikvalues[ele.keyword]}
                     className={classes.online_status}
                     onChange={(e) => {
-                      setFieldValue([ele.groupkeyword], []);
+                      if (
+                        userSettings[ele.groupkeyword]?.length !== 0 &&
+                        e.target.value === ele.groupid
+                      ) {
+                        setFieldValue(
+                          [ele.groupkeyword],
+                          userSettings[ele.groupkeyword]
+                        );
+                      } else if (
+                        userSettings[ele.groupkeyword]?.length !== 0 &&
+                        e.target.value === ele.friendid
+                      ) {
+                        setFieldValue(
+                          [ele.groupkeyword],
+                          userSettings[ele.groupkeyword]
+                        );
+                      } else {
+                        setFieldValue([ele.groupkeyword], []);
+                      }
                       if (
                         e.target.value === ele.groupid ||
                         e.target.value === ele.friendid
@@ -401,14 +445,16 @@ const General = () => {
                 "id"
               )}
               filterOption={(input, option) =>
-                (option?.label ?? "").includes(input)
+                (option?.label?.toLowerCase() ?? "").includes(
+                  input?.toLowerCase()
+                )
               }
               filterSort={(optionA, optionB) =>
                 (optionA?.label ?? "")
                   .toLowerCase()
                   .localeCompare((optionB?.label ?? "").toLowerCase())
               }
-              options={LanguagesList.read_out}
+              options={RemoveDuplicates(LanguagesList.read_out)}
               onChange={(_, { id }) => {
                 setupdateValue("read_out_language_id", id);
                 dispatch(handleRemoveReadoutURL());

@@ -149,7 +149,7 @@ const PreviewFile = () => {
       ...params,
       Type: "STANDARD",
       Persistence: "PERSISTENT",
-      ChannelArn: GroupDetails?.group_arn,
+      ChannelArn: GroupDetails?.channel_arn,
       ChimeBearer: userData.chime_user_id,
       Content: val,
     };

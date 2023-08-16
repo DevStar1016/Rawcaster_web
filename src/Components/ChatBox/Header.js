@@ -6,9 +6,17 @@ import {
 } from "../../Shared/CommonConstants";
 import { useChatContext, useMainContext } from "../../Shared/Context";
 import { Layout } from "antd";
-import { useAuthData, useFriends, useGroups } from "../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useFriends,
+  useGroups,
+  useNuggets,
+} from "../../Shared/Reduxfetcher";
 import ConfigureGroup from "../Connections/Groups/ConfigureGroup";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { getusetId, handleProfileNavigate } from "../../Shared/Utility";
 
 const Header = () => {
   const { isChatOpen, setisChatOpen } = useMainContext();
@@ -24,7 +32,9 @@ const Header = () => {
   const loginuserData = useAuthData();
   const friends = useFriends();
   const groups = useGroups();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nuggetFormData } = useNuggets();
   const [isConfigureGroup, setisConfigureGroup] = useState({
     show: false,
     group_id: null,
@@ -87,7 +97,8 @@ const Header = () => {
     const GroupMembers = getData()?.group_members_list;
     const withoutCurrentUser = GroupMembers?.filter(
       (ele) =>
-        parseInt(ele?.user_id, 10) !== parseInt(loginuserData.user_id, 10)
+        getusetId(parseInt(ele?.user_id, 10)) !==
+        parseInt(loginuserData.user_id, 10)
     );
     let displayData = "";
 
@@ -142,7 +153,17 @@ const Header = () => {
       <Layout.Header className={classes.chatboxHeader}>
         <div
           onClick={() => {
-            setisConfigureGroup({ show: true, group_id: isChatOpen?.id });
+            if (isChatOpen?.type === "friend") {
+              let finalData = {
+                dispatch,
+                navigate,
+                nuggetFormData,
+                user_id: isChatOpen?.id,
+              };
+              handleProfileNavigate(finalData);
+            } else {
+              setisConfigureGroup({ show: true, group_id: isChatOpen?.id });
+            }
           }}
           className={classes.groupintroSec}
         >

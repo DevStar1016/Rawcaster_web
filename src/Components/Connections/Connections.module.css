@@ -150,6 +150,7 @@ padding: 4px;
     border: 1px dashed #afafaf;
     padding: 0;
     height: 250px;
+    max-height: calc(((100vh - 267px)/2) - 90px) !important;
     margin-top: 10px;
     display: flex;
     justify-content: center;
@@ -417,10 +418,18 @@ right: 0;
 top: 0;
 }
 @media (max-width:1100px) {
-  .connectionsLists { max-height: 228px;}
+  .connectionsLists { max-height: 228px;
+  }
+  .myconnectioin{
+    height: calc((100vh - 300px)/2);
+ float: inherit;
+  }
+   .profileConnectlist{
+    max-height: calc(100% - 120px) !important;
+  }
 }
   @media (max-width:768px) {
   .groupLists { min-height: auto !important; }
-  .myconnectioin { max-height: inherit !important; }
+  .myconnectioin { max-height: inherit !important;     height : calc((100vh - 110px)/2) ;}
   .contactdiv .videoAd { display: none;}
   }

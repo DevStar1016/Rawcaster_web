@@ -2,14 +2,45 @@ import React, { useEffect } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesocketListen } from "../../../Services/SocketService";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { getAttendeesFromMeetingService } from "../../../Services/ApiService";
+import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { JSONtoformdata } from "../../../Shared/Utility";
+import { Button } from "antd";
 
-const MeetingManagerComponent = () => {
-  const { setRequestList, RequestRef } = useLayoutContect();
+const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
+  const token = useAuthToken();
+  const {
+    setRequestList,
+    RequestRef,
+    setattendeesList,
+    attendeesList,
+    EventData,
+    setisFetching,
+    RaiseHandUsers,
+    setnotificationToast,
+    setisChatorParticipant,
+  } = useLayoutContect();
 
   useEffect(() => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
       (user_data) => {
+        setnotificationToast({
+          show: true,
+          msg: `${user_data?.user_name} wants to join this meeting`,
+          title: null,
+          type: null,
+          buttons: [
+            <Button
+              onClick={() => {
+                setisChatorParticipant("participant");
+              }}
+            >
+              View
+            </Button>,
+          ],
+          icon: null,
+        });
         RequestRef.current.push(user_data);
         setRequestList((pre) => [...pre, user_data]);
       }
@@ -18,6 +49,54 @@ const MeetingManagerComponent = () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER);
     };
   }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND, (data) => {
+      if (data.raise_hand) {
+        setRaiseHandUsers((pre) => [...pre, data]);
+      } else {
+        setRaiseHandUsers((pre) =>
+          pre.filter((ele) => ele.user_id !== data?.user_id)
+        );
+      }
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND);
+    };
+  }, [RaiseHandUsers]);
+
+  const getAttendees = () => {
+    const userData = {
+      token,
+      meeting_id: EventData?.chime_meeting_id,
+    };
+    getAttendeesFromMeetingService(JSONtoformdata(userData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          const mergedArray = res.data.data.Attendees.reduce((acc, item) => {
+            const matchingItem = res.data.data.users.find(
+              (el) => parseInt(el.id) === parseInt(item.ExternalUserId)
+            );
+            if (matchingItem) {
+              acc.push({ ...item, ...matchingItem });
+            }
+            return acc;
+          }, []);
+          setattendeesList(mergedArray);
+        } else {
+          setattendeesList([]);
+        }
+      })
+      .finally(() => {
+        setisFetching(false);
+      });
+  };
+
+  useEffect(() => {
+    if (token && EventData?.chime_meeting_id) {
+      getAttendees();
+    }
+  }, [EventData, token]);
 
   return <div></div>;
 };

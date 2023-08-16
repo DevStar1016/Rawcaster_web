@@ -60,9 +60,10 @@ export const getfollowerfollowingService = (fansList) => {
   return promise;
 };
 
-export const getUnclaimedInfluencerData = (token) => {
+export const getUnclaimedInfluencerData = (token, value) => {
   let promise = new Promise((resolve, reject) => {
     let listData = {
+      ...value,
       token: token,
     };
     listClaimAccountService(JSONtoformdata(listData))

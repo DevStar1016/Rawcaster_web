@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import classes from "./Event.module.css";
-import { useDispatch } from "react-redux";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
-import { fetchActiveEventData } from "../../Store/Redux/Action";
 import EventStartModal from "../../Modal/Event/EventStartModal";
 
 const EventHandler = ({ title, isHost, meetingId, ele }) => {
   const [openModal, setopenModal] = useState({ show: false, type: "" });
   const [isLoading, setisLoading] = useState(false);
-  const token = useAuthToken();
-  const dispatch = useDispatch();
   const handleJoinEvent = async (e) => {
     e.stopPropagation();
     if (isHost) {
@@ -44,20 +39,12 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
           isLoading={isLoading}
           onStart={(e) => {
             e.stopPropagation();
+            setisLoading(true);
+            window.open(`/room/${meetingId}`, "_blank", {
+              popup: true,
+            });
+            setisLoading(false);
             setopenModal({ show: false, type: "" });
-            // setisLoading(true);
-            // dispatch(
-            //   fetchActiveEventData({
-            //     token,
-            //     ref_id: meetingId,
-            //   })
-            // ).then(({ payload }) => {
-            //   window.open(`/room/${meetingId}`, "_blank", {
-            //     popup: true,
-            //   });
-            //   setisLoading(false);
-            //   setopenModal({ show: false, type: "" });
-            // });
           }}
         />
       )}

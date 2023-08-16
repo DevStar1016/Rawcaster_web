@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Faq.module.css";
-
+import { Skeleton } from "antd";
 
 const Cookiespolicy = () => {
-  (function (d, s, id) {
+  // (function (d, s, id) {
+  //   var js,
+  //     tjs = d.getElementsByTagName(s)[0];
+  //   if (d.getElementById(id)) {
+  //   }
+  //   js = d.createElement(s);
+  //   js.id = id;
+  //   js.src = "https://app.termly.io/embed-policy.min.js";
+  //   tjs.parentNode.insertBefore(js, tjs);
+  // })(document, "script", "termly-jssdk3");
+
+  const [loader, setLoader] = useState(true);
+  useEffect(() => {
+    getScript(document, "script", "termly-jssdk3");
+  }, []);
+
+  function getScript(d, s, id) {
     var js,
       tjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) {
@@ -12,14 +28,35 @@ const Cookiespolicy = () => {
     js.id = id;
     js.src = "https://app.termly.io/embed-policy.min.js";
     tjs.parentNode.insertBefore(js, tjs);
-  })(document, "script", "termly-jssdk3");
+    window.scrollTo({ top: 0 });
+    const handleIframeMessage = (event) => {
+      if (event.data) {
+        if (typeof event.data === "string") {
+          setLoader(false);
+          window.removeEventListener("message", handleIframeMessage);
+        }
+      }
+    };
+    window.addEventListener("message", handleIframeMessage);
+  }
   return (
-    <div
-    className={classes.termsbg}
-      name="termly-embed"
-      data-id="39acab2c-8f0e-4711-b581-400589ce3866"
-      data-type="iframe"
-    ></div>
+    <div id="privacy">
+      {loader && (
+        // <Spin className={classes.spinner} />
+        <div className={classes.Skeleton}>
+          {[...new Array(10)].map((ele) => {
+            return <Skeleton active />;
+          })}
+        </div>
+      )}
+      <div
+        style={loader ? { maxHeight: "100vh" } : {}}
+        className={classes.termsbg}
+        name="termly-embed"
+        data-id="39acab2c-8f0e-4711-b581-400589ce3866"
+        data-type="iframe"
+      ></div>
+    </div>
   );
 };
 

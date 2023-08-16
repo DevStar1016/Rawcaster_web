@@ -13,7 +13,8 @@
 .upgradeBtn { color: #fff; background: #E26386; border-radius: 12px; font-size: 17px; font-weight: 500; height: 45px; border-radius: 8px; text-align: center; padding-top: 10px; float: left; width: 100%; text-decoration: none; }
 .upgradeBtn:hover { color: #fff; }
 .tabContainer {
-    width: 20%;
+    width: 270px;
+    max-width: 100%;
     margin: auto;
     display: flex;
     flex-direction: row;

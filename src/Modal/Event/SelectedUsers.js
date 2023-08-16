@@ -21,6 +21,12 @@ const SelectedUsers = ({
       footer={null}
       closable
       onCancel={close}
+      className={classes.modalWrapper}
+      style={
+        friends?.length > 4 || Groups?.length > 4
+          ? { height: "calc(100vh - 200px)" }
+          : { height: "auto" }
+      }
       closeIcon={
         <div className={styles.modalCloseIcon}>
           <span className="material-symbols-outlined">close</span>
@@ -36,7 +42,7 @@ const SelectedUsers = ({
           autoComplete="off"
         />
         {type === 2 ? (
-          <div className="mt-3">
+          <div className={`mt-3 ${classes.connectionsContainer}`}>
             {Groups?.length > 0 &&
               Groups?.map((group, index) => {
                 return (
@@ -72,7 +78,7 @@ const SelectedUsers = ({
             {Groups.length === 0 && <Empty />}
           </div>
         ) : (
-          <div className="mt-3">
+          <div className={`mt-3 ${classes.connectionsContainer}`}>
             {friends?.map((friend, index) => {
               return (
                 <div

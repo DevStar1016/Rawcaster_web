@@ -12,6 +12,7 @@ import {
   JSONtoformdata,
   decodeHtml,
   getAuthToken,
+  getusetId,
   utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
@@ -24,6 +25,7 @@ import {
 } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import moment from "moment";
+import { handleNotificationUnreadCount } from "../Reducer/DashboardReducer";
 
 // Connections
 
@@ -173,28 +175,30 @@ export const fetchuserInfobyToken = createAsyncThunk(
     };
     try {
       const { data } = await getProfileService(JSONtoformdata(profileData));
-      const getusetId = () => {
-        switch (data.profile.user_id) {
-          case 88:
-            return 11;
-          case 67:
-            return 22;
-          case 21:
-            return 33;
-          default:
-            return data.profile.user_id;
-        }
-      };
+      // const getusetId = () => {
+      //   switch (data.profile.user_id) {
+      //     case 88:
+      //       return 11;
+      //     case 67:
+      //       return 22;
+      //     case 21:
+      //       return 33;
+      //     default:
+      //       return data.profile.user_id;
+      //   }
+      // };
       if (data.status === 1) {
         const finalData = {
           ...data.profile,
           first_name: decodeHtml(data.profile.first_name),
           last_name: decodeHtml(data.profile.last_name),
           name: decodeHtml(data.profile.name),
-          user_id: getusetId(),
+          user_id: getusetId(data.profile.user_id),
         };
         connectChimeMessaging({ userId: data.profile.chime_user_id });
-
+        dispatch(
+          handleNotificationUnreadCount(data.profile.unread_notification_count)
+        );
         dispatch(handleToken(token));
         dispatch(fetchuserSettingsbyToken(token));
         dispatch(handlenuggetToken(token));

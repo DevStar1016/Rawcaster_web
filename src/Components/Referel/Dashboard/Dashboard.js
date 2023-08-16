@@ -46,69 +46,63 @@ const ReferalDashboard = () => {
       }}
     >
       <div className={classes.fullcontainer}>
-        <Row>
-          <Col sm={3}>
-            <div className={classes.leftFull}>
-              <ReferralsList />
-            </div>
-          </Col>
-          <Col>
-            <div>
-              <ReferContainer />
-            </div>
-          </Col>
-          <Col sm={3}>
-            <div>
-              {userData ? (
-                <div className={classes.proBox}>
-                  <Tooltip
-                    placement="top"
-                    title={
-                      isCopied
-                        ? "Text copied to clipboard"
-                        : "Copy referral link"
-                    }
-                  >
-                    {isCopied ? (
-                      <span
-                        className={`material-symbols-rounded ${classes.copyIcon}`}
-                      >
-                        done
-                      </span>
-                    ) : (
-                      <img
-                        onClick={() => {
-                          handleCopyText(shareUrl).then(() => {
-                            setisCopied(true);
-                          });
-                        }}
-                        className={classes.copyIcon}
-                        src={copyImg}
-                      />
-                    )}
-                  </Tooltip>
-                  <img
-                    style={{ width: "100px", borderRadius: "50px" }}
-                    src={userData.profile_image}
-                  />
+        <div className={classes.leftFull}>
+          <ReferralsList />
+        </div>
 
-                  <Tooltip placement="bottom" title={decodeHtml(userData.name)}>
-                    <p
-                      onClick={() => {
-                        console.log(
-                          decodeHtml(userData.name)?.length,
-                          "decodeHtml(userData.name)"
-                        );
-                      }}
-                      className={classes.name}
-                    >
-                      {decodeHtml(userData.name)?.length > 20
-                        ? `${decodeHtml(userData.name)?.slice(0, 17)}...`
-                        : decodeHtml(userData.name)}
-                    </p>
-                  </Tooltip>
-                  <p className={classes.email}>{userData.email_id}</p>
-                  {/* <div className={classes.userBlockRight}>
+        <div className={classes.dashCenter}>
+          <ReferContainer />
+        </div>
+
+        <div className={classes.rightFull}>
+          {userData ? (
+            <div className={classes.proBox}>
+              <Tooltip
+                placement="top"
+                title={
+                  isCopied ? "Text copied to clipboard" : "Copy referral link"
+                }
+              >
+                {isCopied ? (
+                  <span
+                    className={`material-symbols-rounded ${classes.copyIcon}`}
+                  >
+                    done
+                  </span>
+                ) : (
+                  <img
+                    onClick={() => {
+                      handleCopyText(shareUrl).then(() => {
+                        setisCopied(true);
+                      });
+                    }}
+                    className={classes.copyIcon}
+                    src={copyImg}
+                  />
+                )}
+              </Tooltip>
+              <img
+                style={{ width: "100px", borderRadius: "50px" }}
+                src={userData.profile_image}
+              />
+
+              <Tooltip placement="bottom" title={decodeHtml(userData.name)}>
+                <p
+                  onClick={() => {
+                    console.log(
+                      decodeHtml(userData.name)?.length,
+                      "decodeHtml(userData.name)"
+                    );
+                  }}
+                  className={classes.name}
+                >
+                  {decodeHtml(userData.name)?.length > 20
+                    ? `${decodeHtml(userData.name)?.slice(0, 17)}...`
+                    : decodeHtml(userData.name)}
+                </p>
+              </Tooltip>
+              <p className={classes.email}>{userData.email_id}</p>
+              {/* <div className={classes.userBlockRight}>
                     <Tooltip title="Events">
                       <div className={classes.eventBtn}>
                         <i className="material-icons">local_activity</i>
@@ -137,12 +131,10 @@ const ReferalDashboard = () => {
                       </div>
                     </Tooltip>
                   </div> */}
-                </div>
-              ) : null}
-              <Connections referral={true} maxHeight={"50vh"} />
             </div>
-          </Col>
-        </Row>
+          ) : null}
+          <Connections referral={true} maxHeight={"50vh"} />
+        </div>
       </div>
     </ReferalContext.Provider>
   );

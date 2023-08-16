@@ -152,65 +152,88 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         .mixed()
         .test("Event Melody test", "Please Upload Media", function (value) {
           const { event_melody_id } = this.parent;
-          if (parseInt(event_melody_id) === 0 && value !== "") {
+          if (parseInt(event_melody_id) === 0 && !value) {
             return false;
           }
           return true;
         }),
-      event_invite_friends: yup
-        .string()
-        .test(
-          "Invite Friends Test",
-          "Please Select Connections",
-          function (value) {
-            const { event_type, event_invite_mails, event_invite_groups } =
-              this.parent;
-            if (parseInt(event_type) === 2) {
-              if (!event_invite_mails && !event_invite_groups) {
-                return value;
-              } else if (
-                JSON.parse(event_invite_mails).length === 0 &&
-                JSON.parse(event_invite_groups).length === 0
-              ) {
-                return value;
-              }
-            }
-            return true;
-          }
-        ),
-      event_invite_groups: yup
-        .string()
-        .test("Invite Groups Test", "Please Select Groups", function (value) {
-          const { event_type, event_invite_mails, event_invite_friends } =
-            this.parent;
-          if (parseInt(event_type) === 2) {
-            if (!event_invite_mails && !event_invite_friends) {
-              return value;
-            } else if (
-              JSON.parse(event_invite_mails).length === 0 &&
-              JSON.parse(event_invite_friends).length === 0
-            ) {
-              return value;
-            }
-          }
+      event_invite_friends: yup.string(),
+      // .test(
+      //   "Invite Friends Test",
+      //   "Please Select Connections",
+      //   function (value) {
+      //     const { event_type, event_invite_mails, event_invite_groups } =
+      //       this.parent;
+      //     if (parseInt(event_type) === 2) {
+      //       if (!event_invite_mails && !event_invite_groups) {
+      //         return value;
+      //       } else if (
+      //         JSON.parse(event_invite_mails).length === 0 &&
+      //         JSON.parse(event_invite_groups).length === 0
+      //       ) {
+      //         return value;
+      //       }
+      //     }
+      //     return true;
+      //   }
+      // ),
+      event_invite_groups: yup.string(),
+      // .test("Invite Groups Test", "Please Select Groups", function (value) {
+      //   const { event_type, event_invite_mails, event_invite_friends } =
+      //     this.parent;
+      //   if (parseInt(event_type) === 2) {
+      //     if (!event_invite_mails && !event_invite_friends) {
+      //       return value;
+      //     } else if (
+      //       JSON.parse(event_invite_mails).length === 0 &&
+      //       JSON.parse(event_invite_friends).length === 0
+      //     ) {
+      //       return value;
+      //     }
+      //   }
 
-          return true;
-        }),
+      //   return true;
+      // }),
       event_invite_mails: yup
         .string()
         .test("Mail Test", "Please Enter Invite Users", function (value) {
           const { event_type, event_invite_friends, event_invite_groups } =
             this.parent;
+          console.log(
+            typeof event_invite_friends,
+            event_invite_friends,
+            typeof event_invite_groups,
+            event_invite_groups,
+            event_type,
+            value,
+            "event_invite_friendsevent_invite_friends"
+          );
           if (parseInt(event_type) === 2) {
-            if (!event_invite_friends && !event_invite_groups) {
-              return value;
-            } else if (
-              JSON.parse(event_invite_friends).length === 0 &&
-              JSON.parse(event_invite_groups).length === 0
-            ) {
-              return value;
+            if (value && JSON.parse(value)?.length > 0) {
+              return true;
+            } else if (event_invite_friends && event_invite_groups) {
+              if (
+                JSON.parse(event_invite_friends)?.length > 0 ||
+                JSON.parse(event_invite_groups)?.length > 0
+              ) {
+                return true;
+              }
+              return false;
+            } else if (event_invite_groups) {
+              if (JSON.parse(event_invite_groups)?.length > 0) {
+                return true;
+              }
+              return false;
+            } else if (event_invite_friends) {
+              if (JSON.parse(event_invite_friends)?.length > 0) {
+                return true;
+              }
+              return false;
             }
+            console.log("return false");
+            return false;
           }
+          console.log("return overallfalse");
           return true;
         }),
     }),
@@ -317,12 +340,18 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_start_date: utcDateTime.format("YYYY-MM-DD"),
       event_start_time: utcDateTime.format("HH:mm"),
       event_invite_mails: values?.event_invite_mails?.includes("[")
-        ? JSON.parse(values?.event_invite_mails)?.join(",")
+        ? JSON.parse(values?.event_invite_mails)?.length > 0
+          ? JSON.parse(values?.event_invite_mails)?.join(",")
+          : values?.event_invite_mails
         : values?.event_invite_mails,
-      delete_invite_mails: values.delete_invite_mails?.join(","),
+      delete_invite_mails: values?.delete_invite_mails?.includes("[")
+        ? JSON.parse(values?.delete_invite_mails)?.length > 0
+          ? JSON.parse(values?.delete_invite_mails)?.join(",")
+          : values?.delete_invite_mails
+        : values?.delete_invite_mails,
     };
+    console.log("editandupdate api");
 
-    console.log(liveEventData, "liveEventDataliveEventData");
     function isFile(obj) {
       return (
         obj &&
@@ -884,6 +913,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     isCustomize={true}
                     value={values.event_melody_id}
                     onResult={(val) => {
+                      if (parseInt(val.id) === 0) {
+                        setFieldValue("event_melody", "");
+                      }
                       setFieldValue("event_melody_id", val.id);
                     }}
                   />
@@ -920,7 +952,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     <p className="ErrTxt mb-3">{errors?.event_melody}</p>
                   )}
                   <div>
-                    {values.event_melody !== "" ? (
+                    {values.event_melody !== "" && values?.event_melody ? (
                       <span>
                         {values.event_melody?.name}{" "}
                         <span

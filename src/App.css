@@ -582,13 +582,22 @@ margin-bottom: 12px !important;
   padding-top: 20px !important;
 }
 .onlyMob {
-  display: none;
+  display: none !important;
 }
 .influencerProgress .ant-progress-inner {
   width: 73px !important;
     height: 73px !important;
     font-size: 16px !important;
 
+}
+.meetingDrawer .ant-drawer-body {
+padding: 0px !important;
+}
+.eventContainer .ant-drawer-content-wrapper {
+  height: 75% !important;
+}
+.ant-drawer-content-wrapper {
+  height: auto !important;
 }
 .claimrequestModal .ant-modal-content {
   padding: 0px !important;
@@ -620,12 +629,37 @@ margin-bottom: 12px !important;
   } */
 
 
-
+  .ant-slider-horizontal  {
+    width: 100%;
+  }
+  .ant-notification-notice {
+    padding: 10px !important;
+  }
+  .ant-notification-notice-message {
+    margin-bottom: 4px !important;
+  }
+  .eventpopupContainer {
+    bottom: 80px !important;
+   
+  }
+  .eventpopupContainer .toast {
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+  .ch-nameplate {
+    background:none !important;
+    backdrop-filter:unset !important
+  }
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
-  .onlydes { display: none; } 
+  .onlydes { display: none !important; } 
   .onlyMob {
-    display: block;
+    display: block !important;
+  }
+  .eventContainer .ant-drawer-content-wrapper {
+    height: 75% !important;
   }
   .ant-modal-close-x { width: 30px; height: 30px; border-radius: 50px; display: flex; align-items: center; line-height: 16px !important; }
   .anticon-close svg { font-size: 12px; margin-top: -2px; }

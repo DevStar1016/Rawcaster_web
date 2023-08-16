@@ -24,12 +24,12 @@ border-bottom-right-radius: 10px;
 }
 .footerSec,.chatFooterSec {
  
-  padding: 20px 0px !important;
+  padding: 0px 0px !important;
   padding-bottom: 0px !important;
 }
 .popupContainer {
     width: 100%;
-     height: 86vh;
+    height: 88vh;
      background-color: #ffffff1a !important;
      border-radius: 10px;
    }
@@ -125,9 +125,8 @@ border-bottom-right-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 10%;
   width: 100%;
-  padding-top: 10px;
+  margin: 10px 0;
 }
 .inviteContainer .inviteBtn {
   text-align: center;
@@ -209,8 +208,20 @@ padding: 4px;
   border: none !important;
   box-shadow: none !important;
 }
+.participantSearch {
+  border-top-left-radius: 15px !important; 
+  height: 35px !important;
+  border-bottom-left-radius: 15px !important;
+margin-left: 10px;
+}
 .searchIcon { cursor: pointer; text-align: center; margin-left: -15px !important; z-index: 7; border-radius: 50px !important; background: #F2718D !important; width:45px;height: 45px; }
 .searchIcon span {color: #fff; }
+.participantSearchIcon {
+  height: 35px !important;
+  border-radius: 40px;
+  margin-right: 10px;
+}
+
 .SendIcon { 
   color: #C4C4C4;
 }
@@ -233,7 +244,19 @@ padding: 4px;
  color: #FFFFFF;
 }
 .usermessageContainer {
- justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+ float: right;
+}
+.messageContainer .privateuser {
+  display: none;
+}
+.usermessageContainer .privateuser  {
+  display: block;
+}
+.privateuser {
+  font-size: 12px;
+  margin-right: 5px;
 }
 .message {
   display: flex;
@@ -256,7 +279,7 @@ background-color:#f2718d64 ;
   background-color: #fff;
   border-radius: 35px;
   padding-top: 2px;
-  margin-right: 10px;
+  margin-right: 7px;
 }
 .messagesec {
   margin:0 5px;
@@ -302,7 +325,7 @@ background-color:#f2718d64 ;
 
 }
 .messagesec span {
-
+opacity: 0.8;
   font-weight: 500;
   
   }
@@ -311,4 +334,71 @@ background-color:#f2718d64 ;
     align-items: center;
     justify-content: center;
     margin-bottom: 5px;
+  }
+  .speakerContainer {
+    display: flex;
+    justify-content: end;
+    background: #ffffff1a  !important
+  }
+  .speakerSec {
+
+ margin-right: 10px;
+
+    
+  }
+  .speakerSec {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .memberSec {
+    margin:5px 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: fit-content;
+    color: #FFFFFF !important;
+  }
+  .memberSec span {
+    margin-left: 5px;
+  }
+  .memberSec svg {
+    fill: #FFFFFF !important;
+  }
+  .talkshowPopup {
+    height: 95vh !important;
+  }
+  .videosmallIcon {
+    width: 25px !important;
+    height: 25px !important;
+    cursor: pointer;
+    margin-bottom: 0px !important;
+    margin-right: 0px !important;
+}
+.micsmallIcon {
+  width: 19px !important;
+  height: 19px !important;
+  cursor: pointer;
+  margin-left: 5px;
+  margin-bottom: 0px !important;
+}
+.speakersmallIcon {
+  width: 19px !important;
+  height: 19px !important;
+  cursor: pointer;
+  margin-bottom: 0px !important;
+  margin-left: 3px;
+}
+.moreIcon {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+  @media (max-width:768px) { 
+
+    .popupContainer {
+      height: 70vh;
+    }
   }

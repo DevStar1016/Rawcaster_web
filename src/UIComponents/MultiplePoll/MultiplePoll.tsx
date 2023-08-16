@@ -16,6 +16,15 @@ import {
 import styles from "./Multiplepoll.module.css";
 import { getCookieData } from "../../Store/Storage";
 
+type prop = {
+  nugget_id: number;
+  results: Array<any>;
+  isVoted?: boolean;
+  isVotedId: boolean;
+  VoteTiming: string;
+  TotalVotes?: any;
+  created_date: any;
+};
 const MultiplePoll = ({
   nugget_id,
   results,
@@ -24,7 +33,7 @@ const MultiplePoll = ({
   VoteTiming,
   TotalVotes = 0,
   created_date,
-}) => {
+}: prop) => {
   const [pollVotedData, setpollVotedData] = useState({
     isVoted: false,
     votedOptionID: "",
@@ -38,7 +47,7 @@ const MultiplePoll = ({
     return votedId ? parseInt(TotalVotes) + 1 : TotalVotes;
   };
 
-  const getPollOptions = (votedId = pollVotedData.votedOptionID) => {
+  const getPollOptions = (votedId: any = pollVotedData.votedOptionID): any => {
     let tempPollOptions = [...results].map((item) => {
       let votes = item.votes;
       if (votedId === item.option_id) {
@@ -82,8 +91,8 @@ const MultiplePoll = ({
       const momenttimezone = require("moment-timezone");
       const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
       const now = moment(currentTime, "YYYY-MM-DD HH:mm:ss");
-
-      let timeDiff = utcString - now;
+      //@ts-ignore
+      let timeDiff: number = utcString - now;
       let dur = moment.duration(timeDiff);
       const remainingDays = dur.days();
       const remainingHours = dur.hours();
@@ -119,7 +128,7 @@ const MultiplePoll = ({
     return true;
   };
 
-  const handlePoll = (item) => {
+  const handlePoll = (item: any, index: number) => {
     let pollData = {
       token: Token,
       nugget_id: nugget_id,
@@ -152,16 +161,16 @@ const MultiplePoll = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, userSettings, isVoted]);
 
-  function animateAnswers(index, id) {
-    const getValidPercentage = (val) => {
+  function animateAnswers(index: number, id?: any) {
+    const getValidPercentage = (val: any) => {
       if (parseInt(val) > 100) {
         return 100;
       } else {
         return parseInt(val);
       }
     };
-    const answers = [];
-    let restOfAnswers = [];
+    const answers: any[] = [];
+    let restOfAnswers: any[] = [];
 
     for (const result of getPollOptions(id)) {
       if (index !== undefined) {
@@ -170,7 +179,7 @@ const MultiplePoll = ({
         restOfAnswers = getPollOptions(id);
       }
       const findIndex = getPollOptions(id).findIndex(
-        (ele) => ele.option_id === result.option_id
+        (ele: any) => ele.option_id === result.option_id
       );
       const answerBuffer = answerRefs?.current[findIndex]?.current;
       answerBuffer && answers.push(answerBuffer);
@@ -194,7 +203,7 @@ const MultiplePoll = ({
         answers[index].style.width = `${parseInt(
           getPollOptions(id)[index].option_percentage
         )}%`;
-        if (theme?.mainColor) answers[index].style.background = theme?.activeBg;
+        // if (theme?.mainColor) answers[index].style.background = theme?.activeBg;
       }
     }
 
@@ -224,7 +233,7 @@ const MultiplePoll = ({
   return (
     <>
       <article className={styles.container}>
-        {getPollOptions().map((result, index) => (
+        {getPollOptions().map((result: any, index: number) => (
           <div
             key={result.option_id}
             role="button"
@@ -245,7 +254,7 @@ const MultiplePoll = ({
                 if (getRawcaserToken()) {
                   if (isAccountValid(LoginUserData)) {
                     setTimeout(() => {
-                      animateAnswers(-1, result.option_id);
+                      animateAnswers(-1, result?.option_id);
                     }, 1000);
                     setpollVotedData({
                       isVoted: true,

@@ -5,7 +5,11 @@ import classes from "./Groups.module.css";
 import { useFormik } from "formik";
 import { toast } from "react-hot-toast";
 import * as yup from "yup";
-import { JSONtoformdata, filterValidObject } from "../../../Shared/Utility";
+import {
+  JSONtoformdata,
+  filterValidObject,
+  getusetId,
+} from "../../../Shared/Utility";
 import {
   useAuthData,
   useAuthToken,
@@ -163,14 +167,16 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       if (findData?.locked !== 1) {
         let members = [...findData?.group_members_list];
         let findUser = members.findIndex(
-          (ele) => parseInt(ele.user_id) === parseInt(userData?.user_id)
+          (ele) =>
+            getusetId(parseInt(ele.user_id)) === parseInt(userData?.user_id)
         );
         if (findUser !== -1) {
           let removedObj = members.splice(findUser, 1)[0];
           members.splice(0, 0, removedObj);
           setGroupMembers(members);
           setisOwner(
-            parseInt(findData?.group_owner) === parseInt(userData?.user_id)
+            getusetId(parseInt(findData?.group_owner)) ===
+              parseInt(userData?.user_id)
           );
         }
         setValues((pre) => ({

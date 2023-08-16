@@ -11,7 +11,7 @@ const AuthLayout = ({ children }) => {
     <>
       <Layout>
         <div className={`${classes.topbar}`}>
-          <Menu  mode="horizontal">
+          <Menu mode="horizontal">
             <Menu.Item key="join">
               <a to="/joinmeeting">Join a meeting</a>
             </Menu.Item>

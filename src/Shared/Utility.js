@@ -1,4 +1,3 @@
-import { SALT_KEY } from "../Services/ServiceConstants";
 import Geocode from "react-geocode";
 import {
   AES_KEY,
@@ -14,12 +13,11 @@ import {
 } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Linkify from "linkify-react";
 import LinkOpenModal from "../Modal/Verification/LinkOpenModal";
 import moment from "moment";
 import { getTimezone } from "countries-and-timezones";
-import { useLayoutEffect } from "react";
 import moment1 from "moment-timezone";
 import {
   handleNuggetFormData,
@@ -31,6 +29,7 @@ import axios, { isCancel } from "axios";
 import { toast } from "react-hot-toast";
 import { AES, enc } from "crypto-js";
 import classes from "../Sharedcomponents/Nuggets/Nuggets.module.css";
+import { SALT_KEY } from "../Services/APIkeyID";
 
 // Auth
 
@@ -386,7 +385,7 @@ export function isValidImageFile(file) {
 
   const reader = new FileReader();
 
-  reader.readAsDataURL(file);
+  reader?.readAsDataURL(file);
 
   return new Promise((resolve, reject) => {
     reader.onload = () => {
@@ -521,6 +520,7 @@ export const ErrorHandling = (error) => {
     } else if (error.request) {
       handleErrorMsg("Unable to connect to the server !", resolve);
     } else {
+      console.log("something went wrong");
       handleErrorMsg("Something went Wrong!", resolve);
     }
   });
@@ -843,4 +843,26 @@ export const DecryptStringToObject = (encryptedString, secretKey = AES_KEY) => {
   const decryptedString = decryptedBytes.toString(enc.Utf8);
   const decryptedObject = JSON.parse(decryptedString);
   return decryptedObject;
+};
+
+// Testing
+export const getusetId = (user_id) => {
+  switch (user_id) {
+    case 88:
+      return 11;
+    case 67:
+      return 22;
+    case 21:
+      return 33;
+    case 728:
+      return 44;
+    case 164:
+      return 55;
+    case 684:
+      return 66;
+    case 682:
+      return 77;
+    default:
+      return user_id;
+  }
 };

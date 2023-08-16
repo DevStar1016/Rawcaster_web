@@ -106,12 +106,10 @@ const Viewevent = () => {
           </div>
           <div>
             <div className={classes.eventHost}>
-              <div>
-                <img
-                  src={ViewEventData.original_user_image}
-                  alt={decodeHtml(ViewEventData.original_user_name)}
-                ></img>
-              </div>
+              <img
+                src={ViewEventData.original_user_image}
+                alt={decodeHtml(ViewEventData.original_user_name)}
+              />
               <Tooltip
                 placement="bottom"
                 title={decodeHtml(ViewEventData.original_user_name)}

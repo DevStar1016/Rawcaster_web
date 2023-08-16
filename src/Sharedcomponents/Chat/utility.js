@@ -27,7 +27,7 @@ import {
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
 import { Checkbox, Dropdown, Image, Radio, Tooltip, message } from "antd";
-import { useChatContext } from "../../Shared/Context";
+import { useChatBotContext, useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { uploadChatAttachmentService } from "../../Services/ApiService";
@@ -50,6 +50,7 @@ export const ChatInput = ({
   onEdit,
 }) => {
   const token = useAuthToken();
+  const BotContext = useChatBotContext();
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
   });
@@ -71,6 +72,7 @@ export const ChatInput = ({
   const loginUserData = useAuthData();
   const isSend = useRef(null);
   const [isChatContentValid, setisChatContentValid] = useState(true);
+  const [audioDeleted, setAudioDeleted] = useState(false);
   const onRecordStart = () => {
     setIsRecording(true);
     reset();
@@ -94,12 +96,17 @@ export const ChatInput = ({
   }, [value]);
 
   const onRecordStop = (url, blob) => {
+    console.log(isSend.current, "getintomediabloburl issend");
     if (isSend.current) {
-      const file = new File([blob], "blobtofile.mp3", {
-        type: blob.type,
+      // console.log(blob.type, "blob.typeblob.type");
+      // const file = new File([blob], "blobtofile.mp3", {
+      //   type: blob.type,
+      // });
+      const audioFile = new File([mediaBlobUrl], "blobtofile.mp3", {
+        type: "audio/wav",
       });
-      fetchAudioUrl(file);
-    } else {
+      fetchAudioUrl(audioFile);
+    } else if (!audioDeleted) {
       const audio = new Audio(url);
 
       setAudioElement(audio);
@@ -108,14 +115,24 @@ export const ChatInput = ({
   };
 
   const handleClose = () => {
+    clearBlobUrl();
+    reset();
     pause();
+    AudioElement?.pause();
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.stop();
+        stream.getTracks().forEach((track) => track.stop());
+        clearBlobUrl();
+        AudioElement?.pause();
+        stopRecording();
       })
-      .catch((error) => {});
+      .catch((error) => {
+        AudioElement?.pause();
+        stopRecording();
+      });
   };
 
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
@@ -124,7 +141,7 @@ export const ChatInput = ({
       stopStreamsOnStop: true,
 
       onStart: onRecordStart,
-      onStop: onRecordStop,
+      // onStop: onRecordStop,
     });
 
   const handleAllowMicPermission = () => {
@@ -169,6 +186,12 @@ export const ChatInput = ({
     recordingRef.current = status;
   }, [status]);
 
+  useEffect(() => {
+    if (mediaBlobUrl) {
+      onRecordStop(mediaBlobUrl);
+    }
+  }, [mediaBlobUrl]);
+
   const getNuggetTextLength = () => {
     if (loginUserData) {
       return loginUserData?.nugget_content_length;
@@ -211,6 +234,16 @@ export const ChatInput = ({
         setIsRecording(false);
       });
   };
+
+  useEffect(() => {
+    if (!BotContext?.isChatOpen) {
+      setAudioDeleted(true);
+      setAudioElement(null);
+      handleClose();
+      setIsRecording(false);
+      stopRecording();
+    }
+  }, [BotContext?.isChatOpen]);
   return (
     <>
       {!isChatContentValid && (
@@ -407,6 +440,8 @@ export const ChatInput = ({
                 <i
                   className={classes.mic_icon}
                   onClick={() => {
+                    setAudioElement(null);
+                    setAudioDeleted(false);
                     handleAllowMicPermission();
                   }}
                 />
@@ -506,8 +541,12 @@ export const ChatInput = ({
             <span
               className={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
+                console.log("resetted");
+                setAudioDeleted(true);
+                setAudioElement(null);
                 handleClose();
-                clearBlobUrl();
+                setIsRecording(false);
+                stopRecording();
               }}
             >
               delete

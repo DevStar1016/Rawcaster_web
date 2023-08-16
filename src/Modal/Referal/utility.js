@@ -5,6 +5,7 @@ import { useAuthToken } from "../../Shared/Reduxfetcher";
 import classes from "./Referal.module.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useEffect, useRef } from "react";
 
 export const handleSendEmail = (token, contacts) => {
   let promise = new Promise((resolve, reject) => {
@@ -29,7 +30,7 @@ export const handleSendEmail = (token, contacts) => {
 
 export const EmailReferalContainer = ({ close }) => {
   const token = useAuthToken();
-
+  const inputref = useRef(null);
   const {
     values,
     setFieldValue,
@@ -67,10 +68,13 @@ export const EmailReferalContainer = ({ close }) => {
   };
 
   const handleCloseTag = (index) => {
-    setValues((pre) => ({
-      ...pre,
-      EmailList: pre.EmailList.filter((ele, ind) => !(ind === index)),
-    }));
+    setValues((pre) => {
+      const temp = { ...pre };
+      const tempEmaillist = temp?.EmailList?.filter(
+        (item, ind) => ind !== index
+      );
+      return { emailInput: "", EmailList: tempEmaillist };
+    });
   };
 
   const addExtMailHandler = (data) => {
@@ -96,6 +100,10 @@ export const EmailReferalContainer = ({ close }) => {
       }));
     }
   };
+
+  useEffect(() => {
+    inputref.current.focus();
+  }, [values?.EmailList]);
   return (
     <div className={classes.centerSec}>
       <img
@@ -114,7 +122,7 @@ export const EmailReferalContainer = ({ close }) => {
             handleSubmit();
           }}
         >
-          <Form.Item name="email" className="errormsg">
+          <Form.Item className="errormsg">
             {values.EmailList.map((ele, ind) => (
               <Tag
                 key={ind}
@@ -132,8 +140,15 @@ export const EmailReferalContainer = ({ close }) => {
               placeholder="Your friend’s email..."
               autoComplete="off"
               id="extmail"
-              value={values.emailInput}
-              onChange={(e) => setFieldValue("emailInput", e.target.value)}
+              name="emailInput"
+              ref={inputref}
+              value={values.emailInput ? values.emailInput : ""}
+              onClick={() => {
+                console.log(values.emailInput, "values.emailInput");
+              }}
+              onChange={(e) => {
+                setFieldValue("emailInput", e.target.value);
+              }}
               onKeyPress={(e) => {
                 const x = e.keyCode || e.which;
                 // alert(x);
@@ -147,7 +162,11 @@ export const EmailReferalContainer = ({ close }) => {
               }}
             />
             {touched.EmailList && errors.EmailList && (
-              <div className="ErrTxt">{errors.EmailList}</div>
+              <div className="ErrTxt">
+                {errors.EmailList?.includes("Please input your valid email")
+                  ? "Please input your valid email"
+                  : errors.EmailList}
+              </div>
             )}
           </Form.Item>
           <Form.Item>

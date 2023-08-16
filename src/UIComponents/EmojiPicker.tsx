@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import { Picker } from "emoji-mart";
+import { EmojiPickerProps } from "../types/UIComponents";
 
-const EmojiPicker = (props) => {
+const EmojiPicker = (props: EmojiPickerProps) => {
   const ref = useRef(null);
-  const instance = useRef(null);
+  const instance = useRef<any>(null);
 
   if (instance.current) {
-    instance.current.update(props);
+    instance.current?.update(props);
   }
 
   useEffect(() => {
     instance.current = new Picker({ ...props, ref });
-
     return () => {
       instance.current = null;
     };

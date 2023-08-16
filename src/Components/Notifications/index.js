@@ -3,7 +3,11 @@ import React, { useEffect } from "react";
 import Header from "./Header";
 import ContentLayout from "./ContentLayout";
 import { useState } from "react";
-import { JSONtoformdata, filterValidObject } from "../../Shared/Utility";
+import {
+  JSONtoformdata,
+  detectMob,
+  filterValidObject,
+} from "../../Shared/Utility";
 import { ViewNotificationService } from "../../Services/ApiService";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
@@ -84,21 +88,23 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
           trigger="click"
           align="end"
         >
-          <Badge count={UnReadCount} overflowCount={99} color="#F2718D">
-            <img
-              src={src}
-              alt="Notification_logo"
-              className={className}
-              onClick={() => {
-                if (!isPopupOpen) {
-                  dispatch(
-                    fetchNotificationList({ token, notification_type: 5 })
-                  );
-                }
-                setisPopupOpen(!isPopupOpen);
-              }}
-            />
-          </Badge>
+          {!detectMob() && (
+            <Badge count={UnReadCount} overflowCount={99} color="#F2718D">
+              <img
+                src={src}
+                alt="Notification_logo"
+                className={className}
+                onClick={() => {
+                  if (!isPopupOpen) {
+                    dispatch(
+                      fetchNotificationList({ token, notification_type: 5 })
+                    );
+                  }
+                  setisPopupOpen(!isPopupOpen);
+                }}
+              />
+            </Badge>
+          )}
         </Popover>
       </div>
       <div className="onlyMob">

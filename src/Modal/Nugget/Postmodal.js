@@ -312,7 +312,7 @@ const Postmodal = ({ visible, onClose }) => {
               type="file"
               name="file"
               id="post_nugget_image"
-              multiple
+              multiple={!isEdit}
               accept="image/png, image/gif, image/jpeg"
               onClick={(event) => {
                 event.target.value = null;
@@ -356,7 +356,7 @@ const Postmodal = ({ visible, onClose }) => {
               name="file"
               id="post_nugget_video"
               accept="video/mp4"
-              multiple
+              multiple={!isEdit}
               onClick={(event) => {
                 event.target.value = null;
               }}

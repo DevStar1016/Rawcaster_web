@@ -1,30 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import classes from "./EventBox.module.css";
+import styles from "../../Events/Components/Menu.module.css";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
-import { useMainContext } from "../../../Shared/Context";
 import {
   ContentShare,
   LocalVideo,
   RemoteVideo,
   useAttendeeStatus,
-  useAudioVideo,
   useContentShareState,
   useLocalVideo,
   useMeetingManager,
   useRemoteVideoTileState,
   useRosterState,
+  useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { Alert, Drawer, Spin, Tooltip } from "antd";
+import { Toast, ToastContainer } from "react-bootstrap";
+import Reactions from "../Components/Reactions";
+import CommentBox from "./CommentBox";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  CameraComponent,
+  LocalCameraComponent,
+  LocalMicrophoneComponent,
+  MicrophoneComponent,
+} from "../Components/Utility";
 
 const EventBox = () => {
+  const userData = useAuthData();
+  const { isVideoEnabled } = useLocalVideo();
+  const {
+    isPinEnabled,
+    isChatorParticipant,
+    isReactions,
+    isFetching,
+    isHost,
+    notificationToast,
+    setnotificationToast,
+    attendeesList,
+    RaiseHandUsers,
+  } = useLayoutContect();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
-  const { isVideoEnabled } = useLocalVideo();
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
-  const { isPinEnabled, isChatorParticipant } = useLayoutContect();
+
   const getContainerClassName = () => {
     switch (attendees.length) {
       case 1:
@@ -50,45 +73,196 @@ const EventBox = () => {
     }
   };
 
+  const EventBoxOptions = ({ isYou, ele }) => {
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+    );
+
+    return (
+      <div className={classes.eventMenu}>
+        <div className={classes.eventOption}>
+          <Tooltip placement="topLeft" title={"Enable Mic"}>
+            <div
+              className={classes.iconSec}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {isYou ? (
+                <LocalMicrophoneComponent ref={null} className={classes.icon} />
+              ) : (
+                <MicrophoneComponent
+                  ele={ele}
+                  attendee={findAttendee}
+                  isHost={isHost}
+                  className={classes.icon}
+                />
+              )}
+            </div>
+          </Tooltip>
+          <Tooltip placement="topLeft" title={"Enable Video"}>
+            <div
+              className={classes.iconSec}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {isYou ? (
+                <LocalCameraComponent
+                  ref={null}
+                  setselectedDevice={null}
+                  selectedDevice={null}
+                  className={classes.icon}
+                />
+              ) : (
+                <CameraComponent
+                  ele={ele}
+                  attendee={findAttendee}
+                  isHost={isHost}
+                  className={classes.icon}
+                />
+              )}
+            </div>
+          </Tooltip>
+          {!isYou && (
+            <Tooltip placement="topLeft" title={"Remove user"}>
+              <div
+                className={`${isHost ? "" : classes.disabledIcon} ${
+                  classes.iconSec
+                }`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  class="material-symbols-outlined"
+                  style={{
+                    color: !isHost ? "grey" : "",
+                  }}
+                >
+                  cancel
+                </span>
+              </div>
+            </Tooltip>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const CustomNamePlate = ({ ele }) => {
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+    );
+    const { muted, videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
+    const find_raise_hand = RaiseHandUsers.find(
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+    );
+    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.id);
+    return (
+      <div>
+        <div className={classes.customNamePlate}>
+          {muted ? (
+            <i className={classes.name_plate_mic_off_icon}></i>
+          ) : (
+            <i className={classes.name_plate_mic_on_icon}></i>
+          )}
+          {`${findAttendee.name} ${isYou ? "(You)" : ""}`}
+        </div>
+        {find_raise_hand && (
+          <div className={classes.isRaiseHand}>
+            <i className={classes.raise_hand_active_icon}></i>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const GetDisplayComponent = ({ ele }) => {
-    const { muted, videoEnabled, sharingContent, signalStrength } =
-      useAttendeeStatus(ele.chimeAttendeeId);
-    if (videoEnabled || isVideoEnabled) {
-      const value = attendeeIdToTileId[ele.chimeAttendeeId];
-      if (value) {
+    const findAttendee = attendeesList.find(
+      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+    );
+    const value = attendeeIdToTileId[ele.chimeAttendeeId];
+    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.id);
+    const find_raise_hand = RaiseHandUsers.find(
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+    );
+    if (findAttendee) {
+      if (isYou && isVideoEnabled) {
         return (
-          <RemoteVideo
-            className={classes.Child}
-            name={ele.externalUserId}
-            nameplate={ele.externalUserId}
-            tileId={value}
-          />
+          <div className={classes.Child}>
+            {findAttendee?.isHost && (
+              <div className={classes.hostLogo}>Host</div>
+            )}
+            <LocalVideo
+              id={ele.id}
+              className={classes.videoSec}
+              nameplate={<CustomNamePlate ele={ele} />}
+            ></LocalVideo>
+            <EventBoxOptions isYou={isYou} ele={ele} />
+          </div>
+        );
+      } else if (value) {
+        return (
+          <div className={classes.Child}>
+            {findAttendee?.isHost && (
+              <div className={classes.hostLogo}>Host</div>
+            )}
+            <RemoteVideo
+              id={findAttendee.id}
+              className={classes.videoSec}
+              name={<CustomNamePlate ele={ele} />}
+              tileId={value}
+            />
+
+            <EventBoxOptions isYou={isYou} ele={ele} />
+          </div>
         );
       } else {
-        if (isVideoEnabled) {
-          return (
-            <LocalVideo
-              className={classes.Child}
-              nameplate={ele.externalUserId}
+        return (
+          <div className={classes.Child}>
+            {findAttendee?.isHost && (
+              <div className={classes.hostLogo}>Host</div>
+            )}
+            <EventBoxOptions isYou={isYou} ele={ele} />
+            <img
+              src={findAttendee.image ? findAttendee.image : ""}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = userImg;
+              }}
             />
-          );
-        } else {
-          return (
-            <div className={classes.Child}>
-              <img src={userImg} />
-              <p>{ele.externalUserId}</p>
-            </div>
-          );
-        }
+            <p>{findAttendee.name + `${isYou ? " (You)" : ""}`}</p>
+            {find_raise_hand && (
+              <div className={classes.RaisehandContainer}>
+                <div className={classes.isRaiseHand}>
+                  <i className={classes.raise_hand_active_icon}></i>
+                </div>
+              </div>
+            )}
+          </div>
+        );
       }
-    } else {
-      return (
-        <div className={classes.Child}>
-          <img src={userImg} />
-          <p>{ele.externalUserId}</p>
-        </div>
-      );
     }
+    return (
+      <div className={classes.Child}>
+        <EventBoxOptions isYou={isYou} ele={ele} />
+        <img
+          src={findAttendee?.image ? findAttendee.image : ""}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null;
+            currentTarget.src = userImg;
+          }}
+        />
+        <p>{"User" + `${isYou ? " (You)" : ""}`}</p>
+      </div>
+    );
   };
 
   return (
@@ -96,55 +270,144 @@ const EventBox = () => {
       <div
         className={classes.video_grid}
         style={{
-          width: isChatorParticipant ? "80" : "100%",
+          width: !isFetching && isChatorParticipant ? "80" : "100%",
         }}
       >
-        <div
-          className={
-            isPinEnabled && attendees.length >= 10
-              ? classes.isPinavailablePinSec
-              : classes.PinSec
-          }
-        >
-          {isPinEnabled && attendees.length >= 10 && (
-            <div className={classes.pinned_video}>
-              <img src={userImg} />
-              <p>{"Participant "}</p>
+        {isReactions && (
+          <div
+            style={{
+              position: "absolute",
+              height: "88%",
+              width: "100%",
+              zIndex: 13,
+            }}
+          >
+            <Reactions />
+          </div>
+        )}
+        {isFetching ? (
+          <div className="h-100 w-100 d-flex justify-content-center align-items-center">
+            <Spin />
+          </div>
+        ) : (
+          <>
+            <div
+              className={
+                isPinEnabled && attendees.length >= 10
+                  ? classes.isPinavailablePinSec
+                  : classes.PinSec
+              }
+            >
+              {isPinEnabled && attendees.length >= 10 && (
+                <div className={classes.pinned_video}>
+                  <img src={userImg} />
+                  <p>{"Participant "}</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div
-          className={
-            isPinEnabled && attendees.length >= 10
-              ? classes.isPinavailableSec
-              : classes.ParticipantSec
-          }
-          style={{
-            overflow: "scroll",
-          }}
-        >
-          {isLocalUserSharing || sharingAttendeeId ? (
-            <div className={classes.full_container}>
-              <ContentShare className={classes.Child} />
+            <div
+              className={
+                isPinEnabled && attendees.length >= 10
+                  ? classes.isPinavailableSec
+                  : classes.ParticipantSec
+              }
+              style={{
+                overflow: "scroll",
+              }}
+            >
+              {isLocalUserSharing || sharingAttendeeId ? (
+                <div className={classes.full_container}>
+                  <ContentShare className={classes.Child} />
+                </div>
+              ) : (
+                <div className={`mx-auto ${getContainerClassName()}`}>
+                  {attendees.map((ele, index) => {
+                    return GetDisplayComponent({ ele });
+                  })}
+                </div>
+              )}
             </div>
-          ) : (
-            <div className={`mx-auto ${getContainerClassName()}`}>
-              {attendees.map((ele, index) => {
-                return <GetDisplayComponent ele={ele} />;
-              })}
-            </div>
-          )}
-        </div>
+          </>
+        )}
+        <ToastContainer position="top-end" className="eventpopupContainer">
+          <Toast
+            onClose={() => {
+              setnotificationToast({
+                show: false,
+                msg: null,
+                title: null,
+                type: null,
+                buttons: [],
+                icon: null,
+              });
+            }}
+            show={notificationToast.show}
+            autohide
+            delay={3000}
+          >
+            <Toast.Body
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              <Alert
+                icon={notificationToast.icon}
+                showIcon={notificationToast.icon}
+                style={{
+                  background: "#fff",
+                }}
+                message={notificationToast.title}
+                description={notificationToast.msg}
+                onClose={() => {
+                  setnotificationToast({
+                    show: false,
+                    msg: null,
+                    title: null,
+                    type: null,
+                    buttons: [],
+                    icon: null,
+                  });
+                }}
+                action={<>{notificationToast.buttons.map((ele) => ele)}</>}
+                closable
+              />
+            </Toast.Body>
+          </Toast>
+        </ToastContainer>
       </div>
-      {isChatorParticipant && (
-        <div className={classes.participantsSec}>
-          {isChatorParticipant === "participant" ? (
-            <Participants />
-          ) : isChatorParticipant === "chat" ? (
-            <ChatBox />
-          ) : null}
-        </div>
-      )}
+      <div className="onlydes">
+        {isChatorParticipant && (
+          <div className={classes.participantsSec}>
+            {isChatorParticipant === "participant" ? (
+              <Participants />
+            ) : isChatorParticipant === "chat" ? (
+              <ChatBox />
+            ) : isChatorParticipant === "comment" ? (
+              <CommentBox />
+            ) : null}
+          </div>
+        )}
+      </div>
+      <div className="onlyMob eventContainer">
+        <Drawer
+          placement={"bottom"}
+          closable={false}
+          open={isChatorParticipant}
+          key={"bottom"}
+          rootClassName="onlyMob"
+          className="meetingDrawer onlyMob"
+        >
+          <div className={classes.participantsSec}>
+            {isChatorParticipant === "participant" ? (
+              <Participants />
+            ) : isChatorParticipant === "chat" ? (
+              <ChatBox />
+            ) : isChatorParticipant === "comment" ? (
+              <CommentBox />
+            ) : null}
+          </div>
+        </Drawer>
+      </div>
     </div>
   );
 };

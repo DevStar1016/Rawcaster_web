@@ -30,7 +30,7 @@ const ChatSocketComponent = () => {
   }, [isTyping]);
 
   const listAllMessages = () => {
-    listChannelMessages(GroupDetails?.group_arn, userData.chime_user_id)
+    listChannelMessages(GroupDetails?.channel_arn, userData.chime_user_id)
       .then((res) => {
         const finalResult = res.map((ele) => {
           const timestamp = ele.LastEditedTimestamp
@@ -77,6 +77,7 @@ const ChatSocketComponent = () => {
   const messagesProcessor = async (message) => {
     const messageType = message?.headers["x-amz-chime-event-type"];
     const record = JSON.parse(message?.payload);
+    console.log(record, messageType);
     switch (messageType) {
       case "CREATE_CHANNEL_MESSAGE":
         if (record.Sender.Arn !== userData.chime_user_id) {
@@ -109,7 +110,7 @@ const ChatSocketComponent = () => {
       case "PENDING_UPDATE_CHANNEL_MESSAGE":
         if (record.Content && record.Content.match(/Typing/)) {
           if (record.Sender.Arn !== userData.chime_user_id) {
-            if (GroupDetails.group_arn === record?.ChannelArn) {
+            if (GroupDetails.channel_arn === record?.ChannelArn) {
               const indicator = {
                 SenderName: record.Sender.Name,
                 LastUpdatedTimestamp: record.LastUpdatedTimestamp,

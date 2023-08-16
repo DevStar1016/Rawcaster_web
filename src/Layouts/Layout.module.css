@@ -43,11 +43,11 @@ width: 100%;
 .logopart img { height: 40px;}
 .rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 370px; }
 .topSearch {
-  /* width: calc(100% - 640px); */
+  width: calc(100% - 550px);
   height: 45px; 
   /* max-width: 520px; */
   margin: auto;
-  width: 665px;
+  /* width: 665px; */
   max-width: 100%;
 }
 .topSearch span {
@@ -229,6 +229,9 @@ padding: 2px 1px;
   background: #563662 !important;
       padding: 5px 0 !important;
 }
+.TalkshowHeader {
+  background: #563662 !important ;
+}
 .meetingHeader {
 
   background: #563662 !important;
@@ -255,6 +258,7 @@ color: #E8EAEE;
     height: 52px !important;
  
   }
+  .topSearch {width: calc(100% - 390px);}
 .topheader { padding: 5px 0;}
 .onlydes { display: none; }    
 .mobmenu { display: block; }

@@ -226,9 +226,7 @@ export const getNuggetDetailService = (data) => {
 };
 
 export const getNuggetContentAudioService = (data, token) => {
-  return axios.post("nuggetcontentaudio", data, {
-    cancelToken: token,
-  });
+  return axios.post("nuggetcontentaudio", data, token);
 };
 
 export const getNuggetandCommentLikedUserListService = (data) => {
@@ -299,6 +297,10 @@ export const getAttendeesFromMeetingService = (data) => {
 
 export const DeleteMeetingService = (data) => {
   return axios.post("delete_meeting", data);
+};
+
+export const ExitMeetingService = (data) => {
+  return axios.post("exit_meeting", data);
 };
 
 // Profile Config
