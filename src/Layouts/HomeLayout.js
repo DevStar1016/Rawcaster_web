@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import classes from "./Layout.module.css";
-import ProfileImg from "../UIComponents/ProfileImg";
 import LiveIcon from "../Assets/Icons/Live_Img.gif";
 import ReferalIcon from "../Assets/Icons/svg/Referal.svg";
 import RawcasterLogo from "../Assets/Images/svg/rawcaster_logo.svg";
@@ -54,6 +53,7 @@ import Notification from "../Components/Notifications";
 import ArtificialIntelligence from "../Components/ArtificialIntelligence";
 import { GlobalContext } from "../Shared/Context";
 import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
+import ProfileImg from "../UIComponents/ProfileImg";
 
 const HomeLayout = () => {
   const params = useParams();
