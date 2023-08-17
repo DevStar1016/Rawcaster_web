@@ -25,6 +25,18 @@ const ContentLayout = () => {
   const [selectedIndex, setselectedIndex] = useState(0);
   const handleChangeIndex = (index) => {
     setselectedIndex(index);
+    const findKey = TabsValues.find((ele, i) => i === index);
+    if (findKey) {
+      dispatch(handleTabChange(true));
+      dispatch(
+        fetchNotificationList({
+          token,
+          notification_type: findKey.id,
+          page_number: 1,
+        })
+      );
+      setselectedIndex(parseInt(findKey.key));
+    }
   };
 
   return (
