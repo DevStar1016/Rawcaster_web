@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 import {
   useAuthData,
@@ -48,8 +48,10 @@ export const ChatInput = ({
   isEdit = false,
   onEditClose,
   onEdit,
+  placeholderValue = null,
 }) => {
   const token = useAuthToken();
+  const [TextinputHeight, setTextinputHeight] = useState(null);
   const BotContext = useChatBotContext();
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
@@ -85,9 +87,11 @@ export const ChatInput = ({
   };
 
   useEffect(() => {
-    textareaRef.current.style.height = "auto";
-    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-  }, [ChatMessage]);
+    console.log(TextinputHeight);
+    if (textareaRef.current) {
+      setTextinputHeight(textareaRef.current.scrollHeight);
+    }
+  }, [textareaRef.current]);
 
   useEffect(() => {
     if (value && value !== "") {
@@ -96,12 +100,7 @@ export const ChatInput = ({
   }, [value]);
 
   const onRecordStop = (url, blob) => {
-    console.log(isSend.current, "getintomediabloburl issend");
     if (isSend.current) {
-      // console.log(blob.type, "blob.typeblob.type");
-      // const file = new File([blob], "blobtofile.mp3", {
-      //   type: blob.type,
-      // });
       const audioFile = new File([mediaBlobUrl], "blobtofile.mp3", {
         type: "audio/wav",
       });
@@ -244,6 +243,27 @@ export const ChatInput = ({
       stopRecording();
     }
   }, [BotContext?.isChatOpen]);
+
+  const calculateInitialHeight = () => {
+    if (textareaRef.current) {
+      const placeholder = placeholderValue;
+      const fontSize = window.getComputedStyle(textareaRef.current).fontSize;
+      const offScreenDiv = document.createElement("div");
+      offScreenDiv.style.position = "absolute";
+      offScreenDiv.style.top = "-9999px";
+      offScreenDiv.style.left = "-9999px";
+      offScreenDiv.style.fontSize = fontSize;
+      offScreenDiv.style.width = "261px";
+      offScreenDiv.textContent = placeholder;
+      document.body.appendChild(offScreenDiv);
+      const initialHeight = offScreenDiv.clientHeight;
+      document.body.removeChild(offScreenDiv);
+      return `${initialHeight}px`;
+    } else {
+      return "auto";
+    }
+  };
+
   return (
     <>
       {!isChatContentValid && (
@@ -280,15 +300,16 @@ export const ChatInput = ({
             <textarea
               ref={textareaRef}
               className={classes.whatsapp_textarea}
-              placeholder="Type a message..."
+              placeholder={
+                placeholderValue
+                  ? placeholderValue
+                  : "Enter Your Message Here ..."
+              }
+              style={{
+                height: calculateInitialHeight(),
+              }}
               value={ChatMessage}
-              rows="1"
-              // onKeyDown={(e) => {
-              //   if (e.key === "Enter" && !disabled) {
-              //     HandleSendMessage(ChatMessage);
-              //     setChatMessage("");
-              //   }
-              // }}
+              rows={1}
               onChange={(e) => {
                 textareaRef.current.style.height = "auto";
                 textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -307,6 +328,7 @@ export const ChatInput = ({
                 }
               }}
             />
+
             {!isSendOnly &&
               fileuploadEnabled &&
               !isEdit &&

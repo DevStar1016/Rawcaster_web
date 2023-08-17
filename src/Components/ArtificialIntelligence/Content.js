@@ -24,6 +24,9 @@ const ChatContent = () => {
 
   const [isTyping, setisTyping] = useState(false);
   const [ChatEnabled, setChatEnabled] = useState(true);
+  const [PlaceHolderText, setPlaceHolderText] = useState(
+    "Type your message Here ..."
+  );
 
   const HandleSendMessage = (ChatMessage = "", audio_file = null) => {
     const formData = {
@@ -56,22 +59,25 @@ const ChatContent = () => {
             return tempData;
           });
         }
-
-        setTimeout(() => {
-          setMessages((pre) => {
-            return [
-              {
-                user: 2,
-                type: "message",
-                message: res.data.msg,
-                created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-                isshareavailble: ChatMessage !== "",
-                read_out_url: null,
-              },
-              ...pre,
-            ];
-          });
-        }, 1000);
+        if (ChatMessage !== "") {
+          setTimeout(() => {
+            setMessages((pre) => {
+              return [
+                {
+                  user: 2,
+                  type: "message",
+                  message: res.data.msg,
+                  created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                  isshareavailble: ChatMessage !== "",
+                  read_out_url: null,
+                },
+                ...pre,
+              ];
+            });
+          }, 1000);
+        } else {
+          setPlaceHolderText(res.data.msg);
+        }
       })
       .finally(() => {
         setisAudioToTextConvert(false);
@@ -146,41 +152,44 @@ const ChatContent = () => {
           return <ChatType {...ele} index={index} />;
         })}
       </div>
-      <ChatInput
-        disabled={!ChatEnabled}
-        HandleSendMessage={(ChatMessage) => {
-          if (ChatMessage.trim() !== "") {
-            setChatEnabled(false);
-            setisTyping(true);
+      {isChatOpen && (
+        <ChatInput
+          disabled={!ChatEnabled}
+          placeholderValue={PlaceHolderText}
+          HandleSendMessage={(ChatMessage) => {
+            if (ChatMessage.trim() !== "") {
+              setChatEnabled(false);
+              setisTyping(true);
+              setMessages((pre) => [
+                {
+                  user: 1,
+                  type: "message",
+                  message: ChatMessage,
+                  created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                  read_out_url: null,
+                  isshareavailble: false,
+                },
+                ...pre,
+              ]);
+              HandleSendMessage(ChatMessage);
+            }
+          }}
+          onAudioResult={async (val) => {
+            setisAudioToTextConvert(true);
             setMessages((pre) => [
               {
-                user: 1,
-                type: "message",
-                message: ChatMessage,
-                created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+                ...val,
                 read_out_url: null,
                 isshareavailble: false,
+                query: "Converting Audio to Text...",
               },
               ...pre,
             ]);
-            HandleSendMessage(ChatMessage);
-          }
-        }}
-        onAudioResult={async (val) => {
-          setisAudioToTextConvert(true);
-          setMessages((pre) => [
-            {
-              ...val,
-              read_out_url: null,
-              isshareavailble: false,
-              query: "Converting Audio to Text...",
-            },
-            ...pre,
-          ]);
-          const file = await blobUrlToFile(val.message);
-          HandleSendMessage(null, file);
-        }}
-      />
+            const file = await blobUrlToFile(val.message);
+            HandleSendMessage(null, file);
+          }}
+        />
+      )}
     </div>
   );
 };
