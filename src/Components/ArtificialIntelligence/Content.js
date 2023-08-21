@@ -41,6 +41,23 @@ const ChatContent = () => {
           setisPlaying(false);
         }
 
+        setMessages((pre) => {
+          let tempData = [...pre];
+          if (res.data.query) {
+            tempData[0] = {
+              ...tempData[0],
+              message: res.data.query,
+            };
+          } else {
+            tempData[0] = {
+              ...tempData[0],
+              message: ChatMessage,
+            };
+          }
+
+          return tempData;
+        });
+
         if (audio_file) {
           setMessages((pre) => {
             let tempData = [...pre];

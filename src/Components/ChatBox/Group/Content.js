@@ -13,15 +13,17 @@ import SectionList from "../../../Sharedcomponents/SectionList";
 const Content = ({ getContents }) => {
   const userdata = useAuthData();
   const [headerScrolling, setheaderScrolling] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
   const [scroll, setscroll] = useState(0);
   const {
     Messages,
     isTyping,
     GroupDetails,
-    EditData,
     setMessages,
     setSelectAllMessages,
     SelectAllMessages,
+    messageNextToken,
+    listAllMessages,
   } = useChatContext();
   const { isChatOpen } = useMainContext();
 
@@ -80,15 +82,12 @@ const Content = ({ getContents }) => {
   };
 
   useEffect(() => {
-    console.log(selectedMessages, "selectedMessages");
     getContents(selectedMessages);
   }, [selectedMessages]);
 
   useEffect(() => {
     setSelectedMessages([]);
   }, [SelectAllMessages]);
-
-  const closeSelection = () => setSelectAllMessages(false);
 
   return (
     <MessageList
@@ -120,6 +119,16 @@ const Content = ({ getContents }) => {
           {getValidSectionComponent() && (
             <SectionList
               Data={getValidSectionComponent()}
+              hasNextPage={messageNextToken}
+              loading={isLoading}
+              loadMore={() => {
+                setisLoading(true);
+                listAllMessages()
+                  .then((res) => {})
+                  .finally(() => {
+                    setisLoading(false);
+                  });
+              }}
               HeaderComponent={({ children, id, className }) => (
                 <div
                   className={

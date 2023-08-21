@@ -1,4 +1,4 @@
-import { Skeleton } from "antd";
+import { Modal, Skeleton } from "antd";
 import {
   getFollowListService,
   listAllFriendsService,
@@ -10,13 +10,18 @@ import {
   getisAddFriend,
   handleProfileNavigate,
 } from "../../../Shared/Utility";
-import { useAuthData, useNuggets } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+} from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
 import classes from "./ProfilerRight.module.css";
 import { useNavigate } from "react-router";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import AddFriendIcon from "../../../Assets/Icons/svg/add_friend_1.svg";
+import { handleUnFollowService } from "../Utility";
 
 export const getfollowerfollowingService = (fansList) => {
   let promise = new Promise((resolve, reject) => {
@@ -178,6 +183,7 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
   } = useProfileContext();
   const navigate = useNavigate();
   const loginuserData = useAuthData();
+  const loginToken = useAuthToken();
   const isUser = parseInt(loginuserData?.user_id) === parseInt(ele?.user_id);
   const isAddFriend = () => {
     if (isUser) {
@@ -219,13 +225,41 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
                   }}
                 />
               ) : null}
+
+              {type === "influencers" ? (
+                <span
+                  className={`material-symbols-outlined ${classes.plusIcon} ${classes.removeIcon}`}
+                  style={{ display: "" }}
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Confirmation",
+                      okText: "Yes",
+                      cancelText: "No",
+                      okButtonProps: {
+                        danger: true,
+                      },
+                      content: <div>Are you sure to Unfollow this User ?</div>,
+                      onOk: () => {
+                        handleUnFollowService(
+                          loginToken,
+                          ele?.user_ref_id
+                        ).then(() => {
+                          getConnectionList({});
+                        });
+                      },
+                    });
+                  }}
+                >
+                  remove
+                </span>
+              ) : null}
             </>
           ) : (
             <>
               {type === "influencers" ? (
                 <span
                   className={`material-symbols-outlined ${classes.plusIcon}`}
-                  style={{ display: ele.follow ? "none" : "" }}
+                  style={{ display: "" }}
                   onClick={() => {
                     handleBecameFan(ele.user_ref_id).then((res) => {
                       getConnectionList({});

@@ -37,6 +37,7 @@ import dayjs from "dayjs";
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
   const { userSettings } = useAuth();
+  const [isFetching, setisFetching] = useState([]);
   const [isCreating, setisCreating] = useState(false);
   const [SelectedTime, setSelectedTime] = useState(
     moment().add(10, "minutes").format("HH:mm")
@@ -108,15 +109,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         .test("Mail Test", "Please Enter Invite Users", function (value) {
           const { event_type, event_invite_friends, event_invite_groups } =
             this.parent;
-          console.log(
-            typeof event_invite_friends,
-            event_invite_friends,
-            typeof event_invite_groups,
-            event_invite_groups,
-            event_type,
-            value,
-            "event_invite_friendsevent_invite_friends"
-          );
+
           if (parseInt(event_type) === 2) {
             if (value && JSON.parse(value)?.length > 0) {
               return true;
@@ -139,10 +132,10 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
               }
               return false;
             }
-            console.log("return false");
+
             return false;
           }
-          console.log("return overallfalse");
+
           return true;
         }),
     }),
@@ -215,7 +208,6 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       " " +
       moment(moment(val.event_start_time, ["HH:mm"])).format("HH:mm:00");
     let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
-    console.log(val, "submit valuess");
 
     let liveEventData = {
       ...val,
@@ -292,6 +284,8 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         values,
         setValues,
         setFieldValue,
+        isFetching,
+        setisFetching,
       }}
     >
       <EventModal

@@ -48,7 +48,7 @@ export const ChatInput = ({
   isEdit = false,
   onEditClose,
   onEdit,
-  placeholderValue = null,
+  placeholderValue = "Enter Your Message Here ...",
 }) => {
   const token = useAuthToken();
   const [TextinputHeight, setTextinputHeight] = useState(null);
@@ -254,7 +254,7 @@ export const ChatInput = ({
       offScreenDiv.style.left = "-9999px";
       offScreenDiv.style.fontSize = fontSize;
       offScreenDiv.style.width = "261px";
-      offScreenDiv.textContent = placeholder;
+      offScreenDiv.textContent = value && value !== "" ? value : placeholder;
       document.body.appendChild(offScreenDiv);
       const initialHeight = offScreenDiv.clientHeight;
       document.body.removeChild(offScreenDiv);
@@ -901,25 +901,25 @@ export const MessageContent = (props) => {
         <div className={classes.msgBox}>
           {isGroup && (
             <div className={classes.avatar}>
-              {getmessageType() !== "first" ? (
+              {/* {getmessageType() !== "first" ? (
                 <div
                   style={{
                     height: 30,
                     width: 30,
                   }}
                 ></div>
-              ) : (
-                <img
-                  src={
-                    isUser(user)
-                      ? loginUserData?.profile_image
-                      : getUserData().profile_img
-                  }
-                  // onError={(e) => {
-                  //   setisAvatarErr(true);
-                  // }}
-                />
-              )}
+              ) : ( */}
+              <img
+                src={
+                  isUser(user)
+                    ? loginUserData?.profile_image
+                    : getUserData().profile_img
+                }
+                // onError={(e) => {
+                //   setisAvatarErr(true);
+                // }}
+              />
+              {/* )} */}
             </div>
           )}
           <div

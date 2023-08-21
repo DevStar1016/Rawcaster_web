@@ -7,7 +7,7 @@ import {
   useRosterState,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
-import { Modal, message } from "antd";
+import { Layout, Modal, message } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
 import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
 import { useAuthData } from "../Shared/Reduxfetcher";
@@ -29,7 +29,7 @@ const EventLayout = () => {
     setnotificationToast,
     isChatorParticipant,
   } = useEventLayout();
-
+  const { Header, Footer, Sider, Content } = Layout;
   const [userdetails, setuserdetails] = useState(null);
   const userData = useAuthData();
   const { muted, toggleMute } = useToggleLocalMute();
@@ -45,7 +45,7 @@ const EventLayout = () => {
   useEffect(() => {
     if (attendeesList) {
       const findAttendee = attendeesList.find(
-        (ele) => parseInt(ele.id) === parseInt(userData.user_id)
+        (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
       );
       if (findAttendee) {
         setuserdetails(findAttendee);
@@ -56,7 +56,7 @@ const EventLayout = () => {
   const useAttendeesList = () => {
     let filterValidAttendees = attendees.map((elem) => {
       let findAttendee = attendeesList.find(
-        (ele) => parseInt(elem.externalUserId) === ele.id
+        (ele) => parseInt(elem.externalUserId) === ele.userId
       );
       if (findAttendee) {
         return { ...findAttendee };
@@ -141,51 +141,59 @@ const EventLayout = () => {
   return (
     <div className={`${EventData?.type === 2 ? classes.TalkshowHeader : ""}`}>
       {contextHolder}
-      <div
-        className={`${classes.topheader} ${classes.eventHeader} ${
-          EventData?.type === 2 ? classes.TalkshowHeader : ""
-        }`}
-      >
-        <div className={classes.meetingHeader}>
-          <img src={Rlogo} />
-          <h2>{EventData?.event_name}</h2>
-        </div>
-      </div>
-      <Outlet
-        context={{
-          ...useEventLayout(),
-          isHost: userdetails?.isHost,
-          EventMessages,
-          userdetails,
-          setEventMessages,
-          RaiseHandUsers,
-          setRaiseHandUsers,
-          useAttendeesList,
-          notificationToast,
-          setnotificationToast,
-          isReactions,
-          setisReactions,
-        }}
-      />
-      {EventData?.type === 2 ? (
-        <TalkshowMenu
-          setRaiseHandUsers={setRaiseHandUsers}
-          RaiseHandUsers={RaiseHandUsers}
-          userdetails={userdetails}
-          isReactions={isReactions}
-          setisReactions={setisReactions}
-          isNewMessage={isNewMessage}
-          setisNewMessage={setisNewMessage}
-        />
-      ) : (
-        <EventMenu
-          setRaiseHandUsers={setRaiseHandUsers}
-          RaiseHandUsers={RaiseHandUsers}
-          userdetails={userdetails}
-        />
-      )}
+      <Layout className={classes.EventLayoutContainer}>
+        <Header className={classes.headerSec}>
+          <div
+            className={`${classes.topheader} ${classes.eventHeader} ${
+              EventData?.type === 2 ? classes.TalkshowHeader : ""
+            }`}
+          >
+            <div className={classes.meetingHeader}>
+              <img src={Rlogo} />
+              <h2>{EventData?.event_name}</h2>
+            </div>
+          </div>
+        </Header>
 
-      <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} />
+        <Outlet
+          context={{
+            ...useEventLayout(),
+            isHost: userdetails?.isHost,
+            EventMessages,
+            userdetails,
+            setEventMessages,
+            RaiseHandUsers,
+            setRaiseHandUsers,
+            useAttendeesList,
+            notificationToast,
+            setnotificationToast,
+            isReactions,
+            setisReactions,
+          }}
+        />
+
+        <Footer className={classes.footerSec}>
+          {EventData?.type === 2 ? (
+            <TalkshowMenu
+              setRaiseHandUsers={setRaiseHandUsers}
+              RaiseHandUsers={RaiseHandUsers}
+              userdetails={userdetails}
+              isReactions={isReactions}
+              setisReactions={setisReactions}
+              isNewMessage={isNewMessage}
+              setisNewMessage={setisNewMessage}
+            />
+          ) : (
+            <EventMenu
+              setRaiseHandUsers={setRaiseHandUsers}
+              RaiseHandUsers={RaiseHandUsers}
+              userdetails={userdetails}
+            />
+          )}
+        </Footer>
+
+        <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} />
+      </Layout>
     </div>
   );
 };

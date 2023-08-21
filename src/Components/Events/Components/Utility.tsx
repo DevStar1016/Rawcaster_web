@@ -8,6 +8,10 @@ import {
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import styles from "./Menu.module.css";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { Modal } from "antd";
+import { useEventLayout } from "../Room/EventValidaton";
+import { toast } from "react-hot-toast";
 
 export const MicrophoneComponent = ({
   ele,
@@ -25,14 +29,14 @@ export const MicrophoneComponent = ({
           onClick={() => {
             if (isHost && !attendee.isHost) {
               const value = {
-                userId: attendee.id,
+                userId: attendee.userId,
                 audio: true,
               };
               ChimesendMessage(
                 value,
                 CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
               );
-            } else if (attendee.user_id === attendee.id) {
+            } else if (attendee.user_id === attendee.userId) {
               toggleMute();
             }
           }}
@@ -44,12 +48,12 @@ export const MicrophoneComponent = ({
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={() => {
             if (isHost && !attendee.isHost) {
-              const value = { userId: attendee.id, audio: false };
+              const value = { userId: attendee.userId, audio: false };
               ChimesendMessage(
                 value,
                 CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
               );
-            } else if (attendee.user_id === attendee.id) {
+            } else if (attendee.user_id === attendee.userId) {
               toggleMute();
             }
           }}
@@ -93,7 +97,7 @@ export const CameraComponent = ({ ele, attendee, isHost, className = "" }) => {
           className={`${styles.video_off_icon} ${styles.icon} ${className}`}
           onClick={() => {
             if (isHost && !attendee.isHost) {
-              const value = { userId: attendee.id, video: true };
+              const value = { userId: attendee.userId, video: true };
               ChimesendMessage(
                 value,
                 CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
@@ -109,7 +113,7 @@ export const CameraComponent = ({ ele, attendee, isHost, className = "" }) => {
           onClick={() => {
             if (isHost && !attendee.isHost) {
               const value = {
-                userId: attendee.id,
+                userId: attendee.userId,
                 video: false,
               };
               ChimesendMessage(
@@ -189,6 +193,65 @@ export const VolumeStatusComponent = ({
           onClick={onClick}
         ></i>
       )}
+    </>
+  );
+};
+
+export const HangupComponent = ({ userdetails }) => {
+  const { confirm } = Modal;
+  const { EventData, handleExitMeeting }: any = useEventLayout();
+
+  const HandleEndMeeting = () => {
+    confirm({
+      title: "Are you sure Do you want to Exit Meeting?",
+      icon: <ExclamationCircleFilled />,
+      onOk() {
+        handleExitMeeting(userdetails)
+          .then(() => {
+            ChimesendMessage(
+              {
+                name: userdetails?.name,
+                userId: userdetails?.id,
+                meetingId: EventData?.chime_meeting_id,
+                isHost: userdetails?.isHost,
+              },
+              CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
+            );
+            window.close();
+          })
+          .catch(() => {
+            toast.error("Unable to end Meeting !");
+          });
+      },
+      onCancel() {},
+    });
+  };
+  return (
+    <>
+      <div
+        className={`${styles.iconContainer} ${styles.EndIcon} ${styles.onlyMob}`}
+        onClick={() => {
+          HandleEndMeeting();
+        }}
+      >
+        <i className={`${styles.hang_up_icon} ${styles.icon}`}></i>
+      </div>
+      <div
+        className={`${styles.Actionsec} ${styles.onlydes}`}
+        style={{
+          color: "red",
+        }}
+        onClick={() => {
+          HandleEndMeeting();
+        }}
+      >
+        <span
+          className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
+        >
+          logout
+        </span>
+        Exit
+      </div>
     </>
   );
 };

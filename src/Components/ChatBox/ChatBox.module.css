@@ -143,8 +143,8 @@ padding: 10px;
     cursor: pointer;
 }
 .mainContainer {
-  height: 500px;
-  overflow: scroll;
+  /* height: 500px;
+  overflow: scroll; */
   background-color: #fff;
   /* padding: 5px; */
   padding-bottom: 20px !important;

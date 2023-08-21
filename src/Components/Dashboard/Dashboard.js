@@ -42,17 +42,20 @@ const Dashboard = () => {
       removeSessionStorageData("influencerData");
     }
     let filterData = { ...nuggetFormData };
-    if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
+    if (
+      filterData?.formData?.search_key ||
+      filterData?.formData?.user_id ||
+      filterData?.formData?.saved
+    ) {
       filterData.formData = {
         page_number: 1,
         nugget_type: 0,
       };
       dispatch(handleResetNuggets());
       dispatch(handleNuggetFormData(filterData));
-      // dispatch(fetchNuggetsbyId(filterData));
+      dispatch(fetchNuggetsbyId(filterData));
     }
   }, [pathname]);
-  console.log(window.innerWidth);
   return (
     <div>
       {isSuccess && loginUserData === null && (

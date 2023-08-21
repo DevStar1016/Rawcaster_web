@@ -1,13 +1,7 @@
-import React, { useEffect } from "react";
-import {
-  closeChimeMessaging,
-  subscribeToMessageUpdate,
-  unsubscribeFromMessageUpdate,
-} from "../../Services/Messaging/MessageService";
+import { useEffect } from "react";
+import { subscribeToMessageUpdate } from "../../Services/Messaging/MessageService";
 import { useChatContext } from "../../Shared/Context";
-import { useAuthData } from "../../Shared/Reduxfetcher";
-import { listChannelMessages } from "../../Services/Messaging/MessageAPIList";
-import moment from "moment";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 
 const ChatSocketComponent = () => {
   const {
@@ -16,6 +10,7 @@ const ChatSocketComponent = () => {
     GroupDetails,
     setisTyping,
     isTyping,
+    listAllMessages,
   } = useChatContext();
   const userData = useAuthData();
 
@@ -29,90 +24,74 @@ const ChatSocketComponent = () => {
     }
   }, [isTyping]);
 
-  const listAllMessages = () => {
-    listChannelMessages(GroupDetails?.channel_arn, userData.chime_user_id)
-      .then((res) => {
-        const finalResult = res.map((ele) => {
-          const timestamp = ele.LastEditedTimestamp
-            ? ele.LastEditedTimestamp
-            : ele.CreatedTimestamp;
-
-          const getvalidFileData = () => {
-            if (ele.Metadata) {
-              const finalData = JSON.parse(ele.Metadata);
-              return {
-                type: finalData.type,
-                file_path: finalData.file,
-                file: finalData?.web_file,
-              };
-            } else {
-              return {
-                type: "text",
-              };
-            }
-          };
-          return {
-            ...convertMessageFormat({
-              ...getvalidFileData(),
-              isEdited: ele.LastEditedTimestamp !== undefined,
-              message_id: ele.MessageId,
-
-              message: ele.Content,
-
-              user_name: "me",
-              user: ele.Sender.Arn,
-              created_at: moment(ele.CreatedTimestamp).format(
-                "YYYY-MM-DD HH:mm:ss"
-              ),
-            }),
-          };
-        });
-        setMessages(finalResult.reverse());
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  function isJSONString(str) {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 
   const messagesProcessor = async (message) => {
     const messageType = message?.headers["x-amz-chime-event-type"];
     const record = JSON.parse(message?.payload);
-    console.log(record, messageType);
     switch (messageType) {
       case "CREATE_CHANNEL_MESSAGE":
         if (record.Sender.Arn !== userData.chime_user_id) {
-          const getvalidFileData = () => {
-            if (record.Metadata) {
-              const finalData = JSON.parse(record.Metadata);
-              return {
-                type: finalData.type,
-                file_path: finalData.file,
-                file: finalData?.web_file,
-              };
-            } else {
-              return {
-                type: "text",
-              };
-            }
-          };
-          setMessages((pre) => [
-            ...pre,
-            {
-              ...convertMessageFormat({
-                ...getvalidFileData(),
-                message: record.Content,
-                user_name: "Other",
-                user: record.Sender.Arn,
-              }),
-            },
-          ]);
+          if (isJSONString(record.Content)) {
+            const findSender = GroupDetails?.group_members_list.find(
+              (ele) => ele.member_arn === record.Sender.Arn
+            );
+            const indicator = {
+              SenderName: findSender
+                ? findSender.display_name
+                : record.Sender.Name,
+              LastUpdatedTimestamp: record.LastUpdatedTimestamp,
+            };
+            setisTyping(indicator);
+          } else {
+            const getvalidFileData = () => {
+              if (record.Metadata) {
+                const finalData = JSON.parse(record.Metadata);
+                return {
+                  type: finalData.type,
+                  file_path: finalData.file,
+                  file: finalData?.web_file,
+                };
+              } else {
+                return {
+                  type: "text",
+                };
+              }
+            };
+            setMessages((pre) => [
+              ...pre,
+              {
+                ...convertMessageFormat({
+                  ...getvalidFileData(),
+                  message: record.Content,
+                  user_name: "Other",
+                  user: record.Sender.Arn,
+                }),
+              },
+            ]);
+          }
         }
       case "PENDING_UPDATE_CHANNEL_MESSAGE":
         if (record.Content && record.Content.match(/Typing/)) {
           if (record.Sender.Arn !== userData.chime_user_id) {
-            if (GroupDetails.channel_arn === record?.ChannelArn) {
+            if (
+              GroupDetails &&
+              GroupDetails.channel_arn === record?.ChannelArn
+            ) {
+              const findSender = GroupDetails?.group_members_list.find(
+                (ele) => ele.member_arn === record.Sender.Arn
+              );
               const indicator = {
-                SenderName: record.Sender.Name,
+                SenderName: findSender
+                  ? findSender.display_name
+                  : record.Sender.Name,
                 LastUpdatedTimestamp: record.LastUpdatedTimestamp,
               };
               setisTyping(indicator);
@@ -124,14 +103,9 @@ const ChatSocketComponent = () => {
   };
 
   useEffect(() => {
-    if (!userData) return;
+    if (!userData || !GroupDetails) return;
     subscribeToMessageUpdate(messagesProcessor);
-
-    // return () => {
-    //   closeChimeMessaging();
-    //   unsubscribeFromMessageUpdate(messagesProcessor);
-    // };
-  }, [userData]);
+  }, [userData, GroupDetails]);
 
   useEffect(() => {
     if (GroupDetails) {

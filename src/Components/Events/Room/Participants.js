@@ -44,8 +44,10 @@ const Participants = () => {
   };
 
   const handleAccept = (ele) => {
-    const value = { userId: ele.userId, meetingId: ele.meetingId };
-    ChimesendMessage(value, CHIME_SOCKET_EVENTS.ALLOW_TO_JOIN_MEETING);
+    ChimesendMessage(
+      { ...ele, refId: EventData?.reference_id },
+      CHIME_SOCKET_EVENTS.ALLOW_TO_JOIN_MEETING
+    );
     setRequestList((pre) => pre.filter((elem) => elem.userId !== ele.userId));
     RequestRef.current = RequestRef.current.filter(
       (elem) => elem.userId !== ele.userId
@@ -63,13 +65,13 @@ const Participants = () => {
 
   const AttendeeComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
 
-    const isYou = parseInt(userdata.user_id) === parseInt(findAttendee.id);
+    const isYou = parseInt(userdata.user_id) === parseInt(findAttendee.userId);
 
     const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.userId)
     );
 
     return (
@@ -106,8 +108,8 @@ const Participants = () => {
                 ele={ele}
                 className={classes.speakersmallIcon}
                 onClick={() => {
-                  if (SpeakerState !== findAttendee.id) {
-                    setSpeakerState(findAttendee.id);
+                  if (SpeakerState !== findAttendee.userId) {
+                    setSpeakerState(findAttendee.userId);
                   } else {
                     setSpeakerState(false);
                   }
@@ -150,7 +152,7 @@ const Participants = () => {
             ) : null}
           </div>
         </div>
-        <Collapse in={SpeakerState === findAttendee.id}>
+        <Collapse in={SpeakerState === findAttendee.userId}>
           <div
             className={classes.speakerContainer}
             style={{
@@ -159,11 +161,11 @@ const Participants = () => {
           >
             <div className={classes.speakerSec}>
               <VolumeStatusComponent
-                // isEnable={SpeakerState === findAttendee.id}
+                // isEnable={SpeakerState === findAttendee.userId}
 
                 onClick={() => {
-                  if (SpeakerState !== findAttendee.id) {
-                    setSpeakerState(findAttendee.id);
+                  if (SpeakerState !== findAttendee.userId) {
+                    setSpeakerState(findAttendee.userId);
                   } else {
                     setSpeakerState(false);
                   }
@@ -175,8 +177,8 @@ const Participants = () => {
                   color: "white",
                 }}
                 onClick={() => {
-                  if (SpeakerState !== findAttendee.id) {
-                    setSpeakerState(findAttendee.id);
+                  if (SpeakerState !== findAttendee.userId) {
+                    setSpeakerState(findAttendee.userId);
                   } else {
                     setSpeakerState(false);
                   }
@@ -295,8 +297,8 @@ const Participants = () => {
                 return (
                   <div className={classes.participantContainer}>
                     <div className={classes.itemName}>
-                      <img src={ele.user_img} alt={`request_${index}`} />
-                      {ele.user_name}
+                      <img src={ele.image} alt={`request_${index}`} />
+                      {ele.name}
                     </div>
                     <div className={classes.itemAction}>
                       <div

@@ -90,6 +90,7 @@ const UpdateProfile = () => {
       first_name: "",
       last_name: "",
       gender: "",
+      other_gender: "",
       dob: "",
       email_id: "",
       mobile_no: "",
@@ -132,6 +133,9 @@ const UpdateProfile = () => {
             last_name: profileData.last_name,
             gender: profileData.gender,
             dob: profileData.dob ? profileData.dob : "",
+            other_gender: profileData.other_gender
+              ? profileData.other_gender
+              : "",
             email_id: profileData.email_id,
             mobile_no: profileData.mobile,
             profile_image: profileData.profile_image,
@@ -427,7 +431,7 @@ const UpdateProfile = () => {
             </Col>
 
             <Col md={12} xs={24}>
-              <p className={classes.label}>Gender</p>
+              <p className={classes.label}>Sex</p>
               <Form.Item className="genderSelect">
                 <Select
                   name="gender"
@@ -446,7 +450,28 @@ const UpdateProfile = () => {
                 {touched.gender && <p className="ErrTxt">{errors?.gender}</p>}
               </Form.Item>
             </Col>
-
+            <Col md={12} xs={24}>
+              <p className={classes.label}>Gender</p>
+              <Form.Item>
+                <Input
+                  size="large"
+                  name="other_gender"
+                  className={classes.textBox}
+                  placeholder="Gender"
+                  maxLength={50}
+                  status={
+                    touched.other_gender && errors.other_gender ? "error" : ""
+                  }
+                  value={values.other_gender}
+                  onChange={(e) => {
+                    setFieldValue("other_gender", e.target.value);
+                  }}
+                />
+                {touched.other_gender && (
+                  <p className="ErrTxt">{errors?.other_gender}</p>
+                )}
+              </Form.Item>
+            </Col>
             <Col md={12} xs={24}>
               <p className={classes.label}>Date of Birth</p>
               <DateInputBox

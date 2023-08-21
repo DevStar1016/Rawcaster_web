@@ -175,7 +175,7 @@ const PreviewFile = () => {
           convertUrlToFile(PreviewData.File)
             .then((res) => {
               const metaData = {
-                Metadata: JSON.stringify({
+                meta_data: JSON.stringify({
                   file: res.file_path,
                   type: PreviewData.display_type,
                   web_file: {

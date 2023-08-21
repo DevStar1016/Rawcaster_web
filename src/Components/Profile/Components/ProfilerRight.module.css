@@ -92,6 +92,9 @@ justify-content: space-between;
 .modalOthersIcon {
   right: 3px !important;
 }
+.removeIcon {
+  background-color: red !important;
+}
 .iconSec .plusIcon,.iconSec .addIcon {
    float: left;
    font-size: 18px;

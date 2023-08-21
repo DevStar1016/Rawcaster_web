@@ -99,6 +99,7 @@ const SignupwithCredentials = () => {
       geo_location: "",
       latitude: "",
       longitude: "",
+      other_gender: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -256,7 +257,7 @@ const SignupwithCredentials = () => {
                   <p className="ErrTxt">{errors?.password}</p>
                 )}
               </Form.Item>
-              <p className={classes.label}>Gender</p>
+              <p className={classes.label}>Sex</p>
               <Form.Item name="gender" className="genderSelect">
                 <Select
                   className={classes.selectBox}
@@ -272,6 +273,24 @@ const SignupwithCredentials = () => {
                   ))}
                 </Select>
                 {touched.gender && <p className="ErrTxt">{errors?.gender}</p>}
+              </Form.Item>
+              <p className={classes.label}>Gender</p>
+
+              <Form.Item name="other_gender" className="pt-2">
+                <Input
+                  className={classes.textBox}
+                  type="other_gender"
+                  placeholder="Gender"
+                  value={values.other_gender}
+                  maxLength={50}
+                  status={
+                    touched.other_gender && errors.other_gender ? "error" : ""
+                  }
+                  onChange={handleChange("other_gender")}
+                />
+                {touched.other_gender && (
+                  <p className="ErrTxt">{errors?.other_gender}</p>
+                )}
               </Form.Item>
               <p className={classes.label}>Date of Birth</p>
               <Form.Item>

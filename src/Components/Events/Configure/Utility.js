@@ -21,14 +21,20 @@ export const EventTypeComponent = ({
   isLoading,
   isEnabledLabel = true,
 }) => {
+  const { setisFetching } = useAddEventContext();
   const token = useAuthToken();
   const [EventData, setEventData] = useState([]);
 
   useEffect(() => {
-    getEventType(token).then((res) => {
-      setEventData(res);
-      onResult(res[0]);
-    });
+    setisFetching((pre) => [...pre, "event_type"]);
+    getEventType(token)
+      .then((res) => {
+        setEventData(res);
+        onResult(res[0]);
+      })
+      .finally(() => {
+        setisFetching((pre) => pre.filter((ele) => ele !== "event_type"));
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,14 +73,20 @@ export const EventLayoutComponent = ({
   isLoading,
   isEnabledLabel = true,
 }) => {
+  const { setisFetching } = useAddEventContext();
   const token = useAuthToken();
   const [EventData, setEventData] = useState([]);
 
   useEffect(() => {
-    getLayoutData(token).then((res) => {
-      setEventData(res);
-      onResult(res[0]);
-    });
+    setisFetching((pre) => [...pre, "event_layout"]);
+    getLayoutData(token)
+      .then((res) => {
+        setEventData(res);
+        onResult(res[0]);
+      })
+      .finally(() => {
+        setisFetching((pre) => pre.filter((ele) => ele !== "event_layout"));
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -114,23 +126,27 @@ export const EventMelodyComponent = ({
   isEnabledLabel = true,
   isCustomize = false,
 }) => {
+  const { setisFetching } = useAddEventContext();
   const token = useAuthToken();
   const [EventData, setEventData] = useState([]);
 
   useEffect(() => {
-    getMelodyData(token).then((res) => {
-      let finalData = [...res];
-      if (isCustomize) {
-        finalData = [
-          ...finalData,
-          { id: 0, value: "Customize", label: "Customize" },
-        ];
-      }
-
-      setEventData(finalData);
-
-      onResult(finalData[0]);
-    });
+    setisFetching((pre) => [...pre, "event_melody"]);
+    getMelodyData(token)
+      .then((res) => {
+        let finalData = [...res];
+        if (isCustomize) {
+          finalData = [
+            ...finalData,
+            { id: 0, value: "Customize", label: "Customize" },
+          ];
+        }
+        setEventData(finalData);
+        onResult(finalData[0]);
+      })
+      .finally(() => {
+        setisFetching((pre) => pre.filter((ele) => ele !== "event_melody"));
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

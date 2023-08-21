@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import classes from "./ChatBox.module.css";
 import { Layout } from "antd";
-import { ChatInput, ChatInputBox } from "../../Sharedcomponents/Chat/utility";
+import { ChatInput } from "../../Sharedcomponents/Chat/utility";
 import { useChatContext } from "../../Shared/Context";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
-import { SendMessageService } from "../../Services/ApiService";
-import { JSONtoformdata, filterValidObject } from "../../Shared/Utility";
 import {
-  sendChannelMessage,
-  updateChannelMessage,
-} from "../../Services/Messaging/MessageAPIList";
+  SendChannelMessageService,
+  UpdateChannelMessageService,
+} from "../../Services/ApiService";
+import { JSONtoformdata, filterValidObject } from "../../Shared/Utility";
+
 import { debounce } from "lodash";
-import moment from "moment";
 
 const Footer = () => {
   const token = useAuthToken();
@@ -27,15 +26,14 @@ const Footer = () => {
   } = useChatContext();
 
   const sendMessage = (val, params = {}) => {
-    let data = {
-      ...params,
-      Type: "STANDARD",
-      Persistence: "PERSISTENT",
-      ChannelArn: GroupDetails?.channel_arn,
-      ChimeBearer: userData.chime_user_id,
-      Content: val,
+    const send_message_params = {
+      token,
+      channel_id: GroupDetails?.channel_arn,
+      message: val,
     };
-    sendChannelMessage(filterValidObject(data))
+    SendChannelMessageService(
+      JSONtoformdata(filterValidObject(send_message_params))
+    )
       .then((res) => {
         console.log(res);
       })
@@ -45,15 +43,15 @@ const Footer = () => {
   };
 
   const editMessage = (val) => {
-    const params = {
-      ChannelArn: GroupDetails?.channel_arn,
-      MessageId: EditData?.message_id,
-      Content: val,
-      ChimeBearer: userData.chime_user_id,
+    const update_message_params = {
+      token,
+      channel_id: GroupDetails?.channel_arn,
+      message_id: EditData?.message_id,
+      message: val,
     };
-    updateChannelMessage(params)
+
+    UpdateChannelMessageService(JSONtoformdata(update_message_params))
       .then((res) => {
-        console.log(res);
         setMessages((pre) => {
           let findIndex = pre.findIndex(
             (ele) => ele.message_id === EditData?.message_id
@@ -74,26 +72,26 @@ const Footer = () => {
   };
 
   const eventHandler = async () => {
-    const content = JSON.stringify({ Typing: "Indicator" });
+    if (GroupDetails) {
+      const content = JSON.stringify({ Typing: "Indicator" });
 
-    const params = {
-      ChannelArn: GroupDetails?.channel_arn,
-      Content: content,
-      Type: "CONTROL",
-      Persistence: "NON_PERSISTENT",
-      ChimeBearer: userData.chime_user_id,
-    };
-    sendChannelMessage(params)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      const send_message_params = {
+        token,
+        channel_id: GroupDetails?.channel_arn,
+        message: content,
+      };
+      SendChannelMessageService(JSONtoformdata(send_message_params))
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
   const eventHandlerWithDebounce = React.useCallback(
     debounce(eventHandler, 500),
-    []
+    [GroupDetails]
   );
 
   useEffect(() => {
@@ -146,7 +144,7 @@ const Footer = () => {
         }}
         onAudioResult={(val) => {
           const metaData = {
-            Metadata: JSON.stringify({
+            meta_data: JSON.stringify({
               file: val.message,
               type: "audio",
               web_file: val.file,
