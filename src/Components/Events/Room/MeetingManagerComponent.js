@@ -25,9 +25,10 @@ const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
       (user_data) => {
+        console.log(user_data, "user_data");
         setnotificationToast({
           show: true,
-          msg: `${user_data?.user_name} wants to join this meeting`,
+          msg: `${user_data?.name} wants to join this meeting`,
           title: null,
           type: null,
           buttons: [
@@ -41,8 +42,9 @@ const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
           ],
           icon: null,
         });
+
         RequestRef.current.push(user_data);
-        setRequestList((pre) => [...pre, user_data]);
+        // setRequestList((pre) => [...pre, user_data]);
       }
     );
     return () => {
@@ -65,38 +67,11 @@ const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
     };
   }, [RaiseHandUsers]);
 
-  const getAttendees = () => {
-    const userData = {
-      token,
-      meeting_id: EventData?.chime_meeting_id,
-    };
-    getAttendeesFromMeetingService(JSONtoformdata(userData))
-      .then((res) => {
-        if (res.data.status === 1) {
-          const mergedArray = res.data.data.Attendees.reduce((acc, item) => {
-            const matchingItem = res.data.data.users.find(
-              (el) => parseInt(el.id) === parseInt(item.ExternalUserId)
-            );
-            if (matchingItem) {
-              acc.push({ ...item, ...matchingItem });
-            }
-            return acc;
-          }, []);
-          setattendeesList(mergedArray);
-        } else {
-          setattendeesList([]);
-        }
-      })
-      .finally(() => {
-        setisFetching(false);
-      });
-  };
-
-  useEffect(() => {
-    if (token && EventData?.chime_meeting_id) {
-      getAttendees();
-    }
-  }, [EventData, token]);
+  // useEffect(() => {
+  //   if (token && EventData?.chime_meeting_id) {
+  //     getAttendees();
+  //   }
+  // }, [EventData, token]);
 
   return <div></div>;
 };

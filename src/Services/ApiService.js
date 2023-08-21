@@ -401,8 +401,16 @@ export const GetReferralListService = (data) => {
 
 // Rawcaster Chat
 
-export const SendMessageService = (data) => {
-  return axios.post(`send_message`, data);
+export const ListChannelMsgService = (data) => {
+  return axios.post(`list_channel_message`, data);
+};
+
+export const SendChannelMessageService = (data) => {
+  return axios.post(`send_channel_message`, data);
+};
+
+export const UpdateChannelMessageService = (data) => {
+  return axios.post(`update_channel_message`, data);
 };
 
 //QR Code

@@ -1,9 +1,38 @@
-import React, { useEffect, useState } from "react";
-import classes from "./SectionList.module.css";
+import React, { useEffect, useRef, useState } from "react";
 
-const SectionList = ({ HeaderComponent, RenderComponent, Data }) => {
+const SectionList = ({
+  HeaderComponent,
+  RenderComponent,
+  Data,
+  hasNextPage,
+  loadMore,
+  loading,
+}) => {
+  const isInitialLoaded = useRef(null);
+
+  const containerRef = useRef(null);
+  const handleScroll = (e) => {
+    const { scrollTop } = e.target;
+
+    if (scrollTop === 0 && hasNextPage) {
+      loadMore();
+    }
+  };
+
+  useEffect(() => {
+    // Focus on the last item when it's added
+    if (Data.length > 0 && containerRef.current && !isInitialLoaded.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      isInitialLoaded.current = true;
+    }
+  }, [Data]);
+
   return (
-    <div>
+    <div
+      ref={containerRef}
+      onScroll={handleScroll}
+      style={{ height: "400px", overflowY: "scroll" }}
+    >
       {Data.map((section, index) => (
         <div key={index}>
           <HeaderComponent id={`section-${index}`}>
@@ -20,6 +49,7 @@ const SectionList = ({ HeaderComponent, RenderComponent, Data }) => {
           </ul>
         </div>
       ))}
+      {loading && <div className="loading-indicator">Loading...</div>}
     </div>
   );
 };

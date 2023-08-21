@@ -19,8 +19,8 @@ import {
 import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
-import ProfileImg from "../../UIComponents/ProfileImg";
 import { useAuthData } from "../../Shared/Reduxfetcher";
+import ProfileImg from "../../UIComponents/ProfileImg";
 
 const SelectInfluencers = () => {
   const dispatch = useDispatch();

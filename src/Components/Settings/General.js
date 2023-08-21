@@ -77,7 +77,6 @@ const General = () => {
     //   })
     //   .catch((err) => {});
   };
-  console.log(userSettings, "userSettings");
 
   function RemoveDuplicates(data) {
     // Create a Set to store unique objects
@@ -92,7 +91,6 @@ const General = () => {
       uniqueId = [...uniqueId, ele?.language_code];
       return ele;
     });
-    console.log(uniqueArray, "uniqueArrayuniqueArrayuniqueArray");
     return uniqueArray;
     // Use filter to iterate through the data and add unique objects to the Set
   }

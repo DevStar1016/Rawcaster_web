@@ -45,7 +45,7 @@ const EventValidaton = () => {
   const [RequestList, setRequestList] = useState([]);
   const [attendeesList, setattendeesList] = useState([]);
   const { meetingManager } = useMainContext();
-  const [isFetching, setisFetching] = useState(true);
+  const [isFetching, setisFetching] = useState(false);
   const audiovideo = useAudioVideo();
   const [notificationToast, setnotificationToast] = useState({
     show: false,
@@ -93,12 +93,12 @@ const EventValidaton = () => {
               userData.user_id === getusetId(eventdetails?.original_user_id)
             ) {
               ChimesendMessage(
-                { meetingId: eventdetails?.chime_meeting_id },
+                { refId: eventdetails?.reference_id },
                 CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
               );
             } else {
               ChimesendMessage(
-                { meetingId: eventdetails?.chime_meeting_id },
+                { refId: eventdetails?.reference_id },
                 CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
               );
             }
@@ -106,9 +106,9 @@ const EventValidaton = () => {
             ChimesendMessage(
               {
                 userId: userData?.user_id,
-                meetingId: eventdetails?.chime_meeting_id,
-                user_name: userData?.name,
-                user_img: userData?.profile_image,
+                refId: eventdetails?.reference_id,
+                name: userData?.name,
+                image: userData?.profile_image,
               },
               CHIME_SOCKET_EVENTS.JOIN_REQUEST
             );
@@ -185,7 +185,11 @@ const EventValidaton = () => {
   };
 
   return isWaitingRoom ? (
-    <WaitingRoom EventData={EventData} setisWaitingRoom={setisWaitingRoom} />
+    <WaitingRoom
+      EventData={EventData}
+      setisWaitingRoom={setisWaitingRoom}
+      context={contectValues}
+    />
   ) : (
     <>
       <Outlet context={contectValues} />

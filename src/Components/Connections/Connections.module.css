@@ -432,4 +432,8 @@ top: 0;
   .groupLists { min-height: auto !important; }
   .myconnectioin { max-height: inherit !important;     height : calc((100vh - 110px)/2) ;}
   .contactdiv .videoAd { display: none;}
+  .friendsmenu {
+    display: block;
+   
+  }
   }

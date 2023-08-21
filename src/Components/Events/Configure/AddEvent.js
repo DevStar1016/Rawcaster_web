@@ -53,6 +53,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
   const token = useAuthToken();
   const { userSettings, loginUserData } = useAuth();
+  const [isFetching, setisFetching] = useState([]);
   const [isCreating, setisCreating] = useState(false);
   const [isNextPage, setisNextPage] = useState(false);
   const [upgradePlanPopup, setupgradePlanPopup] = useState(false);
@@ -199,15 +200,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         .test("Mail Test", "Please Enter Invite Users", function (value) {
           const { event_type, event_invite_friends, event_invite_groups } =
             this.parent;
-          console.log(
-            typeof event_invite_friends,
-            event_invite_friends,
-            typeof event_invite_groups,
-            event_invite_groups,
-            event_type,
-            value,
-            "event_invite_friendsevent_invite_friends"
-          );
           if (parseInt(event_type) === 2) {
             if (value && JSON.parse(value)?.length > 0) {
               return true;
@@ -230,10 +222,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
               }
               return false;
             }
-            console.log("return false");
             return false;
           }
-          console.log("return overallfalse");
           return true;
         }),
     }),
@@ -353,12 +343,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     console.log("editandupdate api");
 
     function isFile(obj) {
-      return (
-        obj &&
-        typeof obj === "object" &&
-        obj.hasOwnProperty("type") &&
-        typeof obj.type === "string"
-      );
+      return obj instanceof File;
     }
     if (!isFile(liveEventData.event_melody)) {
       delete liveEventData["event_melody"];
@@ -367,6 +352,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     if (typeof liveEventData.event_banner === "string") {
       delete liveEventData["event_banner"];
     }
+
     editEventService(JSONtoformdata(filterValidObject(liveEventData)))
       .then((res) => {
         if (res.data.status === 1) {
@@ -475,6 +461,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         values,
         setValues,
         setFieldValue,
+        isFetching,
+        setisFetching,
       }}
     >
       <EventModal
@@ -485,6 +473,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
         isUpdate={data ? true : false}
         loading={isCreating}
         okBtnTitle={isNextPage ? null : "Next"}
+        isFetching={isFetching}
         onSuccess={() => {
           if (isNextPage) {
             handleSubmit();
@@ -506,10 +495,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
             ];
             validateForm().then((res) => {
               let validatedKeys = Object.keys(res);
-              console.log(
-                compareArrays(validatedKeys, requiredFields),
-                "requiredFields"
-              );
 
               if (compareArrays(validatedKeys, requiredFields)) {
                 const ErrorArray = compareArrays(validatedKeys, requiredFields);
@@ -532,8 +517,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
 
                   // document.getElementById("Alertdiv")?.focus();
                 }
-
-                console.log("requiredFields true");
               } else {
                 setisNextPage(true);
               }

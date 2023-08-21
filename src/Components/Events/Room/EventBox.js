@@ -17,7 +17,7 @@ import {
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
-import { Alert, Drawer, Spin, Tooltip } from "antd";
+import { Alert, Drawer, Layout, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
 import Reactions from "../Components/Reactions";
 import CommentBox from "./CommentBox";
@@ -31,6 +31,7 @@ import {
 
 const EventBox = () => {
   const userData = useAuthData();
+  const { Sider, Content } = Layout;
   const { isVideoEnabled } = useLocalVideo();
   const {
     isPinEnabled,
@@ -75,7 +76,7 @@ const EventBox = () => {
 
   const EventBoxOptions = ({ isYou, ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
 
     return (
@@ -158,13 +159,13 @@ const EventBox = () => {
 
   const CustomNamePlate = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
-    const { muted, videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
+    const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
     const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.userId)
     );
-    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.id);
+    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.userId);
     return (
       <div>
         <div className={classes.customNamePlate}>
@@ -186,13 +187,14 @@ const EventBox = () => {
 
   const GetDisplayComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.id) === parseInt(ele.externalUserId)
+      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
-    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.id);
+    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.userId);
     const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.id)
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.userId)
     );
+
     if (findAttendee) {
       if (isYou && isVideoEnabled) {
         return (
@@ -215,7 +217,7 @@ const EventBox = () => {
               <div className={classes.hostLogo}>Host</div>
             )}
             <RemoteVideo
-              id={findAttendee.id}
+              id={findAttendee.userId}
               className={classes.videoSec}
               name={<CustomNamePlate ele={ele} />}
               tileId={value}
@@ -267,114 +269,116 @@ const EventBox = () => {
 
   return (
     <div className={classes.mainContainer}>
-      <div
-        className={classes.video_grid}
-        style={{
-          width: !isFetching && isChatorParticipant ? "80" : "100%",
-        }}
-      >
-        {isReactions && (
-          <div
-            style={{
-              position: "absolute",
-              height: "88%",
-              width: "100%",
-              zIndex: 13,
-            }}
-          >
-            <Reactions />
-          </div>
-        )}
-        {isFetching ? (
-          <div className="h-100 w-100 d-flex justify-content-center align-items-center">
-            <Spin />
-          </div>
-        ) : (
-          <>
+      <Content>
+        <div
+          className={classes.video_grid}
+          style={{
+            width: !isFetching && isChatorParticipant ? "80" : "100%",
+          }}
+        >
+          {isReactions && (
             <div
-              className={
-                isPinEnabled && attendees.length >= 10
-                  ? classes.isPinavailablePinSec
-                  : classes.PinSec
-              }
-            >
-              {isPinEnabled && attendees.length >= 10 && (
-                <div className={classes.pinned_video}>
-                  <img src={userImg} />
-                  <p>{"Participant "}</p>
-                </div>
-              )}
-            </div>
-            <div
-              className={
-                isPinEnabled && attendees.length >= 10
-                  ? classes.isPinavailableSec
-                  : classes.ParticipantSec
-              }
               style={{
-                overflow: "scroll",
+                position: "absolute",
+                height: "88%",
+                width: "100%",
+                zIndex: 13,
               }}
             >
-              {isLocalUserSharing || sharingAttendeeId ? (
-                <div className={classes.full_container}>
-                  <ContentShare className={classes.Child} />
-                </div>
-              ) : (
-                <div className={`mx-auto ${getContainerClassName()}`}>
-                  {attendees.map((ele, index) => {
-                    return GetDisplayComponent({ ele });
-                  })}
-                </div>
-              )}
+              <Reactions />
             </div>
-          </>
-        )}
-        <ToastContainer position="top-end" className="eventpopupContainer">
-          <Toast
-            onClose={() => {
-              setnotificationToast({
-                show: false,
-                msg: null,
-                title: null,
-                type: null,
-                buttons: [],
-                icon: null,
-              });
-            }}
-            show={notificationToast.show}
-            autohide
-            delay={3000}
-          >
-            <Toast.Body
-              style={{
-                backgroundColor: "transparent",
-              }}
-            >
-              <Alert
-                icon={notificationToast.icon}
-                showIcon={notificationToast.icon}
+          )}
+          {isFetching ? (
+            <div className="h-100 w-100 d-flex justify-content-center align-items-center">
+              <Spin />
+            </div>
+          ) : (
+            <>
+              <div
+                className={
+                  isPinEnabled && attendees.length >= 10
+                    ? classes.isPinavailablePinSec
+                    : classes.PinSec
+                }
+              >
+                {isPinEnabled && attendees.length >= 10 && (
+                  <div className={classes.pinned_video}>
+                    <img src={userImg} />
+                    <p>{"Participant "}</p>
+                  </div>
+                )}
+              </div>
+              <div
+                className={
+                  isPinEnabled && attendees.length >= 10
+                    ? classes.isPinavailableSec
+                    : classes.ParticipantSec
+                }
                 style={{
-                  background: "#fff",
+                  overflow: "scroll",
                 }}
-                message={notificationToast.title}
-                description={notificationToast.msg}
-                onClose={() => {
-                  setnotificationToast({
-                    show: false,
-                    msg: null,
-                    title: null,
-                    type: null,
-                    buttons: [],
-                    icon: null,
-                  });
+              >
+                {isLocalUserSharing || sharingAttendeeId ? (
+                  <div className={classes.full_container}>
+                    <ContentShare className={classes.Child} />
+                  </div>
+                ) : (
+                  <div className={`mx-auto ${getContainerClassName()}`}>
+                    {attendees.map((ele, index) => {
+                      return GetDisplayComponent({ ele });
+                    })}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          <ToastContainer position="top-end" className="eventpopupContainer">
+            <Toast
+              onClose={() => {
+                setnotificationToast({
+                  show: false,
+                  msg: null,
+                  title: null,
+                  type: null,
+                  buttons: [],
+                  icon: null,
+                });
+              }}
+              show={notificationToast.show}
+              autohide
+              delay={3000}
+            >
+              <Toast.Body
+                style={{
+                  backgroundColor: "transparent",
                 }}
-                action={<>{notificationToast.buttons.map((ele) => ele)}</>}
-                closable
-              />
-            </Toast.Body>
-          </Toast>
-        </ToastContainer>
-      </div>
+              >
+                <Alert
+                  icon={notificationToast.icon}
+                  showIcon={notificationToast.icon}
+                  style={{
+                    background: "#fff",
+                  }}
+                  message={notificationToast.title}
+                  description={notificationToast.msg}
+                  onClose={() => {
+                    setnotificationToast({
+                      show: false,
+                      msg: null,
+                      title: null,
+                      type: null,
+                      buttons: [],
+                      icon: null,
+                    });
+                  }}
+                  action={<>{notificationToast.buttons.map((ele) => ele)}</>}
+                  closable
+                />
+              </Toast.Body>
+            </Toast>
+          </ToastContainer>
+        </div>
+      </Content>
       <div className="onlydes">
         {isChatorParticipant && (
           <div className={classes.participantsSec}>
@@ -388,6 +392,7 @@ const EventBox = () => {
           </div>
         )}
       </div>
+
       <div className="onlyMob eventContainer">
         <Drawer
           placement={"bottom"}

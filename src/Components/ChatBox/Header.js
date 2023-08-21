@@ -132,10 +132,6 @@ const Header = () => {
     }
   }, [GroupDetails]);
 
-  useEffect(() => {
-    console.log(SelectedContents, "SelectedContents from header");
-  }, [SelectedContents]);
-
   function copy() {
     const el = document.createElement("input");
     el.value = SelectedContents.join(" ");

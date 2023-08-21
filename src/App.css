@@ -652,6 +652,9 @@ padding: 0px !important;
     background:none !important;
     backdrop-filter:unset !important
   }
+  .chat_drawer .ant-drawer-body{
+padding: 0px !important;
+  }
 @media (max-width:768px) {
   .singleImage { max-width: 100% !important; }
   .onlydes { display: none !important; } 

@@ -10,14 +10,15 @@ import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 import { DeviceLabels } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
 
-const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
+const WaitingRoom = ({ EventData, setisWaitingRoom, context }) => {
+  const { setattendeesList } = context;
   const [audioPlay, setaudioPlay] = useState(false);
   const [loading, setloading] = useState(false);
   const { meetingManager } = useMainContext();
 
   const handleJoinMeeting = async (message) => {
-    const { Attendee, meeting } = message.result;
-
+    const { Attendee, meeting } = message.joinInfo.result;
+    setattendeesList(message.AttendeeList);
     const meetingSessionConfiguration = new MeetingSessionConfiguration(
       meeting,
       Attendee
@@ -37,13 +38,16 @@ const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
   };
 
   useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (message) => {
-      if (message.status === 200) {
-        handleJoinMeeting(message);
-      } else {
-        toast.error("Unable to Connect The Meeting");
+    ChimesocketListen.on(
+      CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
+      (response) => {
+        if (response.joinInfo) {
+          handleJoinMeeting(response);
+        } else {
+          toast.error(response.message);
+        }
       }
-    });
+    );
   }, []);
 
   return (
@@ -65,7 +69,7 @@ const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
               />
             </div>
             <div style={{ textAlign: "center" }}>
-              {EventData?.melodies.type === 3 ? (
+              {EventData?.melodies?.type === 3 ? (
                 <React.Fragment>
                   <img
                     src={
@@ -87,12 +91,20 @@ const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
                     {audioPlay ? (
                       <img
                         src={require("../../../Assets/Images/Events/music_stop.png")}
+                        onClick={() => {
+                          document.getElementById("audioDivID").pause();
+                          setaudioPlay(false);
+                        }}
                         alt="more"
                       ></img>
                     ) : (
                       <img
                         src={require("../../../Assets/Images/Events/music_play.png")}
                         alt="more"
+                        onClick={() => {
+                          document.getElementById("audioDivID").play();
+                          setaudioPlay(true);
+                        }}
                       ></img>
                     )}
                   </div>
@@ -113,14 +125,14 @@ const WaitingRoom = ({ EventData, setisWaitingRoom }) => {
                 </React.Fragment>
               ) : null}
 
-              {EventData?.melodies.type === 1 ? (
+              {EventData?.melodies?.type === 1 ? (
                 <img
                   src={EventData?.melodies.path}
                   alt="more"
                   style={{ maxHeight: "300px", maxWidth: "100%" }}
                 />
               ) : null}
-              {EventData?.melodies.type === 2 ? (
+              {EventData?.melodies?.type === 2 ? (
                 <video
                   width="100%"
                   controls

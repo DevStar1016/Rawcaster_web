@@ -44,7 +44,6 @@ import {
 } from "../../Store/Redux/Reducer/DashboardReducer";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
-import ProfileImg from "../../UIComponents/ProfileImg";
 import CommentsList from "./CommentsList";
 import classes from "./Nuggets.module.css";
 import {
@@ -61,6 +60,7 @@ import { blockunblockuserService } from "../../Services/ApiService";
 import { ReadoutSec, SeeTranslate } from "./Utility";
 import AgreedusersListModal from "../../Modal/Nugget/AgreedusersListModal";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
+import ProfileImg from "../../UIComponents/ProfileImg";
 
 const Post = ({
   ele,

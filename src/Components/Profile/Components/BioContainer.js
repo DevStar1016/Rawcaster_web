@@ -57,10 +57,6 @@ const BioContainer = ({ isLoginuser }) => {
   };
 
   useEffect(() => {
-    console.log(loginUserData, "loginUserDataloginUserData");
-  }, [loginUserData]);
-
-  useEffect(() => {
     if (profileData && influencerCategory.length !== 0) {
       setisAboutEdit(false);
       if (profileData?.influencer_category) {
