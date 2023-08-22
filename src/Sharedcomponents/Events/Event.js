@@ -77,8 +77,8 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
     ele.original_user_name
   } is inviting you to join a web event called ${ele.event_name} on ${
     shareEventDate(
-      utctoUserTimezone(ele.start_date_time, userSettings.time_zone)
-    ) + utctoUserTimezonewithAbbr(ele.start_date_time, userSettings.time_zone)
+      utctoUserTimezone(ele.start_date_time, userSettings?.time_zone)
+    ) + utctoUserTimezonewithAbbr(ele.start_date_time, userSettings?.time_zone)
   }. The link for this Rawcaster event is :`;
 
   const shareUrl = SHARE_URL + eventType + ele.reference_id;

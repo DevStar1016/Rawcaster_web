@@ -3,10 +3,12 @@ import DashboardReducer from "../Reducer/DashboardReducer";
 import AuthReducer from "../Reducer/AuthReducer";
 import NuggetReducer from "../Reducer/NuggetsReducer";
 import notificationReducer from "../Reducer/NotificationsReducer";
+import socketReducer from "../Reducer/SocketReducer";
 
 export const rootReducer = combineReducers({
   auth: AuthReducer,
   dashboard: DashboardReducer,
   nuggets: NuggetReducer,
   notification: notificationReducer,
+  socket: socketReducer,
 });

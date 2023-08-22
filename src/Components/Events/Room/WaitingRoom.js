@@ -1,54 +1,16 @@
 import React, { useEffect, useState } from "react";
 import classes from "./WaitingRoom.module.css";
-import {
-  ChimesendMessage,
-  ChimesocketListen,
-} from "../../../Services/SocketService";
-import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+
 import { useMainContext } from "../../../Shared/Context";
 import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 import { DeviceLabels } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addListener } from "../../../Store/Redux/Reducer/SocketReducer";
 
-const WaitingRoom = ({ EventData, setisWaitingRoom, context }) => {
-  const { setattendeesList } = context;
+const WaitingRoom = ({ EventData }) => {
   const [audioPlay, setaudioPlay] = useState(false);
   const [loading, setloading] = useState(false);
-  const { meetingManager } = useMainContext();
-
-  const handleJoinMeeting = async (message) => {
-    const { Attendee, meeting } = message.joinInfo.result;
-    setattendeesList(message.AttendeeList);
-    const meetingSessionConfiguration = new MeetingSessionConfiguration(
-      meeting,
-      Attendee
-    );
-
-    const meetingOptions = {
-      deviceLabels: DeviceLabels.AudioAndVideo,
-    };
-    try {
-      await meetingManager.join(meetingSessionConfiguration, meetingOptions);
-      await meetingManager.start();
-      setisWaitingRoom(false);
-    } catch (error) {
-      console.log(error);
-      toast.error("Unable to Connect The Meeting");
-    }
-  };
-
-  useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
-      (response) => {
-        if (response.joinInfo) {
-          handleJoinMeeting(response);
-        } else {
-          toast.error(response.message);
-        }
-      }
-    );
-  }, []);
 
   return (
     <div className={classes.contactBg}>

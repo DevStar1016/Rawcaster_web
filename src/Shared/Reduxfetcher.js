@@ -34,3 +34,7 @@ export const useNotification = () => {
 export const useProfileVerifyModal = () => {
   return useSelector((state) => state.dashboard.profileVerifyModalShow);
 };
+
+export const useSocket = () => {
+  return useSelector((state) => state.socket);
+};

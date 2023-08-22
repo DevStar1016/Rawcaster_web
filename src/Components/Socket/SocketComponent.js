@@ -7,8 +7,7 @@ import {
   handleDeleteGroupData,
   handleUpdateGroupData,
 } from "../../Store/Redux/Reducer/DashboardReducer";
-import store from "../../Store/Redux/Config/Store";
-import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
+import { store } from "../../Store/Redux/Config/Store";
 
 const SocketComponent = () => {
   const dispatch = useDispatch();
@@ -75,13 +74,6 @@ const SocketComponent = () => {
   };
 
   useEffect(() => {
-    ChimesocketListen.on("connect", () => {
-      console.log("Chime Socket Status", ChimesocketListen.connected);
-    });
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (value) => {
-      console.log("CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM:", value);
-    });
-
     socketListen.on("connect", () => {
       console.log("Socket connected");
     });

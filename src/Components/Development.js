@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { Alert, Button, notification } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
+import { addListener } from "../Store/Redux/Reducer/SocketReducer";
+import { useDispatch } from "react-redux";
 
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
@@ -11,10 +13,6 @@ const Development = () => {
   const [userId, setuserId] = useState("");
   const [NotificationApi, notificationcontextHolder] =
     notification.useNotification();
-
-  const handleClose = () => {
-    setShow(false);
-  };
 
   return (
     <div>
@@ -29,22 +27,16 @@ const Development = () => {
             setuserId(e.target.value);
           }}
         />
+
         <button
           className="mx-2"
           onClick={() => {
-            // window.open(`/room?meetingid=${MeetingId}`, "_blank", {
-            //   popup: true,
-            // });
+            window.open(`waitingroom/123`, "_blank", {
+              popup: true,
+            });
           }}
         >
           Join Meeting
-        </button>
-        <button
-          onClick={() => {
-            setShow(!show);
-          }}
-        >
-          Get Tags
         </button>
       </div>
       <ToastContainer position="bottom-end" className="eventpopupContainer">

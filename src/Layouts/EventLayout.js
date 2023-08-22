@@ -32,14 +32,13 @@ const EventLayout = () => {
   const { Header, Footer, Sider, Content } = Layout;
   const [userdetails, setuserdetails] = useState(null);
   const userData = useAuthData();
-  const { muted, toggleMute } = useToggleLocalMute();
   const [isReactions, setisReactions] = useState(false);
   const [EventMessages, setEventMessages] = useState([]);
   const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
-  const { isVideoEnabled, toggleVideo, setIsVideoEnabled } = useLocalVideo();
+
   const [isNewMessage, setisNewMessage] = useState(false);
 
   useEffect(() => {
@@ -64,39 +63,6 @@ const EventLayout = () => {
     });
     return { attendees: filterValidAttendees.filter((ele) => ele) };
   };
-
-  useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
-      async (message) => {
-        console.log(message, "message");
-        if (message.audio === false) {
-          toggleMute();
-        } else if (message.audio === true) {
-          Modal.confirm({
-            title: "Host requests that you unmute your microphone",
-            onOk() {
-              toggleMute();
-            },
-            onCancel() {},
-          });
-        } else if (message.video === false) {
-          toggleVideo();
-        } else if (message.video === true) {
-          Modal.confirm({
-            title: "Host requests that you turn on camera",
-            onOk() {
-              toggleVideo();
-            },
-            onCancel() {},
-          });
-        }
-      }
-    );
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
-    };
-  }, [attendeesList, muted, isVideoEnabled]);
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (data) => {
@@ -192,7 +158,7 @@ const EventLayout = () => {
           )}
         </Footer>
 
-        <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} />
+        {/* <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} /> */}
       </Layout>
     </div>
   );

@@ -48,3 +48,6 @@ export const useReferalContext = () => useContext(ReferalContext);
 
 export const ChatContext = createContext();
 export const useChatContext = () => useContext(ChatContext);
+
+export const EventRoomContext = createContext();
+export const useEventRoomContextContext = () => useContext(EventRoomContext);

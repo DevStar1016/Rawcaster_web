@@ -28,6 +28,7 @@ import {
   LocalMicrophoneComponent,
   MicrophoneComponent,
 } from "../Components/Utility";
+import { useEventRoomContextContext } from "../../../Shared/Context";
 
 const EventBox = () => {
   const userData = useAuthData();
@@ -42,8 +43,9 @@ const EventBox = () => {
     notificationToast,
     setnotificationToast,
     attendeesList,
-    RaiseHandUsers,
-  } = useLayoutContect();
+  } = useEventRoomContextContext();
+  const { RaiseHandUsers } = useLayoutContect();
+  console.log(useEventRoomContextContext(), useLayoutContect());
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
@@ -158,6 +160,7 @@ const EventBox = () => {
   };
 
   const CustomNamePlate = ({ ele }) => {
+    console.log(attendeesList, "attendeesList");
     const findAttendee = attendeesList.find(
       (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
@@ -184,15 +187,15 @@ const EventBox = () => {
       </div>
     );
   };
-
+  console.log(attendeesList, "attendeesList", RaiseHandUsers);
   const GetDisplayComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
+      (elem) => parseInt(elem?.userId) === parseInt(ele.externalUserId)
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
-    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.userId);
+    const isYou = parseInt(userData.user_id) === parseInt(findAttendee?.userId);
     const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.userId)
+      (elem) => parseInt(elem.user_id) === parseInt(findAttendee?.userId)
     );
 
     if (findAttendee) {

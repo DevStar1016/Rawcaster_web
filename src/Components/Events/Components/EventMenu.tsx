@@ -22,8 +22,9 @@ import {
   LocalMicrophoneComponent,
 } from "./Utility";
 import MoreBottomSheet from "./MoreBottomSheet";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
 
-const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
+const EventMenu = () => {
   const {
     isChatorParticipant,
     setisChatorParticipant,
@@ -32,20 +33,27 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
     EventData,
     RequestRef,
     handleExitMeeting,
+    attendeesList,
   }: any = useEventLayout();
+  const userData = useAuthData();
   const audiovideo = useAudioVideo();
   const { toggleContentShare } = useContentShareControls();
   const { isLocalUserSharing } = useContentShareState();
   const { confirm } = Modal;
-  const { isVideoEnabled, toggleVideo, setIsVideoEnabled } = useLocalVideo();
-  const { muted, toggleMute } = useToggleLocalMute();
+  const { isVideoEnabled } = useLocalVideo();
+  const { muted } = useToggleLocalMute();
   const audioinput = useAudioInputs();
   const audiooutput = useAudioOutputs();
   const videoinput = useVideoInputs();
   const [AudioSelectedDevice, setAudioSelectedDevice] = useState<any>(null);
   const [selectedDevice, setselectedDevice] = useState<any>(null);
   const [isMore, setisMore] = useState<Boolean>(false);
-  console.log(audiooutput.selectedDevice, "selectedDevice");
+
+  const getCurrentAttendee = () => {
+    return attendeesList.find(
+      (ele: any) => parseInt(ele.userId) === parseInt(userData.user_id)
+    );
+  };
 
   const DeviceList = (List: any, onSelect: any) => {
     return List.map((ele: any, index: any) => {
@@ -64,13 +72,6 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
     });
   };
 
-  const getisActiveRaiseHand = () => {
-    const findData = RaiseHandUsers.find(
-      (ele: any) => ele.id === userdetails?.id
-    );
-    return findData;
-  };
-  console.log(audiooutput.selectedDevice, "selectedDevice");
   return (
     <div className={styles.BottomContainer}>
       <div className={styles.startContainer}>
@@ -224,7 +225,7 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
         </div>
         <div className="onlydes"></div>
         <div className="onlyMob">
-          <HangupComponent userdetails={userdetails} />
+          <HangupComponent userdetails={getCurrentAttendee()} />
         </div>
 
         <div className={`${styles.Actionsec} onlyMob`}>
@@ -278,7 +279,7 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
         </div>
       </div>
       <div className={`${styles.endContainer} ${styles.onlydes} onlydes`}>
-        {userdetails?.isHost && (
+        {getCurrentAttendee()?.isHost && (
           <div className={styles.Actionsec}>
             <div className={styles.iconBox}>
               <i className={`${styles.present_icon} ${styles.icon}`}></i>
@@ -286,7 +287,7 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
             Allow
           </div>
         )}
-        {userdetails?.isHost && (
+        {getCurrentAttendee()?.isHost && (
           <div
             className={styles.Actionsec}
             onClick={() => {
@@ -302,38 +303,23 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
         <div
           className={styles.Actionsec}
           style={{
-            color: getisActiveRaiseHand() ? "#F2718D" : "#ffffff",
+            color: getCurrentAttendee().handRaised ? "#F2718D" : "#ffffff",
           }}
           onClick={() => {
-            if (getisActiveRaiseHand()) {
-              ChimesendMessage(
-                {
-                  user_id: userdetails?.userId,
-                  refId: EventData?.reference_id,
-                  raise_hand: false,
-                },
-                CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-              );
-              setRaiseHandUsers((pre) =>
-                pre.filter((ele) => ele.userId !== userdetails?.userId)
-              );
-            } else {
-              ChimesendMessage(
-                {
-                  user_id: userdetails?.userId,
-                  refId: EventData?.reference_id,
-                  raise_hand: true,
-                },
-                CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-              );
-              setRaiseHandUsers((pre) => [...pre, userdetails]);
-            }
+            ChimesendMessage(
+              {
+                refId: EventData?.reference_id,
+                userId: userData?.user_id,
+                status: !getCurrentAttendee().handRaised,
+              },
+              CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
+            );
           }}
         >
           <div className={styles.iconBox}>
             <i
               className={` ${
-                getisActiveRaiseHand()
+                getCurrentAttendee().handRaised
                   ? styles.raise_hand_active_icon
                   : styles.raise_hand_icon
               } ${styles.icon}`}
@@ -389,14 +375,14 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
               title: "Are you sure Do you want to Exit Meeting?",
               icon: <ExclamationCircleFilled />,
               onOk() {
-                handleExitMeeting(userdetails)
+                handleExitMeeting(getCurrentAttendee())
                   .then(() => {
                     ChimesendMessage(
                       {
-                        name: userdetails?.name,
-                        userId: userdetails?.userId,
+                        name: getCurrentAttendee()?.name,
+                        userId: getCurrentAttendee()?.userId,
                         refId: EventData?.reference_id,
-                        isHost: userdetails?.isHost,
+                        isHost: getCurrentAttendee()?.isHost,
                       },
                       CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
                     );
@@ -433,34 +419,18 @@ const EventMenu = ({ userdetails, RaiseHandUsers, setRaiseHandUsers }) => {
               <div className={styles.iconSec}>
                 <div
                   className={`${styles.iconContainer}  ${
-                    getisActiveRaiseHand() ? styles.activeiconContainer : ""
+                    getCurrentAttendee().handRaised
+                      ? styles.activeiconContainer
+                      : ""
                   }`}
                   onClick={() => {
-                    if (getisActiveRaiseHand()) {
-                      ChimesendMessage(
-                        {
-                          user_id: userdetails?.userId,
-                          refId: EventData?.reference_id,
-                          raise_hand: false,
-                        },
-                        CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                      );
-                      setRaiseHandUsers((pre: any) =>
-                        pre.filter(
-                          (ele: any) => ele.userId !== userdetails?.userId
-                        )
-                      );
-                    } else {
-                      ChimesendMessage(
-                        {
-                          user_id: userdetails?.userId,
-                          refId: EventData?.reference_id,
-                          raise_hand: true,
-                        },
-                        CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                      );
-                      setRaiseHandUsers((pre: any) => [...pre, userdetails]);
-                    }
+                    ChimesendMessage(
+                      {
+                        refId: EventData?.reference_id,
+                        userId: userData?.user_id,
+                      },
+                      CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
+                    );
                   }}
                 >
                   <i

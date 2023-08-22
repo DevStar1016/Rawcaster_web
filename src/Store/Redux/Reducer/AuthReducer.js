@@ -34,6 +34,9 @@ export const { actions, reducer } = createSlice({
     handleisSuccess: (state, action) => {
       state.isSuccess = action.payload;
     },
+    handleisLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
     handleToken: (state, action) => {
       state.loginToken = action.payload;
     },
@@ -61,6 +64,7 @@ export const { actions, reducer } = createSlice({
 
 export const {
   handleLoginData,
+  handleisLoading,
   handleToken,
   handleuserSettings,
   handleisSuccess,
