@@ -5,6 +5,7 @@ import { AuthRoute } from "./AuthRoutes";
 import { DashboardRoute } from "./DashboardRoute";
 import { EventRoute } from "./EventRoute";
 import { ProfileRoute } from "./ProfileRoutes";
+import ChimeSocketComponent from "../Components/Socket/ChimeSocketComponent";
 
 function ErrorBoundary() {
   let error = useRouteError();
@@ -21,12 +22,13 @@ export const routerpaths = [
     children: [
       {
         path: "/",
-        children: [
-          ...AuthRoute,
-          ...DashboardRoute,
-          ...ProfileRoute,
-          ...EventRoute,
-        ],
+        element: <ChimeSocketComponent />,
+        children: [...AuthRoute, ...DashboardRoute, ...ProfileRoute],
+      },
+      {
+        path: "/",
+        element: <ChimeSocketComponent />,
+        children: [...EventRoute],
       },
     ],
   },

@@ -1,6 +1,7 @@
 import React from "react";
 import EventBox from "./EventBox";
 import Reactions from "../Components/Reactions";
+import EventLayoutListener from "../../Socket/EventLayoutListener";
 
 const EventRoom = () => {
   return (

@@ -329,11 +329,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_id: data?.event_id,
       event_start_date: utcDateTime.format("YYYY-MM-DD"),
       event_start_time: utcDateTime.format("HH:mm"),
-      event_invite_mails: values?.event_invite_mails?.includes("[")
-        ? JSON.parse(values?.event_invite_mails)?.length > 0
-          ? JSON.parse(values?.event_invite_mails)?.join(",")
-          : values?.event_invite_mails
-        : values?.event_invite_mails,
+      // event_invite_mails: values?.event_invite_mails?.includes("[")
+      //   ? JSON.parse(values?.event_invite_mails)?.length > 0
+      //     ? JSON.parse(values?.event_invite_mails)?.join(",")
+      //     : values?.event_invite_mails
+      //   : values?.event_invite_mails,
       delete_invite_mails: values?.delete_invite_mails?.includes("[")
         ? JSON.parse(values?.delete_invite_mails)?.length > 0
           ? JSON.parse(values?.delete_invite_mails)?.join(",")
@@ -553,7 +553,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                       <InviteEmailComponent
                         value={values.event_invite_mails}
                         onResult={(val) => {
-                          setFieldValue("event_invite_mails", val.toString());
+                          setFieldValue(
+                            "event_invite_mails",
+                            JSON.stringify(val)
+                          );
                         }}
                         onDeleteData={(delete_arr) => {
                           if (delete_arr.length !== 0) {

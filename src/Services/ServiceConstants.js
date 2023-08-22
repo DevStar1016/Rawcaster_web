@@ -24,6 +24,7 @@ export const SOCKET_EVENTS = {
 };
 
 export const CHIME_SOCKET_EVENTS = {
+  CONNECT_SOCKET: "connect",
   JOIN_SOCKET: "joinSocket",
   CREATE_MEETING_ROOM: "createMeetingRoom",
   JOIN_MEETING_ROOM: "joinMeetingRoom",
@@ -42,4 +43,17 @@ export const CHIME_SOCKET_EVENTS = {
   USER_LEFTED_MEETING: "userLefted",
   MEETING_RAISE_HAND: "raiseHand",
   NEW_USER_JOINED_MEETING: "newUserJoined",
+  RENAME_USER: "renameUser",
+  RENAME_USER_ANSWER: "renameUserAnswer",
+  DISABLE_SHARE_SCREEN: "disableShareScreen",
+  DISABLE_SHARE_SCREEN_ANSWER: "disableShareScreenAnswer",
+  ENABLE_SHARE_SCREEN: "enableShareScreen",
+  ENABLE_SHARE_SCREEN_ANSWER: "enableShareScreenAnswer",
+  ENABLE_AUDIO: "enableAudio",
+  ENABLE_AUDIO_ANSWER: "enableAudioAnswer",
+  DISABLE_AUDIO: "disableAudio",
+  DISABLE_AUDIO_ANSWER: "disableAudioAnswer",
+  UPDATE_LAYOUT: "updateLayout",
+  UPDATE_LAYOUT_ANSWER: "updateLayoutAnswer",
+  DISCONNECT_SOCKET: "disconnect",
 };

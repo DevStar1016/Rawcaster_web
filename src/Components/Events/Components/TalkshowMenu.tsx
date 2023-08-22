@@ -204,9 +204,7 @@ const TalkshowMenu = ({
             if (getisActiveRaiseHand()) {
               ChimesendMessage(
                 {
-                  user_id: userdetails?.id,
-                  meetingId: EventData?.chime_meeting_id,
-                  raise_hand: false,
+                  refId: EventData?.reference_id,
                 },
                 CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
               );
@@ -216,9 +214,7 @@ const TalkshowMenu = ({
             } else {
               ChimesendMessage(
                 {
-                  user_id: userdetails?.id,
-                  meetingId: EventData?.chime_meeting_id,
-                  raise_hand: true,
+                  refId: EventData?.reference_id,
                 },
                 CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
               );
@@ -329,9 +325,7 @@ const TalkshowMenu = ({
                       if (getisActiveRaiseHand()) {
                         ChimesendMessage(
                           {
-                            user_id: userdetails?.id,
-                            meetingId: EventData?.chime_meeting_id,
-                            raise_hand: false,
+                            refId: EventData?.reference_id,
                           },
                           CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
                         );
@@ -341,9 +335,7 @@ const TalkshowMenu = ({
                       } else {
                         ChimesendMessage(
                           {
-                            user_id: userdetails?.id,
-                            meetingId: EventData?.chime_meeting_id,
-                            raise_hand: true,
+                            refId: EventData?.reference_id,
                           },
                           CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
                         );

@@ -168,25 +168,16 @@ export const fetchuserSettingsbyToken = createAsyncThunk(
 
 export const fetchuserInfobyToken = createAsyncThunk(
   "dashboard/fetchuserInfobyToken",
-  async (token, { dispatch }) => {
+  async (token, { dispatch, getState }) => {
+    const { auth } = getState();
+    const isSuccess = auth.isSuccess;
     let profileData = {
       token: token,
       auth_code: getAuthToken(token),
     };
     try {
       const { data } = await getProfileService(JSONtoformdata(profileData));
-      // const getusetId = () => {
-      //   switch (data.profile.user_id) {
-      //     case 88:
-      //       return 11;
-      //     case 67:
-      //       return 22;
-      //     case 21:
-      //       return 33;
-      //     default:
-      //       return data.profile.user_id;
-      //   }
-      // };
+
       if (data.status === 1) {
         const finalData = {
           ...data.profile,
@@ -195,7 +186,15 @@ export const fetchuserInfobyToken = createAsyncThunk(
           name: decodeHtml(data.profile.name),
           user_id: getusetId(data.profile.user_id),
         };
+        // ChimesocketListen.connect();
         connectChimeMessaging({ userId: data.profile.chime_user_id });
+        if (!isSuccess) {
+          ChimesendMessage(
+            { userId: data.profile.user_id },
+            CHIME_SOCKET_EVENTS.JOIN_SOCKET
+          );
+        }
+
         dispatch(
           handleNotificationUnreadCount(data.profile.unread_notification_count)
         );

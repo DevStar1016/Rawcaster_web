@@ -1,77 +1,142 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { ChimesocketListen } from "../../../Services/SocketService";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
-import { getAttendeesFromMeetingService } from "../../../Services/ApiService";
-import { useAuthToken } from "../../../Shared/Reduxfetcher";
-import { JSONtoformdata } from "../../../Shared/Utility";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
+import { useEventRoomContextContext } from "../../../Shared/Context";
+import {
+  useLocalVideo,
+  useToggleLocalMute,
+} from "amazon-chime-sdk-component-library-react";
 
-const MeetingManagerComponent = ({ setRaiseHandUsers }) => {
-  const token = useAuthToken();
+const MeetingManagerComponent = () => {
   const {
-    setRequestList,
     RequestRef,
-    setattendeesList,
-    attendeesList,
-    EventData,
-    setisFetching,
-    RaiseHandUsers,
     setnotificationToast,
     setisChatorParticipant,
-  } = useLayoutContect();
+    handleJoinMeeting,
+    setEventData,
+    setattendeesList,
+  } = useEventRoomContextContext();
+  const { toggleVideo, muted } = useLocalVideo();
+  const { toggleMute, isVideoEnabled } = useToggleLocalMute();
+
+  const onReceiveMessage = (e) => {
+    const { key, newValue } = e;
+    if (newValue) {
+      console.log(key, newValue, "SOCKET_EVENT");
+      switch (key) {
+        case "EventData":
+          try {
+            const eventdetails = JSON.parse(newValue);
+            setEventData(eventdetails);
+          } catch (error) {
+            console.log("Unable to Fetch meeting");
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER:
+          try {
+            const requestanswerDetails = JSON.parse(newValue);
+            if (requestanswerDetails.joinInfo) {
+              handleJoinMeeting(requestanswerDetails);
+            } else {
+              console.log(requestanswerDetails.message);
+            }
+          } catch (error) {
+            console.log("Unable to Fetch meeting");
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER:
+          try {
+            const user_data = JSON.parse(newValue);
+            setnotificationToast({
+              show: true,
+              msg: `${user_data?.name} wants to join this meeting`,
+              title: null,
+              type: null,
+              buttons: [
+                <Button
+                  onClick={() => {
+                    setisChatorParticipant("participant");
+                  }}
+                >
+                  View
+                </Button>,
+              ],
+              icon: null,
+            });
+            RequestRef.current.push(user_data);
+          } catch (error) {
+            console.log(error, "JOIN_REQUEST_FROM_USER ERR");
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING:
+          try {
+            const user_data = JSON.parse(newValue);
+            setnotificationToast({
+              show: true,
+              msg: `${user_data?.name} wants to join this meeting`,
+              title: null,
+              type: null,
+              buttons: [
+                <Button
+                  onClick={() => {
+                    setisChatorParticipant("participant");
+                  }}
+                >
+                  View
+                </Button>,
+              ],
+              icon: null,
+            });
+            setattendeesList((pre) => [...pre, user_data]);
+          } catch (error) {
+            console.log(error, "JOIN_REQUEST_FROM_USER ERR");
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND:
+          try {
+            const user_data = JSON.parse(newValue);
+            console.log(user_data);
+          } catch (error) {}
+          break;
+        case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
+          try {
+            const message = JSON.parse(newValue);
+
+            if (message.audio === false) {
+              toggleMute();
+            } else if (message.audio === true) {
+              Modal.confirm({
+                title: "Host requests that you unmute your microphone",
+                onOk() {
+                  toggleMute();
+                },
+                onCancel() {},
+              });
+            } else if (message.video === false) {
+              toggleVideo();
+            } else if (message.video === true) {
+              Modal.confirm({
+                title: "Host requests that you turn on camera",
+                onOk() {
+                  toggleVideo();
+                },
+                onCancel() {},
+              });
+            }
+          } catch (error) {}
+          break;
+        default:
+          break;
+      }
+    }
+  };
 
   useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
-      (user_data) => {
-        console.log(user_data, "user_data");
-        setnotificationToast({
-          show: true,
-          msg: `${user_data?.name} wants to join this meeting`,
-          title: null,
-          type: null,
-          buttons: [
-            <Button
-              onClick={() => {
-                setisChatorParticipant("participant");
-              }}
-            >
-              View
-            </Button>,
-          ],
-          icon: null,
-        });
-
-        RequestRef.current.push(user_data);
-        // setRequestList((pre) => [...pre, user_data]);
-      }
-    );
+    window.addEventListener("storage", onReceiveMessage);
     return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER);
+      window.removeEventListener("storage", onReceiveMessage);
     };
-  }, []);
-
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND, (data) => {
-      if (data.raise_hand) {
-        setRaiseHandUsers((pre) => [...pre, data]);
-      } else {
-        setRaiseHandUsers((pre) =>
-          pre.filter((ele) => ele.user_id !== data?.user_id)
-        );
-      }
-    });
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND);
-    };
-  }, [RaiseHandUsers]);
-
-  // useEffect(() => {
-  //   if (token && EventData?.chime_meeting_id) {
-  //     getAttendees();
-  //   }
-  // }, [EventData, token]);
+  }, [muted, isVideoEnabled]);
 
   return <div></div>;
 };

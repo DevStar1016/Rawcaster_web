@@ -7,7 +7,7 @@ import {
   useRouteLoaderData,
 } from "react-router";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
-import { useMainContext } from "../../../Shared/Context";
+import { EventRoomContext, useMainContext } from "../../../Shared/Context";
 import {
   ExitMeetingService,
   viewEventsService,
@@ -21,11 +21,14 @@ import WaitingRoom from "./WaitingRoom";
 import { getusetId } from "../../../Shared/Utility";
 import { Button, notification } from "antd";
 import {
+  DeviceLabels,
   useAudioVideo,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
 import { UserOutlined } from "@ant-design/icons";
+import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
+import MeetingManagerComponent from "./MeetingManagerComponent";
 
 export function useEventLayout() {
   return useOutletContext();
@@ -36,14 +39,12 @@ const EventValidaton = () => {
   const [EventData, setEventData] = useState(null);
   const [isChatorParticipant, setisChatorParticipant] = useState(null);
   const [isPinEnabled, setisPinEnabled] = useState(false);
-  const navigate = useNavigate();
-  const { event_id } = useParams();
-  const userData = useAuthData();
   const token = useAuthToken();
 
   const [isWaitingRoom, setisWaitingRoom] = useState(true);
   const [RequestList, setRequestList] = useState([]);
   const [attendeesList, setattendeesList] = useState([]);
+  const [MeetingSettings, setMeetingSettings] = useState(null);
   const { meetingManager } = useMainContext();
   const [isFetching, setisFetching] = useState(false);
   const audiovideo = useAudioVideo();
@@ -74,95 +75,25 @@ const EventValidaton = () => {
     });
   };
 
-  useEffect(() => {
-    if (userData && token && meetingManager.meetingStatus === 0) {
-      let formData = new FormData();
-      formData.append("token", token);
-      formData.append("event_id", event_id);
-      viewEventsService(formData)
-        .then((response) => {
-          if (response.data.status === 1) {
-            const eventdetails = response.data.event_detail;
-            setEventData(eventdetails);
-            ChimesocketListen.connect();
-            ChimesendMessage(
-              { userId: userData.user_id },
-              CHIME_SOCKET_EVENTS.JOIN_SOCKET
-            );
-            if (
-              userData.user_id === getusetId(eventdetails?.original_user_id)
-            ) {
-              ChimesendMessage(
-                { refId: eventdetails?.reference_id },
-                CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
-              );
-            } else {
-              ChimesendMessage(
-                { refId: eventdetails?.reference_id },
-                CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
-              );
-            }
-
-            ChimesendMessage(
-              {
-                userId: userData?.user_id,
-                refId: eventdetails?.reference_id,
-                name: userData?.name,
-                image: userData?.profile_image,
-              },
-              CHIME_SOCKET_EVENTS.JOIN_REQUEST
-            );
-          } else {
-            navigate(-1);
-          }
-        })
-        .catch((error) => {
-          navigate(-1);
-        });
+  const handleJoinMeeting = async (message) => {
+    const { Attendee, meeting } = message.joinInfo.result;
+    setattendeesList(message.AttendeeList);
+    setMeetingSettings(message.meetingSetting);
+    const meetingSessionConfiguration = new MeetingSessionConfiguration(
+      meeting,
+      Attendee
+    );
+    const meetingOptions = {
+      deviceLabels: DeviceLabels.AudioAndVideo,
+    };
+    try {
+      await meetingManager.join(meetingSessionConfiguration, meetingOptions);
+      await meetingManager.start();
+      setisWaitingRoom(false);
+    } catch (error) {
+      toast.error("Unable to Connect The Meeting");
     }
-  }, [event_id, token, userData]);
-
-  useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
-      (user_data) => {
-        setnotificationToast({
-          show: true,
-          msg: `${user_data.name} Joined Meeting`,
-          title: null,
-          buttons: [<Button>View</Button>],
-          icon: <UserOutlined />,
-        });
-        setattendeesList((pre) => [...pre, user_data]);
-      }
-    );
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING);
-    };
-  }, [attendeesList]);
-
-  useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.USER_LEFTED_MEETING,
-      (user_data) => {
-        console.log("userdata", user_data);
-        setnotificationToast({
-          show: true,
-          msg: `${user_data.name} Lefted Meeting`,
-          title: null,
-          buttons: [<Button>View</Button>],
-          icon: <UserOutlined />,
-        });
-
-        setattendeesList((pre) =>
-          pre.filter((ele) => ele.id !== user_data.userId)
-        );
-      }
-    );
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.USER_LEFTED_MEETING);
-    };
-  }, [attendeesList]);
+  };
 
   const contectValues = {
     isPinEnabled,
@@ -182,18 +113,28 @@ const EventValidaton = () => {
     handleExitMeeting,
     notificationToast,
     setnotificationToast,
+    handleJoinMeeting,
+    MeetingSettings,
+    setMeetingSettings,
   };
 
-  return isWaitingRoom ? (
-    <WaitingRoom
-      EventData={EventData}
-      setisWaitingRoom={setisWaitingRoom}
-      context={contectValues}
-    />
-  ) : (
-    <>
-      <Outlet context={contectValues} />
-    </>
+  return (
+    <EventRoomContext.Provider value={contectValues}>
+      <>
+        <MeetingManagerComponent />
+        {isWaitingRoom ? (
+          <WaitingRoom
+            EventData={EventData}
+            setisWaitingRoom={setisWaitingRoom}
+            context={contectValues}
+          />
+        ) : (
+          <>
+            <Outlet context={contectValues} />
+          </>
+        )}
+      </>
+    </EventRoomContext.Provider>
   );
 };
 
