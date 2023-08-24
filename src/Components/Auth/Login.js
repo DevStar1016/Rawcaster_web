@@ -28,9 +28,9 @@ import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 const validationSchema = yup.object().shape({
   username: yup
     .string()
-    .min(5, "Login ID Must be atleast 5 Characters")
+    .min(5, "Email or Phone Number Must be atleast 5 Characters")
     // .matches(LOGIN_ID, "Please Enter Valid Login ID")
-    .required(`Please input your Login ID!`),
+    .required(`Please input your Email or Phone Number!`),
   password: yup
     .string()
     // .matches(

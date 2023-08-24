@@ -55,5 +55,9 @@ export const CHIME_SOCKET_EVENTS = {
   DISABLE_AUDIO_ANSWER: "disableAudioAnswer",
   UPDATE_LAYOUT: "updateLayout",
   UPDATE_LAYOUT_ANSWER: "updateLayoutAnswer",
+  END_MEETING: "endMeeting",
+  END_MEETING_ANSWER: "endMeetingAnswer",
+  KICK_USER: "kickUser",
+  KICK_USER_ANSWER: "kickUserAnswer",
   DISCONNECT_SOCKET: "disconnect",
 };

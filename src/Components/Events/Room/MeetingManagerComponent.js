@@ -1,11 +1,15 @@
 import { useEffect } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Button, Modal } from "antd";
-import { useEventRoomContextContext } from "../../../Shared/Context";
+import { useEventRoomContext } from "../../../Shared/Context";
 import {
   useLocalVideo,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
+import { EndAttendeeMeeting } from "../Components/Methods";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { defaultVolume } from "../Configure/Constants";
+import { MessageOutlined } from "@ant-design/icons";
 
 const MeetingManagerComponent = () => {
   const {
@@ -14,23 +18,25 @@ const MeetingManagerComponent = () => {
     setisChatorParticipant,
     handleJoinMeeting,
     setEventData,
+    EventData,
     setattendeesList,
-  } = useEventRoomContextContext();
+    setRequestStatusMessage,
+    setEventMessages,
+    EventMessages,
+  } = useEventRoomContext();
+  const userData = useAuthData();
   const { toggleVideo, muted } = useLocalVideo();
   const { toggleMute, isVideoEnabled } = useToggleLocalMute();
 
   const onReceiveMessage = (e) => {
     const { key, newValue } = e;
     if (newValue) {
-      console.log(key, newValue, "SOCKET_EVENT");
       switch (key) {
         case "EventData":
           try {
             const eventdetails = JSON.parse(newValue);
             setEventData(eventdetails);
-          } catch (error) {
-            console.log("Unable to Fetch meeting");
-          }
+          } catch (error) {}
           break;
         case CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER:
           try {
@@ -38,11 +44,9 @@ const MeetingManagerComponent = () => {
             if (requestanswerDetails.joinInfo) {
               handleJoinMeeting(requestanswerDetails);
             } else {
-              console.log(requestanswerDetails.message);
+              setRequestStatusMessage(requestanswerDetails.message);
             }
-          } catch (error) {
-            console.log("Unable to Fetch meeting");
-          }
+          } catch (error) {}
           break;
         case CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER:
           try {
@@ -64,38 +68,151 @@ const MeetingManagerComponent = () => {
               icon: null,
             });
             RequestRef.current.push(user_data);
-          } catch (error) {
-            console.log(error, "JOIN_REQUEST_FROM_USER ERR");
-          }
+          } catch (error) {}
           break;
         case CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING:
           try {
             const user_data = JSON.parse(newValue);
             setnotificationToast({
               show: true,
-              msg: `${user_data?.name} wants to join this meeting`,
+              msg: `${user_data?.name} Joined`,
               title: null,
               type: null,
-              buttons: [
-                <Button
-                  onClick={() => {
-                    setisChatorParticipant("participant");
-                  }}
-                >
-                  View
-                </Button>,
-              ],
+              buttons: [],
               icon: null,
             });
-            setattendeesList((pre) => [...pre, user_data]);
-          } catch (error) {
-            console.log(error, "JOIN_REQUEST_FROM_USER ERR");
-          }
+            setattendeesList((pre) => [
+              ...pre,
+              { ...user_data, volume: defaultVolume },
+            ]);
+          } catch (error) {}
           break;
         case CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND:
           try {
             const user_data = JSON.parse(newValue);
-            console.log(user_data);
+
+            const raiseHandUser = user_data.UserData;
+            if (
+              raiseHandUser.handRaised &&
+              parseInt(raiseHandUser.userId) !== parseInt(userData.user_id)
+            ) {
+              setnotificationToast({
+                show: true,
+                msg: `${raiseHandUser?.name} Raised Hand`,
+                title: null,
+                type: null,
+                buttons: [],
+                icon: null,
+              });
+            }
+            setattendeesList((pre) => {
+              const targetIndex = pre.findIndex(
+                (item) => item.userId === raiseHandUser.userId
+              );
+              if (targetIndex !== -1) {
+                const newArray = [...pre];
+                newArray.splice(targetIndex, 1, {
+                  ...raiseHandUser,
+                  volume: defaultVolume,
+                });
+                return newArray;
+              } else {
+                return pre;
+              }
+            });
+          } catch (error) {}
+          break;
+        case CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER:
+          try {
+            const user_data = JSON.parse(newValue);
+            const renamedUser = user_data.updatedUser;
+            setattendeesList((pre) => {
+              const targetIndex = pre.findIndex(
+                (item) => item.userId === renamedUser.userId
+              );
+              if (targetIndex !== -1) {
+                const newArray = [...pre];
+                newArray.splice(targetIndex, 1, {
+                  ...renamedUser,
+                  volume: defaultVolume,
+                });
+                return newArray;
+              } else {
+                return pre;
+              }
+            });
+          } catch (error) {}
+          break;
+        case CHIME_SOCKET_EVENTS.END_MEETING_ANSWER:
+          try {
+            const end_data = JSON.parse(newValue);
+            if (end_data.ended) {
+              const endData = { message: "Meeting Has Been Ended !" };
+              EndAttendeeMeeting(endData);
+            }
+          } catch (error) {}
+          break;
+        // case CHIME_SOCKET_EVENTS.SINGLE_USER_MSG:
+        //   try {
+        //     const message_data = JSON.parse(newValue);
+        //     if (parseInt(message_data.userId) !== parseInt(userData.user_id)) {
+        //       setnotificationToast({
+        //         show: true,
+        //         msg: message_data.message,
+        //         title: `${message_data.name} ${
+        //           message_data.isPrivate ? "(Private)" : ""
+        //         }`,
+        //         icon: <MessageOutlined />,
+        //         buttons: [],
+        //       });
+        //     }
+        //     setEventMessages((pre) => [
+        //       {
+        //         ...message_data,
+        //         refId: EventData?.reference_id,
+        //       },
+        //       ...pre,
+        //     ]);
+        //   } catch (error) {}
+        //   break;
+        case CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG:
+          try {
+            const message_data = JSON.parse(newValue);
+            if (
+              parseInt(message_data.from_user_id) !== parseInt(userData.user_id)
+            ) {
+              setnotificationToast({
+                show: true,
+                msg: message_data.message,
+                title: `${message_data.name} ${
+                  message_data.isPrivate ? "(Private)" : ""
+                }`,
+                icon: <MessageOutlined />,
+                buttons: [],
+              });
+            }
+            setEventMessages((pre) => [
+              {
+                ...message_data,
+                refId: EventData?.reference_id,
+              },
+              ...pre,
+            ]);
+          } catch (error) {}
+          break;
+        case CHIME_SOCKET_EVENTS.KICK_USER_ANSWER:
+          try {
+            const kick_data = JSON.parse(newValue);
+            const kickeduser = kick_data.kickedUser;
+            if (
+              kick_data.statusCode === 1 &&
+              parseInt(kickeduser.userId) === parseInt(userData.user_id)
+            ) {
+              const endData = {
+                message: "Someone removed you from this meeting !",
+              };
+              EndAttendeeMeeting(endData);
+            }
           } catch (error) {}
           break;
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
@@ -136,7 +253,7 @@ const MeetingManagerComponent = () => {
     return () => {
       window.removeEventListener("storage", onReceiveMessage);
     };
-  }, [muted, isVideoEnabled]);
+  }, [muted, isVideoEnabled, EventMessages]);
 
   return <div></div>;
 };

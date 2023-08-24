@@ -50,4 +50,4 @@ export const ChatContext = createContext();
 export const useChatContext = () => useContext(ChatContext);
 
 export const EventRoomContext = createContext();
-export const useEventRoomContextContext = () => useContext(EventRoomContext);
+export const useEventRoomContext = () => useContext(EventRoomContext);

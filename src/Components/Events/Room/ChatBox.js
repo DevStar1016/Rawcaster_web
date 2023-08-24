@@ -26,11 +26,12 @@ const ChatBox = () => {
     EventMessages,
     userdetails,
     EventData,
-    setEventMessages,
+
     useAttendeesList,
   } = useLayoutContect();
   const { attendees } = useAttendeesList();
   const [isEmoji, setisEmoji] = useState(false);
+  console.log(EventMessages, "EventMessages");
 
   const [ChatMessage, setChatMessage] = useState("");
   const initialMessages = [
@@ -45,29 +46,21 @@ const ChatBox = () => {
 
   const getDropdownmembers = () => {
     const filter_current_user = attendees.filter(
-      (ele) => parseInt(ele.id) !== parseInt(userdetails?.id)
+      (ele) => parseInt(ele.userId) !== parseInt(userdetails?.userId)
     );
     return filter_current_user.map((ele) => {
-      return { key: ele.id, label: ele.name };
+      return { key: ele.userId, label: ele.name };
     });
   };
 
   const handleSendMessage = (message) => {
     if (SelectedMembers.key === 0) {
-      setEventMessages((pre) => [
-        {
-          ...userdetails,
-          meetingId: EventData?.chime_meeting_id,
-          message: message ? message : ChatMessage,
-          isPrivate: false,
-        },
-        ...pre,
-      ]);
       ChimesendMessage(
         {
           ...userdetails,
-          meetingId: EventData?.chime_meeting_id,
+          refId: EventData?.reference_id,
           message: message ? message : ChatMessage,
+          from_user_id: userdetails.userId,
           isPrivate: false,
         },
         CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_MEETING_ROOM
@@ -80,27 +73,17 @@ const ChatBox = () => {
 
   const handleSendPrivateMessage = (message) => {
     const finduser = attendees.find(
-      (ele) => parseInt(ele.id) === parseInt(SelectedMembers.key)
+      (ele) => parseInt(ele.userId) === parseInt(SelectedMembers.key)
     );
     if (finduser) {
-      setEventMessages((pre) => [
-        {
-          ...userdetails,
-          meetingId: EventData?.chime_meeting_id,
-          message: message ? message : ChatMessage,
-          isPrivate: true,
-          userId: finduser.id,
-          send_to: finduser,
-        },
-        ...pre,
-      ]);
       ChimesendMessage(
         {
           ...userdetails,
-          meetingId: EventData?.chime_meeting_id,
+          refId: EventData?.reference_id,
           message: message ? message : ChatMessage,
           isPrivate: true,
-          userId: finduser.id,
+          from_user_id: userdetails.userId,
+          userId: finduser.userId,
           send_to: finduser,
         },
         CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_SINGLE_USER
@@ -109,6 +92,7 @@ const ChatBox = () => {
       setisEmoji(false);
     }
   };
+  console.log(EventMessages, "EventMessages");
 
   return (
     <Layout
@@ -139,7 +123,8 @@ const ChatBox = () => {
           {EventMessages.map((ele) => (
             <div
               className={`${classes.messageContainer} ${
-                ele.id === userData?.user_id && classes.usermessageContainer
+                ele.from_user_id === userData?.user_id &&
+                classes.usermessageContainer
               }`}
             >
               {ele.isPrivate && (
@@ -149,7 +134,7 @@ const ChatBox = () => {
               )}
               <div
                 className={`${classes.message} ${
-                  ele.id === userData?.user_id && classes.usermessage
+                  ele.from_user_id === userData?.user_id && classes.usermessage
                 }`}
               >
                 <img src={defaultprofileImg} />

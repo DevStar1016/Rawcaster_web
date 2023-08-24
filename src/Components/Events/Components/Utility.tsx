@@ -12,6 +12,8 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { Modal } from "antd";
 import { useEventLayout } from "../Room/EventValidaton";
 import { toast } from "react-hot-toast";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { EndMeeting, ExitMeeting } from "./Methods";
 
 export const MicrophoneComponent = ({
   ele,
@@ -197,34 +199,30 @@ export const VolumeStatusComponent = ({
   );
 };
 
-export const HangupComponent = ({ userdetails }) => {
-  const { confirm } = Modal;
-  const { EventData, handleExitMeeting }: any = useEventLayout();
+export const HangupComponent = () => {
+  const { EventData, handleExitMeeting, attendeesList }: any = useEventLayout();
+  const userData = useAuthData();
+
+  const getCurrentAttendee = () => {
+    return attendeesList.find(
+      (ele: any) => parseInt(ele.userId) === parseInt(userData.user_id)
+    );
+  };
 
   const HandleEndMeeting = () => {
-    confirm({
-      title: "Are you sure Do you want to Exit Meeting?",
-      icon: <ExclamationCircleFilled />,
-      onOk() {
-        handleExitMeeting(userdetails)
-          .then(() => {
-            ChimesendMessage(
-              {
-                name: userdetails?.name,
-                userId: userdetails?.id,
-                meetingId: EventData?.chime_meeting_id,
-                isHost: userdetails?.isHost,
-              },
-              CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
-            );
-            window.close();
-          })
-          .catch(() => {
-            toast.error("Unable to end Meeting !");
-          });
-      },
-      onCancel() {},
-    });
+    if (getCurrentAttendee()?.isHost) {
+      EndMeeting({
+        Attendee: getCurrentAttendee(),
+        EventData,
+        handleExitMeeting,
+      });
+    } else {
+      ExitMeeting({
+        Attendee: getCurrentAttendee(),
+        EventData,
+        handleExitMeeting,
+      });
+    }
   };
   return (
     <>

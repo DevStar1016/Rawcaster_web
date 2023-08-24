@@ -72,6 +72,7 @@ const HomeLayout = () => {
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
   const [TotalUnreadCount, setTotalUnreadCount] = useState(0);
+  console.log(loginUserData, "loginUserData");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -342,7 +343,7 @@ const HomeLayout = () => {
                             ? loginUserData?.name
                             : !isSuccess
                             ? "Hello User"
-                            : "Log in/Sign up"}
+                            : "Login/Signup"}
                         </span>
                       </Tooltip>
                     </div>

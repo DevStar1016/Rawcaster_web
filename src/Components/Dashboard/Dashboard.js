@@ -1,10 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Link,
-  useActionData,
-  useBeforeUnload,
-  useLocation,
-} from "react-router-dom";
+import { Link, useActionData, useLocation } from "react-router-dom";
 import {
   useAuth,
   useAuthData,
@@ -71,7 +66,7 @@ const Dashboard = () => {
               alt="Rawcaster"
               src={require("../../Assets/Images/png/mob-rlogo.png")}
             />
-            Log in/Sign up to explore Rawcaster features{" "}
+            Login/Sign up to explore Rawcaster features{" "}
             <span className="material-icons">arrow_forward</span>
           </Link>
         </div>

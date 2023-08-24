@@ -1,34 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Outlet,
-  useNavigate,
-  useOutletContext,
-  useParams,
-  useRouteLoaderData,
-} from "react-router";
+import { Outlet, useOutletContext } from "react-router";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { EventRoomContext, useMainContext } from "../../../Shared/Context";
-import {
-  ExitMeetingService,
-  viewEventsService,
-} from "../../../Services/ApiService";
-import {
-  ChimesendMessage,
-  ChimesocketListen,
-} from "../../../Services/SocketService";
-import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { ExitMeetingService } from "../../../Services/ApiService";
 import WaitingRoom from "./WaitingRoom";
-import { getusetId } from "../../../Shared/Utility";
-import { Button, notification } from "antd";
+import { Modal } from "antd";
 import {
   DeviceLabels,
   useAudioVideo,
-  useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
-import { UserOutlined } from "@ant-design/icons";
 import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 import MeetingManagerComponent from "./MeetingManagerComponent";
+import { defaultVolume } from "../Configure/Constants";
 
 export function useEventLayout() {
   return useOutletContext();
@@ -40,13 +24,16 @@ const EventValidaton = () => {
   const [isChatorParticipant, setisChatorParticipant] = useState(null);
   const [isPinEnabled, setisPinEnabled] = useState(false);
   const token = useAuthToken();
-
+  const userData = useAuthData();
+  const [isLoading, setisLoading] = useState(true);
   const [isWaitingRoom, setisWaitingRoom] = useState(true);
   const [RequestList, setRequestList] = useState([]);
   const [attendeesList, setattendeesList] = useState([]);
   const [MeetingSettings, setMeetingSettings] = useState(null);
   const { meetingManager } = useMainContext();
+  const [EventMessages, setEventMessages] = useState([]);
   const [isFetching, setisFetching] = useState(false);
+  const [RequestStatusMessage, setRequestStatusMessage] = useState(null);
   const audiovideo = useAudioVideo();
   const [notificationToast, setnotificationToast] = useState({
     show: false,
@@ -77,7 +64,13 @@ const EventValidaton = () => {
 
   const handleJoinMeeting = async (message) => {
     const { Attendee, meeting } = message.joinInfo.result;
-    setattendeesList(message.AttendeeList);
+    const updatedDetails = message.AttendeeList.map((ele) => {
+      return {
+        ...ele,
+        volume: defaultVolume,
+      };
+    });
+    setattendeesList(updatedDetails);
     setMeetingSettings(message.meetingSetting);
     const meetingSessionConfiguration = new MeetingSessionConfiguration(
       meeting,
@@ -90,6 +83,7 @@ const EventValidaton = () => {
       await meetingManager.join(meetingSessionConfiguration, meetingOptions);
       await meetingManager.start();
       setisWaitingRoom(false);
+      setisLoading(false);
     } catch (error) {
       toast.error("Unable to Connect The Meeting");
     }
@@ -116,13 +110,28 @@ const EventValidaton = () => {
     handleJoinMeeting,
     MeetingSettings,
     setMeetingSettings,
+    setisLoading,
+    isLoading,
+    RequestStatusMessage,
+    setRequestStatusMessage,
+    EventMessages,
+    setEventMessages,
+  };
+
+  const hasWaitingRoomEnabled = () => {
+    return (
+      isWaitingRoom &&
+      EventData &&
+      parseInt(EventData.original_user_id) !== parseInt(userData?.user_id) &&
+      EventData.waiting_room
+    );
   };
 
   return (
     <EventRoomContext.Provider value={contectValues}>
       <>
         <MeetingManagerComponent />
-        {isWaitingRoom ? (
+        {hasWaitingRoomEnabled() ? (
           <WaitingRoom
             EventData={EventData}
             setisWaitingRoom={setisWaitingRoom}
