@@ -22,7 +22,7 @@ const BeforeAuthEvents = () => {
                   removeSessionStorageData("influencerData");
                 }}
               >
-                Log in/Sign up
+                Login/Sign up
               </Link>
             </div>
 

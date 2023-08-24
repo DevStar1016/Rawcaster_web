@@ -23,6 +23,7 @@ import {
 } from "./Utility";
 import MoreBottomSheet from "./MoreBottomSheet";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
+import { EndMeeting, ExitMeeting } from "./Methods";
 
 const EventMenu = () => {
   const {
@@ -225,7 +226,7 @@ const EventMenu = () => {
         </div>
         <div className="onlydes"></div>
         <div className="onlyMob">
-          <HangupComponent userdetails={getCurrentAttendee()} />
+          <HangupComponent />
         </div>
 
         <div className={`${styles.Actionsec} onlyMob`}>
@@ -303,7 +304,7 @@ const EventMenu = () => {
         <div
           className={styles.Actionsec}
           style={{
-            color: getCurrentAttendee().handRaised ? "#F2718D" : "#ffffff",
+            color: getCurrentAttendee()?.handRaised ? "#F2718D" : "#ffffff",
           }}
           onClick={() => {
             ChimesendMessage(
@@ -319,7 +320,7 @@ const EventMenu = () => {
           <div className={styles.iconBox}>
             <i
               className={` ${
-                getCurrentAttendee().handRaised
+                getCurrentAttendee()?.handRaised
                   ? styles.raise_hand_active_icon
                   : styles.raise_hand_icon
               } ${styles.icon}`}
@@ -371,29 +372,19 @@ const EventMenu = () => {
             color: "red",
           }}
           onClick={() => {
-            confirm({
-              title: "Are you sure Do you want to Exit Meeting?",
-              icon: <ExclamationCircleFilled />,
-              onOk() {
-                handleExitMeeting(getCurrentAttendee())
-                  .then(() => {
-                    ChimesendMessage(
-                      {
-                        name: getCurrentAttendee()?.name,
-                        userId: getCurrentAttendee()?.userId,
-                        refId: EventData?.reference_id,
-                        isHost: getCurrentAttendee()?.isHost,
-                      },
-                      CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
-                    );
-                    window.close();
-                  })
-                  .catch(() => {
-                    toast.error("Unable to end Meeting !");
-                  });
-              },
-              onCancel() {},
-            });
+            if (getCurrentAttendee()?.isHost) {
+              EndMeeting({
+                Attendee: getCurrentAttendee(),
+                EventData,
+                handleExitMeeting,
+              });
+            } else {
+              ExitMeeting({
+                Attendee: getCurrentAttendee(),
+                EventData,
+                handleExitMeeting,
+              });
+            }
           }}
         >
           <div className={styles.iconBox}>
@@ -403,8 +394,7 @@ const EventMenu = () => {
               logout
             </span>
           </div>
-          {/* <i className={`${styles.exit_icon} `}></i> */}
-          Exit
+          {getCurrentAttendee()?.isHost ? "End" : "Leave"}
         </div>
       </div>
       <div className="onlyMob">
@@ -419,7 +409,7 @@ const EventMenu = () => {
               <div className={styles.iconSec}>
                 <div
                   className={`${styles.iconContainer}  ${
-                    getCurrentAttendee().handRaised
+                    getCurrentAttendee()?.handRaised
                       ? styles.activeiconContainer
                       : ""
                   }`}
@@ -428,6 +418,7 @@ const EventMenu = () => {
                       {
                         refId: EventData?.reference_id,
                         userId: userData?.user_id,
+                        status: !getCurrentAttendee().handRaised,
                       },
                       CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
                     );

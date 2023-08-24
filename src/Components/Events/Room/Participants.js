@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import classes from "./Room.module.css";
-import { Layout, Slider, message } from "antd";
+import { Layout, Modal, Slider } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { useRosterState } from "amazon-chime-sdk-component-library-react";
+import {
+  useAudioVideo,
+  useRosterState,
+} from "amazon-chime-sdk-component-library-react";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { Collapse, Form, InputGroup } from "react-bootstrap";
 import {
@@ -16,13 +19,17 @@ import {
   MicrophoneComponent,
   VolumeStatusComponent,
 } from "../Components/Utility";
+import RenameModal from "../Components/RenameModal";
+import { toast } from "react-hot-toast";
 
 const { Header, Footer, Content } = Layout;
 
 const Participants = () => {
   const [isSearchEnable, setisSearchEnable] = useState(false);
   const [SpeakerState, setSpeakerState] = useState(false);
+  const [renameAttendee, setrenameAttendee] = useState(false);
   const [SearchData, setSearchData] = useState("");
+  const [audioElements, setAudioElements] = useState({});
   const {
     setisChatorParticipant,
     setRequestList,
@@ -35,6 +42,7 @@ const Participants = () => {
   const userdata = useAuthData();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
+  const audioVideo = useAudioVideo();
 
   const headerStyle = {
     textAlign: "center",
@@ -54,6 +62,29 @@ const Participants = () => {
     );
   };
 
+  useEffect(() => {
+    // Initialize Chime session and audio elements
+
+    if (audioVideo) {
+      audioVideo.addObserver({
+        audioVideoDidStart: (meetingSession) => {
+          // When attendee audio starts, create an audio element
+          meetingSession.audioVideo.realtimeSubscribeToAttendeeIdPresence(
+            (attendeeId, present, externalUserId) => {
+              if (present) {
+                const audioElement = new Audio();
+                setAudioElements((prevAudioElements) => ({
+                  ...prevAudioElements,
+                  [attendeeId]: audioElement,
+                }));
+              }
+            }
+          );
+        },
+      });
+    }
+  }, [audioVideo]);
+
   const handleReject = (ele) => {
     const value = { userId: ele.userId };
     ChimesendMessage(value, CHIME_SOCKET_EVENTS.REJECT_TO_JOIN_MEETING);
@@ -69,10 +100,6 @@ const Participants = () => {
     );
 
     const isYou = parseInt(userdata.user_id) === parseInt(findAttendee.userId);
-
-    const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.userId)
-    );
 
     return (
       <>
@@ -97,7 +124,7 @@ const Participants = () => {
             {findAttendee.name + `${isYou ? " (You)" : ""}`}
           </div>
           <div className={classes.itemAction}>
-            {find_raise_hand && (
+            {findAttendee.handRaised && (
               <span className={styles.raise_hand_active_icon_sm} />
             )}
             {findAttendee.isHost ? (
@@ -146,11 +173,44 @@ const Participants = () => {
               />
             )}
             {!isYou && isHost ? (
-              <div className={classes.moreIcon}>
+              <div
+                className={classes.moreIcon}
+                onClick={() => {
+                  Modal.confirm({
+                    title: "Remove User",
+                    content: "Are you sure do you want to remove this User !",
+                    onOk: () => {
+                      ChimesendMessage(
+                        {
+                          refId: EventData?.reference_id,
+                          hostId: EventData?.original_user_id,
+                          userId: findAttendee?.userId,
+                        },
+                        CHIME_SOCKET_EVENTS.KICK_USER
+                      );
+                    },
+                    onCancel: () => {},
+                  });
+                  // setrenameAttendee(true);
+                }}
+              >
                 <i className="material-symbols-outlined">more_vert</i>
               </div>
             ) : null}
           </div>
+          {renameAttendee && (
+            <RenameModal
+              open={renameAttendee}
+              ele={findAttendee}
+              success={() => {
+                toast.success("Renamed Successfully");
+                setrenameAttendee(false);
+              }}
+              close={() => {
+                setrenameAttendee(false);
+              }}
+            />
+          )}
         </div>
         <Collapse in={SpeakerState === findAttendee.userId}>
           <div
@@ -171,28 +231,19 @@ const Participants = () => {
                   }
                 }}
               />
-              {/* <span
-                className="material-symbols-outlined"
-                style={{
-                  color: "white",
-                }}
-                onClick={() => {
-                  if (SpeakerState !== findAttendee.userId) {
-                    setSpeakerState(findAttendee.userId);
-                  } else {
-                    setSpeakerState(false);
-                  }
-                }}
-              >
-                volume_up
-              </span> */}
+
               <Slider
                 min={0}
-                max={1}
+                defaultValue={ele.volume}
+                max={100}
                 className="ms-3"
                 tooltip
                 onChange={(e) => {
-                  console.log(e, "activeSpeakersactiveSpeakers");
+                  const desiredVolume = parseInt(e) / 100;
+                  const audioElement = audioElements[ele.chimeAttendeeId];
+                  if (audioElement) {
+                    audioElement.volume = desiredVolume;
+                  }
                 }}
               />
             </div>

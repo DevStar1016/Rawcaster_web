@@ -16,6 +16,7 @@ import { ChimesocketListen } from "../Services/SocketService";
 import { MessageOutlined } from "@ant-design/icons";
 import TalkshowMenu from "../Components/Events/Components/TalkshowMenu";
 import EventMenu from "../Components/Events/Components/EventMenu";
+import LoadingOverlay from "react-loading-overlay";
 
 export const useLayoutContect = () => {
   return useOutletContext();
@@ -28,12 +29,12 @@ const EventLayout = () => {
     notificationToast,
     setnotificationToast,
     isChatorParticipant,
+    isLoading,
   } = useEventLayout();
   const { Header, Footer, Sider, Content } = Layout;
   const [userdetails, setuserdetails] = useState(null);
   const userData = useAuthData();
   const [isReactions, setisReactions] = useState(false);
-  const [EventMessages, setEventMessages] = useState([]);
   const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const { roster } = useRosterState();
@@ -64,102 +65,68 @@ const EventLayout = () => {
     return { attendees: filterValidAttendees.filter((ele) => ele) };
   };
 
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (data) => {
-      if (EventData?.type !== 2) {
-        setnotificationToast({
-          show: true,
-          msg: data.message,
-          title: `${data.name}`,
-          icon: <MessageOutlined />,
-          buttons: [],
-        });
-      } else {
-        if (isChatorParticipant !== "comment") {
-          setisNewMessage("comment");
-        }
-      }
-      setEventMessages((pre) => [data, ...pre]);
-    });
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG);
-    };
-  }, [EventMessages]);
-
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG, (data) => {
-      if (EventData?.type !== 2) {
-        setnotificationToast({
-          show: true,
-          msg: data.message,
-          title: `${data.name} (Private)`,
-          icon: <MessageOutlined />,
-          buttons: [],
-        });
-      }
-      setEventMessages((pre) => [data, ...pre]);
-    });
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG);
-    };
-  }, [EventMessages]);
-
   return (
     <div className={`${EventData?.type === 2 ? classes.TalkshowHeader : ""}`}>
       {contextHolder}
-      <Layout className={classes.EventLayoutContainer}>
-        <Header className={classes.headerSec}>
-          <div
-            className={`${classes.topheader} ${classes.eventHeader} ${
-              EventData?.type === 2 ? classes.TalkshowHeader : ""
-            }`}
-          >
-            <div className={classes.meetingHeader}>
-              <img src={Rlogo} />
-              <h2>{EventData?.event_name}</h2>
+      <LoadingOverlay
+        active={isLoading}
+        spinner
+        text={"Meeting Has Been Started"}
+      >
+        <Layout className={classes.EventLayoutContainer}>
+          <Header className={classes.headerSec}>
+            <div
+              className={`${classes.topheader} ${classes.eventHeader} ${
+                EventData?.type === 2 ? classes.TalkshowHeader : ""
+              }`}
+            >
+              <div className={classes.meetingHeader}>
+                <img src={Rlogo} />
+                <h2>{EventData?.event_name}</h2>
+              </div>
             </div>
-          </div>
-        </Header>
+          </Header>
 
-        <Outlet
-          context={{
-            ...useEventLayout(),
-            isHost: userdetails?.isHost,
-            EventMessages,
-            userdetails,
-            setEventMessages,
-            RaiseHandUsers,
-            setRaiseHandUsers,
-            useAttendeesList,
-            notificationToast,
-            setnotificationToast,
-            isReactions,
-            setisReactions,
-          }}
-        />
+          <Outlet
+            context={{
+              ...useEventLayout(),
+              isHost: userdetails?.isHost,
 
-        <Footer className={classes.footerSec}>
-          {EventData?.type === 2 ? (
-            <TalkshowMenu
-              setRaiseHandUsers={setRaiseHandUsers}
-              RaiseHandUsers={RaiseHandUsers}
-              userdetails={userdetails}
-              isReactions={isReactions}
-              setisReactions={setisReactions}
-              isNewMessage={isNewMessage}
-              setisNewMessage={setisNewMessage}
-            />
-          ) : (
-            <EventMenu
-              setRaiseHandUsers={setRaiseHandUsers}
-              RaiseHandUsers={RaiseHandUsers}
-              userdetails={userdetails}
-            />
-          )}
-        </Footer>
+              userdetails,
 
-        {/* <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} /> */}
-      </Layout>
+              RaiseHandUsers,
+              setRaiseHandUsers,
+              useAttendeesList,
+              notificationToast,
+              setnotificationToast,
+              isReactions,
+              setisReactions,
+            }}
+          />
+
+          <Footer className={classes.footerSec}>
+            {EventData?.type === 2 ? (
+              <TalkshowMenu
+                setRaiseHandUsers={setRaiseHandUsers}
+                RaiseHandUsers={RaiseHandUsers}
+                userdetails={userdetails}
+                isReactions={isReactions}
+                setisReactions={setisReactions}
+                isNewMessage={isNewMessage}
+                setisNewMessage={setisNewMessage}
+              />
+            ) : (
+              <EventMenu
+                setRaiseHandUsers={setRaiseHandUsers}
+                RaiseHandUsers={RaiseHandUsers}
+                userdetails={userdetails}
+              />
+            )}
+          </Footer>
+
+          {/* <MeetingManagerComponent setRaiseHandUsers={setRaiseHandUsers} /> */}
+        </Layout>
+      </LoadingOverlay>
     </div>
   );
 };

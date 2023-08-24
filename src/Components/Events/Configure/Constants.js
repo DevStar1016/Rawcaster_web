@@ -1,3 +1,5 @@
+export const defaultVolume = 30;
+
 export const DropdownItems = [
   {
     label: "Upcoming Events",

@@ -6,19 +6,20 @@ import { Outlet } from "react-router";
 import { useEffect } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 import { useAuthData } from "../../Shared/Reduxfetcher";
+import {
+  useLocalVideo,
+  useToggleLocalMute,
+} from "amazon-chime-sdk-component-library-react";
+import { Modal } from "antd";
 
 const ChimeSocketComponent = () => {
   const userData = useAuthData();
+  const { toggleVideo, muted } = useLocalVideo();
+  const { toggleMute, isVideoEnabled } = useToggleLocalMute();
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.CONNECT_SOCKET, () => {
       console.log(ChimesocketListen.connected);
-      // if (userData) {
-      //   // ChimesendMessage(
-      //   //   { userId: userData.user_id },
-      //   //   CHIME_SOCKET_EVENTS.JOIN_SOCKET
-      //   // );
-      // }
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.CONNECT_SOCKET);
@@ -29,7 +30,6 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
       (message) => {
-        console.log(message, "message");
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
           JSON.stringify(message)
@@ -72,7 +72,10 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
       (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
+        localStorage.removeItem(
+          CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
+          JSON.stringify(message)
+        );
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
           JSON.stringify(message)
@@ -80,9 +83,9 @@ const ChimeSocketComponent = () => {
       }
     );
     return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND);
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
     };
-  }, []);
+  }, [isVideoEnabled, muted]);
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND, (message) => {
@@ -178,6 +181,67 @@ const ChimeSocketComponent = () => {
     );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER, (message) => {
+      console.log(message);
+      localStorage.setItem(
+        CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER,
+        JSON.stringify(message)
+      );
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER, (message) => {
+      localStorage.setItem(
+        CHIME_SOCKET_EVENTS.END_MEETING_ANSWER,
+        JSON.stringify(message)
+      );
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER, (message) => {
+      localStorage.setItem(
+        CHIME_SOCKET_EVENTS.KICK_USER_ANSWER,
+        JSON.stringify(message)
+      );
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (message) => {
+      localStorage.setItem(
+        CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG,
+        JSON.stringify(message)
+      );
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG, (message) => {
+      localStorage.setItem(
+        CHIME_SOCKET_EVENTS.SINGLE_USER_MSG,
+        JSON.stringify(message)
+      );
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG);
     };
   }, []);
 

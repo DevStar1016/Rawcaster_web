@@ -4,11 +4,13 @@ import EventStartModal from "../../Modal/Event/EventStartModal";
 import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import { ChimesendMessage } from "../../Services/SocketService";
+import { Modal } from "antd";
 
 const EventHandler = ({ title, isHost, meetingId, ele }) => {
   const userData = useAuthData();
   const [openModal, setopenModal] = useState({ show: false, type: "" });
   const [isLoading, setisLoading] = useState(false);
+  let popup;
 
   const closeModal = (e) => {
     e.stopPropagation();
@@ -16,7 +18,7 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
   };
 
   const HandlePopup = () => {
-    const popup = window.open(`/room/${meetingId}`, "_blank", {
+    popup = window.open(`/room/${meetingId}`, "_blank", {
       popup: true,
     });
     popup.onload = () => {
@@ -62,13 +64,21 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
         CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
         CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER,
         CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
-        CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
+        CHIME_SOCKET_EVENTS.END_MEETING_ANSWER,
+        CHIME_SOCKET_EVENTS.KICK_USER_ANSWER,
       ];
 
       for (const key of keysToRemove) {
         localStorage.removeItem(key);
       }
     };
+
+    // popup.addEventListener("beforeunload", (event) => {
+    //   const confirmationMessage = "Do you want to leave the meeting?";
+    //   event.returnValue = confirmationMessage;
+    //   return confirmationMessage;
+    // });
+
     // when the popup posts a message
   };
 

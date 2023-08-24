@@ -28,7 +28,7 @@ import {
   LocalMicrophoneComponent,
   MicrophoneComponent,
 } from "../Components/Utility";
-import { useEventRoomContextContext } from "../../../Shared/Context";
+import { useEventRoomContext } from "../../../Shared/Context";
 
 const EventBox = () => {
   const userData = useAuthData();
@@ -43,9 +43,9 @@ const EventBox = () => {
     notificationToast,
     setnotificationToast,
     attendeesList,
-  } = useEventRoomContextContext();
+  } = useEventRoomContext();
   const { RaiseHandUsers } = useLayoutContect();
-  console.log(useEventRoomContextContext(), useLayoutContect());
+
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
@@ -165,9 +165,7 @@ const EventBox = () => {
       (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
     const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
-    const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(findAttendee.userId)
-    );
+
     const isYou = parseInt(userData.user_id) === parseInt(findAttendee.userId);
     return (
       <div>
@@ -179,7 +177,7 @@ const EventBox = () => {
           )}
           {`${findAttendee.name} ${isYou ? "(You)" : ""}`}
         </div>
-        {find_raise_hand && (
+        {findAttendee.handRaised && (
           <div className={classes.isRaiseHand}>
             <i className={classes.raise_hand_active_icon}></i>
           </div>
@@ -194,9 +192,6 @@ const EventBox = () => {
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
     const isYou = parseInt(userData.user_id) === parseInt(findAttendee?.userId);
-    const find_raise_hand = RaiseHandUsers.find(
-      (elem) => parseInt(elem.user_id) === parseInt(findAttendee?.userId)
-    );
 
     if (findAttendee) {
       if (isYou && isVideoEnabled) {
@@ -244,7 +239,7 @@ const EventBox = () => {
               }}
             />
             <p>{findAttendee.name + `${isYou ? " (You)" : ""}`}</p>
-            {find_raise_hand && (
+            {findAttendee.handRaised && (
               <div className={classes.RaisehandContainer}>
                 <div className={classes.isRaiseHand}>
                   <i className={classes.raise_hand_active_icon}></i>

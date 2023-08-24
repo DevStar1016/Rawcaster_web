@@ -814,6 +814,16 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                                 ele.isprimary
                               }
                               onChange={(e) => {
+                                switch (ele.type) {
+                                  case "waiting_room":
+                                    setFieldValue("join_before_host", false);
+                                    break;
+                                  case "join_before_host":
+                                    setFieldValue("waiting_room", false);
+                                    break;
+                                  default:
+                                    break;
+                                }
                                 setFieldValue(ele.type, e.target.checked);
                               }}
                             >

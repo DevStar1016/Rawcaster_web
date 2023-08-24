@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classes from "./WaitingRoom.module.css";
 
-import { useMainContext } from "../../../Shared/Context";
+import { useEventRoomContext, useMainContext } from "../../../Shared/Context";
 import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 import { DeviceLabels } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { addListener } from "../../../Store/Redux/Reducer/SocketReducer";
 
 const WaitingRoom = ({ EventData }) => {
+  const { RequestStatusMessage, setRequestStatusMessage } =
+    useEventRoomContext();
   const [audioPlay, setaudioPlay] = useState(false);
   const [loading, setloading] = useState(false);
 
@@ -20,15 +22,19 @@ const WaitingRoom = ({ EventData }) => {
           <>
             <div style={{ textAlign: "center", marginTop: 10 }}>
               <span style={{ fontSize: 16, fontWeight: "bold" }}>
-                {EventData?.waiting_room === 1
+                {RequestStatusMessage
+                  ? RequestStatusMessage
+                  : EventData?.waiting_room === 1
                   ? "Please wait for a moment while host approves your request."
                   : "Please wait for a moment, host not available yet.."}
               </span>
-              <img
-                src={require("../../../Assets/Images/Events/loader.gif")}
-                alt=""
-                style={{ width: "50%" }}
-              />
+              {RequestStatusMessage && (
+                <img
+                  src={require("../../../Assets/Images/Events/loader.gif")}
+                  alt=""
+                  style={{ width: "50%" }}
+                />
+              )}
             </div>
             <div style={{ textAlign: "center" }}>
               {EventData?.melodies?.type === 3 ? (

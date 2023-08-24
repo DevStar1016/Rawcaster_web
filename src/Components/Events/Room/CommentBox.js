@@ -32,7 +32,7 @@ const CommentBox = () => {
     setEventMessages((pre) => [
       {
         ...userdetails,
-        meetingId: EventData?.chime_meeting_id,
+        refId: EventData?.chime_meeting_id,
         message: message ? message : ChatMessage,
         isPrivate: false,
       },
@@ -41,7 +41,7 @@ const CommentBox = () => {
     ChimesendMessage(
       {
         ...userdetails,
-        meetingId: EventData?.chime_meeting_id,
+        refId: EventData?.chime_meeting_id,
         message: message ? message : ChatMessage,
         isPrivate: false,
       },
