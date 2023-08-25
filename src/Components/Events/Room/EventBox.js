@@ -16,7 +16,6 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { Alert, Drawer, Layout, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
 import Reactions from "../Components/Reactions";
@@ -39,12 +38,11 @@ const EventBox = () => {
     isChatorParticipant,
     isReactions,
     isFetching,
-    isHost,
     notificationToast,
     setnotificationToast,
     attendeesList,
+    userdata,
   } = useEventRoomContext();
-  const { RaiseHandUsers } = useLayoutContect();
 
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
@@ -99,7 +97,7 @@ const EventBox = () => {
                 <MicrophoneComponent
                   ele={ele}
                   attendee={findAttendee}
-                  isHost={isHost}
+                  isHost={userdata?.isHost}
                   className={classes.icon}
                 />
               )}
@@ -125,7 +123,7 @@ const EventBox = () => {
                 <CameraComponent
                   ele={ele}
                   attendee={findAttendee}
-                  isHost={isHost}
+                  isHost={userdata?.isHost}
                   className={classes.icon}
                 />
               )}
@@ -134,7 +132,7 @@ const EventBox = () => {
           {!isYou && (
             <Tooltip placement="topLeft" title={"Remove user"}>
               <div
-                className={`${isHost ? "" : classes.disabledIcon} ${
+                className={`${userdata?.isHost ? "" : classes.disabledIcon} ${
                   classes.iconSec
                 }`}
                 style={{
@@ -146,7 +144,7 @@ const EventBox = () => {
                 <span
                   class="material-symbols-outlined"
                   style={{
-                    color: !isHost ? "grey" : "",
+                    color: !userdata?.isHost ? "grey" : "",
                   }}
                 >
                   cancel
@@ -160,7 +158,6 @@ const EventBox = () => {
   };
 
   const CustomNamePlate = ({ ele }) => {
-    console.log(attendeesList, "attendeesList");
     const findAttendee = attendeesList.find(
       (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
@@ -185,7 +182,7 @@ const EventBox = () => {
       </div>
     );
   };
-  console.log(attendeesList, "attendeesList", RaiseHandUsers);
+
   const GetDisplayComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
       (elem) => parseInt(elem?.userId) === parseInt(ele.externalUserId)

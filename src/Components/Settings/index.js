@@ -15,14 +15,10 @@ import Blockuser from "./Blockuser";
 import Event from "./Event";
 import { handleAccountActive } from "../../Store/Redux/Reducer/AuthReducer";
 import { fetchuserSettingsbyToken } from "../../Store/Redux/Action";
-import Seo from "../SEO/Seo";
-import { SettingsSEO } from "../SEO/SEOContent";
-import { Drawer } from "antd";
 
 const Settings = () => {
   const { userSettings } = useAuth();
   const token = useAuthToken();
-  const [ActiveTabName, setActiveTabName] = useState("General");
   const [updateValue, setupdateValue] = useState([]);
   const dispatch = useDispatch();
   const [Progress, setProgress] = useState({
@@ -169,7 +165,7 @@ const Settings = () => {
         })
         .finally(() => {
           let keys = Object.keys(objValue);
-          setupdateValue((pre) => pre.filter((ele) => ele !== keys[0]));
+          setupdateValue((pre) => pre.filter((ele) => !keys.includes(ele)));
           setisMelodyUploading(false);
         });
     });
@@ -177,7 +173,7 @@ const Settings = () => {
   };
   const [visibleSideBar, setvisibleSideBar] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-
+  console.log(updateValue);
   const settingsValues = {
     formikvalues: values,
     setValues,
@@ -196,9 +192,39 @@ const Settings = () => {
           } else {
             setFieldValue([key], value);
           }
-          let updateObj = {
-            [key]: value,
-          };
+          let updateObj;
+          switch (key) {
+            case "waiting_room":
+              if (value === 1) {
+                updateObj = {
+                  join_before_host: 0,
+                  [key]: value,
+                };
+              } else {
+                updateObj = {
+                  [key]: value,
+                };
+              }
+              break;
+            case "join_before_host":
+              if (value === 1) {
+                updateObj = {
+                  waiting_room: 0,
+                  [key]: value,
+                };
+              } else {
+                updateObj = {
+                  [key]: value,
+                };
+              }
+              break;
+            default:
+              updateObj = {
+                [key]: value,
+              };
+              break;
+          }
+
           handleupdate(updateObj).then((response) => {
             if (response.account_active_inactive === 0) {
               dispatch(handleAccountActive(false));
@@ -206,6 +232,7 @@ const Settings = () => {
               window.location.reload();
             }
           });
+          console.log(updateValue, "updateValue");
           if (updateValue.length !== 0) {
             return setupdateValue((pre) => [...pre, key]);
           } else {
@@ -331,7 +358,6 @@ const Settings = () => {
             <li
               className={activeTab === 0 ? classes.active : ""}
               onClick={() => {
-                setActiveTabName("General");
                 setActiveTab(0);
                 setvisibleSideBar(false);
               }}
@@ -341,7 +367,6 @@ const Settings = () => {
             <li
               className={activeTab === 1 ? classes.active : ""}
               onClick={() => {
-                setActiveTabName("Notifications");
                 setActiveTab(1);
                 setvisibleSideBar(false);
               }}
@@ -351,7 +376,6 @@ const Settings = () => {
             <li
               className={activeTab === 2 ? classes.active : ""}
               onClick={() => {
-                setActiveTabName("Blocking");
                 setActiveTab(2);
                 setvisibleSideBar(false);
               }}
@@ -361,7 +385,6 @@ const Settings = () => {
             <li
               className={activeTab === 3 ? classes.active : ""}
               onClick={() => {
-                setActiveTabName("Change Password");
                 setActiveTab(3);
                 setvisibleSideBar(false);
               }}
@@ -371,7 +394,6 @@ const Settings = () => {
             <li
               className={activeTab === 4 ? classes.active : ""}
               onClick={() => {
-                setActiveTabName("Event Settings");
                 setActiveTab(4);
                 setvisibleSideBar(false);
               }}

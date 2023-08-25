@@ -208,6 +208,9 @@ background-color: #f5f5f5;
        contain;
        background: #F2718D !important;
    }
+   .activeicon {
+    background: #F2718D !important;
+   }
    .activeiconContainer {
     background: #F2718D !important;
    }
@@ -381,6 +384,16 @@ background-color: #f5f5f5;
     font-size: 18px;
     margin-bottom: 0px !important;
     margin: 10px 0 !important;
+}
+.iconSec button {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+.iconSec svg {
+    color: #FFFFFF;
+}
+.disableIcon {
+    background-color: gray !important;
 }
    @media (max-width:768px) { 
     .BottomContainer 

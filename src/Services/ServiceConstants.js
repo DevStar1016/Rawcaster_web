@@ -45,8 +45,6 @@ export const CHIME_SOCKET_EVENTS = {
   NEW_USER_JOINED_MEETING: "newUserJoined",
   RENAME_USER: "renameUser",
   RENAME_USER_ANSWER: "renameUserAnswer",
-  DISABLE_SHARE_SCREEN: "disableShareScreen",
-  DISABLE_SHARE_SCREEN_ANSWER: "disableShareScreenAnswer",
   ENABLE_SHARE_SCREEN: "enableShareScreen",
   ENABLE_SHARE_SCREEN_ANSWER: "enableShareScreenAnswer",
   ENABLE_AUDIO: "enableAudio",

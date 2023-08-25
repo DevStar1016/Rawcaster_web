@@ -3,7 +3,9 @@ import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Button, Modal } from "antd";
 import { useEventRoomContext } from "../../../Shared/Context";
 import {
+  useAudioVideo,
   useLocalVideo,
+  useMeetingManager,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { EndAttendeeMeeting } from "../Components/Methods";
@@ -21,15 +23,46 @@ const MeetingManagerComponent = () => {
     EventData,
     setattendeesList,
     setRequestStatusMessage,
+    RequestStatusMessage,
     setEventMessages,
     EventMessages,
+    setuserdata,
+    setMeetingSettings,
+    MeetingSettings,
+    userdata,
   } = useEventRoomContext();
   const userData = useAuthData();
-  const { toggleVideo, muted } = useLocalVideo();
-  const { toggleMute, isVideoEnabled } = useToggleLocalMute();
+  const { toggleVideo, isVideoEnabled } = useLocalVideo();
+  const { toggleMute, muted } = useToggleLocalMute();
+  console.log(MeetingSettings, "userdata");
+
+  const handleIncallEvents = async (message) => {
+    if (message.audio === false) {
+      toggleMute();
+    } else if (message.audio === true) {
+      Modal.confirm({
+        title: "Host requests that you unmute your microphone",
+        async onOk() {
+          toggleMute();
+        },
+        onCancel() {},
+      });
+    } else if (message.video === false) {
+      await toggleVideo();
+    } else if (message.video === true) {
+      Modal.confirm({
+        title: "Host requests that you turn on camera",
+        async onOk() {
+          await toggleVideo();
+        },
+        onCancel() {},
+      });
+    }
+  };
 
   const onReceiveMessage = (e) => {
     const { key, newValue } = e;
+    console.log(key, newValue, "SOCKET EVENT");
     if (newValue) {
       switch (key) {
         case "EventData":
@@ -41,10 +74,10 @@ const MeetingManagerComponent = () => {
         case CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER:
           try {
             const requestanswerDetails = JSON.parse(newValue);
-            if (requestanswerDetails.joinInfo) {
+            if (requestanswerDetails.statusCode === 1) {
               handleJoinMeeting(requestanswerDetails);
             } else {
-              setRequestStatusMessage(requestanswerDetails.message);
+              setRequestStatusMessage(requestanswerDetails);
             }
           } catch (error) {}
           break;
@@ -104,6 +137,10 @@ const MeetingManagerComponent = () => {
                 buttons: [],
                 icon: null,
               });
+            } else if (
+              parseInt(raiseHandUser.userId) === parseInt(userData.user_id)
+            ) {
+              setuserdata(raiseHandUser);
             }
             setattendeesList((pre) => {
               const targetIndex = pre.findIndex(
@@ -215,31 +252,63 @@ const MeetingManagerComponent = () => {
             }
           } catch (error) {}
           break;
+
+        case CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER:
+          try {
+            const attendees = JSON.parse(newValue);
+            const attendeeList = attendees.attendeeList;
+            const findAttendee = attendeeList.find(
+              (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
+            );
+            if (findAttendee) {
+              if (!userdata.isHost) {
+                setuserdata((pre) => ({
+                  ...pre,
+                  screenShare: findAttendee.screenShare ? 1 : 0,
+                }));
+              } else {
+                setMeetingSettings((pre) => ({
+                  ...pre,
+                  user_screenshare: findAttendee.screenShare ? 1 : 0,
+                }));
+              }
+            }
+          } catch (error) {}
+          break;
+
+        case CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER:
+          try {
+            const attendees = JSON.parse(newValue);
+            const attendeeList = attendees.attendeeList;
+            const findAttendee = attendeeList.find(
+              (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
+            );
+            if (findAttendee) {
+              if (!userdata.isHost) {
+                setuserdata((pre) => ({
+                  ...pre,
+                  audio: findAttendee.audio,
+                }));
+                if (findAttendee.audio) {
+                  Modal.confirm({
+                    title: "Host requests that you unmute your microphone",
+                    async onOk() {
+                      toggleMute();
+                    },
+                    onCancel() {},
+                  });
+                } else if (findAttendee.audio === false) {
+                  toggleMute();
+                }
+              }
+            }
+          } catch (error) {}
+          break;
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
           try {
             const message = JSON.parse(newValue);
 
-            if (message.audio === false) {
-              toggleMute();
-            } else if (message.audio === true) {
-              Modal.confirm({
-                title: "Host requests that you unmute your microphone",
-                onOk() {
-                  toggleMute();
-                },
-                onCancel() {},
-              });
-            } else if (message.video === false) {
-              toggleVideo();
-            } else if (message.video === true) {
-              Modal.confirm({
-                title: "Host requests that you turn on camera",
-                onOk() {
-                  toggleVideo();
-                },
-                onCancel() {},
-              });
-            }
+            handleIncallEvents(message);
           } catch (error) {}
           break;
         default:
@@ -253,7 +322,7 @@ const MeetingManagerComponent = () => {
     return () => {
       window.removeEventListener("storage", onReceiveMessage);
     };
-  }, [muted, isVideoEnabled, EventMessages]);
+  }, [muted, isVideoEnabled, EventMessages, RequestStatusMessage]);
 
   return <div></div>;
 };

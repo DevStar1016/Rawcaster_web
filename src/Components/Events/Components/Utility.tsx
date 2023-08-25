@@ -2,42 +2,81 @@ import {
   useAttendeeStatus,
   useAudioVideo,
   useLocalVideo,
+  useMeetingManager,
   useToggleLocalMute,
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import styles from "./Menu.module.css";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Modal } from "antd";
+import { message } from "antd";
 import { useEventLayout } from "../Room/EventValidaton";
-import { toast } from "react-hot-toast";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { EndMeeting, ExitMeeting } from "./Methods";
+import { useEventRoomContext } from "../../../Shared/Context";
 
 export const MicrophoneComponent = ({
   ele,
   attendee,
   isHost,
   className = "",
+  isAllowed = true,
+  isGlobal,
 }) => {
+  const { EventData, MeetingSettings } = useEventRoomContext();
+  const userData = useAuthData();
   const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
   const { toggleMute } = useToggleLocalMute();
-  return (
+
+  return isGlobal ? (
+    <>
+      {MeetingSettings?.default_guest_video === 1 ? (
+        <i
+          className={`${styles.unmute_icon} ${styles.icon} ${className}`}
+          onClick={() => {
+            const value = {
+              refId: EventData?.reference_id,
+              hostId: userData?.user_id,
+              status: false,
+            };
+            ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+          }}
+        >
+          mic_off
+        </i>
+      ) : (
+        <i
+          className={`${styles.mute_icon} ${styles.icon} ${className}`}
+          onClick={() => {
+            const value = {
+              refId: EventData?.reference_id,
+              hostId: userData?.user_id,
+              status: true,
+            };
+            ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+          }}
+        >
+          mic
+        </i>
+      )}
+    </>
+  ) : (
     <>
       {muted ? (
         <i
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
+            if (isGlobal) {
+              return;
+            }
             if (isHost && !attendee.isHost) {
               const value = {
+                refId: EventData?.reference_id,
+                hostId: userData?.user_id,
+                status: false,
                 userId: attendee.userId,
-                audio: true,
               };
-              ChimesendMessage(
-                value,
-                CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-              );
+              ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
             } else if (attendee.user_id === attendee.userId) {
               toggleMute();
             }
@@ -49,13 +88,18 @@ export const MicrophoneComponent = ({
         <i
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={() => {
+            if (isGlobal) {
+              return;
+            }
             if (isHost && !attendee.isHost) {
-              const value = { userId: attendee.userId, audio: false };
-              ChimesendMessage(
-                value,
-                CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-              );
-            } else if (attendee.user_id === attendee.userId) {
+              const value = {
+                refId: EventData?.reference_id,
+                hostId: userData?.user_id,
+                status: true,
+                userId: attendee.userId,
+              };
+              ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+            } else if (attendee.user_id === attendee.userId && isAllowed) {
               toggleMute();
             }
           }}
@@ -67,22 +111,40 @@ export const MicrophoneComponent = ({
   );
 };
 
-export const LocalMicrophoneComponent = ({ className = "" }) => {
+export const LocalMicrophoneComponent = ({
+  className = "",
+  isAllowed = true,
+}) => {
   const { muted, toggleMute } = useToggleLocalMute();
+  const [messageApi] = message.useMessage();
   return (
     <>
       {muted ? (
         <i
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            toggleMute();
+            if (isAllowed) {
+              toggleMute();
+            } else {
+              messageApi.open({
+                type: "warning",
+                content: "Your mic has been disabled. Please contact the host",
+              });
+            }
           }}
         ></i>
       ) : (
         <i
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={async () => {
-            toggleMute();
+            if (isAllowed) {
+              toggleMute();
+            } else {
+              messageApi.open({
+                type: "warning",
+                content: "Your mic has been disabled. Please contact the host",
+              });
+            }
           }}
         ></i>
       )}
@@ -90,7 +152,13 @@ export const LocalMicrophoneComponent = ({ className = "" }) => {
   );
 };
 
-export const CameraComponent = ({ ele, attendee, isHost, className = "" }) => {
+export const CameraComponent = ({
+  ele,
+  attendee,
+  isHost,
+  className = "",
+  isGlobal,
+}) => {
   const { videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
   return (
     <>
@@ -98,6 +166,9 @@ export const CameraComponent = ({ ele, attendee, isHost, className = "" }) => {
         <i
           className={`${styles.video_off_icon} ${styles.icon} ${className}`}
           onClick={() => {
+            if (isGlobal) {
+              return;
+            }
             if (isHost && !attendee.isHost) {
               const value = { userId: attendee.userId, video: true };
               ChimesendMessage(
@@ -113,6 +184,9 @@ export const CameraComponent = ({ ele, attendee, isHost, className = "" }) => {
         <i
           className={`${styles.video_icon} ${styles.icon} ${className}`}
           onClick={() => {
+            if (isGlobal) {
+              return;
+            }
             if (isHost && !attendee.isHost) {
               const value = {
                 userId: attendee.userId,
@@ -135,38 +209,57 @@ export const CameraComponent = ({ ele, attendee, isHost, className = "" }) => {
 export const LocalCameraComponent = ({
   selectedDevice,
   setselectedDevice,
+  isAllowed = true,
   className = "",
 }) => {
   const videoinput = useVideoInputs();
   const { isVideoEnabled, toggleVideo } = useLocalVideo();
   const audiovideo = useAudioVideo();
+  const [messageApi] = message.useMessage();
+  const meetingmanager = useMeetingManager();
   return (
     <>
       {!isVideoEnabled ? (
         <i
-          className={`${styles.video_off_icon} ${styles.icon} ${className}`}
+          className={`${styles.video_off_icon} ${styles.icon} ${className} ${
+            videoinput.devices.length === 0 ? styles.disableIcon : ""
+          }`}
           onClick={() => {
-            toggleVideo();
+            if (isAllowed) {
+              toggleVideo();
+            } else {
+              messageApi.open({
+                type: "warning",
+                content:
+                  "Your video has been disabled. Please contact the host",
+              });
+            }
           }}
         ></i>
       ) : (
         <i
-          className={`${styles.video_icon} ${styles.icon} ${className} `}
+          className={`${styles.video_icon} ${styles.icon} ${className} ${
+            videoinput.devices.length === 0 ? styles.disableIcon : ""
+          }`}
           onClick={async () => {
-            if (videoinput.devices.length !== 0) {
-              if (!selectedDevice) {
-                await audiovideo?.startVideoInput(videoinput.devices[0]);
-                if (setselectedDevice) {
-                  setselectedDevice(videoinput.devices[0]);
-                }
-              } else {
-                await audiovideo?.startVideoInput(selectedDevice);
-                if (setselectedDevice) {
-                  setselectedDevice(selectedDevice);
-                }
-              }
+            if (isAllowed) {
+              if (videoinput.devices.length !== 0) {
+                if (!selectedDevice) {
+                  await meetingmanager.startVideoInputDevice(
+                    videoinput.devices[0]
+                  );
 
-              toggleVideo();
+                  if (setselectedDevice) {
+                    setselectedDevice(videoinput.devices[0]);
+                  }
+                } else {
+                  await meetingmanager.startVideoInputDevice(selectedDevice);
+                  if (setselectedDevice) {
+                    setselectedDevice(selectedDevice);
+                  }
+                }
+                toggleVideo();
+              }
             }
           }}
         ></i>

@@ -61,16 +61,11 @@ export const EndMeeting = (props: ExitMeeting) => {
     onOk() {
       handleExitMeeting(Attendee)
         .then(() => {
-          console.log({
-            refId: EventData?.reference_id,
-            hostId: Attendee?.userId,
-          });
-
           ChimesendMessage(
             { refId: EventData?.reference_id, hostId: Attendee?.userId },
             CHIME_SOCKET_EVENTS.END_MEETING
           );
-          //   window.close();
+          window.close();
         })
         .catch(() => {
           toast.error("Unable to end Meeting !");

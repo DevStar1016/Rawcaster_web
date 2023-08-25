@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import classes from "./Room.module.css";
-import { Layout, Modal, Slider } from "antd";
+import { Dropdown, Layout, Modal, Slider } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import {
+  AudioOutputControl,
+  MicSelection,
   useAudioVideo,
+  useMeetingManager,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
@@ -35,7 +38,6 @@ const Participants = () => {
     setRequestList,
     RequestRef,
     isHost,
-    RaiseHandUsers,
     attendeesList,
     EventData,
   } = useLayoutContect();
@@ -173,29 +175,45 @@ const Participants = () => {
               />
             )}
             {!isYou && isHost ? (
-              <div
-                className={classes.moreIcon}
-                onClick={() => {
-                  Modal.confirm({
-                    title: "Remove User",
-                    content: "Are you sure do you want to remove this User !",
-                    onOk: () => {
-                      ChimesendMessage(
-                        {
-                          refId: EventData?.reference_id,
-                          hostId: EventData?.original_user_id,
-                          userId: findAttendee?.userId,
-                        },
-                        CHIME_SOCKET_EVENTS.KICK_USER
-                      );
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: "1",
+                      label: "Rename user",
+                      onClick: () => {
+                        setrenameAttendee(true);
+                      },
                     },
-                    onCancel: () => {},
-                  });
-                  // setrenameAttendee(true);
+                    {
+                      key: "2",
+                      label: "Remove user",
+                      onClick: () => {
+                        Modal.confirm({
+                          title: "Remove User",
+                          content:
+                            "Are you sure do you want to remove this User !",
+                          onOk: () => {
+                            ChimesendMessage(
+                              {
+                                refId: EventData?.reference_id,
+                                hostId: EventData?.original_user_id,
+                                userId: findAttendee?.userId,
+                              },
+                              CHIME_SOCKET_EVENTS.KICK_USER
+                            );
+                          },
+                          onCancel: () => {},
+                        });
+                      },
+                    },
+                  ],
                 }}
               >
-                <i className="material-symbols-outlined">more_vert</i>
-              </div>
+                <div className={classes.moreIcon}>
+                  <i className="material-symbols-outlined">more_vert</i>
+                </div>
+              </Dropdown>
             ) : null}
           </div>
           {renameAttendee && (
@@ -222,7 +240,6 @@ const Participants = () => {
             <div className={classes.speakerSec}>
               <VolumeStatusComponent
                 // isEnable={SpeakerState === findAttendee.userId}
-
                 onClick={() => {
                   if (SpeakerState !== findAttendee.userId) {
                     setSpeakerState(findAttendee.userId);
@@ -306,9 +323,38 @@ const Participants = () => {
         <div className={classes.GlobalSettingContainer}>
           <div className={classes.itemName}>Global Settings</div>
           <div className={classes.itemAction}>
-            <span className="material-symbols-outlined">volume_up</span>
-            <span className="material-symbols-outlined">mic</span>
-            <span className="material-symbols-outlined">videocam</span>
+            <Collapse in={SpeakerState === "Global"}>
+              <div
+                className={classes.speakerContainer}
+                style={{
+                  background: "#f5f5f5",
+                }}
+              >
+                <div className={classes.speakerSec}>
+                  <VolumeStatusComponent
+                    isEnable={true}
+                    // isEnable={SpeakerState === findAttendee.userId}
+                    onClick={() => {
+                      if (SpeakerState !== "Global") {
+                        setSpeakerState("Global");
+                      } else {
+                        setSpeakerState(false);
+                      }
+                    }}
+                  />
+
+                  <Slider min={0} max={100} className="ms-3" tooltip />
+                </div>
+              </div>
+            </Collapse>
+            <MicrophoneComponent
+              isGlobal={true}
+              className={classes.micsmallIcon}
+            />
+            <CameraComponent
+              isGlobal={true}
+              className={classes.videosmallIcon}
+            />
           </div>
         </div>
       </Header>

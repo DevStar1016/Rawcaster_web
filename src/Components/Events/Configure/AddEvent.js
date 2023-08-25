@@ -816,15 +816,26 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               onChange={(e) => {
                                 switch (ele.type) {
                                   case "waiting_room":
-                                    setFieldValue("join_before_host", false);
+                                    setFieldValue("join_before_host", 0);
+                                    setFieldValue(
+                                      ele.type,
+                                      e.target.checked ? 1 : 0
+                                    );
                                     break;
                                   case "join_before_host":
-                                    setFieldValue("waiting_room", false);
+                                    setFieldValue("waiting_room", 0);
+                                    setFieldValue(
+                                      ele.type,
+                                      e.target.checked ? 1 : 0
+                                    );
                                     break;
                                   default:
+                                    setFieldValue(
+                                      ele.type,
+                                      e.target.checked ? 1 : 0
+                                    );
                                     break;
                                 }
-                                setFieldValue(ele.type, e.target.checked);
                               }}
                             >
                               {ele.title}

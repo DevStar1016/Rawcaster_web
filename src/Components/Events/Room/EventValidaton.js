@@ -4,7 +4,6 @@ import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { EventRoomContext, useMainContext } from "../../../Shared/Context";
 import { ExitMeetingService } from "../../../Services/ApiService";
 import WaitingRoom from "./WaitingRoom";
-import { Modal } from "antd";
 import {
   DeviceLabels,
   useAudioVideo,
@@ -25,6 +24,7 @@ const EventValidaton = () => {
   const [isPinEnabled, setisPinEnabled] = useState(false);
   const token = useAuthToken();
   const userData = useAuthData();
+  const [userdata, setuserdata] = useState(null);
   const [isLoading, setisLoading] = useState(true);
   const [isWaitingRoom, setisWaitingRoom] = useState(true);
   const [RequestList, setRequestList] = useState([]);
@@ -70,6 +70,12 @@ const EventValidaton = () => {
         volume: defaultVolume,
       };
     });
+    const finduserData = updatedDetails.find(
+      (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
+    );
+    if (finduserData) {
+      setuserdata(finduserData);
+    }
     setattendeesList(updatedDetails);
     setMeetingSettings(message.meetingSetting);
     const meetingSessionConfiguration = new MeetingSessionConfiguration(
@@ -116,6 +122,8 @@ const EventValidaton = () => {
     setRequestStatusMessage,
     EventMessages,
     setEventMessages,
+    userdata,
+    setuserdata,
   };
 
   const hasWaitingRoomEnabled = () => {

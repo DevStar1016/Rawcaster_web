@@ -23,6 +23,7 @@ const Event = () => {
     isMelodyUploading,
     setisMelodyUploading,
     ProgressValue,
+    setFieldValue,
   } = useSettingsContext();
 
   const handlePrimaryDisabled = (type, isprimary) => {
@@ -88,6 +89,21 @@ const Event = () => {
                         : formikvalues[ele.type]
                     }
                     onChange={(e) => {
+                      switch (ele.type) {
+                        case "waiting_room":
+                          if (e.target.checked) {
+                            setFieldValue("join_before_host", 0);
+                            // setupdateValue("join_before_host", 0);
+                          }
+                          break;
+                        case "join_before_host":
+                          if (e.target.checked) {
+                            setFieldValue("waiting_room", 0);
+                          }
+                          break;
+                        default:
+                          break;
+                      }
                       setupdateValue(ele.type, e.target.checked ? 1 : 0);
                     }}
                     disabled={handlePrimaryDisabled(ele.type, ele.isprimary)}

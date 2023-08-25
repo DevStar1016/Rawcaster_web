@@ -1,7 +1,4 @@
-import {
-  ChimesendMessage,
-  ChimesocketListen,
-} from "../../Services/SocketService";
+import { ChimesocketListen } from "../../Services/SocketService";
 import { Outlet } from "react-router";
 import { useEffect } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
@@ -10,12 +7,11 @@ import {
   useLocalVideo,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
-import { Modal } from "antd";
 
 const ChimeSocketComponent = () => {
   const userData = useAuthData();
-  const { toggleVideo, muted } = useLocalVideo();
-  const { toggleMute, isVideoEnabled } = useToggleLocalMute();
+  const { muted } = useLocalVideo();
+  const { isVideoEnabled } = useToggleLocalMute();
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.CONNECT_SOCKET, () => {
@@ -58,10 +54,13 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (message) => {
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
-        JSON.stringify(message)
-      );
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
+      setTimeout(() => {
+        localStorage.setItem(
+          CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
+          JSON.stringify(message)
+        );
+      }, 1000);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
@@ -242,6 +241,33 @@ const ChimeSocketComponent = () => {
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(
+      CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
+      (message) => {
+        localStorage.setItem(
+          CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
+          JSON.stringify(message)
+        );
+      }
+    );
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER, (message) => {
+      localStorage.setItem(
+        CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
+        JSON.stringify(message)
+      );
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
     };
   }, []);
 
