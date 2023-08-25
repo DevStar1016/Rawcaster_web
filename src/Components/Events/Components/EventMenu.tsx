@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./Menu.module.css";
-import { Badge, Dropdown, Modal, Popover } from "antd";
+import { Badge, Dropdown, Modal, Popover, message } from "antd";
 import {
   useAudioInputs,
   useAudioOutputs,
@@ -8,6 +8,7 @@ import {
   useContentShareControls,
   useContentShareState,
   useLocalVideo,
+  useMeetingManager,
   useToggleLocalMute,
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
@@ -34,65 +35,42 @@ const EventMenu = () => {
     EventData,
     RequestRef,
     handleExitMeeting,
-    attendeesList,
+    MeetingSettings,
+    userdata,
+    setMeetingSettings,
   }: any = useEventLayout();
   const userData = useAuthData();
+  const [messageApi, contextHolder] = message.useMessage();
   const audiovideo = useAudioVideo();
   const { toggleContentShare } = useContentShareControls();
   const { isLocalUserSharing } = useContentShareState();
-  const { confirm } = Modal;
   const { isVideoEnabled } = useLocalVideo();
   const { muted } = useToggleLocalMute();
   const audioinput = useAudioInputs();
   const audiooutput = useAudioOutputs();
   const videoinput = useVideoInputs();
-  const [AudioSelectedDevice, setAudioSelectedDevice] = useState<any>(null);
   const [selectedDevice, setselectedDevice] = useState<any>(null);
   const [isMore, setisMore] = useState<Boolean>(false);
+  const meetingmanager = useMeetingManager();
 
-  const getCurrentAttendee = () => {
-    return attendeesList.find(
-      (ele: any) => parseInt(ele.userId) === parseInt(userData.user_id)
-    );
-  };
-
-  const DeviceList = (List: any, onSelect: any) => {
-    return List.map((ele: any, index: any) => {
-      return {
-        key: index + 1,
-        label: (
-          <div
-            onClick={() => {
-              onSelect(ele.deviceId);
-            }}
-          >
-            {ele.label}
-          </div>
-        ),
-      };
-    });
-  };
+  const enabledSettings = () => ({
+    presentEnable: userdata?.screenShare === 1 || userdata?.isHost,
+    allowEnable: userdata?.isHost,
+    allowActive: MeetingSettings?.user_screenshare === 1,
+    viewEnable: userdata?.isHost,
+    localvideoStatus: userdata?.isHost || !userdata?.videoDisabledByHost,
+    localMicStatus: userdata?.isHost || !userdata?.audioDisabledByHost,
+  });
 
   return (
     <div className={styles.BottomContainer}>
+      {contextHolder}
       <div className={styles.startContainer}>
         <div className="d-flex flex-row">
           <div className={styles.Actionsec}>
             <div className={styles.iconBox}>
               <LocalMicrophoneComponent />
-              {/* <Dropdown
-                menu={{
-                  items: DeviceList(audioinput.devices, async (id) => {
-                    audiovideo?.startAudioInput(id);
-                  }),
-                }}
-                placement="top"
-              >
-                <div
-                  style={{
-                    color: "white",
-                  }}
-                > */}
+
               <Popover
                 placement="top"
                 showArrow={false}
@@ -104,13 +82,12 @@ const EventMenu = () => {
                         audioinput.selectedDevice === ele.deviceId;
                       return (
                         <span
-                          onClick={() => {
-                            console.log(audioinput.selectedDevice);
-
+                          onClick={async () => {
                             if (audiovideo) {
                               try {
-                                setAudioSelectedDevice(ele.deviceId);
-                                audiovideo.startAudioInput(ele.deviceId);
+                                await meetingmanager.startAudioInputDevice(
+                                  ele.deviceId
+                                );
                               } catch (error) {
                                 console.error(
                                   "Error setting speaker device:",
@@ -138,15 +115,15 @@ const EventMenu = () => {
                         audiooutput.selectedDevice === ele.deviceId;
                       return (
                         <span
-                          onClick={() => {
+                          onClick={async () => {
                             if (audiovideo) {
                               try {
-                                setAudioSelectedDevice(ele.deviceId);
-                                audiovideo.chooseAudioOutput(ele.deviceId);
+                                await meetingmanager.startAudioOutputDevice(
+                                  ele.deviceId
+                                );
                               } catch (error) {
-                                console.error(
-                                  "Error setting speaker device:",
-                                  error
+                                console.log(
+                                  "SpeakerSelection failed to select speaker"
                                 );
                               }
                             }
@@ -189,27 +166,52 @@ const EventMenu = () => {
             <div className={`${styles.iconBox} ${styles.videoiconBox}`}>
               <LocalCameraComponent
                 selectedDevice={selectedDevice}
+                isAllowed={enabledSettings().localvideoStatus}
                 setselectedDevice={setselectedDevice}
               />
               {videoinput.devices.length !== 0 && (
-                <Dropdown
-                  menu={{
-                    items: DeviceList(videoinput.devices, async (id) => {
-                      console.log(id, "ididididid");
-                      audiovideo
-                        ?.startVideoInput(id)
-                        .then((res: any) => {
-                          console.log(res);
-                        })
-                        .catch((err: any) => {
-                          console.log(err);
-                        });
-                    }),
-                  }}
+                <Popover
                   placement="top"
+                  showArrow={false}
+                  content={
+                    <div className={styles.micdropDown}>
+                      {videoinput.devices.map((ele) => {
+                        const getisActive = () =>
+                          videoinput.selectedDevice === ele.deviceId;
+                        return (
+                          <span
+                            onClick={async () => {
+                              if (audiovideo) {
+                                try {
+                                  await meetingmanager.startVideoInputDevice(
+                                    ele.deviceId
+                                  );
+                                } catch (error) {
+                                  console.error(
+                                    "Error setting speaker device:",
+                                    error
+                                  );
+                                }
+                              }
+                            }}
+                          >
+                            <i
+                              className="material-symbols-outlined"
+                              style={{
+                                color: getisActive() ? "black" : "transparent",
+                              }}
+                            >
+                              done
+                            </i>
+                            {ele.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  }
+                  trigger="click"
                 >
                   <div
-                    // className={styles.DropdownBtn}
                     style={{
                       color: "white",
                     }}
@@ -218,7 +220,7 @@ const EventMenu = () => {
                       expand_less
                     </span>
                   </div>
-                </Dropdown>
+                </Popover>
               )}
             </div>
             {isVideoEnabled ? <>Disable</> : <>Enable</>}
@@ -260,17 +262,30 @@ const EventMenu = () => {
         <div
           className={styles.Actionsec}
           style={{
-            color: isLocalUserSharing ? "#F2718D" : "#FFFFFF",
+            color: enabledSettings().presentEnable
+              ? isLocalUserSharing
+                ? "#F2718D"
+                : "#FFFFFF"
+              : "gray",
             textAlign: "center",
             margin: "auto",
           }}
           onClick={() => {
-            toggleContentShare();
+            if (enabledSettings().presentEnable) {
+              toggleContentShare();
+            } else {
+              messageApi.open({
+                type: "warning",
+                content: "Present Disabled By Host",
+              });
+            }
           }}
         >
           <div className={styles.iconBox}>
             <i
-              className={`${styles.present_icon} ${styles.icon}`}
+              className={`${styles.present_icon} ${styles.icon} ${
+                enabledSettings().presentEnable ? "" : styles.disableIcon
+              }`}
               style={{
                 background: isLocalUserSharing ? "#F2718D" : "#FFFFFF",
               }}
@@ -280,15 +295,38 @@ const EventMenu = () => {
         </div>
       </div>
       <div className={`${styles.endContainer} ${styles.onlydes} onlydes`}>
-        {getCurrentAttendee()?.isHost && (
-          <div className={styles.Actionsec}>
+        {enabledSettings().allowEnable && (
+          <div
+            className={styles.Actionsec}
+            style={{
+              color: enabledSettings().allowActive ? "#F2718D" : "#ffffff",
+            }}
+            onClick={() => {
+              ChimesendMessage(
+                {
+                  refId: EventData?.reference_id,
+                  hostId: userData?.user_id,
+                  status: enabledSettings().allowActive ? false : true,
+                },
+                CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN
+              );
+              setMeetingSettings((pre: any) => ({
+                ...pre,
+                user_screenshare: enabledSettings().allowActive ? 0 : 1,
+              }));
+            }}
+          >
             <div className={styles.iconBox}>
-              <i className={`${styles.present_icon} ${styles.icon}`}></i>
+              <i
+                className={`${styles.present_icon} ${styles.icon} ${
+                  enabledSettings().allowActive ? styles.activeicon : ""
+                }`}
+              ></i>
             </div>
             Allow
           </div>
         )}
-        {getCurrentAttendee()?.isHost && (
+        {userdata?.isHost && (
           <div
             className={styles.Actionsec}
             onClick={() => {
@@ -304,14 +342,14 @@ const EventMenu = () => {
         <div
           className={styles.Actionsec}
           style={{
-            color: getCurrentAttendee()?.handRaised ? "#F2718D" : "#ffffff",
+            color: userdata?.handRaised ? "#F2718D" : "#ffffff",
           }}
           onClick={() => {
             ChimesendMessage(
               {
                 refId: EventData?.reference_id,
                 userId: userData?.user_id,
-                status: !getCurrentAttendee().handRaised,
+                status: !userdata.handRaised,
               },
               CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
             );
@@ -320,7 +358,7 @@ const EventMenu = () => {
           <div className={styles.iconBox}>
             <i
               className={` ${
-                getCurrentAttendee()?.handRaised
+                userdata?.handRaised
                   ? styles.raise_hand_active_icon
                   : styles.raise_hand_icon
               } ${styles.icon}`}
@@ -372,15 +410,15 @@ const EventMenu = () => {
             color: "red",
           }}
           onClick={() => {
-            if (getCurrentAttendee()?.isHost) {
+            if (userdata?.isHost) {
               EndMeeting({
-                Attendee: getCurrentAttendee(),
+                Attendee: userdata,
                 EventData,
                 handleExitMeeting,
               });
             } else {
               ExitMeeting({
-                Attendee: getCurrentAttendee(),
+                Attendee: userdata,
                 EventData,
                 handleExitMeeting,
               });
@@ -394,7 +432,7 @@ const EventMenu = () => {
               logout
             </span>
           </div>
-          {getCurrentAttendee()?.isHost ? "End" : "Leave"}
+          {userdata?.isHost ? "End" : "Leave"}
         </div>
       </div>
       <div className="onlyMob">
@@ -409,16 +447,14 @@ const EventMenu = () => {
               <div className={styles.iconSec}>
                 <div
                   className={`${styles.iconContainer}  ${
-                    getCurrentAttendee()?.handRaised
-                      ? styles.activeiconContainer
-                      : ""
+                    userdata?.handRaised ? styles.activeiconContainer : ""
                   }`}
                   onClick={() => {
                     ChimesendMessage(
                       {
                         refId: EventData?.reference_id,
                         userId: userData?.user_id,
-                        status: !getCurrentAttendee().handRaised,
+                        status: !userdata.handRaised,
                       },
                       CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
                     );
@@ -430,6 +466,34 @@ const EventMenu = () => {
                 </div>
                 <p>Raise Hand</p>
               </div>
+              {enabledSettings().allowEnable && (
+                <div className={styles.iconSec}>
+                  <div
+                    className={`${styles.iconContainer} ${
+                      enabledSettings().allowActive
+                        ? styles.activeiconContainer
+                        : ""
+                    }`}
+                    onClick={() => {
+                      ChimesendMessage(
+                        {
+                          refId: EventData?.reference_id,
+                          hostId: userData?.user_id,
+                          status: enabledSettings().allowActive ? false : true,
+                        },
+                        CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN
+                      );
+                      setMeetingSettings((pre: any) => ({
+                        ...pre,
+                        user_screenshare: enabledSettings().allowActive ? 0 : 1,
+                      }));
+                    }}
+                  >
+                    <i className={`${styles.present_icon} ${styles.icon}`}></i>
+                  </div>
+                  <p> Allow</p>
+                </div>
+              )}
               <div className={styles.iconSec}>
                 <div
                   className={`${styles.iconContainer}`}

@@ -7,13 +7,8 @@ import {
   useRosterState,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
-import { Layout, Modal, message } from "antd";
+import { Layout, message } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
-import MeetingManagerComponent from "../Components/Events/Room/MeetingManagerComponent";
-import { useAuthData } from "../Shared/Reduxfetcher";
-import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
-import { ChimesocketListen } from "../Services/SocketService";
-import { MessageOutlined } from "@ant-design/icons";
 import TalkshowMenu from "../Components/Events/Components/TalkshowMenu";
 import EventMenu from "../Components/Events/Components/EventMenu";
 import LoadingOverlay from "react-loading-overlay";
@@ -28,30 +23,17 @@ const EventLayout = () => {
     attendeesList,
     notificationToast,
     setnotificationToast,
-    isChatorParticipant,
     isLoading,
+    userdata,
   } = useEventLayout();
-  const { Header, Footer, Sider, Content } = Layout;
-  const [userdetails, setuserdetails] = useState(null);
-  const userData = useAuthData();
+  const { Header, Footer } = Layout;
   const [isReactions, setisReactions] = useState(false);
   const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [_, contextHolder] = message.useMessage();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
 
   const [isNewMessage, setisNewMessage] = useState(false);
-
-  useEffect(() => {
-    if (attendeesList) {
-      const findAttendee = attendeesList.find(
-        (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
-      );
-      if (findAttendee) {
-        setuserdetails(findAttendee);
-      }
-    }
-  }, [attendeesList]);
 
   const useAttendeesList = () => {
     let filterValidAttendees = attendees.map((elem) => {
@@ -71,7 +53,13 @@ const EventLayout = () => {
       <LoadingOverlay
         active={isLoading}
         spinner
-        text={"Meeting Has Been Started"}
+        text={
+          userdata
+            ? userdata.isHost
+              ? "Meeting Has Been Started ..."
+              : "Joining Event Please Wait ..."
+            : "Fetching User Details ..."
+        }
       >
         <Layout className={classes.EventLayoutContainer}>
           <Header className={classes.headerSec}>
@@ -90,10 +78,8 @@ const EventLayout = () => {
           <Outlet
             context={{
               ...useEventLayout(),
-              isHost: userdetails?.isHost,
-
-              userdetails,
-
+              isHost: userdata?.isHost,
+              userdetails: userdata,
               RaiseHandUsers,
               setRaiseHandUsers,
               useAttendeesList,
@@ -109,7 +95,7 @@ const EventLayout = () => {
               <TalkshowMenu
                 setRaiseHandUsers={setRaiseHandUsers}
                 RaiseHandUsers={RaiseHandUsers}
-                userdetails={userdetails}
+                userdetails={userdata}
                 isReactions={isReactions}
                 setisReactions={setisReactions}
                 isNewMessage={isNewMessage}
@@ -119,7 +105,7 @@ const EventLayout = () => {
               <EventMenu
                 setRaiseHandUsers={setRaiseHandUsers}
                 RaiseHandUsers={RaiseHandUsers}
-                userdetails={userdetails}
+                userdetails={userdata}
               />
             )}
           </Footer>
