@@ -16,7 +16,7 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
-import { Alert, Drawer, Layout, Spin, Tooltip } from "antd";
+import { Alert, Drawer, Layout, Modal, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
 import Reactions from "../Components/Reactions";
 import CommentBox from "./CommentBox";
@@ -28,6 +28,8 @@ import {
   MicrophoneComponent,
 } from "../Components/Utility";
 import { useEventRoomContext } from "../../../Shared/Context";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { ChimesendMessage } from "../../../Services/SocketService";
 
 const EventBox = () => {
   const userData = useAuthData();
@@ -42,6 +44,7 @@ const EventBox = () => {
     setnotificationToast,
     attendeesList,
     userdata,
+    EventData,
   } = useEventRoomContext();
 
   const { roster } = useRosterState();
@@ -129,6 +132,36 @@ const EventBox = () => {
               )}
             </div>
           </Tooltip>
+
+          {userdata?.isHost && isPinEnabled && (
+            <Tooltip placement="topLeft" title={"Add Spotlight"}>
+              <div
+                className={`${userdata?.isHost ? "" : classes.disabledIcon} ${
+                  classes.iconSec
+                }`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  console.log(findAttendee, "findAttendee");
+                  ChimesendMessage(
+                    {
+                      refId: EventData?.reference_id,
+                      view_type: 2,
+                      spotlight_id: findAttendee?.userId,
+                    },
+                    CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
+                  );
+                }}
+              >
+                <i className={`material-icons `}>filter_center_focus</i>
+              </div>
+            </Tooltip>
+          )}
+
           {!isYou && (
             <Tooltip placement="topLeft" title={"Remove user"}>
               <div
@@ -139,6 +172,25 @@ const EventBox = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                }}
+                onClick={() => {
+                  if (userdata?.isHost) {
+                    Modal.confirm({
+                      title: "Remove User",
+                      content: "Are you sure do you want to remove this User !",
+                      onOk: () => {
+                        ChimesendMessage(
+                          {
+                            refId: EventData?.reference_id,
+                            hostId: EventData?.original_user_id,
+                            userId: findAttendee?.userId,
+                          },
+                          CHIME_SOCKET_EVENTS.KICK_USER
+                        );
+                      },
+                      onCancel: () => {},
+                    });
+                  }
                 }}
               >
                 <span
@@ -181,6 +233,19 @@ const EventBox = () => {
         )}
       </div>
     );
+  };
+
+  const ConvertSpotLightAttendee = () => {
+    const spotlightAttendee = attendees.find(
+      (ele) => parseInt(ele.externalUserId) === parseInt(isPinEnabled)
+    );
+    const otherAttendee = attendees.filter(
+      (ele) => parseInt(ele.externalUserId) !== parseInt(isPinEnabled)
+    );
+    return {
+      spotlightAttendee,
+      otherAttendee,
+    };
   };
 
   const GetDisplayComponent = ({ ele }) => {
@@ -291,21 +356,24 @@ const EventBox = () => {
             <>
               <div
                 className={
-                  isPinEnabled && attendees.length >= 10
-                    ? classes.isPinavailablePinSec
-                    : classes.PinSec
+                  // isPinEnabled && attendees.length >= 10
+                  isPinEnabled ? classes.isPinavailablePinSec : classes.PinSec
                 }
               >
-                {isPinEnabled && attendees.length >= 10 && (
-                  <div className={classes.pinned_video}>
-                    <img src={userImg} />
-                    <p>{"Participant "}</p>
-                  </div>
-                )}
+                {/* {isPinEnabled && attendees.length >= 10 && ( */}
+                {isPinEnabled &&
+                  ConvertSpotLightAttendee()?.spotlightAttendee && (
+                    <div className={classes.pinned_video}>
+                      {GetDisplayComponent({
+                        ele: ConvertSpotLightAttendee()?.spotlightAttendee,
+                      })}
+                    </div>
+                  )}
               </div>
               <div
                 className={
-                  isPinEnabled && attendees.length >= 10
+                  // isPinEnabled && attendees.length >= 10
+                  isPinEnabled
                     ? classes.isPinavailableSec
                     : classes.ParticipantSec
                 }
@@ -319,9 +387,11 @@ const EventBox = () => {
                   </div>
                 ) : (
                   <div className={`mx-auto ${getContainerClassName()}`}>
-                    {attendees.map((ele, index) => {
-                      return GetDisplayComponent({ ele });
-                    })}
+                    {ConvertSpotLightAttendee().otherAttendee?.map(
+                      (ele, index) => {
+                        return GetDisplayComponent({ ele });
+                      }
+                    )}
                   </div>
                 )}
               </div>

@@ -172,6 +172,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
       (message) => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
           JSON.stringify(message)
@@ -268,6 +269,18 @@ const ChimeSocketComponent = () => {
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER, (message) => {
+      localStorage.setItem(
+        CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER,
+        JSON.stringify(message)
+      );
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER);
     };
   }, []);
 

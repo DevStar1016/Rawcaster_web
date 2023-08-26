@@ -9,14 +9,13 @@ import {
   useContentShareState,
   useLocalVideo,
   useMeetingManager,
+  useRosterState,
   useToggleLocalMute,
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
 import { useEventLayout } from "../Room/EventValidaton";
-import { ExclamationCircleFilled } from "@ant-design/icons";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { toast } from "react-hot-toast";
 import {
   HangupComponent,
   LocalCameraComponent,
@@ -40,6 +39,8 @@ const EventMenu = () => {
     setMeetingSettings,
   }: any = useEventLayout();
   const userData = useAuthData();
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
   const [messageApi, contextHolder] = message.useMessage();
   const audiovideo = useAudioVideo();
   const { toggleContentShare } = useContentShareControls();
@@ -69,7 +70,9 @@ const EventMenu = () => {
         <div className="d-flex flex-row">
           <div className={styles.Actionsec}>
             <div className={styles.iconBox}>
-              <LocalMicrophoneComponent />
+              <LocalMicrophoneComponent
+                isAllowed={enabledSettings().localMicStatus}
+              />
 
               <Popover
                 placement="top"
@@ -330,7 +333,22 @@ const EventMenu = () => {
           <div
             className={styles.Actionsec}
             onClick={() => {
-              setisPinEnabled(!isPinEnabled);
+              if (attendees.length <= 10) {
+                setisPinEnabled(!isPinEnabled);
+                ChimesendMessage(
+                  {
+                    refId: EventData?.reference_id,
+                    view_type: isPinEnabled ? 1 : 2,
+                    spotlight_id: userData?.user_id,
+                  },
+                  CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
+                );
+              } else {
+                messageApi.open({
+                  type: "warning",
+                  content: "If Less than 10 attendees View change Not allowed",
+                });
+              }
             }}
           >
             <div className={styles.iconBox}>
@@ -540,6 +558,35 @@ const EventMenu = () => {
                   </span>
                 </div>
                 <p>Switch Camera</p>
+              </div>
+              <div className={styles.iconSec}>
+                <div
+                  className={`${styles.iconContainer} ${
+                    isPinEnabled ? styles.activeiconContainer : ""
+                  }`}
+                  onClick={async () => {
+                    if (attendees.length <= 10) {
+                      setisPinEnabled(!isPinEnabled);
+                      ChimesendMessage(
+                        {
+                          refId: EventData?.reference_id,
+                          view_type: isPinEnabled ? 1 : 2,
+                          spotlight_id: userData?.user_id,
+                        },
+                        CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
+                      );
+                    } else {
+                      messageApi.open({
+                        type: "warning",
+                        content:
+                          "If Less than 10 attendees View change Not allowed",
+                      });
+                    }
+                  }}
+                >
+                  <i className="material-symbols-outlined">grid_view</i>
+                </div>
+                <p>View</p>
               </div>
               <div className={styles.iconSec}>
                 <div

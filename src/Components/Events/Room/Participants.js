@@ -7,10 +7,7 @@ import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import {
-  AudioOutputControl,
-  MicSelection,
   useAudioVideo,
-  useMeetingManager,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
@@ -320,43 +317,45 @@ const Participants = () => {
             </InputGroup>
           </Collapse>
         </div>
-        <div className={classes.GlobalSettingContainer}>
-          <div className={classes.itemName}>Global Settings</div>
-          <div className={classes.itemAction}>
-            <Collapse in={SpeakerState === "Global"}>
-              <div
-                className={classes.speakerContainer}
-                style={{
-                  background: "#f5f5f5",
-                }}
-              >
-                <div className={classes.speakerSec}>
-                  <VolumeStatusComponent
-                    isEnable={true}
-                    // isEnable={SpeakerState === findAttendee.userId}
-                    onClick={() => {
-                      if (SpeakerState !== "Global") {
-                        setSpeakerState("Global");
-                      } else {
-                        setSpeakerState(false);
-                      }
-                    }}
-                  />
+        {isHost && (
+          <div className={classes.GlobalSettingContainer}>
+            <div className={classes.itemName}>Global Settings</div>
+            <div className={classes.itemAction}>
+              <Collapse in={SpeakerState === "Global"}>
+                <div
+                  className={classes.speakerContainer}
+                  style={{
+                    background: "#f5f5f5",
+                  }}
+                >
+                  <div className={classes.speakerSec}>
+                    <VolumeStatusComponent
+                      isEnable={true}
+                      // isEnable={SpeakerState === findAttendee.userId}
+                      onClick={() => {
+                        if (SpeakerState !== "Global") {
+                          setSpeakerState("Global");
+                        } else {
+                          setSpeakerState(false);
+                        }
+                      }}
+                    />
 
-                  <Slider min={0} max={100} className="ms-3" tooltip />
+                    <Slider min={0} max={100} className="ms-3" tooltip />
+                  </div>
                 </div>
-              </div>
-            </Collapse>
-            <MicrophoneComponent
-              isGlobal={true}
-              className={classes.micsmallIcon}
-            />
-            <CameraComponent
-              isGlobal={true}
-              className={classes.videosmallIcon}
-            />
+              </Collapse>
+              <MicrophoneComponent
+                isGlobal={true}
+                className={classes.micsmallIcon}
+              />
+              <CameraComponent
+                isGlobal={true}
+                className={classes.videosmallIcon}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </Header>
       <Content className={classes.participantSec}>
         {attendees.map((ele, index) => {
@@ -373,6 +372,7 @@ const Participants = () => {
             style={{
               marginTop: 15,
               paddingTop: "10px",
+              marginBottom: RequestRef.current.length !== 0 ? 20 : 0,
             }}
           >
             <p
@@ -381,7 +381,7 @@ const Participants = () => {
                 marginLeft: 10,
               }}
             >
-              Requests ({RequestRef.current.length})
+              Lobby ({RequestRef.current.length})
             </p>
             <div
               style={{

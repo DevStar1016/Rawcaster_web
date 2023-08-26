@@ -3,9 +3,7 @@ import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Button, Modal } from "antd";
 import { useEventRoomContext } from "../../../Shared/Context";
 import {
-  useAudioVideo,
   useLocalVideo,
-  useMeetingManager,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { EndAttendeeMeeting } from "../Components/Methods";
@@ -29,35 +27,80 @@ const MeetingManagerComponent = () => {
     setuserdata,
     setMeetingSettings,
     MeetingSettings,
+    setisPinEnabled,
     userdata,
   } = useEventRoomContext();
   const userData = useAuthData();
   const { toggleVideo, isVideoEnabled } = useLocalVideo();
   const { toggleMute, muted } = useToggleLocalMute();
-  console.log(MeetingSettings, "userdata");
 
-  const handleIncallEvents = async (message) => {
-    if (message.audio === false) {
-      toggleMute();
-    } else if (message.audio === true) {
-      Modal.confirm({
-        title: "Host requests that you unmute your microphone",
-        async onOk() {
-          toggleMute();
-        },
-        onCancel() {},
-      });
-    } else if (message.video === false) {
-      await toggleVideo();
-    } else if (message.video === true) {
-      Modal.confirm({
-        title: "Host requests that you turn on camera",
-        async onOk() {
-          await toggleVideo();
-        },
-        onCancel() {},
-      });
-    }
+  const HandleVideoAudio = (props) => {
+    return new Promise((resolve, reject) => {
+      const {
+        value,
+        hostDisabledType,
+        userStatus,
+        settingType,
+        Type,
+        popupmessage,
+      } = props;
+      // audioDisabledByHost
+      try {
+        const attendees = JSON.parse(value);
+        const singleAttendee = attendees.updatedUser;
+        const attendeeList = attendees.attendeeList;
+        if (singleAttendee) {
+          if (!userdata.isHost) {
+            setuserdata((pre) => ({
+              ...pre,
+              [hostDisabledType]: singleAttendee[hostDisabledType],
+              [Type]: singleAttendee[hostDisabledType],
+            }));
+            if (singleAttendee[hostDisabledType] === false) {
+              Modal.confirm({
+                title: popupmessage,
+                async onOk() {
+                  resolve();
+                },
+                onCancel() {},
+              });
+            } else if (singleAttendee[hostDisabledType]) {
+              resolve();
+            }
+          }
+        } else if (attendeeList) {
+          const findAttendee = attendeeList.find(
+            (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
+          );
+          if (!userdata.isHost) {
+            setMeetingSettings((pre) => ({
+              ...pre,
+              [settingType]: findAttendee?.[hostDisabledType] ? 0 : 1,
+            }));
+            setuserdata((pre) => ({
+              ...pre,
+              [hostDisabledType]: findAttendee[hostDisabledType],
+              [Type]: findAttendee[hostDisabledType],
+            }));
+            if (findAttendee[hostDisabledType] === false) {
+              Modal.confirm({
+                title: popupmessage,
+                async onOk() {
+                  resolve();
+                },
+                onCancel() {},
+              });
+            } else if (findAttendee[hostDisabledType]) {
+              if (!userStatus) {
+                resolve();
+              }
+            }
+          }
+        }
+      } catch (error) {
+        reject();
+      }
+    });
   };
 
   const onReceiveMessage = (e) => {
@@ -123,7 +166,6 @@ const MeetingManagerComponent = () => {
         case CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND:
           try {
             const user_data = JSON.parse(newValue);
-
             const raiseHandUser = user_data.UserData;
             if (
               raiseHandUser.handRaised &&
@@ -189,29 +231,6 @@ const MeetingManagerComponent = () => {
             }
           } catch (error) {}
           break;
-        // case CHIME_SOCKET_EVENTS.SINGLE_USER_MSG:
-        //   try {
-        //     const message_data = JSON.parse(newValue);
-        //     if (parseInt(message_data.userId) !== parseInt(userData.user_id)) {
-        //       setnotificationToast({
-        //         show: true,
-        //         msg: message_data.message,
-        //         title: `${message_data.name} ${
-        //           message_data.isPrivate ? "(Private)" : ""
-        //         }`,
-        //         icon: <MessageOutlined />,
-        //         buttons: [],
-        //       });
-        //     }
-        //     setEventMessages((pre) => [
-        //       {
-        //         ...message_data,
-        //         refId: EventData?.reference_id,
-        //       },
-        //       ...pre,
-        //     ]);
-        //   } catch (error) {}
-        //   break;
         case CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG:
           try {
             const message_data = JSON.parse(newValue);
@@ -252,7 +271,6 @@ const MeetingManagerComponent = () => {
             }
           } catch (error) {}
           break;
-
         case CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER:
           try {
             const attendees = JSON.parse(newValue);
@@ -275,40 +293,44 @@ const MeetingManagerComponent = () => {
             }
           } catch (error) {}
           break;
-
         case CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER:
           try {
-            const attendees = JSON.parse(newValue);
-            const attendeeList = attendees.attendeeList;
-            const findAttendee = attendeeList.find(
-              (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
-            );
-            if (findAttendee) {
-              if (!userdata.isHost) {
-                setuserdata((pre) => ({
-                  ...pre,
-                  audio: findAttendee.audio,
-                }));
-                if (findAttendee.audio) {
-                  Modal.confirm({
-                    title: "Host requests that you unmute your microphone",
-                    async onOk() {
-                      toggleMute();
-                    },
-                    onCancel() {},
-                  });
-                } else if (findAttendee.audio === false) {
-                  toggleMute();
-                }
-              }
-            }
+            const AudioData = {
+              value: newValue,
+              hostDisabledType: "audioDisabledByHost",
+              userStatus: muted,
+              settingType: "default_guest_audio",
+              popupmessage: "Host requests that you unmute your microphone",
+              Type: "audio",
+            };
+            HandleVideoAudio(AudioData).then(() => {
+              toggleMute();
+            });
           } catch (error) {}
           break;
-        case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
+        case CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER:
           try {
-            const message = JSON.parse(newValue);
-
-            handleIncallEvents(message);
+            const VideoData = {
+              value: newValue,
+              hostDisabledType: "videoDisabledByHost",
+              userStatus: !isVideoEnabled,
+              settingType: "default_guest_video",
+              popupmessage: "Host requests that you Enable your Camera",
+              Type: "video",
+            };
+            HandleVideoAudio(VideoData).then(() => {
+              toggleVideo();
+            });
+          } catch (error) {}
+          break;
+        case CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER:
+          try {
+            const viewData = JSON.parse(newValue);
+            if (viewData.view_type === 2) {
+              setisPinEnabled(viewData.spotlight_id);
+            } else {
+              setisPinEnabled(null);
+            }
           } catch (error) {}
           break;
         default:

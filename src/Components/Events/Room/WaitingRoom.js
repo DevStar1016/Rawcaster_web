@@ -128,13 +128,13 @@ const WaitingRoom = ({ EventData }) => {
           </div>
         </>
 
-        <div style={{ textAlign: "center" }}>
+        {/* <div style={{ textAlign: "center" }}>
           <img
             src={require("../../../Assets/Images/Events/loader.gif")}
             alt=""
             style={{ width: "50%" }}
           />
-        </div>
+        </div> */}
       </div>
       {RequestStatusMessage && (
         <div className={classes.retrySec}>

@@ -7,6 +7,8 @@ import WaitingRoom from "./WaitingRoom";
 import {
   DeviceLabels,
   useAudioVideo,
+  useMeetingManager,
+  useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
 import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
@@ -24,13 +26,14 @@ const EventValidaton = () => {
   const [isPinEnabled, setisPinEnabled] = useState(false);
   const token = useAuthToken();
   const userData = useAuthData();
+  const videoinput = useVideoInputs();
   const [userdata, setuserdata] = useState(null);
   const [isLoading, setisLoading] = useState(true);
   const [isWaitingRoom, setisWaitingRoom] = useState(true);
   const [RequestList, setRequestList] = useState([]);
   const [attendeesList, setattendeesList] = useState([]);
   const [MeetingSettings, setMeetingSettings] = useState(null);
-  const { meetingManager } = useMainContext();
+  const meetingManager = useMeetingManager();
   const [EventMessages, setEventMessages] = useState([]);
   const [isFetching, setisFetching] = useState(false);
   const [RequestStatusMessage, setRequestStatusMessage] = useState(null);
@@ -88,6 +91,34 @@ const EventValidaton = () => {
     try {
       await meetingManager.join(meetingSessionConfiguration, meetingOptions);
       await meetingManager.start();
+      try {
+        if (
+          finduserData.audioDisabledByHost === true &&
+          finduserData.audio === true
+        ) {
+          meetingManager.audioVideo.realtimeUnmuteLocalAudio();
+        } else if (
+          finduserData.audioDisabledByHost === false ||
+          finduserData.audio === false
+        ) {
+          meetingManager.audioVideo.realtimeMuteLocalAudio();
+        }
+
+        if (
+          finduserData.videoDisabledByHost === true &&
+          finduserData.video === true
+        ) {
+          meetingManager.audioVideo.startVideoInputDevice(
+            videoinput.devices[0]
+          );
+        } else if (
+          finduserData.videoDisabledByHost === false ||
+          finduserData.video === false
+        ) {
+          meetingManager.audioVideo.stopVideoInput();
+        }
+      } catch (error) {}
+
       setisWaitingRoom(false);
       setisLoading(false);
     } catch (error) {
