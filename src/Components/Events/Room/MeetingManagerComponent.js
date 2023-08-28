@@ -4,6 +4,8 @@ import { Button, Modal } from "antd";
 import { useEventRoomContext } from "../../../Shared/Context";
 import {
   useLocalVideo,
+  useMeetingEvent,
+  useMeetingManager,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { EndAttendeeMeeting } from "../Components/Methods";
@@ -26,10 +28,17 @@ const MeetingManagerComponent = () => {
     EventMessages,
     setuserdata,
     setMeetingSettings,
-    MeetingSettings,
     setisPinEnabled,
     userdata,
   } = useEventRoomContext();
+  const meetingManager = useMeetingManager();
+
+  useEffect(() => {
+    meetingManager.subscribeToEventDidReceive((eventname, message) => {
+      console.log(eventname, message, "MEETING MANAGER EVENT");
+    });
+  }, []);
+
   const userData = useAuthData();
   const { toggleVideo, isVideoEnabled } = useLocalVideo();
   const { toggleMute, muted } = useToggleLocalMute();

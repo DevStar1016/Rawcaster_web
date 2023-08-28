@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./Menu.module.css";
-import { Badge, Dropdown, Modal, Popover, message } from "antd";
+import { Badge, Drawer, Dropdown, Modal, Popover, message } from "antd";
 import {
   useAudioInputs,
   useAudioOutputs,
@@ -23,7 +23,7 @@ import {
 } from "./Utility";
 import MoreBottomSheet from "./MoreBottomSheet";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
-import { EndMeeting, ExitMeeting } from "./Methods";
+import { EndMeeting, ExitMeeting, MicOptions } from "./Methods";
 
 const EventMenu = () => {
   const {
@@ -47,11 +47,10 @@ const EventMenu = () => {
   const { isLocalUserSharing } = useContentShareState();
   const { isVideoEnabled } = useLocalVideo();
   const { muted } = useToggleLocalMute();
-  const audioinput = useAudioInputs();
-  const audiooutput = useAudioOutputs();
   const videoinput = useVideoInputs();
   const [selectedDevice, setselectedDevice] = useState<any>(null);
   const [isMore, setisMore] = useState<Boolean>(false);
+  const [isSpeakerOpen, setisSpeakerOpen] = useState<boolean>(false);
   const meetingmanager = useMeetingManager();
 
   const enabledSettings = () => ({
@@ -77,76 +76,7 @@ const EventMenu = () => {
               <Popover
                 placement="top"
                 showArrow={false}
-                content={
-                  <div className={styles.micdropDown}>
-                    <h3>Microphone</h3>
-                    {audioinput.devices.map((ele) => {
-                      const getisActive = () =>
-                        audioinput.selectedDevice === ele.deviceId;
-                      return (
-                        <span
-                          onClick={async () => {
-                            if (audiovideo) {
-                              try {
-                                await meetingmanager.startAudioInputDevice(
-                                  ele.deviceId
-                                );
-                              } catch (error) {
-                                console.error(
-                                  "Error setting speaker device:",
-                                  error
-                                );
-                              }
-                            }
-                          }}
-                        >
-                          <i
-                            className="material-symbols-outlined"
-                            style={{
-                              color: getisActive() ? "black" : "transparent",
-                            }}
-                          >
-                            done
-                          </i>
-                          {ele.label}
-                        </span>
-                      );
-                    })}
-                    <h3>Speaker</h3>
-                    {audiooutput.devices.map((ele) => {
-                      const getisActive = () =>
-                        audiooutput.selectedDevice === ele.deviceId;
-                      return (
-                        <span
-                          onClick={async () => {
-                            if (audiovideo) {
-                              try {
-                                await meetingmanager.startAudioOutputDevice(
-                                  ele.deviceId
-                                );
-                              } catch (error) {
-                                console.log(
-                                  "SpeakerSelection failed to select speaker"
-                                );
-                              }
-                            }
-                          }}
-                        >
-                          <i
-                            className="material-symbols-outlined"
-                            style={{
-                              color: getisActive() ? "black" : "transparent",
-                            }}
-                          >
-                            done
-                          </i>
-
-                          {ele.label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                }
+                content={<MicOptions />}
                 trigger="click"
               >
                 <div
@@ -326,14 +256,14 @@ const EventMenu = () => {
                 }`}
               ></i>
             </div>
-            Allow
+            {enabledSettings().allowActive ? "Disable" : "Allow"}
           </div>
         )}
         {userdata?.isHost && (
           <div
             className={styles.Actionsec}
             onClick={() => {
-              if (attendees.length <= 10) {
+              if (attendees.length >= 0) {
                 setisPinEnabled(!isPinEnabled);
                 ChimesendMessage(
                   {
@@ -346,7 +276,7 @@ const EventMenu = () => {
               } else {
                 messageApi.open({
                   type: "warning",
-                  content: "If Less than 10 attendees View change Not allowed",
+                  content: "Need more participants to to switch view",
                 });
               }
             }}
@@ -509,7 +439,7 @@ const EventMenu = () => {
                   >
                     <i className={`${styles.present_icon} ${styles.icon}`}></i>
                   </div>
-                  <p> Allow</p>
+                  <p> {enabledSettings().allowActive ? "Disable" : "Allow"}</p>
                 </div>
               )}
               <div className={styles.iconSec}>
@@ -559,45 +489,42 @@ const EventMenu = () => {
                 </div>
                 <p>Switch Camera</p>
               </div>
-              <div className={styles.iconSec}>
-                <div
-                  className={`${styles.iconContainer} ${
-                    isPinEnabled ? styles.activeiconContainer : ""
-                  }`}
-                  onClick={async () => {
-                    if (attendees.length <= 10) {
-                      setisPinEnabled(!isPinEnabled);
-                      ChimesendMessage(
-                        {
-                          refId: EventData?.reference_id,
-                          view_type: isPinEnabled ? 1 : 2,
-                          spotlight_id: userData?.user_id,
-                        },
-                        CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
-                      );
-                    } else {
-                      messageApi.open({
-                        type: "warning",
-                        content:
-                          "If Less than 10 attendees View change Not allowed",
-                      });
-                    }
-                  }}
-                >
-                  <i className="material-symbols-outlined">grid_view</i>
+              {userdata?.isHost && (
+                <div className={styles.iconSec}>
+                  <div
+                    className={`${styles.iconContainer} ${
+                      isPinEnabled ? styles.activeiconContainer : ""
+                    }`}
+                    onClick={async () => {
+                      if (attendees.length >= 10) {
+                        setisPinEnabled(!isPinEnabled);
+                        ChimesendMessage(
+                          {
+                            refId: EventData?.reference_id,
+                            view_type: isPinEnabled ? 1 : 2,
+                            spotlight_id: userData?.user_id,
+                          },
+                          CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
+                        );
+                      } else {
+                        messageApi.open({
+                          type: "warning",
+                          content: "Need more participants to to switch view",
+                        });
+                      }
+                    }}
+                  >
+                    <i className="material-symbols-outlined">grid_view</i>
+                  </div>
+                  <p>View</p>
                 </div>
-                <p>View</p>
-              </div>
+              )}
               <div className={styles.iconSec}>
                 <div
                   className={`${styles.iconContainer}`}
                   onClick={() => {
                     setisMore((pre) => !pre);
-                    if (isChatorParticipant === "comment") {
-                      setisChatorParticipant(null);
-                    } else {
-                      setisChatorParticipant("comment");
-                    }
+                    setisSpeakerOpen((pre) => !pre);
                   }}
                 >
                   <span className="material-symbols-outlined">volume_up</span>
@@ -607,6 +534,27 @@ const EventMenu = () => {
             </div>
           </>
         </MoreBottomSheet>
+        {/* <Drawer
+          placement="bottom"
+          open={isSpeakerOpen}
+          closable={false}
+          onClose={() => {
+            setisSpeakerOpen(false);
+          }}
+          style={{
+            padding: 0,
+          }}
+        > */}
+        <MoreBottomSheet
+          open={isSpeakerOpen}
+          onClose={() => {
+            setisSpeakerOpen(false);
+          }}
+        >
+          <MicOptions TextColor={"#FFFFFF"} />
+        </MoreBottomSheet>
+
+        {/* </Drawer> */}
       </div>
     </div>
   );

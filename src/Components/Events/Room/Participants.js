@@ -8,6 +8,7 @@ import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import {
   useAudioVideo,
+  useMeetingManager,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
@@ -21,6 +22,7 @@ import {
 } from "../Components/Utility";
 import RenameModal from "../Components/RenameModal";
 import { toast } from "react-hot-toast";
+import { DefaultAudioVideoFacade } from "amazon-chime-sdk-js";
 
 const { Header, Footer, Content } = Layout;
 
@@ -42,6 +44,7 @@ const Participants = () => {
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const audioVideo = useAudioVideo();
+  const meetingSession = useMeetingManager();
 
   const headerStyle = {
     textAlign: "center",
@@ -61,28 +64,13 @@ const Participants = () => {
     );
   };
 
-  useEffect(() => {
-    // Initialize Chime session and audio elements
+  for (const audio of document.querySelectorAll("audio")) {
+    console.log(audio);
 
-    if (audioVideo) {
-      audioVideo.addObserver({
-        audioVideoDidStart: (meetingSession) => {
-          // When attendee audio starts, create an audio element
-          meetingSession.audioVideo.realtimeSubscribeToAttendeeIdPresence(
-            (attendeeId, present, externalUserId) => {
-              if (present) {
-                const audioElement = new Audio();
-                setAudioElements((prevAudioElements) => ({
-                  ...prevAudioElements,
-                  [attendeeId]: audioElement,
-                }));
-              }
-            }
-          );
-        },
-      });
-    }
-  }, [audioVideo]);
+    // if(!audio.paused) {
+    //   return audio;
+    // }
+  }
 
   const handleReject = (ele) => {
     const value = { userId: ele.userId };
@@ -97,11 +85,22 @@ const Participants = () => {
     const findAttendee = attendeesList.find(
       (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
     );
+    // ele.
+    //     useEffect(() => {
+    //       if (audioVideo && audioElementRef.current) {
+    //         audioVideo.bindAudioElement(ele, audioElementRef.current);
+    //       }
+    //     }, [audioVideo, attendeeId]);
 
     const isYou = parseInt(userdata.user_id) === parseInt(findAttendee.userId);
 
     return (
       <>
+        <audio
+          style={{
+            display: "none",
+          }}
+        />
         <div
           className={classes.participantContainer}
           style={{
@@ -253,11 +252,11 @@ const Participants = () => {
                 className="ms-3"
                 tooltip
                 onChange={(e) => {
-                  const desiredVolume = parseInt(e) / 100;
-                  const audioElement = audioElements[ele.chimeAttendeeId];
-                  if (audioElement) {
-                    audioElement.volume = desiredVolume;
-                  }
+                  // const desiredVolume = parseInt(e) / 100;
+                  // const audioElement = audioElements[ele.chimeAttendeeId];
+                  // if (audioElement) {
+                  //   audioElement.volume = desiredVolume;
+                  // }
                 }}
               />
             </div>

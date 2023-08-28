@@ -3,6 +3,13 @@ import { Modal } from "antd";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { toast } from "react-hot-toast";
+import {
+  useAudioInputs,
+  useAudioOutputs,
+  useAudioVideo,
+  useMeetingManager,
+} from "amazon-chime-sdk-component-library-react";
+import styles from "./Menu.module.css";
 
 interface ExitMeeting {
   Attendee: any;
@@ -73,4 +80,90 @@ export const EndMeeting = (props: ExitMeeting) => {
     },
     onCancel() {},
   });
+};
+
+type MicOptionsProps = {
+  TextColor?: any;
+};
+
+export const MicOptions = (props: MicOptionsProps) => {
+  const { TextColor } = props;
+  const meetingmanager = useMeetingManager();
+  const audioinput = useAudioInputs();
+  const audiovideo = useAudioVideo();
+  const audiooutput = useAudioOutputs();
+
+  return (
+    <div
+      className={styles.micdropDown}
+      style={{
+        color: TextColor ? TextColor : "#000000",
+      }}
+    >
+      <h3 className="onlydes">Microphone</h3>
+      {audioinput.devices.map((ele) => {
+        const getisActive = () => audioinput.selectedDevice === ele.deviceId;
+        return (
+          <span
+            onClick={async () => {
+              if (audiovideo) {
+                try {
+                  await meetingmanager.startAudioInputDevice(ele.deviceId);
+                } catch (error) {
+                  console.error("Error setting speaker device:", error);
+                }
+              }
+            }}
+          >
+            <i
+              className="material-symbols-outlined"
+              style={{
+                color: getisActive()
+                  ? TextColor
+                    ? TextColor
+                    : "black"
+                  : "transparent",
+              }}
+            >
+              done
+            </i>
+            {ele.label}
+          </span>
+        );
+      })}
+      <h3 className="onlydes">Speaker</h3>
+      {audiooutput.devices.map((ele) => {
+        const getisActive = () => audiooutput.selectedDevice === ele.deviceId;
+        return (
+          <span
+            className="onlydes"
+            onClick={async () => {
+              if (audiovideo) {
+                try {
+                  await meetingmanager.startAudioOutputDevice(ele.deviceId);
+                } catch (error) {
+                  console.log("SpeakerSelection failed to select speaker");
+                }
+              }
+            }}
+          >
+            <i
+              className="material-symbols-outlined"
+              style={{
+                color: getisActive()
+                  ? TextColor
+                    ? TextColor
+                    : "black"
+                  : "transparent",
+              }}
+            >
+              done
+            </i>
+
+            {ele.label}
+          </span>
+        );
+      })}
+    </div>
+  );
 };
