@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import EventBox from "./EventBox";
-import Reactions from "../Components/Reactions";
-import EventLayoutListener from "../../Socket/EventLayoutListener";
+import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
 
 const EventRoom = () => {
+  const meetingManager = useMeetingManager();
+
+  useEffect(() => {
+    meetingManager.subscribeToEventDidReceive((eventname, message) => {
+      console.log(eventname, message, "MEETING MANAGER EVENT");
+    });
+  }, []);
   return (
     <div>
       {/* <div

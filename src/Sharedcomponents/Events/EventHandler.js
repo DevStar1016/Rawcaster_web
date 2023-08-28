@@ -49,6 +49,10 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
         CHIME_SOCKET_EVENTS.JOIN_REQUEST
       );
     };
+    popup.onclose = (e) => {
+      e.stopPropagation();
+      console.log("onClose");
+    };
     // when the popup unloads
     popup.onunload = () => {
       let keysToRemove = [

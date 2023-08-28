@@ -61,7 +61,10 @@ const EventLayout = () => {
             : "Fetching User Details ..."
         }
       >
-        <Layout className={classes.EventLayoutContainer}>
+        <Layout
+          className={classes.EventLayoutContainer}
+          style={{ minHeight: "100vh" }}
+        >
           <Header className={classes.headerSec}>
             <div
               className={`${classes.topheader} ${classes.eventHeader} ${

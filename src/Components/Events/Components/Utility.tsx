@@ -23,23 +23,28 @@ export const MicrophoneComponent = ({
   isAllowed = true,
   isGlobal,
 }) => {
-  const { EventData, MeetingSettings } = useEventRoomContext();
+  const { EventData, MeetingSettings, setMeetingSettings } =
+    useEventRoomContext();
   const userData = useAuthData();
   const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
   const { toggleMute } = useToggleLocalMute();
 
   return isGlobal ? (
     <>
-      {MeetingSettings?.default_guest_video === 1 ? (
+      {MeetingSettings?.default_guest_audio === 0 ? (
         <i
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
             const value = {
               refId: EventData?.reference_id,
               hostId: userData?.user_id,
-              status: false,
+              status: true,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+            setMeetingSettings((pre: any) => ({
+              ...pre,
+              default_guest_audio: 1,
+            }));
           }}
         >
           mic_off
@@ -51,9 +56,13 @@ export const MicrophoneComponent = ({
             const value = {
               refId: EventData?.reference_id,
               hostId: userData?.user_id,
-              status: true,
+              status: false,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+            setMeetingSettings((pre: any) => ({
+              ...pre,
+              default_guest_audio: 0,
+            }));
           }}
         >
           mic
@@ -66,14 +75,11 @@ export const MicrophoneComponent = ({
         <i
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isGlobal) {
-              return;
-            }
             if (isHost && !attendee.isHost) {
               const value = {
                 refId: EventData?.reference_id,
                 hostId: userData?.user_id,
-                status: false,
+                status: true,
                 userId: attendee.userId,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
@@ -88,14 +94,11 @@ export const MicrophoneComponent = ({
         <i
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isGlobal) {
-              return;
-            }
             if (isHost && !attendee.isHost) {
               const value = {
                 refId: EventData?.reference_id,
                 hostId: userData?.user_id,
-                status: true,
+                status: false,
                 userId: attendee.userId,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
@@ -116,9 +119,10 @@ export const LocalMicrophoneComponent = ({
   isAllowed = true,
 }) => {
   const { muted, toggleMute } = useToggleLocalMute();
-  const [messageApi] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
   return (
     <>
+      {contextHolder}
       {muted ? (
         <i
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
@@ -159,23 +163,26 @@ export const CameraComponent = ({
   className = "",
   isGlobal,
 }) => {
+  const { EventData, MeetingSettings, setMeetingSettings } =
+    useEventRoomContext();
+  const userData = useAuthData();
   const { videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
-  return (
+  return isGlobal ? (
     <>
-      {!videoEnabled ? (
+      {MeetingSettings?.default_guest_video === 0 ? (
         <i
           className={`${styles.video_off_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isGlobal) {
-              return;
-            }
-            if (isHost && !attendee.isHost) {
-              const value = { userId: attendee.userId, video: true };
-              ChimesendMessage(
-                value,
-                CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-              );
-            }
+            const value = {
+              refId: EventData?.reference_id,
+              hostId: userData?.user_id,
+              status: true,
+            };
+            ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
+            setMeetingSettings((pre: any) => ({
+              ...pre,
+              default_guest_video: 1,
+            }));
           }}
         >
           videocam_off
@@ -185,18 +192,53 @@ export const CameraComponent = ({
           className={`${styles.video_icon} ${styles.icon} ${className}`}
           onClick={() => {
             if (isGlobal) {
-              return;
+              const value = {
+                refId: EventData?.reference_id,
+                hostId: userData?.user_id,
+                status: false,
+              };
+              ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
+              setMeetingSettings((pre: any) => ({
+                ...pre,
+                default_guest_video: 0,
+              }));
             }
+          }}
+        >
+          videocam
+        </i>
+      )}
+    </>
+  ) : (
+    <>
+      {!videoEnabled ? (
+        <i
+          className={`${styles.video_off_icon} ${styles.icon} ${className}`}
+          onClick={() => {
             if (isHost && !attendee.isHost) {
               const value = {
+                refId: EventData?.reference_id,
+                hostId: userData?.user_id,
+                status: true,
                 userId: attendee.userId,
-                video: false,
               };
-              ChimesendMessage(
-                value,
-                CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-              );
+              ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
             }
+          }}
+        >
+          videocam_off
+        </i>
+      ) : (
+        <i
+          className={`${styles.video_icon} ${styles.icon} ${className}`}
+          onClick={() => {
+            const value = {
+              refId: EventData?.reference_id,
+              hostId: userData?.user_id,
+              status: false,
+              userId: attendee.userId,
+            };
+            ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
           }}
         >
           videocam
@@ -215,10 +257,11 @@ export const LocalCameraComponent = ({
   const videoinput = useVideoInputs();
   const { isVideoEnabled, toggleVideo } = useLocalVideo();
   const audiovideo = useAudioVideo();
-  const [messageApi] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
   const meetingmanager = useMeetingManager();
   return (
     <>
+      {contextHolder}
       {!isVideoEnabled ? (
         <i
           className={`${styles.video_off_icon} ${styles.icon} ${className} ${
