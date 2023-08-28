@@ -263,7 +263,7 @@ const EventMenu = () => {
           <div
             className={styles.Actionsec}
             onClick={() => {
-              if (attendees.length >= 0) {
+              if (attendees.length >= 10) {
                 setisPinEnabled(!isPinEnabled);
                 ChimesendMessage(
                   {
@@ -276,7 +276,7 @@ const EventMenu = () => {
               } else {
                 messageApi.open({
                   type: "warning",
-                  content: "Need more participants to to switch view",
+                  content: "Need more participants to switch view",
                 });
               }
             }}
@@ -509,7 +509,7 @@ const EventMenu = () => {
                       } else {
                         messageApi.open({
                           type: "warning",
-                          content: "Need more participants to to switch view",
+                          content: "Need more participants to switch view",
                         });
                       }
                     }}
