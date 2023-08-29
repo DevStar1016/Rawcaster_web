@@ -1,14 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
-import { EventRoomContext, useMainContext } from "../../../Shared/Context";
-import { ExitMeetingService } from "../../../Services/ApiService";
+import { EventRoomContext } from "../../../Shared/Context";
+import {
+  EndMeetingService,
+  ExitMeetingService,
+} from "../../../Services/ApiService";
 import WaitingRoom from "./WaitingRoom";
 import {
   DeviceLabels,
   useAudioVideo,
   useMeetingManager,
-  useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
 import { toast } from "react-hot-toast";
 import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
@@ -26,7 +28,6 @@ const EventValidaton = () => {
   const [isPinEnabled, setisPinEnabled] = useState(false);
   const token = useAuthToken();
   const userData = useAuthData();
-  const videoinput = useVideoInputs();
   const [userdata, setuserdata] = useState(null);
   const [isLoading, setisLoading] = useState(true);
   const [isWaitingRoom, setisWaitingRoom] = useState(true);
@@ -65,6 +66,23 @@ const EventValidaton = () => {
     });
   };
 
+  const handleEndMeeting = (userdetails) => {
+    return new Promise((resolve, reject) => {
+      let formData = new FormData();
+      formData.append("token", token);
+      formData.append("meeting_id", EventData?.chime_meeting_id);
+      EndMeetingService(formData)
+        .then(() => {
+          audiovideo.stop();
+          resolve();
+        })
+        .catch(() => {
+          toast.error("Unable to end Meeting !");
+          reject();
+        });
+    });
+  };
+
   const handleJoinMeeting = async (message) => {
     const { Attendee, meeting } = message.joinInfo.result;
     const updatedDetails = message.AttendeeList.map((ele) => {
@@ -79,6 +97,7 @@ const EventValidaton = () => {
     if (finduserData) {
       setuserdata(finduserData);
     }
+    const meetingSettings = message.meetingSetting;
     setattendeesList(updatedDetails);
     setMeetingSettings(message.meetingSetting);
     const meetingSessionConfiguration = new MeetingSessionConfiguration(
@@ -90,37 +109,10 @@ const EventValidaton = () => {
     };
     try {
       await meetingManager.join(meetingSessionConfiguration, meetingOptions);
-      await meetingManager.start();
-      try {
-        if (
-          finduserData.audioDisabledByHost === true &&
-          finduserData.audio === true
-        ) {
-          meetingManager.audioVideo.realtimeUnmuteLocalAudio();
-        } else if (
-          finduserData.audioDisabledByHost === false ||
-          finduserData.audio === false
-        ) {
-          meetingManager.audioVideo.realtimeMuteLocalAudio();
-        }
-
-        if (
-          finduserData.videoDisabledByHost === true &&
-          finduserData.video === true
-        ) {
-          meetingManager.audioVideo.startVideoInputDevice(
-            videoinput.devices[0]
-          );
-        } else if (
-          finduserData.videoDisabledByHost === false ||
-          finduserData.video === false
-        ) {
-          meetingManager.audioVideo.stopVideoInput();
-        }
-      } catch (error) {}
-
-      setisWaitingRoom(false);
-      setisLoading(false);
+      meetingManager.start().then((res) => {
+        setisWaitingRoom(false);
+        setisLoading(false);
+      });
     } catch (error) {
       toast.error("Unable to Connect The Meeting");
     }
@@ -155,6 +147,7 @@ const EventValidaton = () => {
     setEventMessages,
     userdata,
     setuserdata,
+    handleEndMeeting,
   };
 
   const hasWaitingRoomEnabled = () => {

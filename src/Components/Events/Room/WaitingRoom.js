@@ -7,9 +7,9 @@ import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { ChimesendMessage } from "../../../Services/SocketService";
 
-const WaitingRoom = ({ EventData }) => {
+const WaitingRoom = () => {
   const userData = useAuthData();
-  const { RequestStatusMessage, setRequestStatusMessage } =
+  const { RequestStatusMessage, setRequestStatusMessage, EventData } =
     useEventRoomContext();
   const [audioPlay, setaudioPlay] = useState(false);
 
@@ -35,7 +35,7 @@ const WaitingRoom = ({ EventData }) => {
             <span style={{ fontSize: 16, fontWeight: "bold" }}>
               {RequestStatusMessage
                 ? RequestStatusMessage.message
-                : EventData?.waiting_room === 1
+                : EventData?.waiting_room === 1 && EventData?.type !== 2
                 ? "Please wait for a moment while host approves your request."
                 : "Please wait for a moment, host not available yet.."}
             </span>

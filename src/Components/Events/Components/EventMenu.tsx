@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Menu.module.css";
-import { Badge, Drawer, Dropdown, Modal, Popover, message } from "antd";
+import { Badge, Popover, message } from "antd";
 import {
-  useAudioInputs,
-  useAudioOutputs,
   useAudioVideo,
   useContentShareControls,
   useContentShareState,
@@ -34,6 +32,7 @@ const EventMenu = () => {
     EventData,
     RequestRef,
     handleExitMeeting,
+    handleEndMeeting,
     MeetingSettings,
     userdata,
     setMeetingSettings,
@@ -362,7 +361,7 @@ const EventMenu = () => {
               EndMeeting({
                 Attendee: userdata,
                 EventData,
-                handleExitMeeting,
+                handleEndMeeting,
               });
             } else {
               ExitMeeting({

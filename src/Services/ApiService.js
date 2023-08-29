@@ -295,8 +295,8 @@ export const getAttendeesFromMeetingService = (data) => {
   return axios.post("attendees", data);
 };
 
-export const DeleteMeetingService = (data) => {
-  return axios.post("delete_meeting", data);
+export const EndMeetingService = (data) => {
+  return axios.post("end_meeting", data);
 };
 
 export const ExitMeetingService = (data) => {

@@ -18,6 +18,13 @@ interface ExitMeeting {
   message?: String;
 }
 
+interface EndMeeting {
+  Attendee: any;
+  EventData?: any;
+  handleEndMeeting: any;
+  message?: String;
+}
+
 export const ExitMeeting = (props: ExitMeeting) => {
   const { Attendee, EventData, handleExitMeeting } = props;
   const { confirm } = Modal;
@@ -58,15 +65,15 @@ export const EndAttendeeMeeting = (props: ExitMeeting) => {
   });
 };
 
-export const EndMeeting = (props: ExitMeeting) => {
-  const { Attendee, EventData, handleExitMeeting } = props;
+export const EndMeeting = (props: EndMeeting) => {
+  const { Attendee, EventData, handleEndMeeting } = props;
   const { confirm } = Modal;
 
   confirm({
     title: "Are you sure Do you want to End Meeting?",
     icon: <ExclamationCircleFilled />,
     onOk() {
-      handleExitMeeting(Attendee)
+      handleEndMeeting(Attendee)
         .then(() => {
           ChimesendMessage(
             { refId: EventData?.reference_id, hostId: Attendee?.userId },
