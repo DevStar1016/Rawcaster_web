@@ -367,7 +367,8 @@ opacity: 0.8;
     fill: #FFFFFF !important;
   }
   .talkshowPopup {
-    height: 95vh !important;
+    height: 84vh !important;
+    margin-top: 10px !important;
   }
   .videosmallIcon {
     width: 25px !important;

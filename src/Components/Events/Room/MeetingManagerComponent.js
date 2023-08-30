@@ -1,17 +1,24 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Button, Modal } from "antd";
 import { useEventRoomContext } from "../../../Shared/Context";
 import {
+  useAudioVideo,
   useLocalVideo,
   useMeetingEvent,
   useMeetingManager,
+  useMeetingStatus,
+  useRosterState,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { EndAttendeeMeeting } from "../Components/Methods";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { defaultVolume } from "../Configure/Constants";
 import { MessageOutlined } from "@ant-design/icons";
+import {
+  DefaultAudioVideoFacade,
+  DefaultDeviceController,
+} from "amazon-chime-sdk-js";
 
 const MeetingManagerComponent = () => {
   const {
@@ -28,20 +35,185 @@ const MeetingManagerComponent = () => {
     EventMessages,
     setuserdata,
     setMeetingSettings,
+    MeetingSettings,
     setisPinEnabled,
     userdata,
+    attendeesList,
   } = useEventRoomContext();
-  const meetingManager = useMeetingManager();
+  const audiovideo = useAudioVideo();
+  const meetingStatus = useMeetingStatus();
+  const { isVideoEnabled, toggleVideo } = useLocalVideo();
+  const { toggleMute, muted } = useToggleLocalMute();
+  const [isDefaultUpdated, setisDefaultUpdated] = useState({
+    audio: false,
+    video: false,
+  });
+
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
+  // const presenceCallback = useCallback(
+  //   (attendeeId, present, externalUserId, dropped) => {
+  //     const isAttendeeLeft = attendees.find(
+  //       (elem) => parseInt(elem.externalUserId) === parseInt(externalUserId)
+  //     );
+  //     if (!isAttendeeLeft && !present) {
+  //       console.log(attendeesList, attendees, "attendees");
+  //       const user_data = attendeesList.find(
+  //         (ele) => parseInt(ele.userId) === parseInt(externalUserId)
+  //       );
+  //       if (userData) {
+  //         setnotificationToast({
+  //           show: true,
+  //           msg: `${user_data?.name} Lefted`,
+  //           title: null,
+  //           type: null,
+  //           buttons: [],
+  //           icon: null,
+  //         });
+  //         // setattendeesList((pre) =>
+  //         //   pre.filter((ele) => ele.userId !== parseInt(externalUserId))
+  //         // );
+  //       }
+  //     }
+  //   },
+  //   [audiovideo, attendeesList, attendees]
+  // );
+  useEffect(() => {
+    if (audiovideo) {
+      audiovideo?.addObserver({
+        eventDidReceive: (name, attributes) => {
+          console.log(name, attributes, "audioVideoaddObserver");
+          const { meetingHistory, ...otherAttributes } = attributes;
+        },
+      });
+    }
+  }, [audiovideo]);
 
   useEffect(() => {
-    meetingManager.subscribeToEventDidReceive((eventname, message) => {
-      console.log(eventname, message, "MEETING MANAGER EVENT");
-    });
-  }, []);
+    if (meetingStatus === 1 && !isDefaultUpdated.audio) {
+      if (MeetingSettings && userdata) {
+        try {
+          if (userdata?.isHost) {
+            switch (true) {
+              case MeetingSettings?.default_host_audio === 1:
+                if (muted) {
+                  toggleMute();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  audio: true,
+                }));
+                break;
+              case MeetingSettings?.default_host_audio === 0:
+                if (!muted) {
+                  toggleMute();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  audio: true,
+                }));
+                break;
+
+              default:
+                break;
+            }
+          } else {
+            switch (true) {
+              case MeetingSettings?.default_guest_audio === 1:
+                if (muted) {
+                  toggleMute();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  audio: true,
+                }));
+                break;
+              case MeetingSettings?.default_guest_audio === 0:
+                if (!muted) {
+                  toggleMute();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  audio: true,
+                }));
+                break;
+
+              default:
+                break;
+            }
+          }
+        } catch (error) {
+          console.log(error, "Errmsg");
+        }
+      }
+    }
+  }, [MeetingSettings, userdata, meetingStatus, muted, isDefaultUpdated]);
+
+  useEffect(() => {
+    if (meetingStatus === 1 && !isDefaultUpdated.video) {
+      if (MeetingSettings && userdata) {
+        try {
+          if (userdata?.isHost) {
+            switch (true) {
+              case MeetingSettings?.default_host_video === 1:
+                if (!isVideoEnabled) {
+                  toggleVideo();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  video: true,
+                }));
+                break;
+              case MeetingSettings?.default_host_video === 0:
+                if (isVideoEnabled) {
+                  toggleVideo();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  video: true,
+                }));
+                break;
+              default:
+                break;
+            }
+          } else {
+            switch (true) {
+              case MeetingSettings?.default_guest_video === 1:
+                if (!isVideoEnabled) {
+                  toggleVideo();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  video: true,
+                }));
+                break;
+              case MeetingSettings?.default_guest_video === 0:
+                if (isVideoEnabled) {
+                  toggleVideo();
+                }
+                setisDefaultUpdated((pre) => ({
+                  ...pre,
+                  video: true,
+                }));
+                break;
+              default:
+                break;
+            }
+          }
+        } catch (error) {
+          console.log(error, "Errmsg");
+        }
+      }
+    }
+  }, [
+    MeetingSettings,
+    userdata,
+    meetingStatus,
+    isVideoEnabled,
+    isDefaultUpdated,
+  ]);
 
   const userData = useAuthData();
-  const { toggleVideo, isVideoEnabled } = useLocalVideo();
-  const { toggleMute, muted } = useToggleLocalMute();
 
   const HandleVideoAudio = (props) => {
     return new Promise((resolve, reject) => {
@@ -158,6 +330,7 @@ const MeetingManagerComponent = () => {
         case CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING:
           try {
             const user_data = JSON.parse(newValue);
+            console.log(user_data, "user_data");
             setnotificationToast({
               show: true,
               msg: `${user_data?.name} Joined`,
@@ -324,7 +497,7 @@ const MeetingManagerComponent = () => {
               hostDisabledType: "videoDisabledByHost",
               userStatus: !isVideoEnabled,
               settingType: "default_guest_video",
-              popupmessage: "Host requests that you Enable your Camera",
+              popupmessage: "Host requests that you enable your camera",
               Type: "video",
             };
             HandleVideoAudio(VideoData).then(() => {

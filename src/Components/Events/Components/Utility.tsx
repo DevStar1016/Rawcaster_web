@@ -336,7 +336,8 @@ export const VolumeStatusComponent = ({
 };
 
 export const HangupComponent = () => {
-  const { EventData, handleExitMeeting, attendeesList }: any = useEventLayout();
+  const { EventData, handleExitMeeting, attendeesList, handleEndMeeting }: any =
+    useEventLayout();
   const userData = useAuthData();
 
   const getCurrentAttendee = () => {
@@ -350,7 +351,7 @@ export const HangupComponent = () => {
       EndMeeting({
         Attendee: getCurrentAttendee(),
         EventData,
-        handleExitMeeting,
+        handleEndMeeting,
       });
     } else {
       ExitMeeting({
