@@ -231,22 +231,24 @@ const MeetingManagerComponent = () => {
         const singleAttendee = attendees.updatedUser;
         const attendeeList = attendees.attendeeList;
         if (singleAttendee) {
-          if (!userdata.isHost) {
-            setuserdata((pre) => ({
-              ...pre,
-              [hostDisabledType]: singleAttendee[hostDisabledType],
-              [Type]: singleAttendee[hostDisabledType],
-            }));
-            if (singleAttendee[hostDisabledType] === false) {
-              Modal.confirm({
-                title: popupmessage,
-                async onOk() {
-                  resolve();
-                },
-                onCancel() {},
-              });
-            } else if (singleAttendee[hostDisabledType]) {
-              resolve();
+          if (singleAttendee.userId === userdata.userId) {
+            if (!userdata.isHost) {
+              setuserdata((pre) => ({
+                ...pre,
+                [hostDisabledType]: singleAttendee[hostDisabledType],
+                [Type]: singleAttendee[hostDisabledType],
+              }));
+              if (singleAttendee[hostDisabledType] === false) {
+                Modal.confirm({
+                  title: popupmessage,
+                  async onOk() {
+                    resolve();
+                  },
+                  onCancel() {},
+                });
+              } else if (singleAttendee[hostDisabledType]) {
+                resolve();
+              }
             }
           }
         } else if (attendeeList) {

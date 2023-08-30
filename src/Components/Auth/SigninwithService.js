@@ -110,13 +110,19 @@ const SigninwithService = ({ type }) => {
             discoveryDocs="claims_supported"
             access_type="offline"
             onResolve={({ provider, data }) => {
-              let resultVal = {
-                signin_type: 5,
-                first_name: data.name,
-                display_name: data.name,
-                email_id: data.email,
-              };
-              HandleSignup(resultVal);
+              if (data.email) {
+                let resultVal = {
+                  signin_type: 5,
+                  first_name: data.name,
+                  display_name: data.name,
+                  email_id: data.email,
+                };
+                HandleSignup(resultVal);
+              } else {
+                console.log(data);
+                toast.error("Something Went Wrong !");
+              }
+
               dispatch(handleLoading(true));
             }}
             onReject={(err) => {

@@ -26,6 +26,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
       (message) => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
           JSON.stringify(message)
@@ -41,6 +42,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
       (message) => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
           JSON.stringify(message)
@@ -56,6 +58,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (message) => {
       localStorage.removeItem(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
       setTimeout(() => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
           JSON.stringify(message)
@@ -71,10 +74,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
       (message) => {
-        localStorage.removeItem(
-          CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
-          JSON.stringify(message)
-        );
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
           JSON.stringify(message)
@@ -101,6 +101,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER,
         JSON.stringify(message)
@@ -115,6 +116,9 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER,
       (message) => {
+        localStorage.removeItem(
+          CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER
+        );
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER,
           JSON.stringify(message)
@@ -130,6 +134,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
       (message) => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
           JSON.stringify(message)
@@ -143,6 +148,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
         JSON.stringify(message)
@@ -157,6 +163,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER,
       (message) => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER,
           JSON.stringify(message)
@@ -186,7 +193,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER, (message) => {
-      console.log(message);
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER,
         JSON.stringify(message)
@@ -199,6 +206,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.END_MEETING_ANSWER,
         JSON.stringify(message)
@@ -211,6 +219,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.KICK_USER_ANSWER,
         JSON.stringify(message)
@@ -223,6 +232,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG,
         JSON.stringify(message)
@@ -235,6 +245,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.SINGLE_USER_MSG,
         JSON.stringify(message)
@@ -249,6 +260,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
       (message) => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
           JSON.stringify(message)
@@ -262,6 +274,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
         JSON.stringify(message)
@@ -274,6 +287,7 @@ const ChimeSocketComponent = () => {
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER, (message) => {
+      localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER);
       localStorage.setItem(
         CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER,
         JSON.stringify(message)
