@@ -4,6 +4,10 @@ export const useAuthData = () => {
   return useSelector((state) => state.auth.loginUserData);
 };
 
+export const useEventTempAuthData = () => {
+  return useSelector((state) => state.auth.eventTempUserData);
+};
+
 export const useAuthToken = () => {
   return useSelector((state) => state.auth.loginToken);
 };

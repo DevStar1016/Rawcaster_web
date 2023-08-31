@@ -1,0 +1,106 @@
+.bgsec {
+    background: url(../../../Assets/Images/login_bg.jpg) center top no-repeat;
+    min-height: calc(100% - 171px);
+    float: left;
+    width: 100%;
+
+  }
+  .meetingBox {
+    max-width: 430px;
+    margin: 120px auto;
+    text-align: center;
+  }
+  .pauseBox {
+    max-width: 530px;
+    margin: 20px auto;
+    text-align: center;
+  }
+  h1 {
+    color: #454545 !important;
+    font-size: 20px !important;
+    margin-bottom: 25px !important;
+    font-weight: 800;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .textBoxContainer {
+    margin-bottom: 15px;
+  }
+  .textBox {
+    background: #f4f4f4;
+    height: 54px;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    text-align: center;
+    margin-bottom: 5px;
+   
+  }
+  .textBox:focus,
+  .textBox::selection,
+  .textBox:hover {
+    border: #191919 1px solid !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  .joinBtn {
+    background:#FAA21B;
+    border-radius: 30px;
+    width: 275px;
+    font-size: 16px;
+    height: 50px;
+    border: none;
+    font-weight: 800;
+    margin: auto;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .issue {
+    color: #454545;
+    margin-top: 50px;
+    margin-bottom: 10px;
+  }
+  .issue span {
+    color: #454545;
+    font-weight: 800;
+  }
+  .menu {
+    padding: 0;
+    color: #ccc;
+  }
+  .menu li {
+    color: #454545;
+    display: inline-block;
+    margin: 5px 20px;
+    font-size: 14px;
+  }
+  .menu li span {
+    color: #e6a011;
+    font-weight: 800;
+  }
+  
+  .bgmelody {
+    position: absolute;
+    margin-top: -157px;
+    left: 47%;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .meetingBox,
+    .pauseBox {
+      max-width: 100% !important;
+      width: 100%;
+      padding: 0 20px;
+    }
+  
+    .bgmelody {
+      left: 33%;
+    }
+  
+  }
+  

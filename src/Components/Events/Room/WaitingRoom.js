@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import classes from "./WaitingRoom.module.css";
-
 import { useEventRoomContext } from "../../../Shared/Context";
 import { Button } from "antd";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import { ChimesendMessage } from "../../../Services/SocketService";
 
 const WaitingRoom = () => {
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
+
   const { RequestStatusMessage, setRequestStatusMessage, EventData } =
     useEventRoomContext();
   const [audioPlay, setaudioPlay] = useState(false);
@@ -18,6 +22,14 @@ const WaitingRoom = () => {
       RequestStatusMessage &&
       RequestStatusMessage.statusCode === "host_not_available"
     );
+  };
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
   };
 
   return (
@@ -144,10 +156,10 @@ const WaitingRoom = () => {
               onClick={() => {
                 ChimesendMessage(
                   {
-                    userId: userData?.user_id,
+                    userId: getUserData()?.user_id,
                     refId: EventData?.reference_id,
-                    name: userData?.name,
-                    image: userData?.profile_image,
+                    name: getUserData()?.name,
+                    image: getUserData()?.profile_image,
                   },
                   CHIME_SOCKET_EVENTS.JOIN_REQUEST
                 );

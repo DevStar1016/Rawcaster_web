@@ -26,7 +26,7 @@ const ChimeSocketComponent = () => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
       (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER);
+        console.log(message);
         localStorage.setItem(
           CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
           JSON.stringify(message)
@@ -34,7 +34,7 @@ const ChimeSocketComponent = () => {
       }
     );
     return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER);
     };
   }, []);
 
@@ -295,6 +295,22 @@ const ChimeSocketComponent = () => {
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER);
+    };
+  }, []);
+
+  useEffect(() => {
+    ChimesocketListen.on(
+      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
+      (message) => {
+        localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
+        localStorage.setItem(
+          CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
+          JSON.stringify(message)
+        );
+      }
+    );
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
     };
   }, []);
 

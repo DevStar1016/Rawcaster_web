@@ -7,7 +7,10 @@ import { Form, InputGroup } from "react-bootstrap";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import EmojiPicker from "../../../UIComponents/EmojiPicker";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { useEventLayout } from "./EventValidaton";
@@ -22,6 +25,7 @@ const ChatBox = () => {
     label: "Everyone",
   });
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const {
     EventMessages,
     userdetails,
@@ -31,7 +35,14 @@ const ChatBox = () => {
   } = useLayoutContect();
   const { attendees } = useAttendeesList();
   const [isEmoji, setisEmoji] = useState(false);
-  console.log(EventMessages, "EventMessages");
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
   const [ChatMessage, setChatMessage] = useState("");
   const initialMessages = [
@@ -123,7 +134,7 @@ const ChatBox = () => {
           {EventMessages.map((ele) => (
             <div
               className={`${classes.messageContainer} ${
-                ele.from_user_id === userData?.user_id &&
+                ele.from_user_id === getUserData()?.user_id &&
                 classes.usermessageContainer
               }`}
             >
@@ -134,7 +145,8 @@ const ChatBox = () => {
               )}
               <div
                 className={`${classes.message} ${
-                  ele.from_user_id === userData?.user_id && classes.usermessage
+                  ele.from_user_id === getUserData()?.user_id &&
+                  classes.usermessage
                 }`}
               >
                 <img src={defaultprofileImg} />
