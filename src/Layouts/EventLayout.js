@@ -3,15 +3,19 @@ import { Outlet, useOutletContext } from "react-router";
 import classes from "./Layout.module.css";
 import Rlogo from "../Assets/Icons/svg/Events/Rawcasterlogo.svg";
 import {
+  useContentShareControls,
+  useContentShareState,
   useLocalVideo,
   useRosterState,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
-import { Layout, message } from "antd";
+import { Layout, Tooltip, message } from "antd";
 import { useEventLayout } from "../Components/Events/Room/EventValidaton";
 import TalkshowMenu from "../Components/Events/Components/TalkshowMenu";
 import EventMenu from "../Components/Events/Components/EventMenu";
 import LoadingOverlay from "react-loading-overlay";
+import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
+import { ChimesendMessage } from "../Services/SocketService";
 
 export const useLayoutContect = () => {
   return useOutletContext();
@@ -31,7 +35,10 @@ const EventLayout = () => {
   const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
   const [_, contextHolder] = message.useMessage();
   const { roster } = useRosterState();
+  const { toggleContentShare } = useContentShareControls();
   const attendees = Object.values(roster);
+  const [isPresentScreen, setisPresentScreen] = useState(false);
+  const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
 
   const [isNewMessage, setisNewMessage] = useState(false);
 
@@ -47,6 +54,43 @@ const EventLayout = () => {
     return { attendees: filterValidAttendees.filter((ele) => ele) };
   };
 
+  const getSharingAttendee = () => {
+    const findExternalUserId = attendees.find(
+      (ele) => ele.chimeAttendeeId.concat("#content") === sharingAttendeeId
+    );
+    if (findExternalUserId) {
+      const findAttendee = attendeesList.find(
+        (ele) =>
+          parseInt(ele.userId) === parseInt(findExternalUserId.externalUserId)
+      );
+      if (findAttendee) {
+        return findAttendee.name + "'s";
+      } else {
+        return "Someone's";
+      }
+    } else {
+      return "Someone's";
+    }
+  };
+
+  const HandleCloseShareScreen = () => {
+    if (isLocalUserSharing) {
+      toggleContentShare();
+    } else if (sharingAttendeeId) {
+      const findExternalUserId = attendees.find(
+        (ele) => ele.chimeAttendeeId.concat("#content") === sharingAttendeeId
+      );
+      ChimesendMessage(
+        {
+          screen_share_status: false,
+          refId: EventData?.reference_id,
+          userId: parseInt(findExternalUserId.externalUserId),
+        },
+        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+      );
+    }
+  };
+
   return (
     <div className={`${EventData?.type === 2 ? classes.TalkshowHeader : ""}`}>
       {contextHolder}
@@ -58,7 +102,7 @@ const EventLayout = () => {
             ? userdata.isHost
               ? "Meeting Has Been Started ..."
               : "Joining Event Please Wait ..."
-            : "Fetching User Details ..."
+            : "Fetching Event Details ..."
         }
       >
         <Layout
@@ -76,6 +120,48 @@ const EventLayout = () => {
                 <h2>{EventData?.event_name}</h2>
               </div>
             </div>
+            {(isLocalUserSharing || sharingAttendeeId) && (
+              <div
+                className={`${classes.meetingHeader} ${classes.endContainer}`}
+              >
+                <h3>
+                  {isLocalUserSharing ? "Your" : getSharingAttendee()} screen is
+                  presenting
+                </h3>
+
+                <Tooltip
+                  placement="bottomLeft"
+                  title={isPresentScreen ? "Switch Video" : "Switch Presenting"}
+                >
+                  <div className={classes.iconSec}>
+                    <span
+                      class="material-symbols-outlined"
+                      onClick={() => {
+                        setisPresentScreen((pre) => !pre);
+                      }}
+                    >
+                      switch_video
+                    </span>
+                  </div>
+                </Tooltip>
+
+                {userdata?.isHost ||
+                  (isLocalUserSharing && (
+                    <Tooltip placement="bottomLeft" title={"Stop Presenting"}>
+                      <div className={classes.iconSec}>
+                        <span
+                          class={`material-symbols-outlined ${classes.cancelIcon}`}
+                          onClick={() => {
+                            HandleCloseShareScreen();
+                          }}
+                        >
+                          cancel
+                        </span>
+                      </div>
+                    </Tooltip>
+                  ))}
+              </div>
+            )}
           </Header>
 
           <Outlet
@@ -90,6 +176,8 @@ const EventLayout = () => {
               setnotificationToast,
               isReactions,
               setisReactions,
+              isPresentScreen,
+              setisPresentScreen,
             }}
           />
 

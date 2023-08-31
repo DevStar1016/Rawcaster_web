@@ -1,24 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Button, Modal } from "antd";
 import { useEventRoomContext } from "../../../Shared/Context";
 import {
   useAudioVideo,
+  useContentShareControls,
+  useContentShareState,
   useLocalVideo,
-  useMeetingEvent,
   useMeetingManager,
   useMeetingStatus,
-  useRosterState,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { EndAttendeeMeeting } from "../Components/Methods";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import { defaultVolume } from "../Configure/Constants";
 import { MessageOutlined } from "@ant-design/icons";
-import {
-  DefaultAudioVideoFacade,
-  DefaultDeviceController,
-} from "amazon-chime-sdk-js";
 
 const MeetingManagerComponent = () => {
   const {
@@ -40,6 +39,7 @@ const MeetingManagerComponent = () => {
     userdata,
     attendeesList,
   } = useEventRoomContext();
+  const meetingManager = useMeetingManager();
   const audiovideo = useAudioVideo();
   const meetingStatus = useMeetingStatus();
   const { isVideoEnabled, toggleVideo } = useLocalVideo();
@@ -48,46 +48,43 @@ const MeetingManagerComponent = () => {
     audio: false,
     video: false,
   });
+  const { toggleContentShare } = useContentShareControls();
+  const { isLocalUserSharing } = useContentShareState();
 
-  const { roster } = useRosterState();
-  const attendees = Object.values(roster);
-  // const presenceCallback = useCallback(
-  //   (attendeeId, present, externalUserId, dropped) => {
-  //     const isAttendeeLeft = attendees.find(
-  //       (elem) => parseInt(elem.externalUserId) === parseInt(externalUserId)
-  //     );
-  //     if (!isAttendeeLeft && !present) {
-  //       console.log(attendeesList, attendees, "attendees");
-  //       const user_data = attendeesList.find(
-  //         (ele) => parseInt(ele.userId) === parseInt(externalUserId)
-  //       );
-  //       if (userData) {
-  //         setnotificationToast({
-  //           show: true,
-  //           msg: `${user_data?.name} Lefted`,
-  //           title: null,
-  //           type: null,
-  //           buttons: [],
-  //           icon: null,
-  //         });
-  //         // setattendeesList((pre) =>
-  //         //   pre.filter((ele) => ele.userId !== parseInt(externalUserId))
-  //         // );
-  //       }
-  //     }
-  //   },
-  //   [audiovideo, attendeesList, attendees]
-  // );
+  const presenceCallback = (attendeeId, present, externalUserId) => {
+    if (!attendeeId.includes("#content") && !present) {
+      const user_data = attendeesList.find(
+        (ele) => parseInt(ele.userId) === parseInt(externalUserId)
+      );
+      if (user_data) {
+        setnotificationToast({
+          show: true,
+          msg: `${user_data?.name} Lefted`,
+          title: null,
+          type: null,
+          buttons: [],
+          icon: null,
+        });
+        setattendeesList((pre) =>
+          pre.filter((ele) => ele.userId !== parseInt(externalUserId))
+        );
+        if (user_data.isHost) {
+          audiovideo.stop();
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     if (audiovideo) {
       audiovideo?.addObserver({
         eventDidReceive: (name, attributes) => {
-          console.log(name, attributes, "audioVideoaddObserver");
           const { meetingHistory, ...otherAttributes } = attributes;
         },
       });
+      audiovideo?.realtimeSubscribeToAttendeeIdPresence(presenceCallback);
     }
-  }, [audiovideo]);
+  }, [audiovideo, meetingManager]);
 
   useEffect(() => {
     if (meetingStatus === 1 && !isDefaultUpdated.audio) {
@@ -214,6 +211,15 @@ const MeetingManagerComponent = () => {
   ]);
 
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
   const HandleVideoAudio = (props) => {
     return new Promise((resolve, reject) => {
@@ -253,7 +259,7 @@ const MeetingManagerComponent = () => {
           }
         } else if (attendeeList) {
           const findAttendee = attendeeList.find(
-            (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
+            (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
           );
           if (!userdata.isHost) {
             setMeetingSettings((pre) => ({
@@ -353,7 +359,8 @@ const MeetingManagerComponent = () => {
             const raiseHandUser = user_data.UserData;
             if (
               raiseHandUser.handRaised &&
-              parseInt(raiseHandUser.userId) !== parseInt(userData.user_id)
+              parseInt(raiseHandUser.userId) !==
+                parseInt(getUserData()?.user_id)
             ) {
               setnotificationToast({
                 show: true,
@@ -364,7 +371,8 @@ const MeetingManagerComponent = () => {
                 icon: null,
               });
             } else if (
-              parseInt(raiseHandUser.userId) === parseInt(userData.user_id)
+              parseInt(raiseHandUser.userId) ===
+              parseInt(getUserData()?.user_id)
             ) {
               setuserdata(raiseHandUser);
             }
@@ -419,7 +427,8 @@ const MeetingManagerComponent = () => {
           try {
             const message_data = JSON.parse(newValue);
             if (
-              parseInt(message_data.from_user_id) !== parseInt(userData.user_id)
+              parseInt(message_data.from_user_id) !==
+              parseInt(getUserData()?.user_id)
             ) {
               setnotificationToast({
                 show: true,
@@ -446,7 +455,7 @@ const MeetingManagerComponent = () => {
             const kickeduser = kick_data.kickedUser;
             if (
               kick_data.statusCode === 1 &&
-              parseInt(kickeduser.userId) === parseInt(userData.user_id)
+              parseInt(kickeduser.userId) === parseInt(getUserData()?.user_id)
             ) {
               const endData = {
                 message: "Someone removed you from this meeting !",
@@ -460,18 +469,17 @@ const MeetingManagerComponent = () => {
             const attendees = JSON.parse(newValue);
             const attendeeList = attendees.attendeeList;
             const findAttendee = attendeeList.find(
-              (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
+              (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
             );
             if (findAttendee) {
+              setMeetingSettings((pre) => ({
+                ...pre,
+                user_screenshare: findAttendee.screenShare ? 1 : 0,
+              }));
               if (!userdata.isHost) {
                 setuserdata((pre) => ({
                   ...pre,
                   screenShare: findAttendee.screenShare ? 1 : 0,
-                }));
-              } else {
-                setMeetingSettings((pre) => ({
-                  ...pre,
-                  user_screenshare: findAttendee.screenShare ? 1 : 0,
                 }));
               }
             }
@@ -510,10 +518,22 @@ const MeetingManagerComponent = () => {
         case CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER:
           try {
             const viewData = JSON.parse(newValue);
-            if (viewData.view_type === 2) {
-              setisPinEnabled(viewData.spotlight_id);
+            if (viewData.pin_enabled === 1) {
+              setisPinEnabled(viewData.pinned_user_id);
             } else {
               setisPinEnabled(null);
+            }
+          } catch (error) {}
+          break;
+        case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
+          try {
+            const callEventData = JSON.parse(newValue);
+            if (callEventData) {
+              if (callEventData.screen_share_status === false) {
+                if (isLocalUserSharing) {
+                  toggleContentShare();
+                }
+              }
             }
           } catch (error) {}
           break;
@@ -528,7 +548,13 @@ const MeetingManagerComponent = () => {
     return () => {
       window.removeEventListener("storage", onReceiveMessage);
     };
-  }, [muted, isVideoEnabled, EventMessages, RequestStatusMessage]);
+  }, [
+    muted,
+    isVideoEnabled,
+    EventMessages,
+    RequestStatusMessage,
+    isLocalUserSharing,
+  ]);
 
   return <div></div>;
 };

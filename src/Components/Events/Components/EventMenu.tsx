@@ -20,7 +20,10 @@ import {
   LocalMicrophoneComponent,
 } from "./Utility";
 import MoreBottomSheet from "./MoreBottomSheet";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import { EndMeeting, ExitMeeting, MicOptions } from "./Methods";
 
 const EventMenu = () => {
@@ -37,7 +40,9 @@ const EventMenu = () => {
     userdata,
     setMeetingSettings,
   }: any = useEventLayout();
+
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const [messageApi, contextHolder] = message.useMessage();
@@ -51,6 +56,14 @@ const EventMenu = () => {
   const [isMore, setisMore] = useState<Boolean>(false);
   const [isSpeakerOpen, setisSpeakerOpen] = useState<boolean>(false);
   const meetingmanager = useMeetingManager();
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
   const enabledSettings = () => ({
     presentEnable: userdata?.screenShare === 1 || userdata?.isHost,
@@ -237,7 +250,7 @@ const EventMenu = () => {
               ChimesendMessage(
                 {
                   refId: EventData?.reference_id,
-                  hostId: userData?.user_id,
+                  hostId: getUserData()?.user_id,
                   status: enabledSettings().allowActive ? false : true,
                 },
                 CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN
@@ -262,13 +275,13 @@ const EventMenu = () => {
           <div
             className={styles.Actionsec}
             onClick={() => {
-              if (attendees.length >= 10) {
+              if (attendees.length >= 0) {
                 setisPinEnabled(!isPinEnabled);
                 ChimesendMessage(
                   {
                     refId: EventData?.reference_id,
-                    view_type: isPinEnabled ? 1 : 2,
-                    spotlight_id: userData?.user_id,
+                    pin_enabled: isPinEnabled ? 0 : 1,
+                    pinned_user_id: getUserData()?.user_id,
                   },
                   CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
                 );
@@ -295,7 +308,7 @@ const EventMenu = () => {
             ChimesendMessage(
               {
                 refId: EventData?.reference_id,
-                userId: userData?.user_id,
+                userId: getUserData()?.user_id,
                 status: !userdata.handRaised,
               },
               CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
@@ -362,6 +375,7 @@ const EventMenu = () => {
                 Attendee: userdata,
                 EventData,
                 handleEndMeeting,
+                meetingmanager,
               });
             } else {
               ExitMeeting({
@@ -400,7 +414,7 @@ const EventMenu = () => {
                     ChimesendMessage(
                       {
                         refId: EventData?.reference_id,
-                        userId: userData?.user_id,
+                        userId: getUserData()?.user_id,
                         status: !userdata.handRaised,
                       },
                       CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
@@ -425,7 +439,7 @@ const EventMenu = () => {
                       ChimesendMessage(
                         {
                           refId: EventData?.reference_id,
-                          hostId: userData?.user_id,
+                          hostId: getUserData()?.user_id,
                           status: enabledSettings().allowActive ? false : true,
                         },
                         CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN
@@ -500,8 +514,9 @@ const EventMenu = () => {
                         ChimesendMessage(
                           {
                             refId: EventData?.reference_id,
-                            view_type: isPinEnabled ? 1 : 2,
-                            spotlight_id: userData?.user_id,
+
+                            pin_enabled: isPinEnabled ? 0 : 1,
+                            pinned_user_id: getUserData()?.user_id,
                           },
                           CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
                         );

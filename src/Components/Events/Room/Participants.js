@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import classes from "./Room.module.css";
-import { Dropdown, Layout, Modal, Slider } from "antd";
+import { Dropdown, Layout, Modal, Slider, Tooltip } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { useLayoutContect } from "../../../Layouts/EventLayout";
@@ -11,7 +11,10 @@ import {
   useMeetingManager,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import { Collapse, Form, InputGroup } from "react-bootstrap";
 import {
   CameraComponent,
@@ -22,7 +25,8 @@ import {
 } from "../Components/Utility";
 import RenameModal from "../Components/RenameModal";
 import { toast } from "react-hot-toast";
-import { DefaultAudioVideoFacade } from "amazon-chime-sdk-js";
+import { generatePath } from "react-router";
+import { handleCopyText } from "../../../Shared/Utility";
 
 const { Header, Footer, Content } = Layout;
 
@@ -31,7 +35,6 @@ const Participants = () => {
   const [SpeakerState, setSpeakerState] = useState(false);
   const [renameAttendee, setrenameAttendee] = useState(false);
   const [SearchData, setSearchData] = useState("");
-  const [audioElements, setAudioElements] = useState({});
   const {
     setisChatorParticipant,
     setRequestList,
@@ -41,16 +44,25 @@ const Participants = () => {
     EventData,
   } = useLayoutContect();
   const userdata = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
-  const audioVideo = useAudioVideo();
-  const meetingSession = useMeetingManager();
+  const [isInvited, setisInvited] = useState(false);
+  const [isCopied, setisCopied] = useState(false);
 
   const headerStyle = {
     textAlign: "center",
     color: "#fff",
     lineHeight: "64px",
     backgroundColor: "#7dbcea",
+  };
+
+  const getUserData = () => {
+    if (userdata) {
+      return userdata;
+    } else {
+      return tempuserData;
+    }
   };
 
   const handleAccept = (ele) => {
@@ -92,7 +104,8 @@ const Participants = () => {
     //       }
     //     }, [audioVideo, attendeeId]);
 
-    const isYou = parseInt(userdata.user_id) === parseInt(findAttendee.userId);
+    const isYou =
+      parseInt(getUserData()?.user_id) === parseInt(findAttendee.userId);
 
     return (
       <>
@@ -119,7 +132,12 @@ const Participants = () => {
                 currentTarget.src = defaultprofileImg;
               }}
             />
-            {findAttendee.name + `${isYou ? " (You)" : ""}`}
+            <div className={classes.nameSec}>
+              <span className={classes.participantName}>
+                {findAttendee.name}
+              </span>
+              {`${isYou ? " (You)" : ""}`}
+            </div>
           </div>
           <div className={classes.itemAction}>
             {findAttendee.handRaised && (
@@ -266,6 +284,16 @@ const Participants = () => {
     );
   };
 
+  const getInviteLink = () => {
+    return (
+      window.location.origin +
+      generatePath(`/join/:event/:ref_id`, {
+        event: EventData?.type === 2 ? "talkshow" : "event",
+        ref_id: EventData.reference_id,
+      })
+    );
+  };
+
   return (
     <Layout
       className={`${classes.popupContainer} ${
@@ -362,9 +390,46 @@ const Participants = () => {
         })}
       </Content>
       <Footer className={classes.footerSec}>
-        <div className={classes.inviteContainer}>
+        <div
+          className={classes.inviteContainer}
+          onClick={() => {
+            setisInvited((pre) => !pre);
+          }}
+        >
           <div className={classes.inviteBtn}>Invite Participants</div>
         </div>
+
+        <Collapse in={isInvited}>
+          <div className={classes.inviteModal}>
+            <h2>Invite via Meeting Link</h2>
+            <div className={classes.MeetingLinkSec}>
+              <p> {getInviteLink()}</p>
+              <Tooltip placement="top" title={"Copy"}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {isCopied ? (
+                    <span className={`material-symbols-rounded`}>done</span>
+                  ) : (
+                    <span
+                      class="material-symbols-outlined"
+                      onClick={() => {
+                        handleCopyText(getInviteLink()).then(() => {
+                          setisCopied(true);
+                        });
+                      }}
+                    >
+                      content_copy
+                    </span>
+                  )}
+                </div>
+              </Tooltip>
+            </div>
+          </div>
+        </Collapse>
 
         {RequestRef.current.length !== 0 && (
           <div

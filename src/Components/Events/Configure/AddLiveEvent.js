@@ -33,12 +33,15 @@ import EventModal from "../../../Modal/Event/EventModal";
 import moment from "moment";
 import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
+import EventSuccessPage from "./EventSuccessPage";
 
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
   const { userSettings } = useAuth();
   const [isFetching, setisFetching] = useState([]);
   const [isCreating, setisCreating] = useState(false);
+  const [EventData, setEventData] = useState(null);
+  const [isSuccesspage, setisSuccesspage] = useState(false);
   const [SelectedTime, setSelectedTime] = useState(
     moment().add(10, "minutes").format("HH:mm")
   );
@@ -191,6 +194,8 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       .then((res) => {
         if (res.data.status === 1) {
           getEvents(ActiveEvent.key);
+          setEventData(res.data.event_detail);
+          setisSuccesspage(true);
           toast.success(res.data.msg);
         } else {
           toast.error(res.data.msg);
@@ -198,7 +203,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       })
       .catch((err) => {})
       .finally(() => {
-        handleCloseEvent();
+        setisCreating(false);
       });
   };
 
@@ -286,11 +291,14 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         setFieldValue,
         isFetching,
         setisFetching,
+        EventData,
+        setEventData,
       }}
     >
       <EventModal
         title={getTitle()}
         open={isTalkshowOpen}
+        isLinkScreen={isSuccesspage}
         isUpdate={data ? true : false}
         loading={isCreating}
         onSuccess={() => {
@@ -300,251 +308,259 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           handleCloseEvent();
         }}
       >
-        <Form
-          layout="vertical"
-          autoComplete="off"
-          className={`${classes.eventBody} eventBody`}
-        >
-          <Row>
-            <Col sm={6}>
-              <Form.Item
-                label="Event Title"
-                colon={false}
-                className={classes.textBoxSec}
-                initialValue={values.event_title}
-              >
-                <Input
-                  className={classes.textbox}
-                  defaultValue={values.event_title}
-                  value={values.event_title}
-                  maxLength={80}
-                  onChange={handleChange("event_title")}
-                />
-              </Form.Item>
-              {touched.event_title && (
-                <p className="ErrTxt mb-3">{errors?.event_title}</p>
-              )}
-            </Col>
-            <Col sm={6}>
-              <EventTypeComponent
-                value={values.event_type}
-                onResult={(val) => {
-                  setFieldValue("event_type", val.id);
-                }}
-              />
-              {touched.event_type && (
-                <p className="ErrTxt mb-3">{errors?.event_type}</p>
-              )}
-            </Col>
-            <Col sm={6}>
-              <Form.Item
-                label="Date"
-                colon={false}
-                className={classes.textBoxSec}
-              >
-                <DatePicker
-                  showToday={false}
-                  className={classes.textbox}
-                  defaultValue={
-                    values?.event_start_date
-                      ? dayjs(values?.event_start_date, "YYYY-MM-DD")
-                      : undefined
-                  }
-                  value={
-                    values?.event_start_date
-                      ? dayjs(values?.event_start_date, "YYYY-MM-DD")
-                      : undefined
-                  }
-                  disabledDate={(current) => {
-                    return moment().add(-1, "days") >= current;
+        {isSuccesspage ? (
+          <EventSuccessPage />
+        ) : (
+          <Form
+            layout="vertical"
+            autoComplete="off"
+            className={`${classes.eventBody} eventBody`}
+          >
+            <Row>
+              <Col sm={6}>
+                <Form.Item
+                  label="Event Title"
+                  colon={false}
+                  className={classes.textBoxSec}
+                  initialValue={values.event_title}
+                >
+                  <Input
+                    className={classes.textbox}
+                    defaultValue={values.event_title}
+                    value={values.event_title}
+                    maxLength={80}
+                    onChange={handleChange("event_title")}
+                  />
+                </Form.Item>
+                {touched.event_title && (
+                  <p className="ErrTxt mb-3">{errors?.event_title}</p>
+                )}
+              </Col>
+              <Col sm={6}>
+                <EventTypeComponent
+                  value={values.event_type}
+                  onResult={(val) => {
+                    setFieldValue("event_type", val.id);
                   }}
-                  allowClear={false}
-                  format={"YYYY-MM-DD"}
-                  onChange={(date, dateString) => {
-                    setFieldValue("event_start_date", dateString);
+                />
+                {touched.event_type && (
+                  <p className="ErrTxt mb-3">{errors?.event_type}</p>
+                )}
+              </Col>
+              <Col sm={6}>
+                <Form.Item
+                  label="Date"
+                  colon={false}
+                  className={classes.textBoxSec}
+                >
+                  <DatePicker
+                    showToday={false}
+                    className={classes.textbox}
+                    defaultValue={
+                      values?.event_start_date
+                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                        : undefined
+                    }
+                    value={
+                      values?.event_start_date
+                        ? dayjs(values?.event_start_date, "YYYY-MM-DD")
+                        : undefined
+                    }
+                    disabledDate={(current) => {
+                      return moment().add(-1, "days") >= current;
+                    }}
+                    allowClear={false}
+                    format={"YYYY-MM-DD"}
+                    onChange={(date, dateString) => {
+                      setFieldValue("event_start_date", dateString);
+                      if (
+                        moment(new Date()).format("DD:MM:YYYY") ==
+                        moment(dateString, "YYYY-MM-DD").format("DD:MM:YYYY")
+                      ) {
+                        if (
+                          !(
+                            moment().format("HH:mm") <
+                            moment(values.event_start_time, "HH:mm").format(
+                              "HH:mm"
+                            )
+                          )
+                        ) {
+                          setFieldValue("event_start_time", "");
+                        }
+                      } else {
+                        setFieldValue("event_start_time", SelectedTime);
+                      }
+                    }}
+                  />
+                </Form.Item>
+                {touched.event_start_date && (
+                  <p className="ErrTxt mb-3">{errors?.event_start_date}</p>
+                )}
+              </Col>
+              <Col sm={6}>
+                <div className={classes.lableTxt}>Time</div>
+                <TimeValueComponent
+                  value={values.event_start_time}
+                  onResult={(res) => {
+                    setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                     if (
-                      moment(new Date()).format("DD:MM:YYYY") ==
-                      moment(dateString, "YYYY-MM-DD").format("DD:MM:YYYY")
+                      moment().format("DD:MM:YYYY") ==
+                      moment(values.event_start_date, "YYYY-MM-DD").format(
+                        "DD:MM:YYYY"
+                      )
                     ) {
                       if (
-                        !(
-                          moment().format("HH:mm") <
-                          moment(values.event_start_time, "HH:mm").format(
-                            "HH:mm"
-                          )
-                        )
+                        moment().add(10, "minutes").format("HH:mm") <=
+                        moment(res, "hh:mm A").format("HH:mm")
                       ) {
+                        setFieldValue(
+                          "event_start_time",
+                          moment(res, "hh:mm A").format("HH:mm")
+                        );
+                      } else {
                         setFieldValue("event_start_time", "");
                       }
                     } else {
-                      setFieldValue("event_start_time", SelectedTime);
-                    }
-                  }}
-                />
-              </Form.Item>
-              {touched.event_start_date && (
-                <p className="ErrTxt mb-3">{errors?.event_start_date}</p>
-              )}
-            </Col>
-            <Col sm={6}>
-              <div className={classes.lableTxt}>Time</div>
-              <TimeValueComponent
-                value={values.event_start_time}
-                onResult={(res) => {
-                  setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
-                  if (
-                    moment().format("DD:MM:YYYY") ==
-                    moment(values.event_start_date, "YYYY-MM-DD").format(
-                      "DD:MM:YYYY"
-                    )
-                  ) {
-                    if (
-                      moment().add(10, "minutes").format("HH:mm") <=
-                      moment(res, "hh:mm A").format("HH:mm")
-                    ) {
                       setFieldValue(
                         "event_start_time",
                         moment(res, "hh:mm A").format("HH:mm")
                       );
-                    } else {
-                      setFieldValue("event_start_time", "");
                     }
-                  } else {
-                    setFieldValue(
-                      "event_start_time",
-                      moment(res, "hh:mm A").format("HH:mm")
-                    );
-                  }
-                }}
-              />
-              {touched.event_start_time && (
-                <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
-              )}
-            </Col>
-            <Col sm={12}>
-              <Form.Item
-                label="Event Description"
-                colon={false}
-                className={classes.textBoxSec}
-                initialValue={values.event_message}
-              >
-                <Input.TextArea
-                  className={`${classes.textbox} ${classes.textArea}`}
-                  defaultValue={values.event_message}
-                  value={values.event_message}
-                  maxLength={150}
-                  onChange={handleChange("event_message")}
+                  }}
                 />
-              </Form.Item>
-              {touched.event_message && (
-                <p className="ErrTxt mb-3">{errors?.event_message}</p>
+                {touched.event_start_time && (
+                  <p className="ErrTxt mb-3">{errors?.event_start_time}</p>
+                )}
+              </Col>
+              <Col sm={12}>
+                <Form.Item
+                  label="Event Description"
+                  colon={false}
+                  className={classes.textBoxSec}
+                  initialValue={values.event_message}
+                >
+                  <Input.TextArea
+                    className={`${classes.textbox} ${classes.textArea}`}
+                    defaultValue={values.event_message}
+                    value={values.event_message}
+                    maxLength={150}
+                    onChange={handleChange("event_message")}
+                  />
+                </Form.Item>
+                {touched.event_message && (
+                  <p className="ErrTxt mb-3">{errors?.event_message}</p>
+                )}
+              </Col>
+              <Col sm={12}>
+                <BannerComponent
+                  value={values.event_banner}
+                  onResult={(val) => {
+                    setFieldValue("event_banner", val);
+                  }}
+                />
+                {touched.event_banner && (
+                  <p className="ErrTxt mb-3">{errors?.event_banner}</p>
+                )}
+              </Col>
+              {parseInt(values.event_type) !== 3 && (
+                <>
+                  <Col sm={12}>
+                    <InviteEmailComponent
+                      value={values.event_invite_mails}
+                      onDeleteData={(delete_arr) => {
+                        if (delete_arr.length !== 0) {
+                          setFieldValue(
+                            "delete_invite_mails",
+                            JSON.stringify(delete_arr)
+                          );
+                        } else {
+                          setFieldValue("delete_invite_mails", "");
+                        }
+                      }}
+                      onResult={(val) => {
+                        if (val.length !== 0) {
+                          setFieldValue(
+                            "event_invite_mails",
+                            JSON.stringify(val)
+                          );
+                        } else {
+                          setFieldValue("event_invite_mails", "");
+                        }
+                      }}
+                    />
+                    {touched.event_invite_mails && (
+                      <p className="ErrTxt mb-3">
+                        {errors?.event_invite_mails}
+                      </p>
+                    )}
+                  </Col>
+                  <Col sm={12}>
+                    <Connections
+                      values={values.event_invite_friends}
+                      onDeleteData={(delete_arr) => {
+                        if (delete_arr.length !== 0) {
+                          setFieldValue(
+                            "delete_invite_friends",
+                            JSON.stringify(delete_arr)
+                          );
+                        } else {
+                          setFieldValue("delete_invite_friends", "");
+                        }
+                      }}
+                      onResult={(val) => {
+                        let finRes = val.map((ele) => ele.user_id);
+                        if (finRes.length !== 0) {
+                          setFieldValue(
+                            "event_invite_friends",
+                            JSON.stringify(finRes)
+                          );
+                        } else {
+                          setFieldValue("event_invite_friends", "[]");
+                        }
+                      }}
+                    />
+                    {touched.event_invite_friends && (
+                      <p className="ErrTxt mb-3">
+                        {errors?.event_invite_friends}
+                      </p>
+                    )}
+                  </Col>
+                  <Col>
+                    <Groups
+                      values={values.event_invite_groups}
+                      onDeleteData={(delete_arr) => {
+                        if (delete_arr.length !== 0) {
+                          setFieldValue(
+                            "delete_invite_groups",
+                            JSON.stringify(delete_arr)
+                          );
+                        } else {
+                          setFieldValue("delete_invite_groups", "");
+                        }
+                      }}
+                      onResult={(val) => {
+                        let finRes = val.map((ele) => ele.group_id);
+                        if (finRes.length !== 0) {
+                          setFieldValue(
+                            "event_invite_groups",
+                            JSON.stringify(finRes)
+                          );
+                        } else {
+                          setFieldValue("event_invite_groups", "");
+                        }
+                      }}
+                    />
+                    {touched.event_invite_groups && (
+                      <p className="ErrTxt mb-3">
+                        {errors?.event_invite_groups}
+                      </p>
+                    )}
+                  </Col>
+                </>
               )}
-            </Col>
-            <Col sm={12}>
-              <BannerComponent
-                value={values.event_banner}
-                onResult={(val) => {
-                  setFieldValue("event_banner", val);
-                }}
-              />
-              {touched.event_banner && (
-                <p className="ErrTxt mb-3">{errors?.event_banner}</p>
-              )}
-            </Col>
-            {parseInt(values.event_type) !== 3 && (
-              <>
-                <Col sm={12}>
-                  <InviteEmailComponent
-                    value={values.event_invite_mails}
-                    onDeleteData={(delete_arr) => {
-                      if (delete_arr.length !== 0) {
-                        setFieldValue(
-                          "delete_invite_mails",
-                          JSON.stringify(delete_arr)
-                        );
-                      } else {
-                        setFieldValue("delete_invite_mails", "");
-                      }
-                    }}
-                    onResult={(val) => {
-                      if (val.length !== 0) {
-                        setFieldValue(
-                          "event_invite_mails",
-                          JSON.stringify(val)
-                        );
-                      } else {
-                        setFieldValue("event_invite_mails", "");
-                      }
-                    }}
-                  />
-                  {touched.event_invite_mails && (
-                    <p className="ErrTxt mb-3">{errors?.event_invite_mails}</p>
-                  )}
-                </Col>
-                <Col sm={12}>
-                  <Connections
-                    values={values.event_invite_friends}
-                    onDeleteData={(delete_arr) => {
-                      if (delete_arr.length !== 0) {
-                        setFieldValue(
-                          "delete_invite_friends",
-                          JSON.stringify(delete_arr)
-                        );
-                      } else {
-                        setFieldValue("delete_invite_friends", "");
-                      }
-                    }}
-                    onResult={(val) => {
-                      let finRes = val.map((ele) => ele.user_id);
-                      if (finRes.length !== 0) {
-                        setFieldValue(
-                          "event_invite_friends",
-                          JSON.stringify(finRes)
-                        );
-                      } else {
-                        setFieldValue("event_invite_friends", "[]");
-                      }
-                    }}
-                  />
-                  {touched.event_invite_friends && (
-                    <p className="ErrTxt mb-3">
-                      {errors?.event_invite_friends}
-                    </p>
-                  )}
-                </Col>
-                <Col>
-                  <Groups
-                    values={values.event_invite_groups}
-                    onDeleteData={(delete_arr) => {
-                      if (delete_arr.length !== 0) {
-                        setFieldValue(
-                          "delete_invite_groups",
-                          JSON.stringify(delete_arr)
-                        );
-                      } else {
-                        setFieldValue("delete_invite_groups", "");
-                      }
-                    }}
-                    onResult={(val) => {
-                      let finRes = val.map((ele) => ele.group_id);
-                      if (finRes.length !== 0) {
-                        setFieldValue(
-                          "event_invite_groups",
-                          JSON.stringify(finRes)
-                        );
-                      } else {
-                        setFieldValue("event_invite_groups", "");
-                      }
-                    }}
-                  />
-                  {touched.event_invite_groups && (
-                    <p className="ErrTxt mb-3">{errors?.event_invite_groups}</p>
-                  )}
-                </Col>
-              </>
-            )}
-          </Row>
-        </Form>
+            </Row>
+          </Form>
+        )}
       </EventModal>
     </AddEventContext.Provider>
   );

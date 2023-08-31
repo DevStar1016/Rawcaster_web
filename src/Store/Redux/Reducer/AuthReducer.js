@@ -22,6 +22,7 @@ const initialState = {
   loginToken: getRawcaserToken(),
   userSettings: null,
   isAccountActive: false,
+  eventTempUserData: null,
 };
 
 export const { actions, reducer } = createSlice({
@@ -46,6 +47,9 @@ export const { actions, reducer } = createSlice({
     handleAccountActive: (state, action) => {
       state.isAccountActive = action.payload;
     },
+    handleeventTempUserData: (state, action) => {
+      state.eventTempUserData = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchuserInfobyToken.pending, (state, action) => {
@@ -69,6 +73,7 @@ export const {
   handleuserSettings,
   handleisSuccess,
   handleAccountActive,
+  handleeventTempUserData,
 } = actions;
 
 export default reducer;

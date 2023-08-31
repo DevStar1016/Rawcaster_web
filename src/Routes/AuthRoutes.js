@@ -3,6 +3,7 @@ import Login from "../Components/Auth/Login";
 import ResetPassword from "../Components/Auth/ResetPassword";
 import Signup from "../Components/Auth/Signup";
 import SignupwithCredentials from "../Components/Auth/SignupwithCredentials";
+import JoinMeeting from "../Components/Events/Room/JoinMeeting";
 import Homepage from "../Components/Homepage/Homepage";
 import NotFound from "../Components/NotFound/NotFound";
 import AppdownloadScreen from "../Components/Policy/AppdownloadScreen";
@@ -83,6 +84,14 @@ export const AuthRoute = [
           {
             path: "appdownloadscreen",
             element: <AppdownloadScreen />,
+          },
+          {
+            path: "/joinmeeting",
+            element: <JoinMeeting />,
+          },
+          {
+            path: "/join/:event/:ref_id",
+            element: <JoinMeeting />,
           },
         ],
       },

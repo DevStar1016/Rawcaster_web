@@ -18,11 +18,10 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
   };
 
   const HandlePopup = () => {
-    popup = window.open(`/room/${meetingId}`, "_blank", {
+    popup = window.open(`/room/${ele?.reference_id}`, "_blank", {
       popup: true,
     });
     popup.onload = () => {
-      console.log("Onload");
       ChimesendMessage(
         { userId: userData.user_id },
         CHIME_SOCKET_EVENTS.JOIN_SOCKET
@@ -76,14 +75,6 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
         localStorage.removeItem(key);
       }
     };
-
-    // popup.addEventListener("beforeunload", (event) => {
-    //   const confirmationMessage = "Do you want to leave the meeting?";
-    //   event.returnValue = confirmationMessage;
-    //   return confirmationMessage;
-    // });
-
-    // when the popup posts a message
   };
 
   const handleJoinEvent = async (e) => {

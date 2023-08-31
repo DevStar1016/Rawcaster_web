@@ -1,6 +1,6 @@
 import { Modal, Popover, Tooltip } from "antd";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
@@ -73,6 +73,16 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
     return true;
   };
 
+  const getInviteLink = () => {
+    return (
+      window.location.origin +
+      generatePath(`/join/:event/:ref_id`, {
+        event: ele?.type === 2 ? "talkshow" : "event",
+        ref_id: ele?.reference_id || "",
+      })
+    );
+  };
+
   const shareMessage = `Hi,\n ${
     ele.original_user_name
   } is inviting you to join a web event called ${ele.event_name} on ${
@@ -81,7 +91,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
     ) + utctoUserTimezonewithAbbr(ele.start_date_time, userSettings?.time_zone)
   }. The link for this Rawcaster event is :`;
 
-  const shareUrl = SHARE_URL + eventType + ele.reference_id;
+  const shareUrl = getInviteLink();
   const subject = "Rawcaster Event Invitation";
 
   const content = (

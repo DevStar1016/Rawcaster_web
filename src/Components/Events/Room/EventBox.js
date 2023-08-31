@@ -20,7 +20,10 @@ import { Alert, Drawer, Layout, Modal, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
 import Reactions from "../Components/Reactions";
 import CommentBox from "./CommentBox";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import {
   CameraComponent,
   LocalCameraComponent,
@@ -30,9 +33,11 @@ import {
 import { useEventRoomContext } from "../../../Shared/Context";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
+import { useLayoutContect } from "../../../Layouts/EventLayout";
 
 const EventBox = () => {
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const { Sider, Content } = Layout;
   const { isVideoEnabled } = useLocalVideo();
   const {
@@ -46,11 +51,19 @@ const EventBox = () => {
     userdata,
     EventData,
   } = useEventRoomContext();
-
+  const { isPresentScreen, setisPresentScreen } = useLayoutContect();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
   const getContainerClassName = () => {
     switch (attendees.length) {
@@ -146,12 +159,11 @@ const EventBox = () => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  console.log(findAttendee, "findAttendee");
                   ChimesendMessage(
                     {
                       refId: EventData?.reference_id,
-                      view_type: 2,
-                      spotlight_id: findAttendee?.userId,
+                      pin_enabled: isPinEnabled ? 0 : 1,
+                      pinned_user_id: findAttendee?.userId,
                     },
                     CHIME_SOCKET_EVENTS.UPDATE_LAYOUT
                   );
@@ -215,7 +227,8 @@ const EventBox = () => {
     );
     const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
 
-    const isYou = parseInt(userData.user_id) === parseInt(findAttendee.userId);
+    const isYou =
+      parseInt(getUserData()?.user_id) === parseInt(findAttendee.userId);
     return (
       <div>
         <div className={classes.customNamePlate}>
@@ -253,7 +266,8 @@ const EventBox = () => {
       (elem) => parseInt(elem?.userId) === parseInt(ele.externalUserId)
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
-    const isYou = parseInt(userData.user_id) === parseInt(findAttendee?.userId);
+    const isYou =
+      parseInt(getUserData()?.user_id) === parseInt(findAttendee?.userId);
 
     if (findAttendee) {
       if (isYou && isVideoEnabled) {
@@ -327,6 +341,16 @@ const EventBox = () => {
     );
   };
 
+  const getisShareScreen = () => {
+    if (isLocalUserSharing || sharingAttendeeId) {
+      if (isPresentScreen) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  };
+
   return (
     <div className={classes.mainContainer}>
       <Content>
@@ -381,7 +405,7 @@ const EventBox = () => {
                   overflow: "scroll",
                 }}
               >
-                {isLocalUserSharing || sharingAttendeeId ? (
+                {getisShareScreen() ? (
                   <div className={classes.full_container}>
                     <ContentShare className={classes.Child} />
                   </div>

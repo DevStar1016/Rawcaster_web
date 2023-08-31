@@ -303,6 +303,10 @@ export const ExitMeetingService = (data) => {
   return axios.post("exit_meeting", data);
 };
 
+export const ExternalUserJoinService = (data) => {
+  return axios.post("externaluserjoin", data);
+};
+
 // Profile Config
 
 export const FollowandunfollowService = (data) => {

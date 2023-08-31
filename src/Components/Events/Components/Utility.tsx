@@ -11,7 +11,10 @@ import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import styles from "./Menu.module.css";
 import { message } from "antd";
 import { useEventLayout } from "../Room/EventValidaton";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import { EndMeeting, ExitMeeting } from "./Methods";
 import { useEventRoomContext } from "../../../Shared/Context";
 
@@ -26,8 +29,17 @@ export const MicrophoneComponent = ({
   const { EventData, MeetingSettings, setMeetingSettings } =
     useEventRoomContext();
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
   const { toggleMute } = useToggleLocalMute();
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
   return isGlobal ? (
     <>
@@ -37,7 +49,7 @@ export const MicrophoneComponent = ({
           onClick={() => {
             const value = {
               refId: EventData?.reference_id,
-              hostId: userData?.user_id,
+              hostId: getUserData()?.user_id,
               status: true,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
@@ -55,7 +67,7 @@ export const MicrophoneComponent = ({
           onClick={() => {
             const value = {
               refId: EventData?.reference_id,
-              hostId: userData?.user_id,
+              hostId: getUserData()?.user_id,
               status: false,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
@@ -78,7 +90,7 @@ export const MicrophoneComponent = ({
             if (isHost && !attendee.isHost) {
               const value = {
                 refId: EventData?.reference_id,
-                hostId: userData?.user_id,
+                hostId: getUserData()?.user_id,
                 status: true,
                 userId: attendee.userId,
               };
@@ -97,7 +109,7 @@ export const MicrophoneComponent = ({
             if (isHost && !attendee.isHost) {
               const value = {
                 refId: EventData?.reference_id,
-                hostId: userData?.user_id,
+                hostId: getUserData()?.user_id,
                 status: false,
                 userId: attendee.userId,
               };
@@ -166,7 +178,15 @@ export const CameraComponent = ({
   const { EventData, MeetingSettings, setMeetingSettings } =
     useEventRoomContext();
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const { videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
   return isGlobal ? (
     <>
       {MeetingSettings?.default_guest_video === 0 ? (
@@ -175,7 +195,7 @@ export const CameraComponent = ({
           onClick={() => {
             const value = {
               refId: EventData?.reference_id,
-              hostId: userData?.user_id,
+              hostId: getUserData()?.user_id,
               status: true,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
@@ -194,7 +214,7 @@ export const CameraComponent = ({
             if (isGlobal) {
               const value = {
                 refId: EventData?.reference_id,
-                hostId: userData?.user_id,
+                hostId: getUserData()?.user_id,
                 status: false,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
@@ -218,7 +238,7 @@ export const CameraComponent = ({
             if (isHost && !attendee.isHost) {
               const value = {
                 refId: EventData?.reference_id,
-                hostId: userData?.user_id,
+                hostId: getUserData()?.user_id,
                 status: true,
                 userId: attendee.userId,
               };
@@ -234,7 +254,7 @@ export const CameraComponent = ({
           onClick={() => {
             const value = {
               refId: EventData?.reference_id,
-              hostId: userData?.user_id,
+              hostId: getUserData()?.user_id,
               status: false,
               userId: attendee.userId,
             };
@@ -338,11 +358,21 @@ export const VolumeStatusComponent = ({
 export const HangupComponent = () => {
   const { EventData, handleExitMeeting, attendeesList, handleEndMeeting }: any =
     useEventLayout();
+  const meetingmanager = useMeetingManager();
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
   const getCurrentAttendee = () => {
     return attendeesList.find(
-      (ele: any) => parseInt(ele.userId) === parseInt(userData.user_id)
+      (ele: any) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
     );
   };
 
@@ -352,6 +382,7 @@ export const HangupComponent = () => {
         Attendee: getCurrentAttendee(),
         EventData,
         handleEndMeeting,
+        meetingmanager,
       });
     } else {
       ExitMeeting({

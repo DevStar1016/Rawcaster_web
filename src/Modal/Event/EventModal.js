@@ -2,6 +2,7 @@ import { Modal } from "antd";
 import React from "react";
 import styles from "../Modal.module.css";
 import LoadingOverlay from "react-loading-overlay";
+import classes from "../../Components/Events/Events.module.css";
 
 const EventModal = ({
   Type = "Talk Show",
@@ -13,10 +14,17 @@ const EventModal = ({
   children,
   isUpdate,
   loading,
+  isLinkScreen = false,
   isFetching = [],
 }) => {
   const getTitle = () => {
-    if (title) {
+    if (isLinkScreen) {
+      return (
+        <div className={classes.headingSec}>
+          {Type + " Scheduling Successful"}
+        </div>
+      );
+    } else if (title) {
       return title;
     } else {
       return `${isUpdate ? "Update" : "Create"} ` + Type;
@@ -46,14 +54,29 @@ const EventModal = ({
       width={700}
       open={open}
       okText={
-        okBtnTitle ? okBtnTitle : `${isUpdate ? "Update" : "Create"} Event`
+        isLinkScreen
+          ? "Close"
+          : okBtnTitle
+          ? okBtnTitle
+          : `${isUpdate ? "Update" : "Create"} Event`
       }
-      cancelText="Cancel"
+      cancelText={isLinkScreen ? "" : "Cancel"}
       className="eventmodal"
-      onOk={() => onSuccess()}
+      onOk={() => {
+        if (isLinkScreen) {
+          onClose();
+        } else {
+          onSuccess();
+        }
+      }}
       onCancel={() => onClose()}
       confirmLoading={loading}
-      cancelButtonProps={{ disabled: loading || getFetchingStatus().status }}
+      cancelButtonProps={{
+        disabled: loading || getFetchingStatus().status,
+        style: {
+          display: isLinkScreen ? "none" : "",
+        },
+      }}
       okButtonProps={{ disabled: getFetchingStatus().status }}
       closeIcon={
         <div className={styles.modalCloseIcon}>

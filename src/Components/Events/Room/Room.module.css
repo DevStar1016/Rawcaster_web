@@ -90,7 +90,17 @@ border-bottom-right-radius: 10px;
     font-size: 14px;
     line-height: 25px;
     text-align: center;
+    display: flex;
+    flex-direction: row;
 
+  }
+  .nameSec {
+    width: 100px;
+  }
+  .nameSec .participantName {
+      white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   }
   .itemName img {
     height: 25px;
@@ -395,6 +405,52 @@ opacity: 0.8;
   display: flex;
   align-items: center;
   cursor: pointer;
+}
+.inviteModal {
+   padding:0px 20px;
+}
+.inviteModal h2 {
+font-family: 'Gilroy-Bold';
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: 0.04em;
+    color: #FFFFFF;
+}
+.MeetingLinkSec {
+  padding: 7px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #f1f2f55f;
+  max-width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+ 
+}
+.MeetingLinkSec span {
+  font-size: 18px;
+  line-height: 17px;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  margin-left: 20px;
+}
+.nameSec {
+  display: flex;
+  flex-direction: row;
+
+}
+.MeetingLinkSec p {
+  font-family: 'Gilroy-Bold';
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  
+  white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
 }
 
   @media (max-width:768px) { 

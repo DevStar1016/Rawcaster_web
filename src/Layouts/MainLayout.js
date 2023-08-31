@@ -26,10 +26,10 @@ const MainLayout = () => {
           <div className={classes.headermargin}>
             <Menu mode="horizontal">
               <Menu.Item key="join">
-                <a to="/joinmeeting">Join a meeting</a>
+                <Link to="/joinmeeting">Join a meeting</Link>
               </Menu.Item>
               <Menu.Item key="Host">
-                <a to="/signin">Host a meeting</a>
+                <Link to="/login">Host a meeting</Link>
               </Menu.Item>
               <Menu.Item key="download">
                 <Link to="/appdownloadscreen">Download</Link>

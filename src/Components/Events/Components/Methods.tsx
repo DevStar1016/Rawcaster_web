@@ -4,6 +4,7 @@ import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { toast } from "react-hot-toast";
 import {
+  MeetingManager,
   useAudioInputs,
   useAudioOutputs,
   useAudioVideo,
@@ -23,6 +24,7 @@ interface EndMeeting {
   EventData?: any;
   handleEndMeeting: any;
   message?: String;
+  meetingmanager: MeetingManager;
 }
 
 export const ExitMeeting = (props: ExitMeeting) => {
@@ -66,7 +68,7 @@ export const EndAttendeeMeeting = (props: ExitMeeting) => {
 };
 
 export const EndMeeting = (props: EndMeeting) => {
-  const { Attendee, EventData, handleEndMeeting } = props;
+  const { Attendee, EventData, handleEndMeeting, meetingmanager } = props;
   const { confirm } = Modal;
 
   confirm({
@@ -79,6 +81,8 @@ export const EndMeeting = (props: EndMeeting) => {
             { refId: EventData?.reference_id, hostId: Attendee?.userId },
             CHIME_SOCKET_EVENTS.END_MEETING
           );
+
+          meetingmanager.meetingSession?.destroy();
           window.close();
         })
         .catch(() => {

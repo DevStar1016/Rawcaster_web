@@ -4,31 +4,19 @@ import EventValidaton from "../Components/Events/Room/EventValidaton";
 import WaitingRoom from "../Components/Events/Room/WaitingRoom";
 import NotFound from "../Components/NotFound/NotFound";
 import EventLayout from "../Layouts/EventLayout";
-import { useDispatch } from "react-redux";
-import { useAuthToken } from "../Shared/Reduxfetcher";
-import { fetchActiveEventData } from "../Store/Redux/Action";
 import { useEffect } from "react";
-import { useMainContext } from "../Shared/Context";
+import { useToken } from "antd/es/theme/internal";
 
 const HandleNavigate = () => {
-  const { setActiveEvent } = useMainContext();
   const { ref_id } = useParams();
-  const dispatch = useDispatch();
-  const token = useAuthToken();
-
+  const token = useToken();
   useEffect(() => {
-    dispatch(
-      fetchActiveEventData({
-        token,
-        ref_id: ref_id,
-      })
-    ).then(({ payload }) => {
-      setActiveEvent(payload);
+    if (token) {
       window.open(`/room/${ref_id}`, "_blank", {
         popup: true,
       });
-    });
-  }, []);
+    }
+  }, [token]);
 
   return <Navigate to={`/dashboard`} />;
 };
@@ -45,20 +33,20 @@ export const EventRoute = [
         errorElement: <NotFound />,
         children: [
           {
-            path: "/room/:event_id",
+            path: "/room/:ref_id",
             element: <EventRoom />,
           },
         ],
       },
       {
-        path: "/waitingroom/:event_id",
+        path: "/waitingroom/:ref_id",
         element: <WaitingRoom />,
         errorElement: <NotFound />,
       },
     ],
   },
   {
-    path: "/join/event/:ref_id",
+    path: "/join/:event/:ref_id",
     element: <HandleNavigate />,
   },
 ];

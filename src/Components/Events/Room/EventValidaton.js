@@ -1,6 +1,10 @@
 import React, { useRef, useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
-import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
 import { EventRoomContext } from "../../../Shared/Context";
 import {
   EndMeetingService,
@@ -28,6 +32,7 @@ const EventValidaton = () => {
   const [isPinEnabled, setisPinEnabled] = useState(false);
   const token = useAuthToken();
   const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const [userdata, setuserdata] = useState(null);
   const [isLoading, setisLoading] = useState(true);
   const [isWaitingRoom, setisWaitingRoom] = useState(true);
@@ -47,6 +52,14 @@ const EventValidaton = () => {
     buttons: [],
     icon: null,
   });
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
   const handleExitMeeting = (userdetails) => {
     return new Promise((resolve, reject) => {
@@ -91,13 +104,18 @@ const EventValidaton = () => {
         volume: defaultVolume,
       };
     });
+
     const finduserData = updatedDetails.find(
-      (ele) => parseInt(ele.userId) === parseInt(userData.user_id)
+      (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
     );
     if (finduserData) {
       setuserdata(finduserData);
     }
     const meetingSettings = message.meetingSetting;
+    if (meetingSettings.pin_enabled === 1) {
+      setisPinEnabled(meetingSettings.pinned_user_id);
+    }
+
     setattendeesList(updatedDetails);
     setMeetingSettings(message.meetingSetting);
     const meetingSessionConfiguration = new MeetingSessionConfiguration(
@@ -154,7 +172,8 @@ const EventValidaton = () => {
     return (
       isWaitingRoom &&
       EventData &&
-      parseInt(EventData.original_user_id) !== parseInt(userData?.user_id) &&
+      parseInt(EventData.original_user_id) !==
+        parseInt(getUserData()?.user_id) &&
       EventData.waiting_room
     );
   };
