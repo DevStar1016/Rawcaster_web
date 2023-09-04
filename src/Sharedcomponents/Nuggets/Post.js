@@ -773,7 +773,6 @@ const Post = ({
    * Determines if the element is downloadable based on its share type.
    * @returns {number} - 1 if the element is downloadable, 2 otherwise.
    */
-  s;
 
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
@@ -1007,7 +1006,7 @@ const Post = ({
                   <ImageGrid
                     imgArray={ele.media_list}
                     muted={muted}
-                    downloadable={getisDownloadable()}
+                    // downloadable={getisDownloadable()}
                     mutenuggetaudio={setmuted}
                     onPlay={() => {
                       let dashboardPlayer = document.getElementById(
