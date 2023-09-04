@@ -1,3 +1,7 @@
+/**
+ * A React component that renders an image editor using the Toast UI Image Editor library.
+ * @returns The rendered image editor component.
+ */
 import React from "react";
 import "tui-image-editor/dist/tui-image-editor.css";
 import ImageEditor from "@toast-ui/react-image-editor";

@@ -1,3 +1,7 @@
+/**
+ * A component for signing up with credentials.
+ * @returns JSX element representing the signup form.
+ */
 import { Button, Form, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -70,10 +74,6 @@ const SignupwithCredentials = () => {
       .required(`Please input your ${getLoginType().title}!`),
     password: yup
       .string()
-      // .matches(
-      //   PASSWORD_EXP,
-      //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-      // )
       .trim("The Password cannot include leading and trailing spaces")
       .strict(true)
       .min(8, "Password must be at least 8 characters long")
@@ -108,6 +108,12 @@ const SignupwithCredentials = () => {
     },
   });
 
+  /**
+   * Executes the specified effect function after the component has rendered.
+   * The effect function retrieves geocode data and updates the component's state
+   * with the retrieved values.
+   * @returns None
+   */
   useEffect(() => {
     getGeocodeData()
       .then((res) => {
@@ -128,6 +134,11 @@ const SignupwithCredentials = () => {
       });
   }, []);
 
+  /**
+   * Handles the signup process by sending the user's signup data to the server.
+   * @param {object} values - The signup form values.
+   * @returns None
+   */
   const HandleSignup = (values) => {
     let signupValue = {
       ...values,
@@ -152,6 +163,13 @@ const SignupwithCredentials = () => {
       });
   };
 
+  /**
+   * Handles the profile update response based on the login type.
+   * If the login type is email, it calls the accountVerifyHandle function with the "email" parameter.
+   * If the login type is sms, it calls the accountVerifyHandle function with the "sms" parameter.
+   * @param {any} res - The response object from the profile update request.
+   * @returns None
+   */
   const handleProfileUpdate = (res) => {
     if (getLoginType().id === 1) {
       accountVerifyHandle(res, "email", navigate);

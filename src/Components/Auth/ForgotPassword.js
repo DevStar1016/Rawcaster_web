@@ -1,3 +1,10 @@
+/**
+ * A React component for the Forgot Password page.
+ * This component allows users to enter their login ID (username or email address)
+ * and sends an OTP (One-Time Password) to their registered contact information.
+ * If the OTP is successfully sent, the user is redirected to the Set Password page.
+ * @returns JSX element representing the Forgot Password page.
+ */
 import { Button, Form, Input } from "antd";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,6 +39,11 @@ const ForgotPassword = () => {
     },
   });
 
+  /**
+   * Handles the process of sending an OTP (One-Time Password) for password recovery.
+   * @param {object} values - The values object containing the necessary data for sending the OTP.
+   * @returns None
+   */
   const HandleSendOTP = (values) => {
     let ForgotPasswordValues = {
       ...values,

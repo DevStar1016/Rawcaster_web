@@ -19,7 +19,6 @@ const ChatContent = () => {
     audio,
     setisPlaying,
     setisAudioToTextConvert,
-    isAudioToTextConvert,
   } = useChatBotContext();
 
   const [isTyping, setisTyping] = useState(false);
@@ -28,6 +27,12 @@ const ChatContent = () => {
     "Type your message Here ..."
   );
 
+  /**
+   * Handles sending a chat message and audio file to the AI chat service.
+   * @param {string} ChatMessage - The chat message to send.
+   * @param {File | null} audio_file - The audio file to send (optional).
+   * @returns None
+   */
   const HandleSendMessage = (ChatMessage = "", audio_file = null) => {
     const formData = {
       token,
@@ -103,6 +108,11 @@ const ChatContent = () => {
       });
   };
 
+  /**
+   * Determines the type of chat element and returns the corresponding component.
+   * @param {object} ele - The chat element object.
+   * @returns The corresponding component based on the type of chat element.
+   */
   const ChatType = (ele) => {
     switch (ele.type) {
       case "message":
@@ -132,6 +142,11 @@ const ChatContent = () => {
     }
   }, [isChatOpen]);
 
+  /**
+   * Extracts the filename from a given URL.
+   * @param {string} url - The URL from which to extract the filename.
+   * @returns {string} The filename extracted from the URL.
+   */
   function getFilenameFromUrl(url) {
     const parsedUrl = new URL(url);
     const pathname = parsedUrl.pathname;
@@ -139,6 +154,11 @@ const ChatContent = () => {
     return filename;
   }
 
+  /**
+   * Converts a Blob URL to a File object.
+   * @param {string} blobUrl - The Blob URL to convert.
+   * @returns {Promise<File>} - A Promise that resolves to a File object.
+   */
   async function blobUrlToFile(blobUrl) {
     const response = await fetch(blobUrl);
     const blob = await response.blob();

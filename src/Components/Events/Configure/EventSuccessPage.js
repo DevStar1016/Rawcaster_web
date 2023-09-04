@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import classes from "./EventSuccess.module.css";
 import {
   handleCopyText,
@@ -12,11 +12,14 @@ import { useAuth } from "../../../Shared/Reduxfetcher";
 import moment from "moment";
 
 const EventSuccessPage = () => {
-  const { userSettings, loginUserData } = useAuth();
+  const { userSettings } = useAuth();
   const [isCopied, setisCopied] = useState(false);
   const { EventData } = useAddEventContext();
-  console.log(EventData, "EventData");
 
+  /**
+   * Generates an invite link based on the web base url and event data.
+   * @returns {string} - The invite link.
+   */
   const getInviteLink = () => {
     return (
       window.location.origin +

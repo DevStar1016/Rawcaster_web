@@ -1,3 +1,9 @@
+/**
+ * A React component that is responsible for handling the initial rendering of the application.
+ * It performs various tasks such as dispatching actions, making API requests, handling errors,
+ * and connecting to a socket service.
+ * @returns A React component that renders nothing.
+ */
 import React from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
@@ -18,7 +24,6 @@ import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
 
 const InitialRenderComponent = () => {
   const dispatch = useDispatch();
-  const { isSuccess } = useAuth();
   axios.interceptors.response.use(
     function (response) {
       if (response?.data?.status === -1) {
@@ -34,6 +39,12 @@ const InitialRenderComponent = () => {
     }
   );
 
+  /**
+   * Executes a side effect when the component mounts or when the value of `getRawcaserToken()` changes.
+   * If `getRawcaserToken()` returns a truthy value, it fetches user information using the token and connects to a socket.
+   * If `getRawcaserToken()` returns a falsy value, it dispatches actions to handle loading, success, and error states.
+   * @returns None
+   */
   useEffect(() => {
     if (getRawcaserToken()) {
       // if (!isSuccess) {

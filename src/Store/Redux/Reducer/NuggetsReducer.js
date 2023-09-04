@@ -1,3 +1,7 @@
+/**
+ * Redux slice for managing the state related to nuggets.
+ * @module NuggetsSlice
+ */
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchNuggetsbyId } from "../Action";
 import { addNuggetView } from "../../../Shared/SharedAPIs";

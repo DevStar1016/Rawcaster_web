@@ -1,5 +1,12 @@
+/**
+ * A component that displays a modal for reporting a message.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} close - A function to close the modal.
+ * @param {function} onSuccess - A function to call when the report is successful.
+ * @param {string} msg - The title of the modal.
+ * @returns A modal component with a textarea for entering a message and a button to submit the report.
+ */
 import { Button, Modal } from "antd";
-import React from "react";
 import classes from "./ReportGroup.module.css";
 import TextArea from "antd/es/input/TextArea";
 import { useFormik } from "formik";

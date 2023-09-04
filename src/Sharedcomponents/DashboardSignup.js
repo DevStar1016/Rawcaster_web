@@ -1,3 +1,7 @@
+/**
+ * A component that renders the signup page for the dashboard.
+ * @returns JSX element
+ */
 import { Button, Drawer } from "antd";
 import React, { useEffect, useState } from "react";
 import classes from "./SuggestedInfluencers.module.css";

@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a list of events based on a search key.
+ * @returns The rendered EventsList component.
+ */
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router";
@@ -17,8 +21,6 @@ import Event from "../../Sharedcomponents/Events/Event";
 import classes from "./GlobalSearch.module.css";
 import { Empty, Skeleton } from "antd";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { ChimesocketListen } from "../../Services/SocketService";
-import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 
 let isRequestCancel = false;
 
@@ -39,15 +41,12 @@ const EventsList = () => {
     totalpage: null,
   });
 
-  useEffect(() => {
-    // ChimesocketListen.on("connect", () => {
-    //   console.log(ChimesocketListen.connected, "Chime Socket");
-    // });
-    // ChimesocketListen.on(CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM, (message) => {
-    //   console.log(message, "CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM");
-    // });
-  }, []);
-
+  /**
+   * Retrieves the authentication token.
+   * If the user is authenticated, it retrieves the token from the user data.
+   * If the user is not authenticated, it returns a default token "RAWCAST".
+   * @returns {string} - The authentication token.
+   */
   const getToken = () => {
     if (getAuthenticated()) {
       const userData = getRawcaserToken();
@@ -57,6 +56,11 @@ const EventsList = () => {
     }
   };
 
+  /**
+   * Retrieves a list of events from the server based on the specified page number.
+   * @param {number} [page=1] - The page number to retrieve events from. Default is 1.
+   * @returns None
+   */
   const getEventList = (page = 1) => {
     if (source.current) {
       isRequestCancel = true;
@@ -109,6 +113,12 @@ const EventsList = () => {
       });
   };
 
+  /**
+   * Executes a side effect when the value of `pathname` changes.
+   * If `isGlobalSearch` is true or `EventList` is empty, it dispatches a loading action,
+   * sets `isFetching` to true, and calls the `getEventList` function.
+   * @returns None
+   */
   useEffect(() => {
     if (isGlobalSearch || EventList?.length === 0) {
       dispatch(handleLoading(true));
@@ -118,10 +128,19 @@ const EventsList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  /**
+   * Checks if there is a next page available based on the current page reference and the total number of pages.
+   * @returns {boolean} - True if there is a next page available, false otherwise.
+   */
   const getHasNextPage = () => {
     return Pages.totalpage && pageRef.current !== Pages.totalpage;
   };
 
+  /**
+   * Loads more data by incrementing the page number and calling the getEventList function.
+   * If there are no more pages to load, it sets the loading state to false.
+   * @returns None
+   */
   const loadMore = () => {
     if (!getHasNextPage()) {
       setloading(false);
@@ -132,12 +151,23 @@ const EventsList = () => {
     }
   };
 
+  /**
+   * Initializes the useInfiniteScroll hook with the provided parameters.
+   * @param {boolean} loading - Indicates whether the data is currently being loaded.
+   * @param {function} getHasNextPage - A function that returns a boolean indicating whether there is more data to load.
+   * @param {function} loadMore - A function that is called when more data needs to be loaded.
+   * @returns An array containing the sentryRef and rootRef references.
+   */
   const [sentryRef, { rootRef }] = useInfiniteScroll({
     loading: loading,
     hasNextPage: getHasNextPage(),
     onLoadMore: loadMore,
   });
 
+  /**
+   * Returns a filtered array of valid events from the EventList array.
+   * @returns {Array} - An array of valid events.
+   */
   const getValidEvent = () => {
     if (EventList && EventList.length !== 0) {
       const filteredArr = EventList.reduce((acc, current) => {
@@ -154,18 +184,25 @@ const EventsList = () => {
     }
   };
 
+  /**
+   * Handles the scroll event of a container element.
+   * @returns None
+   */
   const handleScroll = () => {
     const container = containerRef.current;
     if (container) {
       const { scrollTop, clientHeight, scrollHeight } = container;
       if (scrollTop + clientHeight >= scrollHeight - 10) {
-        console.log("Reached End");
         // User has reached the bottom (with a 10px threshold)
         // Perform your desired action here, e.g., fetch more data
       }
     }
   };
 
+  /**
+   * Adds a scroll event listener to the container element and removes it when the component is unmounted.
+   * @returns None
+   */
   useEffect(() => {
     const container = containerRef.current;
     if (container) {

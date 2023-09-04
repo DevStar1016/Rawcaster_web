@@ -1,3 +1,8 @@
+/**
+ * A React functional component that represents the Event Settings page.
+ * This component displays various settings related to events, such as audio settings, video settings, default event type, and media options.
+ * @returns JSX element representing the Event Settings page.
+ */
 import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
 import { Button, Checkbox, Progress, Spin, Switch } from "antd";
@@ -26,6 +31,12 @@ const Event = () => {
     setFieldValue,
   } = useSettingsContext();
 
+  /**
+   * Determines if the primary disabled state should be applied based on the given type and isprimary value.
+   * @param {string} type - The type of the element.
+   * @param {boolean} isprimary - The value indicating if the element is primary.
+   * @returns {boolean} - True if the primary disabled state should be applied, false otherwise.
+   */
   const handlePrimaryDisabled = (type, isprimary) => {
     if (loginUserData?.user_status_id === 1 && isprimary) {
       return true;
@@ -35,6 +46,12 @@ const Event = () => {
     return false;
   };
 
+  /**
+   * Executes a side effect when the value of the token changes.
+   * If the token is truthy, it calls the getMelodyData function with the token and updates the melodyData state with the response.
+   * @param {string} token - The token value.
+   * @returns None
+   */
   useEffect(() => {
     if (token) {
       getMelodyData(token).then((res) => {
@@ -43,8 +60,12 @@ const Event = () => {
     }
   }, [token]);
 
+  /**
+   * Handles the onChange event for the melody input field.
+   * @param {File} imageFile - The selected file from the input field.
+   * @returns None
+   */
   const onChangeMelody = (imageFile) => {
-    // var allowedFiles = [".ppt", ".pptx"];
     if (!imageFile) {
       toast.error("Please select file.");
     } else if (imageFile.size > 25 * 1024 * 1024) {
@@ -61,6 +82,10 @@ const Event = () => {
     }
   };
 
+  /**
+   * Handles the audio playback by pausing or playing the audio element based on the current state.
+   * @returns None
+   */
   const audioHandler = () => {
     if (audioPlay) document.getElementById("audioDivID").pause();
     else document.getElementById("audioDivID").play();

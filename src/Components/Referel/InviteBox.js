@@ -1,3 +1,7 @@
+/**
+ * A React component that displays an invite box with various sharing options and contact list.
+ * @returns {JSX.Element} - The rendered InviteBox component.
+ */
 import React, { useState } from "react";
 import classes from "./Referel.module.css";
 import PhoneIcon from "../../Assets/Icons/svg/Phone.svg";

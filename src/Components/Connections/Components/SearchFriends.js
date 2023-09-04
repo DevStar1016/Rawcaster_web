@@ -1,3 +1,13 @@
+/**
+ * A React component that allows users to search for friends.
+ * @param {Object} props - The component props.
+ * @param {boolean} props.loadingStatus - The loading status of the search.
+ * @param {function} props.onResult - The callback function to handle the search results.
+ * @param {function} props.setPages - The function to set the pagination information.
+ * @param {string} props.setSearchData - The search data entered by the user.
+ * @param {Array} props.SearchData - The search data entered by the user.
+ * @returns A React component that renders a search input field and displays the search results.
+ */
 import axios from "axios";
 import React, { useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
@@ -28,6 +38,11 @@ const SearchFriends = ({
     return userData?.token;
   };
 
+  /**
+   * Retrieves a list of people based on the given page number.
+   * @param {number} [page=1] - The page number to retrieve the people list from.
+   * @returns None
+   */
   const getPeopleList = (page = 1) => {
     if (source.current) {
       isRequestCancel = true;

@@ -69,10 +69,8 @@ const UpdateProfile = () => {
         ? yup
             .string()
             .email(`Please input Valid Email Id!`)
-            // .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
             .required(`Please input your Email!`)
         : yup.string().email(`Please input Valid Email Id!`),
-    // .matches(EMAIL_REGEX, `Please input Valid Email Id!`)
   });
 
   const {
@@ -107,6 +105,11 @@ const UpdateProfile = () => {
     },
   });
 
+  /**
+   * Retrieves profile information from the server and updates the state with the retrieved data.
+   * @param {boolean} [isNext=false] - Indicates whether the profile update is for the next step.
+   * @returns None
+   */
   const getProfileInfo = (isNext = false) => {
     let profileData = {
       token: loginToken,
@@ -174,6 +177,16 @@ const UpdateProfile = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Handles the profile update based on the provided value.
+   * If two_type_verification is 1 and both email_id and mobile are valid data,
+   * it dispatches the handletwostepVerifyModalshow action.
+   * If only email_id is valid data, it calls the handleSendOTP function with "email" as the parameter.
+   * If only mobile is valid data, it calls the handleSendOTP function with "sms" as the parameter.
+   * If both email_id and mobile are missing or not valid data, it displays an error toast message.
+   * @param {object} value - The value object containing the profile update data.
+   * @returns None
+   */
   const HandleprofileUpdate = (value) => {
     if (
       value.two_type_verification === 1 &&
@@ -190,6 +203,12 @@ const UpdateProfile = () => {
     }
   };
 
+  /**
+   * Handles the process of sending an OTP (One-Time Password) for verification.
+   * @param {string} value - The value of the OTP flag.
+   * @param {string} navigateFrom - The path to navigate from.
+   * @returns None
+   */
   const handleSendOTP = (value, navigateFrom) => {
     let finalData = {
       auth_code: getAuthToken("Rawcaster"),
@@ -214,6 +233,12 @@ const UpdateProfile = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Converts an address to latitude and longitude coordinates using the ConvertAddresstoLatLng function.
+   * Updates the geo_location, latitude, and longitude values in the state.
+   * @param {string} address - The address to convert to coordinates.
+   * @returns None
+   */
   const convertAddresstoLatLng = (address) => {
     ConvertAddresstoLatLng(address)
       .then((res) => {
@@ -227,6 +252,10 @@ const UpdateProfile = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Retrieves the current location using geocode data.
+   * @returns None
+   */
   const getCurrentLocation = () => {
     getGeocodeData()
       .then((res) => {
@@ -240,6 +269,12 @@ const UpdateProfile = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Handles the update of a user's profile information.
+   * @param {object} values - The updated profile values.
+   * @param {boolean} [isNext=false] - Indicates whether to proceed to the next step after updating the profile.
+   * @returns None
+   */
   const handleupdateProfile = (values, isNext = false) => {
     let profileValue = {
       ...values,
@@ -266,16 +301,25 @@ const UpdateProfile = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Executes a side effect when the value of `loginToken` changes.
+   * If `loginToken` is truthy, it calls the `getProfileInfo` function.
+   * @returns None
+   */
   useEffect(() => {
     if (loginToken) {
       getProfileInfo();
     }
   }, [loginToken]);
 
+  /**
+   * Event handler for when an image is selected.
+   * @param {Event} event - The event object containing information about the selected image.
+   * @returns None
+   */
   const onChangeImage = (event) => {
     if (event.target.files && event.target.files.length !== 0) {
       if (isValidImageFile(event.target.files[0])) {
-        console.log(event.target.files[0], "getimagevalue onchnage");
         settempGroupImage(event.target.files[0]);
       } else {
         toast.error("Please Select Valid Image");
@@ -376,12 +420,7 @@ const UpdateProfile = () => {
                     touched.first_name && errors.first_name ? "error" : ""
                   }
                   value={values?.first_name ? values?.first_name : ""}
-                  onClick={() => {
-                    console.log(
-                      values?.first_name,
-                      "  profileprofileprofile first name"
-                    );
-                  }}
+                  onClick={() => {}}
                   onChange={(e) => {
                     setFieldValue("first_name", e.target.value);
                   }}
@@ -478,9 +517,7 @@ const UpdateProfile = () => {
                 displayDate={values.dob}
                 onSelectDate={(date) => {
                   if (date !== "") {
-                    console.log(date);
                     setFieldValue("dob", moment(date).format("YYYY-MM-DD"));
-                    console.log(values);
                   } else {
                     setFieldValue("dob", "");
                   }

@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a progress bar and a spinning icon while a post is being processed.
+ * @returns {JSX.Element} - The rendered React component.
+ */
 import { Progress, Spin } from "antd";
 import React from "react";
 import { useListNuggetContext } from "../../Shared/Context";

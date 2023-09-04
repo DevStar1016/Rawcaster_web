@@ -1,5 +1,13 @@
+/**
+ * A React component that renders a modal for starting an event.
+ * @param {boolean} [isLoading=false] - Indicates whether the component is in a loading state.
+ * @param {boolean} openmodal - Indicates whether the modal is open or closed.
+ * @param {function} close - Callback function to close the modal.
+ * @param {function} onStart - Callback function to handle the start event.
+ * @param {string} [type="Start Hosting"] - The type of event to start.
+ * @returns The rendered modal component.
+ */
 import { Button, Modal } from "antd";
-import React, { useEffect, useState } from "react";
 import { handlenuggetVideoPaused } from "../../Store/Redux/Reducer/NuggetsReducer";
 import VideoThumb from "../../Assets/Images/Video_preview.jpg";
 import { useDispatch } from "react-redux";

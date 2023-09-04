@@ -1,3 +1,7 @@
+/**
+ * Redux slice for managing the dashboard state.
+ * @module dashboard
+ */
 import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchActiveEventData,

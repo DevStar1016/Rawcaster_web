@@ -1,3 +1,15 @@
+/**
+ * A reusable modal component for displaying events.
+ * @param {string} Type - The type of event (default: "Talk Show").
+ * @param {string} okBtnTitle - The title of the OK button (default: "").
+ * @param {string} title - The title of the modal.
+ * @param {boolean} open - Whether the modal is open or not.
+ * @param {function} onClose - Callback function to handle modal close event.
+ * @param {function} onSuccess - Callback function to handle successful event creation/update.
+ * @param {ReactNode} children - The content to be displayed inside the modal.
+ * @param {boolean} isUpdate - Whether the event is an update or not.
+ *
+ */
 import { Modal } from "antd";
 import React from "react";
 import styles from "../Modal.module.css";
@@ -17,6 +29,10 @@ const EventModal = ({
   isLinkScreen = false,
   isFetching = [],
 }) => {
+  /**
+   * Returns the title component based on the current state and props.
+   * @returns {ReactNode} - The title component.
+   */
   const getTitle = () => {
     if (isLinkScreen) {
       return (
@@ -31,6 +47,10 @@ const EventModal = ({
     }
   };
 
+  /**
+   * Retrieves the fetching status and text based on the current state of the "isFetching" array.
+   * @returns An object containing the status and fetching text.
+   */
   const getFetchingStatus = () => {
     const FetchingData = [
       { type: "event_melody", text: "Fetching Event Melody..." },

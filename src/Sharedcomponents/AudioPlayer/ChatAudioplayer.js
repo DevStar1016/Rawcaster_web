@@ -1,4 +1,11 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+/**
+ * A custom audio player component for chat messages.
+ * @param {string} url - The URL of the audio file to play.
+ * @param {string} time - The time duration of the audio file.
+ * @param {string} textColor - The color of the text displayed on the player.
+ * @returns The ChatAudioplayer component.
+ */
+import { useEffect, useRef, useState } from "react";
 import classes from "./Audioplayer.module.css";
 import moment from "moment";
 import ReactPlayer from "react-player";
@@ -11,8 +18,12 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
   const [isPlaying, setisPlaying] = useState(false);
   const [FormattedTime, setFormattedTime] = useState("00:00");
   const [isBuffering, setisBuffering] = useState(false);
-  const duration = 0;
 
+  /**
+   * Handles the change event of a slider input element.
+   * @param {Event} e - The event object.
+   * @returns None
+   */
   const handleSliderChange = (e) => {
     const value = parseFloat(e.target.value);
     setCurrentTime(value);
@@ -21,6 +32,12 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
     player.seekTo(seekToSeconds);
   };
 
+  /**
+   * useEffect hook that sets up an audio element with the given URL and listens for the "loadedmetadata" event.
+   * When the event is triggered, it updates the audio URL state.
+   * @param {string} url - The URL of the audio file.
+   * @returns None
+   */
   useEffect(() => {
     const audio = new Audio();
     audio.src = url;
@@ -35,6 +52,11 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
     };
   }, [url]);
 
+  /**
+   * Handles the progress event of a media player.
+   * @param {object} e - The progress event object.
+   * @returns None
+   */
   const handleProgress = (e) => {
     const played = e.played * 100;
     setCurrentTime(played);

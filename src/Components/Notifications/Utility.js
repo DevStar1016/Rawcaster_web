@@ -29,6 +29,12 @@ const HomePageIds = [2, 4];
 const UserPageIds = [5, 3];
 const NuggetPageIds = [1, 6];
 
+/**
+ * Returns the notification message based on the given type and content.
+ * @param {number} type - The type of notification.
+ * @param {string} content - The content of the notification.
+ * @returns The notification message.
+ */
 export const getNotificationMessage = (type, content) => {
   switch (parseInt(type)) {
     case 1:
@@ -72,6 +78,13 @@ export const getNotificationMessage = (type, content) => {
   }
 };
 
+/**
+ * Retrieves the user's time zone and converts the given date to that time zone.
+ * @param {Date} date - The date to convert.
+ * @param {string} format - The format of the date string.
+ * @param {UserSettings} userSettings - The user's settings object containing the time zone.
+ * @returns The converted date in the user's time zone.
+ */
 export const getUserTimeZone = (date, format, userSettings) => {
   if (format) {
     const createdTime = utctoUserTimezone(date, userSettings?.time_zone);
@@ -85,6 +98,15 @@ export const getUserTimeZone = (date, format, userSettings) => {
   }
 };
 
+/**
+ * Renders a list item for a notification.
+ * @param {Object} ele - The notification object.
+ * @param {string} type - The type of notification.
+ * @param {Function} handleUpdate - The function to handle updating the notification.
+ * @param {Function} handleDelete - The function to handle deleting the notification.
+ * @param {Function} handleView - The function to handle viewing the notification.
+ * @returns The rendered notification list item.
+ */
 export const NotificationsList = ({
   ele,
   type,

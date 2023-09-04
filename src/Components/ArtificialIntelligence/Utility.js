@@ -1,3 +1,8 @@
+/**
+ * This module contains various components related to the chat functionality in the Artificial Intelligence module.
+ *
+ * @module ArtificialIntelligence
+ */
 import React, { useState, useRef, useEffect } from "react";
 import classes from "./ArtificialIntelligence.module.css";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
@@ -22,6 +27,12 @@ import { TextToAudioService } from "../../Services/ApiService";
 import axios from "axios";
 import ChatAudioplayer from "../../Sharedcomponents/AudioPlayer/ChatAudioplayer";
 
+/**
+ * Local user id(Static) for Artifitial intelligence
+ * @param {*} id
+ * @returns
+ */
+
 export const isUser = (id) => {
   if (parseInt(id) === 1) {
     return true;
@@ -30,6 +41,14 @@ export const isUser = (id) => {
 };
 let isRequestCancel = false;
 
+/**
+ * A component that displays a readout section for audio playback.
+ * @param {string} audiourl - The URL of the audio file to play.
+ * @param {number} index - The index of the readout section.
+ * @param {string} message - The message to convert to audio.
+ * @param {function} onResponse - A callback function to handle the response from the audio conversion service.
+ * @returns The readout section component.
+ */
 export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
   const { player, setplayer, PlayerSource } = useMainContext();
   const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
@@ -147,6 +166,17 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
   );
 };
 
+/**
+ * A component that renders the content of a message in a chatbox.
+ * @param {Object} props - The props passed to the component.
+ * @param {Function} props.setpostModalShow - A function to set the visibility of the post modal.
+ * @param {Function} props.setPostContent - A function to set the content of the post.
+ * @param {string} props.message - The message content.
+ * @param {string} props.user - The user who sent the message.
+ * @param {number} props.index - The index of the message.
+ * @param {string} props.read_out_url - The URL for the readout of the message.
+ * @param {Function} props.OnReadout
+ */
 export const MessageContent = (props) => {
   const { setpostModalShow, setPostContent } = useGlobalContext();
   const {
@@ -216,6 +246,15 @@ export const MessageContent = (props) => {
   );
 };
 
+/**
+ * A component that represents a chat voice message.
+ * @param {string} url - The URL of the audio file.
+ * @param {string} audioId - The ID of the audio element.
+ * @param {string} user - The user who sent the message.
+ * @param {string} created_at - The timestamp of when the message was created.
+ * @param {string | null} query - The query associated with the voice message.
+ * @returns The chat voice message component.
+ */
 export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
   const { player, setplayer, ...props } = useMainContext();
   const loginUserData = useAuthData();
@@ -333,63 +372,17 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
           </div>
         </div>
       </div>
-      {/* <div
-        className={`${classes.chatbox_message} ${
-          isUser(user) ? classes.user_audio_message : ""
-        } w-100`}
-      >
-        <div className={classes.avatar}>
-          <img
-            src={loginUserData ? loginUserData?.profile_image : ChatProfile}
-          />
-        </div>
-        <div className={`d-flex flex-column ${classes.playContainer}`}>
-          <div className="d-flex flex-row">
-            <div className={`${classes.playSec}`}>
-              <button onClick={isPlaying ? handlePause : handlePlay}>
-                {isPlaying ? (
-                  <span className="material-symbols-outlined">pause</span>
-                ) : (
-                  <span className="material-symbols-outlined">play_arrow</span>
-                )}
-              </button>
-            </div>
-
-            <div className={classes.sliderSec}>
-              <input
-                type="range"
-                min="0"
-                max={Math.round(duration)}
-                value={Math.round(currentTime)}
-                onChange={handleSeek}
-                aria-label="Audio Seekbar"
-              />
-            </div>
-          </div>
-
-          {query && <div className={classes.queryText}>{query}</div>}
-          <div className="d-flex flex-row justify-content-between">
-            <div className={classes.controlSec}>
-              <div className={classes.timeSec}>
-                <span>{formatTime(currentTime)}</span> /{" "}
-                <span>
-                  {isNaN(parseInt(duration)) ? "-" : formatTime(duration)}
-                </span>
-              </div>
-            </div>
-
-            {created_at && (
-              <span className={`${classes.timestamp} ${classes.timeSec}`}>
-                {moment(created_at, "YYYY-MM-DD HH:mm:ss").format("hh:mm A")}
-              </span>
-            )}
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };
 
+/**
+ * A component that represents a chat input field for sending messages and recording audio.
+ * @param {function} HandleSendMessage - A function to handle sending a message.
+ * @param {function} onAudioResult - A function to handle the result of recording audio.
+ * @param {boolean} disabled - A flag indicating whether the chat input is disabled.
+ * @returns The ChatInput component.
+ */
 export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
   const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: false,

@@ -1,3 +1,7 @@
+/**
+ * Represents the layout component for the home page.
+ * @returns {JSX.Element} The rendered home layout component.
+ */
 import { Badge, Dropdown, Layout, Popover, Tooltip } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";

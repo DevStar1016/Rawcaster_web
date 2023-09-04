@@ -1,37 +1,37 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import classes from "./Room.module.css";
 import styles from "../../../Layouts/MeetingLayout.module.css";
-import { Dropdown, Layout, Tag } from "antd";
+import { Layout } from "antd";
 import ChatIcon from "../../../Assets/Icons/svg/chat_icon.svg";
 import { Form, InputGroup } from "react-bootstrap";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import EmojiPicker from "../../../UIComponents/EmojiPicker";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
-import { useEventLayout } from "./EventValidaton";
-import { DownOutlined } from "@ant-design/icons";
-import { useEffect } from "react";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { EventContextProp } from "../Components/types";
+import { useEventRoomContext } from "../../../Shared/Context";
 
 const { Header, Footer, Content } = Layout;
 
 const CommentBox = () => {
   const {
     EventMessages,
-    userdetails,
+    userdata,
     EventData,
     setEventMessages,
-    useAttendeesList,
     setisChatorParticipant,
-  } = useLayoutContect();
+  }: EventContextProp = useEventRoomContext();
   const [isEmoji, setisEmoji] = useState(false);
   const [ChatMessage, setChatMessage] = useState("");
 
-  const handleSendMessage = (message) => {
-    setEventMessages((pre) => [
+  /**
+   *
+   *  Send Comment to every attendee in Meeting Room
+   */
+  const handleSendMessage = (message: string | null) => {
+    setEventMessages((pre: any) => [
       {
-        ...userdetails,
+        ...userdata,
         refId: EventData?.chime_meeting_id,
         message: message ? message : ChatMessage,
         isPrivate: false,
@@ -40,7 +40,7 @@ const CommentBox = () => {
     ]);
     ChimesendMessage(
       {
-        ...userdetails,
+        ...userdata,
         refId: EventData?.chime_meeting_id,
         message: message ? message : ChatMessage,
         isPrivate: false,
@@ -108,7 +108,7 @@ const CommentBox = () => {
               value={ChatMessage}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  handleSendMessage();
+                  handleSendMessage(null);
                 }
               }}
               onChange={(e) => {
@@ -124,7 +124,7 @@ const CommentBox = () => {
               <InputGroup.Text
                 className={classes.searchIcon}
                 onClick={() => {
-                  handleSendMessage();
+                  handleSendMessage(null);
                 }}
               >
                 <span

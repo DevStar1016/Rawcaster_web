@@ -1,3 +1,10 @@
+/**
+ * A React component that represents a profile in a search result.
+ * @param {Object} ele - The profile data object.
+ * @param {function} setPeopleList - A function to update the list of people.
+ * @param {Array} PeopleList - The list of people.
+ * @returns A React component that displays the profile information.
+ */
 import React from "react";
 import classes from "./Profile.module.css";
 import { Button } from "react-bootstrap";
@@ -31,6 +38,11 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
   const profileData = useAuthData();
   const dispatch = useDispatch();
   const { nuggetFormData } = useNuggets();
+  /**
+   * Handles the action of becoming a fan of a user.
+   * @param {Object} ele - The element representing the user to become a fan of.
+   * @returns None
+   */
   const handleBecomeFan = (ele) => {
     let becameFanData = {
       token: token,
@@ -55,6 +67,11 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
       .catch((err) => {});
   };
 
+  /**
+   * Handles sending a friend request to a user.
+   * @param {Object} ele - The element containing user information.
+   * @returns None
+   */
   const handleFriendRequest = (ele) => {
     let finalData = {
       dispatch,
@@ -62,7 +79,6 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
       nuggetFormData,
       user_id: ele.user_id,
     };
-    console.log("friendrequest");
     let becameFanData = {
       token: token,
       auth_code: getAuthToken(token),
@@ -94,6 +110,11 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
       .catch((err) => {});
   };
 
+  /**
+   * Retrieves the bio data for the given element.
+   * If the bio data is not available, it calls the replaceBiodataHandler function to generate it.
+   * @returns The bio data for the element.
+   */
   const getBioData = () => {
     if (ele.bio !== "") {
       return ele.bio;

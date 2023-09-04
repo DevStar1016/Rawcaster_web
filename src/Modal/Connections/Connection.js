@@ -1,12 +1,23 @@
+/**
+ * A modal component for displaying connections based on various filters.
+ * @param {string} type - The type of connections to display.
+ * @param {boolean} open - Whether the modal is open or not.
+ * @param {function} onSuccess - Callback function to be called when the modal is successfully closed.
+ * @param {function} onClose - Callback function to be called when the modal is closed.
+ * @param {object} value - The value object containing connection data.
+ * @param {string} userType - The type of user.
+ * @param {function} getConnectionList - Function to get the connection list.
+ * @param {boolean} filters - Whether to display filters or not.
+ * @returns The ConnectionModal component.
+ */
 import { Empty, InputNumber, Modal, Select } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
-import { filterValidObject, handleProfileNavigate } from "../../Shared/Utility";
+import { useCallback, useEffect, useState } from "react";
+import { filterValidObject } from "../../Shared/Utility";
 import classes from "./Connection.module.css";
 import { getCountylistService } from "../../Services/ApiService";
 import { Col, Row } from "react-bootstrap";
 import { useFormik } from "formik";
 import _debounce from "lodash/debounce";
-import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { UserProfile } from "../../Components/Profile/Components/Utility";
 
 const ConnectionModal = ({
@@ -29,6 +40,11 @@ const ConnectionModal = ({
     },
   });
 
+  /**
+   * Executes a side effect function to fetch the list of countries from the server and update the location list state.
+   * This effect runs only once, when the component is mounted.
+   * @returns None
+   */
   useEffect(() => {
     getCountylistService()
       .then((res) => {
@@ -37,6 +53,11 @@ const ConnectionModal = ({
       .catch(() => {});
   }, []);
 
+  /**
+   * Handles the submission of the age value.
+   * @param {string} value - The value of the age input field.
+   * @returns None
+   */
   const HandleAgeSubmit = (value) => {
     if (value) {
       setFieldValue("age", parseInt(value));

@@ -1,3 +1,8 @@
+/**
+ * A React component that displays a typing animation with a given text.
+ * @param {string} [text="Thinking"] - The text to display before the typing animation.
+ * @returns The TypingContainer component.
+ */
 import React, { useEffect, useState } from "react";
 
 const TypingContainer = ({ text = "Thinking" }) => {

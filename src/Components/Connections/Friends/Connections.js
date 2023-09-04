@@ -1,3 +1,10 @@
+/**
+ * A React component that displays the user's connections.
+ * @param {Object} props - The component props.
+ * @param {boolean} props.referral - Indicates whether the component is being used in a referral context.
+ * @param {string} props.profileClass - The CSS class to apply to the profile component.
+ * @returns The Connections component.
+ */
 import React, { useEffect, useState } from "react";
 import { socketListen } from "../../../Services/SocketService";
 import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
@@ -20,6 +27,10 @@ const Connections = ({ referral, profileClass }) => {
   const [friends, setfriends] = useState([]);
   const [requests, setrequests] = useState([]);
 
+  /**
+   * Sets up a socket listener to handle incoming messages and perform actions based on the event type.
+   * @returns None
+   */
   useEffect(() => {
     socketListen.on(
       "message",
@@ -40,12 +51,13 @@ const Connections = ({ referral, profileClass }) => {
       },
       []
     );
-    // return () => {
-    //   socketListen.off("call");
-    // };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Filters out duplicate objects from an array of data based on the "user_id" property.
+   * @param {Array} data - The array of data to filter.
+   * @returns {Array} - The filtered array with duplicate objects removed.
+   */
   const getValidData = (data) => {
     if (data && data.length !== 0) {
       const filteredArr = data.reduce((acc, current) => {
@@ -62,6 +74,13 @@ const Connections = ({ referral, profileClass }) => {
     }
   };
 
+  /**
+   * Executes a side effect when the value of Token changes.
+   * If Token is truthy, it sends a request to the server to retrieve a list of pending friend requests.
+   * If the request is successful and the response status is 1, it updates the state with the list of pending requests.
+   * @param {string} Token - The token used for authentication.
+   * @returns None
+   */
   useEffect(() => {
     if (Token) {
       var formData = new FormData();
@@ -76,16 +95,31 @@ const Connections = ({ referral, profileClass }) => {
     }
   }, [Token]);
 
+  /**
+   * useEffect hook that updates the "friends" state variable whenever the "friendsList" state variable changes.
+   * If the "friendsList" is not empty, it calls the "getValidData" function to filter out any invalid data and updates the "friends" state with the valid data.
+   * @returns None
+   */
   useEffect(() => {
     if (friendsList.length !== 0) {
       setfriends(getValidData(friendsList));
     }
   }, [friendsList]);
 
+  /**
+   * Handles a friend request by adding it to the list of requests.
+   * @param {any} message - The friend request message.
+   * @returns None
+   */
   const FriendRequest = (message) => {
     setrequests((p) => getValidData([...p, message.data]));
   };
 
+  /**
+   * Handles the response from a friend message.
+   * @param {any} message - The message received from a friend.
+   * @returns None
+   */
   const FriendResponse = (message) => {
     let data = [];
     setfriends((p) => {
@@ -95,6 +129,11 @@ const Connections = ({ referral, profileClass }) => {
     dispatch(handleFriendsList(data));
   };
 
+  /**
+   * Updates the status of a friend based on the received message.
+   * @param {object} message - The message containing the friend's status information.
+   * @returns None
+   */
   const friendStatusHandler = (message) => {
     setfriends((p) => {
       let friendsList = [...p];

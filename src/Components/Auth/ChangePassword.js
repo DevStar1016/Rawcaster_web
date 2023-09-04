@@ -1,3 +1,7 @@
+/**
+ * A React component that renders a form for changing the user's password.
+ * @returns The ChangePassword component.
+ */
 import React from "react";
 import classes from "./ChangePassword.module.css";
 import { Button, Form, Input } from "antd";
@@ -56,6 +60,12 @@ const ChangePassword = () => {
       handleChangePassword(val);
     },
   });
+
+  /**
+   * Handles the change password functionality.
+   * @param {object} value - The new password value.
+   * @returns None
+   */
 
   const handleChangePassword = (value) => {
     setisDisable(true);

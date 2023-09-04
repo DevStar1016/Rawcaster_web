@@ -14,6 +14,16 @@ import {
 } from "../../../Shared/DropdownApis";
 import { useAddEventContext } from "../../../Shared/Context";
 
+/**
+ * A component that renders a dropdown select input for selecting an event type.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onResult - A callback function to handle the selected event type.
+ * @param {number} props.value - The currently selected event type value.
+ * @param {boolean} props.disabled - Whether the select input is disabled or not.
+ * @param {boolean} props.isLoading - Whether the select input is in a loading state or not.
+ * @param {boolean} [props.isEnabledLabel=true] - Whether to display the label for the select input or not.
+ * @returns The rendered EventTypeComponent.
+ */
 export const EventTypeComponent = ({
   onResult,
   value,
@@ -25,6 +35,15 @@ export const EventTypeComponent = ({
   const token = useAuthToken();
   const [EventData, setEventData] = useState([]);
 
+  /**
+   * Executes a side effect when the component mounts.
+   * Fetches the event type data using the provided token and updates the state with the response.
+   * Calls the onResult function with the first event type from the response.
+   * Updates the isFetching state to indicate that the "event_type" data is being fetched.
+   * @param {string} token - The token used for authentication.
+   * @param {function} onResult - The function to call with the first event type from the response.
+   * @returns None
+   */
   useEffect(() => {
     setisFetching((pre) => [...pre, "event_type"]);
     getEventType(token)
@@ -35,9 +54,12 @@ export const EventTypeComponent = ({
       .finally(() => {
         setisFetching((pre) => pre.filter((ele) => ele !== "event_type"));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Retrieves the display name of an event based on its ID.
+   * @returns {EventData} The event object with the matching ID, or the first event object if no match is found.
+   */
   const getDisplayName = () => {
     let findEvent = EventData.find((ele) => ele.id === parseInt(value));
     if (findEvent) {
@@ -66,6 +88,16 @@ export const EventTypeComponent = ({
   );
 };
 
+/**
+ * A component that renders an event layout selection form item.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onResult - The callback function to be called when a layout is selected.
+ * @param {string} props.value - The currently selected layout value.
+ * @param {boolean} props.disabled - Whether the component is disabled or not.
+ * @param {boolean} props.isLoading - Whether the component is in a loading state or not.
+ * @param {boolean} [props.isEnabledLabel=true] - Whether to display the label for the layout selection form item.
+ * @returns The rendered EventLayoutComponent.
+ */
 export const EventLayoutComponent = ({
   onResult,
   value,
@@ -87,7 +119,6 @@ export const EventLayoutComponent = ({
       .finally(() => {
         setisFetching((pre) => pre.filter((ele) => ele !== "event_layout"));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getDisplayName = () => {
@@ -118,6 +149,17 @@ export const EventLayoutComponent = ({
   );
 };
 
+/**
+ * A component that displays a select dropdown for event melodies.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onResult - The callback function to be called when a melody is selected.
+ * @param {string} props.value - The currently selected melody value.
+ * @param {boolean} props.disabled - Whether the select dropdown is disabled.
+ * @param {boolean} props.isLoading - Whether the select dropdown is in a loading state.
+ * @param {boolean} [props.isEnabledLabel=true] - Whether to display the label for the select dropdown.
+ * @param {boolean} [props.isCustomize=false] - Whether to include a "Customize" option in the select dropdown.
+ * @
+ */
 export const EventMelodyComponent = ({
   onResult,
   value,
@@ -179,6 +221,13 @@ export const EventMelodyComponent = ({
   );
 };
 
+/**
+ * A banner component that allows users to upload and display a banner image.
+ * @param {function} onResult - Callback function to handle the result of the component.
+ * @param {string} value - The current value of the banner image.
+ * @param {number} [size=null] - The maximum size of the image in MB.
+ * @returns The banner component.
+ */
 export const BannerComponent = ({ onResult, value, size = null }) => {
   const bannerRef = useRef();
   const [cropImage, setcropImage] = useState("");
@@ -294,6 +343,16 @@ export const BannerComponent = ({ onResult, value, size = null }) => {
   );
 };
 
+/**
+ * A component for inviting users via email.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onResult - Callback function to handle the result of the invitation.
+ * @param {string} props.value - The initial value of the component.
+ * @param {Function} props.setuserMailList - Function to set the user mail list.
+ * @param {Array} props.userMailList - The list of user mail addresses.
+ * @param {Function} props.onDeleteData - Callback function to handle deletion of mail data.
+ * @returns The InviteEmailComponent JSX element.
+ */
 export const InviteEmailComponent = ({
   onResult,
   value,
@@ -431,6 +490,13 @@ export const InviteEmailComponent = ({
   );
 };
 
+/**
+ * A component that allows the user to select a time value.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onResult - A callback function that is called when a time value is selected.
+ * @param {string} props.value - The initial value of the time component.
+ * @returns A React component that renders a time picker and a dropdown for selecting AM/PM.
+ */
 export const TimeValueComponent = ({ onResult, value }) => {
   const [showTimePicker, setshowTimePicker] = useState(false);
   const [TimeValue, setTimeValue] = useState({ time: "", session: "AM" });
@@ -506,6 +572,13 @@ export const TimeValueComponent = ({ onResult, value }) => {
   );
 };
 
+/**
+ * A component that displays a list of connections/friends and allows the user to select and filter them.
+ * @param {Function} onResult - A callback function that is called when the user selects a friend.
+ * @param {Array} values - An array of user IDs representing the initially selected friends.
+ * @param {Function} onDeleteData - A callback function that is called when a friend is deleted.
+ * @returns The Connections component.
+ */
 export const Connections = ({ onResult, values, onDeleteData }) => {
   const { friendsList } = useDashboard();
   const [filterFriendList, setFilterFriendList] = useState([...friendsList]);
@@ -673,6 +746,13 @@ export const Connections = ({ onResult, values, onDeleteData }) => {
   );
 };
 
+/**
+ * A component that displays a list of groups and allows the user to select and manage them.
+ * @param {function} onResult - A callback function that is called when the selected group list changes.
+ * @param {Array} values - An array of group IDs that should be pre-selected.
+ * @param {function} onDeleteData - A callback function that is called when a group is deleted.
+ * @returns The Groups component.
+ */
 export const Groups = ({ onResult, values, onDeleteData }) => {
   const { groupsList } = useDashboard();
   const [filterGroupList, setFilterGroupList] = useState([...groupsList]);
@@ -836,6 +916,11 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
   );
 };
 
+/**
+ * Takes in data and returns a valid array data.
+ * @param {any} data - The data to be validated.
+ * @returns {string} - The validated array data.
+ */
 export const getValidarrayData = (data) => {
   if (data) {
     let finalData = "";
@@ -850,6 +935,10 @@ export const getValidarrayData = (data) => {
   }
 };
 
+/**
+ * A component that displays audio and video settings for an event.
+ * @returns JSX element representing the audio and video settings component.
+ */
 export const AudioVideoSettings = () => {
   const { values, setFieldValue } = useAddEventContext();
 
@@ -914,6 +1003,12 @@ export const AudioVideoSettings = () => {
   );
 };
 
+/**
+ * Compares two arrays and returns any common items found in arr2 that are also present in arr1.
+ * @param {Array} arr1 - The first array to compare.
+ * @param {Array} arr2 - The second array to compare.
+ * @returns {Array|boolean} - An array of common items if found, otherwise false.
+ */
 export function compareArrays(arr1, arr2) {
   const checkError = arr2?.filter((item, index) => {
     const CommonItemIndex = arr1?.findIndex((item1, index1) =>

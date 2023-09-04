@@ -1,3 +1,7 @@
+/**
+ * A React component that renders a profile verification page.
+ * @returns The rendered profile verification page.
+ */
 import React, { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
 import { useDispatch } from "react-redux";

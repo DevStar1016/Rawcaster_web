@@ -1,3 +1,9 @@
+/**
+ * Creates a Redux slice for managing socket-related state.
+ * @param {object} initialState - The initial state of the slice.
+ * @param {object} reducers - An object containing the reducer functions for the slice.
+ * @returns An object containing the actions and reducer for the socket slice.
+ */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {

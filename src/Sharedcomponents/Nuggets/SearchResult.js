@@ -1,3 +1,11 @@
+/**
+ * A React component that displays a search input field for filtering a list of items.
+ * @param {Object} props - The component props.
+ * @param {function} props.setConnectionData - A function to update the filtered list of items.
+ * @param {string} props.type - The type of items being filtered (e.g., "connection" or "group").
+ * @param {Array} props.allList - The complete list of items to filter.
+ * @returns The rendered SearchResult component.
+ */
 import React from "react";
 import { Form, InputGroup } from "react-bootstrap";
 

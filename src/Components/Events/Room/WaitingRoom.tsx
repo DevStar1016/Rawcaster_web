@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import classes from "./WaitingRoom.module.css";
 import { useEventRoomContext } from "../../../Shared/Context";
 import { Button } from "antd";
@@ -12,10 +12,14 @@ import { ChimesendMessage } from "../../../Services/SocketService";
 const WaitingRoom = () => {
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
-
   const { RequestStatusMessage, setRequestStatusMessage, EventData } =
     useEventRoomContext();
   const [audioPlay, setaudioPlay] = useState(false);
+
+  /**
+   *
+   * Get Status For Retry in Join Request
+   */
 
   const isRetryEnable = () => {
     return (
@@ -24,6 +28,7 @@ const WaitingRoom = () => {
     );
   };
 
+  /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
     if (userData) {
       return userData;
@@ -83,7 +88,8 @@ const WaitingRoom = () => {
                     <img
                       src={require("../../../Assets/Images/Events/music_stop.png")}
                       onClick={() => {
-                        document.getElementById("audioDivID").pause();
+                        // @ts-ignore
+                        document.getElementById("audioDivID")?.pause();
                         setaudioPlay(false);
                       }}
                       alt="more"
@@ -93,7 +99,8 @@ const WaitingRoom = () => {
                       src={require("../../../Assets/Images/Events/music_play.png")}
                       alt="more"
                       onClick={() => {
-                        document.getElementById("audioDivID").play();
+                        // @ts-ignore
+                        document.getElementById("audioDivID")?.play();
                         setaudioPlay(true);
                       }}
                     ></img>
@@ -139,14 +146,6 @@ const WaitingRoom = () => {
             ) : null}
           </div>
         </>
-
-        {/* <div style={{ textAlign: "center" }}>
-          <img
-            src={require("../../../Assets/Images/Events/loader.gif")}
-            alt=""
-            style={{ width: "50%" }}
-          />
-        </div> */}
       </div>
       {RequestStatusMessage && (
         <div className={classes.retrySec}>

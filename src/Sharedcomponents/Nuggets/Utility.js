@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./Nuggets.module.css";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
 import { getNuggetContentAudioService } from "../../Services/ApiService";
@@ -14,49 +14,37 @@ import {
   handleNuggetReadoutUrlUpdate,
   handleNuggetTranslateUpdate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
-import axios from "axios";
 
-let isRequestCancel = false;
-
+/**
+ * A component that displays a readout section for a nugget.
+ * @param {string} nugget_id - The ID of the nugget.
+ * @param {string|null} [readout_url=null] - The URL of the readout audio file.
+ * @returns The readout section component.
+ */
 export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
   const { player, setplayer, PlayerSource } = useMainContext();
   const token = useAuthToken();
   const dispatch = useDispatch();
   const { audio, setAudio, isPlaying, setisPlaying } = useListNuggetContext();
-
   const { ReadoutRef } = useListNuggetContext();
   const [isFetchingurl, setisFetchingurl] = useState(false);
-  const [isReadout, setisReadout] = useState(false);
 
   const handleplayaudio = (url) => {
     if (player && player.id !== nugget_id) {
       player.pause();
     }
-
     const audioElement = new Audio(url);
-
     audioElement.id = nugget_id;
     setAudio(audioElement);
     setplayer(audioElement);
-    console.log(nugget_id);
     setisPlaying(nugget_id);
     audioElement.play();
   };
 
   const HandlegetNuggetContentAudio = () => {
-    setisReadout(true);
-    // if (PlayerSource.current || isReadout) {
-    //   isRequestCancel = true;
-    //   PlayerSource.current.abort("Request Cancelled");
-    // }
-
-    // if (!PlayerSource.current) {
-    // PlayerSource.current = axios.CancelToken.source();
-    // }
     if (ReadoutRef.current) {
       ReadoutRef.current.abort("Request Cancelled");
     }
-
     ReadoutRef.current = new AbortController();
 
     if (audio) {
@@ -97,13 +85,10 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
           }
         }
       })
-      .catch((err) => {
-        console.log(err);
-      })
+      .catch((err) => {})
       .finally(() => {
         PlayerSource.current = null;
         setisFetchingurl(false);
-        setisReadout(false);
       });
   };
 
@@ -165,6 +150,12 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
   );
 };
 
+/**
+ * Component that displays a button to toggle between the original text and translated text.
+ * @param {string} nugget_id - The ID of the nugget.
+ * @param {string} [translate_text=null] - The translated text.
+ * @returns JSX element that renders the translation button.
+ */
 export const SeeTranslate = ({ nugget_id, translate_text = null }) => {
   const { PlayerSource } = useMainContext();
   const token = useAuthToken();
@@ -173,12 +164,6 @@ export const SeeTranslate = ({ nugget_id, translate_text = null }) => {
   const [isFetching, setisFetching] = useState(false);
 
   const getTranslatedText = () => {
-    // if (PlayerSource.current) {
-    //   isRequestCancel = true;
-    //   PlayerSource.current.cancel("Request Cancelled");
-    // }
-
-    // PlayerSource.current = axios.CancelToken.source();
     if (translate_text) {
       setisTranslate(true);
     } else {

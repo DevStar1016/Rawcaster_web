@@ -1,3 +1,7 @@
+/**
+ * A React component that renders the settings page.
+ * @returns The rendered settings page.
+ */
 import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
 import { Nav, Tab } from "react-bootstrap";
@@ -78,6 +82,11 @@ const Settings = () => {
     read_out_language_id: "",
   });
 
+  /**
+   * useEffect hook that updates the component's state with the values from the userSettings object.
+   * @param {object} userSettings - The user settings object containing various settings.
+   * @returns None
+   */
   useEffect(() => {
     if (userSettings) {
       setValues({
@@ -133,6 +142,11 @@ const Settings = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSettings]);
 
+  /**
+   * Handles the progress of a task and updates the progress state.
+   * @param {object} progress - The progress object containing the loaded and total values.
+   * @returns None
+   */
   const handleProgress = (progress) => {
     let val = (progress.loaded / progress.total) * 100;
     setProgress({
@@ -141,6 +155,11 @@ const Settings = () => {
     });
   };
 
+  /**
+   * Handles updating user settings by making an API call to the server.
+   * @param {object} objValue - The updated object value containing user settings.
+   * @returns {Promise} - A promise that resolves with the updated user settings payload.
+   */
   const handleupdate = (objValue) => {
     let promise = new Promise((resolve, reject) => {
       let finalObj = {
@@ -173,7 +192,16 @@ const Settings = () => {
   };
   const [visibleSideBar, setvisibleSideBar] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  console.log(updateValue);
+  /**
+   * An object containing various settings values and functions related to formik form handling.
+   * @property {object} formikvalues - The values object from formik.
+   * @property {function} setValues - A function to set the values in formik.
+   * @property {function} setFieldValue - A function to set the value of a specific field in formik.
+   * @property {function} setupdateValue - A function to update the value of a specific key in the settings object.
+   * @property {boolean} isMelodyUploading - A boolean indicating whether a melody is currently being uploaded.
+   * @property {function} setisMelodyUploading - A function to set the isMelodyUploading value.
+   *
+   */
   const settingsValues = {
     formikvalues: values,
     setValues,
@@ -232,7 +260,6 @@ const Settings = () => {
               window.location.reload();
             }
           });
-          console.log(updateValue, "updateValue");
           if (updateValue.length !== 0) {
             return setupdateValue((pre) => [...pre, key]);
           } else {
@@ -269,85 +296,6 @@ const Settings = () => {
   return (
     <SettingsContext.Provider value={settingsValues}>
       <div className={classes.settingSec}>
-        {/* <Drawer
-          placement="left"
-          closable={false}
-          onClose={() => {
-            setvisibleSideBar(false);
-          }}
-          className="settingsDrawer"
-          open={visibleSideBar}
-        >
-          <div className={`${classes.sidebar}  `}>
-            <Nav variant="pills" className="flex-column">
-              <h2>Settings</h2>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 1 ? classes.active : ""}
-                  onClick={() => {
-                    setActiveTab(1);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="general"
-                >
-                  General
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 2 ? classes.active : ""}
-                  onClick={() => {
-                    setActiveTab(2);
-                    setvisibleSideBar(false);
-                  }}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  eventKey="notifications"
-                >
-                  Notifications
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 3 ? classes.active : ""}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  onClick={() => {
-                    setActiveTab(3);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="blocking"
-                >
-                  Blocking
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 4 ? classes.active : ""}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  onClick={() => {
-                    setActiveTab(4);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="change_password"
-                >
-                  Change Password
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 5 ? classes.active : ""}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  onClick={() => {
-                    setActiveTab(5);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="event_setting"
-                >
-                  Event Settings
-                </Nav.Link>
-              </Nav.Item>
-            </Nav>
-          </div>
-        </Drawer> */}
         <div
           className={`${classes.sidebar}  ${
             !visibleSideBar ? classes.hideSlidebar : null

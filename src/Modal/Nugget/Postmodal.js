@@ -8,7 +8,7 @@ import {
   Tooltip,
   message,
 } from "antd";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import classes from "../Modal.module.css";
 import pollIcon from "../../Assets/Images/svg/pollIcon.svg";
 import mikeIcon from "../../Assets/Images/svg/mikeicon.svg";
@@ -83,6 +83,11 @@ const Postmodal = ({ visible, onClose }) => {
     type: "",
   });
 
+  /**
+   * Handles the camera permission for a specific type.
+   * @param {string} type - The type of camera permission to handle.
+   * @returns None
+   */
   const handleCameraPermission = (type) => {
     requestVideoPermissions()
       .then(() => {
@@ -101,6 +106,12 @@ const Postmodal = ({ visible, onClose }) => {
       });
   };
 
+  /**
+   * Handles the action of allowing microphone permission.
+   * Requests audio permissions and sets the 'isAudioModal' state to true if permission is granted.
+   * Displays an error toast message if permission is denied.
+   * @returns None
+   */
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
       .then(() => {
@@ -118,6 +129,11 @@ const Postmodal = ({ visible, onClose }) => {
       });
   };
 
+  /**
+   * useEffect hook that updates the share type based on the selected value in the values array.
+   * @param {Array} values - The array of values to watch for changes.
+   * @returns None
+   */
   useEffect(() => {
     const findShareType = SHARED_TYPE.find(
       (ele) => ele.id === values.share_type
@@ -127,6 +143,11 @@ const Postmodal = ({ visible, onClose }) => {
     }
   }, [values]);
 
+  /**
+   * Extracts link information from a given value.
+   * @param {string} val - The value to extract link information from.
+   * @returns None
+   */
   const getLinkInfo = (val) => {
     let expression =
       /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
@@ -151,6 +172,10 @@ const Postmodal = ({ visible, onClose }) => {
     }
   };
 
+  /**
+   * Sets up a socket listener for the "nuggets" event and handles the "getmetadata" event.
+   * @returns None
+   */
   useEffect(() => {
     socketListen.on("nuggets", (message) => {
       switch (message.event) {
@@ -164,10 +189,21 @@ const Postmodal = ({ visible, onClose }) => {
     // };
   }, []);
 
+  /**
+   * Sets the metadata using the provided message data.
+   * @param {any} message - The message containing the data to set as metadata.
+   * @returns None
+   */
   const Getmetadata = (message) => {
     setMetaData(message.data);
   };
 
+  /**
+   * Retrieves the length of the nugget text from the login user data.
+   * If the login user data is available, it returns the value of the `nugget_content_length` property.
+   * If the login user data is not available, it returns 0.
+   * @returns The length of the nugget text.
+   */
   const getNuggetTextLength = () => {
     if (loginUserData) {
       return loginUserData?.nugget_content_length;
@@ -176,6 +212,10 @@ const Postmodal = ({ visible, onClose }) => {
     }
   };
 
+  /**
+   * Handles the closing of the limit exceeds alert.
+   * @returns None
+   */
   const handleLimitExceedsClose = () => setLimitExceeds(false);
 
   return (

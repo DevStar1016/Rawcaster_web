@@ -1,13 +1,19 @@
+/**
+ * A modal component for recording audio using the device's microphone.
+ * @param {function} onClose - Callback function to close the modal.
+ * @param {boolean} visible - Flag indicating whether the modal is visible or not.
+ * @param {function} onSuccess - Callback function to handle successful recording.
+ * @returns A modal component for recording audio.
+ */
 import { Modal } from "antd";
 import { MediaPermissionsErrorType } from "mic-check";
 import { requestAudioPermissions } from "mic-check/lib/requestMediaPermissions";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useStopwatch } from "react-timer-hook";
 import AudioRecord from "../../Assets/Images/audio_img.gif";
 import AudioStop from "../../Assets/Images/audio_stop.jpg";
-import { PostNuggetContext } from "../../Shared/Context";
 import classes from "../Modal.module.css";
 import PreviewModal from "./PreviewModal";
 import { Timer } from "../../Shared/Utility";
@@ -22,6 +28,16 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
   const [CloseAudio, setCloseAudio] = useState(false);
   const [previewMediaData, setPreviewMediaData] = useState(null);
 
+  /**
+   * Handles the closing of a media preview.
+   * - Pauses the media playback.
+   * - Clears the blob URL.
+   * - Resets the preview media.
+   * - Resets the preview media data.
+   * - Stops the media recording.
+   * - Closes the media preview.
+   * @returns None
+   */
   const handleClose = () => {
     pause();
     clearBlobUrl();
@@ -46,6 +62,13 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
       });
   };
 
+  /**
+   * Starts the recording process.
+   * - Resets any previous recording state.
+   * - Sets a timer to automatically stop the recording after 150000 milliseconds (2.5 minutes).
+   * - If the recording is already in progress, it stops the recording.
+   * @returns None
+   */
   const onRecordStart = () => {
     reset();
     timerRef.current = new Timer(function () {
@@ -54,8 +77,14 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
       }
     }, 150000);
   };
+
+  /**
+   * Callback function triggered when recording is stopped.
+   * @param {string} url - The URL of the recorded audio.
+   * @param {Blob} blob - The recorded audio data as a Blob object.
+   * @returns None
+   */
   const onRecordStop = (url, blob) => {
-    console.log(CloseAudio, "CloseAudioCloseAudio from recorder");
     if (!CloseAudio) {
       const file = new File([blob], "RecordAudio.wav", {
         type: blob.type,
@@ -83,6 +112,14 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
   useEffect(() => {
     recordingRef.current = status;
   }, [status]);
+
+  /**
+   * useEffect hook that sets the preview media data based on the provided media blob URL.
+   * If a media blob URL is provided, it creates a new audio file with the blob data and sets
+   * the preview media data to include the file and the URL.
+   * @param {string} mediaBlobUrl - The URL of the media blob.
+   * @returns None
+   */
   useEffect(() => {
     setPreviewMediaData(mediaBlobUrl);
     if (mediaBlobUrl) {
@@ -93,6 +130,12 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
     }
   }, [mediaBlobUrl]);
 
+  /**
+   * Handles the start microphone action.
+   * Requests audio permissions and starts or stops recording based on the current status.
+   * Displays error messages for different types of media permission errors.
+   * @returns None
+   */
   const handleStartMic = () => {
     requestAudioPermissions()
       .then(() => {
@@ -123,6 +166,12 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
       });
   };
 
+  /**
+   * Handles the pause functionality based on the current status.
+   * If the status is "paused", it resumes the timer, starts recording, and resumes the process.
+   * If the status is not "paused", it pauses the timer, pauses recording, and pauses the process.
+   * @returns None
+   */
   const handlePause = () => {
     if (status === "paused") {
       timerRef.current?.resume();
@@ -135,12 +184,21 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
     }
   };
 
+  /**
+   * Takes in a number and returns a string representation of the number with leading zero if it is a single digit number.
+   * @param {number} num - The number to format.
+   * @returns {string} - The formatted number as a string.
+   */
   const getValidNumber = (num) => {
     return num.toString().length == 1
       ? num.toString().padStart(2, "0")
       : num.toString();
   };
 
+  /**
+   * Checks if the current status is valid for displaying a record.
+   * @returns {boolean} - true if the status is "recording" or "paused", false otherwise.
+   */
   const isValidRecordDisplay = () => {
     if (status === "recording") {
       return true;

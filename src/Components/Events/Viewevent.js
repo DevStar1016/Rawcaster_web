@@ -22,6 +22,15 @@ const Viewevent = () => {
   const { event_id } = useParams();
   const navigate = useNavigate();
 
+  /**
+   * Executes a side effect when the dependencies `event_id` and `token` change.
+   * If `token` is truthy, it sets the view event data, creates a new `FormData` object,
+   * appends the `token` and `event_id` to the form data, and calls the `viewEventsService`
+   * function with the form data. If the response status is 1, it sets the `viewEventData`
+   * state with the event details from the response. Otherwise, it navigates back one page.
+   * If there is an error, it also navigates back one page.
+   * @returns None
+   */
   useEffect(() => {
     if (token) {
       setViewEventData();

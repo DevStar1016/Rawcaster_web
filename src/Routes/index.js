@@ -1,5 +1,4 @@
 import { useRouteError } from "react-router";
-import NotFound from "../Components/NotFound/NotFound";
 import ModalLayout from "../Layouts/ModalLayout";
 import { AuthRoute } from "./AuthRoutes";
 import { DashboardRoute } from "./DashboardRoute";

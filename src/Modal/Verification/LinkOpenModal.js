@@ -1,10 +1,22 @@
+/**
+ * A modal component that displays a warning message when opening a link.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} close - Callback function to close the modal.
+ * @param {string} url - The URL of the site to be opened.
+ * @returns A modal component with a warning message and buttons to cancel or continue.
+ */
 import { Modal, Button } from "antd";
-import React from "react";
 import classes from "../Modal.module.css";
 
 const LinkOpenModal = ({ open, close, url }) => {
   return (
-    <Modal centered open={open} closable={false} footer={null} title="Warning !">
+    <Modal
+      centered
+      open={open}
+      closable={false}
+      footer={null}
+      title="Warning !"
+    >
       <div className={classes.reportModal}>
         <p style={{ fontSize: "16px", textIndent: "10px", marginTop: "15px" }}>
           The site you have requested is not managed by Rawcaster.com, we cannot

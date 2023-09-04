@@ -1,3 +1,8 @@
+/**
+ * Sets the default base URL for Axios requests and adds an interceptor to modify the
+ * request headers.
+ * @returns None
+ */
 import axios from "axios";
 import { BASE_URL } from "./ServiceConstants";
 

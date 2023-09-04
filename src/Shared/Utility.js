@@ -1,6 +1,8 @@
+/**
+ * This file contains various utility functions used throughout the application.
+ */
 import Geocode from "react-geocode";
 import {
-  AES_KEY,
   ENCRIPTION_STRING,
   GECODE_API_KEY,
   GOOGLE_CLIENT_ID,
@@ -27,12 +29,15 @@ import { message } from "antd";
 import { Typography } from "antd";
 import axios, { isCancel } from "axios";
 import { toast } from "react-hot-toast";
-import { AES, enc } from "crypto-js";
 import classes from "../Sharedcomponents/Nuggets/Nuggets.module.css";
 import { SALT_KEY } from "../Services/APIkeyID";
 
 // Auth
 
+/**
+ * Retrieves the rawcaster user token from the cookie data.
+ * @returns {object | null} The rawcaster user token if it exists, otherwise null.
+ */
 export const getRawcaserToken = () => {
   if (getCookieData("rawcaster_user_token")) {
     try {
@@ -44,15 +49,30 @@ export const getRawcaserToken = () => {
   return null;
 };
 
+/**
+ * Generates an authentication token by hashing the given value with a salt key.
+ * @param {string} value - The value to be hashed.
+ * @returns {string} The authentication token.
+ */
 export const getAuthToken = (value) => {
   var sha1 = require("sha1");
   return sha1(SALT_KEY + value);
 };
 
+/**
+ * Encrypts a given string by encoding it using base64 and appending an encryption string.
+ * @param {string} str - The string to be encrypted.
+ * @returns {string} The encrypted string.
+ */
 export const EncryptionString = (str) => {
   return window.btoa(str + ENCRIPTION_STRING);
 };
 
+/**
+ * Decrypts a given string using the window.atob() function.
+ * @param {string} str - The string to be decrypted.
+ * @returns The decrypted string, with the encryption string removed, or 0 if an error occurs.
+ */
 export const DecryptionString = (str) => {
   try {
     let data = window.atob(str);
@@ -62,6 +82,12 @@ export const DecryptionString = (str) => {
   }
 };
 
+/**
+ * Removes the user token by dispatching actions to update the login data, token, and user settings to null.
+ * Also removes the user token from the cookie data.
+ * @param {function} dispatch - The dispatch function from the Redux store.
+ * @returns None
+ */
 export const RemoveToken = (dispatch) => {
   dispatch(handleLoginData(null));
   dispatch(handleToken(null));
@@ -71,6 +97,11 @@ export const RemoveToken = (dispatch) => {
 
 //GEO_CODE_CONFIGURE
 
+/**
+ * Retrieves geocode data based on the user's current location.
+ * @returns {Promise} A promise that resolves to an object containing the address and location data.
+ *                    If an error occurs, the promise resolves to an object with empty values.
+ */
 export const getGeocodeData = () => {
   return new Promise((resolve, reject) => {
     try {
@@ -120,6 +151,12 @@ export const getGeocodeData = () => {
   });
 };
 
+/**
+ * Converts an address to latitude and longitude coordinates using the Google Maps Geocoding API.
+ * @param {string} address - The address to convert.
+ * @returns {Promise} A promise that resolves to the latitude and longitude coordinates of the address.
+ *                    If the conversion fails, the promise is rejected with an error.
+ */
 export const ConvertAddresstoLatLng = (address) => {
   return new Promise((resolve, reject) => {
     geocodeByAddress(address)
@@ -131,10 +168,20 @@ export const ConvertAddresstoLatLng = (address) => {
 
 // Common Utility
 
+/**
+ * Decodes HTML entities in a given string.
+ * @param {string} data - The string to decode.
+ * @returns {string} The decoded string.
+ */
 export const decodeHtml = (data) => {
   return decode(data);
 };
 
+/**
+ * Converts a JSON object to FormData.
+ * @param {object} object - The JSON object to convert.
+ * @returns {FormData} - The converted FormData object.
+ */
 export const JSONtoformdata = (object) => {
   const formData = new FormData();
   for (const key in object) {
@@ -143,6 +190,11 @@ export const JSONtoformdata = (object) => {
   return formData;
 };
 
+/**
+ * Converts an array of values into an array of objects with 'label' and 'value' properties.
+ * @param {Array} listData - The array of values to convert.
+ * @returns {Array} An array of objects with 'label' and 'value' properties.
+ */
 export const getSelectData = (listData = []) => {
   return listData.map((value) => ({
     label: value,
@@ -150,6 +202,11 @@ export const getSelectData = (listData = []) => {
   }));
 };
 
+/**
+ * Filters out properties with undefined, null, or empty string values from an object.
+ * @param {object} obj - The object to filter.
+ * @returns {object} - A new object with only the properties that have non-empty values.
+ */
 export function filterValidObject(obj) {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
@@ -159,6 +216,11 @@ export function filterValidObject(obj) {
   }, {});
 }
 
+/**
+ * Returns a valid image URL based on the input.
+ * @param {string | object} img - The image URL or object.
+ * @returns {string} - The valid image URL.
+ */
 export const getValidImageUrl = (img) => {
   if (typeof img === "object") {
     return URL.createObjectURL(img);
@@ -167,6 +229,12 @@ export const getValidImageUrl = (img) => {
   }
 };
 
+/**
+ * Retrieves the value associated with a given ID from an array of data objects.
+ * @param {Array} data - The array of data objects.
+ * @param {number} id - The ID to search for.
+ * @returns The value associated with the given ID, or an empty string if no match is found.
+ */
 export const getDataValueById = (data, id) => {
   let findData = data.find((ele) => ele.id === parseInt(id));
 
@@ -177,6 +245,10 @@ export const getDataValueById = (data, id) => {
   }
 };
 
+/**
+ * Checks if the user is authenticated by verifying the presence of a rawcaser token.
+ * @returns {boolean} - true if the user is authenticated, false otherwise.
+ */
 export const getAuthenticated = () => {
   if (getRawcaserToken()) {
     return true;
@@ -185,6 +257,12 @@ export const getAuthenticated = () => {
   }
 };
 
+/**
+ * Loads a resource from the specified URL using XMLHttpRequest.
+ * @param {string} url - The URL of the resource to load.
+ * @returns {Promise<Blob>} - A promise that resolves with the loaded resource as a Blob.
+ * If the loading fails, the promise is rejected with an error message.
+ */
 export function loadXHR(url) {
   return new Promise(function (resolve, reject) {
     try {
@@ -208,6 +286,12 @@ export function loadXHR(url) {
   });
 }
 
+/**
+ * Returns a partially hidden email address by replacing all characters after the first
+ * three characters of the email name with asterisks.
+ * @param {string} email - The email address to partially hide.
+ * @returns {string} - The partially hidden email address.
+ */
 export const getPartialHiddenEmail = (email) => {
   if (email) {
     let emailSplitedList = email?.toString().split("@");
@@ -229,6 +313,11 @@ export const getPartialHiddenEmail = (email) => {
   }
 };
 
+/**
+ * Returns a partially hidden mobile number by replacing the middle digits with asterisks.
+ * @param {number} number - The mobile number to be partially hidden.
+ * @returns {string} The partially hidden mobile number.
+ */
 export const getPartialHiddenMobileNumber = (number) => {
   if (number) {
     let splitedNumbersList = number?.toString().split("");
@@ -246,6 +335,11 @@ export const getPartialHiddenMobileNumber = (number) => {
   }
 };
 
+/**
+ * Converts milliseconds to a string formatted as MM:SS.
+ * @param {number} milliseconds - The number of milliseconds to convert.
+ * @returns {string} The formatted time string in the format MM:SS.
+ */
 export function millisecondsToMMSS(milliseconds) {
   const totalSeconds = Math.floor(milliseconds / 1000);
   const minutes = Math.floor(totalSeconds / 60);
@@ -256,6 +350,11 @@ export function millisecondsToMMSS(milliseconds) {
     .padStart(2, "0")}`;
 }
 
+/**
+ * Checks if the given data is valid.
+ * @param {any} data - The data to be checked.
+ * @returns {boolean} - True if the data is valid, false otherwise.
+ */
 export const isValidData = (data) => {
   if (data && data !== "" && data.trim() !== "") {
     return true;
@@ -264,6 +363,11 @@ export const isValidData = (data) => {
   }
 };
 
+/**
+ * Checks if the user account is valid based on the provided user data.
+ * @param {object} userData - The user data object.
+ * @returns {boolean} - True if the account is valid, false otherwise.
+ */
 export const isAccountValid = (userData) => {
   if (userData && userData?.acc_verify_status === 1) {
     return true;
@@ -272,85 +376,11 @@ export const isAccountValid = (userData) => {
   }
 };
 
-// export const ReadMore = ({
-//   partialShowLines = 3,
-//   children,
-//   isReadMore = true,
-//   isLinkopenModal,
-//   setisLinkopenModal,
-//   isReadMoreValid,
-// }) => {
-//   const renderLink = ({ attributes, content }) => {
-//     const { href, ...props } = attributes;
-//     return (
-//       <>
-//         <a
-//           className="content_link"
-//           onClick={() => {
-//             setisLinkopenModal(true);
-//           }}
-//           {...props}
-//         >
-//           {decodeHtml(content)}
-//         </a>
-
-//         <LinkOpenModal
-//           open={isLinkopenModal}
-//           url={href}
-//           close={() => {
-//             setisLinkopenModal(false);
-//           }}
-//         />
-//       </>
-//     );
-//   };
-
-//   const [open, setOpen] = useState(false);
-//   const ref = useRef(null);
-//   const [showLink, setShowLink] = useState(false);
-
-//   useLayoutEffect(() => {
-//     if (
-//       ref.current &&
-//       ref.current.clientHeight < ref.current.scrollHeight &&
-//       !isReadMore
-//     ) {
-//       isReadMoreValid();
-//       setShowLink(true);
-//     } else if (isReadMore) {
-//       if (ref.current && ref.current.clientHeight < ref.current.scrollHeight) {
-//         isReadMoreValid();
-//         setOpen(true);
-//       }
-//     }
-//   }, [ref]);
-
-//   let textClass = `text${partialShowLines}lines`;
-//   if (open) {
-//     textClass += " open";
-//   }
-
-//   return (
-//     <Linkify options={{ render: renderLink }}>
-//       <div>
-//         <span className={textClass} ref={ref}>
-//           {children}
-//         </span>
-//         {showLink && (
-//           <>
-//             <span
-//               onClick={() => setOpen(!open)}
-//               style={{ color: "#e26386", cursor: "pointer" }}
-//             >
-//               {open ? "Read Less" : "Read More"}
-//             </span>
-//           </>
-//         )}
-//       </div>
-//     </Linkify>
-//   );
-// };
-
+/**
+ * Detects if the current device is a mobile device by checking the user agent string
+ * against a list of known mobile device patterns.
+ * @returns {boolean} - true if the device is a mobile device, false otherwise.
+ */
 export function detectMob() {
   const toMatch = [
     /Android/i,
@@ -367,6 +397,10 @@ export function detectMob() {
   });
 }
 
+/**
+ * A custom React hook that returns the current width of the window.
+ * @returns {number} The current width of the window.
+ */
 export function useWindowWidth() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -384,6 +418,12 @@ export function useWindowWidth() {
   return windowWidth;
 }
 
+/**
+ * Calculates the aspect ratio of a rectangle given its height and width.
+ * @param {number} height - The height of the rectangle.
+ * @param {number} width - The width of the rectangle.
+ * @returns {number} The aspect ratio of the rectangle.
+ */
 export function getAspectRatio(height, width) {
   const gcd = (a, b) => {
     if (b === 0) return a;
@@ -395,6 +435,11 @@ export function getAspectRatio(height, width) {
   return numerator / denominator;
 }
 
+/**
+ * Checks if a given file is a valid image file.
+ * @param {File} file - The file to check.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the file is a valid image, and false otherwise.
+ */
 export function isValidImageFile(file) {
   if (!file.type.startsWith("image/")) {
     return false;
@@ -422,6 +467,11 @@ export function isValidImageFile(file) {
 
 // Timezone
 
+/**
+ * Extracts the timezone name from a string.
+ * @param {string} str - The string containing the timezone information.
+ * @returns {string} The extracted timezone name.
+ */
 export const getTimezoneName = (str) => {
   let index;
   try {
@@ -431,8 +481,19 @@ export const getTimezoneName = (str) => {
   else return str;
 };
 
+/**
+ * Get the UTC offset of the current timezone.
+ * @param {string} timezone - The timezone to get the offset for.
+ * @returns The UTC offset of the given timezone, or null if the offset cannot be determined.
+ */
 export const utcoffset = getTimezone(moment.tz?.guess()) ?? null;
 
+/**
+ * Converts a UTC time to the user's timezone.
+ * @param {string} time - The UTC time to convert in the format "YYYY-MM-DD HH:mm:ss".
+ * @param {string} [zonename=null] - The name of the timezone to convert to. If not provided, the user's default timezone will be used.
+ * @returns {moment.Moment} - The converted time in the user's timezone.
+ */
 export const utctoUserTimezone = (time, zonename = null) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
   if (zonename) {
@@ -445,6 +506,12 @@ export const utctoUserTimezone = (time, zonename = null) => {
   }
 };
 
+/**
+ * Converts a given time from the user's timezone to UTC.
+ * @param {string} time - The time to convert in the format "YYYY-MM-DD HH:mm:ss".
+ * @param {string} zonename - The name of the user's timezone.
+ * @returns The converted time in UTC format.
+ */
 export const userTimezonetoUtc = (time, zonename) => {
   let userTimeZone = moment1(time, "YYYY-MM-DD HH:mm:ss").tz(
     getTimezoneName(zonename)
@@ -452,6 +519,12 @@ export const userTimezonetoUtc = (time, zonename) => {
   return moment(userTimeZone).utc();
 };
 
+/**
+ * Converts a UTC time to the user's timezone with the timezone abbreviation.
+ * @param {string} time - The UTC time to convert in the format "YYYY-MM-DD HH:mm:ss".
+ * @param {string} zonename - The name of the user's timezone.
+ * @returns {string} - The timezone abbreviation for the converted time.
+ */
 export const utctoUserTimezonewithAbbr = (time, zonename) => {
   let utcCutoff = moment.utc(time, "YYYY-MM-DD HH:mm:ss");
   let displayCutoff = moment1(utcCutoff)?.tz(getTimezoneName(zonename));
@@ -459,6 +532,11 @@ export const utctoUserTimezonewithAbbr = (time, zonename) => {
   return timezoneabbrs;
 };
 
+/**
+ * Converts a given time string to a formatted display event time.
+ * @param {string} time - The time string to convert.
+ * @returns {string} The formatted display event time in "hh:mm A" format.
+ */
 export const getDisplayEventTime = (time) => {
   if (time) {
     return moment(time, "YYYY-MM-DD hh:mm:ss").format("hh:mm A");
@@ -466,6 +544,12 @@ export const getDisplayEventTime = (time) => {
   return "";
 };
 
+/**
+ * Returns the formatted display event date based on the received date and the specified date format.
+ * @param {Date} receivedDate - The received date of the event.
+ * @param {string} [dateFormat="MM/DD/YYYY"] - The format in which the date should be displayed.
+ * @returns {string} The formatted display event date.
+ */
 export const getDisplayEventDate = (
   receivedDate,
   dateFormat = "MM/DD/YYYY"
@@ -483,20 +567,46 @@ export const getDisplayEventDate = (
   return "";
 };
 
+/**
+ * Formats a given date and time using the moment.js library.
+ * @param {Date} t - The date and time to format.
+ * @returns {string} - The formatted date and time in the format "D MMM YYYY hh:mm A".
+ */
 export const shareEventDate = (t) => {
   return moment(t).format("D MMM YYYY hh:mm A ");
 };
 
+/**
+ * Converts a given date and time to a short date format relative to the current time zone.
+ * @param {string} time - The date and time to convert.
+ * @param {string} time_zone - The time zone to use for the conversion.
+ * @returns {string} - The short date format relative to the current time zone.
+ */
 export const dateToShortDate = (time, time_zone) => {
   const momenttimezone = require("moment-timezone");
   const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
   return moment(time).from(moment(currentTime, "YYYY-MM-DD HH:mm:ss"));
 };
 
+/**
+ * Converts a given date to a formatted string using the moment.js library.
+ * @param {Date} t - The date to convert.
+ * @returns {string} - The formatted date string.
+ */
 export const datetoString = (t) => {
   return moment(t).format("D MMM YYYY [ • ] h:mm A ");
 };
 
+/**
+ * Handles the navigation to a user's profile page.
+ * @param {Object} userData - The user data object containing necessary information.
+ * @param {string} userData.Encrypted_id - The encrypted ID of the user's profile.
+ * @param {Function} userData.navigate - The function to navigate to a new page.
+ * @param {Function} userData.dispatch - The function to dispatch actions.
+ * @param {Object} userData.nuggetFormData - The form data for nuggets.
+ * @param {string} userData.user_id - The ID of the current user.
+ * @returns None
+ */
 export const handleProfileNavigate = (userData) => {
   const Encrypted_id = window.location.pathname.replace("/viewprofile/", "");
   const display_user_id = DecryptionString(Encrypted_id);
@@ -517,10 +627,14 @@ export const handleProfileNavigate = (userData) => {
   }
 };
 
+/**
+ * Handles error responses from API requests and returns a promise that resolves or rejects based on the error.
+ * @param {Error} error - The error object received from the API request.
+ * @returns {Promise} - A promise that resolves or rejects based on the error.
+ */
 export const ErrorHandling = (error) => {
   return new Promise((resolve, reject) => {
     if ((axios, isCancel(error))) {
-      console.log(error.message);
     } else if (error.response) {
       if (error.response.status === 404) {
         handleErrorMsg(
@@ -537,17 +651,27 @@ export const ErrorHandling = (error) => {
     } else if (error.request) {
       handleErrorMsg("Unable to connect to the server !", resolve);
     } else {
-      console.log("something went wrong");
       handleErrorMsg("Something went Wrong!", resolve);
     }
   });
 };
+/**
+ * Displays an error message using the message.error() function and resolves the given promise.
+ * @param {string} msg - The error message to display.
+ * @param {function} resolve - The resolve function of a promise to be resolved after displaying the error message.
+ * @returns None
+ */
 const handleErrorMsg = (msg, resolve) => {
   message.error(msg).then(() => {
     resolve();
   });
 };
 
+/**
+ * Determines whether a user can be added as a friend based on their status.
+ * @param {number} status - The status of the user.
+ * @returns {boolean} - True if the user can be added as a friend, false otherwise.
+ */
 export const getisAddFriend = (status) => {
   switch (status) {
     case 0:
@@ -561,6 +685,11 @@ export const getisAddFriend = (status) => {
   }
 };
 
+/**
+ * Converts a time duration in the format "hh:mm" to a human-readable format.
+ * @param {string} time - The time duration in the format "hh:mm".
+ * @returns {string} - The time duration in the format "x hrs y mins".
+ */
 export const eventDisplayDuration = (time) => {
   let dur = time.split(":");
   let hr = parseInt(dur[0]) > 0 ? `${dur[0]} hrs ` : "";
@@ -569,6 +698,11 @@ export const eventDisplayDuration = (time) => {
 
 // Google Contacts
 
+/**
+ * Fetches the user's Google contacts using the Google People API.
+ * @returns {Promise<Array>} A promise that resolves to an array of the user's contacts.
+ * @throws {Error} If there is an error fetching the contacts.
+ */
 export const fetchGoogleContacts = async () => {
   let maxResults = 1000;
   return new Promise(async (resolve, reject) => {
@@ -600,6 +734,15 @@ export const fetchGoogleContacts = async () => {
   });
 };
 
+/**
+ * A component that displays a "Read More" functionality for long text content.
+ * @param {number} [partialShowLines=3] - The number of lines to show before truncating the text.
+ * @param {ReactNode} children - The content to display.
+ * @param {boolean} [isReadMore=true] - Whether to show the "Read More" functionality.
+ * @param {boolean} isLinkopenModal - Whether to open a modal when a link is clicked.
+ * @param {function} setisLinkopenModal - A function to set the state of isLinkopenModal.
+ * @param {boolean} isReadMoreValid - A function to check if the "Read More" functionality is valid
+ */
 export const ReadMore = ({
   partialShowLines = 3,
   children,
@@ -669,15 +812,7 @@ export const ReadMore = ({
             className="ReadMoreText"
             // ellipsis={true}
             style={{ cursor: "pointer" }}
-            onClick={() => {
-              console.log(
-                children
-                  ?.split("\n")
-                  ?.filter((ele, index) => index < partialHeight)
-                  .join("\n"),
-                "childrenchildren"
-              );
-            }}
+            onClick={() => {}}
           >
             {readMore
               ? children
@@ -748,6 +883,12 @@ export const ReadMore = ({
   );
 };
 
+/**
+ * Timer class that allows pausing and resuming of a callback function with a specified delay.
+ * @param {function} callback - The callback function to be executed after the delay.
+ * @param {number} delay - The delay in milliseconds before executing the callback function.
+ * @returns None
+ */
 export const Timer = function (callback, delay) {
   var timerId,
     start,
@@ -771,6 +912,11 @@ export const Timer = function (callback, delay) {
   this.resume();
 };
 
+/**
+ * Formats the given number of bytes into a human-readable string representation.
+ * @param {number} bytes - The number of bytes to format.
+ * @returns {string} The formatted string representation of the bytes.
+ */
 export function formatBytes(bytes) {
   if (bytes === 0) {
     return "0 B";
@@ -783,6 +929,12 @@ export function formatBytes(bytes) {
   return `${formattedSize} ${sizes[i]}`;
 }
 
+/**
+ * Handles copying a given URL to the clipboard.
+ * @param {string} url - The URL to be copied.
+ * @returns {Promise} - A promise that resolves when the text is successfully copied to the clipboard.
+ *                     Rejects with an error if there was an issue copying the text.
+ */
 export const handleCopyText = (url) => {
   return new Promise((resolve, reject) => {
     navigator.clipboard
@@ -798,6 +950,13 @@ export const handleCopyText = (url) => {
   });
 };
 
+/**
+ * Converts a Blob URL to a File object.
+ * @param {string} blobUrl - The Blob URL to convert.
+ * @param {string} [fileName="blobtofile"] - The name of the resulting File object.
+ * @returns {Promise<File>} A Promise that resolves with the converted File object.
+ * @throws {string} If there is an error converting the Blob URL to a File.
+ */
 export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -830,6 +989,11 @@ export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
   });
 };
 
+/**
+ * Downloads a file from the given URL.
+ * @param {string} url - The URL of the file to download.
+ * @returns None
+ */
 export const downloadurl = (url) => {
   var file_path = url;
   var a = document.createElement("A");
@@ -840,46 +1004,14 @@ export const downloadurl = (url) => {
   document.body.removeChild(a);
 };
 
+/**
+ * Converts a UTC date and time to the system's local date and time.
+ * @param {string} dateTime - The UTC date and time in the format "YYYY-MM-DD HH:mm:ss".
+ * @returns {moment.Moment} - The converted local date and time.
+ */
 export const getUtcToSystemTime = (dateTime) => {
   return moment(dateTime, "YYYY-MM-DD HH:mm:ss").subtract(
     -moment().utcOffset(),
     "minutes"
   );
-};
-
-// OBJECT TO STRING
-
-export const EncryptObjectToString = (objectToEncrypt, secretKey = AES_KEY) => {
-  const stringToEncrypt = JSON.stringify(objectToEncrypt);
-  const encrypted = AES.encrypt(stringToEncrypt, secretKey).toString();
-  return encrypted;
-};
-
-export const DecryptStringToObject = (encryptedString, secretKey = AES_KEY) => {
-  const decryptedBytes = AES.decrypt(encryptedString, secretKey);
-  const decryptedString = decryptedBytes.toString(enc.Utf8);
-  const decryptedObject = JSON.parse(decryptedString);
-  return decryptedObject;
-};
-
-// Testing
-export const getusetId = (user_id) => {
-  switch (user_id) {
-    // case 88:
-    //   return 11;
-    // case 67:
-    //   return 22;
-    // case 21:
-    //   return 33;
-    // case 728:
-    //   return 44;
-    // case 164:
-    //   return 55;
-    // case 684:
-    //   return 66;
-    // case 682:
-    //   return 77;
-    default:
-      return user_id;
-  }
 };

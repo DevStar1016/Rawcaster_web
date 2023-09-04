@@ -1,3 +1,11 @@
+/**
+ * A React component that represents the main layout of the application.
+ * It includes a header, content section, and footer. The header contains a menu
+ * with links to different pages of the application. The content section is where
+ * the main content of each page is rendered. The footer contains links to terms
+ * and conditions, privacy policy, support, and cookies policy.
+ * @returns {JSX.Element} - The rendered main layout component.
+ */
 import { Layout, Menu } from "antd";
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";

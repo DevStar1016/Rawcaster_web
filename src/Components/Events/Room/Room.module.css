@@ -5,7 +5,6 @@
 }
 .headerStyle {
   background-color: transparent !important;
-  border-bottom: 1px solid grey;
 }
 .footerSec,.chatFooterSec {
 
@@ -202,6 +201,13 @@ padding: 4px;
    margin: 0 5px;
   margin-bottom: 5px;
  
+}
+.lobbyHeader {
+  margin:0 10px;
+  padding-bottom: 5px;
+  margin-bottom: 5px !important;
+  width: 95%;
+  border-bottom: 1px solid #F1F2F5;
 }
 .chatinputSec {
   width: 100% !important;

@@ -1,3 +1,6 @@
+/**
+ * Redux async thunk functions for fetching data related to the dashboard and notifications.
+ */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   ListNotificationService,
@@ -12,17 +15,13 @@ import {
   JSONtoformdata,
   decodeHtml,
   getAuthToken,
-  getusetId,
   utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
 import { handlenuggetToken } from "../Reducer/NuggetsReducer";
 import { handleToken } from "../Reducer/AuthReducer";
 import { connectChimeMessaging } from "../../../Services/Messaging/MessageService";
-import {
-  ChimesendMessage,
-  ChimesocketListen,
-} from "../../../Services/SocketService";
+import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import moment from "moment";
 import { handleNotificationUnreadCount } from "../Reducer/DashboardReducer";
@@ -184,7 +183,7 @@ export const fetchuserInfobyToken = createAsyncThunk(
           first_name: decodeHtml(data.profile.first_name),
           last_name: decodeHtml(data.profile.last_name),
           name: decodeHtml(data.profile.name),
-          user_id: getusetId(data.profile.user_id),
+          user_id: data.profile.user_id,
         };
         // ChimesocketListen.connect();
         connectChimeMessaging({ userId: data.profile.chime_user_id });

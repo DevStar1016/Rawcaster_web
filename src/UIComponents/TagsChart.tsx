@@ -1,3 +1,9 @@
+/**
+ * A React component that renders a line chart using the Chart.js library.
+ * @param {prop} props - The component props.
+ * @param {any} props.Data - The data used to populate the chart.
+ * @returns A line chart component.
+ */
 import React from "react";
 import { Line } from "react-chartjs-2";
 import {

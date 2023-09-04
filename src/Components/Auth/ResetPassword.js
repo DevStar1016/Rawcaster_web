@@ -1,5 +1,9 @@
+/**
+ * A component for resetting the user's password.
+ * @returns JSX element representing the reset password page.
+ */
 import { Button, Form, Input } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
 import forgotImg from "../../Assets/Images/png/forgot-password.png";
@@ -28,20 +32,12 @@ const validationSchema = yup.object().shape({
     .required(`Please input your OTP!`),
   new_password: yup
     .string()
-    // .matches(
-    //   PASSWORD_EXP,
-    //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-    // )
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
     .min(8, "Password must be at least 8 characters long")
     .required("Please input your Password!"),
   confirm_password: yup
     .string()
-    // .matches(
-    //   PASSWORD_EXP,
-    //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-    // )
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
     .min(8, "Password must be at least 8 characters long")
@@ -70,12 +66,23 @@ const ResetPassword = () => {
       HandlesubmitResetPassword(values);
     },
   });
+
+  /**
+   * useEffect hook that updates the otpRefId state variable if it is not already set.
+   * @param {object} state - The state object that contains the otp_ref_id property.
+   * @returns None
+   */
   useEffect(() => {
     if (!otpRefId) {
       setotpRefId(state?.otp_ref_id);
     }
   }, [state]);
 
+  /**
+   * Handles the submission of the reset password form.
+   * @param {object} values - The form values submitted by the user.
+   * @returns None
+   */
   const HandlesubmitResetPassword = (values) => {
     let ResetPasswordValue = {
       ...values,
@@ -94,6 +101,11 @@ const ResetPassword = () => {
       .catch((err) => {});
   };
 
+  /**
+   * useEffect hook that updates the timer value based on the difference between the current time
+   * and the stored time value. It also updates the session storage data with the updated timer value.
+   * @returns None
+   */
   useEffect(() => {
     let finalTimeVal;
     try {
@@ -118,6 +130,12 @@ const ResetPassword = () => {
     }
   }, []);
 
+  /**
+   * Executes a side effect when the TimerValue changes.
+   * Starts a countdown timer and updates the TimerValue every second.
+   * Stores the countdown data in session storage.
+   * @returns None
+   */
   useEffect(() => {
     let timer;
     if (TimerValue > 0) {
@@ -142,10 +160,21 @@ const ResetPassword = () => {
     };
   }, [TimerValue]);
 
+  /**
+   * Returns a string representation of a number with at least two digits.
+   * If the number is less than 10, a leading zero is added.
+   * @param {number} n - The number to format.
+   * @returns {string} - The formatted number as a string.
+   */
   function minTwoDigits(n) {
     return (n < 10 ? "0" : "") + n;
   }
 
+  /**
+   * Converts a number of seconds to a formatted string in the format "mm:ss".
+   * @param {number} d - The number of seconds to convert.
+   * @returns {string} The formatted time string.
+   */
   function secondsToHms(d) {
     d = Number(d);
     let mDisplay = Math.floor((d % 3600) / 60);
@@ -153,6 +182,10 @@ const ResetPassword = () => {
     return minTwoDigits(mDisplay) + ":" + minTwoDigits(sDisplay);
   }
 
+  /**
+   * Handles the resend OTP functionality.
+   * @returns None
+   */
   const handleresendOTP = () => {
     let ResendValues = {
       otp_ref_id: otpRefId,

@@ -1,3 +1,7 @@
+/**
+ * A React component that displays different membership plans and pricing options.
+ * @returns The Membership component.
+ */
 import React, { useState } from "react";
 import classes from "./Membership.module.css";
 import valuedMember from "../../Assets/Images/svg/valuedMember.svg";
@@ -9,6 +13,10 @@ import { useAuthData } from "../../Shared/Reduxfetcher";
 const Membership = () => {
   const userData = useAuthData();
   const [ActiveTab, setActiveTab] = useState(1);
+  /**
+   * Returns a badge value based on the user status ID.
+   * @returns {number} - The badge value.
+   */
   const getBadge = () => {
     switch (userData?.user_status_id) {
       case 1:
@@ -24,6 +32,17 @@ const Membership = () => {
     }
   };
 
+  /**
+   * Returns an object representing the membership amount based on the active tab.
+   * If the active tab is 1, it returns the monthly membership amount.
+   * If the active tab is not 1, it returns the annual membership amount.
+   * @returns {Object} - An object containing the title and amount of the membership.
+   * - title: The title of the membership (either "Monthly" or "Annually").
+   * - amount: An object containing the membership amounts for different tiers.
+   *   - valued: The amount for the valued tier (always "Free").
+   *   - premium: The amount for the premium tier.
+   *   - diamond: The amount for the diamond tier.
+   */
   const getMemberShipAmount = () => {
     if (ActiveTab === 1) {
       return {

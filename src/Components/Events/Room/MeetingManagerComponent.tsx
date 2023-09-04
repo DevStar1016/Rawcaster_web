@@ -18,6 +18,11 @@ import {
 } from "../../../Shared/Reduxfetcher";
 import { defaultVolume } from "../Configure/Constants";
 import { MessageOutlined } from "@ant-design/icons";
+import {
+  AttendeeUserData,
+  EventContextProp,
+  MeetingSettingProp,
+} from "../Components/types";
 
 const MeetingManagerComponent = () => {
   const {
@@ -38,7 +43,7 @@ const MeetingManagerComponent = () => {
     setisPinEnabled,
     userdata,
     attendeesList,
-  } = useEventRoomContext();
+  }: EventContextProp = useEventRoomContext();
   const meetingManager = useMeetingManager();
   const audiovideo = useAudioVideo();
   const meetingStatus = useMeetingStatus();
@@ -50,11 +55,21 @@ const MeetingManagerComponent = () => {
   });
   const { toggleContentShare } = useContentShareControls();
   const { isLocalUserSharing } = useContentShareState();
+  const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
 
-  const presenceCallback = (attendeeId, present, externalUserId) => {
+  /**
+   * Handle Attendee Present By Amazon Chime SDK
+   */
+
+  const presenceCallback = (
+    attendeeId: string,
+    present: boolean,
+    externalUserId: string | undefined
+  ) => {
     if (!attendeeId.includes("#content") && !present) {
       const user_data = attendeesList.find(
-        (ele) => parseInt(ele.userId) === parseInt(externalUserId)
+        (ele) => externalUserId && ele.userId === parseInt(externalUserId)
       );
       if (user_data) {
         setnotificationToast({
@@ -66,10 +81,12 @@ const MeetingManagerComponent = () => {
           icon: null,
         });
         setattendeesList((pre) =>
-          pre.filter((ele) => ele.userId !== parseInt(externalUserId))
+          pre.filter(
+            (ele) => externalUserId && ele.userId !== parseInt(externalUserId)
+          )
         );
         if (user_data.isHost) {
-          audiovideo.stop();
+          audiovideo?.stop();
         }
       }
     }
@@ -77,14 +94,398 @@ const MeetingManagerComponent = () => {
 
   useEffect(() => {
     if (audiovideo) {
-      audiovideo?.addObserver({
-        eventDidReceive: (name, attributes) => {
-          const { meetingHistory, ...otherAttributes } = attributes;
-        },
-      });
       audiovideo?.realtimeSubscribeToAttendeeIdPresence(presenceCallback);
     }
   }, [audiovideo, meetingManager]);
+
+  /* To get Rawcaster user or non Rawcaster User */
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
+
+  /**
+   * Audio Video Settings Handle By Socket
+   */
+
+  const HandleVideoAudio = (props) => {
+    return new Promise<void>((resolve, reject) => {
+      const {
+        value,
+        hostDisabledType,
+        userStatus,
+        settingType,
+        Type,
+        popupmessage,
+      } = props;
+      try {
+        const attendees = value;
+        const singleAttendee = attendees.updatedUser;
+        const attendeeList = attendees.attendeeList;
+        if (singleAttendee) {
+          if (singleAttendee.userId === userdata.userId) {
+            if (!userdata.isHost) {
+              setuserdata((pre) => ({
+                ...pre,
+                [hostDisabledType]: singleAttendee[hostDisabledType],
+                [Type]: singleAttendee[hostDisabledType],
+              }));
+              if (singleAttendee[hostDisabledType] === false && userStatus) {
+                Modal.confirm({
+                  title: popupmessage,
+                  async onOk() {
+                    resolve();
+                  },
+                  onCancel() {},
+                });
+              } else if (singleAttendee[hostDisabledType]) {
+                resolve();
+              }
+            }
+          }
+        } else if (attendeeList) {
+          const findAttendee = attendeeList.find(
+            (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
+          );
+          if (!userdata.isHost) {
+            setMeetingSettings((pre) => ({
+              ...pre,
+              [settingType]: findAttendee?.[hostDisabledType] ? 0 : 1,
+            }));
+            setuserdata((pre) => ({
+              ...pre,
+              [hostDisabledType]: findAttendee[hostDisabledType],
+              [Type]: findAttendee[hostDisabledType],
+            }));
+            if (findAttendee[hostDisabledType] === false && userStatus) {
+              Modal.confirm({
+                title: popupmessage,
+                async onOk() {
+                  resolve();
+                },
+                onCancel() {},
+              });
+            } else if (findAttendee[hostDisabledType]) {
+              if (!userStatus) {
+                resolve();
+              }
+            }
+          }
+        }
+      } catch (error) {
+        reject();
+      }
+    });
+  };
+
+  const onReceiveMessage = (e) => {
+    const { type, message } = e;
+
+    if (message) {
+      switch (type) {
+        case "EventData":
+          if (message) {
+            setEventData(message);
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER:
+          if (message) {
+            if (message.statusCode === 1) {
+              handleJoinMeeting(message);
+            } else {
+              setRequestStatusMessage(message);
+            }
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER:
+          if (message) {
+            const FilterDuplicateUser = RequestRef.current.find(
+              (ele) => parseInt(ele.userId) === parseInt(message.userId)
+            );
+            if (!FilterDuplicateUser) {
+              setnotificationToast({
+                show: true,
+                msg: `${message?.name} wants to join this meeting`,
+                title: null,
+                type: null,
+                buttons: [
+                  <Button
+                    onClick={() => {
+                      setisChatorParticipant("participant");
+                    }}
+                  >
+                    View
+                  </Button>,
+                ],
+                icon: null,
+              });
+              RequestRef.current.push(message);
+            }
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING:
+          if (message) {
+            setnotificationToast({
+              show: true,
+              msg: `${message?.name} Joined`,
+              title: null,
+              type: null,
+              buttons: [],
+              icon: null,
+            });
+            setattendeesList((pre) => [
+              ...pre,
+              { ...message, volume: defaultVolume },
+            ]);
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND:
+          if (message) {
+            const user_data = message;
+            const raiseHandUser = user_data.UserData;
+            if (
+              raiseHandUser.handRaised &&
+              parseInt(raiseHandUser.userId) !==
+                parseInt(getUserData()?.user_id)
+            ) {
+              setnotificationToast({
+                show: true,
+                msg: `${raiseHandUser?.name} Raised Hand`,
+                title: null,
+                type: null,
+                buttons: [],
+                icon: null,
+              });
+            } else if (
+              parseInt(raiseHandUser.userId) ===
+              parseInt(getUserData()?.user_id)
+            ) {
+              setuserdata(raiseHandUser);
+            }
+            setattendeesList((pre) => {
+              const targetIndex = pre.findIndex(
+                (item) => item.userId === raiseHandUser.userId
+              );
+              if (targetIndex !== -1) {
+                const newArray = [...pre];
+                newArray.splice(targetIndex, 1, {
+                  ...raiseHandUser,
+                  volume: defaultVolume,
+                });
+                return newArray;
+              } else {
+                return pre;
+              }
+            });
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER:
+          if (message) {
+            const user_data = message;
+            const renamedUser = user_data.updatedUser;
+            setattendeesList((pre) => {
+              const targetIndex = pre.findIndex(
+                (item) => item.userId === renamedUser.userId
+              );
+              if (targetIndex !== -1) {
+                const newArray = [...pre];
+                newArray.splice(targetIndex, 1, {
+                  ...renamedUser,
+                  volume: defaultVolume,
+                });
+                return newArray;
+              } else {
+                return pre;
+              }
+            });
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.END_MEETING_ANSWER:
+          if (message) {
+            const end_data = message;
+            if (end_data.ended) {
+              const endData = { message: "Meeting Has Been Ended !" };
+              EndAttendeeMeeting(endData);
+            }
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG:
+          if (message) {
+            const message_data = message;
+            if (
+              parseInt(message_data.from_user_id) !==
+              parseInt(getUserData()?.user_id)
+            ) {
+              setnotificationToast({
+                show: true,
+                msg: message_data.message,
+                title: `${message_data.name} ${
+                  message_data.isPrivate ? "(Private)" : ""
+                }`,
+                icon: <MessageOutlined />,
+                buttons: [],
+              });
+            }
+            setEventMessages((pre) => [
+              {
+                ...message_data,
+                refId: EventData?.reference_id,
+              },
+              ...pre,
+            ]);
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.KICK_USER_ANSWER:
+          if (message) {
+            const kick_data = message;
+            const kickeduser = kick_data.kickedUser;
+            if (
+              kick_data.statusCode === 1 &&
+              parseInt(kickeduser.userId) === parseInt(getUserData()?.user_id)
+            ) {
+              const endData = {
+                message: "Someone removed you from this meeting !",
+              };
+              EndAttendeeMeeting(endData);
+            }
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER:
+          if (message) {
+            const attendees = message;
+            const attendeeList = attendees.attendeeList;
+            const findAttendee = attendeeList.find(
+              (ele: AttendeeUserData) =>
+                ele.userId === parseInt(getUserData()?.user_id)
+            );
+            if (findAttendee) {
+              setMeetingSettings((pre: MeetingSettingProp) => ({
+                ...pre,
+                user_screenshare: findAttendee.screenShare ? 1 : 0,
+              }));
+              if (!userdata.isHost) {
+                setuserdata((pre) => ({
+                  ...pre,
+                  screenShare: findAttendee.screenShare ? 1 : 0,
+                }));
+              }
+            }
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER:
+          if (message) {
+            const AudioData = {
+              value: message,
+              hostDisabledType: "audioDisabledByHost",
+              userStatus: muted,
+              settingType: "default_guest_audio",
+              popupmessage: "Host requests that you unmute your microphone",
+              Type: "audio",
+            };
+            HandleVideoAudio(AudioData).then(() => {
+              toggleMute();
+            });
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER:
+          if (message) {
+            const VideoData = {
+              value: message,
+              hostDisabledType: "videoDisabledByHost",
+              userStatus: !isVideoEnabled,
+              settingType: "default_guest_video",
+              popupmessage: "Host requests that you enable your camera",
+              Type: "video",
+            };
+            HandleVideoAudio(VideoData).then(() => {
+              toggleVideo();
+            });
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER:
+          if (message) {
+            if (message.pin_enabled === 1) {
+              setisPinEnabled(message.pinned_user_id);
+            } else {
+              setisPinEnabled(null);
+            }
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.MAKE_HOST_ANSWER:
+          if (message) {
+            const hostData = message;
+            if (hostData && hostData.statusCode === 1) {
+              const updatedUserData = hostData.updatedUser;
+              if (
+                parseInt(updatedUserData.userId) === parseInt(userData.user_id)
+              ) {
+                setuserdata((pre) => ({
+                  ...pre,
+                  isHost: updatedUserData.isHost,
+                }));
+              } else {
+                setuserdata((pre) => ({
+                  ...pre,
+                  isHost: false,
+                }));
+              }
+
+              setattendeesList((pre) =>
+                pre.map((ele) => {
+                  return {
+                    ...ele,
+                    isHost: updatedUserData.userId === ele.userId,
+                  };
+                })
+              );
+            }
+          }
+          break;
+        case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
+          try {
+            const callEventData = message;
+            if (callEventData) {
+              if (callEventData.screen_share_status === false) {
+                if (isLocalUserSharing) {
+                  toggleContentShare();
+                }
+              }
+            }
+          } catch (error) {}
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  /**
+   * Listener From Parent Window to Child Window
+   */
+
+  useEffect(() => {
+    window.addEventListener("message", (event) => {
+      onReceiveMessage(event.data);
+    });
+    return () => {
+      window.removeEventListener("message", (event) => {
+        onReceiveMessage(event.data);
+      });
+    };
+  }, [
+    muted,
+    isVideoEnabled,
+    EventMessages,
+    RequestStatusMessage,
+    isLocalUserSharing,
+  ]);
+
+  /**
+   * Default Audio Settings for Attendee and Host
+   */
 
   useEffect(() => {
     if (meetingStatus === 1 && !isDefaultUpdated.audio) {
@@ -139,12 +540,14 @@ const MeetingManagerComponent = () => {
                 break;
             }
           }
-        } catch (error) {
-          console.log(error, "Errmsg");
-        }
+        } catch (error) {}
       }
     }
   }, [MeetingSettings, userdata, meetingStatus, muted, isDefaultUpdated]);
+
+  /**
+   * Default Video Settings for Attendee and Host
+   */
 
   useEffect(() => {
     if (meetingStatus === 1 && !isDefaultUpdated.video) {
@@ -197,9 +600,7 @@ const MeetingManagerComponent = () => {
                 break;
             }
           }
-        } catch (error) {
-          console.log(error, "Errmsg");
-        }
+        } catch (error) {}
       }
     }
   }, [
@@ -208,352 +609,6 @@ const MeetingManagerComponent = () => {
     meetingStatus,
     isVideoEnabled,
     isDefaultUpdated,
-  ]);
-
-  const userData = useAuthData();
-  const tempuserData = useEventTempAuthData();
-
-  const getUserData = () => {
-    if (userData) {
-      return userData;
-    } else {
-      return tempuserData;
-    }
-  };
-
-  const HandleVideoAudio = (props) => {
-    return new Promise((resolve, reject) => {
-      const {
-        value,
-        hostDisabledType,
-        userStatus,
-        settingType,
-        Type,
-        popupmessage,
-      } = props;
-      // audioDisabledByHost
-      try {
-        const attendees = JSON.parse(value);
-        const singleAttendee = attendees.updatedUser;
-        const attendeeList = attendees.attendeeList;
-        if (singleAttendee) {
-          if (singleAttendee.userId === userdata.userId) {
-            if (!userdata.isHost) {
-              setuserdata((pre) => ({
-                ...pre,
-                [hostDisabledType]: singleAttendee[hostDisabledType],
-                [Type]: singleAttendee[hostDisabledType],
-              }));
-              if (singleAttendee[hostDisabledType] === false) {
-                Modal.confirm({
-                  title: popupmessage,
-                  async onOk() {
-                    resolve();
-                  },
-                  onCancel() {},
-                });
-              } else if (singleAttendee[hostDisabledType]) {
-                resolve();
-              }
-            }
-          }
-        } else if (attendeeList) {
-          const findAttendee = attendeeList.find(
-            (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
-          );
-          if (!userdata.isHost) {
-            setMeetingSettings((pre) => ({
-              ...pre,
-              [settingType]: findAttendee?.[hostDisabledType] ? 0 : 1,
-            }));
-            setuserdata((pre) => ({
-              ...pre,
-              [hostDisabledType]: findAttendee[hostDisabledType],
-              [Type]: findAttendee[hostDisabledType],
-            }));
-            if (findAttendee[hostDisabledType] === false) {
-              Modal.confirm({
-                title: popupmessage,
-                async onOk() {
-                  resolve();
-                },
-                onCancel() {},
-              });
-            } else if (findAttendee[hostDisabledType]) {
-              if (!userStatus) {
-                resolve();
-              }
-            }
-          }
-        }
-      } catch (error) {
-        reject();
-      }
-    });
-  };
-
-  const onReceiveMessage = (e) => {
-    const { key, newValue } = e;
-    console.log(key, newValue, "SOCKET EVENT");
-    if (newValue) {
-      switch (key) {
-        case "EventData":
-          try {
-            const eventdetails = JSON.parse(newValue);
-            setEventData(eventdetails);
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER:
-          try {
-            const requestanswerDetails = JSON.parse(newValue);
-            if (requestanswerDetails.statusCode === 1) {
-              handleJoinMeeting(requestanswerDetails);
-            } else {
-              setRequestStatusMessage(requestanswerDetails);
-            }
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER:
-          try {
-            const user_data = JSON.parse(newValue);
-            setnotificationToast({
-              show: true,
-              msg: `${user_data?.name} wants to join this meeting`,
-              title: null,
-              type: null,
-              buttons: [
-                <Button
-                  onClick={() => {
-                    setisChatorParticipant("participant");
-                  }}
-                >
-                  View
-                </Button>,
-              ],
-              icon: null,
-            });
-            RequestRef.current.push(user_data);
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING:
-          try {
-            const user_data = JSON.parse(newValue);
-            console.log(user_data, "user_data");
-            setnotificationToast({
-              show: true,
-              msg: `${user_data?.name} Joined`,
-              title: null,
-              type: null,
-              buttons: [],
-              icon: null,
-            });
-            setattendeesList((pre) => [
-              ...pre,
-              { ...user_data, volume: defaultVolume },
-            ]);
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND:
-          try {
-            const user_data = JSON.parse(newValue);
-            const raiseHandUser = user_data.UserData;
-            if (
-              raiseHandUser.handRaised &&
-              parseInt(raiseHandUser.userId) !==
-                parseInt(getUserData()?.user_id)
-            ) {
-              setnotificationToast({
-                show: true,
-                msg: `${raiseHandUser?.name} Raised Hand`,
-                title: null,
-                type: null,
-                buttons: [],
-                icon: null,
-              });
-            } else if (
-              parseInt(raiseHandUser.userId) ===
-              parseInt(getUserData()?.user_id)
-            ) {
-              setuserdata(raiseHandUser);
-            }
-            setattendeesList((pre) => {
-              const targetIndex = pre.findIndex(
-                (item) => item.userId === raiseHandUser.userId
-              );
-              if (targetIndex !== -1) {
-                const newArray = [...pre];
-                newArray.splice(targetIndex, 1, {
-                  ...raiseHandUser,
-                  volume: defaultVolume,
-                });
-                return newArray;
-              } else {
-                return pre;
-              }
-            });
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER:
-          try {
-            const user_data = JSON.parse(newValue);
-            const renamedUser = user_data.updatedUser;
-            setattendeesList((pre) => {
-              const targetIndex = pre.findIndex(
-                (item) => item.userId === renamedUser.userId
-              );
-              if (targetIndex !== -1) {
-                const newArray = [...pre];
-                newArray.splice(targetIndex, 1, {
-                  ...renamedUser,
-                  volume: defaultVolume,
-                });
-                return newArray;
-              } else {
-                return pre;
-              }
-            });
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.END_MEETING_ANSWER:
-          try {
-            const end_data = JSON.parse(newValue);
-            if (end_data.ended) {
-              const endData = { message: "Meeting Has Been Ended !" };
-              EndAttendeeMeeting(endData);
-            }
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG:
-          try {
-            const message_data = JSON.parse(newValue);
-            if (
-              parseInt(message_data.from_user_id) !==
-              parseInt(getUserData()?.user_id)
-            ) {
-              setnotificationToast({
-                show: true,
-                msg: message_data.message,
-                title: `${message_data.name} ${
-                  message_data.isPrivate ? "(Private)" : ""
-                }`,
-                icon: <MessageOutlined />,
-                buttons: [],
-              });
-            }
-            setEventMessages((pre) => [
-              {
-                ...message_data,
-                refId: EventData?.reference_id,
-              },
-              ...pre,
-            ]);
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.KICK_USER_ANSWER:
-          try {
-            const kick_data = JSON.parse(newValue);
-            const kickeduser = kick_data.kickedUser;
-            if (
-              kick_data.statusCode === 1 &&
-              parseInt(kickeduser.userId) === parseInt(getUserData()?.user_id)
-            ) {
-              const endData = {
-                message: "Someone removed you from this meeting !",
-              };
-              EndAttendeeMeeting(endData);
-            }
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER:
-          try {
-            const attendees = JSON.parse(newValue);
-            const attendeeList = attendees.attendeeList;
-            const findAttendee = attendeeList.find(
-              (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
-            );
-            if (findAttendee) {
-              setMeetingSettings((pre) => ({
-                ...pre,
-                user_screenshare: findAttendee.screenShare ? 1 : 0,
-              }));
-              if (!userdata.isHost) {
-                setuserdata((pre) => ({
-                  ...pre,
-                  screenShare: findAttendee.screenShare ? 1 : 0,
-                }));
-              }
-            }
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER:
-          try {
-            const AudioData = {
-              value: newValue,
-              hostDisabledType: "audioDisabledByHost",
-              userStatus: muted,
-              settingType: "default_guest_audio",
-              popupmessage: "Host requests that you unmute your microphone",
-              Type: "audio",
-            };
-            HandleVideoAudio(AudioData).then(() => {
-              toggleMute();
-            });
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER:
-          try {
-            const VideoData = {
-              value: newValue,
-              hostDisabledType: "videoDisabledByHost",
-              userStatus: !isVideoEnabled,
-              settingType: "default_guest_video",
-              popupmessage: "Host requests that you enable your camera",
-              Type: "video",
-            };
-            HandleVideoAudio(VideoData).then(() => {
-              toggleVideo();
-            });
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER:
-          try {
-            const viewData = JSON.parse(newValue);
-            if (viewData.pin_enabled === 1) {
-              setisPinEnabled(viewData.pinned_user_id);
-            } else {
-              setisPinEnabled(null);
-            }
-          } catch (error) {}
-          break;
-        case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
-          try {
-            const callEventData = JSON.parse(newValue);
-            if (callEventData) {
-              if (callEventData.screen_share_status === false) {
-                if (isLocalUserSharing) {
-                  toggleContentShare();
-                }
-              }
-            }
-          } catch (error) {}
-          break;
-        default:
-          break;
-      }
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("storage", onReceiveMessage);
-    return () => {
-      window.removeEventListener("storage", onReceiveMessage);
-    };
-  }, [
-    muted,
-    isVideoEnabled,
-    EventMessages,
-    RequestStatusMessage,
-    isLocalUserSharing,
   ]);
 
   return <div></div>;

@@ -1,3 +1,8 @@
+/**
+ * A React component that displays a spinner while content is loading.
+ * @param {object} props - The props object for the Spinner component.
+ * @returns A React Fragment containing the spinner element.
+ */
 import React, { Fragment } from "react";
 import { Spin } from "antd";
 

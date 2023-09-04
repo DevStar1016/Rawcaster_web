@@ -1,3 +1,7 @@
+/**
+ * Defines the routes for the dashboard.
+ * @returns An array of route objects.
+ */
 import { useDispatch } from "react-redux";
 import Dashboard from "../Components/Dashboard/Dashboard";
 import Development from "../Components/Development";

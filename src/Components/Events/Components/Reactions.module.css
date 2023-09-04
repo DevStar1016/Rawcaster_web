@@ -5,7 +5,11 @@
     align-items: end;
     justify-content: center;
     margin-bottom: 10px;
+    pointer-events:none;  
 }
+.reactionsSec::-webkit-scrollbar {
+    width: 0px !important;
+  }
 .reactionsSec {
     display: flex;
     flex-direction: row;
@@ -13,6 +17,12 @@
     padding: 10px 0;
     border-radius: 30px;
    max-width: 100%;
+   overflow: scroll;
+   pointer-events: auto;
+   z-index: 20;
+   position: absolute;
+   bottom: 0;
+   left: calc(48% - 120px);
     
 }
 .emoji {
@@ -24,5 +34,9 @@
     .reactionsContainer {
         height: 98%;
    
+    }
+    .reactionsSec { 
+        left: calc(30% - 120px);
+
     }
 }

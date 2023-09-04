@@ -1,3 +1,7 @@
+/**
+ * Defines the routes for the events feature in the application.
+ * @returns An array of route objects that define the paths and components for the events feature.
+ */
 import { Navigate, useParams } from "react-router";
 import EventRoom from "../Components/Events/Room/EventRoom";
 import EventValidaton from "../Components/Events/Room/EventValidaton";
@@ -7,6 +11,10 @@ import EventLayout from "../Layouts/EventLayout";
 import { useEffect } from "react";
 import { useToken } from "antd/es/theme/internal";
 
+/**
+ * Handles the navigation to a specific room based on the ref_id parameter in the URL.
+ * @returns A Navigate component that redirects the user to the dashboard page.
+ */
 const HandleNavigate = () => {
   const { ref_id } = useParams();
   const token = useToken();

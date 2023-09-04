@@ -1,3 +1,11 @@
+/**
+ * This module exports multiple context objects and corresponding custom hooks for accessing those contexts.
+ * Each context object is created using the `createContext` function from the React library.
+ * The custom hooks are created using the `useContext` hook from the React library.
+ *
+ * GlobalContext: A context object for global state management.
+ * useGlobalContext: A custom hook for accessing the GlobalContext.
+ */
 import { createContext, useContext } from "react";
 
 export const GlobalContext = createContext();

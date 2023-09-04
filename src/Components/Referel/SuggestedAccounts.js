@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a list of suggested accounts.
+ * @returns JSX element
+ */
 import React, { useEffect, useState } from "react";
 import classes from "./Referel.module.css";
 import { useAuthToken, useNuggets } from "../../Shared/Reduxfetcher";
@@ -16,7 +20,6 @@ import { toast } from "react-hot-toast";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import EventLoaders from "../Loaders/EventLoaders";
 import { Empty, Skeleton } from "antd";
 
 const SuggestedAccounts = () => {
@@ -27,6 +30,10 @@ const SuggestedAccounts = () => {
   const [influencerList, setinfluencerList] = useState([]);
   const [isFetching, setisFetching] = useState(true);
 
+  /**
+   * Retrieves a list of influencers from the server using the provided token.
+   * @returns None
+   */
   const getInfluencerList = () => {
     let influencerData = {
       token: token,
@@ -47,12 +54,22 @@ const SuggestedAccounts = () => {
       });
   };
 
+  /**
+   * Executes a side effect when the component mounts.
+   * If the user is authenticated, it calls the getInfluencerList function.
+   * @returns None
+   */
   useEffect(() => {
     if (getAuthenticated()) {
       getInfluencerList();
     }
   }, []);
 
+  /**
+   * Handles the action of becoming a fan of an influencer.
+   * @param {Object} ele - The element representing the influencer.
+   * @returns None
+   */
   const handleBecomeFan = (ele) => {
     let becameFanData = {
       token: token,

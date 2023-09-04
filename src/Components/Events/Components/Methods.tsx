@@ -1,5 +1,5 @@
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { toast } from "react-hot-toast";
@@ -11,22 +11,31 @@ import {
   useMeetingManager,
 } from "amazon-chime-sdk-component-library-react";
 import styles from "./Menu.module.css";
+import { EventDataProp } from "../Configure/types";
+import { AttendeeUserData, EventContextProp } from "./types";
+import { useEventRoomContext } from "../../../Shared/Context";
 
-interface ExitMeeting {
-  Attendee: any;
-  EventData?: any;
-  handleExitMeeting: any;
+type ExitMeeting = {
+  Attendee?: AttendeeUserData | undefined;
+  EventData?: EventDataProp | null;
+  handleExitMeeting?: any;
   message?: String;
-}
+};
 
-interface EndMeeting {
-  Attendee: any;
-  EventData?: any;
+type EndMeeting = {
+  Attendee?: AttendeeUserData | undefined;
+  EventData?: EventDataProp | null;
   handleEndMeeting: any;
   message?: String;
-  meetingmanager: MeetingManager;
-}
+  meetingmanager?: MeetingManager;
+};
 
+/**
+ * Displays a confirmation modal to prompt the user if they want to exit the meeting.
+ * If the user confirms, it calls the handleExitMeeting function and performs necessary actions.
+ * @param {ExitMeeting} props - The props object containing Attendee, EventData, and handleExitMeeting.
+ * @returns None
+ */
 export const ExitMeeting = (props: ExitMeeting) => {
   const { Attendee, EventData, handleExitMeeting } = props;
   const { confirm } = Modal;
@@ -55,6 +64,11 @@ export const ExitMeeting = (props: ExitMeeting) => {
   });
 };
 
+/**
+ * Displays a warning modal with the given message and closes the window when the user clicks "OK".
+ * @param {ExitMeeting} props - The props object containing the message to display.
+ * @returns None
+ */
 export const EndAttendeeMeeting = (props: ExitMeeting) => {
   const { message } = props;
   const { warning } = Modal;
@@ -67,12 +81,17 @@ export const EndAttendeeMeeting = (props: ExitMeeting) => {
   });
 };
 
+/**
+ * Renders a confirmation modal to end a meeting for all attendees.
+ * @param {EndMeeting} props - The props object containing the necessary data and functions.
+ * @returns None
+ */
 export const EndMeeting = (props: EndMeeting) => {
   const { Attendee, EventData, handleEndMeeting, meetingmanager } = props;
   const { confirm } = Modal;
 
   confirm({
-    title: "Are you sure Do you want to End Meeting?",
+    title: "Are you sure Do you want to End Meeting For All?",
     icon: <ExclamationCircleFilled />,
     onOk() {
       handleEndMeeting(Attendee)
@@ -82,7 +101,7 @@ export const EndMeeting = (props: EndMeeting) => {
             CHIME_SOCKET_EVENTS.END_MEETING
           );
 
-          meetingmanager.meetingSession?.destroy();
+          meetingmanager?.meetingSession?.destroy();
           window.close();
         })
         .catch(() => {
@@ -94,9 +113,14 @@ export const EndMeeting = (props: EndMeeting) => {
 };
 
 type MicOptionsProps = {
-  TextColor?: any;
+  TextColor?: string | undefined;
 };
 
+/**
+ * Component for displaying microphone and speaker options.
+ * @param {MicOptionsProps} props - The props for the MicOptions component.
+ * @returns JSX element representing the microphone and speaker options.
+ */
 export const MicOptions = (props: MicOptionsProps) => {
   const { TextColor } = props;
   const meetingmanager = useMeetingManager();
@@ -152,9 +176,7 @@ export const MicOptions = (props: MicOptionsProps) => {
               if (audiovideo) {
                 try {
                   await meetingmanager.startAudioOutputDevice(ele.deviceId);
-                } catch (error) {
-                  console.log("SpeakerSelection failed to select speaker");
-                }
+                } catch (error) {}
               }
             }}
           >
@@ -175,6 +197,75 @@ export const MicOptions = (props: MicOptionsProps) => {
           </span>
         );
       })}
+    </div>
+  );
+};
+
+/**
+ * Component for the host exit option in a meeting.
+ * @returns JSX element representing the host exit option.
+ */
+export const HostExitOption = () => {
+  const {
+    EventData,
+    handleExitMeeting,
+    handleEndMeeting,
+    userdata,
+  }: EventContextProp = useEventRoomContext();
+  const meetingmanager = useMeetingManager();
+  const [messageApi, contextHolder] = message.useMessage();
+  return (
+    <div className={styles.HostLeaveSec}>
+      {contextHolder}
+      <div
+        className={`${styles.Actionsec} ${styles.HostEndActionsec}`}
+        style={{
+          color: "red",
+        }}
+        onClick={() => {
+          if (userdata?.isHost) {
+            messageApi.open({
+              type: "warning",
+              content:
+                "Please make someone else host before leaving the meeting",
+            });
+          } else {
+            ExitMeeting({
+              Attendee: userdata,
+              EventData,
+              handleExitMeeting,
+            });
+          }
+        }}
+      >
+        <div className={`${styles.iconBox} ${styles.HostEndIcon}`}>
+          <span
+            className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
+          >
+            logout
+          </span>
+        </div>
+        {"Leave"}
+      </div>
+      <div
+        className={`${styles.Actionsec} ${styles.HostEndActionsec}`}
+        style={{
+          color: "red",
+        }}
+        onClick={() => {
+          EndMeeting({
+            Attendee: userdata,
+            EventData,
+            handleEndMeeting,
+            meetingmanager,
+          });
+        }}
+      >
+        <div className={` ${styles.EndIcon} ${styles.HostEndIcon}`}>
+          <i className={`${styles.hang_up_icon} ${styles.icon}`}></i>
+        </div>
+        {"End"}
+      </div>
     </div>
   );
 };

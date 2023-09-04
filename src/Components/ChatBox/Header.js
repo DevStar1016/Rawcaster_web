@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from "react";
+/**
+ * The Header component displays the header section of the chat box. It includes the profile picture, display name, and additional options for the selected chat.
+ * @returns The rendered Header component.
+ */
+import { useEffect, useState } from "react";
 import classes from "./ChatBox.module.css";
 import {
   defaultGroupImg,
@@ -16,7 +20,7 @@ import ConfigureGroup from "../Connections/Groups/ConfigureGroup";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { getusetId, handleProfileNavigate } from "../../Shared/Utility";
+import { handleProfileNavigate } from "../../Shared/Utility";
 
 const Header = () => {
   const { isChatOpen, setisChatOpen } = useMainContext();
@@ -24,9 +28,7 @@ const Header = () => {
     setGroupDetails,
     GroupDetails,
     SelectedContents,
-    removeselection,
     setSelectAllMessages,
-    SelectAllMessages,
     receiverMessage,
   } = useChatContext();
   const loginuserData = useAuthData();
@@ -40,6 +42,13 @@ const Header = () => {
     group_id: null,
   });
 
+  /**
+   * Retrieves data based on the type of chat open.
+   * @returns {Object | undefined} - The data object containing the relevant information for the chat.
+   * If the chat type is "friend", the object will contain the friend's account information.
+   * If the chat type is "group", the object will contain the group's information.
+   * If the chat type is neither "friend" nor "group", undefined is returned.
+   */
   const getData = () => {
     if (isChatOpen.type === "friend") {
       const findAccount = friends.find(
@@ -65,40 +74,15 @@ const Header = () => {
     return;
   };
 
-  // const getGroupDisplayData = () => {
-  //   const displayedData = getData()?.group_members_list.slice(0, 2); // Get the first 2 objects
-  //   const remainingData = getData()?.group_members_list.slice(2); // Get the remaining objects
-  //   const displayName = displayedData?.map((ele) => {
-  //     if (parseInt(loginuserData.user_id) !== ele.user_id) {
-  //       return ele.display_name.split(" ")[0] || "";
-  //     }
-  //     return "";
-  //   });
-  //   let displayData;
-
-  //   if (remainingData.length > 0) {
-  //     if (remainingData.length === 1) {
-  //       displayData = [
-  //         "You",
-  //         ...displayName,
-  //         remainingData[0].display_name,
-  //       ].toString();
-  //     } else {
-  //       displayData =
-  //         "You ," + displayName.toString() + ` +${remainingData.length} Others`;
-  //     }
-  //   } else {
-  //     displayData = "You ," + displayName.toString();
-  //   }
-  //   return displayData;
-  // };
-
+  /**
+   * Retrieves the display data for a group, excluding the current user.
+   * @returns {string} The display data for the group.
+   */
   const getGroupDisplayData = () => {
     const GroupMembers = getData()?.group_members_list;
     const withoutCurrentUser = GroupMembers?.filter(
       (ele) =>
-        getusetId(parseInt(ele?.user_id, 10)) !==
-        parseInt(loginuserData.user_id, 10)
+        parseInt(ele?.user_id, 10) !== parseInt(loginuserData.user_id, 10)
     );
     let displayData = "";
 
@@ -132,6 +116,10 @@ const Header = () => {
     }
   }, [GroupDetails]);
 
+  /**
+   * Copies the selected contents to the clipboard and displays a success toast message.
+   * @returns None
+   */
   function copy() {
     const el = document.createElement("input");
     el.value = SelectedContents.join(" ");

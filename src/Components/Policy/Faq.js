@@ -6,6 +6,11 @@ import { getFaqService } from "../../Services/ApiService";
 const Faq = () => {
   const { Panel } = Collapse;
   const [faq, setFaq] = useState([]);
+  /**
+   * Executes the specified effect function after the component has rendered.
+   * Fetches the FAQ service data and updates the state with the response data.
+   * @returns None
+   */
   useEffect(() => {
     getFaqService()
       .then((response) => {
@@ -40,47 +45,6 @@ const Faq = () => {
                   </Panel>
                 );
               })}
-
-              {/* <Panel header={heading} key="2">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>
-                    <Panel header={heading} key="3">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>                   
-                    <Panel header={heading} key="4">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>                   
-                    <Panel header={heading} key="5">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>                   
-                    <Panel header={heading} key="6">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>                   
-                    <Panel header={heading} key="7">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>                   
-                    <Panel header={heading} key="8">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>                   
-                    <Panel header={heading} key="9">   
-                    <p>
-                    Purchase token is a permission granted to a user to make a purchase with his points in Myluckyzone.com. Each person you refer earns you a bonus token valid for a purchase from the open sales category. Each 5 persons you refer earns you an elite token valid to make a purchase from the elite category you belong to.
-                    </p>                 
-                    </Panel>                    */}
             </Collapse>
           </div>
         </div>

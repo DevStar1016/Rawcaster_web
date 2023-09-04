@@ -1,3 +1,7 @@
+/**
+ * A React component that displays the details of a nugget.
+ * @returns The rendered component.
+ */
 import React, { useEffect, useRef, useState } from "react";
 import { getNuggetDetailService } from "../../Services/ApiService";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
@@ -24,6 +28,10 @@ const ViewNugget = () => {
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
 
+  /**
+   * Retrieves the details of a nugget using the provided token and nugget ID.
+   * @returns None
+   */
   const getNuggetDetail = () => {
     let nuggetDetailData = {
       token: Token,
@@ -32,7 +40,6 @@ const ViewNugget = () => {
     getNuggetDetailService(JSONtoformdata(nuggetDetailData))
       .then((res) => {
         if (res.data.status === 1) {
-          console.log("dgfgsgfrd");
           setNuggetData(res.data.nugget_detail);
         } else {
           navigate(-1);
@@ -45,11 +52,17 @@ const ViewNugget = () => {
 
   useEffect(() => {
     if (Token) {
-      console.log(nugget_id);
       getNuggetDetail();
     }
   }, [Token, nugget_id]);
 
+  /**
+   * Retrieves the original name of a nugget.
+   * If the nugget has poll options, it returns the original name formatted for SEO using the PollNuggetSEO function.
+   * If the nugget does not have poll options, it returns the original name formatted for SEO using the NuggetSEO function.
+   * If the original user name is not available, it defaults to "Nugget".
+   * @returns {string} The original name of the nugget formatted for SEO.
+   */
   const getOriginalName = () => {
     if (NuggetData?.poll_option?.length !== 0) {
       return PollNuggetSEO(

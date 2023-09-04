@@ -5,12 +5,14 @@
     background-color: #392342;
   }
   .video_grid  {
-   
+   position: relative;
     display: block;
     height: calc(89vh - 13px);
     width: 100%;
     overflow-y: scroll;
     background-color: #392342;
+     z-index: 15;
+      pointer-events: auto;
   
   }
   .full_container, .Half_container ,.grid_3_boxes ,.grid_4_boxes,.grid_5_boxes,.grid_initial_3_boxes ,.grid_initial_4_boxes,.grid_initial_5_boxes {
@@ -20,9 +22,9 @@
     margin: auto;
     margin-top: 5px;
     height:calc(100% - 20px) !important;
-    
      border-radius: 10px !important;
      overflow: hidden;
+     z-index: 14;
   }
   .isPinavailableSec .Child {
     min-height: 185px !important;
@@ -182,6 +184,9 @@ position: relative;
     background: #00000040;
     overflow: hidden;
         border-radius: 10px;
+        z-index: 14;
+      
+       
   }
   .eventOption {
    background-color: rgba(0, 0, 0, 0.682);
@@ -306,7 +311,7 @@ margin-left: 5px;
       grid-template-columns: repeat(2, 2fr); /* Create three equal-width columns */
     }
     .Half_container  {
-      height: 90% !important;
+
           align-items: center;
     }
     .grid_initial_5_boxes {

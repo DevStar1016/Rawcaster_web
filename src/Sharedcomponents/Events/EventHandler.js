@@ -1,32 +1,52 @@
-import React, { useState } from "react";
+/**
+ * A React component that handles event-related functionality such as joining or hosting an event.
+ * @param {string} title - The title of the event.
+ * @param {boolean} isHost - Indicates whether the user is the host of the event.
+ * @param {object} ele - The event object.
+ * @returns A React component that renders the event link and modal.
+ */
+import { useState } from "react";
 import classes from "./Event.module.css";
 import EventStartModal from "../../Modal/Event/EventStartModal";
 import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import { ChimesendMessage } from "../../Services/SocketService";
-import { Modal } from "antd";
+import { useDispatch } from "react-redux";
+import { handleEventWindowRef } from "../../Store/Redux/Reducer/UtilityReducer";
 
-const EventHandler = ({ title, isHost, meetingId, ele }) => {
+const EventHandler = ({ title, isHost, ele }) => {
   const userData = useAuthData();
+  const dispatch = useDispatch();
   const [openModal, setopenModal] = useState({ show: false, type: "" });
   const [isLoading, setisLoading] = useState(false);
-  let popup;
 
+  /**
+   * Closes the modal by setting the `show` property of `openModal` state to `false`
+   * and clearing the `type` property.
+   * @param {Event} e - The event object.
+   * @returns None
+   */
   const closeModal = (e) => {
     e.stopPropagation();
     setopenModal({ show: false, type: "" });
   };
 
+  /**
+   * Handles the opening and manipulation of a popup window for a specific event.
+   * @returns None
+   */
   const HandlePopup = () => {
-    popup = window.open(`/room/${ele?.reference_id}`, "_blank", {
+    const EventWindowRef = window.open(`/room/${ele?.reference_id}`, "_blank", {
       popup: true,
     });
-    popup.onload = () => {
-      ChimesendMessage(
-        { userId: userData.user_id },
-        CHIME_SOCKET_EVENTS.JOIN_SOCKET
-      );
-      localStorage.setItem("EventData", JSON.stringify(ele));
+    dispatch(handleEventWindowRef(EventWindowRef));
+
+    EventWindowRef.onload = () => {
+      const EventData = {
+        type: "EventData",
+        message: ele,
+      };
+      EventWindowRef.postMessage(EventData, "*");
       if (isHost) {
         ChimesendMessage(
           { refId: ele?.reference_id },
@@ -48,35 +68,17 @@ const EventHandler = ({ title, isHost, meetingId, ele }) => {
         CHIME_SOCKET_EVENTS.JOIN_REQUEST
       );
     };
-    popup.onclose = (e) => {
+    EventWindowRef.onclose = (e) => {
       e.stopPropagation();
-      console.log("onClose");
     };
     // when the popup unloads
-    popup.onunload = () => {
-      let keysToRemove = [
-        "EventData",
-        CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
-        CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
-        CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
-        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
-        CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND,
-        CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER,
-        CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER,
-        CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
-        CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
-        CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER,
-        CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
-        CHIME_SOCKET_EVENTS.END_MEETING_ANSWER,
-        CHIME_SOCKET_EVENTS.KICK_USER_ANSWER,
-      ];
-
-      for (const key of keysToRemove) {
-        localStorage.removeItem(key);
-      }
-    };
   };
 
+  /**
+   * Handles the join event.
+   * @param {Event} e - The event object.
+   * @returns None
+   */
   const handleJoinEvent = async (e) => {
     e.stopPropagation();
     if (isHost) {

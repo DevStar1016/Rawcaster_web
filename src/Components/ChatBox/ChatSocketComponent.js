@@ -1,7 +1,12 @@
+/**
+ * A React component that handles the WebSocket connection for chat functionality.
+ * It subscribes to message updates and processes incoming messages based on their type.
+ * @returns A React component that renders an empty div.
+ */
 import { useEffect } from "react";
 import { subscribeToMessageUpdate } from "../../Services/Messaging/MessageService";
 import { useChatContext } from "../../Shared/Context";
-import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuthData } from "../../Shared/Reduxfetcher";
 
 const ChatSocketComponent = () => {
   const {
@@ -14,6 +19,12 @@ const ChatSocketComponent = () => {
   } = useChatContext();
   const userData = useAuthData();
 
+  /**
+   * Executes a side effect when the value of `isTyping` changes.
+   * If `isTyping` is true, it sets a timeout to set `isTyping` to null after 3000 milliseconds.
+   * @param {boolean} isTyping - The value indicating whether the user is typing or not.
+   * @returns None
+   */
   useEffect(() => {
     if (isTyping) {
       (async function x() {
@@ -24,6 +35,11 @@ const ChatSocketComponent = () => {
     }
   }, [isTyping]);
 
+  /**
+   * Checks if a given string is a valid JSON string.
+   * @param {string} str - The string to check.
+   * @returns {boolean} - True if the string is a valid JSON string, false otherwise.
+   */
   function isJSONString(str) {
     try {
       JSON.parse(str);
@@ -33,6 +49,11 @@ const ChatSocketComponent = () => {
     }
   }
 
+  /**
+   * Processes a message received from a messaging system.
+   * @param {object} message - The message object received.
+   * @returns None
+   */
   const messagesProcessor = async (message) => {
     const messageType = message?.headers["x-amz-chime-event-type"];
     const record = JSON.parse(message?.payload);
@@ -102,11 +123,20 @@ const ChatSocketComponent = () => {
     }
   };
 
+  /**
+   * useEffect hook that subscribes to message updates when userData and GroupDetails are both truthy.
+   * @param {Function} messagesProcessor - The function to be called when a message update occurs.
+   * @returns None
+   */
   useEffect(() => {
     if (!userData || !GroupDetails) return;
     subscribeToMessageUpdate(messagesProcessor);
   }, [userData, GroupDetails]);
 
+  /**
+   * Executes the `listAllMessages` function when the `GroupDetails` variable changes.
+   * @returns None
+   */
   useEffect(() => {
     if (GroupDetails) {
       listAllMessages();

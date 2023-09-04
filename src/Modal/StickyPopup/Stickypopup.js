@@ -1,3 +1,10 @@
+/**
+ * A React component that represents a sticky popup for a chat box.
+ * @param {Object} HeaderContainer - The component to render as the header of the popup.
+ * @param {boolean} open - Determines whether the popup is open or closed.
+ * @param {function} close - A function to close the popup.
+ * @returns The StickyPopup component.
+ */
 import React, { useEffect, useState } from "react";
 import classes from "./Stickypopup.module.css";
 import { Drawer, Layout } from "antd";
@@ -15,8 +22,6 @@ import {
 import { JSONtoformdata } from "../../Shared/Utility";
 import ConfigureGroup from "../../Components/Connections/Groups/ConfigureGroup";
 import { isDesktop, isMobile } from "react-device-detect";
-
-const { Header } = Layout;
 
 const StickyPopup = ({ HeaderContainer, open, close }) => {
   const token = useAuthToken();
@@ -42,6 +47,16 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     }, 500);
   }, [open]);
 
+  /**
+   * Converts a message format object to a standardized format.
+   * @param {Object} messageFormat - The message format object to convert.
+   * @param {string} messageFormat.type - The type of the message.
+   * @param {string} messageFormat.message - The content of the message.
+   * @param {string} messageFormat.user_name - The name of the user who sent the message.
+   * @param {string} messageFormat.user - The ID of the user who sent the message.
+   * @param {string | null} [messageFormat.file_path=null] - The file path associated with the message.
+   * @param {string | null} [messageFormat.created_at=null] - The timestamp of when the message was created.
+   */
   const convertMessageFormat = ({
     type,
     message,
@@ -66,6 +81,12 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     };
   };
 
+  /**
+   * Converts a file to a URL and uploads it as a chat attachment.
+   * @param {File} file - The file to convert and upload.
+   * @returns {Promise<Object>} A promise that resolves to an object containing the original file and the file path of the uploaded file.
+   * @throws {Error} If there is an error uploading the file.
+   */
   const convertUrlToFile = (file) => {
     return new Promise((resolve, reject) => {
       const uniqueId =
@@ -86,19 +107,6 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
             file,
             file_path: res.data.filepath,
           });
-          // setMessages((pre) => [
-          //   ...pre,
-          //   {
-          //     ...convertMessageFormat({
-          //       type: validType,
-          //       message: val,
-          //       file: PreviewData,
-          //       file_path: res.data.filepath,
-          //       user_name: "me",
-          //       user: userData?.chime_user_id,
-          //     }),
-          //   },
-          // ]);
         })
         .catch((err) => {
           reject(err);
@@ -106,6 +114,11 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
     });
   };
 
+  /**
+   * Checks if a given string is a valid JSON string.
+   * @param {string} str - The string to check.
+   * @returns {boolean} - True if the string is a valid JSON string, false otherwise.
+   */
   function isJSONString(str) {
     try {
       JSON.parse(str);
@@ -114,6 +127,12 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
       return false;
     }
   }
+
+  /**
+   * Retrieves all messages from a channel and formats them into a consistent structure.
+   * @returns {Promise} A promise that resolves when all messages have been retrieved and formatted.
+   * @throws {Error} If there is an error retrieving the messages.
+   */
   const listAllMessages = () => {
     return new Promise((resolve, reject) => {
       let messageData = {
@@ -169,7 +188,6 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
           resolve();
         })
         .catch((err) => {
-          console.log(err, "err");
           reject();
         });
     });

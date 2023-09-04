@@ -1,66 +1,58 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Menu.module.css";
 import {
-  useAudioInputs,
   useAudioVideo,
   useLocalVideo,
+  useMeetingManager,
   useToggleLocalMute,
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
-import { useEventLayout } from "../Room/EventValidaton";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { Badge, Dropdown, Modal } from "antd";
+import { Badge, Modal, Popover } from "antd";
 import MoreBottomSheet from "./MoreBottomSheet";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { toast } from "react-hot-toast";
 import { LocalCameraComponent, LocalMicrophoneComponent } from "./Utility";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
+import { MicOptions } from "./Methods";
+import { EventContextProp } from "./types";
+import { useEventRoomContext } from "../../../Shared/Context";
 
-const TalkshowMenu = ({
-  RaiseHandUsers,
-  setRaiseHandUsers,
-  userdetails,
-  isReactions,
-  setisReactions,
-  isNewMessage,
-  setisNewMessage,
-}) => {
+const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
   const {
     isChatorParticipant,
     setisChatorParticipant,
     EventData,
     handleExitMeeting,
-  }: any = useEventLayout();
+    userdata,
+    isReactions,
+    setisReactions,
+  }: EventContextProp = useEventRoomContext();
+  const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
   const { isVideoEnabled } = useLocalVideo();
   const { muted } = useToggleLocalMute();
   const audiovideo = useAudioVideo();
-  const audioinput = useAudioInputs();
   const videoinput = useVideoInputs();
   const [isMore, setisMore] = useState<Boolean>(false);
   const [selectedDevice, setselectedDevice] = useState<any>(null);
+  const meetingmanager = useMeetingManager();
 
-  const DeviceList = (List: any, onSelect: any) => {
-    return List.map((ele: any, index: any) => {
-      return {
-        key: index + 1,
-        label: (
-          <div
-            onClick={() => {
-              onSelect(ele.deviceId);
-            }}
-          >
-            {ele.label}
-          </div>
-        ),
-      };
-    });
-  };
-
-  const getisActiveRaiseHand = () => {
-    const findData = RaiseHandUsers.find(
-      (ele: any) => ele.id === userdetails?.id
-    );
-    return findData;
+  /**
+   * Retrieves the user data. If the userData variable is defined, it returns the value of userData.
+   * Otherwise, it returns the value of tempuserData.
+   * @returns The user data.
+   */
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
   };
 
   return (
@@ -73,21 +65,16 @@ const TalkshowMenu = ({
         >
           <LocalMicrophoneComponent />
 
-          <Dropdown
-            menu={{
-              selectable: true,
-
-              items: DeviceList(audioinput.devices, async (id: any) => {
-                audiovideo?.startAudioInput(id);
-              }),
-            }}
+          <Popover
             placement="top"
-            trigger={["click"]}
+            showArrow={false}
+            content={<MicOptions />}
+            trigger="click"
           >
             <span className="material-symbols-outlined onlydes">
               expand_less
             </span>
-          </Dropdown>
+          </Popover>
         </div>
         <div
           className={`${styles.iconContainer} ${styles.switchIconSec} ${
@@ -98,29 +85,61 @@ const TalkshowMenu = ({
             selectedDevice={selectedDevice}
             setselectedDevice={setselectedDevice}
           />
-          <Dropdown
-            menu={{
-              selectable: true,
-              items: DeviceList(videoinput.devices, async (id: any) => {
-                audiovideo
-                  ?.startVideoInput(id)
-                  .then((res: any) => {
-                    console.log(res);
-                  })
-                  .catch((err: any) => {
-                    console.log(err);
-                  });
-              }),
-            }}
-            placement="top"
-            trigger={["click"]}
-          >
-            <span className="material-symbols-outlined onlydes">
-              expand_less
-            </span>
-          </Dropdown>
+          {videoinput.devices.length !== 0 && (
+            <Popover
+              placement="top"
+              showArrow={false}
+              content={
+                <div className={styles.micdropDown}>
+                  {videoinput.devices.map((ele) => {
+                    const getisActive = () =>
+                      videoinput.selectedDevice === ele.deviceId;
+                    return (
+                      <span
+                        onClick={async () => {
+                          if (audiovideo) {
+                            try {
+                              await meetingmanager.startVideoInputDevice(
+                                ele.deviceId
+                              );
+                            } catch (error) {
+                              console.error(
+                                "Error setting speaker device:",
+                                error
+                              );
+                            }
+                          }
+                        }}
+                      >
+                        <i
+                          className="material-symbols-outlined"
+                          style={{
+                            color: getisActive() ? "black" : "transparent",
+                          }}
+                        >
+                          done
+                        </i>
+                        {ele.label}
+                      </span>
+                    );
+                  })}
+                </div>
+              }
+              trigger="click"
+            >
+              <div
+                style={{
+                  color: "white",
+                }}
+              >
+                <span className="material-symbols-outlined onlydes">
+                  expand_less
+                </span>
+              </div>
+            </Popover>
+          )}
         </div>
-        {userdetails?.isHost ? (
+        {userdata?.isHost ? (
           <div
             className={`onlydes ${styles.streamBtn}`}
             onClick={() => {
@@ -128,14 +147,14 @@ const TalkshowMenu = ({
                 title: "Are you sure Do you want to Stop Talkshow Streaming ? ",
                 icon: <ExclamationCircleFilled />,
                 onOk() {
-                  handleExitMeeting(userdetails)
+                  handleExitMeeting(userdata)
                     .then(() => {
                       ChimesendMessage(
                         {
-                          name: userdetails?.name,
-                          userId: userdetails?.id,
+                          name: userdata?.name,
+                          userId: userdata?.userId,
                           meetingId: EventData?.chime_meeting_id,
-                          isHost: userdetails?.isHost,
+                          isHost: userdata?.isHost,
                         },
                         CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
                       );
@@ -162,14 +181,14 @@ const TalkshowMenu = ({
                 title: "Are you sure Do you want to Exit Talkshow Streaming ?",
                 icon: <ExclamationCircleFilled />,
                 onOk() {
-                  handleExitMeeting(userdetails)
+                  handleExitMeeting(userdata)
                     .then(() => {
                       ChimesendMessage(
                         {
-                          name: userdetails?.name,
-                          userId: userdetails?.id,
+                          name: userdata?.name,
+                          userId: userdata?.userId,
                           meetingId: EventData?.chime_meeting_id,
-                          isHost: userdetails?.isHost,
+                          isHost: userdata?.isHost,
                         },
                         CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
                       );
@@ -191,45 +210,27 @@ const TalkshowMenu = ({
             isReactions ? styles.activeiconContainer : ""
           }`}
           onClick={() => {
-            setisReactions((pre: Boolean) => !pre);
+            setisReactions((pre) => !pre);
           }}
         >
           <i className="material-symbols-outlined">mood</i>
         </div>
         <div
           className={`${styles.iconContainer} onlydes ${
-            getisActiveRaiseHand() ? styles.activeiconContainer : ""
+            userdata?.handRaised ? styles.activeiconContainer : ""
           }`}
           onClick={() => {
-            if (getisActiveRaiseHand()) {
-              ChimesendMessage(
-                {
-                  refId: EventData?.reference_id,
-                },
-                CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-              );
-              setRaiseHandUsers((pre: any) =>
-                pre.filter((ele: any) => ele.id !== userdetails?.id)
-              );
-            } else {
-              ChimesendMessage(
-                {
-                  refId: EventData?.reference_id,
-                },
-                CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-              );
-              setRaiseHandUsers((pre: any) => [...pre, userdetails]);
-            }
+            ChimesendMessage(
+              {
+                refId: EventData?.reference_id,
+                userId: getUserData()?.user_id,
+                status: !userdata.handRaised,
+              },
+              CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
+            );
           }}
         >
-          <i
-            className={` ${
-              styles.raise_hand_icon
-              // getisActiveRaiseHand()
-              //   // ? styles.raise_hand_active_icon
-              //   : styles.raise_hand_icon
-            } ${styles.icon} `}
-          ></i>
+          <i className={` ${styles.raise_hand_icon} ${styles.icon} `}></i>
         </div>
         <Badge dot={isNewMessage === "participant"}>
           <div
@@ -284,14 +285,14 @@ const TalkshowMenu = ({
               title: "Are you sure Do you want to Exit Talkshow Streaming ?",
               icon: <ExclamationCircleFilled />,
               onOk() {
-                handleExitMeeting(userdetails)
+                handleExitMeeting(userdata)
                   .then(() => {
                     ChimesendMessage(
                       {
-                        name: userdetails?.name,
-                        userId: userdetails?.id,
+                        name: userdata?.name,
+                        userId: userdata?.userId,
                         meetingId: EventData?.chime_meeting_id,
-                        isHost: userdetails?.isHost,
+                        isHost: userdata?.isHost,
                       },
                       CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
                     );
@@ -319,37 +320,21 @@ const TalkshowMenu = ({
                 <div className={styles.iconSec}>
                   <div
                     className={`${styles.iconContainer}  ${
-                      getisActiveRaiseHand() ? styles.activeiconContainer : ""
+                      userdata?.handRaised ? styles.activeiconContainer : ""
                     }`}
                     onClick={() => {
-                      if (getisActiveRaiseHand()) {
-                        ChimesendMessage(
-                          {
-                            refId: EventData?.reference_id,
-                          },
-                          CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                        );
-                        setRaiseHandUsers((pre: any) =>
-                          pre.filter((ele: any) => ele.id !== userdetails?.id)
-                        );
-                      } else {
-                        ChimesendMessage(
-                          {
-                            refId: EventData?.reference_id,
-                          },
-                          CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
-                        );
-                        setRaiseHandUsers((pre: any) => [...pre, userdetails]);
-                      }
+                      ChimesendMessage(
+                        {
+                          refId: EventData?.reference_id,
+                          userId: getUserData()?.user_id,
+                          status: !userdata.handRaised,
+                        },
+                        CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
+                      );
                     }}
                   >
                     <i
-                      className={` ${
-                        styles.raise_hand_icon
-                        // getisActiveRaiseHand()
-                        //   // ? styles.raise_hand_active_icon
-                        //   : styles.raise_hand_icon
-                      } ${styles.icon} `}
+                      className={` ${styles.raise_hand_icon} ${styles.icon} `}
                     ></i>
                   </div>
                   <p>Raise Hand</p>

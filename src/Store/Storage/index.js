@@ -1,3 +1,6 @@
+/**
+ * A collection of utility functions for managing data storage using cookies, local storage, and session storage.
+ */
 import { getCookie, setCookie } from "./Cookie";
 
 export const setCookieData = (key, value, exdays = 30) => {

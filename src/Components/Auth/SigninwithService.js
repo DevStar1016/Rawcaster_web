@@ -1,3 +1,8 @@
+/**
+ * A component that allows users to sign in with social media services like Google and Apple.
+ * @param {string} type - The type of sign-in service (e.g., "Sign in", "Sign up").
+ * @returns The SigninwithService component.
+ */
 import React, { useEffect, useState } from "react";
 import { LoginSocialApple, LoginSocialGoogle } from "reactjs-social-login";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
@@ -31,13 +36,17 @@ import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 const SigninwithService = ({ type }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
     latitude: "",
     longitude: "",
   });
 
+  /**
+   * Executes the specified callback function after the component has rendered.
+   * Retrieves geocode data and updates the location value state with the retrieved data.
+   * @returns None
+   */
   useEffect(() => {
     getGeocodeData()
       .then((res) => {
@@ -58,6 +67,11 @@ const SigninwithService = ({ type }) => {
       });
   }, []);
 
+  /**
+   * Handles the signup process by sending the user's data to the server for authentication.
+   * @param {object} values - The user's signup data.
+   * @returns None
+   */
   const HandleSignup = (values) => {
     let finalData = {
       ...values,
@@ -119,15 +133,12 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
-                console.log(data);
                 toast.error("Something Went Wrong !");
               }
 
               dispatch(handleLoading(true));
             }}
-            onReject={(err) => {
-              console.log(err, "err");
-            }}
+            onReject={(err) => {}}
           >
             <button
               className={classes.altSignBtn}

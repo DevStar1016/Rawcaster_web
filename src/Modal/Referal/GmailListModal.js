@@ -1,5 +1,14 @@
+/**
+ * A modal component that displays a list of contacts from Gmail and allows the user to select
+ * contacts to send invitations to. The component also provides search functionality and the ability
+ * to select/unselect all contacts.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} close - Callback function to close the modal.
+ * @param {Array} Contacts - An array of contact objects from Gmail.
+ * @returns A modal component with a list of contacts and invitation sending functionality.
+ */
 import { Button, Checkbox, Modal, message } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./Referal.module.css";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { handleSendEmail } from "./utility";
@@ -11,10 +20,14 @@ const GmailListModal = ({ open, close, Contacts }) => {
   const [selectedEmails, setselectedEmails] = useState([]);
   const [FilterContacts, setFilterContacts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-
   const profileData = useAuthData();
 
   const handleInviteFriends = (contacts) => {
+    /**
+     * Handles the action of inviting friends by sending an email to the specified contacts.
+     * @param {Array} contacts - The list of contacts to send the invitation to.
+     * @returns None
+     */
     handleSendEmail(token, contacts).then(() => {
       close();
       setselectedEmails([]);
@@ -22,6 +35,13 @@ const GmailListModal = ({ open, close, Contacts }) => {
     });
   };
 
+  /**
+   * Handles the selection or deselection of a contact in the contact selector.
+   * If the contact is already selected, it will be deselected. If the contact is not
+   * selected, it will be added to the selectedEmails array.
+   * @param {any} val - The value of the selected contact.
+   * @returns None
+   */
   const handleContactselector = (val) => {
     if (selectedEmails.includes(val)) {
       let tempSelected = selectedEmails.filter((ele) => !(ele === val));
@@ -31,6 +51,15 @@ const GmailListModal = ({ open, close, Contacts }) => {
     }
   };
 
+  /**
+   * Handles the search functionality for filtering contacts based on a given value.
+   * If the value is empty, it resets the filter and displays all contacts.
+   * If the value is not empty, it filters the contacts based on the email or title that
+   * includes the given value (case-insensitive).
+   * It updates the filtered contacts state, search input state, and resets the view more state if necessary.
+   * @param {string} val - The value to search for.
+   * @returns None
+   */
   const handleSearchConnections = (val) => {
     if (val === "") {
       setFilterContacts(Contacts);
@@ -50,6 +79,14 @@ const GmailListModal = ({ open, close, Contacts }) => {
     }
   };
 
+  /**
+   * useEffect hook that updates the filter contacts state when the Contacts prop changes.
+   * If the FilterContacts array is empty and the Contacts prop is not null or undefined,
+   * it sets the FilterContacts state to the value of the Contacts prop.
+   * @param {Array} FilterContacts - The current filter contacts state.
+   * @param {Array} Contacts - The contacts prop.
+   * @returns None
+   */
   useEffect(() => {
     if (FilterContacts.length === 0 && Contacts) {
       setFilterContacts(Contacts);

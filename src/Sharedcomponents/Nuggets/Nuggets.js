@@ -1,3 +1,11 @@
+/**
+ * A React component that displays a list of nuggets.
+ * @param {boolean} [isLocked=false] - Indicates whether the nuggets are locked.
+ * @param {boolean} [isUserPostAvailable=true] - Indicates whether the user's posts are available.
+ * @param {boolean} [isLoading=false] - Indicates whether the nuggets are currently loading.
+ * @param {string} [className=null] - The CSS class name for the component.
+ * @returns The Nuggets component.
+ */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import classes from "./Nuggets.module.css";
 import {
@@ -89,6 +97,11 @@ const Nuggets = ({
   });
   const [loading, setloading] = useState(false);
 
+  /**
+   * useEffect hook that updates the nugget count state when the login user data changes.
+   * @param {Object} loginuserData - The login user data object.
+   * @returns None
+   */
   useEffect(() => {
     if (loginuserData) {
       setNuggetCount({
@@ -98,14 +111,11 @@ const Nuggets = ({
     }
   }, [loginuserData]);
 
-  useEffect(() => {
-    // return () => {
-    //   if (ReadSource.current) {
-    //     ReadSource.current.cancel("Request Cancelled");
-    //   }
-    // };
-  }, [audio]);
-
+  /**
+   * Handles the progress of a task and updates the progress state.
+   * @param {object} progress - The progress object containing the loaded and total values.
+   * @returns None
+   */
   const handleProgress = (progress) => {
     let val = (progress.loaded / progress.total) * 100;
     setProgress({
@@ -114,6 +124,12 @@ const Nuggets = ({
     });
   };
 
+  /**
+   * Handles the view handling logic for updating the Nugget view API and updating
+   * each element in the viewRef.
+   * @param {number} index - The index of the view handling operation.
+   * @returns None
+   */
   const ViewHandling = (index) => {
     dispatch(handleNuggetViewAPIUpdate(viewRef.current));
     for (let i = 0; i < viewRef.current.length; i++) {
@@ -129,6 +145,12 @@ const Nuggets = ({
     []
   );
 
+  /**
+   * Retrieves a list of nuggets based on the specified page number and form data.
+   * @param {number} [page=1] - The page number to retrieve the nuggets from.
+   * @param {object} [formData=null] - The form data to filter the nuggets.
+   * @returns {Promise} - A promise that resolves with the retrieved nuggets data.
+   */
   const GetNuggetList = (page = 1, formData = null) => {
     return new Promise((resolve, reject) => {
       if (formData) {
@@ -170,10 +192,19 @@ const Nuggets = ({
     });
   };
 
+  /**
+   * Checks if there is a next page available based on the current page reference and the total number of pages.
+   * @returns {boolean} - true if there is a next page available, false otherwise.
+   */
   const getHasNextPage = () => {
     return totalpages && pageRef.current !== totalpages;
   };
 
+  /**
+   * Handles the bottom loader functionality.
+   * If there is a next page available, it sets the 'isReachedEnd' state to true.
+   * @returns None
+   */
   const handleBottomLoader = () => {
     if (getHasNextPage()) {
       setisReachedEnd(true);
@@ -182,6 +213,14 @@ const Nuggets = ({
 
   const scrollRef = useBottomScrollListener(handleBottomLoader);
 
+  /**
+   * Executes a side effect when the component mounts or when the `token` or `isLoading` dependencies change.
+   * If `isLocked` or `isLoading` is true, the effect returns early and does not execute the rest of the code.
+   * If `Nuggets` is an empty array, it prepares the `finalData` object with a default token and form data.
+   * If the current URL path includes "globalsearch", it adds the decrypted search key to the `finalData` object.
+   * If the current URL path includes "viewprofile", it adds the decrypted user ID to the `finalData` object.
+   * Finally, it dispatches the `handleNuggetFormData` action with the `finalData`
+   */
   useEffect(() => {
     if (isLocked || isLoading) {
       return;
@@ -253,6 +292,10 @@ const Nuggets = ({
     ReadoutRef,
   };
 
+  /**
+   * Checks if the current page is valid based on authentication and user data.
+   * @returns {boolean} - true if the page is valid, false otherwise.
+   */
   const isValidPage = () => {
     if (getAuthenticated() && loginuserData) {
       if (parseInt(display_user_id) === parseInt(userData?.user_id)) {
@@ -265,10 +308,23 @@ const Nuggets = ({
     return false;
   };
 
+  /**
+   * Checks if the user connection is valid based on the provided display_user_id and userData.
+   * @param {string} display_user_id - The display user ID.
+   * @param {object} userData - The user data object.
+   * @returns {boolean} True if the user connection is valid, false otherwise.
+   */
   const isuserConnection =
     display_user_id &&
     parseInt(display_user_id) !== parseInt(userData?.user_id);
 
+  /**
+   * Checks if the current page is a display post page.
+   * @returns {string | JSX.Element} - Returns a string or JSX element based on the conditions.
+   * If the page is valid and the active tab is 0, it returns the string "Share Your First Nugget".
+   * If the display_user_id is not equal to the user_id in the userData object, it returns an Empty component with the description "No Posts Available".
+   * Otherwise, it returns an Empty component with the description "No Posts Available".
+   */
   const isDisplayPost = () => {
     if (isValidPage() && ActiveTab === 0) {
       return "Share Your First Nugget";
@@ -284,6 +340,11 @@ const Nuggets = ({
     // }
   }, [Nuggets]);
 
+  /**
+   * Loads more data when the end is reached, there is a next page available, and
+   * no loading is currently in progress.
+   * @returns None
+   */
   const loadMore = () => {
     if (isReachedEnd && getHasNextPage() && !loading) {
       setloading(true);
@@ -292,12 +353,23 @@ const Nuggets = ({
     }
   };
 
+  /**
+   * Initializes the useInfiniteScroll hook with the provided parameters.
+   * @param {boolean} loading - Indicates whether the data is currently being loaded.
+   * @param {function} getHasNextPage - A function that returns a boolean indicating whether there is more data to load.
+   * @param {function} loadMore - A function that is called when more data needs to be loaded.
+   * @returns An array containing the sentryRef and rootRef references.
+   */
   const [sentryRef, { rootRef }] = useInfiniteScroll({
     loading: loading,
     hasNextPage: getHasNextPage(),
     onLoadMore: loadMore,
   });
 
+  /**
+   * Adds a scroll event listener to the container element and removes it when the component is unmounted.
+   * @returns None
+   */
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -310,6 +382,11 @@ const Nuggets = ({
     };
   }, []);
 
+  /**
+   * Handles the selection of a filter type and updates the filter data accordingly.
+   * @param {string} type - The selected filter type.
+   * @returns None
+   */
   const handleFilterType = (type) => {
     let filterData = { ...nuggetFormData };
 

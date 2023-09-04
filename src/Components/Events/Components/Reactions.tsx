@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { Easing } from "react-native-web";
 import Fly from "react-flying-objects";
 import classes from "./Reactions.module.css";
@@ -10,9 +10,14 @@ const SIZE = 25;
 const random = (min: any, max: any) =>
   Math.floor(Math.random() * (max - min) + min);
 
+type EmojiObject = {
+  id: number;
+  emoji: string;
+};
+
 const Reactions = () => {
-  const [animatedEmoji, setAnimatedEmoji] = useState<any>(); // To randomly set values in the objectConfig
-  const [flyingObjects, setFlyingObjects] = useState<any>([]); // Used to manage all flying currently objects by the Fly component
+  const [animatedEmoji, setAnimatedEmoji] = useState<ReactNode>(); // To randomly set values in the objectConfig
+  const [flyingObjects, setFlyingObjects] = useState<EmojiObject[]>([]); // Used to manage all flying currently objects by the Fly component
 
   const animatedEmojiList = [
     {
@@ -63,6 +68,7 @@ const Reactions = () => {
         {emojiData}
       </div>
     );
+
     setAnimatedEmoji(emoji); // Setting the object which would fly in a moment
   };
 

@@ -7,6 +7,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useEffect, useRef } from "react";
 
+/**
+ * Handles sending an email to the specified contacts using the provided token.
+ * @param {string} token - The token used for authentication.
+ * @param {Array} contacts - An array of email contacts to send the email to.
+ * @returns {Promise} - A promise that resolves when the email is successfully sent.
+ */
 export const handleSendEmail = (token, contacts) => {
   let promise = new Promise((resolve, reject) => {
     let inviteData = {
@@ -28,6 +34,12 @@ export const handleSendEmail = (token, contacts) => {
   return promise;
 };
 
+/**
+ * A container component for the email referral feature. Allows users to invite their friends
+ * via email and unlock Rawcaster Pro features.
+ * @param {Function} close - A function to close the container.
+ * @returns The email referral container component.
+ */
 export const EmailReferalContainer = ({ close }) => {
   const token = useAuthToken();
   const inputref = useRef(null);
@@ -143,9 +155,6 @@ export const EmailReferalContainer = ({ close }) => {
               name="emailInput"
               ref={inputref}
               value={values.emailInput ? values.emailInput : ""}
-              onClick={() => {
-                console.log(values.emailInput, "values.emailInput");
-              }}
               onChange={(e) => {
                 setFieldValue("emailInput", e.target.value);
               }}

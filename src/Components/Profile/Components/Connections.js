@@ -1,3 +1,12 @@
+/**
+ * A React component that displays a list of connections.
+ * @param {string} title - The title of the connections list.
+ * @param {string} type - The type of connections list (e.g., influencers, connections, fans).
+ * @param {boolean} isLocked - Indicates whether the connections list is locked or not.
+ * @param {boolean} isMyProfile - Indicates whether the connections list belongs to the user's own profile.
+ * @param {boolean} isLoading - Indicates whether the connections list is currently loading.
+ * @returns A React component that renders the connections list.
+ */
 import React, { useEffect, useState } from "react";
 import classes from "./ProfilerRight.module.css";
 import { useParams } from "react-router";

@@ -40,6 +40,15 @@ const InfluencerSend = ({ open, close, user }) => {
     },
   });
 
+  /**
+   * Handles the nugget files by updating the NuggetData state.
+   * If an index is provided, it updates the file at that index with the given value.
+   * If the index is undefined, it either adds a new file to the NuggetData state if it is empty,
+   * or appends a new file to the existing NuggetData state.
+   * @param {any} value - The value of the file to be added or updated.
+   * @param {number | undefined} index - The index of the file to be updated. If undefined, a new file will be added.
+   * @returns None
+   */
   const handleNuggetFiles = (value, index) => {
     if (index !== undefined) {
       let tempData = [...NuggetData];
@@ -52,6 +61,12 @@ const InfluencerSend = ({ open, close, user }) => {
     }
   };
 
+  /**
+   * Handles the action of allowing microphone permission.
+   * Requests audio permissions and sets the 'isAudioModal' state to true if permission is granted.
+   * Displays an error toast message if permission is denied.
+   * @returns None
+   */
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
       .then(() => {
@@ -69,6 +84,11 @@ const InfluencerSend = ({ open, close, user }) => {
       });
   };
 
+  /**
+   * Checks if a given type is valid based on the file types in NuggetData.
+   * @param {string} type - The type to check for validity.
+   * @returns {boolean} - True if the type is valid, false otherwise.
+   */
   const checkValidType = (type) => {
     let findData = NuggetData.find((ele) => ele.file.type.includes(type));
     if (findData || NuggetData.length === 0) {
@@ -78,6 +98,11 @@ const InfluencerSend = ({ open, close, user }) => {
     }
   };
 
+  /**
+   * Returns the corresponding media type code for the given media type.
+   * @param {string | number} type - The media type to get the code for.
+   * @returns {string | number} - The media type code.
+   */
   const getMediaType = (type) => {
     switch (type) {
       case "image":
@@ -97,6 +122,10 @@ const InfluencerSend = ({ open, close, user }) => {
     }
   };
 
+  /**
+   * Retrieves the "My Fans" group from the list of groups.
+   * @returns {object | string} - The "My Fans" group object if found, otherwise an empty string.
+   */
   const getFansGroup = () => {
     let myfansGroup = groupsList.find((ele) => ele.group_name === "My Fans");
     if (myfansGroup) {
@@ -106,6 +135,13 @@ const InfluencerSend = ({ open, close, user }) => {
     }
   };
 
+  /**
+   * Generates the post data object for an event message in a group chat.
+   * @param {string} type - The type of the message (e.g. text, image, video).
+   * @param {string} textMessage - The text content of the message.
+   * @param {string | null} [mediaPath=null] - The path to the media file associated with the message.
+   * @returns {object} - The post data object.
+   */
   const getEventPostData = (type, textMessage, mediaPath = null) => {
     const uniqueId =
       userData.user_id +
@@ -141,6 +177,11 @@ const InfluencerSend = ({ open, close, user }) => {
     };
   };
 
+  /**
+   * Handles sending a chat value to the server.
+   * @param {any} value - The value to send as a chat message.
+   * @returns None
+   */
   const handleSendChatValue = (value) => {
     if (NuggetData && NuggetData.length !== 0) {
       for (let index = 0; index < NuggetData.length; index++) {
@@ -327,11 +368,11 @@ const InfluencerSend = ({ open, close, user }) => {
                   index={index}
                   setNuggetData={setNuggetData}
                   setNuggetImg={setNuggetImg}
-                  onUpload={(val) => {
-                    let tempData = [...NuggetData];
-                    tempData[index] = val;
-                    console.log(tempData);
-                  }}
+                  // onUpload={(val) => {
+                  //   let tempData = [...NuggetData];
+                  //   tempData[index] = val;
+                  //
+                  // }}
                 />
               );
             })}

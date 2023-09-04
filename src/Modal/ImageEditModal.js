@@ -1,5 +1,13 @@
+/**
+ * A modal component that allows users to edit images using the Toast UI Image Editor.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {object} initialFile - The initial file to be edited.
+ * @param {function} onSuccess - Callback function to be called when editing is successful.
+ * @param {function} onFailure - Callback function to be called when editing is cancelled or fails.
+ * @returns A modal component with an image editor.
+ */
 import { Modal } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImageEditor from "@toast-ui/react-image-editor";
 
 const ImageEditModal = ({ open, initialFile, onSuccess, onFailure }) => {

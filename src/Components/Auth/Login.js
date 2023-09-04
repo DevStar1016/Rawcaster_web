@@ -1,3 +1,8 @@
+/**
+ * A functional component that represents the login page of the application.
+ * Allows users to log in with their credentials and access the latest insights and experiences for their social media performance.
+ * @returns JSX elements representing the login page.
+ */
 import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -29,14 +34,9 @@ const validationSchema = yup.object().shape({
   username: yup
     .string()
     .min(5, "Email or Phone Number Must be atleast 5 Characters")
-    // .matches(LOGIN_ID, "Please Enter Valid Login ID")
     .required(`Please input your Email or Phone Number!`),
   password: yup
     .string()
-    // .matches(
-    //   PASSWORD_EXP,
-    //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-    // )
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
     .min(8, "Password must be at least 8 characters long")
@@ -60,6 +60,12 @@ const Login = () => {
       },
     });
 
+  /**
+   * Handles the profile update based on the given type.
+   * @param {object} res - The response object.
+   * @param {number} type - The type of profile update (1 for email, 2 for sms).
+   * @returns None
+   */
   const handleProfileUpdate = (res, type) => {
     if (type === 1) {
       accountVerifyHandle(res, "email", navigate);
@@ -68,6 +74,11 @@ const Login = () => {
     }
   };
 
+  /**
+   * Handles the login service by sending a request to the server with the provided values.
+   * @param {object} values - The login values object.
+   * @returns None
+   */
   const HandleLoginService = (values) => {
     let loginData = {
       ...values,

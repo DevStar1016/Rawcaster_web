@@ -2,6 +2,10 @@ import { Skeleton } from "antd";
 import React from "react";
 import classes from "../Components/ProfilerRight.module.css";
 
+/**
+ * Renders a list of locked connections.
+ * @returns {JSX.Element} - The rendered component.
+ */
 const LockedConnections = () => {
   return (
     <div className={classes.listSec}>

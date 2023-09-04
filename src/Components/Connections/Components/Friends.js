@@ -1,3 +1,9 @@
+/**
+ * A functional component that represents a friend in a friends list.
+ * @param {Object} friend - The friend object containing information about the friend.
+ * @param {string} searchInput - The search input used to filter the friends list.
+ * @returns The JSX representation of a friend in the friends list.
+ */
 import React from "react";
 import { decodeHtml, handleProfileNavigate } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";

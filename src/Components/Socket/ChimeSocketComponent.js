@@ -1,318 +1,237 @@
-import { ChimesocketListen } from "../../Services/SocketService";
-import { Outlet } from "react-router";
+import {
+  ChimesendMessage,
+  ChimesocketListen,
+} from "../../Services/SocketService";
+import { Outlet, useParams } from "react-router";
 import { useEffect } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuthData, useEventWindow } from "../../Shared/Reduxfetcher";
 import {
   useLocalVideo,
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
+import { useEvent } from "../../Sharedcomponents/EventProvider";
 
 const ChimeSocketComponent = () => {
+  const EventWindowRef = useEventWindow();
   const userData = useAuthData();
   const { muted } = useLocalVideo();
   const { isVideoEnabled } = useToggleLocalMute();
+  const { ref_id } = useParams();
+  const { emit } = useEvent();
+
+  // Socket Emitter from Parent Window to Child Window
+
+  const HandleSendToNewWindow = (type, message) => {
+    if (EventWindowRef) {
+      const EventData = {
+        type: type,
+        message: message,
+      };
+      EventWindowRef.postMessage(EventData, "*");
+    }
+  };
+
+  // Connect Socket URL
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.CONNECT_SOCKET, () => {
-      console.log(ChimesocketListen.connected);
+      if (!ref_id && userData) {
+        ChimesendMessage(
+          { userId: userData.user_id },
+          CHIME_SOCKET_EVENTS.JOIN_SOCKET
+        );
+      }
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.CONNECT_SOCKET);
     };
   }, [userData]);
 
+  //  Notifications Received Here - Socket
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
+      if (message && message.type) {
+        emit(message.type, message);
+      }
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.NOTIFICATIONS);
+    };
+  }, [userData, emit]);
+
+  //  Join Request From Attendees to Host Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
       (message) => {
-        console.log(message);
-        localStorage.setItem(
+        HandleSendToNewWindow(
           CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
-          JSON.stringify(message)
+          message
         );
       }
     );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  //  New User Joined Status Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
       (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING);
-        localStorage.setItem(
+        HandleSendToNewWindow(
           CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
-          JSON.stringify(message)
+          message
         );
       }
     );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  // Join Request Answer For new Joined user Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
-      setTimeout(() => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
-        localStorage.setItem(
-          CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
-          JSON.stringify(message)
-        );
-      }, 1000);
+      if (EventWindowRef) {
+        HandleSendToNewWindow(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER, message);
+      }
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  // Meeting In-call events Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
       (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
-        localStorage.setItem(
+        HandleSendToNewWindow(
           CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
-          JSON.stringify(message)
+          message
         );
       }
     );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
     };
-  }, [isVideoEnabled, muted]);
+  }, [isVideoEnabled, muted, EventWindowRef]);
+
+  // Meeting Raise Hand status Received Here - Socket
 
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND,
-        JSON.stringify(message)
-      );
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  // Renamed user data Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER,
-        JSON.stringify(message)
-      );
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
-  useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER,
-      (message) => {
-        localStorage.removeItem(
-          CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER
-        );
-        localStorage.setItem(
-          CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER,
-          JSON.stringify(message)
-        );
-      }
-    );
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.DISABLE_SHARE_SCREEN_ANSWER);
-    };
-  }, []);
-
+  // Screen share Enable/Disable Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
       (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER);
-        localStorage.setItem(
+        HandleSendToNewWindow(
           CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
-          JSON.stringify(message)
+          message
         );
       }
     );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  // Audio Enable/Disable Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
-        JSON.stringify(message)
-      );
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
-  useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER,
-      (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER);
-        localStorage.setItem(
-          CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER,
-          JSON.stringify(message)
-        );
-      }
-    );
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.DISABLE_AUDIO_ANSWER);
-    };
-  }, []);
-
+  // View Status Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(
       CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
       (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER);
-        localStorage.setItem(
+        HandleSendToNewWindow(
           CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
-          JSON.stringify(message)
+          message
         );
       }
     );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER,
-        JSON.stringify(message)
-      );
-    });
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER);
-    };
-  }, []);
-
+  // Meeting Ended Status Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.END_MEETING_ANSWER,
-        JSON.stringify(message)
-      );
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.END_MEETING_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  // Attendee Kicked Status Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.KICK_USER_ANSWER,
-        JSON.stringify(message)
-      );
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.KICK_USER_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  // Message in Meeting Room Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG,
-        JSON.stringify(message)
-      );
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG);
     };
-  }, []);
+  }, [EventWindowRef]);
 
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.SINGLE_USER_MSG,
-        JSON.stringify(message)
-      );
-    });
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.SINGLE_USER_MSG);
-    };
-  }, []);
-
-  useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
-      (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER);
-        localStorage.setItem(
-          CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
-          JSON.stringify(message)
-        );
-      }
-    );
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER);
-    };
-  }, []);
-
-  useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
-        JSON.stringify(message)
-      );
-    });
-    return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER);
-    };
-  }, []);
-
+  // Video Enable/Disable Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER, (message) => {
-      localStorage.removeItem(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER);
-      localStorage.setItem(
-        CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER,
-        JSON.stringify(message)
-      );
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
+  // Promote Host Statue Received Here - Socket
   useEffect(() => {
-    ChimesocketListen.on(
-      CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
-      (message) => {
-        localStorage.removeItem(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
-        localStorage.setItem(
-          CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
-          JSON.stringify(message)
-        );
-      }
-    );
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.MAKE_HOST_ANSWER, (message) => {
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.MAKE_HOST_ANSWER, message);
+    });
     return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS);
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.MAKE_HOST_ANSWER);
     };
-  }, []);
+  }, [EventWindowRef]);
 
   return <Outlet />;
 };

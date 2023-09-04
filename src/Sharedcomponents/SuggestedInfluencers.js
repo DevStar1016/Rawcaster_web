@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a list of suggested influencers.
+ * @returns The JSX code for rendering the suggested influencers component.
+ */
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { InfluencerListService } from "../Services/ApiService";
@@ -17,6 +21,10 @@ const SuggestedInfluencers = () => {
   const dispatch = useDispatch();
   const [influencerList, setinfluencerList] = useState();
   const [isInfluencerLoading, setisInfluencerLoading] = useState(true);
+  /**
+   * Retrieves a list of influencers from the server and updates the state with the result.
+   * @returns None
+   */
   const getInfluencerList = () => {
     let influencerData = {
       token: "RAWCAST",
@@ -37,6 +45,12 @@ const SuggestedInfluencers = () => {
       });
   };
 
+  /**
+   * Executes a side effect function when the component mounts.
+   * The side effect function is only executed if the user is not authenticated.
+   * The function `getInfluencerList()` is called to retrieve the list of influencers.
+   * @returns None
+   */
   useEffect(() => {
     if (!getAuthenticated()) {
       getInfluencerList();

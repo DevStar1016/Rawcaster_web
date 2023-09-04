@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a list of connections.
+ * @returns The ConnectionsList component.
+ */
 import React, { useEffect } from "react";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import { decodeHtml } from "../../Shared/Utility";
@@ -19,6 +23,14 @@ const ConnectionsList = () => {
     share_type,
   } = useSpecificConnectionNugget();
   const { friendsList } = useDashboard();
+  /**
+   * useEffect hook that updates the connection data and filtered list based on changes in friendsList, open, type, and shareWithData.
+   * @param {Array} friendsList - The list of friends.
+   * @param {boolean} open - The state of the component being open or closed.
+   * @param {number} type - The type of share.
+   * @param {Array} shareWithData - The list of users to share data with.
+   * @returns None
+   */
   useEffect(() => {
     if (friendsList) {
       setConnectionData(friendsList);
@@ -37,6 +49,11 @@ const ConnectionsList = () => {
     }
   }, [friendsList, open, type, shareWithData]);
 
+  /**
+   * Checks if a connection with the given user ID is selected.
+   * @param {number} user_id - The user ID to check.
+   * @returns {object | undefined} - The connection object if found, otherwise undefined.
+   */
   const isSelectedConnection = (user_id) => {
     const findData = FilteredList.find(
       (ele) => parseInt(ele.user_id) === parseInt(user_id)

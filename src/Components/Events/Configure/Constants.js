@@ -1,5 +1,8 @@
 export const defaultVolume = 30;
 
+/**
+ * An array of dropdown items for a Event menu.
+ */
 export const DropdownItems = [
   {
     label: "Upcoming Events",
@@ -35,6 +38,11 @@ export const DropdownItems = [
   },
 ];
 
+/**
+ * An array of objects representing items in a user dropdown menu.
+ * Each object has a label and a key property.
+ * Some objects may have a type property set to "divider" to represent a divider line.
+ */
 export const UserDropdownItems = [
   {
     label: "Upcoming Events",
@@ -56,6 +64,11 @@ export const UserDropdownItems = [
   },
 ];
 
+/**
+ * An array of event settings objects.
+ * Each object represents a specific event setting with its title, description, type, and isprimary flag.
+ * @type {Array<Object>}
+ */
 export const EventSettings = [
   {
     title: "Waiting Room",

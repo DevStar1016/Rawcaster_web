@@ -1,3 +1,10 @@
+/**
+ * A React component that renders a modal for displaying a claim account request.
+ * @param {boolean} visible - Determines whether the modal is visible or not.
+ * @param {function} onClose - Callback function to close the modal.
+ * @param {string} msg - The message to display in the modal.
+ * @returns A modal component with the claim account request information.
+ */
 import React from "react";
 import classes from "./ClaimAccount.module.css";
 import { Modal } from "antd";

@@ -57,5 +57,14 @@ export const CHIME_SOCKET_EVENTS = {
   END_MEETING_ANSWER: "endMeetingAnswer",
   KICK_USER: "kickUser",
   KICK_USER_ANSWER: "kickUserAnswer",
+  MAKE_HOST: "makeHost",
+  MAKE_HOST_ANSWER: "makeHostAnswer",
+  NOTIFICATIONS: "notifications",
   DISCONNECT_SOCKET: "disconnect",
+};
+
+export const COMMON_EVENTS_TYPES = {
+  CREATE_EVENT: "createEvent",
+  EDIT_EVENT: "editEvent",
+  DELETE_EVENT: "deleteEvent",
 };

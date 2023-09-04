@@ -1,3 +1,8 @@
+/**
+ * A React component that renders an emoji picker.
+ * @param {EmojiPickerProps} props - The props for the EmojiPicker component.
+ * @returns The rendered EmojiPicker component.
+ */
 import React, { useEffect, useRef } from "react";
 import { Picker } from "emoji-mart";
 import { EmojiPickerProps } from "../types/UIComponents";

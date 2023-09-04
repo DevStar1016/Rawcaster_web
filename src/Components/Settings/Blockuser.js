@@ -1,3 +1,7 @@
+/**
+ * A React component that allows users to manage blocked users in their connection list.
+ * @returns The Blockuser component.
+ */
 import React, { useEffect } from "react";
 import classes from "./Settings.module.css";
 import { Button, Select } from "antd";
@@ -29,6 +33,11 @@ const Blockuser = () => {
   const [query, setQuery] = useState(null);
   const [isSearchEnabled, setisSearchEnabled] = useState(true);
 
+  /**
+   * Retrieves blocked user data from the server.
+   * @param {string|null} search_key - The search key to filter the blocked user data. Default is null.
+   * @returns None
+   */
   const getBlockedUserData = (search_key = null) => {
     let blockuserData = {
       token: token,
@@ -56,6 +65,11 @@ const Blockuser = () => {
     dispatch(fetchFrindsbyId(token));
   };
 
+  /**
+   * Handles blocking multiple users by sending a request to the server.
+   * @param {string} user_id - The ID of the user to be blocked.
+   * @returns None
+   */
   const handleBlockMultipleuser = (user_id) => {
     let blockData = {
       token: token,
@@ -74,6 +88,11 @@ const Blockuser = () => {
       });
   };
 
+  /**
+   * Handles the unblocking of a user with the given user ID.
+   * @param {string} user_id - The ID of the user to unblock.
+   * @returns None
+   */
   const handleunblockuser = (user_id) => {
     let unblockData = {
       token: token,

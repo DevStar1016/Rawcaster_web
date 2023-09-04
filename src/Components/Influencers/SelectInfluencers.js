@@ -42,6 +42,13 @@ const SelectInfluencers = () => {
     total_page: 1,
   });
 
+  /**
+   * Retrieves a list of influencers based on the specified page number, category, and search key.
+   * @param {number} [page=1] - The page number to retrieve influencers from.
+   * @param {string} [category=""] - The category of influencers to filter by.
+   * @param {string} [search_key=""] - The search key to filter influencers by.
+   * @returns None
+   */
   const getInfluencerList = (page = 1, category = "", search_key = "") => {
     let influencerData = {
       token: loginUserData?.token,
@@ -83,10 +90,12 @@ const SelectInfluencers = () => {
         setisLoadMore(null);
       });
   };
-  useEffect(() => {
-    console.log(SelectedInfluencersList, "SelectedInfluencersList");
-  }, [SelectedInfluencersList]);
 
+  /**
+   * Retrieves the list of influencer categories from the server and updates the state
+   * with the fetched data.
+   * @returns None
+   */
   const getCategoryList = () => {
     let influencerData = {
       token: loginUserData?.token,
@@ -103,6 +112,11 @@ const SelectInfluencers = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Executes the specified functions to retrieve category and influencer lists
+   * when the loginUserData changes.
+   * @returns None
+   */
   useEffect(() => {
     if (loginUserData !== null) {
       getCategoryList();
@@ -110,6 +124,14 @@ const SelectInfluencers = () => {
     }
   }, [loginUserData]);
 
+  /**
+   * useEffect hook that updates the selected influencers list based on changes in the influencer list.
+   * If SelectAllInfluencer is true, it filters out the influencers that were previously selected but are not present in the current influencer list.
+   * If there are any remaining selected influencers, it updates the selected influencers list with those influencers.
+   * If there are no remaining selected influencers, it updates the selected influencers list with all the influencers in the current influencer list.
+   * @param {Array} influencerList - The list of influencers
+   * @returns None
+   */
   useEffect(() => {
     if (SelectAllInfluencer) {
       const tempPreviousInfluencersList = [...previousInfluencerList];
@@ -148,6 +170,11 @@ const SelectInfluencers = () => {
     }
   }, [influencerList]);
 
+  /**
+   * Handles the selection of all influencers based on the given type.
+   * @param {boolean} type - Determines whether to select all influencers or deselect all influencers.
+   * @returns None
+   */
   const handleSelectAllInfluencers = (type) => {
     if (type) {
       const tempInfluencersList = [...influencerList];
@@ -162,6 +189,11 @@ const SelectInfluencers = () => {
     }
   };
 
+  /**
+   * Transforms a list of data into a new format suitable for a select input component.
+   * @param {Array} listData - The list of data to transform.
+   * @returns {Array} - The transformed list of data with each item having a "label" and "value" property.
+   */
   const getSelectData = (listData = []) => {
     return listData.map((value) => ({
       ...value,
@@ -170,6 +202,11 @@ const SelectInfluencers = () => {
     }));
   };
 
+  /**
+   * Handles the update of fans by sending a request to the server to become a fan of the selected influencers.
+   * @param {Array} [selectedFansList=SelectedInfluencersList] - The list of selected influencers to become a fan of.
+   * @returns {Promise} - A promise that resolves to true if the update is successful, and rejects with false otherwise.
+   */
   const HandleupdateFans = (selectedFansList = SelectedInfluencersList) => {
     let promise = new Promise((resolve, reject) => {
       let becameFanData = {

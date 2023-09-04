@@ -1,3 +1,7 @@
+/**
+ * A React component that represents an Artificial Intelligence chatbot.
+ * @returns The rendered chatbot component.
+ */
 import React, { useEffect, useState } from "react";
 import Heading from "./Heading";
 import ChatContent from "./Content";
@@ -9,13 +13,10 @@ import { detectMob } from "../../Shared/Utility";
 import { useLocation } from "react-router";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import LoginModal from "../../Modal/Verification/LoginModal";
-// import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
-// import { useDispatch } from "react-redux";
 
 const ArtificialIntelligence = () => {
   const { pathname } = useLocation();
   const loginUserData = useAuthData();
-  // const dispatch = useDispatch();
   const [ChatMessage, setChatMessage] = useState("");
   const [isAudioToTextConvert, setisAudioToTextConvert] = useState(false);
   const [isChatOpen, setisChatOpen] = useState(false);
@@ -49,14 +50,6 @@ const ArtificialIntelligence = () => {
   useEffect(() => {
     setMessages([]);
   }, [pathname]);
-
-  // const ChatAccessDenied = () => {
-  //   return (
-  //     <div style={{ padding: 10, paddingBottom: 0 }}>
-  //       <p>Only Premium Member have this Access</p>
-  //     </div>
-  //   );
-  // };
 
   const handlePremiumModalClose = () => setgetPremiumModal(false);
 
