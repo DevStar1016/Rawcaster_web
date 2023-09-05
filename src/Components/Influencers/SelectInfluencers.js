@@ -63,7 +63,7 @@ const SelectInfluencers = () => {
         if (res.data.status === 1) {
           setSearchValues((pre) => ({
             search_key: pre?.search_key,
-            category: "",
+            category: pre?.category,
             pageNum: res.data.current_page_no,
             total_page: res.data.total_pages,
           }));
@@ -78,7 +78,7 @@ const SelectInfluencers = () => {
           setinfluencersCount(0);
           setSearchValues((pre) => ({
             search_key: pre?.search_key,
-            category: "",
+            category: pre?.category,
             pageNum: 1,
             total_page: 1,
           }));
