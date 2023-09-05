@@ -600,7 +600,6 @@ export const datetoString = (t) => {
 /**
  * Handles the navigation to a user's profile page.
  * @param {Object} userData - The user data object containing necessary information.
- * @param {string} userData.Encrypted_id - The encrypted ID of the user's profile.
  * @param {Function} userData.navigate - The function to navigate to a new page.
  * @param {Function} userData.dispatch - The function to dispatch actions.
  * @param {Object} userData.nuggetFormData - The form data for nuggets.

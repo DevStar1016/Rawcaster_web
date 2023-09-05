@@ -49,7 +49,7 @@ export const EventTypeComponent = ({
     getEventType(token)
       .then((res) => {
         setEventData(res);
-        onResult(res[0]);
+        // onResult(res[0]);
       })
       .finally(() => {
         setisFetching((pre) => pre.filter((ele) => ele !== "event_type"));

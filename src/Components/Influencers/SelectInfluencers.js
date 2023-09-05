@@ -229,11 +229,25 @@ const SelectInfluencers = () => {
         .then((res) => {
           if (res.data.status === 1) {
             setisBecomeFanSent(true);
-            getInfluencerList(
-              SearchValues.pageNum,
-              SearchValues.category,
-              SearchValues.search_key
-            );
+            setinfluencerList((pre) => {
+              const temp = [...pre];
+              const filteredInfluencer = temp?.filter((ele, ind) => {
+                const findUser = selectedFansList?.findIndex(
+                  (item) => item === ele?.user_ref_id
+                );
+                if (findUser !== -1) {
+                  return undefined;
+                }
+                return ele;
+              });
+              return filteredInfluencer;
+            });
+            // getInfluencerList(
+            //   SearchValues.pageNum,
+            //   SearchValues.category,
+            //   SearchValues.search_key
+            // );
+            // toast.success(res?.data?.msg);
             setSelectedInfluencersList([]);
             resolve(true);
           } else if (res.data.status === 0) {
@@ -243,6 +257,10 @@ const SelectInfluencers = () => {
         })
         .catch((err) => {
           reject(false);
+        })
+        .finally(() => {
+          dispatch(handleLoading(false));
+          setisLoadMore(null);
         });
     });
 
@@ -441,7 +459,7 @@ const SelectInfluencers = () => {
         </Row>
 
         <Row gutter={15}>
-          {influencerList.map((ele) => {
+          {influencerList?.map((ele) => {
             return (
               <Col sm={8}>
                 <div className={classes.influencers}>
@@ -508,7 +526,8 @@ const SelectInfluencers = () => {
                   ) : (
                     <>
                       {isLoadMore === ele.user_ref_id ? (
-                        <Spin />
+                        // <Spin />
+                        <></>
                       ) : (
                         <Link
                           className={classes.fanBtn}
@@ -532,7 +551,7 @@ const SelectInfluencers = () => {
         {SearchValues.pageNum !== SearchValues.total_page && (
           <div className={classes.loadmoreSec}>
             {isLoadMore === "load_more" ? (
-              <Spin />
+              <></>
             ) : (
               <p
                 onClick={() => {
