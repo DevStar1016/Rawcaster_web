@@ -100,7 +100,10 @@ const SigninwithService = ({ type }) => {
             window.location.reload();
           });
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {})
@@ -133,7 +136,10 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
-                toast.error("Something Went Wrong !");
+                toast.remove("Error");
+                toast.error("Something Went Wrong !", {
+                  id: "Error",
+                });
               }
 
               dispatch(handleLoading(true));
@@ -168,7 +174,10 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
-                toast.error("Something Went Wrong !!");
+                toast.remove("Error");
+                toast.error("Something Went Wrong !", {
+                  id: "Error",
+                });
               }
             }}
             onReject={(err) => {

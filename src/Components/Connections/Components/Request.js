@@ -85,7 +85,10 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
             onReject();
           }
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {});

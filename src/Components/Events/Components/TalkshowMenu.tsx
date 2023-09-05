@@ -161,7 +161,10 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
                       window.close();
                     })
                     .catch(() => {
-                      toast.error("Unable to end Talkshow !");
+                      toast.remove("Error");
+                      toast.error("Unable to exit Meeting !", {
+                        id: "Error",
+                      });
                     });
                 },
                 onCancel() {},
@@ -195,7 +198,10 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
                       window.close();
                     })
                     .catch(() => {
-                      toast.error("Unable to end Talkshow !");
+                      toast.remove("Error");
+                      toast.error("Unable to end Talkshow !", {
+                        id: "Error",
+                      });
                     });
                 },
                 onCancel() {},
@@ -299,7 +305,10 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
                     window.close();
                   })
                   .catch(() => {
-                    toast.error("Unable to end Talkshow !");
+                    toast.remove("Error");
+                    toast.error("Unable to exit Talkshow !", {
+                      id: "Error",
+                    });
                   });
               },
               onCancel() {},

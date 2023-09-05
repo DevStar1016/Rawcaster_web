@@ -102,11 +102,7 @@ const TagsList = () => {
           setTagsList([]);
         }
       })
-      .catch((err) => {
-        if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
-          toast.error(err.message);
-        }
-      })
+      .catch((err) => {})
       .finally(() => {
         dispatch(handleLoading(false));
         dispatch(handleisGlobalSearch(false));

@@ -57,7 +57,10 @@ export const ExitMeeting = (props: ExitMeeting) => {
           window.close();
         })
         .catch(() => {
-          toast.error("Unable to exit Meeting !");
+          toast.remove("Error");
+          toast.error("Unable to exit Meeting !", {
+            id: "Error",
+          });
         });
     },
     onCancel() {},
@@ -105,7 +108,10 @@ export const EndMeeting = (props: EndMeeting) => {
           window.close();
         })
         .catch(() => {
-          toast.error("Unable to end Meeting !");
+          toast.remove("Error");
+          toast.error("Unable to end Meeting !", {
+            id: "Error",
+          });
         });
     },
     onCancel() {},

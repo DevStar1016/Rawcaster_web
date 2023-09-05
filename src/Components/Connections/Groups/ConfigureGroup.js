@@ -170,12 +170,13 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           }
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   /**
@@ -262,12 +263,13 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           groupFunctionalitySocket(message);
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         close();
       });
@@ -317,12 +319,13 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           );
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      })
+      .catch((err) => {})
       .finally(() => {
         handleClose();
       });
@@ -374,15 +377,19 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           toast.success(res.data.msg);
         } else {
           if (typeof res?.data?.msg === "string") {
-            toast.error(res.data.msg);
+            toast.remove("Error");
+            toast.error(res.data.msg, {
+              id: "Error",
+            });
           } else {
-            toast.error("Something went wrong");
+            toast.remove("Error");
+            toast.error("Something went wrong", {
+              id: "Error",
+            });
           }
         }
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => {});
   };
 
   /**
@@ -424,7 +431,10 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           groupFunctionalitySocket(message);
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch(() => {});
@@ -451,7 +461,10 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           groupFunctionalitySocket(message);
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch(() => {});

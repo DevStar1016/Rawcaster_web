@@ -51,7 +51,10 @@ const Content = ({ getContents }) => {
         setMessages((pre) => pre.filter((ele) => ele.message_id !== id));
       })
       .catch((err) => {
-        toast.error("Unable to delete this message");
+        toast.remove("Error");
+        toast.error(err.message, {
+          id: "Error",
+        });
       });
   };
 

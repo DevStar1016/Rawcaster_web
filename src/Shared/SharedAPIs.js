@@ -46,7 +46,6 @@ export const HandleBecameaFan = (token, user_ref_id) => {
         }
       })
       .catch((err) => {
-        toast.error(err.msg);
         reject();
       });
   });
@@ -77,7 +76,6 @@ export const HandleAddFriend = (token, user_ref_id) => {
       })
       .catch((err) => {
         reject();
-        toast.error(err.message);
       });
   });
 };

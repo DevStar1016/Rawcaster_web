@@ -179,9 +179,7 @@ const Settings = () => {
             resolve(payload);
           });
         })
-        .catch((err) => {
-          toast.error(err.message);
-        })
+        .catch((err) => {})
         .finally(() => {
           let keys = Object.keys(objValue);
           setupdateValue((pre) => pre.filter((ele) => !keys.includes(ele)));

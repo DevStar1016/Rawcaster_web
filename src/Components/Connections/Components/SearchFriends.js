@@ -99,11 +99,7 @@ const SearchFriends = ({
           setPeopleList([]);
         }
       })
-      .catch((err) => {
-        if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
-          toast.error(err.message);
-        }
-      })
+      .catch((err) => {})
       .finally(() => {
         loadingStatus(false);
       });

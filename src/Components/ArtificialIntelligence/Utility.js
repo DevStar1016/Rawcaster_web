@@ -128,7 +128,10 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
             onResponse(res.data.url);
             HandlegetNuggetContentAudio(res.data.url);
           } else {
-            toast.error(res.data.msg);
+            toast.remove("Error");
+            toast.error(res.data.msg, {
+              id: "Error",
+            });
           }
         })
         .finally(() => {
@@ -446,12 +449,19 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
       })
       .catch((err) => {
         const { type, message } = err;
+        toast.remove("Error");
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
-          toast.error("browser does not have permission to access microphone");
+          toast.error("browser does not have permission to access microphone", {
+            id: "Error",
+          });
         } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
-          toast.error("user didn't allow app to access microphone");
+          toast.error("user didn't allow app to access microphone", {
+            id: "Error",
+          });
         } else {
-          toast.error(message);
+          toast.error(message, {
+            id: "Error",
+          });
         }
       });
   };
