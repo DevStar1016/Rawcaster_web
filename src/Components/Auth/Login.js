@@ -5,7 +5,7 @@
  */
 import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
@@ -44,6 +44,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Login = () => {
+  const { nugget_id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
@@ -68,9 +69,9 @@ const Login = () => {
    */
   const handleProfileUpdate = (res, type) => {
     if (type === 1) {
-      accountVerifyHandle(res, "email", navigate);
+      accountVerifyHandle(res, "email", navigate, nugget_id);
     } else if (type === 2) {
-      accountVerifyHandle(res, "sms", navigate);
+      accountVerifyHandle(res, "sms", navigate, nugget_id);
     }
   };
 
@@ -99,15 +100,19 @@ const Login = () => {
             };
             delete finalVal["name"];
             setCookieData("rawcaster_user_token", finalVal);
-            if (res.data.first_time === 1) {
-              navigate("/selectinfluencers");
-            } else if (getSessionStorageData("influencerData")) {
-              navigate("/selectinfluencers");
-              removeSessionStorageData("influencerData");
+            if (nugget_id) {
+              navigate(`/view/${nugget_id}`);
             } else {
-              navigate("/dashboard");
+              if (res.data.first_time === 1) {
+                navigate("/selectinfluencers");
+              } else if (getSessionStorageData("influencerData")) {
+                navigate("/selectinfluencers");
+                removeSessionStorageData("influencerData");
+              } else {
+                navigate("/dashboard");
+              }
+              window.location.reload();
             }
-            window.location.reload();
           });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });

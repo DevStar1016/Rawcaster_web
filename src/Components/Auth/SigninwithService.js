@@ -27,13 +27,14 @@ import {
   removeSessionStorageData,
   setCookieData,
 } from "../../Store/Storage";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Signup.module.css";
 import { toast } from "react-hot-toast";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 
 const SigninwithService = ({ type }) => {
+  const { nugget_id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [LocationValue, setLocationValue] = useState({
@@ -87,7 +88,9 @@ const SigninwithService = ({ type }) => {
           delete finalVal["name"];
           setCookieData("rawcaster_user_token", finalVal);
           dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
-            if (res.data.first_time === 1) {
+            if (nugget_id) {
+              navigate(`/view/${nugget_id}`);
+            } else if (res.data.first_time === 1) {
               navigate("/selectinfluencers");
             } else if (getSessionStorageData("influencerData")) {
               navigate("/selectinfluencers");

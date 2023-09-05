@@ -4,7 +4,7 @@
  */
 import { Button, Form } from "antd";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
@@ -17,6 +17,7 @@ import Seo from "../SEO/Seo";
 import SigninwithService from "./SigninwithService";
 
 const Signup = () => {
+  const { nugget_id } = useParams();
   const navigate = useNavigate();
 
   const carouselOptions = {
@@ -59,7 +60,11 @@ const Signup = () => {
                   htmlType="submit"
                   className={classes.signupbtn}
                   onClick={() => {
-                    navigate("/signupwithemail");
+                    if (nugget_id) {
+                      navigate(`/signupwithemail/${nugget_id}`);
+                    } else {
+                      navigate("/signupwithemail");
+                    }
                   }}
                 >
                   Signup with a phone number or email
