@@ -67,9 +67,11 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
               pre.filter((elem) => elem.event_id !== ele.event_id)
             );
           }
-          toast.success("Event Deleted Successfully !");
+          toast.remove("rawcaster");
+          toast.success("Event Deleted Successfully !", { id: "rawcaster" });
         } else {
-          toast.error(res.data.message);
+          toast.remove("rawcaster");
+          toast.error(res.data.message, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

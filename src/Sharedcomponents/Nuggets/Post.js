@@ -200,10 +200,11 @@ const Post = ({
           if (onDelete) {
             onDelete();
           }
-
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})
@@ -270,10 +271,12 @@ const Post = ({
     };
     blockunblockuserService(JSONtoformdata(BlockData)).then((res) => {
       if (res.data.status === 1) {
-        toast.success(res.data.msg);
+        toast.remove("rawcaster");
+        toast.success(res.data.msg, { id: "rawcaster" });
         dispatch(handleDeleteNuggetListByUserId(id));
       } else {
-        toast.error(res.data.msg);
+        toast.remove("rawcaster");
+        toast.error(res.data.msg, { id: "rawcaster" });
       }
     });
   };
@@ -291,10 +294,12 @@ const Post = ({
     };
     NuggetAbuseReportService(JSONtoformdata(abuseData)).then((res) => {
       if (res.data.status === 1) {
-        toast.success(res.data.msg);
+        toast.remove("rawcaster");
+        toast.success(res.data.msg, { id: "rawcaster" });
         dispatch(handleDeleteNuggetList(ele.nugget_id));
       } else {
-        toast.error(res.data.msg);
+        toast.remove("rawcaster");
+        toast.error(res.data.msg, { id: "rawcaster" });
       }
     });
   };
@@ -730,7 +735,8 @@ const Post = ({
           });
           HandleShare();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

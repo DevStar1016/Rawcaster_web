@@ -298,7 +298,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           getEvents(ActiveEvent.key);
           setEventData(res.data.event_detail);
           setisSuccesspage(true);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           ChimesendMessage(
             {
               type: COMMON_EVENTS_TYPES.CREATE_EVENT,
@@ -360,7 +361,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       .then((res) => {
         if (res.data.status === 1) {
           getEvents(ActiveEvent.key);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
           toast.remove("Error");
           toast.error(res.data.msg, {

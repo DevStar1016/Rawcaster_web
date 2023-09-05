@@ -78,7 +78,8 @@ const ChangePassword = () => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
           setFieldError("old_password", res.data.msg);
         }

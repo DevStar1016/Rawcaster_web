@@ -93,7 +93,8 @@ const ResetPassword = () => {
       .then((res) => {
         if (res.data.status === 1) {
           navigate("/login");
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else if (res.data.status === 0) {
           toast.remove("Error");
           toast.error(res.data.msg, {
@@ -206,7 +207,8 @@ const ResetPassword = () => {
             })
           );
           setotpRefId(res.data.otp_ref_id);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else if (res.data.status === 0) {
           toast.remove("Error");
           toast.error(res.data.msg, {

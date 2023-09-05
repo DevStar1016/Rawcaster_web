@@ -74,14 +74,17 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
               data: data,
             };
             sendMessage(socketMes, "message");
+            toast.remove("rawcaster");
             toast.success(
               `You and ${decodeHtml(
                 res.data.friend_details.display_name
-              )} connected`
+              )} connected`,
+              { id: "rawcaster" }
             );
             onSuccess(res.data.friend_details);
           } else {
-            toast.success(`Sucessfully rejected`);
+            toast.remove("rawcaster");
+            toast.success(`Sucessfully rejected`, { id: "rawcaster" });
             onReject();
           }
         } else {

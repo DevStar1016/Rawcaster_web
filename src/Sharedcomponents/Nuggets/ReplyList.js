@@ -80,7 +80,8 @@ const ReplyList = ({
           getCommentList(id);
           getNuggetDetail();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -104,7 +105,8 @@ const ReplyList = ({
         if (res.data.status === 1) {
           setisActiveEdit("");
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -126,7 +128,8 @@ const ReplyList = ({
           getCommentList(nugget_id);
           getNuggetDetail();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -329,7 +332,11 @@ const ReplyList = ({
                                         findData.comment
                                       );
                                     } else {
-                                      toast.error("Please Enter Valid Comment");
+                                      toast.remove("rawcaster");
+                                      toast.error(
+                                        "Please Enter Valid Comment",
+                                        { id: "rawcaster" }
+                                      );
                                     }
                                   } else {
                                     setisActiveEdit("");
@@ -542,7 +549,10 @@ const ReplyList = ({
                         tempData[index] = "";
                         setReplyTxt(tempData);
                       } else {
-                        toast.error("Please Enter Valid Comment");
+                        toast.remove("rawcaster");
+                        toast.error("Please Enter Valid Comment", {
+                          id: "rawcaster",
+                        });
                       }
                     }}
                   />

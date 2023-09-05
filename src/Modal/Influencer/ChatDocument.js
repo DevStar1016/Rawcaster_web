@@ -101,7 +101,8 @@ const ChatDocument = ({
           };
           onUpload(finalData);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
           setNuggetData((pre) => pre.filter((ele, i) => i !== index));
         }
       })

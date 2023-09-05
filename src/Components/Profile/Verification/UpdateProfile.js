@@ -199,7 +199,8 @@ const UpdateProfile = () => {
     } else if (isValidData(value.mobile)) {
       handleSendOTP("sms");
     } else {
-      toast.error("Phone Number and Email ID Missing");
+      toast.remove("rawcaster");
+      toast.error("Phone Number and Email ID Missing", { id: "rawcaster" });
     }
   };
 
@@ -218,7 +219,8 @@ const UpdateProfile = () => {
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           if (navigateFrom) {
             navigate("/verifyotp", {
               state: { navigatePath: "/setting", type: value, ...res.data },
@@ -227,7 +229,8 @@ const UpdateProfile = () => {
             navigate("/verifyotp", { state: { type: value, ...res.data } });
           }
         } else {
-          toast.error(res.data.message);
+          toast.remove("rawcaster");
+          toast.error(res.data.message, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -292,10 +295,12 @@ const UpdateProfile = () => {
     updateProfileService(JSONtoformdata(filterValidObject(profileValue)))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           getProfileInfo(isNext);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -322,7 +327,8 @@ const UpdateProfile = () => {
       if (isValidImageFile(event.target.files[0])) {
         settempGroupImage(event.target.files[0]);
       } else {
-        toast.error("Please Select Valid Image");
+        toast.remove("rawcaster");
+        toast.error("Please Select Valid Image", { id: "rawcaster" });
       }
     }
   };

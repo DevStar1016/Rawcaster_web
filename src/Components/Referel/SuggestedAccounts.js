@@ -81,7 +81,8 @@ const SuggestedAccounts = () => {
         if (res.data.status === 1) {
           getInfluencerList();
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

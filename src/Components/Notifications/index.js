@@ -72,7 +72,8 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
               })
             );
           } else {
-            toast.error(data.msg);
+            toast.remove("rawcaster");
+            toast.error(data.msg, { id: "rawcaster" });
           }
         })
         .catch((err) => {});

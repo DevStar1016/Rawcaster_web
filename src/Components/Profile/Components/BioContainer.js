@@ -109,9 +109,11 @@ const BioContainer = ({ isLoginuser }) => {
       .then((response) => {
         if (response.data.status === 1) {
           setisAboutEdit(false);
-          toast.success("Bio data updated sucessfully");
+          toast.remove("rawcaster");
+          toast.success("Bio data updated sucessfully", { id: "rawcaster" });
         } else {
-          toast.error(response.data.msg);
+          toast.remove("rawcaster");
+          toast.error(response.data.msg, { id: "rawcaster" });
         }
       })
       .catch((error) => {});
@@ -158,7 +160,8 @@ const BioContainer = ({ isLoginuser }) => {
             })
           );
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

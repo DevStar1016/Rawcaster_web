@@ -99,15 +99,18 @@ const ProfileLayout = ({
         if (res.data.status === 1) {
           dispatch(fetchuserInfobyToken(loginToken)).then(({ payload }) => {
             setisUploading(false);
-            toast.success("Successfully Updated");
+            toast.remove("rawcaster");
+            toast.success("Successfully Updated", { id: "rawcaster" });
           });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
           setisUploading(false);
         }
       })
       .catch((err) => {
-        toast.error(err.message);
+        toast.remove("rawcaster");
+        toast.error(err.message, { id: "rawcaster" });
         setisUploading(false);
       });
   };
@@ -416,7 +419,8 @@ const ProfileLayout = ({
                 ratio: getAspectRatio(1170, 240),
               });
             } else {
-              toast.error("Please Select Valid Image");
+              toast.remove("rawcaster");
+              toast.error("Please Select Valid Image", { id: "rawcaster" });
             }
           }
         }}
@@ -441,7 +445,8 @@ const ProfileLayout = ({
                 ratio: getAspectRatio(150, 150),
               });
             } else {
-              toast.error("Please Select Valid Image");
+              toast.remove("rawcaster");
+              toast.error("Please Select Valid Image", { id: "rawcaster" });
             }
           }
         }}

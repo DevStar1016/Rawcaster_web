@@ -237,7 +237,8 @@ export const BannerComponent = ({ onResult, value, size = null }) => {
     if (typeof image.type !== "undefined" && image.type.includes("image/")) {
       setcropImage(image);
     } else {
-      toast.error("upload only image");
+      toast.remove("rawcaster");
+      toast.error("upload only image", { id: "rawcaster" });
     }
   };
 
@@ -319,13 +320,17 @@ export const BannerComponent = ({ onResult, value, size = null }) => {
           onSuccess={(image) => {
             if (size) {
               if (image.size > size * 1024 * 1024) {
-                toast.error("Image size is too big (max 10MB)");
+                toast.remove("rawcaster");
+                toast.error("Image size is too big (max 10MB)", {
+                  id: "rawcaster",
+                });
               } else if (image.type.match("image")) {
                 setbannerImage(image);
                 onResult(image);
                 setcropImage("");
               } else {
-                toast.error("Upload only image");
+                toast.remove("rawcaster");
+                toast.error("Upload only image", { id: "rawcaster" });
               }
             } else {
               setbannerImage(image);

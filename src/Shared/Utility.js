@@ -940,8 +940,8 @@ export const handleCopyText = (url) => {
       .writeText(url)
       .then(() => {
         resolve();
-
-        toast.success("Text copied to clipboard");
+        toast.remove("rawcaster");
+        toast.success("Text copied to clipboard", { id: "rawcaster" });
       })
       .catch((error) => {
         console.error("Error copying text:", error);

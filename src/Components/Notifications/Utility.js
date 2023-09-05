@@ -162,17 +162,21 @@ export const NotificationsList = ({
               data: data,
             };
             sendMessage(socketMes, "message");
+            toast.remove("rawcaster");
             toast.success(
               `You and ${decodeHtml(
                 res.data.friend_details.display_name
-              )} connected`
+              )} connected`,
+              { id: "rawcaster" }
             );
           } else {
-            toast.success(`Sucessfully rejected`);
+            toast.remove("rawcaster");
+            toast.success(`Sucessfully rejected`, { id: "rawcaster" });
           }
           handleUpdate(ele.notification_id);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -220,7 +224,8 @@ export const NotificationsList = ({
                 if (ele?.group_id) {
                   setisConfigureGroup({ show: true, group_id: ele?.group_id });
                 } else {
-                  toast.error("Group not found");
+                  toast.remove("rawcaster");
+                  toast.error("Group not found", { id: "rawcaster" });
                 }
               }
             }}

@@ -65,7 +65,8 @@ const CommentsList = ({ index }) => {
             getNuggetDetail();
           });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -89,7 +90,8 @@ const CommentsList = ({ index }) => {
         if (res.data.status === 1) {
           setisActiveEdit("");
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -112,7 +114,8 @@ const CommentsList = ({ index }) => {
             getNuggetDetail();
           });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -299,7 +302,10 @@ const CommentsList = ({ index }) => {
                                       findData.comment
                                     );
                                   } else {
-                                    toast.error("Please Enter Valid Comment");
+                                    toast.remove("rawcaster");
+                                    toast.error("Please Enter Valid Comment", {
+                                      id: "rawcaster",
+                                    });
                                   }
                                 } else {
                                   setisActiveEdit("");
@@ -528,7 +534,10 @@ const CommentsList = ({ index }) => {
                   tempData[index] = "";
                   setCommentTxt(tempData);
                 } else {
-                  toast.error("Please Enter Valid Comment");
+                  toast.remove("rawcaster");
+                  toast.error("Please Enter Valid Comment", {
+                    id: "rawcaster",
+                  });
                 }
               }}
             />

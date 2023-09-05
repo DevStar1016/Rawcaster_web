@@ -43,7 +43,8 @@ const AgreedusersListModal = ({ open, close, formData }) => {
         if (data.status === 1) {
           setProfileList(data.userlist);
         } else {
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .finally(() => {

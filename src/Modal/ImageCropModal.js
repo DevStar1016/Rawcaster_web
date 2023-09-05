@@ -117,7 +117,8 @@ const ImageCropModal = ({
     ctx.restore();
     previewCanvasRef.current.toBlob((blob) => {
       if (!blob) {
-        toast.error("Failed to create blob");
+        toast.remove("rawcaster");
+        toast.error("Failed to create blob", { id: "rawcaster" });
       } else {
         const file = new File(
           [blob],

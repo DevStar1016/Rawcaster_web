@@ -193,7 +193,8 @@ const Profile = () => {
         })
         .catch((err) => {
           resolve(FansList);
-          toast.error(err.message);
+          toast.remove("rawcaster");
+          toast.error(err.message, { id: "rawcaster" });
         });
     });
     return promise;

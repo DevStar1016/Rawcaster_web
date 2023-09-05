@@ -127,8 +127,8 @@ const Header = () => {
     el.select();
     document.execCommand("copy");
     document.body.removeChild(el);
-
-    toast.success("Text copied to clipboard");
+    toast.remove("rawcaster");
+    toast.success("Text copied to clipboard", { id: "rawcaster" });
     setSelectAllMessages(false);
   }
 

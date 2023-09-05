@@ -38,10 +38,12 @@ export const HandleBecameaFan = (token, user_ref_id) => {
     FollowandunfollowService(JSONtoformdata(becameFanData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           resolve();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
           reject();
         }
       })
@@ -68,10 +70,12 @@ export const HandleAddFriend = (token, user_ref_id) => {
       .then((res) => {
         if (res.data.status === 1) {
           resolve(res.data);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else if (res.data.status === 0) {
           reject();
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {

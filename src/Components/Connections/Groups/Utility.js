@@ -82,7 +82,8 @@ export const GroupHeader = () => {
           ratio: getAspectRatio(150, 150),
         });
       } else {
-        toast.error("Please Select Valid Image");
+        toast.remove("rawcaster");
+        toast.error("Please Select Valid Image", { id: "rawcaster" });
       }
     }
     // const imageFile = event.target.files[0];

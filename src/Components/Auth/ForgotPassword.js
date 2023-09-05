@@ -58,7 +58,8 @@ const ForgotPassword = () => {
               remaining_seconds: res.data.remaining_seconds,
             },
           });
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else if (res.data.status === 0) {
           toast.remove("Error");
           toast.error(res.data.msg, {

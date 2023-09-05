@@ -263,7 +263,8 @@ const Participants = () => {
               open={renameAttendee}
               ele={findAttendee}
               success={() => {
-                toast.success("Renamed Successfully");
+                toast.remove("rawcaster");
+                toast.success("Renamed Successfully", { id: "rawcaster" });
                 setrenameAttendee(false);
               }}
               close={() => {

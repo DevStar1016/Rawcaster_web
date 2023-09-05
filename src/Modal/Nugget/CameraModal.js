@@ -125,19 +125,27 @@ const CameraModal = ({
 
         handleVideoonly();
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
+          toast.remove("rawcaster");
           toast.error(
-            "browser does not have permission to access camera or microphone"
+            "browser does not have permission to access camera or microphone",
+            { id: "rawcaster" }
           );
         } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
-          toast.error("user didn't allow app to access camera or microphone");
+          toast.remove("rawcaster");
+          toast.error("user didn't allow app to access camera or microphone", {
+            id: "rawcaster",
+          });
         } else if (
           type === MediaPermissionsErrorType.CouldNotStartVideoSource
         ) {
+          toast.remove("rawcaster");
           toast.error(
-            "camera is in use by another application (Zoom, Skype) or browser tab (Google Meet, Messenger Video)"
+            "camera is in use by another application (Zoom, Skype) or browser tab (Google Meet, Messenger Video)",
+            { id: "rawcaster" }
           );
         } else {
-          toast.error(message);
+          toast.remove("rawcaster");
+          toast.error(message, { id: "rawcaster" });
         }
       });
   };
@@ -238,7 +246,8 @@ const CameraModal = ({
    */
   useEffect(() => {
     if (error) {
-      toast.error(error.message);
+      toast.remove("rawcaster");
+      toast.error(error.message, { id: "rawcaster" });
     }
   }, [error]);
 

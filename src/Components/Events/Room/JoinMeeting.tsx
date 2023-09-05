@@ -116,7 +116,8 @@ const JoinMeeting = () => {
           dispatch(handleeventTempUserData(user));
           HandlePopup(user, event);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})

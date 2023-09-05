@@ -63,7 +63,8 @@ const Content = ({ elem }) => {
         if (data.status === 1) {
           dispatch(handleUpdateNotification(notification_id));
         } else {
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

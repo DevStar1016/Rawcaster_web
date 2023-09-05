@@ -47,7 +47,8 @@ const Content = ({ getContents }) => {
     };
     deleteChannelMessage(params)
       .then((res) => {
-        toast.success("Message Deleted Successfully");
+        toast.remove("rawcaster");
+        toast.success("Message Deleted Successfully", { id: "rawcaster" });
         setMessages((pre) => pre.filter((ele) => ele.message_id !== id));
       })
       .catch((err) => {

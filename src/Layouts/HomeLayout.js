@@ -111,7 +111,8 @@ const HomeLayout = () => {
           dispatch(handleLoading(false));
           window.location.assign("/");
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

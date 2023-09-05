@@ -103,7 +103,8 @@ const DashboardSignup = () => {
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})
@@ -172,7 +173,8 @@ const DashboardSignup = () => {
                 HandleSignup(resultVal);
               }}
               onReject={(err) => {
-                toast.error("Something Went Wrong !!");
+                toast.remove("rawcaster");
+                toast.error("Something Went Wrong !!", { id: "rawcaster" });
               }}
             >
               <Button className={classes.altSignBtn}>
@@ -196,7 +198,8 @@ const DashboardSignup = () => {
                   };
                   HandleSignup(resultVal);
                 } else {
-                  toast.error("Something Went Wrong !!");
+                  toast.remove("rawcaster");
+                  toast.error("Something Went Wrong !!", { id: "rawcaster" });
                 }
               }}
               onReject={(err) => {}}

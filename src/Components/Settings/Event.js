@@ -67,9 +67,11 @@ const Event = () => {
    */
   const onChangeMelody = (imageFile) => {
     if (!imageFile) {
-      toast.error("Please select file.");
+      toast.remove("rawcaster");
+      toast.error("Please select file.", { id: "rawcaster" });
     } else if (imageFile.size > 25 * 1024 * 1024) {
-      toast.error("Image size is too big (max 25MB)");
+      toast.remove("rawcaster");
+      toast.error("Image size is too big (max 25MB)", { id: "rawcaster" });
     } else if (
       imageFile.type.match("image") ||
       imageFile.type.match("audio") ||
@@ -78,7 +80,8 @@ const Event = () => {
       setisMelodyUploading(true);
       setupdateValue("default_melody", imageFile);
     } else {
-      toast.error("Upload only image,video or audio");
+      toast.remove("rawcaster");
+      toast.error("Upload only image,video or audio", { id: "rawcaster" });
     }
   };
 

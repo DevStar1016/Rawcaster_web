@@ -169,9 +169,11 @@ const VerifyOtp = () => {
             })
           );
           setotpRefId(res.data.otp_ref_id);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -213,11 +215,13 @@ const VerifyOtp = () => {
             handleContinue(res.data.token);
           }
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {
-        toast.error(err.message);
+        toast.remove("rawcaster");
+        toast.error(err.message, { id: "rawcaster" });
       })
       .finally(() => {
         dispatch(handleLoading(false));

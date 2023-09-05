@@ -47,10 +47,12 @@ const ValidateTypeModal = ({ open, handleClose }) => {
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           handleNavigate(res, type);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

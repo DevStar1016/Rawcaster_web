@@ -169,9 +169,11 @@ const Settings = () => {
       updateUserSettingsService(JSONtoformdata(finalObj), handleProgress)
         .then((res) => {
           if (res.data.status === 1) {
-            toast.success("Successfully Updated");
+            toast.remove("rawcaster");
+            toast.success("Successfully Updated", { id: "rawcaster" });
           } else if (res.data.status === 0) {
-            toast.error(res.data.msg);
+            toast.remove("rawcaster");
+            toast.error(res.data.msg, { id: "rawcaster" });
           } else {
             return;
           }

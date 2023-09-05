@@ -118,7 +118,10 @@ const PostNuggets = ({ isUserPostAvailable }) => {
       !isValidData(val.content) &&
       previewMedia?.length === 0
     ) {
-      toast.error("Sorry! Nuggets content or Media can not be empty.");
+      toast.remove("rawcaster");
+      toast.error("Sorry! Nuggets content or Media can not be empty.", {
+        id: "rawcaster",
+      });
       return;
     }
     setpostModalShow(false);
@@ -158,7 +161,8 @@ const PostNuggets = ({ isUserPostAvailable }) => {
           GetNuggetList();
           setNuggetData([]);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})
@@ -177,7 +181,10 @@ const PostNuggets = ({ isUserPostAvailable }) => {
    */
   const uploadNugget = (val) => {
     if (NuggetData.length === 0 && !isValidData(val.content) && !PollData) {
-      toast.error("Sorry! Nuggets content or Media can not be empty.");
+      toast.remove("rawcaster");
+      toast.error("Sorry! Nuggets content or Media can not be empty.", {
+        id: "rawcaster",
+      });
       return;
     }
     setpostModalShow(false);
@@ -227,7 +234,8 @@ const PostNuggets = ({ isUserPostAvailable }) => {
           GetNuggetList();
           setNuggetData([]);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})

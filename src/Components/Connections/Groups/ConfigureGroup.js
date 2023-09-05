@@ -168,7 +168,8 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           } else {
             dispatch(handleAddGroupData(res.data.group_details));
           }
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
           toast.remove("Error");
           toast.error(res.data.msg, {
@@ -221,8 +222,10 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       }
     } else {
       if (!isOwner) {
+        toast.remove("rawcaster");
         toast.error(
-          "Either you've been removed from the group or the group has been deleted by the owner"
+          "Either you've been removed from the group or the group has been deleted by the owner",
+          { id: "rawcaster" }
         );
       }
 
@@ -261,7 +264,8 @@ const ConfigureGroup = ({ groupId, close, open }) => {
             groupData: null,
           };
           groupFunctionalitySocket(message);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
           toast.remove("Error");
           toast.error(res.data.msg, {
@@ -317,7 +321,8 @@ const ConfigureGroup = ({ groupId, close, open }) => {
               id: groupId,
             })
           );
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
           toast.remove("Error");
           toast.error(res.data.msg, {
@@ -374,7 +379,8 @@ const ConfigureGroup = ({ groupId, close, open }) => {
               id: groupId,
             })
           );
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
           if (typeof res?.data?.msg === "string") {
             toast.remove("Error");

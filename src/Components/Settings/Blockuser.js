@@ -184,7 +184,10 @@ const Blockuser = () => {
               if (blockuser?.length > 0) {
                 handleBlockMultipleuser(JSON.stringify(blockuser));
               } else {
-                toast.error("Please select a user to block");
+                toast.remove("rawcaster");
+                toast.error("Please select a user to block", {
+                  id: "rawcaster",
+                });
               }
             }}
           >

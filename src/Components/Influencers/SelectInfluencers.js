@@ -106,7 +106,8 @@ const SelectInfluencers = () => {
         if (res.data.status === 1) {
           setinfluencerCategory(res.data.influencer_category);
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -251,7 +252,8 @@ const SelectInfluencers = () => {
             setSelectedInfluencersList([]);
             resolve(true);
           } else if (res.data.status === 0) {
-            toast.error(res.data.msg);
+            toast.remove("rawcaster");
+            toast.error(res.data.msg, { id: "rawcaster" });
             reject(false);
           }
         })

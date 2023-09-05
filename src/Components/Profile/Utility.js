@@ -88,11 +88,13 @@ export const handleUnFriendService = (token, user_id) => {
     unFriendService(JSONtoformdata(unfriendData))
       .then(({ data }) => {
         if (data.status === 1) {
-          toast.success(data.msg);
+          toast.remove("rawcaster");
+          toast.success(data.msg, { id: "rawcaster" });
           resolve(data.msg);
         } else {
           reject();
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .catch(() => {
@@ -117,11 +119,13 @@ export const handleUnFollowService = (token, follow_userid) => {
     FollowandunfollowService(JSONtoformdata(unfollowData))
       .then(({ data }) => {
         if (data.status === 1) {
-          toast.success(data.msg);
+          toast.remove("rawcaster");
+          toast.success(data.msg, { id: "rawcaster" });
           resolve(data.msg);
         } else {
           reject();
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .catch(() => {

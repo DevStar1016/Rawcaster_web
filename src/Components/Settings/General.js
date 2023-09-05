@@ -82,8 +82,10 @@ const General = () => {
       }));
       handleupdate(finalData);
     } else {
+      toast.remove("rawcaster");
       toast.error(
-        `please select atleast one ${type === 3 ? "connection" : "group"}`
+        `please select atleast one ${type === 3 ? "connection" : "group"}`,
+        { id: "rawcaster" }
       );
     }
   };

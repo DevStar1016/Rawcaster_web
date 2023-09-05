@@ -83,7 +83,8 @@ const EventValidaton = () => {
           resolve();
         })
         .catch(() => {
-          toast.error("Unable to end Meeting !");
+          toast.remove("rawcaster");
+          toast.error("Unable to end Meeting !", { id: "rawcaster" });
           reject();
         })
         .finally(() => {
@@ -107,7 +108,8 @@ const EventValidaton = () => {
           resolve();
         })
         .catch(() => {
-          toast.error("Unable to end Meeting !");
+          toast.remove("rawcaster");
+          toast.error("Unable to end Meeting !", { id: "rawcaster" });
           setisEndLoading(null);
           reject();
         });
@@ -148,7 +150,8 @@ const EventValidaton = () => {
         setisLoading(false);
       });
     } catch (error) {
-      toast.error("Unable to Connect The Meeting");
+      toast.remove("rawcaster");
+      toast.error("Unable to Connect The Meeting", { id: "rawcaster" });
     }
   };
 

@@ -88,7 +88,8 @@ const Login = () => {
       .then((res) => {
         if (res.data.status === 1) {
           if (res.data.acc_verify_status === 0) {
-            toast.success(res.data.msg);
+            toast.remove("rawcaster");
+            toast.success(res.data.msg, { id: "rawcaster" });
             handleProfileUpdate(res.data, res.data.signup_type);
             return;
           }

@@ -38,11 +38,13 @@ export const VerificationModal = ({ open, close }) => {
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           navigate("/verifyotp", { state: { ...value, ...res.data } });
           window.location.reload();
         } else {
-          toast.error(res.data.message);
+          toast.remove("rawcaster");
+          toast.error(res.data.message, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -74,7 +76,8 @@ export const VerificationModal = ({ open, close }) => {
       } else if (isValidData(loginUserData.mobile)) {
         handleSendOTP("sms");
       } else {
-        toast.error("Phone Number and Email ID Missing");
+        toast.remove("rawcaster");
+        toast.error("Phone Number and Email ID Missing", { id: "rawcaster" });
       }
     } else {
       navigate("/profile");

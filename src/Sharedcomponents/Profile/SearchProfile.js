@@ -59,9 +59,11 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           let tempData = [...PeopleList];
           tempData[findIndex].follow = true;
           setPeopleList(tempData);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -104,7 +106,8 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           setPeopleList(tempData);
           toast.success(res.data.msg);
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

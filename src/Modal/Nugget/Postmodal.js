@@ -97,11 +97,18 @@ const Postmodal = ({ visible, onClose }) => {
       .catch((err) => {
         const { type, message } = err;
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
-          toast.error("browser does not have permission to access microphone");
+          toast.remove("rawcaster");
+          toast.error("browser does not have permission to access microphone", {
+            id: "rawcaster",
+          });
         } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
-          toast.error("user didn't allow app to access microphone");
+          toast.remove("rawcaster");
+          toast.error("user didn't allow app to access microphone", {
+            id: "rawcaster",
+          });
         } else {
-          toast.error(message);
+          toast.remove("rawcaster");
+          toast.error(message, { id: "rawcaster" });
         }
       });
   };
@@ -120,11 +127,18 @@ const Postmodal = ({ visible, onClose }) => {
       .catch((err) => {
         const { type, message } = err;
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
-          toast.error("browser does not have permission to access microphone");
+          toast.remove("rawcaster");
+          toast.error("browser does not have permission to access microphone", {
+            id: "rawcaster",
+          });
         } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
-          toast.error("user didn't allow app to access microphone");
+          toast.remove("rawcaster");
+          toast.error("user didn't allow app to access microphone", {
+            id: "rawcaster",
+          });
         } else {
-          toast.error(message);
+          toast.remove("rawcaster");
+          toast.error(message, { id: "rawcaster" });
         }
       });
   };

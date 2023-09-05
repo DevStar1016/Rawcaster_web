@@ -70,7 +70,10 @@ const AddConnection = ({ open, close }) => {
           let tempData = [...ProfileList];
           tempData[find] = { ...tempData[find], friend_request_status: 0 };
           setProfileList(tempData);
-          toast.success("Successfully connection request send");
+          toast.remove("rawcaster");
+          toast.success("Successfully connection request send", {
+            id: "rawcaster",
+          });
         }
       })
       .catch((err) => {});

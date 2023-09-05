@@ -81,7 +81,8 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
           handleplayaudio(res?.data?.file_path);
         } else {
           if (res?.data?.msg) {
-            toast.error(res?.data?.msg);
+            toast.remove("rawcaster");
+            toast.error(res?.data?.msg, { id: "rawcaster" });
           }
         }
       })
@@ -187,7 +188,8 @@ export const SeeTranslate = ({ nugget_id, translate_text = null }) => {
             );
             setisTranslate(true);
           } else {
-            toast.error(res.data.msg);
+            toast.remove("rawcaster");
+            toast.error(res.data.msg, { id: "rawcaster" });
           }
         })
         .finally(() => {
