@@ -60,7 +60,10 @@ const ForgotPassword = () => {
           });
           toast.success(res.data.msg);
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {});

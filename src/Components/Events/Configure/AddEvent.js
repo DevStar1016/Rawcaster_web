@@ -307,7 +307,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
             CHIME_SOCKET_EVENTS.NOTIFICATIONS
           );
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
           handleCloseEvent();
         }
       })
@@ -359,7 +362,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           getEvents(ActiveEvent.key);
           toast.success(res.data.msg);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {})
