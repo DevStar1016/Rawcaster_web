@@ -42,11 +42,11 @@ const ViewNugget = () => {
         if (res.data.status === 1) {
           setNuggetData(res.data.nugget_detail);
         } else {
-          navigate(-1);
+          // navigate(-1);
         }
       })
       .catch((err) => {
-        navigate(-1);
+        // navigate(-1);
       });
   };
 

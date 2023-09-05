@@ -4,7 +4,7 @@
  */
 import { Button, Form, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
@@ -34,6 +34,7 @@ import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { accountVerifyHandle } from "./Utility";
 
 const SignupwithCredentials = () => {
+  const { nugget_id } = useParams();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
@@ -175,9 +176,9 @@ const SignupwithCredentials = () => {
    */
   const handleProfileUpdate = (res) => {
     if (getLoginType().id === 1) {
-      accountVerifyHandle(res, "email", navigate);
+      accountVerifyHandle(res, "email", navigate, nugget_id);
     } else if (getLoginType().id === 2) {
-      accountVerifyHandle(res, "sms", navigate);
+      accountVerifyHandle(res, "sms", navigate, nugget_id);
     }
   };
 

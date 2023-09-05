@@ -40,7 +40,15 @@ export const AuthRoute = [
             element: <Login />,
           },
           {
+            path: "/login/:nugget_id",
+            element: <Login />,
+          },
+          {
             path: "/signup",
+            element: <Signup />,
+          },
+          {
+            path: "/signup/:nugget_id",
             element: <Signup />,
           },
           {
@@ -48,7 +56,15 @@ export const AuthRoute = [
             element: <SignupwithCredentials />,
           },
           {
+            path: "/signupwithemail/:nugget_id",
+            element: <SignupwithCredentials />,
+          },
+          {
             path: "/signupwithmobile",
+            element: <SignupwithCredentials />,
+          },
+          {
+            path: "/signupwithmobile/:nugget_id",
             element: <SignupwithCredentials />,
           },
           {
