@@ -1,3 +1,15 @@
+/**
+ * A component that displays a user's profile image and badge.
+ * @component
+ * @param {boolean} [isLoggedIn=true] - Indicates whether the user is logged in.
+ * @param {string} src - The source URL of the profile image.
+ * @param {number} Badgetype - The type of badge to display.
+ * @param {string} [BadgeTitle=""] - The title of the badge.
+ * @param {string} imgClassName - The CSS class name for the profile image.
+ * @param {string} badgeClassName - The CSS class name for the badge.
+ * @param {object} user - The user object.
+ * @returns {JSX.Element} - The rendered profile image and badge
+ */
 import React from "react";
 import Diamond from "../Assets/Icons/svg/Diamond.svg";
 import Gold from "../Assets/Icons/svg/Gold.svg";
@@ -41,6 +53,10 @@ const ProfileImg = ({
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
 
+  /**
+   * Retrieves the badge information based on the given badge type.
+   * @returns {BadgeProp | undefined} - The badge object containing the image and title, or undefined if the badge type is not recognized.
+   */
   const getBadge = (): BadgeProp | undefined => {
     switch (Badgetype) {
       case 1:

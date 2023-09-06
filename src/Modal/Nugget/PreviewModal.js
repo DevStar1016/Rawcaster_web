@@ -1,9 +1,21 @@
+/**
+ * A modal component that displays a preview of an image and provides buttons for canceling or adding the image.
+ * @param {Object} props - The component props.
+ * @param {string} props.url - The URL of the image.
+ * @param {function} props.onSuccess - The callback function to be called when the "Add" button is clicked.
+ * @param {function} props.onClose - The callback function to be called when the "Cancel" button is clicked.
+ * @param {string} props.previewurl - The URL of the preview image.
+ * @returns The PreviewModal component.
+ */
 import { Button } from "antd";
-import React from "react";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 import classes from "../Modal.module.css";
 
 const PreviewModal = ({ url, onSuccess, onClose, previewurl }) => {
+  /**
+   * Retrieves the URL information from the given URL object.
+   * @returns An object containing the path, media type, media file type, and media ID.
+   */
   const getURL = () => {
     let type = url.type.split("/");
     return {
@@ -13,12 +25,6 @@ const PreviewModal = ({ url, onSuccess, onClose, previewurl }) => {
       media_id: url.lastModified,
     };
   };
-  // {
-  //   path: previewurl,
-  //   media_type: "audio",
-  //   media_file_type: "wav",
-  //   media_id: modified,
-  // }
 
   return (
     <div style={{ width: "100%" }}>

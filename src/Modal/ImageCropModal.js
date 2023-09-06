@@ -1,12 +1,19 @@
 import { Modal } from "antd";
 import Compressor from "compressorjs";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import classes from "./Imagecrop.module.css";
 
 const TO_RADIANS = Math.PI / 180;
 
+/**
+ * Centers and crops an image or video to a specific aspect ratio.
+ * @param {number} mediaWidth - The width of the media.
+ * @param {number} mediaHeight - The height of the media.
+ * @param {number} aspect - The desired aspect ratio.
+ * @returns The cropped media with the specified aspect ratio.
+ */
 function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
   return centerCrop(
     makeAspectCrop(
@@ -23,6 +30,17 @@ function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
   );
 }
 
+/**
+ * A modal component for cropping images.
+ * @param {object} props - The component props.
+ * @param {boolean} props.open - Whether the modal is open or not.
+ * @param {string} props.src - The source URL of the image to be cropped.
+ * @param {number} props.ratio - The aspect ratio for the crop.
+ * @param {function} props.onSuccess - The callback function to be called when the crop is successful.
+ * @param {function} props.onFailure - The callback function to be called when the crop is cancelled or fails.
+ * @param {number} props.validsize - The maximum valid size for the cropped image in megabytes.
+ * @returns The ImageCropModal component
+ */
 const ImageCropModal = ({
   open,
   src,
@@ -99,7 +117,8 @@ const ImageCropModal = ({
     ctx.restore();
     previewCanvasRef.current.toBlob((blob) => {
       if (!blob) {
-        toast.error("Failed to create blob");
+        toast.remove("rawcaster");
+        toast.error("Failed to create blob", { id: "rawcaster" });
       } else {
         const file = new File(
           [blob],

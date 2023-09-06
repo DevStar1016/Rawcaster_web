@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
 import {
   useAuthData,
@@ -29,6 +29,10 @@ const ChatDocument = ({
   const [progress, setProgress] = useState(0);
   const [isuploading, setisuploading] = useState(false);
 
+  /**
+   * Retrieves the URL and media information for the given element.
+   * @returns {Object} An object containing the path, media type, media file type, and media ID.
+   */
   const getURL = () => {
     let type = ele.type.split("/");
     return {
@@ -39,6 +43,10 @@ const ChatDocument = ({
     };
   };
 
+  /**
+   * Retrieves the group ID of the "My Fans" group from the list of groups.
+   * @returns {string} The group ID of the "My Fans" group, or an empty string if the group is not found.
+   */
   const getFansGroup = () => {
     let myfansGroup = groupsList.find((ele) => ele.group_name === "My Fans");
     if (myfansGroup) {
@@ -48,12 +56,22 @@ const ChatDocument = ({
     }
   };
 
+  /**
+   * Updates the progress value based on the loaded and total values of the progress object.
+   * @param {object} progress - The progress object containing the loaded and total values.
+   * @returns None
+   */
   const handleProgress = (progress) => {
     let val = (progress.loaded / progress.total) * 100;
 
     setProgress(val);
   };
 
+  /**
+   * Handles the upload of an attachment.
+   * @param {Object} attachment - The attachment to be uploaded.
+   * @returns None
+   */
   const handleuploadAttachment = (attachment) => {
     source.current = axios.CancelToken.source();
     setisuploading(true);
@@ -83,7 +101,8 @@ const ChatDocument = ({
           };
           onUpload(finalData);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
           setNuggetData((pre) => pre.filter((ele, i) => i !== index));
         }
       })
@@ -95,6 +114,13 @@ const ChatDocument = ({
       });
   };
 
+  /**
+   * Executes a side effect when the component mounts and cleans up the effect when the component unmounts.
+   * The effect checks if the 'ele' object exists and does not have a 'file_path' property. If this condition is met,
+   * the 'handleuploadAttachment' function is called. Additionally, a cleanup function is returned that cancels any
+   * ongoing requests if the 'source' ref is defined and sets the 'isRequestCancel' flag to true.
+   * @returns None
+   */
   useEffect(() => {
     if (ele && !ele.file_path) {
       handleuploadAttachment(ele);

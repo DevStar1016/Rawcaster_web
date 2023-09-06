@@ -1,3 +1,8 @@
+/**
+ * A React component that renders the content of a chat box.
+ * @param {Function} getContents - A function that handles getting the contents of the chat box.
+ * @returns The rendered content of the chat box.
+ */
 import React, { useEffect, useState } from "react";
 import { MessageContent } from "../../../Sharedcomponents/Chat/utility";
 import { Layout, Modal } from "antd";
@@ -29,6 +34,11 @@ const Content = ({ getContents }) => {
 
   const [selectedMessages, setSelectedMessages] = useState([]);
 
+  /**
+   * Handles the deletion of a message with the given ID.
+   * @param {string} id - The ID of the message to delete.
+   * @returns None
+   */
   const handleDelete = (id) => {
     const params = {
       ChannelArn: GroupDetails?.channel_arn,
@@ -37,14 +47,22 @@ const Content = ({ getContents }) => {
     };
     deleteChannelMessage(params)
       .then((res) => {
-        toast.success("Message Deleted Successfully");
+        toast.remove("rawcaster");
+        toast.success("Message Deleted Successfully", { id: "rawcaster" });
         setMessages((pre) => pre.filter((ele) => ele.message_id !== id));
       })
       .catch((err) => {
-        toast.error("Unable to delete this message");
+        toast.remove("Error");
+        toast.error(err.message, {
+          id: "Error",
+        });
       });
   };
 
+  /**
+   * Groups messages into sections based on their creation date and returns an array of sectioned messages.
+   * @returns {Array} An array of sectioned messages, where each section contains messages with the same creation date.
+   */
   const getValidSectionComponent = () => {
     const sectionedMessages = [];
     let currentSectionDate = null;
@@ -81,6 +99,10 @@ const Content = ({ getContents }) => {
     return sectionedMessages.reverse();
   };
 
+  /**
+   * Executes the getContents function whenever the selectedMessages array changes.
+   * @returns None
+   */
   useEffect(() => {
     getContents(selectedMessages);
   }, [selectedMessages]);

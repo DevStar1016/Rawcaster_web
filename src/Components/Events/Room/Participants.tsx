@@ -1,16 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import classes from "./Room.module.css";
 import { Dropdown, Layout, Modal, Slider, Tooltip } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import {
-  useAudioVideo,
-  useMeetingManager,
-  useRosterState,
-} from "amazon-chime-sdk-component-library-react";
+import { useRosterState } from "amazon-chime-sdk-component-library-react";
 import {
   useAuthData,
   useEventTempAuthData,
@@ -27,85 +22,146 @@ import RenameModal from "../Components/RenameModal";
 import { toast } from "react-hot-toast";
 import { generatePath } from "react-router";
 import { handleCopyText } from "../../../Shared/Utility";
+import {
+  AttendeeUserData,
+  EventContextProp,
+  RequestAttendee,
+} from "../Components/types";
+import { useEventRoomContext } from "../../../Shared/Context";
 
 const { Header, Footer, Content } = Layout;
 
 const Participants = () => {
   const [isSearchEnable, setisSearchEnable] = useState(false);
-  const [SpeakerState, setSpeakerState] = useState(false);
+  const [SpeakerState, setSpeakerState] = useState<boolean | number | string>(
+    false
+  );
   const [renameAttendee, setrenameAttendee] = useState(false);
   const [SearchData, setSearchData] = useState("");
   const {
     setisChatorParticipant,
-    setRequestList,
     RequestRef,
-    isHost,
     attendeesList,
     EventData,
-  } = useLayoutContect();
-  const userdata = useAuthData();
+    userdata,
+  }: EventContextProp = useEventRoomContext();
+  const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const [isInvited, setisInvited] = useState(false);
   const [isCopied, setisCopied] = useState(false);
 
-  const headerStyle = {
-    textAlign: "center",
-    color: "#fff",
-    lineHeight: "64px",
-    backgroundColor: "#7dbcea",
-  };
-
+  /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
-    if (userdata) {
-      return userdata;
+    if (userData) {
+      return userData;
     } else {
       return tempuserData;
     }
   };
 
-  const handleAccept = (ele) => {
+  /**
+   * Get Updated Status for Host
+   */
+  const getISHost = () => {
+    return userdata?.isHost;
+  };
+
+  /* Handle Accept the Attendee Join Request  */
+  const handleAccept = (ele: RequestAttendee) => {
     ChimesendMessage(
       { ...ele, refId: EventData?.reference_id },
       CHIME_SOCKET_EVENTS.ALLOW_TO_JOIN_MEETING
     );
-    setRequestList((pre) => pre.filter((elem) => elem.userId !== ele.userId));
     RequestRef.current = RequestRef.current.filter(
-      (elem) => elem.userId !== ele.userId
+      (elem: RequestAttendee) => elem.userId !== ele.userId
     );
   };
 
-  for (const audio of document.querySelectorAll("audio")) {
-    console.log(audio);
+  /* Handle Reject the Attendee Join Request  */
 
-    // if(!audio.paused) {
-    //   return audio;
-    // }
-  }
-
-  const handleReject = (ele) => {
+  const handleReject = (ele: RequestAttendee) => {
     const value = { userId: ele.userId };
     ChimesendMessage(value, CHIME_SOCKET_EVENTS.REJECT_TO_JOIN_MEETING);
-    setRequestList((pre) => pre.filter((elem) => elem.userId !== ele.userId));
     RequestRef.current = RequestRef.current.filter(
-      (elem) => elem.userId !== ele.userId
+      (elem: RequestAttendee) => elem.userId !== ele.userId
     );
   };
 
   const AttendeeComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
+      (elem) => elem.userId === parseInt(ele.externalUserId)
     );
-    // ele.
-    //     useEffect(() => {
-    //       if (audioVideo && audioElementRef.current) {
-    //         audioVideo.bindAudioElement(ele, audioElementRef.current);
-    //       }
-    //     }, [audioVideo, attendeeId]);
+    const isYou = parseInt(getUserData()?.user_id) === findAttendee?.userId;
 
-    const isYou =
-      parseInt(getUserData()?.user_id) === parseInt(findAttendee.userId);
+    /* List of Attendee Handling Options */
+
+    const getDropdownList = (ele: AttendeeUserData) => {
+      if (ele?.isHost) {
+        return [
+          {
+            key: "1",
+            label: "Rename user",
+            onClick: () => {
+              setrenameAttendee(true);
+            },
+          },
+        ];
+      }
+      return [
+        {
+          key: "0",
+          label: "Promote as Host",
+          onClick: () => {
+            Modal.confirm({
+              title: "Promote as Host",
+              content:
+                "Are you sure do you want to Promote as Host for this User !",
+              onOk: () => {
+                ChimesendMessage(
+                  {
+                    refId: EventData?.reference_id,
+                    hostId: EventData?.original_user_id,
+                    userId: findAttendee?.userId,
+                  },
+                  CHIME_SOCKET_EVENTS.MAKE_HOST
+                );
+              },
+              onCancel: () => {},
+            });
+          },
+        },
+        {
+          key: "1",
+          label: "Rename user",
+          onClick: () => {
+            setrenameAttendee(true);
+          },
+        },
+        {
+          key: "2",
+          label: "Remove user",
+          onClick: () => {
+            Modal.confirm({
+              title: "Remove User",
+              content: "Are you sure do you want to remove this User !",
+              onOk: () => {
+                ChimesendMessage(
+                  {
+                    refId: EventData?.reference_id,
+                    hostId: EventData?.original_user_id,
+                    userId: findAttendee?.userId,
+                  },
+                  CHIME_SOCKET_EVENTS.KICK_USER
+                );
+              },
+              onCancel: () => {},
+            });
+          },
+        },
+      ];
+    };
 
     return (
       <>
@@ -117,7 +173,7 @@ const Participants = () => {
         <div
           className={classes.participantContainer}
           style={{
-            display: findAttendee.name
+            display: findAttendee?.name
               ?.toLowerCase()
               .includes(SearchData?.toLowerCase())
               ? ""
@@ -126,7 +182,7 @@ const Participants = () => {
         >
           <div className={classes.itemName}>
             <img
-              src={findAttendee.image ? findAttendee.image : ""}
+              src={findAttendee?.image ? findAttendee?.image : ""}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
                 currentTarget.src = defaultprofileImg;
@@ -134,16 +190,16 @@ const Participants = () => {
             />
             <div className={classes.nameSec}>
               <span className={classes.participantName}>
-                {findAttendee.name}
+                {findAttendee?.name}
               </span>
               {`${isYou ? " (You)" : ""}`}
             </div>
           </div>
           <div className={classes.itemAction}>
-            {findAttendee.handRaised && (
+            {findAttendee?.handRaised && (
               <span className={styles.raise_hand_active_icon_sm} />
             )}
-            {findAttendee.isHost ? (
+            {findAttendee?.isHost ? (
               <div className={classes.hostIcon}>HOST</div>
             ) : null}
             {!isYou && (
@@ -151,7 +207,11 @@ const Participants = () => {
                 ele={ele}
                 className={classes.speakersmallIcon}
                 onClick={() => {
-                  if (SpeakerState !== findAttendee.userId) {
+                  if (
+                    SpeakerState &&
+                    findAttendee &&
+                    SpeakerState !== findAttendee?.userId
+                  ) {
                     setSpeakerState(findAttendee.userId);
                   } else {
                     setSpeakerState(false);
@@ -160,22 +220,19 @@ const Participants = () => {
               />
             )}
             {isYou ? (
-              <LocalMicrophoneComponent
-                ref={null}
-                className={classes.micsmallIcon}
-              />
+              <LocalMicrophoneComponent className={classes.micsmallIcon} />
             ) : (
               <MicrophoneComponent
                 ele={ele}
                 attendee={findAttendee}
-                isHost={isHost}
+                isHost={getISHost()}
                 className={classes.micsmallIcon}
+                isGlobal={false}
               />
             )}
 
             {isYou ? (
               <LocalCameraComponent
-                ref={null}
                 setselectedDevice={null}
                 selectedDevice={null}
                 className={classes.videosmallIcon}
@@ -184,44 +241,15 @@ const Participants = () => {
               <CameraComponent
                 ele={ele}
                 attendee={findAttendee}
-                isHost={isHost}
+                isHost={getISHost()}
                 className={classes.videosmallIcon}
+                isGlobal={false}
               />
             )}
-            {!isYou && isHost ? (
+            {getISHost() ? (
               <Dropdown
                 menu={{
-                  items: [
-                    {
-                      key: "1",
-                      label: "Rename user",
-                      onClick: () => {
-                        setrenameAttendee(true);
-                      },
-                    },
-                    {
-                      key: "2",
-                      label: "Remove user",
-                      onClick: () => {
-                        Modal.confirm({
-                          title: "Remove User",
-                          content:
-                            "Are you sure do you want to remove this User !",
-                          onOk: () => {
-                            ChimesendMessage(
-                              {
-                                refId: EventData?.reference_id,
-                                hostId: EventData?.original_user_id,
-                                userId: findAttendee?.userId,
-                              },
-                              CHIME_SOCKET_EVENTS.KICK_USER
-                            );
-                          },
-                          onCancel: () => {},
-                        });
-                      },
-                    },
-                  ],
+                  items: findAttendee ? getDropdownList(findAttendee) : [],
                 }}
               >
                 <div className={classes.moreIcon}>
@@ -235,7 +263,8 @@ const Participants = () => {
               open={renameAttendee}
               ele={findAttendee}
               success={() => {
-                toast.success("Renamed Successfully");
+                toast.remove("rawcaster");
+                toast.success("Renamed Successfully", { id: "rawcaster" });
                 setrenameAttendee(false);
               }}
               close={() => {
@@ -244,7 +273,7 @@ const Participants = () => {
             />
           )}
         </div>
-        <Collapse in={SpeakerState === findAttendee.userId}>
+        <Collapse in={SpeakerState === findAttendee?.userId}>
           <div
             className={classes.speakerContainer}
             style={{
@@ -253,10 +282,9 @@ const Participants = () => {
           >
             <div className={classes.speakerSec}>
               <VolumeStatusComponent
-                // isEnable={SpeakerState === findAttendee.userId}
                 onClick={() => {
-                  if (SpeakerState !== findAttendee.userId) {
-                    setSpeakerState(findAttendee.userId);
+                  if (findAttendee && SpeakerState !== findAttendee?.userId) {
+                    setSpeakerState(findAttendee?.userId);
                   } else {
                     setSpeakerState(false);
                   }
@@ -268,13 +296,8 @@ const Participants = () => {
                 defaultValue={ele.volume}
                 max={100}
                 className="ms-3"
-                tooltip
-                onChange={(e) => {
-                  // const desiredVolume = parseInt(e) / 100;
-                  // const audioElement = audioElements[ele.chimeAttendeeId];
-                  // if (audioElement) {
-                  //   audioElement.volume = desiredVolume;
-                  // }
+                tooltip={{
+                  open: true,
                 }}
               />
             </div>
@@ -284,12 +307,13 @@ const Participants = () => {
     );
   };
 
+  /* Generate Invite Link  */
   const getInviteLink = () => {
     return (
       window.location.origin +
       generatePath(`/join/:event/:ref_id`, {
         event: EventData?.type === 2 ? "talkshow" : "event",
-        ref_id: EventData.reference_id,
+        ref_id: EventData?.reference_id || "",
       })
     );
   };
@@ -300,7 +324,15 @@ const Participants = () => {
         EventData?.type === 2 ? classes.talkshowPopup : ""
       }`}
     >
-      <Header style={headerStyle} className={classes.headerStyle}>
+      <Header
+        style={{
+          textAlign: "center",
+          color: "#fff",
+          lineHeight: 64,
+          backgroundColor: "#7dbcea",
+        }}
+        className={classes.headerStyle}
+      >
         <div className={classes.popupHeader}>
           <div>
             <i className={`${styles.participant_icon} ${styles.icon}`}></i>
@@ -344,7 +376,7 @@ const Participants = () => {
             </InputGroup>
           </Collapse>
         </div>
-        {isHost && (
+        {getISHost() && (
           <div className={classes.GlobalSettingContainer}>
             <div className={classes.itemName}>Global Settings</div>
             <div className={classes.itemAction}>
@@ -368,7 +400,7 @@ const Participants = () => {
                       }}
                     />
 
-                    <Slider min={0} max={100} className="ms-3" tooltip />
+                    <Slider min={0} max={100} className="ms-3" />
                   </div>
                 </div>
               </Collapse>
@@ -390,63 +422,46 @@ const Participants = () => {
         })}
       </Content>
       <Footer className={classes.footerSec}>
-        <div
-          className={classes.inviteContainer}
-          onClick={() => {
-            setisInvited((pre) => !pre);
-          }}
-        >
-          <div className={classes.inviteBtn}>Invite Participants</div>
-        </div>
-
-        <Collapse in={isInvited}>
-          <div className={classes.inviteModal}>
-            <h2>Invite via Meeting Link</h2>
-            <div className={classes.MeetingLinkSec}>
-              <p> {getInviteLink()}</p>
-              <Tooltip placement="top" title={"Copy"}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {isCopied ? (
-                    <span className={`material-symbols-rounded`}>done</span>
-                  ) : (
-                    <span
-                      class="material-symbols-outlined"
-                      onClick={() => {
-                        handleCopyText(getInviteLink()).then(() => {
-                          setisCopied(true);
-                        });
-                      }}
-                    >
-                      content_copy
-                    </span>
-                  )}
-                </div>
-              </Tooltip>
-            </div>
-          </div>
-        </Collapse>
-
         {RequestRef.current.length !== 0 && (
           <div
             style={{
               marginTop: 15,
-              paddingTop: "10px",
               marginBottom: RequestRef.current.length !== 0 ? 20 : 0,
             }}
           >
-            <p
-              style={{
-                marginBottom: 0,
-                marginLeft: 10,
-              }}
+            <div
+              className={`${classes.participantContainer} ${classes.lobbyHeader}`}
             >
-              Lobby ({RequestRef.current.length})
-            </p>
+              <p
+                style={{
+                  marginBottom: 0,
+                }}
+              >
+                Lobby ({RequestRef.current.length})
+              </p>
+              <div className={classes.itemAction}>
+                <div
+                  className={classes.greenicon}
+                  onClick={() => {
+                    RequestRef.current.map((ele) => {
+                      handleAccept(ele);
+                    });
+                  }}
+                >
+                  <i className="material-symbols-outlined">done</i>
+                </div>
+                <div
+                  className={classes.redicon}
+                  onClick={() => {
+                    RequestRef.current.map((ele) => {
+                      handleReject(ele);
+                    });
+                  }}
+                >
+                  <i className="material-symbols-outlined">close</i>
+                </div>
+              </div>
+            </div>
             <div
               style={{
                 maxHeight: 150,
@@ -485,6 +500,45 @@ const Participants = () => {
             </div>
           </div>
         )}
+        <div
+          className={classes.inviteContainer}
+          onClick={() => {
+            setisInvited((pre) => !pre);
+          }}
+        >
+          <div className={classes.inviteBtn}>Invite Participants</div>
+        </div>
+        <Collapse in={isInvited}>
+          <div className={classes.inviteModal}>
+            <h2>Invite via Meeting Link</h2>
+            <div className={classes.MeetingLinkSec}>
+              <p> {getInviteLink()}</p>
+              <Tooltip placement="top" title={"Copy"}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {isCopied ? (
+                    <span className={`material-symbols-rounded`}>done</span>
+                  ) : (
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => {
+                        handleCopyText(getInviteLink()).then(() => {
+                          setisCopied(true);
+                        });
+                      }}
+                    >
+                      content_copy
+                    </span>
+                  )}
+                </div>
+              </Tooltip>
+            </div>
+          </div>
+        </Collapse>
       </Footer>
     </Layout>
   );

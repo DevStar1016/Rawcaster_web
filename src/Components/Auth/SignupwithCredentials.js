@@ -1,6 +1,10 @@
+/**
+ * A component for signing up with credentials.
+ * @returns JSX element representing the signup form.
+ */
 import { Button, Form, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
@@ -30,6 +34,7 @@ import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { accountVerifyHandle } from "./Utility";
 
 const SignupwithCredentials = () => {
+  const { nugget_id } = useParams();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
@@ -70,10 +75,6 @@ const SignupwithCredentials = () => {
       .required(`Please input your ${getLoginType().title}!`),
     password: yup
       .string()
-      // .matches(
-      //   PASSWORD_EXP,
-      //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-      // )
       .trim("The Password cannot include leading and trailing spaces")
       .strict(true)
       .min(8, "Password must be at least 8 characters long")
@@ -108,6 +109,12 @@ const SignupwithCredentials = () => {
     },
   });
 
+  /**
+   * Executes the specified effect function after the component has rendered.
+   * The effect function retrieves geocode data and updates the component's state
+   * with the retrieved values.
+   * @returns None
+   */
   useEffect(() => {
     getGeocodeData()
       .then((res) => {
@@ -128,6 +135,11 @@ const SignupwithCredentials = () => {
       });
   }, []);
 
+  /**
+   * Handles the signup process by sending the user's signup data to the server.
+   * @param {object} values - The signup form values.
+   * @returns None
+   */
   const HandleSignup = (values) => {
     let signupValue = {
       ...values,
@@ -143,7 +155,10 @@ const SignupwithCredentials = () => {
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {})
@@ -152,11 +167,18 @@ const SignupwithCredentials = () => {
       });
   };
 
+  /**
+   * Handles the profile update response based on the login type.
+   * If the login type is email, it calls the accountVerifyHandle function with the "email" parameter.
+   * If the login type is sms, it calls the accountVerifyHandle function with the "sms" parameter.
+   * @param {any} res - The response object from the profile update request.
+   * @returns None
+   */
   const handleProfileUpdate = (res) => {
     if (getLoginType().id === 1) {
-      accountVerifyHandle(res, "email", navigate);
+      accountVerifyHandle(res, "email", navigate, nugget_id);
     } else if (getLoginType().id === 2) {
-      accountVerifyHandle(res, "sms", navigate);
+      accountVerifyHandle(res, "sms", navigate, nugget_id);
     }
   };
 

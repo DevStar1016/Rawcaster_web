@@ -1,4 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+/**
+ * A component that represents the input field for sending messages in a chat.
+ * @param {string} value - The current value of the input field.
+ * @param {function} onInput - A callback function to handle changes in the input field.
+ * @param {boolean} isSendLoading - A flag indicating if the send button is in a loading state.
+ * @param {function} HandleSendMessage - A callback function to handle sending a message.
+ * @param {function} onAudioResult - A callback function to handle the result of an audio recording.
+ * @param {boolean} disabled - A flag indicating if the input field is disabled.
+ * @param {boolean} fileuploadEnabled - A flag indicating if file upload is
+ */
+import { useEffect, useRef, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 import {
   useAuthData,
@@ -12,7 +22,7 @@ import {
   requestVideoPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import { toast } from "react-hot-toast";
-import { Form, InputGroup, Spinner } from "react-bootstrap";
+import { InputGroup, Spinner } from "react-bootstrap";
 import classes from "./Chat.module.css";
 import moment from "moment";
 import ChatIcon from "../../Assets/Icons/svg/chat_icon.svg";
@@ -26,7 +36,7 @@ import {
 } from "../../Shared/Utility";
 import ChatAudioplayer from "../AudioPlayer/ChatAudioplayer";
 import CameraModal from "../../Modal/Nugget/CameraModal";
-import { Checkbox, Dropdown, Image, Radio, Tooltip, message } from "antd";
+import { Checkbox, Dropdown, Image, Tooltip, message } from "antd";
 import { useChatBotContext, useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
@@ -51,7 +61,6 @@ export const ChatInput = ({
   placeholderValue = "Enter Your Message Here ...",
 }) => {
   const token = useAuthToken();
-  const [TextinputHeight, setTextinputHeight] = useState(null);
   const BotContext = useChatBotContext();
   const { seconds, minutes, pause, reset } = useStopwatch({
     autoStart: false,
@@ -87,18 +96,17 @@ export const ChatInput = ({
   };
 
   useEffect(() => {
-    console.log(TextinputHeight);
-    if (textareaRef.current) {
-      setTextinputHeight(textareaRef.current.scrollHeight);
-    }
-  }, [textareaRef.current]);
-
-  useEffect(() => {
     if (value && value !== "") {
       setChatMessage(value);
     }
   }, [value]);
 
+  /**
+   * Callback function triggered when recording is stopped.
+   * @param {string} url - The URL of the recorded audio blob.
+   * @param {Blob} blob - The recorded audio blob.
+   * @returns None
+   */
   const onRecordStop = (url, blob) => {
     if (isSend.current) {
       const audioFile = new File([mediaBlobUrl], "blobtofile.mp3", {
@@ -113,6 +121,18 @@ export const ChatInput = ({
     }
   };
 
+  /**
+   * Handles the closing action by performing the following tasks:
+   * - Clears the blob URL
+   * - Resets any necessary variables or states
+   * - Pauses any ongoing processes
+   * - Pauses the audio element, if it exists
+   * - Stops the media recording and releases the media stream
+   * - Clears the blob URL again
+   * - Pauses the audio element again
+   * - Stops the recording process
+   * @returns None
+   */
   const handleClose = () => {
     clearBlobUrl();
     reset();
@@ -134,6 +154,15 @@ export const ChatInput = ({
       });
   };
 
+  /**
+   * Custom hook that provides functionality for recording media using React.
+   * @returns {Object} An object containing the following properties:
+   *   - status: The current status of the media recording.
+   *   - startRecording: Function to start the recording.
+   *   - stopRecording: Function to stop the recording.
+   *   - mediaBlobUrl: The URL of the recorded media blob.
+   *   - clearBlobUrl: Function to clear the URL of the recorded media blob.
+   */
   const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({
       audio: true,
@@ -143,6 +172,12 @@ export const ChatInput = ({
       // onStop: onRecordStop,
     });
 
+  /**
+   * Handles the action when the user allows microphone permission.
+   * Requests audio permissions and starts or stops recording based on the current status.
+   * Displays error messages if there are any permission errors.
+   * @returns None
+   */
   const handleAllowMicPermission = () => {
     requestAudioPermissions()
       .then(() => {
@@ -155,15 +190,27 @@ export const ChatInput = ({
       .catch((err) => {
         const { type, message } = err;
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
-          toast.error("browser does not have permission to access microphone");
+          toast.remove("rawcaster");
+          toast.error("browser does not have permission to access microphone", {
+            id: "rawcaster",
+          });
         } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
-          toast.error("user didn't allow app to access microphone");
+          toast.remove("rawcaster");
+          toast.error("user didn't allow app to access microphone", {
+            id: "rawcaster",
+          });
         } else {
-          toast.error(message);
+          toast.remove("rawcaster");
+          toast.error(message, { id: "rawcaster" });
         }
       });
   };
 
+  /**
+   * Handles the camera permission for a specific type of action.
+   * @param {string} type - The type of action to handle camera permission for.
+   * @returns None
+   */
   const handleCameraPermission = (type) => {
     requestVideoPermissions()
       .then(() => {
@@ -172,25 +219,49 @@ export const ChatInput = ({
       .catch((err) => {
         const { type, message } = err;
         if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
-          toast.error("browser does not have permission to access microphone");
+          toast.remove("rawcaster");
+          toast.error("browser does not have permission to access microphone", {
+            id: "rawcaster",
+          });
         } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
-          toast.error("user didn't allow app to access microphone");
+          toast.remove("rawcaster");
+          toast.error("user didn't allow app to access microphone", {
+            id: "rawcaster",
+          });
         } else {
-          toast.error(message);
+          toast.remove("rawcaster");
+          toast.error(message, { id: "rawcaster" });
         }
       });
   };
 
+  /**
+   * Updates the value of the recordingRef.current with the given status whenever the status changes.
+   * @param {any} status - The new status value.
+   * @returns None
+   */
   useEffect(() => {
     recordingRef.current = status;
   }, [status]);
 
+  /**
+   * Executes a side effect when the value of `mediaBlobUrl` changes.
+   * If `mediaBlobUrl` is truthy, calls the `onRecordStop` function with `mediaBlobUrl` as the argument.
+   * @param {string} mediaBlobUrl - The URL of the media blob.
+   * @returns None
+   */
   useEffect(() => {
     if (mediaBlobUrl) {
       onRecordStop(mediaBlobUrl);
     }
   }, [mediaBlobUrl]);
 
+  /**
+   * Retrieves the length of the nugget text from the login user data.
+   * If the login user data is available, it returns the value of the 'nugget_content_length' property.
+   * If the login user data is not available, it returns 0.
+   * @returns The length of the nugget text.
+   */
   const getNuggetTextLength = () => {
     if (loginUserData) {
       return loginUserData?.nugget_content_length;
@@ -199,12 +270,22 @@ export const ChatInput = ({
     }
   };
 
+  /**
+   * Takes in a number and returns a string representation of the number with leading zero if it is a single digit number.
+   * @param {number} num - The number to format.
+   * @returns {string} - The formatted number as a string.
+   */
   const getValidNumber = (num) => {
     return num.toString().length == 1
       ? num.toString().padStart(2, "0")
       : num.toString();
   };
 
+  /**
+   * Formats a given number of seconds into a string representation of time in the format "minutes:seconds".
+   * @param {number} seconds - The number of seconds to format.
+   * @returns {string} The formatted time string.
+   */
   function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -213,6 +294,11 @@ export const ChatInput = ({
     return `${minutes}:${formattedSeconds}`;
   }
 
+  /**
+   * Fetches the audio URL for the given file.
+   * @param {string} file - The audio file to fetch the URL for.
+   * @returns None
+   */
   const fetchAudioUrl = (file) => {
     const formData = {
       token,
@@ -234,6 +320,16 @@ export const ChatInput = ({
       });
   };
 
+  /**
+   * useEffect hook that listens for changes in the BotContext's isChatOpen property.
+   * If the chat is closed, it performs the following actions:
+   * - Sets the audioDeleted state to true
+   * - Sets the audioElement state to null
+   * - Closes the chat by calling the handleClose function
+   * - Sets the isRecording state to false
+   * - Stops the recording by calling the stopRecording function
+   * @returns None
+   */
   useEffect(() => {
     if (!BotContext?.isChatOpen) {
       setAudioDeleted(true);
@@ -244,6 +340,10 @@ export const ChatInput = ({
     }
   }, [BotContext?.isChatOpen]);
 
+  /**
+   * Calculates the initial height of a textarea element based on its content.
+   * @returns {string} The initial height of the textarea element in pixels.
+   */
   const calculateInitialHeight = () => {
     if (textareaRef.current) {
       const placeholder = placeholderValue;
@@ -266,6 +366,7 @@ export const ChatInput = ({
 
   return (
     <>
+      {contextHolder}
       {!isChatContentValid && (
         <p className="ErrTxt mx-auto text-center mb-1">
           Message Content cannot be longer than {getNuggetTextLength() + " "}
@@ -563,7 +664,6 @@ export const ChatInput = ({
             <span
               className={`material-symbols-outlined ${classes.closeIcon}`}
               onClick={() => {
-                console.log("resetted");
                 setAudioDeleted(true);
                 setAudioElement(null);
                 handleClose();
@@ -684,7 +784,6 @@ export const MessageContent = (props) => {
   const friends_list = useFriends();
   const loginUserData = useAuthData();
 
-  // const [isAvatarErr, setisAvatarErr] = useState(false);
   const isUser = (id) => {
     if (id === loginUserData?.chime_user_id) {
       return true;

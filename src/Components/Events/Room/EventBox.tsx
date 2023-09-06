@@ -1,6 +1,4 @@
-import React, { useState } from "react";
 import classes from "./EventBox.module.css";
-import styles from "../../Events/Components/Menu.module.css";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
 import {
   ContentShare,
@@ -9,10 +7,8 @@ import {
   useAttendeeStatus,
   useContentShareState,
   useLocalVideo,
-  useMeetingManager,
   useRemoteVideoTileState,
   useRosterState,
-  useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import Participants from "./Participants";
 import ChatBox from "./ChatBox";
@@ -33,12 +29,12 @@ import {
 import { useEventRoomContext } from "../../../Shared/Context";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
+import { AttendeeUserData, EventContextProp } from "../Components/types";
 
 const EventBox = () => {
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
-  const { Sider, Content } = Layout;
+  const { Content } = Layout;
   const { isVideoEnabled } = useLocalVideo();
   const {
     isPinEnabled,
@@ -50,13 +46,14 @@ const EventBox = () => {
     attendeesList,
     userdata,
     EventData,
-  } = useEventRoomContext();
-  const { isPresentScreen, setisPresentScreen } = useLayoutContect();
+    isPresentScreen,
+  }: EventContextProp = useEventRoomContext();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
 
+  /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
     if (userData) {
       return userData;
@@ -64,6 +61,8 @@ const EventBox = () => {
       return tempuserData;
     }
   };
+
+  /* Dynamic Classname for Attendee Display boxes */
 
   const getContainerClassName = () => {
     switch (attendees.length) {
@@ -90,9 +89,11 @@ const EventBox = () => {
     }
   };
 
+  /* Options for Attendee Audio,Video Handling */
+
   const EventBoxOptions = ({ isYou, ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
+      (elem) => elem.userId === parseInt(ele.externalUserId)
     );
 
     return (
@@ -108,7 +109,7 @@ const EventBox = () => {
               }}
             >
               {isYou ? (
-                <LocalMicrophoneComponent ref={null} className={classes.icon} />
+                <LocalMicrophoneComponent className={classes.icon} />
               ) : (
                 <MicrophoneComponent
                   ele={ele}
@@ -130,7 +131,6 @@ const EventBox = () => {
             >
               {isYou ? (
                 <LocalCameraComponent
-                  ref={null}
                   setselectedDevice={null}
                   selectedDevice={null}
                   className={classes.icon}
@@ -206,7 +206,7 @@ const EventBox = () => {
                 }}
               >
                 <span
-                  class="material-symbols-outlined"
+                  className="material-symbols-outlined"
                   style={{
                     color: !userdata?.isHost ? "grey" : "",
                   }}
@@ -221,14 +221,15 @@ const EventBox = () => {
     );
   };
 
+  /* Name plate Design when video is enable */
+
   const CustomNamePlate = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem.userId) === parseInt(ele.externalUserId)
+      (elem) => elem.userId === parseInt(ele.externalUserId)
     );
     const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
 
-    const isYou =
-      parseInt(getUserData()?.user_id) === parseInt(findAttendee.userId);
+    const isYou = parseInt(getUserData()?.user_id) === findAttendee?.userId;
     return (
       <div>
         <div className={classes.customNamePlate}>
@@ -237,9 +238,9 @@ const EventBox = () => {
           ) : (
             <i className={classes.name_plate_mic_on_icon}></i>
           )}
-          {`${findAttendee.name} ${isYou ? "(You)" : ""}`}
+          {`${findAttendee?.name} ${isYou ? "(You)" : ""}`}
         </div>
-        {findAttendee.handRaised && (
+        {findAttendee?.handRaised && (
           <div className={classes.isRaiseHand}>
             <i className={classes.raise_hand_active_icon}></i>
           </div>
@@ -248,12 +249,21 @@ const EventBox = () => {
     );
   };
 
+  /* List for whose layout is pinned by Host */
+
   const ConvertSpotLightAttendee = () => {
     const spotlightAttendee = attendees.find(
-      (ele) => parseInt(ele.externalUserId) === parseInt(isPinEnabled)
+      (ele) =>
+        ele.externalUserId &&
+        //@ts-ignore
+        parseInt(ele.externalUserId) === parseInt(isPinEnabled)
     );
+
     const otherAttendee = attendees.filter(
-      (ele) => parseInt(ele.externalUserId) !== parseInt(isPinEnabled)
+      (ele) =>
+        ele.externalUserId &&
+        //@ts-ignore
+        parseInt(ele.externalUserId) !== parseInt(isPinEnabled)
     );
     return {
       spotlightAttendee,
@@ -261,13 +271,14 @@ const EventBox = () => {
     };
   };
 
+  /* List for Each attendee or Host Video Enabled or not */
+
   const GetDisplayComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => parseInt(elem?.userId) === parseInt(ele.externalUserId)
+      (elem: AttendeeUserData) => elem?.userId === parseInt(ele.externalUserId)
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
-    const isYou =
-      parseInt(getUserData()?.user_id) === parseInt(findAttendee?.userId);
+    const isYou = parseInt(getUserData()?.user_id) === findAttendee?.userId;
 
     if (findAttendee) {
       if (isYou && isVideoEnabled) {
@@ -279,6 +290,7 @@ const EventBox = () => {
             <LocalVideo
               id={ele.id}
               className={classes.videoSec}
+              // @ts-ignore
               nameplate={<CustomNamePlate ele={ele} />}
             ></LocalVideo>
             <EventBoxOptions isYou={isYou} ele={ele} />
@@ -291,8 +303,9 @@ const EventBox = () => {
               <div className={classes.hostLogo}>Host</div>
             )}
             <RemoteVideo
-              id={findAttendee.userId}
+              id={findAttendee.userId.toString()}
               className={classes.videoSec}
+              // @ts-ignore
               name={<CustomNamePlate ele={ele} />}
               tileId={value}
             />
@@ -329,17 +342,21 @@ const EventBox = () => {
     return (
       <div className={classes.Child}>
         <EventBoxOptions isYou={isYou} ele={ele} />
+
         <img
-          src={findAttendee?.image ? findAttendee.image : ""}
+          src={userImg}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null;
             currentTarget.src = userImg;
           }}
         />
+
         <p>{"User" + `${isYou ? " (You)" : ""}`}</p>
       </div>
     );
   };
+
+  /* Share screen enabled for attendee or Host */
 
   const getisShareScreen = () => {
     if (isLocalUserSharing || sharingAttendeeId) {
@@ -364,9 +381,10 @@ const EventBox = () => {
             <div
               style={{
                 position: "absolute",
-                height: "88%",
+                height: "100%",
                 width: "100%",
                 zIndex: 13,
+                pointerEvents: "none",
               }}
             >
               <Reactions />
@@ -426,7 +444,7 @@ const EventBox = () => {
               onClose={() => {
                 setnotificationToast({
                   show: false,
-                  msg: null,
+                  msg: "",
                   title: null,
                   type: null,
                   buttons: [],
@@ -444,7 +462,7 @@ const EventBox = () => {
               >
                 <Alert
                   icon={notificationToast.icon}
-                  showIcon={notificationToast.icon}
+                  showIcon={notificationToast.icon ? true : false}
                   style={{
                     background: "#fff",
                   }}
@@ -453,7 +471,7 @@ const EventBox = () => {
                   onClose={() => {
                     setnotificationToast({
                       show: false,
-                      msg: null,
+                      msg: "",
                       title: null,
                       type: null,
                       buttons: [],
@@ -486,7 +504,7 @@ const EventBox = () => {
         <Drawer
           placement={"bottom"}
           closable={false}
-          open={isChatorParticipant}
+          open={isChatorParticipant ? true : false}
           key={"bottom"}
           rootClassName="onlyMob"
           className="meetingDrawer onlyMob"

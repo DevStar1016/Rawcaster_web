@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a list of profiles based on a search key.
+ * @returns JSX element
+ */
 import SearchProfile from "../../Sharedcomponents/Profile/SearchProfile";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -41,6 +45,12 @@ const ProfileList = () => {
     totalpage: null,
   });
 
+  /**
+   * Retrieves the authentication token.
+   * If the user is authenticated, it retrieves the token from the user data.
+   * If the user is not authenticated, it returns a default token "RAWCAST".
+   * @returns {string} - The authentication token.
+   */
   const getToken = () => {
     if (getAuthenticated()) {
       const userData = getRawcaserToken();
@@ -50,6 +60,11 @@ const ProfileList = () => {
     }
   };
 
+  /**
+   * Retrieves a list of people from the server.
+   * @param {number} [page=1] - The page number to retrieve.
+   * @returns {Promise} - A promise that resolves with the list of people.
+   */
   const getPeopleList = (page = 1) => {
     return new Promise((resolve, reject) => {
       if (source.current) {
@@ -95,11 +110,7 @@ const ProfileList = () => {
             setPeopleList([]);
           }
         })
-        .catch((err) => {
-          if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
-            toast.error(err.message);
-          }
-        })
+        .catch((err) => {})
         .finally(() => {
           dispatch(handleLoading(false));
           dispatch(handleisGlobalSearch(false));
@@ -111,19 +122,35 @@ const ProfileList = () => {
     });
   };
 
+  /**
+   * Executes a side effect when the value of `pathname` changes.
+   * If `isGlobalSearch` is true or `PeopleList` is empty, it dispatches a loading action,
+   * sets `isFetching` to true, and calls the `getPeopleList` function.
+   * @returns None
+   */
   useEffect(() => {
     if (isGlobalSearch || PeopleList?.length === 0) {
       dispatch(handleLoading(true));
+
       setisFetching(true);
       getPeopleList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  /**
+   * Checks if there is a next page available based on the current page reference and the total number of pages.
+   * @returns {boolean} - True if there is a next page available, false otherwise.
+   */
   const getHasNextPage = () => {
     return Pages.totalpage && pageRef.current !== Pages.totalpage;
   };
 
+  /**
+   * Handles the scroll event and checks if the user has reached the end of the container.
+   * If the user has reached the end, it sets the 'isReachedEnd' state to true.
+   * @returns None
+   */
   const handleScroll = () => {
     const container = containerRef.current;
     if (container) {
@@ -134,6 +161,13 @@ const ProfileList = () => {
     }
   };
 
+  /**
+   * Loads more data if there is a next page available.
+   * If there is no next page, it sets the loading state to false and the isReachedEnd state to false.
+   * If isReachedEnd is true and there is a next page available and the loading state is false,
+   * it sets the loading state to true, increments the pageRef.current value by 1, and calls the getPeopleList function.
+   * @returns None
+   */
   const loadMore = () => {
     if (!getHasNextPage()) {
       setloading(false);
@@ -145,12 +179,23 @@ const ProfileList = () => {
     }
   };
 
+  /**
+   * Initializes the useInfiniteScroll hook with the provided parameters.
+   * @param {boolean} loading - Indicates whether the data is currently being loaded.
+   * @param {function} getHasNextPage - A function that returns a boolean indicating whether there is more data to load.
+   * @param {function} loadMore - A function that is called when more data needs to be loaded.
+   * @returns An array containing the sentryRef and rootRef references.
+   */
   const [sentryRef, { rootRef }] = useInfiniteScroll({
     loading: loading,
     hasNextPage: getHasNextPage(),
     onLoadMore: loadMore,
   });
 
+  /**
+   * Adds a scroll event listener to the container element and removes it when the component is unmounted.
+   * @returns None
+   */
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -163,6 +208,11 @@ const ProfileList = () => {
     };
   }, []);
 
+  /**
+   * Returns a filtered array of valid people from the PeopleList array.
+   * A person is considered valid if their user_id is unique within the array.
+   * @returns {Array} - An array of valid people.
+   */
   const getValidPeople = () => {
     if (PeopleList && PeopleList.length !== 0) {
       const filteredArr = PeopleList.reduce((acc, current) => {
@@ -180,12 +230,6 @@ const ProfileList = () => {
   };
 
   return (
-    // <BottomScrollListener
-    //   offset={100}
-    //   onBottom={() => {
-    //     console.log("test");
-    //   }}
-    // >
     <div className={` ${classes.profileSec}`} ref={containerRef}>
       {getValidPeople()?.length === 0 ? (
         <>

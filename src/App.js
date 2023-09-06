@@ -1,3 +1,7 @@
+/**
+ * The main component of the application.
+ * @returns The rendered application component.
+ */
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import { routerpaths } from "./Routes";

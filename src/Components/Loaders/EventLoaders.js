@@ -1,7 +1,15 @@
+/**
+ * A React component that displays a skeleton loader for an event item.
+ * @returns {JSX.Element} - The JSX element representing the event loader.
+ */
 import { Skeleton } from "antd";
 import React from "react";
 import classes from "./Loaders.module.css";
 
+/**
+ * Renders a component that displays an event item with skeleton loading effect.
+ * @returns JSX element representing the event item component.
+ */
 const EventLoaders = () => {
   return (
     <div className={`${classes.eventItem}`}>

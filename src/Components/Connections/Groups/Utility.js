@@ -73,23 +73,17 @@ export const GroupHeader = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(values?.group_name, "getimagevalue src");
-  }, [values?.group_icon]);
-
   const onChangeImage = (event) => {
-    console.log(event, "Edit GroupEdit Group");
-
     if (event.target.files && event.target.files.length !== 0) {
       if (isValidImageFile(event.target.files[0])) {
-        console.log(event.target.files[0], "getimagevalue onchnage");
         settempGroupImage({
           type: "groupIcon",
           src: event.target.files[0],
           ratio: getAspectRatio(150, 150),
         });
       } else {
-        toast.error("Please Select Valid Image");
+        toast.remove("rawcaster");
+        toast.error("Please Select Valid Image", { id: "rawcaster" });
       }
     }
     // const imageFile = event.target.files[0];
@@ -288,8 +282,6 @@ export const GroupHeader = () => {
                   ? values.group_icon
                   : URL.createObjectURL(values.group_icon)
                 : uploadImg
-              // "https://dev.rawcaster.com/rawadmin/uploads/group/default.png"
-              // uploadImg
             }
             style={{ borderRadius: "2px" }}
             alt="gropup-icon"
@@ -312,7 +304,6 @@ export const GroupHeader = () => {
       </AndForm.Item>
 
       <AndForm.Item
-        // name="group_name"
         style={{
           display: "inline-block",
           width: "100%",
@@ -370,20 +361,7 @@ export const GroupHeader = () => {
           src={URL.createObjectURL(tempGroupImage?.src)}
           ratio={tempGroupImage?.ratio}
           onSuccess={(val) => {
-            // handleUpdateProfile(val);
-            // setisUploading(profileImg.type);
-            // setprofileImg({
-            //   type: "",
-            //   src: "",
-            //   ratio: "",
-            // });
-            // setFieldValue("group_icon", {
-            //   type: "groupIcon",
-            //   src: val,
-            //   ratio: getAspectRatio(150, 150),
-            // });
             if (GroupData.group_category !== 2) {
-              console.log("getimagevalue logged");
               const editData = {
                 group_name: values.group_name,
                 group_icon: val,
@@ -392,19 +370,11 @@ export const GroupHeader = () => {
               settempGroupImage("");
               return;
             }
-
             setFieldValue("group_icon", val);
             settempGroupImage("");
-            console.log(val, "getimagevalue");
           }}
           onFailure={() => {
-            console.log("getimagevalue failure");
             settempGroupImage("");
-            // setprofileImg({
-            //   type: "",
-            //   src: "",
-            //   ratio: "",
-            // });
           }}
         />
       )}
@@ -614,6 +584,10 @@ export const EditGroupMembers = () => {
   } = useConfigureGroupContext();
   const [searchInput, setsearchInput] = useState("");
 
+  /**
+   * Checks if the chat switch is enabled.
+   * @returns {boolean} - Returns true if the chat switch is enabled, false otherwise.
+   */
   const isChatSwichEnabled = () => {
     if (isOwner) {
       if (groupId) {
@@ -624,6 +598,11 @@ export const EditGroupMembers = () => {
     }
     return false;
   };
+
+  /**
+   * Retrieves search data from the GroupMembers array based on the search input.
+   * @returns {Array} An array of search results that match the search input.
+   */
   const getSearchData = () => {
     let searchData = GroupMembers.filter((ele) =>
       decodeHtml(ele?.display_name || "")
@@ -631,21 +610,12 @@ export const EditGroupMembers = () => {
         .includes(searchInput.toLowerCase())
     );
     searchData = searchData.filter((ele) => ele !== undefined);
-    console.log(searchData, GroupMembers);
     if (searchData) {
       return searchData;
     } else {
       return [];
     }
   };
-
-  console.log(getSearchData());
-
-  // const getisLocked = () => {
-
-  //   const findOwner = GroupMembers.find((ele)=>ele.)
-
-  // }
 
   return (
     <div>

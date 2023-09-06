@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Outlet, useOutletContext } from "react-router";
+import { useRef, useState } from "react";
+import { Outlet } from "react-router";
 import {
   useAuthData,
   useAuthToken,
@@ -19,31 +19,35 @@ import {
 import { toast } from "react-hot-toast";
 import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 import MeetingManagerComponent from "./MeetingManagerComponent";
-import { defaultVolume } from "../Configure/Constants";
-
-export function useEventLayout() {
-  return useOutletContext();
-}
+import {
+  AttendeeUserData,
+  MeetingJoinedDataProp,
+  MeetingSettingProp,
+} from "../Components/types";
 
 const EventValidaton = () => {
-  const RequestRef = useRef([]);
-  const [EventData, setEventData] = useState(null);
-  const [isChatorParticipant, setisChatorParticipant] = useState(null);
-  const [isPinEnabled, setisPinEnabled] = useState(false);
   const token = useAuthToken();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
-  const [userdata, setuserdata] = useState(null);
+  const audiovideo = useAudioVideo();
+  const RequestRef = useRef([]);
+  const [EventData, setEventData] = useState<any>(null);
+  const [isChatorParticipant, setisChatorParticipant] = useState(null);
+  const [isReactions, setisReactions] = useState(false);
+  const [isPinEnabled, setisPinEnabled] = useState<string | number | null>(
+    null
+  );
+  const [isEndLoading, setisEndLoading] = useState<string | null>(null);
+  const [userdata, setuserdata] = useState<AttendeeUserData | null>(null);
   const [isLoading, setisLoading] = useState(true);
   const [isWaitingRoom, setisWaitingRoom] = useState(true);
-  const [RequestList, setRequestList] = useState([]);
-  const [attendeesList, setattendeesList] = useState([]);
-  const [MeetingSettings, setMeetingSettings] = useState(null);
+  const [attendeesList, setattendeesList] = useState<AttendeeUserData[]>([]);
+  const [MeetingSettings, setMeetingSettings] =
+    useState<MeetingSettingProp | null>(null);
   const meetingManager = useMeetingManager();
   const [EventMessages, setEventMessages] = useState([]);
   const [isFetching, setisFetching] = useState(false);
   const [RequestStatusMessage, setRequestStatusMessage] = useState(null);
-  const audiovideo = useAudioVideo();
   const [notificationToast, setnotificationToast] = useState({
     show: false,
     msg: null,
@@ -53,6 +57,7 @@ const EventValidaton = () => {
     icon: null,
   });
 
+  /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
     if (userData) {
       return userData;
@@ -61,62 +66,75 @@ const EventValidaton = () => {
     }
   };
 
-  const handleExitMeeting = (userdetails) => {
-    return new Promise((resolve, reject) => {
+  /**
+   *  Attendee and Host Leave the meeting
+   */
+
+  const handleExitMeeting = (userdetails: any) => {
+    setisEndLoading("Leaving Please Wait ..");
+    return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
       formData.append("token", token);
       formData.append("meeting_id", EventData?.chime_meeting_id);
       formData.append("attendeeId", userdetails?.AttendeeId);
       ExitMeetingService(formData)
         .then(() => {
-          audiovideo.stop();
+          audiovideo?.stop();
           resolve();
         })
         .catch(() => {
-          toast.error("Unable to end Meeting !");
+          toast.remove("rawcaster");
+          toast.error("Unable to end Meeting !", { id: "rawcaster" });
           reject();
+        })
+        .finally(() => {
+          setisEndLoading(null);
         });
     });
   };
 
-  const handleEndMeeting = (userdetails) => {
-    return new Promise((resolve, reject) => {
+  /**
+   *  Host The meeting
+   */
+  const handleEndMeeting = () => {
+    setisEndLoading("Please Wait Meeting Has Been Ended ..");
+    return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
       formData.append("token", token);
       formData.append("meeting_id", EventData?.chime_meeting_id);
       EndMeetingService(formData)
         .then(() => {
-          audiovideo.stop();
+          audiovideo?.stop();
           resolve();
         })
         .catch(() => {
-          toast.error("Unable to end Meeting !");
+          toast.remove("rawcaster");
+          toast.error("Unable to end Meeting !", { id: "rawcaster" });
+          setisEndLoading(null);
           reject();
         });
     });
   };
 
-  const handleJoinMeeting = async (message) => {
-    const { Attendee, meeting } = message.joinInfo.result;
-    const updatedDetails = message.AttendeeList.map((ele) => {
-      return {
-        ...ele,
-        volume: defaultVolume,
-      };
-    });
+  /**
+   *  Join meeting Handling in Amazon Chime SDK
+   */
 
-    const finduserData = updatedDetails.find(
-      (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
+  const handleJoinMeeting = async (message: MeetingJoinedDataProp) => {
+    const { Attendee, meeting }: any = message.joinInfo.result;
+    const finduserData = message.AttendeeList.find(
+      (ele: AttendeeUserData) => ele.userId === parseInt(getUserData()?.user_id)
     );
     if (finduserData) {
       setuserdata(finduserData);
     }
     const meetingSettings = message.meetingSetting;
+
     if (meetingSettings.pin_enabled === 1) {
       setisPinEnabled(meetingSettings.pinned_user_id);
     }
 
-    setattendeesList(updatedDetails);
+    setattendeesList(message.AttendeeList);
     setMeetingSettings(message.meetingSetting);
     const meetingSessionConfiguration = new MeetingSessionConfiguration(
       meeting,
@@ -132,11 +150,15 @@ const EventValidaton = () => {
         setisLoading(false);
       });
     } catch (error) {
-      toast.error("Unable to Connect The Meeting");
+      toast.remove("rawcaster");
+      toast.error("Unable to Connect The Meeting", { id: "rawcaster" });
     }
   };
 
-  const contectValues = {
+  /**
+   * Context values for Entire EventRoom and Talkshow
+   */
+  const contextValues = {
     isPinEnabled,
     setisPinEnabled,
     isChatorParticipant,
@@ -144,8 +166,6 @@ const EventValidaton = () => {
     setEventData,
     EventData,
     setisWaitingRoom,
-    setRequestList,
-    RequestList,
     RequestRef,
     setattendeesList,
     attendeesList,
@@ -166,6 +186,10 @@ const EventValidaton = () => {
     userdata,
     setuserdata,
     handleEndMeeting,
+    isReactions,
+    setisReactions,
+    isEndLoading,
+    setisEndLoading,
   };
 
   const hasWaitingRoomEnabled = () => {
@@ -174,23 +198,19 @@ const EventValidaton = () => {
       EventData &&
       parseInt(EventData.original_user_id) !==
         parseInt(getUserData()?.user_id) &&
-      EventData.waiting_room
+      EventData?.waiting_room
     );
   };
 
   return (
-    <EventRoomContext.Provider value={contectValues}>
+    <EventRoomContext.Provider value={contextValues}>
       <>
         <MeetingManagerComponent />
         {hasWaitingRoomEnabled() ? (
-          <WaitingRoom
-            EventData={EventData}
-            setisWaitingRoom={setisWaitingRoom}
-            context={contectValues}
-          />
+          <WaitingRoom />
         ) : (
           <>
-            <Outlet context={contectValues} />
+            <Outlet />
           </>
         )}
       </>

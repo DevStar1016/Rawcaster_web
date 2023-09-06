@@ -1,3 +1,7 @@
+/**
+ * A React component that represents the chat content section of the chatbot.
+ * @returns JSX element representing the chat content section.
+ */
 import React from "react";
 import classes from "./ArtificialIntelligence.module.css";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";

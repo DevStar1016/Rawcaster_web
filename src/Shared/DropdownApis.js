@@ -7,6 +7,11 @@ import {
 } from "../Services/ApiService";
 import { JSONtoformdata } from "./Utility";
 
+/**
+ * Retrieves the event type based on the provided token.
+ * @param {string} token - The token used to authenticate the request.
+ * @returns {Promise<Array>} A promise that resolves to an array of event types.
+ */
 export const getEventType = (token) => {
   let promise = new Promise((resolve, reject) => {
     let eventData = {
@@ -30,6 +35,10 @@ export const getEventType = (token) => {
   return promise;
 };
 
+/**
+ * Retrieves the list of time zones from the server.
+ * @returns {Promise<Array>} - A promise that resolves to an array of time zone objects.
+ */
 export const getTimeZone = () => {
   let promise = new Promise((resolve, reject) => {
     getTimeZoneService()
@@ -50,6 +59,12 @@ export const getTimeZone = () => {
   return promise;
 };
 
+/**
+ * Retrieves the list of languages from the server.
+ * @returns {Promise} A promise that resolves to an object containing the default language list and the read-out language list.
+ * The default language list and read-out language list are arrays of objects with properties "label" and "value".
+ * If an error occurs during the retrieval, the promise resolves to an object with empty default and read-out language lists.
+ */
 export const getlanguagelist = () => {
   let promise = new Promise((resolve, reject) => {
     getLanguageListService()
@@ -73,6 +88,11 @@ export const getlanguagelist = () => {
   return promise;
 };
 
+/**
+ * Retrieves layout data for a given token.
+ * @param {string} token - The token used to authenticate the request.
+ * @returns {Promise} A promise that resolves to an array of layout objects, or null if there was an error.
+ */
 export const getLayoutData = (token) => {
   let promise = new Promise((resolve, reject) => {
     let JSONData = {
@@ -96,6 +116,11 @@ export const getLayoutData = (token) => {
   return promise;
 };
 
+/**
+ * Retrieves melody data using the provided token.
+ * @param {string} token - The token used to authenticate the request.
+ * @returns {Promise} A promise that resolves to an array of melody objects, or null if there was an error.
+ */
 export const getMelodyData = (token) => {
   let promise = new Promise((resolve, reject) => {
     let JSONData = {

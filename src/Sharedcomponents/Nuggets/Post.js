@@ -1,3 +1,14 @@
+/**
+ * A component that represents a single post.
+ * @param {Object} ele - The post object.
+ * @param {Function} handleLike - The function to handle liking/unliking a post.
+ * @param {Function} HandleShare - The function to handle sharing a post.
+ * @param {Function} handleSave - The function to handle saving/unsaving a post.
+ * @param {Function} handleView - The function to handle viewing a post.
+ * @param {number} index - The index of the post in the list.
+ * @param {boolean} muted - A flag indicating if the post is muted.
+ * @param {Function} setmuted - The function to set the muted state of the post.
+ */
 import { Dropdown, Modal, Tooltip } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-hook-inview";
@@ -112,6 +123,12 @@ const Post = ({
     },
   });
 
+  /**
+   * useEffect hook that checks the length of the content and poll options of an element
+   * and sets the value of iscollapse accordingly.
+   * @param {Object} ele - The element object to check.
+   * @returns None
+   */
   useEffect(() => {
     if (ele) {
       if (ele?.content?.split("\n")?.length > 10) {
@@ -128,12 +145,23 @@ const Post = ({
       }
     }
   }, []);
+  /**
+   * useEffect hook that sets the value of `iscollapse` to `true` if `Opened` is true.
+   * This effect runs only once, when the component is mounted.
+   * @returns None
+   */
+
   useEffect(() => {
     if (Opened) {
       setiscollapse(true);
     }
   }, []);
 
+  /**
+   * Retrieves the details of a nugget using the nugget ID and updates the total_comments
+   * property of the corresponding nugget in the Nuggets array.
+   * @returns None
+   */
   const getNuggetDetail = () => {
     let nuggetDetailData = {
       token: Token,
@@ -156,6 +184,11 @@ const Post = ({
       .catch((err) => {});
   };
 
+  /**
+   * Deletes a nugget with the given ID.
+   * @param {number} id - The ID of the nugget to delete.
+   * @returns None
+   */
   const deletenugget = (id) => {
     let deleteData = {
       token: Token,
@@ -167,10 +200,11 @@ const Post = ({
           if (onDelete) {
             onDelete();
           }
-
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})
@@ -179,6 +213,12 @@ const Post = ({
       });
   };
 
+  /**
+   * useEffect hook that is triggered when the value of isCommentShow or ele.nugget_id changes.
+   * If isCommentShow is true and ele is defined, it sets isCommentLoading to true, clears the comment list,
+   * and retrieves the comments for the given nugget_id. It also retrieves the comment list for the given nugget_id.
+   * @returns None
+   */
   useEffect(() => {
     if (isCommentShow && ele) {
       setisCommentLoading(true);
@@ -190,6 +230,11 @@ const Post = ({
     }
   }, [isCommentShow, ele.nugget_id]);
 
+  /**
+   * Retrieves the list of comments for a given ID using an API call.
+   * @param {number} id - The ID of the nugget to retrieve comments for.
+   * @returns {Promise} - A promise that resolves with the list of comments.
+   */
   const getCommentList = (id) => {
     let promise = new Promise((resolve, reject) => {
       let listComment = {
@@ -213,6 +258,11 @@ const Post = ({
     return promise;
   };
 
+  /**
+   * Handles blocking a user with the given ID.
+   * @param {number} id - The ID of the user to block.
+   * @returns None
+   */
   const handleBlock = (id) => {
     let BlockData = {
       token: Token,
@@ -221,14 +271,21 @@ const Post = ({
     };
     blockunblockuserService(JSONtoformdata(BlockData)).then((res) => {
       if (res.data.status === 1) {
-        toast.success(res.data.msg);
+        toast.remove("rawcaster");
+        toast.success(res.data.msg, { id: "rawcaster" });
         dispatch(handleDeleteNuggetListByUserId(id));
       } else {
-        toast.error(res.data.msg);
+        toast.remove("rawcaster");
+        toast.error(res.data.msg, { id: "rawcaster" });
       }
     });
   };
 
+  /**
+   * Handles the reporting of abuse for a given value.
+   * @param {any} val - The value to report abuse for.
+   * @returns None
+   */
   const handleReport = (val) => {
     let abuseData = {
       token: Token,
@@ -237,14 +294,21 @@ const Post = ({
     };
     NuggetAbuseReportService(JSONtoformdata(abuseData)).then((res) => {
       if (res.data.status === 1) {
-        toast.success(res.data.msg);
+        toast.remove("rawcaster");
+        toast.success(res.data.msg, { id: "rawcaster" });
         dispatch(handleDeleteNuggetList(ele.nugget_id));
       } else {
-        toast.error(res.data.msg);
+        toast.remove("rawcaster");
+        toast.error(res.data.msg, { id: "rawcaster" });
       }
     });
   };
 
+  /**
+   * Returns an array of objects containing key-value pairs based on the given element.
+   * @param {any} ele - The element to process.
+   * @returns {Array} An array of objects containing key-value pairs.
+   */
   const getMoreValues = (ele) => {
     if (ele.user_id === loginUserData?.user_id) {
       if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
@@ -440,6 +504,12 @@ const Post = ({
     }
   };
 
+  /**
+   * Handles the like functionality for a specific nugget.
+   * @param {string} id - The ID of the nugget.
+   * @param {boolean} like - Indicates whether the user is liking or unliking the nugget.
+   * @returns None
+   */
   const HandleLike = (id, like) => {
     let nuggetData = {
       token: Token,
@@ -454,6 +524,12 @@ const Post = ({
       .catch((err) => {});
   };
 
+  /**
+   * Handles saving or unsaving a nugget.
+   * @param {string} id - The ID of the nugget to save or unsave.
+   * @param {boolean} save - Indicates whether to save or unsave the nugget.
+   * @returns None
+   */
   const HandleSave = (id, save) => {
     let nuggetData = {
       token: Token,
@@ -473,18 +549,36 @@ const Post = ({
       .catch((err) => {});
   };
 
+  /**
+   * Creates a debounced version of the HandleLike function using the useCallback hook.
+   * The debounced function will be called after a delay of 1000 milliseconds.
+   * @param {function} HandleLike - The function to be debounced.
+   * @returns {function} - The debounced version of the HandleLike function.
+   */
   const LikeProcess = useCallback(
     _debounce(HandleLike, 1000),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
+  /**
+   * Creates a debounced version of the HandleSave function that will be called after a delay of 1000 milliseconds.
+   * The debounced function is memoized using useCallback to prevent unnecessary re-renders.
+   * @param {function} HandleSave - The function to be debounced.
+   * @returns {function} - The debounced version of the HandleSave function.
+   */
   const SaveProcess = useCallback(
     _debounce(HandleSave, 1000),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
+  /**
+   * Handles the liking or unliking of a nugget comment.
+   * @param {string} comment_id - The ID of the comment to like or unlike.
+   * @param {boolean} like - Indicates whether to like or unlike the comment.
+   * @returns {Promise} A promise that resolves with the response data if successful, or rejects with an error message if an error occurs.
+   */
   const handleNuggetCommentLike = (comment_id, like) => {
     const promise = new Promise((resolve, reject) => {
       let likeData = {
@@ -504,6 +598,16 @@ const Post = ({
     return promise;
   };
 
+  /**
+   * An object that contains various properties and methods related to single nugget data.
+   * @property {ele} Nuggets - The nuggets element.
+   * @property {Comments} nugget_id - The ID of the nugget's comments.
+   * @property {CommentList} CommentList - The list of comments for the nugget.
+   * @property {boolean} isCommentLoading - Indicates if the comments are currently being loaded.
+   * @property {function} setCommentList - A function to set the comment list.
+   * @property {function} handleNuggetCommentLike - A function to handle the like action on a nugget comment.
+   * @property {function} setAgreedUsersList - A function to set the list of
+   */
   const SingleNuggetData = {
     Nuggets: ele,
     nugget_id: Comments,
@@ -520,6 +624,10 @@ const Post = ({
     },
   };
 
+  /**
+   * Determines if the given element is a "Read More" section based on its properties.
+   * @returns {boolean} - true if the element is a "Read More" section, false otherwise.
+   */
   const isReadMore = () => {
     if (ele.media_list?.length !== 0) {
       return false;
@@ -539,6 +647,10 @@ const Post = ({
     return true;
   };
 
+  /**
+   * Determines whether an element should be collapsed or not based on various conditions.
+   * @returns {boolean} - True if the element should be collapsed, false otherwise.
+   */
   const isCollapse = () => {
     let isvalidCollapse =
       ele.media_list?.length !== 0 || ele.metadata ? true : false;
@@ -563,6 +675,13 @@ const Post = ({
     }
   };
 
+  /**
+   * Handles the share action for a nugget.
+   * @param {string} id - The ID of the nugget to share.
+   * @param {string} key - The key for the share action.
+   * @param {any} [values=null] - Additional values to pass to the share action.
+   * @returns None
+   */
   const Handleshare = (id, key, values = null) => {
     Modal.confirm({
       title: "Confirmation",
@@ -578,6 +697,13 @@ const Post = ({
     });
   };
 
+  /**
+   * Handles sharing a post with the specified ID, key, and values.
+   * @param {number} id - The ID of the post to share.
+   * @param {string} key - The type of sharing (e.g. group, friend).
+   * @param {Array} values - The values associated with the sharing (e.g. group IDs, friend IDs).
+   * @returns None
+   */
   const handlesharepost = (id, key, values) => {
     let shareData = {
       token: Token,
@@ -609,12 +735,17 @@ const Post = ({
           });
           HandleShare();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * Determines the number of lines based on the conditions of the given element.
+   * @returns {number | undefined} - The number of lines based on the conditions of the element.
+   */
   const getNumberofLines = () => {
     if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
       if (ele.poll_option?.length === 4) {
@@ -629,43 +760,11 @@ const Post = ({
     }
   };
 
-  const getHeightofLines = () => {
-    if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
-      if (ele.poll_option?.length === 4) {
-        return 75;
-      } else if (ele.poll_option?.length === 3) {
-        return 85;
-      } else if (ele.poll_option?.length === 2) {
-        return 100;
-      }
-    }
-  };
-
-  const getTranslatedText = () => {
-    if (ele.translate_text) {
-      setisTranslate(true);
-    } else {
-      const formData = {
-        token: Token,
-        nugget_id: ele.nugget_id,
-        translation_type: 2,
-      };
-      getNuggetContentAudioService(JSONtoformdata(formData)).then((res) => {
-        if (res.data.status === 1 && res.data.translation) {
-          dispatch(
-            handleNuggetTranslateUpdate({
-              nugget_id: ele.nugget_id,
-              translate_text: res.data.translation,
-            })
-          );
-          setisTranslate(true);
-        } else {
-          toast.error(res.data.msg);
-        }
-      });
-    }
-  };
-
+  /**
+   * Calculates the total length of comments in a given data array, including replies.
+   * @param {Array} data - The array of data containing comments and replies.
+   * @returns {number} - The total length of comments, including replies.
+   */
   const getcommentLength = (data) => {
     let count = 0;
     const commentlength = data?.map((item, index) => {
@@ -676,13 +775,10 @@ const Post = ({
     return count + data?.length;
   };
 
-  const getisDownloadable = () => {
-    if (ele && ele?.share_type === 1) {
-      return 1;
-    } else {
-      return 2;
-    }
-  };
+  /**
+   * Determines if the element is downloadable based on its share type.
+   * @returns {number} - 1 if the element is downloadable, 2 otherwise.
+   */
 
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
@@ -829,19 +925,7 @@ const Post = ({
                     wordBreak: "break-word",
                   }}
                   ref={contentTextRef}
-                  onClick={() => {
-                    console.log(
-                      // ele?.content?.length,
-                      // isCollapse(),
-                      // iscollapse,
-                      ele?.content?.split("\n")?.length > 10,
-                      isReadMore(),
-                      // ele?.content?.length > 300 &&
-                      //   ele?.poll_option?.length > 1,
-                      // !isvalidContent,
-                      "contentlength"
-                    );
-                  }}
+                  onClick={() => {}}
                 >
                   <ReadMore
                     isReadMore={isReadMore()}
@@ -928,7 +1012,7 @@ const Post = ({
                   <ImageGrid
                     imgArray={ele.media_list}
                     muted={muted}
-                    downloadable={getisDownloadable()}
+                    // downloadable={getisDownloadable()}
                     mutenuggetaudio={setmuted}
                     onPlay={() => {
                       let dashboardPlayer = document.getElementById(
@@ -972,9 +1056,7 @@ const Post = ({
                             handleLike(like);
                             try {
                               LikeProcess(ele.nugget_id, like);
-                            } catch (error) {
-                              console.log(error, "===>Post Like");
-                            }
+                            } catch (error) {}
                           } else {
                             dispatch(
                               handleprofileVerifyModalShow({

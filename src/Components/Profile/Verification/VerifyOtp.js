@@ -34,7 +34,6 @@ const validationSchema = yup.object().shape({
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const { state } = useLocation();
   const loginToken = useAuthToken();
   const userData = useAuthData();
@@ -51,12 +50,23 @@ const VerifyOtp = () => {
     return (n < 10 ? "0" : "") + n;
   }
 
+  /**
+   * useEffect hook that updates the otpRefId state variable if it is not already set.
+   * It checks if otpRefId is falsy and if so, sets it to the value of state?.otp_ref_id.
+   * @param {object} state - The state object that contains the otp_ref_id value.
+   * @returns None
+   */
   useEffect(() => {
     if (!otpRefId) {
       setotpRefId(state?.otp_ref_id);
     }
   }, [state]);
 
+  /**
+   * Converts a number of seconds to a formatted string in the format "mm:ss".
+   * @param {number} d - The number of seconds to convert.
+   * @returns {string} The formatted time string.
+   */
   function secondsToHms(d) {
     d = Number(d);
     let mDisplay = Math.floor((d % 3600) / 60);
@@ -64,6 +74,11 @@ const VerifyOtp = () => {
     return minTwoDigits(mDisplay) + ":" + minTwoDigits(sDisplay);
   }
 
+  /**
+   * useEffect hook that updates the timer value based on the difference between the current time
+   * and the stored time value. It also updates the session storage data with the updated timer value.
+   * @returns None
+   */
   useEffect(() => {
     let finalTimeVal;
     try {
@@ -101,6 +116,13 @@ const VerifyOtp = () => {
     });
   };
 
+  /**
+   * Executes a side effect when the TimerValue changes.
+   * Starts a countdown timer and updates the TimerValue every second.
+   * Stores the countdown value and current date in session storage.
+   * Clears the session storage and stops the timer when the countdown reaches 0.
+   * @returns None
+   */
   useEffect(() => {
     let timer;
     if (TimerValue > 0) {
@@ -125,6 +147,10 @@ const VerifyOtp = () => {
     };
   }, [TimerValue]);
 
+  /**
+   * Handles the resend OTP functionality.
+   * @returns None
+   */
   const handleresendOTP = () => {
     let ResendValues = {
       otp_ref_id: otpRefId,
@@ -143,9 +169,11 @@ const VerifyOtp = () => {
             })
           );
           setotpRefId(res.data.otp_ref_id);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -161,6 +189,11 @@ const VerifyOtp = () => {
     },
   });
 
+  /**
+   * Handles the submission of a verification form.
+   * @param {object} values - The form values submitted by the user.
+   * @returns None
+   */
   const HandlesubmitVerify = (values) => {
     dispatch(handleLoading(true));
     let ResetPasswordValue = {
@@ -182,11 +215,13 @@ const VerifyOtp = () => {
             handleContinue(res.data.token);
           }
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {
-        toast.error(err.message);
+        toast.remove("rawcaster");
+        toast.error(err.message, { id: "rawcaster" });
       })
       .finally(() => {
         dispatch(handleLoading(false));

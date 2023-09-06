@@ -1,3 +1,8 @@
+/**
+ * A React component that displays and allows editing of the user's bio information.
+ * @param {boolean} isLoginuser - Indicates whether the user is the logged-in user.
+ * @returns The BioContainer component.
+ */
 import React, { useEffect } from "react";
 import { useAuth, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
@@ -48,6 +53,11 @@ const BioContainer = ({ isLoginuser }) => {
     },
   });
 
+  /**
+   * Retrieves the bio data from the values object. If the bio data is not available,
+   * it calls the replaceBiodataHandler function to generate the bio data from the profileData.
+   * @returns The bio data string.
+   */
   const getBioData = () => {
     if (values?.bio_data !== "") {
       return values?.bio_data;
@@ -56,6 +66,16 @@ const BioContainer = ({ isLoginuser }) => {
     }
   };
 
+  /**
+   * useEffect hook that runs when the profileData or influencerCategory changes.
+   * If profileData and influencerCategory are both truthy, it sets isAboutEdit to false.
+   * If profileData has a non-empty influencer_category property, it splits the string into an array.
+   * It then filters the influencerCategory array based on the values in the profileData array.
+   * The filtered array is then set as the selectedCategory state.
+   * @param {Object} profileData - The profile data object.
+   * @param {Array} influencerCategory - The array of influencer categories.
+   * @returns None
+   */
   useEffect(() => {
     if (profileData && influencerCategory.length !== 0) {
       setisAboutEdit(false);
@@ -69,6 +89,11 @@ const BioContainer = ({ isLoginuser }) => {
     }
   }, [profileData, influencerCategory]);
 
+  /**
+   * Handles the update of bio data for a user profile.
+   * @param {object} values - The updated values for the bio data.
+   * @returns None
+   */
   const updateBioDataHandler = (values) => {
     var formData = new FormData();
     formData.append("token", loginToken);
@@ -84,14 +109,22 @@ const BioContainer = ({ isLoginuser }) => {
       .then((response) => {
         if (response.data.status === 1) {
           setisAboutEdit(false);
-          toast.success("Bio data updated sucessfully");
+          toast.remove("rawcaster");
+          toast.success("Bio data updated sucessfully", { id: "rawcaster" });
         } else {
-          toast.error(response.data.msg);
+          toast.remove("rawcaster");
+          toast.error(response.data.msg, { id: "rawcaster" });
         }
       })
       .catch((error) => {});
   };
 
+  /**
+   * Handles the change event of an option in a select input.
+   * @param {any} value - The selected value from the select input.
+   * @param {any} val - Additional value to handle the change event.
+   * @returns None
+   */
   const handleChangeOption = (value, val) => {
     let finalResult = influencerCategory.map((ele) => {
       let findValue = value.find((item) => item === ele.label);
@@ -104,6 +137,11 @@ const BioContainer = ({ isLoginuser }) => {
     setselectedCategory(finalResult);
   };
 
+  /**
+   * Retrieves the list of influencer categories from the server and sets the state
+   * with the received data.
+   * @returns None
+   */
   const getCategoryList = () => {
     let influencerData = {
       token: loginUserData?.token,
@@ -122,18 +160,27 @@ const BioContainer = ({ isLoginuser }) => {
             })
           );
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * Executes the getCategoryList function when the loginUserData state changes.
+   * @returns None
+   */
   useEffect(() => {
     if (loginUserData) {
       getCategoryList();
     }
   }, [loginUserData]);
 
+  /**
+   * Retrieves the value of the selected category from the `selectedCategory` array.
+   * @returns An array of values from the selected category.
+   */
   const getLabelValue = () => {
     return selectedCategory.map((ele) => ele.value);
   };

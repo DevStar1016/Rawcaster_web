@@ -1,5 +1,12 @@
-import { Modal, Skeleton, Spin } from "antd";
-import React, { useEffect, useState } from "react";
+/**
+ * A modal component that displays a list of agreed users.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} close - Callback function to close the modal.
+ * @param {object} formData - The form data used to fetch the list of agreed users.
+ * @returns A modal component displaying the list of agreed users.
+ */
+import { Modal, Skeleton } from "antd";
+import { useEffect, useState } from "react";
 import classes from "./Agreedusers.module.css";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
@@ -22,6 +29,10 @@ const AgreedusersListModal = ({ open, close, formData }) => {
   const [isLoading, setisLoading] = useState(false);
   const [ProfileList, setProfileList] = useState([]);
 
+  /**
+   * Retrieves the comments for a given token and form data.
+   * @returns None
+   */
   const getComments = () => {
     const commentData = {
       token,
@@ -32,7 +43,8 @@ const AgreedusersListModal = ({ open, close, formData }) => {
         if (data.status === 1) {
           setProfileList(data.userlist);
         } else {
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .finally(() => {
@@ -40,6 +52,11 @@ const AgreedusersListModal = ({ open, close, formData }) => {
       });
   };
 
+  /**
+   * Executes a side effect when the value of the token changes.
+   * If the token is truthy, it sets the isLoading state to true and calls the getComments function.
+   * @returns None
+   */
   useEffect(() => {
     if (token) {
       setisLoading(true);
@@ -47,6 +64,12 @@ const AgreedusersListModal = ({ open, close, formData }) => {
     }
   }, [token]);
 
+  /**
+   * Handles sending a friend request to a user.
+   * @param {string} user_ref_id - The user reference ID.
+   * @param {string} user_id - The user ID.
+   * @returns None
+   */
   const HandleSendRequest = (user_ref_id, user_id) => {
     let requestData = {
       token: token,
@@ -73,6 +96,11 @@ const AgreedusersListModal = ({ open, close, formData }) => {
       .catch((err) => {});
   };
 
+  /**
+   * Checks if the given user ID matches the owner's user ID.
+   * @param {number} user_id - The user ID to check against the owner's user ID.
+   * @returns {boolean} True if the user ID matches the owner's user ID, false otherwise.
+   */
   const isOwner = (user_id) => {
     return parseInt(profileData.user_id) === parseInt(user_id);
   };

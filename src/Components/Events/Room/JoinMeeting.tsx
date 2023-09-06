@@ -1,7 +1,7 @@
 import { Form, Input } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./JoinMeeting.module.css";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { EMAIL_REGEX } from "../../../Shared/Constant";
@@ -12,6 +12,7 @@ import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { useDispatch } from "react-redux";
 import { handleeventTempUserData } from "../../../Store/Redux/Reducer/AuthReducer";
+import { handleEventWindowRef } from "../../../Store/Redux/Reducer/UtilityReducer";
 
 const validationSchema = yup.object().shape({
   reference_id: yup
@@ -34,8 +35,6 @@ const validationSchema = yup.object().shape({
 });
 
 const JoinMeeting = () => {
-  let popup;
-  const location = useLocation();
   const dispatch = useDispatch();
   const { ref_id } = useParams();
   const [isFetched, setisFetched] = useState(false);
@@ -53,58 +52,49 @@ const JoinMeeting = () => {
       },
     });
 
-  const HandlePopup = (user_data, meeting_data) => {
-    popup = window.open(`/room/${ref_id}`, "_blank", {
+  /**
+   * if start and join meeting opens a new popup window
+   */
+
+  const HandlePopup = (user_data: any, meeting_data: any) => {
+    // @ts-ignore
+    const EventWindowRef = window.open(`/room/${ref_id}`, "_blank", {
       popup: true,
     });
-    popup.onload = () => {
-      ChimesendMessage(
-        { userId: user_data.user_id },
-        CHIME_SOCKET_EVENTS.JOIN_SOCKET
-      );
-      localStorage.setItem("EventData", JSON.stringify(meeting_data));
+    dispatch(handleEventWindowRef(EventWindowRef));
+    if (EventWindowRef) {
+      EventWindowRef.onload = () => {
+        const EventData = {
+          type: "EventData",
+          message: meeting_data,
+        };
+        EventWindowRef.postMessage(EventData, "*");
+        ChimesendMessage(
+          { userId: user_data.user_id },
+          CHIME_SOCKET_EVENTS.JOIN_SOCKET
+        );
 
-      ChimesendMessage(
-        { refId: ref_id },
-        CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
-      );
+        ChimesendMessage(
+          { refId: ref_id },
+          CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+        );
 
-      ChimesendMessage(
-        {
-          userId: user_data?.user_id,
-          refId: ref_id,
-          name: user_data?.name,
-          image: user_data?.profile_image,
-          email: user_data?.email,
-        },
-        CHIME_SOCKET_EVENTS.JOIN_REQUEST
-      );
-    };
-    popup.onclose = (e) => {
-      e.stopPropagation();
-      console.log("onClose");
-    };
+        ChimesendMessage(
+          {
+            userId: user_data?.user_id,
+            refId: ref_id,
+            name: user_data?.name,
+            image: user_data?.profile_image,
+            email: user_data?.email,
+          },
+          CHIME_SOCKET_EVENTS.JOIN_REQUEST
+        );
+      };
+      EventWindowRef.onclose = (e) => {
+        e.stopPropagation();
+      };
+    }
     // when the popup unloads
-    popup.onunload = () => {
-      let keysToRemove = [
-        "EventData",
-        CHIME_SOCKET_EVENTS.JOIN_REQUEST_FROM_USER,
-        CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING,
-        CHIME_SOCKET_EVENTS.JOIN_REQUEST_ANSWER,
-        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS,
-        CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND,
-        CHIME_SOCKET_EVENTS.RENAME_USER_ANSWER,
-        CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN_ANSWER,
-        CHIME_SOCKET_EVENTS.ENABLE_AUDIO_ANSWER,
-        CHIME_SOCKET_EVENTS.UPDATE_LAYOUT_ANSWER,
-        CHIME_SOCKET_EVENTS.END_MEETING_ANSWER,
-        CHIME_SOCKET_EVENTS.KICK_USER_ANSWER,
-      ];
-
-      for (const key of keysToRemove) {
-        localStorage.removeItem(key);
-      }
-    };
   };
 
   useEffect(() => {
@@ -115,6 +105,9 @@ const JoinMeeting = () => {
     }
   }, [ref_id]);
 
+  /**
+   *  Generate an user id for Non-Rawcaster user and join then meeting
+   */
   const HandleJoinMeeting = (value) => {
     ExternalUserJoinService(JSONtoformdata(value))
       .then((res) => {
@@ -123,7 +116,8 @@ const JoinMeeting = () => {
           dispatch(handleeventTempUserData(user));
           HandlePopup(user, event);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})

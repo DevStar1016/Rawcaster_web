@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a referral container with various social media sharing options.
+ * @returns JSX element
+ */
 import React from "react";
 import classes from "./Dashboard.module.css";
 import { EmailReferalContainer } from "../../../Modal/Referal/utility";

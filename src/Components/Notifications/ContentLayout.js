@@ -1,3 +1,7 @@
+/**
+ * A React component that renders a layout for displaying notification content.
+ * @returns The rendered React component.
+ */
 import React, { useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import classes from "./Notification.module.css";
@@ -23,6 +27,12 @@ const ContentLayout = () => {
   const dispatch = useDispatch();
   const token = useAuthToken();
   const [selectedIndex, setselectedIndex] = useState(0);
+
+  /**
+   * Handles the change of the selected index in a tab component.
+   * @param {number} index - The index of the selected tab.
+   * @returns None
+   */
   const handleChangeIndex = (index) => {
     setselectedIndex(index);
     const findKey = TabsValues.find((ele, i) => i === index);

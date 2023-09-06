@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a settings page for managing notifications.
+ * @returns JSX element
+ */
 import { Switch } from "antd";
 import React, { useState } from "react";
 import classes from "./Settings.module.css";
@@ -20,6 +24,11 @@ const Notifications = () => {
   });
   const { formikvalues, setupdateValue, updateValue } = useSettingsContext();
 
+  /**
+   * Returns a valid data string based on the given type.
+   * @param {number} type - The type of data.
+   * @returns {string} A valid data string.
+   */
   const getValidData = (type) => {
     switch (type) {
       case 0:
@@ -33,6 +42,13 @@ const Notifications = () => {
     }
   };
 
+  /**
+   * Handles the notification based on the given type, index, and status.
+   * @param {string} type - The type of notification.
+   * @param {number} index - The index of the notification.
+   * @param {boolean} status - The status of the notification.
+   * @returns None
+   */
   const handleNotification = (type, index, status) => {
     if (index === 0) {
       if (loginUserData?.is_email_id_verified === 0) {
@@ -60,28 +76,11 @@ const Notifications = () => {
     }
   };
 
-  // const getDisabled = (index, type) => {
-  //   if (index === 0) {
-  //     if (loginUserData?.is_email_id_verified === 0) {
-  //       if (loginUserData?.email_id && loginUserData?.email_id === "") {
-  //         return;
-  //       } else {
-  //         return true;
-  //       }
-  //     }
-  //   } else if (index === 1) {
-  //     if (loginUserData?.is_mobile_no_verified === 0) {
-  //       if (loginUserData?.mobile && loginUserData?.mobile !== "") {
-  //         return;
-  //       } else {
-  //         return true;
-  //       }
-  //     }
-  //   } else {
-  //     return;
-  //   }
-  // };
-
+  /**
+   * Handles the process of sending an OTP (One-Time Password) for verification.
+   * @param {any} value - The value indicating the type of OTP to send.
+   * @returns None
+   */
   const handleSendOTP = (value) => {
     let finalData = {
       auth_code: getAuthToken("Rawcaster"),
@@ -91,12 +90,14 @@ const Notifications = () => {
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           navigate("/verifyotp", {
             state: { navigatePath: "/setting", type: value, ...res.data },
           });
         } else {
-          toast.error(res.data.message);
+          toast.remove("rawcaster");
+          toast.error(res.data.message, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

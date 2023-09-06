@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import classes from "./Room.module.css";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { Dropdown, Layout, Tag } from "antd";
@@ -6,45 +6,38 @@ import ChatIcon from "../../../Assets/Icons/svg/chat_icon.svg";
 import { Form, InputGroup } from "react-bootstrap";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import EmojiPicker from "../../../UIComponents/EmojiPicker";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
 import {
   useAuthData,
   useEventTempAuthData,
 } from "../../../Shared/Reduxfetcher";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
-import { useEventLayout } from "./EventValidaton";
 import { DownOutlined } from "@ant-design/icons";
+import { useEventRoomContext } from "../../../Shared/Context";
 
 const { Header, Footer, Content } = Layout;
 
+type SelectedMemberProp = {
+  key: number;
+  label: string;
+};
+
 const ChatBox = () => {
-  const { setisChatorParticipant } = useEventLayout();
-  const [SelectedMembers, setSelectedMembers] = useState({
+  const {
+    setisChatorParticipant,
+    EventMessages,
+    userdata,
+    EventData,
+    attendeesList,
+  } = useEventRoomContext();
+  const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
+  const [ChatMessage, setChatMessage] = useState("");
+  const [isEmoji, setisEmoji] = useState(false);
+  const [SelectedMembers, setSelectedMembers] = useState<SelectedMemberProp>({
     key: 0,
     label: "Everyone",
   });
-  const userData = useAuthData();
-  const tempuserData = useEventTempAuthData();
-  const {
-    EventMessages,
-    userdetails,
-    EventData,
-
-    useAttendeesList,
-  } = useLayoutContect();
-  const { attendees } = useAttendeesList();
-  const [isEmoji, setisEmoji] = useState(false);
-
-  const getUserData = () => {
-    if (userData) {
-      return userData;
-    } else {
-      return tempuserData;
-    }
-  };
-
-  const [ChatMessage, setChatMessage] = useState("");
   const initialMessages = [
     { id: 1, message: "Yes" },
     { id: 2, message: "No" },
@@ -55,23 +48,40 @@ const ChatBox = () => {
     { id: 7, message: "Thanks" },
   ];
 
+  /* To get Rawcaster user or non Rawcaster User */
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
+
+  /**
+   *
+   *  List Of all attendees except local user
+   */
   const getDropdownmembers = () => {
-    const filter_current_user = attendees.filter(
-      (ele) => parseInt(ele.userId) !== parseInt(userdetails?.userId)
+    const filter_current_user = attendeesList.filter(
+      (ele) => ele.userId !== userdata?.userId
     );
     return filter_current_user.map((ele) => {
       return { key: ele.userId, label: ele.name };
     });
   };
 
-  const handleSendMessage = (message) => {
+  /**
+   *
+   *  Send Comment to every attendee in Meeting Room
+   */
+  const handleSendMessage = (message: any | null) => {
     if (SelectedMembers.key === 0) {
       ChimesendMessage(
         {
-          ...userdetails,
+          ...userdata,
           refId: EventData?.reference_id,
           message: message ? message : ChatMessage,
-          from_user_id: userdetails.userId,
+          from_user_id: userdata.userId,
           isPrivate: false,
         },
         CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_MEETING_ROOM
@@ -82,18 +92,22 @@ const ChatBox = () => {
     setisEmoji(false);
   };
 
-  const handleSendPrivateMessage = (message) => {
-    const finduser = attendees.find(
-      (ele) => parseInt(ele.userId) === parseInt(SelectedMembers.key)
+  /**
+   *
+   *  Send Comment to Single attendee in Meeting Room
+   */
+  const handleSendPrivateMessage = (message: any | null) => {
+    const finduser = attendeesList.find(
+      (ele) => ele.userId === SelectedMembers.key
     );
     if (finduser) {
       ChimesendMessage(
         {
-          ...userdetails,
+          ...userdata,
           refId: EventData?.reference_id,
           message: message ? message : ChatMessage,
           isPrivate: true,
-          from_user_id: userdetails.userId,
+          from_user_id: userdata.userId,
           userId: finduser.userId,
           send_to: finduser,
         },
@@ -103,7 +117,6 @@ const ChatBox = () => {
       setisEmoji(false);
     }
   };
-  console.log(EventMessages, "EventMessages");
 
   return (
     <Layout
@@ -169,8 +182,10 @@ const ChatBox = () => {
               const resultValue = [
                 { key: 0, label: "Everyone" },
                 ...getDropdownmembers(),
-              ].find((ele) => parseInt(ele.key) === parseInt(key));
-              setSelectedMembers(resultValue);
+              ].find((ele) => ele.key === parseInt(key));
+              if (resultValue) {
+                setSelectedMembers(resultValue);
+              }
             },
           }}
         >
@@ -199,9 +214,9 @@ const ChatBox = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   if (SelectedMembers.key === 0) {
-                    handleSendMessage();
+                    handleSendMessage(null);
                   } else {
-                    handleSendPrivateMessage();
+                    handleSendPrivateMessage(null);
                   }
                 }
               }}
@@ -219,9 +234,9 @@ const ChatBox = () => {
                 className={classes.searchIcon}
                 onClick={() => {
                   if (SelectedMembers.key === 0) {
-                    handleSendMessage();
+                    handleSendMessage(null);
                   } else {
-                    handleSendPrivateMessage();
+                    handleSendPrivateMessage(null);
                   }
                 }}
               >
@@ -241,9 +256,6 @@ const ChatBox = () => {
               emojiButtonRadius="8px"
               skinTonePosition="none"
               previewPosition="none"
-              //   onClickOutside={() => {
-              //     setisEmoji(!isEmoji);
-              //   }}
               categories={[
                 "people",
                 "nature",

@@ -1,24 +1,27 @@
-import { useEffect, useState } from "react";
+/**
+ * A layout component for the event page.
+ * @returns The event layout component.
+ */
+import { useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
 import classes from "./Layout.module.css";
 import Rlogo from "../Assets/Icons/svg/Events/Rawcasterlogo.svg";
 import {
   useContentShareControls,
   useContentShareState,
-  useLocalVideo,
   useRosterState,
-  useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { Layout, Tooltip, message } from "antd";
-import { useEventLayout } from "../Components/Events/Room/EventValidaton";
 import TalkshowMenu from "../Components/Events/Components/TalkshowMenu";
 import EventMenu from "../Components/Events/Components/EventMenu";
 import LoadingOverlay from "react-loading-overlay";
 import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
 import { ChimesendMessage } from "../Services/SocketService";
+import { EventContextProp } from "../Components/Events/Components/types";
+import { useEventRoomContext } from "../Shared/Context";
 
 export const useLayoutContect = () => {
-  return useOutletContext();
+  return useOutletContext<EventContextProp>();
 };
 
 const EventLayout = () => {
@@ -29,7 +32,8 @@ const EventLayout = () => {
     setnotificationToast,
     isLoading,
     userdata,
-  } = useEventLayout();
+    isEndLoading,
+  }: EventContextProp = useEventRoomContext();
   const { Header, Footer } = Layout;
   const [isReactions, setisReactions] = useState(false);
   const [RaiseHandUsers, setRaiseHandUsers] = useState([]);
@@ -39,55 +43,84 @@ const EventLayout = () => {
   const attendees = Object.values(roster);
   const [isPresentScreen, setisPresentScreen] = useState(false);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
-
   const [isNewMessage, setisNewMessage] = useState(false);
 
+  /**
+   * Custom hook that filters the list of attendees based on their external user ID.
+   * @returns An object containing the filtered list of attendees.
+   */
   const useAttendeesList = () => {
+    // Filter out any attendees that have an externalUserId but not the userId
     let filterValidAttendees = attendees.map((elem) => {
       let findAttendee = attendeesList.find(
-        (ele) => parseInt(elem.externalUserId) === ele.userId
+        (ele) =>
+          elem.externalUserId && parseInt(elem.externalUserId) === ele.userId
       );
       if (findAttendee) {
         return { ...findAttendee };
       }
     });
+    // Return the filtered list of attendees
     return { attendees: filterValidAttendees.filter((ele) => ele) };
   };
 
+  /**
+   * Retrieves the name of the attendee who is currently sharing content.
+   * @returns {string} - The name of the sharing attendee, or "Someone's" if the attendee is not found.
+   */
   const getSharingAttendee = () => {
+    // Find the external user ID from the attendees list
     const findExternalUserId = attendees.find(
       (ele) => ele.chimeAttendeeId.concat("#content") === sharingAttendeeId
     );
-    if (findExternalUserId) {
+    // If the external user ID exists, find the attendee from the attendees list
+    if (findExternalUserId && findExternalUserId.externalUserId) {
       const findAttendee = attendeesList.find(
         (ele) =>
-          parseInt(ele.userId) === parseInt(findExternalUserId.externalUserId)
+          findExternalUserId.externalUserId &&
+          ele.userId === parseInt(findExternalUserId.externalUserId)
       );
+      // If the attendee exists, return the name of the attendee plus's'
       if (findAttendee) {
         return findAttendee.name + "'s";
+        // Otherwise, return 'Someone's'
       } else {
         return "Someone's";
       }
+      // Otherwise, return 'Someone's'
     } else {
       return "Someone's";
     }
   };
 
+  /**
+   * Handles the closing of the share screen.
+   * If the local user is sharing, it toggles the content share.
+   * If there is a sharing attendee ID, it finds the corresponding external user ID and sends a message to disable screen sharing.
+   * @returns None
+   */
   const HandleCloseShareScreen = () => {
+    // Check if the user is sharing a content
     if (isLocalUserSharing) {
+      // Toggle the content share
       toggleContentShare();
     } else if (sharingAttendeeId) {
+      // Find the external user id
       const findExternalUserId = attendees.find(
         (ele) => ele.chimeAttendeeId.concat("#content") === sharingAttendeeId
       );
-      ChimesendMessage(
-        {
-          screen_share_status: false,
-          refId: EventData?.reference_id,
-          userId: parseInt(findExternalUserId.externalUserId),
-        },
-        CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
-      );
+      // Check if the user has an external user id
+      if (findExternalUserId && findExternalUserId.externalUserId) {
+        // Send a message to the meeting in call
+        ChimesendMessage(
+          {
+            screen_share_status: false,
+            refId: EventData?.reference_id,
+            userId: parseInt(findExternalUserId.externalUserId),
+          },
+          CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
+        );
+      }
     }
   };
 
@@ -95,10 +128,12 @@ const EventLayout = () => {
     <div className={`${EventData?.type === 2 ? classes.TalkshowHeader : ""}`}>
       {contextHolder}
       <LoadingOverlay
-        active={isLoading}
+        active={isEndLoading || isLoading}
         spinner
         text={
-          userdata
+          isEndLoading
+            ? isEndLoading
+            : userdata
             ? userdata.isHost
               ? "Meeting Has Been Started ..."
               : "Joining Event Please Wait ..."
@@ -135,7 +170,7 @@ const EventLayout = () => {
                 >
                   <div className={classes.iconSec}>
                     <span
-                      class="material-symbols-outlined"
+                      className="material-symbols-outlined"
                       onClick={() => {
                         setisPresentScreen((pre) => !pre);
                       }}
@@ -150,7 +185,7 @@ const EventLayout = () => {
                     <Tooltip placement="bottomLeft" title={"Stop Presenting"}>
                       <div className={classes.iconSec}>
                         <span
-                          class={`material-symbols-outlined ${classes.cancelIcon}`}
+                          className={`material-symbols-outlined ${classes.cancelIcon}`}
                           onClick={() => {
                             HandleCloseShareScreen();
                           }}
@@ -166,7 +201,7 @@ const EventLayout = () => {
 
           <Outlet
             context={{
-              ...useEventLayout(),
+              ...useEventRoomContext(),
               isHost: userdata?.isHost,
               userdetails: userdata,
               RaiseHandUsers,
@@ -184,20 +219,11 @@ const EventLayout = () => {
           <Footer className={classes.footerSec}>
             {EventData?.type === 2 ? (
               <TalkshowMenu
-                setRaiseHandUsers={setRaiseHandUsers}
-                RaiseHandUsers={RaiseHandUsers}
-                userdetails={userdata}
-                isReactions={isReactions}
-                setisReactions={setisReactions}
                 isNewMessage={isNewMessage}
                 setisNewMessage={setisNewMessage}
               />
             ) : (
-              <EventMenu
-                setRaiseHandUsers={setRaiseHandUsers}
-                RaiseHandUsers={RaiseHandUsers}
-                userdetails={userdata}
-              />
+              <EventMenu />
             )}
           </Footer>
 

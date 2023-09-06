@@ -1,3 +1,14 @@
+/**
+ * A layout component for displaying a user's profile.
+ * @param {React.ReactNode} children - The content to be displayed within the layout.
+ * @param {object} [profileData=null] - The data of the user's profile.
+ * @param {boolean} [isFansEnabled=false] - Indicates whether the fans feature is enabled.
+ * @param {boolean} [isEditable=false] - Indicates whether the profile is editable.
+ * @param {boolean} [isLocked=false] - Indicates whether the profile is locked.
+ * @param {function} handleAddUser - The function to handle adding a user.
+ * @param {function} setprofileData - The function to set the profile data.
+ * @param {string
+ */
 import React, { useRef, useState } from "react";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
@@ -43,7 +54,6 @@ const ProfileLayout = ({
   setisInfluencerChatModalOpen = null,
 }) => {
   const loginUserData = useAuthData();
-
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const params = useParams();
@@ -56,13 +66,17 @@ const ProfileLayout = ({
   const loginToken = useAuthToken();
   const { claimAccount } = useDashboard();
   const [isUploading, setisUploading] = useState(false);
-  const [isCoverLoading, setisCoverLoading] = useState(true);
   const [profileImg, setprofileImg] = useState({
     type: "",
     src: "",
     ratio: "",
   });
 
+  /**
+   * Handles the update of a user's profile by sending a request to the server with the updated image.
+   * @param {string} image - The updated image to be uploaded.
+   * @returns None
+   */
   const handleUpdateProfile = (image) => {
     let profileValue = {
       token: loginToken,
@@ -85,19 +99,27 @@ const ProfileLayout = ({
         if (res.data.status === 1) {
           dispatch(fetchuserInfobyToken(loginToken)).then(({ payload }) => {
             setisUploading(false);
-            toast.success("Successfully Updated");
+            toast.remove("rawcaster");
+            toast.success("Successfully Updated", { id: "rawcaster" });
           });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
           setisUploading(false);
         }
       })
       .catch((err) => {
-        toast.error(err.message);
+        toast.remove("rawcaster");
+        toast.error(err.message, { id: "rawcaster" });
         setisUploading(false);
       });
   };
 
+  /**
+   * Determines whether the "Add Friend" functionality should be displayed based on
+   * various conditions.
+   * @returns {boolean} - true if the "Add Friend" functionality should be displayed, false otherwise.
+   */
   const isAddFriend = () => {
     if (isLoginUser) {
       return false;
@@ -112,6 +134,12 @@ const ProfileLayout = ({
     }
   };
 
+  /**
+   * UnfriendService is a function that handles the unfriending process.
+   * It calls the handleUnFriendService function with the provided loginToken and profileData's user_ref_id.
+   * After the unfriending process is completed, it updates the profileData's friend_status to 0.
+   * @returns None
+   */
   const UnfriendService = () => {
     handleUnFriendService(loginToken, profileData?.user_ref_id).then(() => {
       setprofileData((pre) => ({
@@ -120,6 +148,12 @@ const ProfileLayout = ({
       }));
     });
   };
+
+  /**
+   * Unfollows a user by calling the handleUnFollowService function with the provided login token and user reference ID.
+   * Updates the profileData state to reflect the change in follow status.
+   * @returns None
+   */
   const UnfollowService = () => {
     handleUnFollowService(loginToken, profileData?.user_ref_id).then(() => {
       setprofileData((pre) => ({
@@ -129,6 +163,13 @@ const ProfileLayout = ({
     });
   };
 
+  /**
+   * An array of dropdown items for a menu.
+   * Each item contains a key and a label, which is a JSX element representing the dropdown item.
+   * The label is a clickable div that opens a confirmation modal when clicked.
+   * The confirmation modal asks the user to confirm an action and performs a corresponding service function when confirmed.
+   * @type {Array<Object>}
+   */
   const DropDownItems = [
     {
       key: 1,
@@ -178,6 +219,10 @@ const ProfileLayout = ({
     },
   ];
 
+  /**
+   * Returns an array of valid items from the DropDownItems array based on certain conditions.
+   * @returns {Array} An array of valid items from the DropDownItems array.
+   */
   const getValidItems = () => {
     return DropDownItems.filter((ele) => {
       const getisAddFriend = () => {
@@ -374,7 +419,8 @@ const ProfileLayout = ({
                 ratio: getAspectRatio(1170, 240),
               });
             } else {
-              toast.error("Please Select Valid Image");
+              toast.remove("rawcaster");
+              toast.error("Please Select Valid Image", { id: "rawcaster" });
             }
           }
         }}
@@ -399,7 +445,8 @@ const ProfileLayout = ({
                 ratio: getAspectRatio(150, 150),
               });
             } else {
-              toast.error("Please Select Valid Image");
+              toast.remove("rawcaster");
+              toast.error("Please Select Valid Image", { id: "rawcaster" });
             }
           }
         }}

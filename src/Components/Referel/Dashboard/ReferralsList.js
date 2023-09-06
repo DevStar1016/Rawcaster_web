@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a list of referrals.
+ * @returns JSX element
+ */
 import React, { useState } from "react";
 import classes from "./Dashboard.module.css";
 import { decodeHtml } from "../../../Shared/Utility";

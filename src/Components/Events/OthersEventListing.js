@@ -18,6 +18,12 @@ const OthersEventListing = () => {
     : null;
   const [EventListData, setEventListData] = useState([]);
 
+  /**
+   * Retrieves a list of events based on the provided token and filters the list to only include
+   * events associated with the specified user ID. The filtered list is then reversed and set as
+   * the data for the event list.
+   * @returns None
+   */
   const getEvents = () => {
     let eventData = {
       token: token,

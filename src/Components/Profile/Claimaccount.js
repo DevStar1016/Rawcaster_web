@@ -1,3 +1,7 @@
+/**
+ * A React functional component that renders a form for claiming or verifying an account.
+ * @returns The JSX element representing the claim account form.
+ */
 import React, { useEffect } from "react";
 import classes from "./Profile.module.css";
 import {
@@ -71,6 +75,12 @@ const Claimaccount = () => {
     },
   });
 
+  /**
+   * Verifies the type of value and calls the appropriate service function based on the
+   * value of display_user_id.
+   * @param {any} value - The value to be verified.
+   * @returns The result of calling the appropriate service function.
+   */
   const VerifyType = (value) => {
     if (display_user_id) {
       return AddClaimAccountService(value);
@@ -79,6 +89,11 @@ const Claimaccount = () => {
     }
   };
 
+  /**
+   * Handles the claim account functionality by sending a request to the server with the provided value.
+   * @param {any} value - The value to be sent to the server for claiming the account.
+   * @returns None
+   */
   const HandleClaimAccount = (value) => {
     let finalData = {
       ...value,
@@ -108,6 +123,10 @@ const Claimaccount = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Retrieves the current location using geocode data and sets the value of the "location" field.
+   * @returns None
+   */
   const getCurrentLocation = () => {
     getGeocodeData()
       .then((res) => {
@@ -116,6 +135,11 @@ const Claimaccount = () => {
       .catch((err) => {});
   };
 
+  /**
+   * useEffect hook that updates the form values with the login user data when it changes.
+   * @param {Object} loginUserData - The login user data object.
+   * @returns None
+   */
   useEffect(() => {
     if (loginUserData) {
       setValues({
@@ -129,6 +153,12 @@ const Claimaccount = () => {
     }
   }, [loginUserData]);
 
+  /**
+   * Determines the SEO type based on the presence of a display_user_id.
+   * If display_user_id is present, it returns the SEO for claiming an account.
+   * If display_user_id is not present, it returns the SEO for verifying an account.
+   * @returns {string} - The SEO type.
+   */
   const getSeoType = () => {
     if (display_user_id) {
       return ClaimorVerifySEO(

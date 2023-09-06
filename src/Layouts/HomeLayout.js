@@ -1,3 +1,7 @@
+/**
+ * Represents the layout component for the home page.
+ * @returns {JSX.Element} The rendered home layout component.
+ */
 import { Badge, Dropdown, Layout, Popover, Tooltip } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
@@ -107,7 +111,8 @@ const HomeLayout = () => {
           dispatch(handleLoading(false));
           window.location.assign("/");
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

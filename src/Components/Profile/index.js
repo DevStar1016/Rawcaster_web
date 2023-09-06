@@ -1,3 +1,7 @@
+/**
+ * A React component that represents a user profile page.
+ * @returns The rendered profile page.
+ */
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./Profile.module.css";
 import {
@@ -71,10 +75,19 @@ const Profile = () => {
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const [profileData, setprofileData] = useState();
 
+  /**
+   * Checks if the display user ID is equal to the login user ID.
+   * @returns {boolean} True if the display user ID is equal to the login user ID, false otherwise.
+   */
   const getisLoginUser = () => {
     return parseInt(display_user_id) === parseInt(loginUserData?.user_id);
   };
 
+  /**
+   * Retrieves the profile data of a user with the given ID.
+   * @param {number} id - The ID of the user.
+   * @returns None
+   */
   const getuserprofile = (id) => {
     let otherprofileValue = {
       token: loginToken,
@@ -93,6 +106,13 @@ const Profile = () => {
       .catch((err) => {});
   };
 
+  /**
+   * Retrieves the user profile based on the provided filter data.
+   * If the search key or user ID is present in the filter data, it updates the filter data
+   * with the necessary parameters and dispatches actions to reset the nuggets, update the
+   * nugget form data, and fetch the nuggets by ID.
+   * @returns None
+   */
   const getprofile = () => {
     let filterData = { ...nuggetFormData };
     if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
@@ -107,6 +127,16 @@ const Profile = () => {
     }
   };
 
+  /**
+   * Executes a side effect when the dependencies change. If `loginUserData` is truthy,
+   * it checks if the user is logged in using `getisLoginUser()`. If the user is logged in,
+   * it sets the `profileData` state to `loginUserData` and calls the `getprofile()` function.
+   * If the user is not logged in, it clears the `profileData` state and calls the
+   * `getuserprofile()` function with the `display_user_id` parameter.
+   * @param {Function} effect - The side effect to execute.
+   * @param {Array} dependencies - The dependencies to watch for changes.
+   * @returns None
+   */
   useEffect(() => {
     if (loginUserData) {
       if (getisLoginUser()) {
@@ -121,6 +151,11 @@ const Profile = () => {
     }
   }, [display_user_id, loginUserData]);
 
+  /**
+   * Retrieves the followers list based on the provided filter values.
+   * @param {Object} [filterValues={}] - The filter values to apply to the followers list.
+   * @returns {Promise} - A promise that resolves to the final object containing the followers list.
+   */
   const getFollowers = (filterValues = {}) => {
     let promise = new Promise((resolve, reject) => {
       let fansList = {
@@ -158,12 +193,18 @@ const Profile = () => {
         })
         .catch((err) => {
           resolve(FansList);
-          toast.error(err.message);
+          toast.remove("rawcaster");
+          toast.error(err.message, { id: "rawcaster" });
         });
     });
     return promise;
   };
 
+  /**
+   * Handles the action when a user becomes a fan.
+   * @param {string|null} user_ref_id - The user reference ID. If provided, it will be used instead of the profileData's user_ref_id.
+   * @returns {Promise} - A promise that resolves when the action is successfully handled, and rejects if there is an error.
+   */
   const handleBecameFan = (user_ref_id = null) => {
     return new Promise((resolve, reject) => {
       if (token && profileData) {
@@ -185,6 +226,12 @@ const Profile = () => {
     });
   };
 
+  /**
+   * Handles the process of adding a user as a friend.
+   * @param {Object} ele - The user object to add as a friend. Default value is null.
+   * @returns {Promise} A promise that resolves when the user is successfully added as a friend.
+   * If an error occurs, the promise is rejected.
+   */
   const handleAddUser = (ele = null) => {
     return new Promise((resolve, reject) => {
       if (token && (ele || profileData)) {
@@ -219,12 +266,14 @@ const Profile = () => {
     });
   };
 
-  // Response
-  // 1 - verified
-  // 2 - Approval Pending
-  // 3 - not verified but verify available for this member
-  // 4 - verify not available
-
+  /**
+   * Retrieves the diamond verification type based on the login user data.
+   * @returns {number} - The diamond verification type:
+   *   - 1: The account verify status is:verified.
+   *   - 2: The account verify status is:Approval Pending.
+   *   - 3: The account verify status is:not verified but verify available for this member.
+   *   - 4: The account verify status is:verify not available.
+   */
   const getDiamondVeifyType = () => {
     if (loginUserData) {
       const { account_verify_type, user_status_id } = loginUserData;

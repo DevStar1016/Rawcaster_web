@@ -1,3 +1,9 @@
+/**
+ * A React component that renders the header section of the notification module.
+ * It displays the title "Notifications" and the unread count of notifications.
+ * It also provides a button to mark all notifications as read.
+ * @returns {JSX.Element} - The rendered header component.
+ */
 import { Badge, Popover } from "antd";
 import React, { useEffect } from "react";
 import Header from "./Header";
@@ -29,10 +35,22 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
   const token = useAuthToken();
   const [markallAsRead, setmarkallAsRead] = useState(false);
 
+  /**
+   * useEffect hook that updates the total unread count whenever the unReadCount value changes.
+   * @param {number} unReadCount - The current unread count value.
+   * @returns None
+   */
   useEffect(() => {
     setTotalUnreadCount(unReadCount);
   }, [unReadCount]);
 
+  /**
+   * Handles the view notification action by sending a request to the server to mark the
+   * notification as read and updating the necessary state variables.
+   * @param {number} notification_id - The ID of the notification to be viewed.
+   * @param {boolean} [mark_all_as_read=null] - Optional parameter to mark all notifications as read.
+   * @returns {Promise<number>} - A promise that resolves with the notification ID if the request is successful.
+   */
   const handleViewNotification = (notification_id, mark_all_as_read = null) => {
     let promise = new Promise((resolve, reject) => {
       const ViewData = {
@@ -54,7 +72,8 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
               })
             );
           } else {
-            toast.error(data.msg);
+            toast.remove("rawcaster");
+            toast.error(data.msg, { id: "rawcaster" });
           }
         })
         .catch((err) => {});
@@ -62,6 +81,11 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
     return promise;
   };
 
+  /**
+   * useEffect hook that updates the read count and total unread count when the login user data changes.
+   * @param {object} loginuserData - The login user data object.
+   * @returns None
+   */
   useEffect(() => {
     if (loginuserData) {
       onReadCountChange(loginuserData?.unread_notification_count);

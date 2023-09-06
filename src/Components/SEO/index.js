@@ -22,6 +22,10 @@ import { useLocation } from "react-router";
 const HelmetComponent = () => {
   const location = useLocation();
 
+  /**
+   * Returns the appropriate SEO content component based on the current location pathname.
+   * @returns The SEO content component corresponding to the current location pathname.
+   */
   const getSeoContent = () => {
     switch (location.pathname) {
       case "/dashboard":

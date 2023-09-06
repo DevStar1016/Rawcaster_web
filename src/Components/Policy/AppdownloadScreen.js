@@ -1,3 +1,7 @@
+/**
+ * A React component that renders a section for downloading the Rawcaster app.
+ * @returns The JSX code for the app download section.
+ */
 import React from "react";
 import classes from "./Appdownload.module.css";
 import Rlogo from "../../Assets/Images/svg/downlaod-apps.svg";

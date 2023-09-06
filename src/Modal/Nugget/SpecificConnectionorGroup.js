@@ -1,5 +1,15 @@
+/**
+ * A modal component that allows the user to select specific connections or groups.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} onClose - Callback function to close the modal.
+ * @param {function} onSuccess - Callback function to handle successful selection.
+ * @param {string} type - The type of selection (either "group" or "connections").
+ * @param {array} shareWithData - Array of data to share with.
+ * @param {number} share_type - The type of sharing.
+ * @returns The SpecificConnectionorGroup modal component.
+ */
 import { Button, Modal } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
 import { SpecificConnectionNugget } from "../../Shared/Context";
 import { useDashboard } from "../../Shared/Reduxfetcher";
 import { decodeHtml } from "../../Shared/Utility";
@@ -17,7 +27,6 @@ const SpecificConnectionorGroup = ({
 }) => {
   const [ConnectionData, setConnectionData] = useState([]);
   const [FilteredList, setFilteredList] = useState([]);
-
   const { groupsList, friendsList } = useDashboard();
 
   const contextvalue = {

@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+/**
+ * A React component that displays a list of fans' thumbnails.
+ * @returns JSX element
+ */
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useNuggets } from "../../../Shared/Reduxfetcher";
-import { detectMob, handleProfileNavigate } from "../../../Shared/Utility";
+import { handleProfileNavigate } from "../../../Shared/Utility";
 import classes from "../Profile.module.css";
 import { useProfileContext } from "../../../Shared/Context";
 import { useDispatch } from "react-redux";

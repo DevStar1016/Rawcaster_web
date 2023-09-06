@@ -1,3 +1,8 @@
+/**
+ * A component that allows the user to select a poll date and time.
+ * @param {function} onSelectDate - A callback function that is called when a date and time is selected.
+ * @returns The PollDateinputBox component.
+ */
 import { Col, Row, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { isValidData } from "../Shared/Utility";

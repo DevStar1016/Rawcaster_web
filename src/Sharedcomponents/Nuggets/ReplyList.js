@@ -1,3 +1,11 @@
+/**
+ * A React component that displays a list of replies to a comment.
+ * @param {boolean} isReplyEnabled - Indicates whether the reply section is enabled or not.
+ * @param {number} comment_id - The ID of the comment.
+ * @param {number} [index=0] - The index of the comment in the list.
+ * @param {function} setisReplyEnabled - A function to set the reply section enabled or disabled.
+ * @returns The ReplyList component.
+ */
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -51,6 +59,13 @@ const ReplyList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CommentList]);
 
+  /**
+   * Adds a comment for a specific nugget.
+   * @param {number} id - The ID of the nugget.
+   * @param {string} comment - The comment to add.
+   * @param {number} [type=2] - The type of the comment.
+   * @returns None
+   */
   const AddCommentforAnugget = (id, comment, type = 2) => {
     let addComment = {
       token: loginUserData?.token,
@@ -65,12 +80,20 @@ const ReplyList = ({
           getCommentList(id);
           getNuggetDetail();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * Edits a comment for a specific nugget.
+   * @param {number} id - The ID of the comment to edit.
+   * @param {string} comment - The updated comment text.
+   * @param {number} [type=1] - The type of comment (default is 1).
+   * @returns None
+   */
   const EditCommentforAnugget = (id, comment, type = 1) => {
     let editComment = {
       token: loginUserData?.token,
@@ -82,12 +105,18 @@ const ReplyList = ({
         if (res.data.status === 1) {
           setisActiveEdit("");
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * Handles the deletion of a nugget comment.
+   * @param {number} comment_id - The ID of the comment to be deleted.
+   * @returns None
+   */
   const handleDeleteNuggetComment = (comment_id) => {
     let deleteComment = {
       token: loginUserData?.token,
@@ -99,17 +128,30 @@ const ReplyList = ({
           getCommentList(nugget_id);
           getNuggetDetail();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * Retrieves the value of a comment based on its comment ID.
+   * @param {number} comment_id - The ID of the comment to retrieve the value for.
+   * @returns The value of the comment with the specified comment ID, or undefined if no comment is found.
+   */
   const getCommentValue = (comment_id) => {
     let findData = ReplyList.find((ele) => ele.comment_id === comment_id);
     return findData;
   };
 
+  /**
+   * Handles the agree action for a comment.
+   * @param {number} id - The ID of the comment.
+   * @param {boolean} like - Indicates whether the comment is liked or not.
+   * @param {number} count - The current like count of the comment.
+   * @returns None
+   */
   const handleAgree = (id, like, count) => {
     let findIndex = ReplyList.findIndex((ele) => ele.comment_id === id);
     let tempData = [...ReplyList];
@@ -290,7 +332,11 @@ const ReplyList = ({
                                         findData.comment
                                       );
                                     } else {
-                                      toast.error("Please Enter Valid Comment");
+                                      toast.remove("rawcaster");
+                                      toast.error(
+                                        "Please Enter Valid Comment",
+                                        { id: "rawcaster" }
+                                      );
                                     }
                                   } else {
                                     setisActiveEdit("");
@@ -503,7 +549,10 @@ const ReplyList = ({
                         tempData[index] = "";
                         setReplyTxt(tempData);
                       } else {
-                        toast.error("Please Enter Valid Comment");
+                        toast.remove("rawcaster");
+                        toast.error("Please Enter Valid Comment", {
+                          id: "rawcaster",
+                        });
                       }
                     }}
                   />

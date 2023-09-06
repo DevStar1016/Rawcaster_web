@@ -1,3 +1,14 @@
+/**
+ * A React component that displays a modal with a list of selected users or groups.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {number} [type=1] - The type of selection (1 for connections, 2 for groups).
+ * @param {Array} Groups - An array of groups to display.
+ * @param {Array} friends - An array of friends to display.
+ * @param {function} close - A function to close the modal.
+ * @param {function} setfriends - A function to set the selected friends.
+ * @param {function} setGroups - A function to set the selected groups.
+ * @returns A React component that renders a modal
+ */
 import { Empty, Modal } from "antd";
 import React, { useState } from "react";
 import { decodeHtml } from "../../Shared/Utility";

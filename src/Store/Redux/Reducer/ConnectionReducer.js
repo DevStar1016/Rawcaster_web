@@ -1,3 +1,15 @@
+/**
+ * The initial state object for the connections feature.
+ * @type {Object}
+ * @property {Array} fans - The array of fans.
+ * @property {number} fansCount - The count of fans.
+ * @property {Array} influencers - The array of influencers.
+ * @property {number} influencerCount - The count of influencers.
+ * @property {Array} connections - The array of connections.
+ * @property {number} connectionsCount - The count of connections.
+ * @property {Array} unclaimedInfluencer - The array of unclaimed influencers.
+ * @property {number} unclaimedInfluencerCount - The count of unclaimed influencers.
+ */
 const initialState = {
   fans: [],
   fansCount: 0,

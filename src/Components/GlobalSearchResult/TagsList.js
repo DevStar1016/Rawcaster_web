@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a list of tags and their corresponding trends.
+ * @returns JSX element
+ */
 import { Dropdown, Empty, Skeleton } from "antd";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
@@ -41,6 +45,12 @@ const TagsList = () => {
     totalpage: null,
   });
 
+  /**
+   * Retrieves the authentication token.
+   * If the user is authenticated, it retrieves the token from the user data.
+   * If the user is not authenticated, it returns a default token "RAWCAST".
+   * @returns {string} - The authentication token.
+   */
   const getToken = () => {
     if (getAuthenticated()) {
       const userData = getRawcaserToken();
@@ -49,6 +59,12 @@ const TagsList = () => {
       return "RAWCAST";
     }
   };
+
+  /**
+   * Retrieves a list of tags from the server, based on the specified page number.
+   * @param {number} [page=1] - The page number to retrieve tags from. Default is 1.
+   * @returns None
+   */
   const getTagsList = (page = 1) => {
     if (source.current) {
       isRequestCancel = true;
@@ -86,11 +102,7 @@ const TagsList = () => {
           setTagsList([]);
         }
       })
-      .catch((err) => {
-        if (!isRequestCancel || !err.message.includes("Request Cancelled")) {
-          toast.error(err.message);
-        }
-      })
+      .catch((err) => {})
       .finally(() => {
         dispatch(handleLoading(false));
         dispatch(handleisGlobalSearch(false));
@@ -98,6 +110,12 @@ const TagsList = () => {
       });
   };
 
+  /**
+   * Executes a side effect when the value of `pathname` changes.
+   * If `isGlobalSearch` is true or `TagsList` is empty, it dispatches a loading action,
+   * retrieves the list of tags, and sets `isFetching` to true.
+   * @returns None
+   */
   useEffect(() => {
     if (isGlobalSearch || TagsList?.length === 0) {
       dispatch(handleLoading(true));
@@ -107,10 +125,19 @@ const TagsList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  /**
+   * Checks if there is a next page available based on the current page reference and the total number of pages.
+   * @returns {boolean} - True if there is a next page available, false otherwise.
+   */
   const getHasNextPage = () => {
     return Pages.totalpage && pageRef.current !== Pages.totalpage;
   };
 
+  /**
+   * Handles the scroll event and checks if the user has reached the end of the container.
+   * If the user has reached the end, it sets the `isReachedEnd` state to true.
+   * @returns None
+   */
   const handleScroll = () => {
     const container = containerRef.current;
     if (container) {
@@ -121,6 +148,13 @@ const TagsList = () => {
     }
   };
 
+  /**
+   * Loads more data if there is a next page available.
+   * If there is no next page, it sets the loading state to false and the isReachedEnd state to false.
+   * If isReachedEnd is true and there is a next page available and the loading state is false,
+   * it sets the loading state to true, increments the pageRef.current value by 1, and calls the getTagsList function.
+   * @returns None
+   */
   const loadMore = () => {
     if (!getHasNextPage()) {
       setloading(false);
@@ -138,6 +172,10 @@ const TagsList = () => {
     onLoadMore: loadMore,
   });
 
+  /**
+   * Retrieves a list of unique tags from the TagsList array.
+   * @returns {Array} An array of unique tags.
+   */
   const getValidTags = () => {
     if (TagsList && TagsList.length !== 0) {
       const filteredArr = TagsList.reduce((acc, current) => {
@@ -155,6 +193,10 @@ const TagsList = () => {
     }
   };
 
+  /**
+   * Adds a scroll event listener to the container element and removes it when the component unmounts.
+   * @returns None
+   */
   useEffect(() => {
     const container = containerRef.current;
     if (container) {

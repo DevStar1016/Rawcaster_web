@@ -1,3 +1,8 @@
+/**
+ * A component that allows users to sign in with social media services like Google and Apple.
+ * @param {string} type - The type of sign-in service (e.g., "Sign in", "Sign up").
+ * @returns The SigninwithService component.
+ */
 import React, { useEffect, useState } from "react";
 import { LoginSocialApple, LoginSocialGoogle } from "reactjs-social-login";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
@@ -22,22 +27,27 @@ import {
   removeSessionStorageData,
   setCookieData,
 } from "../../Store/Storage";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Signup.module.css";
 import { toast } from "react-hot-toast";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 
 const SigninwithService = ({ type }) => {
+  const { nugget_id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
     latitude: "",
     longitude: "",
   });
 
+  /**
+   * Executes the specified callback function after the component has rendered.
+   * Retrieves geocode data and updates the location value state with the retrieved data.
+   * @returns None
+   */
   useEffect(() => {
     getGeocodeData()
       .then((res) => {
@@ -58,6 +68,11 @@ const SigninwithService = ({ type }) => {
       });
   }, []);
 
+  /**
+   * Handles the signup process by sending the user's data to the server for authentication.
+   * @param {object} values - The user's signup data.
+   * @returns None
+   */
   const HandleSignup = (values) => {
     let finalData = {
       ...values,
@@ -73,20 +88,24 @@ const SigninwithService = ({ type }) => {
           delete finalVal["name"];
           setCookieData("rawcaster_user_token", finalVal);
           dispatch(fetchuserInfobyToken(res.data.token)).then(({ payload }) => {
-            if (res.data.first_time === 1) {
-              navigate("/selectinfluencers");
+            if (nugget_id) {
+              window.location.assign(`/view/${nugget_id}`);
+            } else if (res.data.first_time === 1) {
+              window.location.assign("/selectinfluencers");
             } else if (getSessionStorageData("influencerData")) {
-              navigate("/selectinfluencers");
+              window.location.assign("/selectinfluencers");
               removeSessionStorageData("influencerData");
             } else if (res.data.first_time === 1) {
-              navigate("/selectinfluencers");
+              window.location.assign("/selectinfluencers");
             } else {
-              navigate("/dashboard");
+              window.location.assign("/dashboard");
             }
-            window.location.reload();
           });
         } else if (res.data.status === 0) {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {})
@@ -119,15 +138,15 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
-                console.log(data);
-                toast.error("Something Went Wrong !");
+                toast.remove("Error");
+                toast.error("Something Went Wrong !", {
+                  id: "Error",
+                });
               }
 
               dispatch(handleLoading(true));
             }}
-            onReject={(err) => {
-              console.log(err, "err");
-            }}
+            onReject={(err) => {}}
           >
             <button
               className={classes.altSignBtn}
@@ -157,7 +176,10 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
-                toast.error("Something Went Wrong !!");
+                toast.remove("Error");
+                toast.error("Something Went Wrong !", {
+                  id: "Error",
+                });
               }
             }}
             onReject={(err) => {

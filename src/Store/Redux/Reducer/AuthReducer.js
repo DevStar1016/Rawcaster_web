@@ -1,3 +1,7 @@
+/**
+ * Redux slice for managing authentication-related state.
+ * @module auth
+ */
 import { createSlice } from "@reduxjs/toolkit";
 import { getCookieData } from "../../Storage";
 import { fetchuserInfobyToken, fetchuserSettingsbyToken } from "../Action";

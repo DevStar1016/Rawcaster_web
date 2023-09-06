@@ -1,13 +1,17 @@
+/**
+ * A component that allows users to post a poll.
+ * @param {function} setisPoll - A function to set the state of whether the poll is active or not.
+ * @returns The Postpoll component.
+ */
 import { Alert, Button, Input, Space } from "antd";
 import { useFormik } from "formik";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { PostNuggetContext } from "../../Shared/Context";
 import PollDateinputBox from "../../Sharedcomponents/PollDateinputBox";
 import classes from "../Modal.module.css";
 import * as Yup from "yup";
 import { isArray } from "lodash";
-import LoginModal from "../Verification/LoginModal";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 
 const Postpoll = ({ setisPoll }) => {
@@ -64,6 +68,12 @@ const Postpoll = ({ setisPoll }) => {
       },
     });
 
+  /**
+   * Returns the title for a choice based on the given index.
+   * If the index is greater than 2, the title will include "(optional)".
+   * @param {number} index - The index of the choice.
+   * @returns {string} The title for the choice.
+   */
   const getChoiceTitle = (index) => {
     if (index > 2) {
       return `Choice ${index} (optional)`;
@@ -72,6 +82,14 @@ const Postpoll = ({ setisPoll }) => {
     }
   };
 
+  /**
+   * A useEffect hook that checks if the length of the content in the values object exceeds
+   * the nugget_content_length of the loginUserData object. If it does, it sets the limitExceeds
+   * state to true, otherwise it sets it to false.
+   * @param {object} values - The values object containing the content.
+   * @param {object} loginUserData - The loginUserData object containing the nugget_content_length.
+   * @returns None
+   */
   useEffect(() => {
     if (values?.content?.length > loginUserData?.nugget_content_length - 1) {
       setLimitExceeds(true);

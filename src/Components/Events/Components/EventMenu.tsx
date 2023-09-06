@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Menu.module.css";
 import { Badge, Popover, message } from "antd";
 import {
@@ -11,7 +11,6 @@ import {
   useToggleLocalMute,
   useVideoInputs,
 } from "amazon-chime-sdk-component-library-react";
-import { useEventLayout } from "../Room/EventValidaton";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import {
@@ -24,23 +23,22 @@ import {
   useAuthData,
   useEventTempAuthData,
 } from "../../../Shared/Reduxfetcher";
-import { EndMeeting, ExitMeeting, MicOptions } from "./Methods";
+import { ExitMeeting, HostExitOption, MicOptions } from "./Methods";
+import { EventContextProp, MeetingSettingProp } from "./types";
+import { useEventRoomContext } from "../../../Shared/Context";
 
 const EventMenu = () => {
   const {
     isChatorParticipant,
     setisChatorParticipant,
     isPinEnabled,
-    setisPinEnabled,
     EventData,
     RequestRef,
     handleExitMeeting,
-    handleEndMeeting,
     MeetingSettings,
     userdata,
     setMeetingSettings,
-  }: any = useEventLayout();
-
+  }: EventContextProp = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
   const { roster } = useRosterState();
@@ -52,11 +50,16 @@ const EventMenu = () => {
   const { isVideoEnabled } = useLocalVideo();
   const { muted } = useToggleLocalMute();
   const videoinput = useVideoInputs();
+  const meetingmanager = useMeetingManager();
   const [selectedDevice, setselectedDevice] = useState<any>(null);
   const [isMore, setisMore] = useState<Boolean>(false);
   const [isSpeakerOpen, setisSpeakerOpen] = useState<boolean>(false);
-  const meetingmanager = useMeetingManager();
 
+  /**
+   * Retrieves the user data. If the userData variable is defined, it returns the value of userData.
+   * Otherwise, it returns the value of tempuserData.
+   * @returns The user data.
+   */
   const getUserData = () => {
     if (userData) {
       return userData;
@@ -65,8 +68,21 @@ const EventMenu = () => {
     }
   };
 
+  /* Default Menu Enable/Disable Handling */
+  /**
+   * Returns an object containing various enabled settings based on the user data and meeting settings.
+   * @returns {Object} - An object with the following properties:
+   *   - isHost: A boolean indicating if the user is a host.
+   *   - presentEnable: A boolean indicating if the user can enable screen sharing or if they are a host.
+   *   - allowEnable: A boolean indicating if the user is a host.
+   *   - allowActive: A boolean indicating if screen sharing is allowed in the meeting settings.
+   *   - viewEnable: A boolean indicating if the user is a host.
+   *   - localvideoStatus: A boolean indicating if the user is a host or if their video is not disabled by the host.
+   *
+   */
   const enabledSettings = () => ({
-    presentEnable: userdata?.screenShare === 1 || userdata?.isHost,
+    isHost: userdata?.isHost,
+    presentEnable: userdata?.screenShare || userdata?.isHost,
     allowEnable: userdata?.isHost,
     allowActive: MeetingSettings?.user_screenshare === 1,
     viewEnable: userdata?.isHost,
@@ -255,10 +271,12 @@ const EventMenu = () => {
                 },
                 CHIME_SOCKET_EVENTS.ENABLE_SHARE_SCREEN
               );
-              setMeetingSettings((pre: any) => ({
-                ...pre,
-                user_screenshare: enabledSettings().allowActive ? 0 : 1,
-              }));
+              setMeetingSettings((prev: MeetingSettingProp) => {
+                return {
+                  ...prev,
+                  user_screenshare: enabledSettings().allowActive ? 0 : 1,
+                };
+              });
             }}
           >
             <div className={styles.iconBox}>
@@ -271,12 +289,11 @@ const EventMenu = () => {
             {enabledSettings().allowActive ? "Disable" : "Allow"}
           </div>
         )}
-        {userdata?.isHost && (
+        {enabledSettings()?.isHost && (
           <div
             className={styles.Actionsec}
             onClick={() => {
               if (attendees.length >= 0) {
-                setisPinEnabled(!isPinEnabled);
                 ChimesendMessage(
                   {
                     refId: EventData?.reference_id,
@@ -364,37 +381,53 @@ const EventMenu = () => {
           </div>
           Chat
         </div>
-        <div
-          className={styles.Actionsec}
-          style={{
-            color: "red",
-          }}
-          onClick={() => {
-            if (userdata?.isHost) {
-              EndMeeting({
-                Attendee: userdata,
-                EventData,
-                handleEndMeeting,
-                meetingmanager,
-              });
-            } else {
+        {enabledSettings()?.isHost ? (
+          <Popover
+            placement="topLeft"
+            showArrow={false}
+            content={<HostExitOption />}
+            trigger="click"
+          >
+            <div
+              className={styles.Actionsec}
+              style={{
+                color: "red",
+              }}
+            >
+              <div className={styles.iconBox}>
+                <span
+                  className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
+                >
+                  logout
+                </span>
+              </div>
+              {"Leave"}
+            </div>
+          </Popover>
+        ) : (
+          <div
+            className={styles.Actionsec}
+            style={{
+              color: "red",
+            }}
+            onClick={() => {
               ExitMeeting({
                 Attendee: userdata,
                 EventData,
                 handleExitMeeting,
               });
-            }
-          }}
-        >
-          <div className={styles.iconBox}>
-            <span
-              className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
-            >
-              logout
-            </span>
+            }}
+          >
+            <div className={styles.iconBox}>
+              <span
+                className={`material-symbols-outlined ${styles.icon} ${styles.spanicon}`}
+              >
+                logout
+              </span>
+            </div>
+            {"Leave"}
           </div>
-          {userdata?.isHost ? "End" : "Leave"}
-        </div>
+        )}
       </div>
       <div className="onlyMob">
         <MoreBottomSheet
@@ -502,7 +535,7 @@ const EventMenu = () => {
                 </div>
                 <p>Switch Camera</p>
               </div>
-              {userdata?.isHost && (
+              {enabledSettings()?.isHost && (
                 <div className={styles.iconSec}>
                   <div
                     className={`${styles.iconContainer} ${
@@ -510,7 +543,6 @@ const EventMenu = () => {
                     }`}
                     onClick={async () => {
                       if (attendees.length >= 10) {
-                        setisPinEnabled(!isPinEnabled);
                         ChimesendMessage(
                           {
                             refId: EventData?.reference_id,

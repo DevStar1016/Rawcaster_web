@@ -1,5 +1,14 @@
+/**
+ * A React component that renders a login modal.
+ * @param {Object} props - The component props.
+ * @param {boolean} props.open - Whether the modal is open or not.
+ * @param {function} props.close - Function to close the modal.
+ * @param {boolean} props.AIopen - Whether the AI is open or not.
+ * @param {function} props.AIclose - Function to close the AI.
+ * @param {string} props.AImessgae - The message to display in the modal.
+ * @returns A modal component that allows users to login or signup for a Rawcaster account.
+ */
 import { Button, Modal } from "antd";
-import React from "react";
 import { useNavigate } from "react-router";
 import { removeSessionStorageData } from "../../Store/Storage";
 import classes from "../Modal.module.css";

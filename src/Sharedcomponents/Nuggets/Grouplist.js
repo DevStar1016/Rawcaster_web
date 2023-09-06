@@ -17,6 +17,13 @@ const Grouplist = () => {
   } = useSpecificConnectionNugget();
   const { groupsList } = useDashboard();
 
+  /**
+   * useEffect hook that updates the connection data and filtered list based on the groups list.
+   * @param {Array} groupsList - The list of groups.
+   * @param {boolean} shareWithData - Indicates whether there is shared data.
+   * @param {number} share_type - The type of sharing.
+   * @returns None
+   */
   useEffect(() => {
     if (groupsList) {
       setConnectionData(groupsList);
@@ -34,6 +41,11 @@ const Grouplist = () => {
     }
   }, [groupsList]);
 
+  /**
+   * Checks if a group with the given group_id is selected in the FilteredList.
+   * @param {number} group_id - The ID of the group to check.
+   * @returns {object | undefined} - The selected group object if found, otherwise undefined.
+   */
   const isSelectedGroup = (group_id) => {
     const findData = FilteredList.find(
       (ele) => parseInt(ele.group_id) === parseInt(group_id)

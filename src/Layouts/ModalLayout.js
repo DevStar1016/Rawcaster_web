@@ -1,6 +1,10 @@
+/**
+ * A layout component that renders various modals and handles their state and logic.
+ * @returns The rendered modals and their corresponding logic.
+ */
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Outlet, useLocation, useOutletContext } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import LoginModal from "../Modal/Verification/LoginModal";
 import { VerificationModal } from "../Modal/Verification/ProfileVerificationModal";
 import ValidateTypeModal from "../Modal/Verification/ValidateTypeModal";
@@ -42,6 +46,13 @@ const ModalLayout = () => {
   const { isAccountActive, userSettings } = useAuth();
   const profileverifyStatus = useProfileVerifyModal();
 
+  /**
+   * React hook that runs an effect when the 'location' dependency changes.
+   * The effect pauses the player if it exists and cancels any ongoing requests
+   * made by the 'PlayerSource' ref.
+   * @param {object} location - The location object that triggers the effect when it changes.
+   * @returns None
+   */
   useEffect(() => {
     if (player) {
       player.pause();
@@ -51,6 +62,12 @@ const ModalLayout = () => {
     }
   }, [location]);
 
+  /**
+   * Executes the specified side effects when the location pathname changes.
+   * @param {function} callback - The callback function to execute.
+   * @param {Array} dependencies - The dependencies to watch for changes.
+   * @returns None
+   */
   useEffect(() => {
     if (location.pathname !== "/setpassword") {
       removeSessionStorageData("CountDown");

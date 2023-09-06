@@ -10,29 +10,63 @@ import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import styles from "./Menu.module.css";
 import { message } from "antd";
-import { useEventLayout } from "../Room/EventValidaton";
 import {
   useAuthData,
   useEventTempAuthData,
 } from "../../../Shared/Reduxfetcher";
 import { EndMeeting, ExitMeeting } from "./Methods";
 import { useEventRoomContext } from "../../../Shared/Context";
+import {
+  AttendeeUserData,
+  ChimeAttendee,
+  EventContextProp,
+  MeetingSettingProp,
+} from "./types";
+
+type MicrophoneComponentProps = {
+  ele?: ChimeAttendee | null;
+  attendee?: AttendeeUserData | null;
+  isHost?: boolean;
+  className?: string;
+  isAllowed?: boolean;
+  isGlobal?: boolean;
+};
+
+type CameraComponentProps = {
+  ele?: ChimeAttendee | null;
+  attendee?: AttendeeUserData | null;
+  isHost?: boolean;
+  className?: string;
+  isGlobal?: boolean;
+};
+
+type VolumeComponentProps = {
+  ele?: ChimeAttendee | null;
+  isEnable?: boolean;
+  className?: string;
+  onClick?: (val?: any) => void;
+};
 
 export const MicrophoneComponent = ({
-  ele,
-  attendee,
-  isHost,
+  ele = null,
+  attendee = null,
+  isHost = false,
   className = "",
   isAllowed = true,
   isGlobal,
-}) => {
+}: MicrophoneComponentProps) => {
   const { EventData, MeetingSettings, setMeetingSettings } =
     useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
-  const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
+  const { muted } = useAttendeeStatus(ele ? ele?.chimeAttendeeId : "");
   const { toggleMute } = useToggleLocalMute();
 
+  /**
+   * Retrieves the user data. If the userData object is defined, it is returned.
+   * Otherwise, the tempuserData object is returned.
+   * @returns The user data object.
+   */
   const getUserData = () => {
     if (userData) {
       return userData;
@@ -53,7 +87,7 @@ export const MicrophoneComponent = ({
               status: true,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
-            setMeetingSettings((pre: any) => ({
+            setMeetingSettings((pre: MeetingSettingProp) => ({
               ...pre,
               default_guest_audio: 1,
             }));
@@ -71,7 +105,7 @@ export const MicrophoneComponent = ({
               status: false,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
-            setMeetingSettings((pre: any) => ({
+            setMeetingSettings((pre: MeetingSettingProp) => ({
               ...pre,
               default_guest_audio: 0,
             }));
@@ -87,15 +121,15 @@ export const MicrophoneComponent = ({
         <i
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isHost && !attendee.isHost) {
+            if (isHost && !attendee?.isHost) {
               const value = {
                 refId: EventData?.reference_id,
                 hostId: getUserData()?.user_id,
                 status: true,
-                userId: attendee.userId,
+                userId: attendee?.userId,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
-            } else if (attendee.user_id === attendee.userId) {
+            } else if (userData?.user_id === attendee?.userId) {
               toggleMute();
             }
           }}
@@ -106,15 +140,15 @@ export const MicrophoneComponent = ({
         <i
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isHost && !attendee.isHost) {
+            if (isHost && !attendee?.isHost) {
               const value = {
                 refId: EventData?.reference_id,
                 hostId: getUserData()?.user_id,
                 status: false,
-                userId: attendee.userId,
+                userId: attendee?.userId,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
-            } else if (attendee.user_id === attendee.userId && isAllowed) {
+            } else if (userData?.user_id === attendee?.userId && isAllowed) {
               toggleMute();
             }
           }}
@@ -169,17 +203,19 @@ export const LocalMicrophoneComponent = ({
 };
 
 export const CameraComponent = ({
-  ele,
-  attendee,
-  isHost,
+  ele = null,
+  attendee = null,
+  isHost = false,
   className = "",
   isGlobal,
-}) => {
+}: CameraComponentProps) => {
   const { EventData, MeetingSettings, setMeetingSettings } =
     useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
-  const { videoEnabled } = useAttendeeStatus(ele?.chimeAttendeeId);
+  const { videoEnabled } = useAttendeeStatus(ele ? ele?.chimeAttendeeId : "");
+
+  /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
     if (userData) {
       return userData;
@@ -187,6 +223,7 @@ export const CameraComponent = ({
       return tempuserData;
     }
   };
+
   return isGlobal ? (
     <>
       {MeetingSettings?.default_guest_video === 0 ? (
@@ -199,7 +236,7 @@ export const CameraComponent = ({
               status: true,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
-            setMeetingSettings((pre: any) => ({
+            setMeetingSettings((pre: MeetingSettingProp) => ({
               ...pre,
               default_guest_video: 1,
             }));
@@ -218,7 +255,7 @@ export const CameraComponent = ({
                 status: false,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
-              setMeetingSettings((pre: any) => ({
+              setMeetingSettings((pre: MeetingSettingProp) => ({
                 ...pre,
                 default_guest_video: 0,
               }));
@@ -235,12 +272,12 @@ export const CameraComponent = ({
         <i
           className={`${styles.video_off_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isHost && !attendee.isHost) {
+            if (isHost && !attendee?.isHost) {
               const value = {
                 refId: EventData?.reference_id,
                 hostId: getUserData()?.user_id,
                 status: true,
-                userId: attendee.userId,
+                userId: attendee?.userId,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
             }
@@ -256,7 +293,7 @@ export const CameraComponent = ({
               refId: EventData?.reference_id,
               hostId: getUserData()?.user_id,
               status: false,
-              userId: attendee.userId,
+              userId: attendee?.userId,
             };
             ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
           }}
@@ -276,7 +313,6 @@ export const LocalCameraComponent = ({
 }) => {
   const videoinput = useVideoInputs();
   const { isVideoEnabled, toggleVideo } = useLocalVideo();
-  const audiovideo = useAudioVideo();
   const [messageApi, contextHolder] = message.useMessage();
   const meetingmanager = useMeetingManager();
   return (
@@ -332,12 +368,12 @@ export const LocalCameraComponent = ({
 };
 
 export const VolumeStatusComponent = ({
-  ele,
+  ele = null,
   isEnable = true,
-  className,
-  onClick,
-}) => {
-  const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
+  className = "",
+  onClick = () => {},
+}: VolumeComponentProps) => {
+  const { muted } = useAttendeeStatus(ele ? ele?.chimeAttendeeId : "");
   return muted ? null : (
     <>
       {!isEnable ? (
@@ -356,12 +392,21 @@ export const VolumeStatusComponent = ({
 };
 
 export const HangupComponent = () => {
-  const { EventData, handleExitMeeting, attendeesList, handleEndMeeting }: any =
-    useEventLayout();
+  const {
+    EventData,
+    handleExitMeeting,
+    attendeesList,
+    handleEndMeeting,
+  }: EventContextProp = useEventRoomContext();
   const meetingmanager = useMeetingManager();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
 
+  /**
+   * Retrieves the user data. If the userData variable is defined, it returns the value of userData.
+   * Otherwise, it returns the value of tempuserData.
+   * @returns The user data.
+   */
   const getUserData = () => {
     if (userData) {
       return userData;
@@ -370,12 +415,21 @@ export const HangupComponent = () => {
     }
   };
 
+  /**
+   * Retrieves the current attendee from the attendees list based on the user ID.
+   * @returns {AttendeeUserData | undefined} The current attendee object if found, otherwise undefined.
+   */
   const getCurrentAttendee = () => {
     return attendeesList.find(
-      (ele: any) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
+      (ele: AttendeeUserData) => ele.userId === parseInt(getUserData()?.user_id)
     );
   };
 
+  /**
+   * Handles the end of a meeting. If the current attendee is the host, it calls the EndMeeting function
+   * with the necessary parameters. Otherwise, it calls the ExitMeeting function with the necessary parameters.
+   * @returns None
+   */
   const HandleEndMeeting = () => {
     if (getCurrentAttendee()?.isHost) {
       EndMeeting({

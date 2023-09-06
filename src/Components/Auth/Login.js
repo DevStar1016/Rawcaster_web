@@ -1,6 +1,11 @@
+/**
+ * A functional component that represents the login page of the application.
+ * Allows users to log in with their credentials and access the latest insights and experiences for their social media performance.
+ * @returns JSX elements representing the login page.
+ */
 import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
@@ -29,14 +34,9 @@ const validationSchema = yup.object().shape({
   username: yup
     .string()
     .min(5, "Email or Phone Number Must be atleast 5 Characters")
-    // .matches(LOGIN_ID, "Please Enter Valid Login ID")
     .required(`Please input your Email or Phone Number!`),
   password: yup
     .string()
-    // .matches(
-    //   PASSWORD_EXP,
-    //   "Your password to be at least 8 characters long, contain uppercase letter (A-Z), lowercase letter (a-z), symbol (!@#$%) and a number (0-9)."
-    // )
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
     .min(8, "Password must be at least 8 characters long")
@@ -44,6 +44,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Login = () => {
+  const { nugget_id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
@@ -60,14 +61,25 @@ const Login = () => {
       },
     });
 
+  /**
+   * Handles the profile update based on the given type.
+   * @param {object} res - The response object.
+   * @param {number} type - The type of profile update (1 for email, 2 for sms).
+   * @returns None
+   */
   const handleProfileUpdate = (res, type) => {
     if (type === 1) {
-      accountVerifyHandle(res, "email", navigate);
+      accountVerifyHandle(res, "email", navigate, nugget_id);
     } else if (type === 2) {
-      accountVerifyHandle(res, "sms", navigate);
+      accountVerifyHandle(res, "sms", navigate, nugget_id);
     }
   };
 
+  /**
+   * Handles the login service by sending a request to the server with the provided values.
+   * @param {object} values - The login values object.
+   * @returns None
+   */
   const HandleLoginService = (values) => {
     let loginData = {
       ...values,
@@ -77,7 +89,8 @@ const Login = () => {
       .then((res) => {
         if (res.data.status === 1) {
           if (res.data.acc_verify_status === 0) {
-            toast.success(res.data.msg);
+            toast.remove("rawcaster");
+            toast.success(res.data.msg, { id: "rawcaster" });
             handleProfileUpdate(res.data, res.data.signup_type);
             return;
           }
@@ -87,15 +100,18 @@ const Login = () => {
             };
             delete finalVal["name"];
             setCookieData("rawcaster_user_token", finalVal);
-            if (res.data.first_time === 1) {
-              navigate("/selectinfluencers");
-            } else if (getSessionStorageData("influencerData")) {
-              navigate("/selectinfluencers");
-              removeSessionStorageData("influencerData");
+            if (nugget_id) {
+              window.location.assign(`/view/${nugget_id}`);
             } else {
-              navigate("/dashboard");
+              if (res.data.first_time === 1) {
+                window.location.assign("/selectinfluencers");
+              } else if (getSessionStorageData("influencerData")) {
+                window.location.assign("/selectinfluencers");
+                removeSessionStorageData("influencerData");
+              } else {
+                navigate("/dashboard");
+              }
             }
-            window.location.reload();
           });
         } else if (res.data.status === 2) {
           setredirectModal({ show: true, msg: res.data.msg });

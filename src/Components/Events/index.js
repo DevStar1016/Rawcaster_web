@@ -20,6 +20,11 @@ const Events = ({ ref = null, style = {} }) => {
   const { isSuccess, loginUserData } = useAuth();
   const { DashboardfilterType, nuggetFormData } = useNuggets();
 
+  /**
+   * Handles the selection of a filter type and updates the filter data accordingly.
+   * @param {string} type - The selected filter type.
+   * @returns None
+   */
   const handleFilterType = (type) => {
     let filterData = { ...nuggetFormData };
 

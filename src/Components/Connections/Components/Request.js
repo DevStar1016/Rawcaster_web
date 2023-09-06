@@ -1,3 +1,11 @@
+/**
+ * A React component that represents a friend request.
+ * @param {Object} request - The friend request object.
+ * @param {Function} setrequests - A function to update the list of friend requests.
+ * @param {Function} onSuccess - A callback function to be called when the friend request is accepted successfully.
+ * @param {Function} onReject - A callback function to be called when the friend request is rejected.
+ * @returns A React component that displays the friend request and handles the response.
+ */
 import React from "react";
 import { toast } from "react-hot-toast";
 import { respondToFriendRequestsService } from "../../../Services/ApiService";
@@ -23,6 +31,11 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
 
+  /**
+   * Handles a friend request by sending a response to the server.
+   * @param {number} action - The action to take on the friend request (1 for accept, 0 for reject).
+   * @returns None
+   */
   const handleRequest = (action) => {
     let respondData = {
       token: token,
@@ -61,18 +74,24 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
               data: data,
             };
             sendMessage(socketMes, "message");
+            toast.remove("rawcaster");
             toast.success(
               `You and ${decodeHtml(
                 res.data.friend_details.display_name
-              )} connected`
+              )} connected`,
+              { id: "rawcaster" }
             );
             onSuccess(res.data.friend_details);
           } else {
-            toast.success(`Sucessfully rejected`);
+            toast.remove("rawcaster");
+            toast.success(`Sucessfully rejected`, { id: "rawcaster" });
             onReject();
           }
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {});

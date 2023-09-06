@@ -2,6 +2,10 @@ import { Button, Result } from "antd";
 import React from "react";
 import { useNavigate } from "react-router";
 
+/**
+ * A functional component that renders a 404 error page.
+ * @returns The JSX code for the 404 error page.
+ */
 const NotFound = () => {
   const navigate = useNavigate();
   return (

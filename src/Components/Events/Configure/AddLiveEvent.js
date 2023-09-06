@@ -152,6 +152,13 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       }
     },
   });
+
+  /**
+   * Handles the close event of the talkshow.
+   * Sets the isTalkshowOpen state to false, resets the form, sets isCreating state to false,
+   * and updates the values state with the default values from userSettings.
+   * @returns None
+   */
   const handleCloseEvent = () => {
     setisTalkshowOpen(false);
     resetForm();
@@ -163,6 +170,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     }));
   };
 
+  /**
+   * useEffect hook that updates the component's state values based on the user settings.
+   * @param {object} userSettings - The user settings object.
+   * @returns None
+   */
   useEffect(() => {
     if (userSettings) {
       setValues((pre) => ({
@@ -173,6 +185,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     }
   }, [userSettings]);
 
+  /**
+   * Handles a live event by formatting the date and time, converting it to UTC, and making a request to add the event.
+   * @param {any} val - The event data object.
+   * @returns None
+   */
   const HandleLiveEvent = (val) => {
     const dateAndTime =
       moment(val.event_start_date).format("YYYY-MM-DD") +
@@ -196,9 +213,13 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
           getEvents(ActiveEvent.key);
           setEventData(res.data.event_detail);
           setisSuccesspage(true);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {})
@@ -207,6 +228,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       });
   };
 
+  /**
+   * Handles the editing of a live event.
+   * @param {Object} val - The event data to be edited.
+   * @returns None
+   */
   const HandleEditLiveEvent = (val) => {
     const dateAndTime =
       moment(val.event_start_date).format("YYYY-MM-DD") +
@@ -234,9 +260,13 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       .then((res) => {
         if (res.data.status === 1) {
           getEvents(ActiveEvent.key);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {})
@@ -245,6 +275,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       });
   };
 
+  /**
+   * useEffect hook that fetches event data and updates the component state with the retrieved data.
+   * @param {Object} data - The data object containing the event ID.
+   * @returns None
+   */
   useEffect(() => {
     if (data) {
       let eventdata = {
@@ -276,6 +311,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
         .catch((err) => {});
     }
   }, [data]);
+
+  /**
+   * Returns a JSX element representing the title of a talk show.
+   * @returns {JSX.Element} - The JSX element containing the title.
+   */
   const getTitle = () => {
     return (
       <div className={classes.headingSec}>
@@ -283,6 +323,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       </div>
     );
   };
+
   return (
     <AddEventContext.Provider
       value={{

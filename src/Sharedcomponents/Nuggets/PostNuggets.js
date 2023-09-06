@@ -1,3 +1,8 @@
+/**
+ * A component that allows users to post nuggets, which can include text, images, videos, and polls.
+ * @param {boolean} isUserPostAvailable - Indicates whether the user is allowed to post nuggets.
+ * @returns The PostNuggets component.
+ */
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./PostNuggets.module.css";
 import cameraIcon from "../../Assets/Images/svg/camera.svg";
@@ -75,6 +80,11 @@ const PostNuggets = ({ isUserPostAvailable }) => {
     },
   });
 
+  /**
+   * Retrieves the length of the nugget text from the LoginUserData object.
+   * If the LoginUserData object is not available, returns 0.
+   * @returns The length of the nugget text or 0 if LoginUserData is not available.
+   */
   const getNuggetTextLength = () => {
     if (LoginUserData) {
       return LoginUserData?.nugget_content_length;
@@ -83,19 +93,35 @@ const PostNuggets = ({ isUserPostAvailable }) => {
     }
   };
 
+  /**
+   * useEffect hook that updates the "content" field value in the form whenever the "PostContent" prop changes.
+   * It slices the "PostContent" string to the length specified by the "getNuggetTextLength()" function and sets the sliced value as the new field value.
+   * @param {function} setFieldValue - The function to update the value of a form field.
+   * @param {string} PostContent - The content of the post.
+   * @param {function} getNuggetTextLength - The function that returns the desired length of the sliced text.
+   * @returns None
+   */
   useEffect(() => {
     if (PostContent) {
       setFieldValue("content", PostContent.slice(0, getNuggetTextLength()));
     }
   }, [PostContent]);
 
+  /**
+   * Edits a nugget with the given value.
+   * @param {object} val - The value to edit the nugget with.
+   * @returns None
+   */
   const EditNugget = (val) => {
     if (
       NuggetData.length === 0 &&
       !isValidData(val.content) &&
       previewMedia?.length === 0
     ) {
-      toast.error("Sorry! Nuggets content or Media can not be empty.");
+      toast.remove("rawcaster");
+      toast.error("Sorry! Nuggets content or Media can not be empty.", {
+        id: "rawcaster",
+      });
       return;
     }
     setpostModalShow(false);
@@ -135,7 +161,8 @@ const PostNuggets = ({ isUserPostAvailable }) => {
           GetNuggetList();
           setNuggetData([]);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})
@@ -147,9 +174,17 @@ const PostNuggets = ({ isUserPostAvailable }) => {
       });
   };
 
+  /**
+   * Uploads a nugget with the given data.
+   * @param {object} val - The data of the nugget to be uploaded.
+   * @returns None
+   */
   const uploadNugget = (val) => {
     if (NuggetData.length === 0 && !isValidData(val.content) && !PollData) {
-      toast.error("Sorry! Nuggets content or Media can not be empty.");
+      toast.remove("rawcaster");
+      toast.error("Sorry! Nuggets content or Media can not be empty.", {
+        id: "rawcaster",
+      });
       return;
     }
     setpostModalShow(false);
@@ -199,7 +234,8 @@ const PostNuggets = ({ isUserPostAvailable }) => {
           GetNuggetList();
           setNuggetData([]);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})
@@ -258,6 +294,10 @@ const PostNuggets = ({ isUserPostAvailable }) => {
     setdeletedMedia,
   };
 
+  /**
+   * Retrieves the details of a nugget from the server.
+   * @returns None
+   */
   const getNuggetDetail = () => {
     let nuggetDetailData = {
       token: Token,
@@ -286,6 +326,11 @@ const PostNuggets = ({ isUserPostAvailable }) => {
       .catch((err) => {});
   };
 
+  /**
+   * Executes a side effect when the `isEdit` state changes.
+   * If `isEdit` is true, it calls the `getNuggetDetail` function.
+   * @returns None
+   */
   useEffect(() => {
     if (isEdit) {
       getNuggetDetail();

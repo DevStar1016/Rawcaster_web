@@ -1,3 +1,8 @@
+/**
+ * A layout component for authenticated pages.
+ * @param {React.ReactNode} children - The child components to render within the layout.
+ * @returns The layout component with the provided child components.
+ */
 import { Layout, Menu } from "antd";
 import React from "react";
 import { Outlet } from "react-router";
@@ -29,11 +34,8 @@ const AuthLayout = ({ children }) => {
             </Menu.Item>
           </Menu>
         </div>
-        {/* <Header className={classes.header}> <Navbar /> </Header> */}
         <Content className="site-layout mainsec">
           <Outlet />
-
-          {/* <LoginSlider /> */}
         </Content>
       </Layout>
     </>

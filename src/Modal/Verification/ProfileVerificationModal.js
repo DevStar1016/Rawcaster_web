@@ -1,3 +1,9 @@
+/**
+ * A modal component for account verification.
+ * @param {boolean} open - Whether the modal is open or not.
+ * @param {function} close - Function to close the modal.
+ * @returns A modal component for account verification.
+ */
 import { Button, Modal } from "antd";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -18,6 +24,11 @@ export const VerificationModal = ({ open, close }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  /**
+   * Handles the process of sending an OTP (One-Time Password) for verification.
+   * @param {any} value - The value to be passed to the OTP service.
+   * @returns None
+   */
   const handleSendOTP = (value) => {
     let finalData = {
       auth_code: getAuthToken("Rawcaster"),
@@ -27,16 +38,28 @@ export const VerificationModal = ({ open, close }) => {
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           navigate("/verifyotp", { state: { ...value, ...res.data } });
           window.location.reload();
         } else {
-          toast.error(res.data.message);
+          toast.remove("rawcaster");
+          toast.error(res.data.message, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * Handles the validation process for the user.
+   * If the user's account verification status is 0 and their profile is updated,
+   * it checks if two-factor verification is enabled and if the user has a valid email and mobile number.
+   * If all conditions are met, it dispatches an action to show the two-step verification modal.
+   * If only the email is valid, it calls the handleSendOTP function with "email" as the parameter.
+   * If only the mobile number is valid, it calls the handleSendOTP function with "sms" as the parameter.
+   * If neither the email nor the mobile number is valid, it displays an error toast message.
+   * If the user's account verification status is not 0 or their profile is
+   */
   const handleValidate = () => {
     if (
       loginUserData.acc_verify_status === 0 &&
@@ -53,7 +76,8 @@ export const VerificationModal = ({ open, close }) => {
       } else if (isValidData(loginUserData.mobile)) {
         handleSendOTP("sms");
       } else {
-        toast.error("Phone Number and Email ID Missing");
+        toast.remove("rawcaster");
+        toast.error("Phone Number and Email ID Missing", { id: "rawcaster" });
       }
     } else {
       navigate("/profile");

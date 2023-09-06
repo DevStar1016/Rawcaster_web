@@ -1,3 +1,18 @@
+/**
+ * Sets a cookie with the given name and value.
+ * @param {string} cname - The name of the cookie.
+ * @param {any} cvalue - The value to be stored in the cookie.
+ * @param {number} [exdays=30] - The number of days until the cookie expires.
+ * @returns None
+ */
+
+/**
+ * Sets a cookie with the given name, value, and expiration days.
+ * @param {string} cname - The name of the cookie.
+ * @param {any} cvalue - The value of the cookie.
+ * @param {number} [exdays=30] - The number of days until the cookie expires.
+ * @returns None
+ */
 export function setCookie(cname, cvalue, exdays = 30) {
   const d = new Date();
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
@@ -6,6 +21,11 @@ export function setCookie(cname, cvalue, exdays = 30) {
     cname + "=" + JSON.stringify(cvalue) + ";" + expires + ";path=/";
 }
 
+/**
+ * Retrieves the value of a cookie with the given name.
+ * @param {string} cname - The name of the cookie to retrieve.
+ * @returns {string} The value of the cookie, or an empty string if the cookie does not exist.
+ */
 export function getCookie(cname) {
   let name = cname + "=";
   let decodedCookie = decodeURIComponent(document.cookie);

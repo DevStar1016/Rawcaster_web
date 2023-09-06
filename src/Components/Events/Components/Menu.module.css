@@ -248,6 +248,24 @@ background-color: #f5f5f5;
     margin: 0px;
     width: 100%;
 }
+.HostEndIcon {
+        background-color: red !important;
+        height: 35px !important;
+        width: 40px !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 30px;
+        color: #FFFFFF !important;
+    
+}
+.HostEndActionsec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .participantAction {
     align-items: center !important;
 }
@@ -394,6 +412,10 @@ background-color: #f5f5f5;
 }
 .disableIcon {
     background-color: gray !important;
+}
+.HostLeaveSec {
+    display: flex;
+    flex-direction: row;
 }
    @media (max-width:768px) { 
     .BottomContainer 

@@ -1,5 +1,10 @@
+/**
+ * A modal component that displays a message to reactivate the user's account.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} close - Callback function to close the modal.
+ * @returns A modal component with the account reactivation message.
+ */
 import { Modal } from "antd";
-import React from "react";
 import classes from "./Modal.module.css";
 import { Link } from "react-router-dom";
 

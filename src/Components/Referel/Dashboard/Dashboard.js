@@ -1,3 +1,9 @@
+/**
+ * A React component that represents the referral dashboard.
+ * This component displays a list of referrals, a referral container, and user information.
+ * It also provides the functionality to copy the referral link to the clipboard.
+ * @returns The referral dashboard component.
+ */
 import React, { useEffect, useState } from "react";
 import classes from "./Dashboard.module.css";
 import ReferralsList from "./ReferralsList";
@@ -21,9 +27,14 @@ const ReferalDashboard = () => {
   const userData = useAuthData();
   const [isCopied, setisCopied] = useState(false);
   const [ReferalData, setReferalData] = useState(null);
-
   const shareUrl = userData?.referral_link || "";
 
+  /**
+   * Retrieves referral data by making a request to the GetReferralListService API.
+   * The request includes a token in the request body.
+   * If the request is successful and the response status is true, the referral data is set.
+   * @returns None
+   */
   const getReferalData = () => {
     const Data = {
       token,
@@ -35,6 +46,10 @@ const ReferalDashboard = () => {
     });
   };
 
+  /**
+   * Executes the getReferalData function once when the component is mounted.
+   * @returns None
+   */
   useEffect(() => {
     getReferalData();
   }, []);
@@ -87,15 +102,7 @@ const ReferalDashboard = () => {
               />
 
               <Tooltip placement="bottom" title={decodeHtml(userData.name)}>
-                <p
-                  onClick={() => {
-                    console.log(
-                      decodeHtml(userData.name)?.length,
-                      "decodeHtml(userData.name)"
-                    );
-                  }}
-                  className={classes.name}
-                >
+                <p onClick={() => {}} className={classes.name}>
                   {decodeHtml(userData.name)?.length > 20
                     ? `${decodeHtml(userData.name)?.slice(0, 17)}...`
                     : decodeHtml(userData.name)}

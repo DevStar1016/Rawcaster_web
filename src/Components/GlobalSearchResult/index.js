@@ -1,3 +1,7 @@
+/**
+ * A React component that displays the global search results.
+ * @returns {JSX.Element} - The rendered component.
+ */
 import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useParams } from "react-router";

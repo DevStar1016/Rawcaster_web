@@ -1,5 +1,16 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Space, message } from "antd";
+/**
+ * A React component that renders a contact form for users to submit their inquiries, bug reports,
+ * feedback, and feature requests. The form includes fields for the user's name, email address,
+ * subject, and message. Upon submission, the form data is sent to the server using the contactusService
+ * function from the ApiService module. The form data is validated using the yup validation schema.
+ * If the submission is successful, a success message is displayed using the toast component from the
+ * react-hot-toast library. If there is an error, an error message is displayed. The form also includes
+ * error messages for each field if they are not filled out correctly. The form is styled using CSS
+ * modules.
+ * @returns
+ */
+
+import { Form, Input, Button } from "antd";
 import classes from "./Contactus.module.css";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -36,6 +47,11 @@ const Contactus = () => {
       },
     });
 
+  /**
+   * Submits a contact form with the provided values.
+   * @param {object} values - The values of the contact form fields.
+   * @returns None
+   */
   const ContactusSubmit = (values) => {
     dispatch(handleLoading(true));
     let contactValue = {
@@ -45,10 +61,12 @@ const Contactus = () => {
     contactusService(JSONtoformdata(contactValue))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           resetForm();
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {})

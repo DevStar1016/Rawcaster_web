@@ -35,6 +35,11 @@ const Eventslisting = ({
   const [isFetching, setisFetching] = useState(true);
   const [EnableEvents, setEnableEvents] = useState(false);
 
+  /**
+   * Retrieves a list of events based on the specified event type.
+   * @param {number} [event_type=0] - The type of event to retrieve. Defaults to 0.
+   * @returns None
+   */
   const getEvents = (event_type = 0) => {
     let eventData = {
       token: token,
@@ -63,6 +68,17 @@ const Eventslisting = ({
       });
   };
 
+  /**
+   * Executes a side effect when the dependencies change.
+   * If the loginUserData is not null and there is a token,
+   * it calls the getEvents function with the ActiveEvent key.
+   * @param {Function} getEvents - The function to call when the dependencies change.
+   * @param {any} loginUserData - The user data obtained after login.
+   * @param {string} token - The authentication token.
+   * @param {boolean} isTalkshowOpen - The flag indicating if the talkshow is open.
+   * @param {boolean} isSuccess - The flag indicating if the operation was successful.
+   * @returns None
+   */
   useEffect(() => {
     if (loginUserData !== null) {
       if (token) {
@@ -72,6 +88,12 @@ const Eventslisting = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, isTalkshowOpen, isSuccess]);
 
+  /**
+   * Determines the appropriate dropdown list based on the value of `isUser`.
+   * If `isUser` is true, the `UserDropdownItems` list is used. Otherwise, the `DropdownItems` list is used.
+   * @param {boolean} isUser - Indicates whether the dropdown list should be for a user or not.
+   * @returns The appropriate dropdown list based on the value of `isUser`.
+   */
   const Dropdownlist = isUser ? UserDropdownItems : DropdownItems;
 
   return (
@@ -80,6 +102,8 @@ const Eventslisting = ({
         getEvents,
         ActiveEvent,
         isCreateEnabled,
+        EventListData,
+        setEventListData,
       }}
     >
       <>

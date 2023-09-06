@@ -1,3 +1,11 @@
+/**
+ * The Homepage component displays the main content of the Rawcaster website's homepage.
+ * It includes sections such as a welcome section, live talk show section, events section,
+ * post nuggets section, platform features section, user testimonials section, founder message section,
+ * download app section, and a call-to-action section.
+ *
+ * @returns The JSX elements for the homepage.
+ */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import classes from "./Homepage.module.css";
@@ -375,11 +383,8 @@ const Homepage = () => {
             controlsList="nodownload"
             src={DEFAULT_VIDEO_RAWCASTER}
             type="video/mp4"
-            onPlay={() => {
-              console.log("test");
-            }}
+            onPlay={() => {}}
             onPlayingCapture={() => {
-              console.log(player);
               if (player && player.id !== `dashboardSignup`) {
                 player.pause();
               }

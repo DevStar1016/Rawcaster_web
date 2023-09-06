@@ -3,10 +3,19 @@ import {
   removeSessionStorageData,
 } from "../../Store/Storage";
 
-export const accountVerifyHandle = (res, type, navigate) => {
+/**
+ * Handles the verification process for an account.
+ * @param {object} res - The response object containing verification data.
+ * @param {string} type - The type of account being verified (e.g. email, phone).
+ * @param {function} navigate - The function used to navigate to different routes.
+ * @returns None
+ */
+export const accountVerifyHandle = (res, type, navigate, nugget_id = null) => {
   const { otp_ref_id, remaining_seconds, alt_token_id } = res;
   const handleNavigateValue = () => {
-    if (getSessionStorageData("influencerData")) {
+    if (nugget_id) {
+      return `/view/${nugget_id}`;
+    } else if (getSessionStorageData("influencerData")) {
       removeSessionStorageData("influencerData");
       return "/selectinfluencers";
     } else if (res.first_time) {

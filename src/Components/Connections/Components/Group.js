@@ -1,3 +1,10 @@
+/**
+ * A React component that represents a group in a connections list.
+ * @param {Object} group - The group object containing information about the group.
+ * @param {string} searchInput - The search input used to filter the groups.
+ * @param {function} onClick - The function to be called when the group is clicked.
+ * @returns A React component representing a group in a connections list.
+ */
 import React from "react";
 import { decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";

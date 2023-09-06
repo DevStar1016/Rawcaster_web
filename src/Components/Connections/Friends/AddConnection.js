@@ -1,3 +1,10 @@
+/**
+ * A component that allows users to add connections.
+ * @param {Object} props - The component props.
+ * @param {boolean} props.open - Whether the modal is open or not.
+ * @param {function} props.close - Function to close the modal.
+ * @returns The AddConnection component.
+ */
 import { Empty, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import { sendFriendRequestsService } from "../../../Services/ApiService";
@@ -36,6 +43,12 @@ const AddConnection = ({ open, close }) => {
     totalpage: "",
   });
 
+  /**
+   * Handles sending a friend request to a user.
+   * @param {string} user_ref_id - The user reference ID.
+   * @param {string} user_id - The user ID.
+   * @returns None
+   */
   const HandleSendRequest = (user_ref_id, user_id) => {
     let requestData = {
       token: token,
@@ -57,7 +70,10 @@ const AddConnection = ({ open, close }) => {
           let tempData = [...ProfileList];
           tempData[find] = { ...tempData[find], friend_request_status: 0 };
           setProfileList(tempData);
-          toast.success("Successfully connection request send");
+          toast.remove("rawcaster");
+          toast.success("Successfully connection request send", {
+            id: "rawcaster",
+          });
         }
       })
       .catch((err) => {});

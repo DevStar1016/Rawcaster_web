@@ -1,5 +1,10 @@
+/**
+ * A React functional component that represents the General settings page.
+ * This component displays various settings related to the user's account and allows them to make changes.
+ * @returns {JSX.Element} The rendered General component.
+ */
 import { Button, Modal, Radio, Select, Switch } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
 import { useAuth, useAuthToken, useDashboard } from "../../Shared/Reduxfetcher";
 import { getTimeZone, getlanguagelist } from "../../Shared/DropdownApis";
@@ -12,8 +17,7 @@ import {
   SettingsList,
 } from "./Constants";
 import { getValidDisplayData } from "./Utility";
-import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
-import { grouplistupdateService } from "../../Services/ApiService";
+import { decodeHtml } from "../../Shared/Utility";
 import {
   defaultGroupImg,
   defaultprofileImg,
@@ -35,7 +39,6 @@ const General = () => {
     handleupdate,
   } = useSettingsContext();
   const dispatch = useDispatch();
-  const token = useAuthToken();
   const { loginUserData, userSettings } = useAuth();
   const { groupsList, friendsList } = useDashboard();
   const [TimeZones, setTimeZones] = useState([]);
@@ -44,6 +47,14 @@ const General = () => {
     read_out: [],
   });
 
+  /**
+   * Executes the specified effect function after the component has rendered.
+   * The effect function retrieves the user's time zone and language list using
+   * asynchronous API calls. Once both API calls have resolved, the retrieved
+   * data is used to update the component's state variables `timeZones` and
+   * `languagesList`.
+   * @returns None
+   */
   useEffect(() => {
     Promise.all([getTimeZone(), getlanguagelist()]).then((res) => {
       setTimeZones(res[0]);
@@ -51,6 +62,13 @@ const General = () => {
     });
   }, []);
 
+  /**
+   * Handles the update of a group list in a service.
+   * @param {string} key - The key of the profile field being updated.
+   * @param {any} value - The new value of the group list.
+   * @param {string} type - The type of the group list (e.g. "connection" or "group").
+   * @returns None
+   */
   const handleGroupListUpdateService = (key, value, type) => {
     if (value?.length > 0) {
       let finalData = {
@@ -64,20 +82,19 @@ const General = () => {
       }));
       handleupdate(finalData);
     } else {
+      toast.remove("rawcaster");
       toast.error(
-        `please select atleast one ${type === 3 ? "connection" : "group"}`
+        `please select atleast one ${type === 3 ? "connection" : "group"}`,
+        { id: "rawcaster" }
       );
     }
-
-    // grouplistupdateService(JSONtoformdata(finalData))
-    //   .then((res) => {
-    //     if (res.data.status === 1) {
-    //       setupdateValue(key, 3);
-    //     }
-    //   })
-    //   .catch((err) => {});
   };
 
+  /**
+   * Removes duplicate elements from an array based on a specific property.
+   * @param {Array} data - The array to remove duplicates from.
+   * @returns {Array} - A new array with duplicate elements removed.
+   */
   function RemoveDuplicates(data) {
     // Create a Set to store unique objects
     let uniqueId = [];
@@ -231,8 +248,6 @@ const General = () => {
                       placeholder="Search group"
                       value={getGroupList()}
                       onChange={(val, value) => {
-                        console.log(value);
-                        console.log(formikvalues[ele.groupkeyword]);
                         setFieldValue([ele.groupkeyword], val);
                       }}
                       optionLabelProp="label"

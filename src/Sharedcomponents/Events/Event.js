@@ -1,11 +1,17 @@
+/**
+ * Represents a single event component.
+ * @param {Object} ele - The event object.
+ * @param {Function} handleEdit - The function to handle editing the event.
+ * @param {Function} setList - The function to set the event list.
+ * @param {boolean} [isOthers=false] - Indicates if the event is created by someone else.
+ * @returns The event component.
+ */
 import { Modal, Popover, Tooltip } from "antd";
-import React from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
   decodeHtml,
-  getusetId,
   shareEventDate,
   utctoUserTimezone,
   utctoUserTimezonewithAbbr,
@@ -16,9 +22,7 @@ import { deleteEventService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import moment from "moment";
 import shareicon from "../../Assets/Icons/svg/shareiconblack.svg";
-import { SHARE_URL } from "../../Shared/Constant";
 import {
-  EmailShareButton,
   FacebookShareButton,
   TwitterShareButton,
   WhatsappShareButton,
@@ -33,16 +37,23 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const { userSettings, loginUserData } = useAuth();
   const navigate = useNavigate();
   const token = useAuthToken();
-  const eventType =
-    ele.type === 1 ? "event/" : ele.type === 2 ? "talkshow/" : "golive/";
 
+  /**
+   * Checks if the current user is the creator of a specific element.
+   * @returns {boolean} - True if the current user is the creator, false otherwise.
+   */
   const isCreatedUser = () => {
-    if (loginUserData?.user_id === getusetId(ele?.original_user_id)) {
+    if (loginUserData?.user_id === ele?.original_user_id) {
       return true;
     }
     return false;
   };
 
+  /**
+   * Handles the deletion of an event.
+   * @param {Object} ele - The event object to be deleted.
+   * @returns None
+   */
   const handleDelete = (ele) => {
     let deleteData = {
       token: token,
@@ -56,23 +67,33 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
               pre.filter((elem) => elem.event_id !== ele.event_id)
             );
           }
-          toast.success("Event Deleted Successfully !");
+          toast.remove("rawcaster");
+          toast.success("Event Deleted Successfully !", { id: "rawcaster" });
         } else {
-          toast.error(res.data.message);
+          toast.remove("rawcaster");
+          toast.error(res.data.message, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * Checks if a given date and time is not expired.
+   * @returns {boolean} - Returns true if the date and time is not expired, false otherwise.
+   */
   const isNotExpired = () => {
     const momenttimezone = require("moment-timezone");
     const currentTime = momenttimezone.utc().format("YYYY-MM-DD HH:mm:ss");
-    // if (moment(ele.start_date_time).isBefore(currentTime)) {
-    //   return false;
-    // }
+    if (moment(ele.start_date_time).isBefore(currentTime)) {
+      return false;
+    }
     return true;
   };
 
+  /**
+   * Generates an invite link based on the current window location and event details.
+   * @returns {string} - The invite link.
+   */
   const getInviteLink = () => {
     return (
       window.location.origin +
@@ -83,6 +104,14 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
     );
   };
 
+  /**
+   * Generates a share message for inviting users to a web event.
+   * @param {string} ele.original_user_name - The name of the user sending the invitation.
+   * @param {string} ele.event_name - The name of the web event.
+   * @param {string} ele.start_date_time - The start date and time of the web event in UTC format.
+   * @param {string} userSettings?.time_zone - The time zone of the user.
+   * @returns {string} The share message with the invitation details.
+   */
   const shareMessage = `Hi,\n ${
     ele.original_user_name
   } is inviting you to join a web event called ${ele.event_name} on ${
@@ -94,6 +123,12 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
   const shareUrl = getInviteLink();
   const subject = "Rawcaster Event Invitation";
 
+  /**
+   * Generates a JSX element for displaying social media share buttons.
+   * @param {string} shareMessage - The message to be shared on social media.
+   * @param {string} shareUrl - The URL to be shared on social media.
+   * @returns A JSX element containing social media share buttons for Facebook, Twitter, Gmail, and WhatsApp.
+   */
   const content = (
     <div className={classes.socialmediashare}>
       <p>

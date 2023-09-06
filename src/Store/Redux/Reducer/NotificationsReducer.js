@@ -1,3 +1,7 @@
+/**
+ * Redux slice for managing notifications state.
+ * @module notifications
+ */
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchNotificationList } from "../Action";
 

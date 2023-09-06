@@ -1,3 +1,14 @@
+/**
+ * A React component that renders a multiple choice poll.
+ * @param {number} nugget_id - The ID of the poll.
+ * @param {Array<any>} results - An array of poll options and their vote counts.
+ * @param {boolean} [isVoted=false] - Indicates whether the user has already voted on the poll.
+ * @param {boolean} isVotedId - Indicates whether the user has voted for a specific option.
+ * @param {string} VoteTiming - The duration of the poll.
+ * @param {any} [TotalVotes=0] - The total number of votes for the poll.
+ * @param {any} created_date - The date the poll was created.
+ * @returns A
+ */
 import moment from "moment";
 import React, { useState, useEffect, useRef, createRef } from "react";
 import { useDispatch } from "react-redux";
@@ -29,7 +40,6 @@ const MultiplePoll = ({
   nugget_id,
   results,
   isVoted = false,
-  isVotedId,
   VoteTiming,
   TotalVotes = 0,
   created_date,
@@ -43,10 +53,22 @@ const MultiplePoll = ({
   const dispatch = useDispatch();
   const Token = useAuthToken();
 
+  /**
+   * Calculates the total number of votes for a poll, taking into account the currently
+   * voted option.
+   * @param {string} votedId - The ID of the currently voted option. Defaults to the value
+   * of pollVotedData.votedOptionID.
+   * @returns {number} The total number of votes, incremented by 1 if votedId is truthy.
+   */
   const getTotalVotes = (votedId = pollVotedData.votedOptionID) => {
     return votedId ? parseInt(TotalVotes) + 1 : TotalVotes;
   };
 
+  /**
+   * Retrieves the poll options and calculates the percentage of votes for each option.
+   * @param {any} [votedId=pollVotedData.votedOptionID] - The ID of the option that the user voted for.
+   * @returns {any[]} An array of poll options with updated vote counts and percentages.
+   */
   const getPollOptions = (votedId: any = pollVotedData.votedOptionID): any => {
     let tempPollOptions = [...results].map((item) => {
       let votes = item.votes;
@@ -80,6 +102,11 @@ const MultiplePoll = ({
     alignment: "center",
   };
 
+  /**
+   * Calculates the remaining time until a specific voting timing based on the user settings.
+   * @returns {string | null | boolean} - The remaining time in the format "X days X hours X minutes left",
+   * null if there is no remaining time, or true if user settings are not available.
+   */
   const getVotesTiming = () => {
     if (userSettings) {
       const [daysval, hoursval, minutesval] = VoteTiming.split(":");
@@ -128,6 +155,12 @@ const MultiplePoll = ({
     return true;
   };
 
+  /**
+   * Handles the polling functionality by sending a vote for a specific poll option.
+   * @param {any} item - The poll option object.
+   * @param {number} index - The index of the poll option in the list.
+   * @returns None
+   */
   const handlePoll = (item: any, index: number) => {
     let pollData = {
       token: Token,
@@ -139,6 +172,14 @@ const MultiplePoll = ({
       .catch((err) => {});
   };
 
+  /**
+   * Executes a side effect when the dependencies of the effect change.
+   * If `getVotesTiming()` returns false and `userSettings` is truthy, it animates the answers by calling `animateAnswers(-1)`
+   * and sets the `pollVotedData` state to indicate that the poll has been voted with an empty votedOptionID.
+   * If `Token` is falsy and `getCookieData("rawcaster_user_token")` returns falsy, it sets the `pollVotedData` state to indicate
+   * that the poll has been voted with an empty votedOptionID.
+   * If `isVoted` is truthy, it animates the answers by calling `animateAnswers(-1)` and sets the `
+   */
   useEffect(() => {
     if (!getVotesTiming() && userSettings) {
       animateAnswers(-1);
@@ -161,6 +202,12 @@ const MultiplePoll = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, userSettings, isVoted]);
 
+  /**
+   * Animates the answers in a poll based on the given index.
+   * @param {number} index - The index of the answer to animate.
+   * @param {any} [id] - The ID of the poll.
+   * @returns None
+   */
   function animateAnswers(index: number, id?: any) {
     const getValidPercentage = (val: any) => {
       if (parseInt(val) > 100) {

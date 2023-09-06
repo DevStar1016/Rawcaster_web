@@ -1,3 +1,7 @@
+/**
+ * Custom React hook that returns the login user data from the Redux store.
+ * @returns The login user data.
+ */
 import { useSelector } from "react-redux";
 
 export const useAuthData = () => {
@@ -41,4 +45,8 @@ export const useProfileVerifyModal = () => {
 
 export const useSocket = () => {
   return useSelector((state) => state.socket);
+};
+
+export const useEventWindow = () => {
+  return useSelector((state) => state.utility.eventWindowRef);
 };

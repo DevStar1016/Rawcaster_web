@@ -6,6 +6,11 @@ import {
 } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 
+/**
+ * Calculates the age based on the given date of birth.
+ * @param {Date} dob - The date of birth.
+ * @returns The calculated age.
+ */
 export const calculate_age = (dob) => {
   var diff_ms = Date.now() - dob;
   var age_dt = new Date(diff_ms);
@@ -13,6 +18,12 @@ export const calculate_age = (dob) => {
   return Math.abs(age_dt.getUTCFullYear() - 1970);
 };
 
+/**
+ * Replaces placeholders in a biodata string with actual values from the given data object.
+ * @param {object} data - The data object containing the biodata information.
+ * @param {string} [type="display"] - The type of replacement to perform. Defaults to "display".
+ * @returns {string} The formatted biodata string with placeholders replaced.
+ */
 export const replaceBiodataHandler = (data, type = "display") => {
   if (data) {
     let defaultBioDataformat = "";
@@ -62,6 +73,12 @@ export const replaceBiodataHandler = (data, type = "display") => {
   return "";
 };
 
+/**
+ * Handles the unfriend service by sending a request to the server to unfriend a user.
+ * @param {string} token - The authentication token of the user.
+ * @param {string} user_id - The ID of the user to unfriend.
+ * @returns {Promise<string>} A promise that resolves with a success message if the unfriend operation is successful, or rejects if there is an error.
+ */
 export const handleUnFriendService = (token, user_id) => {
   return new Promise((resolve, reject) => {
     const unfriendData = {
@@ -71,11 +88,13 @@ export const handleUnFriendService = (token, user_id) => {
     unFriendService(JSONtoformdata(unfriendData))
       .then(({ data }) => {
         if (data.status === 1) {
-          toast.success(data.msg);
+          toast.remove("rawcaster");
+          toast.success(data.msg, { id: "rawcaster" });
           resolve(data.msg);
         } else {
           reject();
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .catch(() => {
@@ -84,6 +103,12 @@ export const handleUnFriendService = (token, user_id) => {
   });
 };
 
+/**
+ * Handles the unfollow service by sending a request to the server to unfollow a user.
+ * @param {string} token - The authentication token of the user.
+ * @param {string} follow_userid - The ID of the user to unfollow.
+ * @returns {Promise<string>} A promise that resolves with a success message if the unfollow is successful, or rejects if there is an error.
+ */
 export const handleUnFollowService = (token, follow_userid) => {
   return new Promise((resolve, reject) => {
     const unfollowData = {
@@ -94,11 +119,13 @@ export const handleUnFollowService = (token, follow_userid) => {
     FollowandunfollowService(JSONtoformdata(unfollowData))
       .then(({ data }) => {
         if (data.status === 1) {
-          toast.success(data.msg);
+          toast.remove("rawcaster");
+          toast.success(data.msg, { id: "rawcaster" });
           resolve(data.msg);
         } else {
           reject();
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .catch(() => {

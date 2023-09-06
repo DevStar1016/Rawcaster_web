@@ -1,5 +1,10 @@
+/**
+ * A modal component that allows the user to choose the verification mode.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} handleClose - Callback function to handle closing the modal.
+ * @returns A modal component with options to choose the verification mode.
+ */
 import { Modal } from "antd";
-import React from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { resendOtpService } from "../../Services/ApiService";
@@ -16,11 +21,22 @@ const ValidateTypeModal = ({ open, handleClose }) => {
   const navigate = useNavigate();
   const loginUserData = useAuthData();
 
+  /**
+   * Handles navigation to the "/verifyotp" route and reloads the page.
+   * @param {any} res - The response object.
+   * @param {string} type - The type of navigation.
+   * @returns None
+   */
   const handleNavigate = (res, type) => {
     navigate("/verifyotp", { state: { type: type, ...res?.data } });
     window.location.reload();
   };
 
+  /**
+   * Handles the sending of OTP (One-Time Password) based on the given type.
+   * @param {string} type - The type of OTP to send.
+   * @returns None
+   */
   const handleSendOTP = (type) => {
     let finalData = {
       auth_code: getAuthToken("Rawcaster"),
@@ -31,10 +47,12 @@ const ValidateTypeModal = ({ open, handleClose }) => {
     resendOtpService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
           handleNavigate(res, type);
         } else {
-          toast.error(res.data.msg);
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

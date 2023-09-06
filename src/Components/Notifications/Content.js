@@ -1,3 +1,8 @@
+/**
+ * A React component that renders the content of a notification.
+ * @param {Object} elem - The notification object.
+ * @returns The rendered content of the notification.
+ */
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./Notification.module.css";
 import { useNotificationContext } from "../../Shared/Context";
@@ -28,6 +33,11 @@ const Content = ({ elem }) => {
   const token = useAuthToken();
   const { handleViewNotification } = useNotificationContext();
 
+  /**
+   * Retrieves fans data from the server.
+   * @param {number} [page=1] - The page number to retrieve.
+   * @returns None
+   */
   const getFansData = (page = 1) => {
     if (userSettings && token) {
       let formData = {
@@ -38,6 +48,11 @@ const Content = ({ elem }) => {
     }
   };
 
+  /**
+   * Handles the deletion of a notification.
+   * @param {number} notification_id - The ID of the notification to delete.
+   * @returns None
+   */
   const handleDeleteNotification = (notification_id) => {
     const DeleteData = {
       token,
@@ -48,18 +63,29 @@ const Content = ({ elem }) => {
         if (data.status === 1) {
           dispatch(handleUpdateNotification(notification_id));
         } else {
-          toast.error(data.msg);
+          toast.remove("rawcaster");
+          toast.error(data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
   };
 
+  /**
+   * View a notification and update its status as read.
+   * @param {number} notification_id - The ID of the notification to view.
+   * @param {boolean} [mark_all_as_read=null] - Optional parameter to mark all notifications as read.
+   * @returns None
+   */
   const ViewNotification = (notification_id, mark_all_as_read = null) => {
     handleViewNotification(notification_id, mark_all_as_read).then(() => {
       dispatch(handleViewUpdateNotification(notification_id));
     });
   };
 
+  /**
+   * Loads more data if there is a next page available and the end has not been reached.
+   * @returns None
+   */
   const loadMore = () => {
     if (!getHasNextPage()) {
       setisReachedEnd(false);
@@ -68,6 +94,10 @@ const Content = ({ elem }) => {
     }
   };
 
+  /**
+   * Checks if there is a next page available in the notifications.
+   * @returns {boolean} - True if there is a next page, false otherwise.
+   */
   const getHasNextPage = () => {
     return (
       Notifications.total_pages &&
@@ -75,6 +105,13 @@ const Content = ({ elem }) => {
     );
   };
 
+  /**
+   * Uses the `useInfiniteScroll` hook to implement infinite scrolling functionality.
+   * @param {boolean} isLoading - Indicates whether the data is currently being loaded.
+   * @param {function} getHasNextPage - A function that returns a boolean indicating whether there are more pages to load.
+   * @param {function} loadMore - A function that is called when more data needs to be loaded.
+   * @returns A reference to the `sentryRef` element.
+   */
   const [sentryRef] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage: getHasNextPage(),
@@ -91,6 +128,10 @@ const Content = ({ elem }) => {
     }
   };
 
+  /**
+   * Adds a scroll event listener to the container element and removes it when the component is unmounted.
+   * @returns None
+   */
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -106,6 +147,16 @@ const Content = ({ elem }) => {
     };
   }, []);
 
+  /**
+   * Executes a side effect when the value of the Notifications object changes.
+   * If there are more pages of notifications to fetch and the total number of notifications
+   * from older, today, and yesterday is less than 9, it calls the getFansData function
+   * to fetch more data.
+   * @param {function} getFansData - The function to fetch more data.
+   * @param {object} Notifications - The Notifications object containing the current page number,
+   * total pages, and arrays of older, today, and yesterday notifications.
+   * @returns None
+   */
   useEffect(() => {
     if (
       Notifications?.total_pages > Notifications.current_page_no &&

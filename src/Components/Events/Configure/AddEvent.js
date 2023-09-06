@@ -49,6 +49,10 @@ import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import EventSuccessPage from "./EventSuccessPage";
+import {
+  CHIME_SOCKET_EVENTS,
+  COMMON_EVENTS_TYPES,
+} from "../../../Services/ServiceConstants";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -162,42 +166,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           return true;
         }),
       event_invite_friends: yup.string(),
-      // .test(
-      //   "Invite Friends Test",
-      //   "Please Select Connections",
-      //   function (value) {
-      //     const { event_type, event_invite_mails, event_invite_groups } =
-      //       this.parent;
-      //     if (parseInt(event_type) === 2) {
-      //       if (!event_invite_mails && !event_invite_groups) {
-      //         return value;
-      //       } else if (
-      //         JSON.parse(event_invite_mails).length === 0 &&
-      //         JSON.parse(event_invite_groups).length === 0
-      //       ) {
-      //         return value;
-      //       }
-      //     }
-      //     return true;
-      //   }
-      // ),
       event_invite_groups: yup.string(),
-      // .test("Invite Groups Test", "Please Select Groups", function (value) {
-      //   const { event_type, event_invite_mails, event_invite_friends } =
-      //     this.parent;
-      //   if (parseInt(event_type) === 2) {
-      //     if (!event_invite_mails && !event_invite_friends) {
-      //       return value;
-      //     } else if (
-      //       JSON.parse(event_invite_mails).length === 0 &&
-      //       JSON.parse(event_invite_friends).length === 0
-      //     ) {
-      //       return value;
-      //     }
-      //   }
-
-      //   return true;
-      // }),
       event_invite_mails: yup
         .string()
         .test("Mail Test", "Please Enter Invite Users", function (value) {
@@ -241,6 +210,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     },
   });
 
+  /**
+   * Handles the close event action by resetting the form, updating state variables,
+   * and closing the event.
+   * @returns None
+   */
   const handleCloseEvent = () => {
     resetForm();
     setisCreating(false);
@@ -265,6 +239,14 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     setisEventOpen(false);
   };
 
+  /**
+   * Returns the title component based on the current state.
+   * If isNextPage is true, it returns a title component for the "Personalize Your Event" page,
+   * with a back arrow icon that sets isNextPage to false when clicked.
+   * If isNextPage is false, it returns a title component for either the "Update Event" or "Create Event" page,
+   * depending on the value of the data variable.
+   * @returns The title component.
+   */
   const getTitle = () => {
     if (isNextPage) {
       return (
@@ -288,6 +270,12 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     );
   };
 
+  /**
+   * Handles the event creation process by formatting the date and time, converting it to UTC,
+   * and making an API call to add the event. It also handles success and error responses from the API.
+   * @param {Object} val - The event data object.
+   * @returns None
+   */
   const HandleAddEvent = (val) => {
     const dateAndTime =
       moment(val.event_start_date).format("YYYY-MM-DD") +
@@ -310,9 +298,20 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           getEvents(ActiveEvent.key);
           setEventData(res.data.event_detail);
           setisSuccesspage(true);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
+          ChimesendMessage(
+            {
+              type: COMMON_EVENTS_TYPES.CREATE_EVENT,
+              event_detail: res.data.event_detail,
+            },
+            CHIME_SOCKET_EVENTS.NOTIFICATIONS
+          );
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
           handleCloseEvent();
         }
       })
@@ -322,6 +321,12 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       });
   };
 
+  /**
+   * Handles the edit event event. It takes in a value object and performs the necessary
+   * operations to update the event data.
+   * @param {object} val - The value object containing the updated event data.
+   * @returns None
+   */
   const HandleEditEvent = (val) => {
     const dateAndTime =
       moment(val.event_start_date).format("YYYY-MM-DD") +
@@ -334,18 +339,12 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_id: data?.event_id,
       event_start_date: utcDateTime.format("YYYY-MM-DD"),
       event_start_time: utcDateTime.format("HH:mm"),
-      // event_invite_mails: values?.event_invite_mails?.includes("[")
-      //   ? JSON.parse(values?.event_invite_mails)?.length > 0
-      //     ? JSON.parse(values?.event_invite_mails)?.join(",")
-      //     : values?.event_invite_mails
-      //   : values?.event_invite_mails,
       delete_invite_mails: values?.delete_invite_mails?.includes("[")
         ? JSON.parse(values?.delete_invite_mails)?.length > 0
           ? JSON.parse(values?.delete_invite_mails)?.join(",")
           : values?.delete_invite_mails
         : values?.delete_invite_mails,
     };
-    console.log("editandupdate api");
 
     function isFile(obj) {
       return obj instanceof File;
@@ -362,9 +361,13 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       .then((res) => {
         if (res.data.status === 1) {
           getEvents(ActiveEvent.key);
-          toast.success(res.data.msg);
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
         } else {
-          toast.error(res.data.msg);
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
         }
       })
       .catch((err) => {})
@@ -373,6 +376,15 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       });
   };
 
+  /**
+   * useEffect hook that is triggered when the 'data' or 'userSettings' dependencies change.
+   * If 'data' is truthy, it makes an API call to retrieve event details based on the provided token and event_id.
+   * It then updates the state values with the retrieved event data.
+   * If 'data' is falsy and 'userSettings' is truthy, it updates the state values with the user settings data.
+   * @param {any} data - The data object containing the token and event_id.
+   * @param {any} userSettings - The user settings object.
+   * @returns None
+   */
   useEffect(() => {
     if (data) {
       let eventdata = {
@@ -419,9 +431,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
               ),
             }));
             setuserMailList(eventData?.invite_mails);
-          } catch (error) {
-            console.log(error, "error");
-          }
+          } catch (error) {}
         })
         .catch((err) => {});
     } else {
@@ -447,6 +457,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }
   }, [data, userSettings]);
 
+  /**
+   * Scrolls to the bottom of the "eventForm" element with a smooth animation.
+   * @param {number} [value=0] - The value to scroll to. Default is 0.
+   * @returns None
+   */
   const scrollToUpgrade = (value = 0) => {
     const scrollHeight = document.getElementById("eventForm").scrollHeight;
     document
@@ -454,6 +469,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       .scrollTo({ top: scrollHeight, behavior: "smooth" });
   };
 
+  /**
+   * Executes a side effect when the value of `upgradePlanPopup` changes.
+   * If `upgradePlanPopup` is truthy, it calls the `scrollToUpgrade` function.
+   * @returns None
+   */
   useEffect(() => {
     if (upgradePlanPopup) {
       scrollToUpgrade();
@@ -506,11 +526,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
 
               if (compareArrays(validatedKeys, requiredFields)) {
                 const ErrorArray = compareArrays(validatedKeys, requiredFields);
-                console.log(
-                  ErrorArray,
-                  "ErrorArrayErrorArray",
-                  document.getElementById("eventForm").scrollHeight
-                );
                 handleSubmit();
                 if (
                   loginUserData?.user_status_id !== 4 &&
@@ -580,13 +595,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             }
                           }}
                           userMailList={userMailList}
-                          setuserMailList={(val) => {
-                            console.log(val);
-                            // setFieldValue("delete_invite_mails", [
-                            //   ...values.delete_invite_mails,
-                            //   val,
-                            // ]);
-                          }}
+                          setuserMailList={(val) => {}}
                         />
                         {touched.event_invite_mails && (
                           <p className="ErrTxt mb-3">
@@ -639,7 +648,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             }
                           }}
                           onResult={(val) => {
-                            console.log(val);
                             let finRes = val.map((ele) => ele.group_id);
                             if (finRes.length !== 0) {
                               setFieldValue(

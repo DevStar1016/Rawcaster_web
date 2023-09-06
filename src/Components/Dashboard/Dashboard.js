@@ -1,3 +1,7 @@
+/**
+ * A React component that represents the dashboard page.
+ * @returns The rendered dashboard page.
+ */
 import React, { useEffect } from "react";
 import { Link, useActionData, useLocation } from "react-router-dom";
 import {
@@ -32,6 +36,15 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const WINDOW_WIDTH = useWindowWidth();
 
+  /**
+   * Executes a side effect when the value of `pathname` changes.
+   * If `loginToken` is `null`, removes the "influencerData" from session storage.
+   * Creates a copy of `nuggetFormData` and checks if any of its properties (`search_key`, `user_id`, `saved`)
+   * are truthy. If so, updates `filterData.formData` with `page_number` set to 1 and `nugget_type` set to 0.
+   * Dispatches `handleResetNuggets` action to reset the nuggets state.
+   * Dispatches `handleNuggetFormData` action to update the nugget form data with `filterData`.
+   * Dispatches `fetchNuggets
+   */
   useEffect(() => {
     if (loginToken === null) {
       removeSessionStorageData("influencerData");
@@ -84,11 +97,7 @@ const Dashboard = () => {
         <div className={classes.fullcontainer}>
           {dashboardMenu === "event" && <Events />}
           {dashboardMenu === "notification" && (
-            <Notification
-              onReadCountChange={() => {
-                console.log("test");
-              }}
-            />
+            <Notification onReadCountChange={() => {}} />
           )}
           {dashboardMenu === "nugget" && <Nuggets />}
           {dashboardMenu === "usermenu" && <DashboardSignup />}

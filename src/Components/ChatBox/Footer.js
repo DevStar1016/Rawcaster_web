@@ -1,3 +1,9 @@
+/**
+ * A React functional component that represents the footer section of a chat box.
+ * It provides functionality for sending and editing messages, as well as handling
+ * various input events such as typing indicators and file uploads.
+ * @returns The rendered JSX element representing the footer section of the chat box.
+ */
 import React, { useEffect, useState } from "react";
 import classes from "./ChatBox.module.css";
 import { Layout } from "antd";
@@ -25,6 +31,12 @@ const Footer = () => {
     setEditData,
   } = useChatContext();
 
+  /**
+   * Sends a message to a channel using the SendChannelMessageService.
+   * @param {any} val - The message to send.
+   * @param {object} [params={}] - Additional parameters for sending the message.
+   * @returns None
+   */
   const sendMessage = (val, params = {}) => {
     const send_message_params = {
       token,
@@ -34,14 +46,15 @@ const Footer = () => {
     SendChannelMessageService(
       JSONtoformdata(filterValidObject(send_message_params))
     )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((res) => {})
+      .catch((err) => {});
   };
 
+  /**
+   * Edits a message in a channel by updating the message content with the provided value.
+   * @param {string} val - The new value for the message.
+   * @returns None
+   */
   const editMessage = (val) => {
     const update_message_params = {
       token,
@@ -66,11 +79,14 @@ const Footer = () => {
         });
         setEditData(null);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
+  /**
+   * Event handler function that sends a channel message with a typing indicator
+   * to the specified group.
+   * @returns None
+   */
   const eventHandler = async () => {
     if (GroupDetails) {
       const content = JSON.stringify({ Typing: "Indicator" });
@@ -81,12 +97,8 @@ const Footer = () => {
         message: content,
       };
       SendChannelMessageService(JSONtoformdata(send_message_params))
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .then((res) => {})
+        .catch((err) => {});
     }
   };
   const eventHandlerWithDebounce = React.useCallback(

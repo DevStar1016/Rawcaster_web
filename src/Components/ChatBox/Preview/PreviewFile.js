@@ -1,3 +1,7 @@
+/**
+ * A React component that displays a preview of a file and allows the user to perform actions on it.
+ * @returns {JSX.Element} - The rendered component.
+ */
 import React, { useState } from "react";
 import classes from "../ChatBox.module.css";
 import { ChatInput } from "../../../Sharedcomponents/Chat/utility";
@@ -20,6 +24,10 @@ const PreviewFile = () => {
     convertMessageFormat,
     convertUrlToFile,
   } = useChatContext();
+  /**
+   * Returns a component based on the type of file in the PreviewData object.
+   * @returns A React component that displays the preview of the file.
+   */
   const GetComponent = () => {
     const previewFile = PreviewData.File;
     const validcontent = previewFile.type.split("/")[1];
@@ -144,6 +152,12 @@ const PreviewFile = () => {
     }
   };
 
+  /**
+   * Sends a message with the given value and optional parameters.
+   * @param {any} val - The value of the message to send.
+   * @param {object} [params={}] - Optional parameters for the message.
+   * @returns None
+   */
   const sendMessage = (val, params = {}) => {
     let data = {
       ...params,
@@ -154,12 +168,8 @@ const PreviewFile = () => {
       Content: val,
     };
     sendChannelMessage(filterValidObject(data))
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((res) => {})
+      .catch((err) => {});
   };
 
   return (
@@ -201,9 +211,7 @@ const PreviewFile = () => {
                 },
               ]);
             })
-            .catch((err) => {
-              console.log(err);
-            })
+            .catch((err) => {})
             .finally(() => {
               setisFetchingUrl(false);
             });

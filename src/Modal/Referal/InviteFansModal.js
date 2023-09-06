@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import classes from "./Referal.module.css";
-import { Button, Form, Input, Modal, Tag } from "antd";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { EmailReferalContainer, handleSendEmail } from "./utility";
+/**
+ * A React component that renders a modal for inviting fans.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} close - A function to close the modal.
+ * @returns A modal component for inviting fans.
+ */
+
+import { Modal } from "antd";
+import { EmailReferalContainer } from "./utility";
 
 const InviteFansModal = ({ open, close }) => {
   return (

@@ -1,3 +1,11 @@
+/**
+ * A component that renders an audio player with controls such as play/pause, mute/unmute, and a seekbar.
+ * @param {string} url - The URL of the audio file to play.
+ * @param {boolean} [isThumb=false] - Indicates whether the audio player is being used as a thumbnail.
+ * @param {string} audioId - The ID of the audio element.
+ * @param {boolean} isPreview - Indicates whether the audio player is in preview mode.
+ * @returns The rendered audio player component.
+ */
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useDashboard } from "../../Shared/Reduxfetcher";
@@ -19,6 +27,13 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
   const [isMuted, setisMuted] = useState(false);
   const [isBuffering, setisBuffering] = useState(false);
 
+  /**
+   * useEffect hook that creates an audio element with the given URL and sets it as the audio state.
+   * If isPreview is false, it also sets the audio element's muted property to isNuggetMuted and updates the isMuted state accordingly.
+   * When the component unmounts, the audio element is paused and the audio state is set to null.
+   * @param {string} url - The URL of the audio file.
+   * @returns None
+   */
   useEffect(() => {
     const audioElement = new Audio(url);
 
@@ -35,6 +50,14 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     };
   }, [url]);
 
+  /**
+   * React useEffect hook that updates the audio element's muted property and the state
+   * of isMuted based on the value of isNuggetMuted.
+   * @param {HTMLAudioElement} audio - The audio element to update.
+   * @param {boolean} isPreview - Flag indicating if the audio is in preview mode.
+   * @param {boolean} isNuggetMuted - Flag indicating if the audio is muted.
+   * @returns None
+   */
   useEffect(() => {
     if (audio) {
       if (!isPreview) {
@@ -44,6 +67,11 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     }
   }, [audio, isNuggetMuted]);
 
+  /**
+   * Sets up event listeners on the audio element to handle various audio events.
+   * @param {HTMLAudioElement} audio - The audio element to attach the event listeners to.
+   * @returns None
+   */
   useEffect(() => {
     if (audio) {
       audio.addEventListener("pause", () => {
@@ -79,20 +107,42 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     }
   }, [audio]);
 
+  /**
+   * Updates the current time of the audio player.
+   * @returns None
+   */
   function handleTimeUpdate() {
     setCurrentTime(audio.currentTime);
   }
 
+  /**
+   * Handles the change in duration of the audio.
+   * Updates the duration state with the new duration value.
+   * @returns None
+   */
   function handleDurationChange() {
     setDuration(audio.duration);
   }
 
+  /**
+   * Handles the seek event by updating the current time of the audio element.
+   * @param {Event} event - The seek event object.
+   * @returns None
+   */
   function handleSeek(event) {
     if (audio) {
       audio.currentTime = event.target.value;
     }
   }
 
+  /**
+   * Handles the play functionality for an audio player.
+   * If there is a currently playing audio and it is not the same as the new audio,
+   * it will pause the currently playing audio.
+   * Sets the new audio as the player.
+   * If there is a new audio, it will play it and set the isPlaying state to true.
+   * @returns None
+   */
   function handlePlay() {
     if (player && player.id !== audioId) {
       player.pause();
@@ -104,6 +154,10 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     }
   }
 
+  /**
+   * Pauses the audio playback and updates the state to indicate that the audio is not playing.
+   * @returns None
+   */
   function handlePause() {
     if (audio) {
       audio.pause();
@@ -111,6 +165,13 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     }
   }
 
+  /**
+   * Toggles the mute state of the audio element.
+   * If the audio element exists, it will toggle the muted property based on the current state.
+   * If the isPreview flag is false, it will also update the isMuted state, dispatch a handleisNuggetMuted action,
+   * and update the isMuted state again.
+   * @returns None
+   */
   function toggleMute() {
     if (audio) {
       if (!isPreview) {
@@ -124,17 +185,20 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
     }
   }
 
-  // useEffect(() => {
-  //   if (audio) {
-  //     audio.muted = isMuted;
-  //   }
-  // }, [audio]);
-
+  /**
+   * Handles the "ended" event of a media element.
+   * Sets the value of "isPlaying" to false.
+   * @returns None
+   */
   function handleEnded() {
     setIsPlaying(false);
-    // setCurrentTime(0);
   }
 
+  /**
+   * Formats a given number of seconds into a string representation of time in the format "minutes:seconds".
+   * @param {number} seconds - The number of seconds to format.
+   * @returns {string} The formatted time string.
+   */
   function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);

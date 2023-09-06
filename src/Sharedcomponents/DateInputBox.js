@@ -1,3 +1,11 @@
+/**
+ * A reusable component that displays a date input box with options for selecting
+ * the month, day, and year.
+ * @param {string} displayDate - The initial value of the date to display in the input box.
+ * @param {function} onSelectDate - A callback function that is called when a date is selected.
+ * @param {string} status - The status of the input box.
+ * @returns A React component that renders a date input box.
+ */
 import { Select } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";

@@ -1,16 +1,17 @@
 import { Input, Modal } from "antd";
 import styles from "./RenameModal.module.css";
 import { FormikProps, useFormik } from "formik";
-import { useLayoutContect } from "../../../Layouts/EventLayout";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
+import { EventContextProp } from "./types";
+import { useEventRoomContext } from "../../../Shared/Context";
 
 interface MyValues {
   name: string;
 }
 
 const RenameModal = ({ open, ele, close, success }) => {
-  const { EventData }: any = useLayoutContect();
+  const { EventData }: EventContextProp = useEventRoomContext();
   const { values, handleChange, handleSubmit }: FormikProps<MyValues> =
     useFormik<MyValues>({
       initialValues: {
@@ -21,6 +22,11 @@ const RenameModal = ({ open, ele, close, success }) => {
       },
     });
 
+  /**
+   * Handles the renaming of a user by sending a message to the Chime server with the updated user information.
+   * @param {MyValues} val - The updated user values.
+   * @returns None
+   */
   const HandleRename = (val: MyValues) => {
     ChimesendMessage(
       {

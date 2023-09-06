@@ -1,3 +1,7 @@
+/**
+ * A React component that renders a form for changing the user's password.
+ * @returns {JSX.Element} - The rendered ChangePassword component.
+ */
 import React from "react";
 import ChangePassword from "../Auth/ChangePassword";
 import classes from "./Settings.module.css";

@@ -1,3 +1,9 @@
+/**
+ * A slider component that displays a carousel of items.
+ * @param {Object[]} Data - An array of data objects to be displayed in the slider.
+ * @param {ReactNode} children - The content to be displayed within each slide.
+ * @returns A carousel component that displays the provided data.
+ */
 import { Carousel } from "antd";
 import React from "react";
 import classes from "./Slider.module.css";

@@ -1,3 +1,9 @@
+/**
+ * A React component that renders the Referral page.
+ * This component displays suggested accounts, a filter section, and a list of nuggets.
+ * Users can filter the nuggets based on their preferences.
+ * @returns The rendered Referral page component.
+ */
 import React, { useRef } from "react";
 import Nuggets from "../../Sharedcomponents/Nuggets/Nuggets";
 import SuggestedAccounts from "./SuggestedAccounts";

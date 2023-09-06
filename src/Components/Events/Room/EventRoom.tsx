@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import EventBox from "./EventBox";
 import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
 import { EndAttendeeMeeting } from "../Components/Methods";
@@ -6,12 +6,9 @@ import { EndAttendeeMeeting } from "../Components/Methods";
 const EventRoom = () => {
   const meetingManager = useMeetingManager();
 
-  const HandleAttendeePresence = (attendeeId, present, externalUserId) => {
-    if (!attendeeId.includes("#content") && !present) {
-      console.log(externalUserId);
-    }
-  };
-
+  /**
+   * End Meeting Handle By Amazon Chime SDK
+   */
   useEffect(() => {
     meetingManager.subscribeToEventDidReceive((eventname, message) => {
       if (eventname === "meetingEnded") {
@@ -19,10 +16,8 @@ const EventRoom = () => {
         EndAttendeeMeeting(endData);
       }
     });
-    meetingManager.audioVideo?.realtimeSubscribeToAttendeeIdPresence(
-      HandleAttendeePresence
-    );
   }, []);
+
   return (
     <div>
       <EventBox />

@@ -1,3 +1,11 @@
+/**
+ * A modal component that displays a success message and confetti animation
+ * when an account validation is completed.
+ * @param {boolean} open - Determines whether the modal is open or closed.
+ * @param {function} onClose - Callback function to close the modal.
+ * @param {function} onSuccess - Callback function to handle success action.
+ * @returns A React component that renders the VerifiedModal.
+ */
 import { Button, Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import classes from "./VerifiedModal.module.css";
