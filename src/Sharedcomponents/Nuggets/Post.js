@@ -558,7 +558,7 @@ const Post = ({
   const LikeProcess = useCallback(
     _debounce(HandleLike, 1000),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [Token]
   );
 
   /**
@@ -570,7 +570,7 @@ const Post = ({
   const SaveProcess = useCallback(
     _debounce(HandleSave, 1000),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [Token]
   );
 
   /**
