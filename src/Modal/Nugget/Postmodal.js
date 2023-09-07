@@ -465,13 +465,17 @@ const Postmodal = ({ visible, onClose }) => {
                     setisPostContentValid(true);
                     setLimitExceeds(false);
                   } else {
-                    setFieldValue(
-                      "content",
-                      e.target.value.slice(0, getNuggetTextLength())
-                    );
-                    getLinkInfo(e.target.value.slice(0, getNuggetTextLength()));
-                    setisPostContentValid(false);
-                    setLimitExceeds(true);
+                    if (parseInt(loginUserData?.user_status_id) !== 4) {
+                      setFieldValue(
+                        "content",
+                        e.target.value.slice(0, getNuggetTextLength())
+                      );
+                      getLinkInfo(
+                        e.target.value.slice(0, getNuggetTextLength())
+                      );
+                      setisPostContentValid(false);
+                      setLimitExceeds(true);
+                    }
                   }
                 }}
               />

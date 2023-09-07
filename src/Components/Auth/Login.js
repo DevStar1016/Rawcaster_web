@@ -101,17 +101,16 @@ const Login = () => {
             delete finalVal["name"];
             setCookieData("rawcaster_user_token", finalVal);
             if (nugget_id) {
-              navigate(`/view/${nugget_id}`);
+              window.location.assign(`/view/${nugget_id}`);
             } else {
               if (res.data.first_time === 1) {
-                navigate("/selectinfluencers");
+                window.location.assign("/selectinfluencers");
               } else if (getSessionStorageData("influencerData")) {
-                navigate("/selectinfluencers");
+                window.location.assign("/selectinfluencers");
                 removeSessionStorageData("influencerData");
               } else {
                 navigate("/dashboard");
               }
-              window.location.reload();
             }
           });
         } else if (res.data.status === 2) {
