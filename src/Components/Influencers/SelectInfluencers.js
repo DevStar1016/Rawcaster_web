@@ -119,7 +119,6 @@ const SelectInfluencers = () => {
    * @returns None
    */
   useEffect(() => {
-    console.log(loginUserData);
     if (loginUserData && loginUserData !== null) {
       getCategoryList();
       getInfluencerList();

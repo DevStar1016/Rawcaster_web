@@ -361,7 +361,7 @@ export const GroupHeader = () => {
           src={URL.createObjectURL(tempGroupImage?.src)}
           ratio={tempGroupImage?.ratio}
           onSuccess={(val) => {
-            if (GroupData.group_category !== 2) {
+            if (GroupData && GroupData?.group_category !== 2) {
               const editData = {
                 group_name: values.group_name,
                 group_icon: val,
