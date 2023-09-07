@@ -350,7 +350,10 @@ const SelectInfluencers = () => {
                   setSelectedInfluencersList([]);
                   setSelectAllInfluencer(false);
                 }}
-                onClear={getInfluencerList}
+                onClear={() => {
+                  getInfluencerList(1, "", SearchValues.search_key);
+                  setSearchValues((pre) => ({ ...pre, category: "" }));
+                }}
                 clearIcon={
                   <span style={{}} className={classes.clearIcon}>
                     <span class="material-symbols-outlined">close</span>

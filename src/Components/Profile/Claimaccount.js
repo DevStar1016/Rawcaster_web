@@ -38,7 +38,10 @@ const validationSchema = yup.object().shape({
     .min(5, "Telephone must be atleast 5 characters")
     .required(`Please input your Telephone!`),
   dob: yup.string().required(`Please input your Date of Birth!`),
-  email_id: yup.string().required(`Please input your Email id!`),
+  email_id: yup
+    .string()
+    .email("Please enter a valid Email id!")
+    .required(`Please input your Email id!`),
   location: yup.string().required(`Please input your Location!`),
 });
 
@@ -179,7 +182,7 @@ const Claimaccount = () => {
 
   return (
     <div className={`mainWrapper ${classes.profilePage}`}>
-      <ProfileLayout profileData={loginUserData}>
+      <ProfileLayout Addfriend={true} profileData={loginUserData}>
         <Seo
           title={getSeoType().title}
           description={getSeoType().description}

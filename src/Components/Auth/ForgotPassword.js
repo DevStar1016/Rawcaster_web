@@ -23,7 +23,17 @@ const validationSchema = yup.object().shape({
     .string()
     .min(5, "Login ID Must be atleast 5 Characters")
     // .matches(LOGIN_ID, "Please Enter Valid Login ID")
-    .required(`Please input your Login ID!`),
+    .required(`Please input your Login ID!`)
+    .test("validate email", "Enter valid email", function (value) {
+      if (/[A-Za-z]/.test(value)) {
+        if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      return true;
+    }),
 });
 
 const ForgotPassword = () => {

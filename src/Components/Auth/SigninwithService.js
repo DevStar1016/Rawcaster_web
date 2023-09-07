@@ -143,11 +143,14 @@ const SigninwithService = ({ type }) => {
                 toast.error("Something Went Wrong !", {
                   id: "Error",
                 });
+                dispatch(handleLoading(false));
               }
 
               dispatch(handleLoading(true));
             }}
-            onReject={(err) => {}}
+            onReject={(err) => {
+              dispatch(handleLoading(false));
+            }}
           >
             <button
               className={classes.altSignBtn}

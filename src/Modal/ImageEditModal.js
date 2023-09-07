@@ -29,7 +29,7 @@ const ImageEditModal = ({ open, initialFile, onSuccess, onFailure }) => {
   }
 
   function getBase64(fileData) {
-    const file = fileData?.File;
+    const file = fileData;
     var reader = new FileReader();
     reader?.readAsDataURL(file);
     reader.onload = function () {
