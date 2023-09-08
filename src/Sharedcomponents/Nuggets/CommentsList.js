@@ -3,7 +3,7 @@
  * @param {Object} index - The index of the nugget in the list.
  * @returns A React component that renders the list of comments for a nugget.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   addNuggetCommentService,
@@ -453,6 +453,7 @@ const CommentsList = ({ index }) => {
                       setisReplyEnabled={setisReplyEnabled}
                       comment_id={elem.comment_id}
                       index={ind}
+                      setCommentList={setCommentList}
                     />
                   </>
                 );

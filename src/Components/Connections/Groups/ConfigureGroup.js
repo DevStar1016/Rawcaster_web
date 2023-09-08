@@ -74,9 +74,6 @@ const ConfigureGroup = ({ groupId, close, open }) => {
             let invalidString = "My Fans";
             const lowerCaseStr =
               invalidString?.toLowerCase() === value?.toLowerCase();
-            // const withoutSpaces =
-            //   invalidString.replace(/\s+(?=\S+\s)/g, "") ===
-            //   value.replace(/\s+(?=\S+\s)/g, "");
             if (lowerCaseStr) {
               return false;
             }

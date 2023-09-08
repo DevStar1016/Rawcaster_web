@@ -44,6 +44,7 @@ import _debounce from "lodash/debounce";
 import { Form, InputGroup } from "react-bootstrap";
 import FavImg from "../../Assets/Icons/svg/Favorite.svg";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
 const Nuggets = ({
   isLocked = false,
@@ -661,6 +662,12 @@ const Nuggets = ({
                                 ...pre,
                                 favorites: val,
                               }));
+                              dispatch(
+                                handleLoginData({
+                                  ...loginuserData,
+                                  saved_nugget_count: val,
+                                })
+                              );
                             }}
                             onEdit={(id) => {
                               setisEdit(id);
