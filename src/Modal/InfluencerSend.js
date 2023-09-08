@@ -16,7 +16,6 @@ import AudioRecordModal from "./Nugget/AudioRecordModal";
 import ChatDocument from "./Influencer/ChatDocument";
 import { useAuthData, useDashboard } from "../Shared/Reduxfetcher";
 import moment from "moment";
-import { sendMessage } from "../Services/SocketService";
 
 const validationSchema = yup.object().shape({
   message: yup.string().required(`Please input your Message!`),
@@ -206,7 +205,6 @@ const InfluencerSend = ({ open, close, user }) => {
           file_upload_status: 1,
           file_download_status: 2,
         };
-        sendMessage(socketMes, "groupchatting");
       }
     } else if (value.message !== "") {
       let socketMes = {
@@ -217,8 +215,6 @@ const InfluencerSend = ({ open, close, user }) => {
         file_upload_status: 1,
         file_download_status: 0,
       };
-
-      sendMessage(socketMes, "groupchatting");
     }
     close();
   };

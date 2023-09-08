@@ -36,6 +36,12 @@ export const { actions, reducer } = createSlice({
     handleLoginData: (state, action) => {
       state.loginUserData = action.payload;
     },
+    handleAccountVerifyStatus: (state, action) => {
+      state.loginUserData = {
+        ...state.loginUserData,
+        account_verify_type: action.payload,
+      };
+    },
     handleisSuccess: (state, action) => {
       state.isSuccess = action.payload;
     },
@@ -78,6 +84,7 @@ export const {
   handleisSuccess,
   handleAccountActive,
   handleeventTempUserData,
+  handleAccountVerifyStatus,
 } = actions;
 
 export default reducer;

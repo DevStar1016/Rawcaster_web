@@ -8,7 +8,6 @@ import { routerpaths } from "./Routes";
 import { useDashboard } from "./Shared/Reduxfetcher";
 import Spinner from "./Sharedcomponents/Spinner";
 import InitialRenderComponent from "./Sharedcomponents/InitialRenderComponent";
-import SocketComponent from "./Components/Socket/SocketComponent";
 import { ThemeProvider } from "styled-components";
 import {
   MeetingProvider,
@@ -26,7 +25,6 @@ function App() {
         {isLoading ? <Spinner /> : null}
         <RouterProvider router={router} />
         <InitialRenderComponent />
-        <SocketComponent />
       </MeetingProvider>
     </ThemeProvider>
   );

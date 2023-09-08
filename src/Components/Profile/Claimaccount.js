@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
+import { handleAccountVerifyStatus } from "../../Store/Redux/Reducer/AuthReducer";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -114,6 +115,7 @@ const Claimaccount = () => {
               msg: res.data.msg,
             })
           );
+          dispatch(handleAccountVerifyStatus(1));
           // Modal.success({
           //   content: res.data.msg,
           // });

@@ -90,6 +90,14 @@ export const grouplistupdateService = (data) => {
   return axios.post("grouplistupdate", data);
 };
 
+export const GeturlmetadataService = (data) => {
+  return axios.post("geturlmetadata", data);
+};
+
+export const ChatEnableDisableService = (data) => {
+  return axios.post("chat_enable_disable", data);
+};
+
 export const searchRawcasterUsersService = (data, token) => {
   return axios.post("searchrawcasterusers", data, {
     cancelToken: token,

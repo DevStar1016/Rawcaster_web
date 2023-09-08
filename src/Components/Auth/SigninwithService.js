@@ -138,14 +138,13 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
+                console.log(data, "===> Error From Google Sign in");
                 toast.remove("Error");
                 toast.error("Something Went Wrong !", {
                   id: "Error",
                 });
                 dispatch(handleLoading(false));
               }
-
-              dispatch(handleLoading(true));
             }}
             onReject={(err) => {
               dispatch(handleLoading(false));
@@ -179,6 +178,8 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
+                console.log(data, "");
+                dispatch(handleLoading(false));
                 toast.remove("Error");
                 toast.error("Something Went Wrong !", {
                   id: "Error",

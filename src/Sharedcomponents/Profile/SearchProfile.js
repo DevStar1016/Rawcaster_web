@@ -29,7 +29,6 @@ import {
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
-import { friendRequestSocket } from "../../Services/SocketList";
 import { replaceBiodataHandler } from "../../Components/Profile/Utility";
 
 const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
@@ -97,7 +96,6 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           };
 
           handleProfileNavigate(finalData);
-          friendRequestSocket(ele.user_id, data);
           let findIndex = PeopleList.findIndex(
             (elem) => elem.user_id === ele.user_id
           );
