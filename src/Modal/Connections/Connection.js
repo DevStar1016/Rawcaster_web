@@ -28,6 +28,7 @@ const ConnectionModal = ({
   value,
   userType,
   getConnectionList,
+  closeCall,
   filters,
 }) => {
   const [LocationList, setLocationList] = useState([]);
@@ -91,7 +92,9 @@ const ConnectionModal = ({
         onSuccess();
       }}
       onCancel={() => {
-        getConnectionList(filterValidObject({}));
+        if (!closeCall) {
+          getConnectionList(filterValidObject({}));
+        }
         onClose();
       }}
     >

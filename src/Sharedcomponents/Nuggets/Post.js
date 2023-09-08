@@ -865,15 +865,19 @@ const Post = ({
                 <Tooltip
                   placement="right"
                   color={"#fff"}
-                  title={() => {
-                    return (
-                      <div className={classes.TooltipSec}>
-                        {ele.shared_detail.map((elem) => (
-                          <p>{elem.name}</p>
-                        ))}
-                      </div>
-                    );
-                  }}
+                  title={
+                    ele.shared_detail?.length > 0
+                      ? () => {
+                          return (
+                            <div className={classes.TooltipSec}>
+                              {ele.shared_detail.map((elem) => (
+                                <p>{elem.name}</p>
+                              ))}
+                            </div>
+                          );
+                        }
+                      : ""
+                  }
                 >
                   <i className="material-icons">fiber_manual_record</i>
                   {getDataValueById(SHARED_TYPE, ele?.share_type)}
