@@ -4,24 +4,16 @@
 
 // LOCAL BASE_URL
 
-// export const BASE_URL = "http://192.168.1.108:8003/rawcaster";
+// export const BASE_URL = "http://192.168.1.185:8003/rawcaster";
 
 // DEV BASE_URL
 
 export const BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
 
 // SOCKET URL
-
-export const socketURL = "wss://dev.rawcaster.com:8118";
 export const ChimesocketURL = "34.239.41.21:5000";
 
 // Socket Values
-
-export const SOCKET_EVENTS = {
-  FRIEND_REQUEST: "friendrequest",
-  FRIEND_RESPONSE: "friendresponse",
-  FRIEND_STATUS: "friendstatus",
-};
 
 export const CHIME_SOCKET_EVENTS = {
   CONNECT_SOCKET: "connect",

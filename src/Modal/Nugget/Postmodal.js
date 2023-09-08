@@ -26,20 +26,20 @@ import {
 import { SHARED_TYPE } from "../../Shared/Constant";
 import AudioRecordModal from "./AudioRecordModal";
 import { toast } from "react-hot-toast";
-import { detectMob } from "../../Shared/Utility";
+import { JSONtoformdata, detectMob } from "../../Shared/Utility";
 import {
   MediaPermissionsErrorType,
   requestAudioPermissions,
   requestVideoPermissions,
 } from "mic-check/lib/requestMediaPermissions";
 import Postpoll from "./Postpoll";
-
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import ImageGrid from "../../UIComponents/Imagegrid/ImageGrid";
-import { sendMessage, socketListen } from "../../Services/SocketService";
 import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
 import { parseInt } from "lodash";
 import ImageEditModal from "../ImageEditModal";
+import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { GeturlmetadataService } from "../../Services/ApiService";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -76,7 +76,7 @@ const Postmodal = ({ visible, onClose }) => {
   const [isCamera, setisCamera] = useState({ show: false, type: "" });
   const [ShareType, setShareType] = useState("Public");
   const [LimitExceeds, setLimitExceeds] = useState(false);
-
+  const token = useAuthToken();
   const [oldUrl, setOldurl] = useState("");
   const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
     show: false,
@@ -162,54 +162,34 @@ const Postmodal = ({ visible, onClose }) => {
    * @param {string} val - The value to extract link information from.
    * @returns None
    */
-  const getLinkInfo = (val) => {
-    let expression =
-      /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-    var regex = new RegExp(expression);
-    var t = val;
-    if (t.match(regex)) {
-      let url = t.match(regex);
-      let addHttp = url[url.length - 1]?.replace(
-        /^(?:(.*:)?\/\/)?(.*)/i,
-        (match, schemma, nonSchemmaUrl) =>
-          schemma ? match : `http://${nonSchemmaUrl}`
-      );
-      let index = addHttp.indexOf("http");
-      if (index > 0) {
-        addHttp = addHttp.substring(index, addHttp.length);
+  const getLinkInfo = (url) => {
+    const isValidUrl = () => {
+      try {
+        new URL(url);
+        return true;
+      } catch (error) {
+        return false;
       }
-      if (oldUrl !== addHttp) {
-        setOldurl(addHttp);
-        let message = { event: "getmetadata", url: addHttp };
-        sendMessage(message, "nuggets");
-      }
+    };
+    if (url && isValidUrl() && oldUrl !== url) {
+      const userData = {
+        token,
+        url,
+      };
+      GeturlmetadataService(JSONtoformdata(userData))
+        .then((res) => {
+          const { title, description, open_graph_image } = res.data.data;
+          if (title && description && open_graph_image)
+            setMetaData({
+              title,
+              description,
+              image: open_graph_image,
+            });
+        })
+        .finally(() => {
+          setOldurl(url);
+        });
     }
-  };
-
-  /**
-   * Sets up a socket listener for the "nuggets" event and handles the "getmetadata" event.
-   * @returns None
-   */
-  useEffect(() => {
-    socketListen.on("nuggets", (message) => {
-      switch (message.event) {
-        case "getmetadata":
-          Getmetadata(message);
-          break;
-      }
-    });
-    // return () => {
-    //   socketListen.off("call");
-    // };
-  }, []);
-
-  /**
-   * Sets the metadata using the provided message data.
-   * @param {any} message - The message containing the data to set as metadata.
-   * @returns None
-   */
-  const Getmetadata = (message) => {
-    setMetaData(message.data);
   };
 
   /**
@@ -450,11 +430,13 @@ const Postmodal = ({ visible, onClose }) => {
                 onPaste={(event) => {
                   const pastedText = event.clipboardData.getData("text/plain");
                   const selectedText = window.getSelection().toString();
+                  console.log(selectedText, pastedText);
                   const updatedText = textinputRef.current?.value?.replace(
                     selectedText,
                     pastedText
                   );
                   setFieldValue("content", updatedText);
+                  console.log(updatedText, "updatedText");
                   getLinkInfo(updatedText);
                 }}
                 value={values.content}

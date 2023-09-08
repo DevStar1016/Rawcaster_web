@@ -250,6 +250,7 @@ const VerifyOtp = () => {
             <OtpInput
               value={values.otp}
               onChange={handleChange("otp")}
+              isInputNum
               numInputs={6}
               className={classes.otpInput}
               inputStyle={{

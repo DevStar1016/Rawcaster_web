@@ -83,9 +83,9 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
       audio.addEventListener("loadstart", (e) => {
         setisBuffering(true);
       });
-      audio.addEventListener("waiting", () => {
-        setisBuffering(true);
-      });
+      // audio.addEventListener("waiting", () => {
+      //   setisBuffering(true);
+      // });
       audio.addEventListener("loadeddata", (e) => {
         setisBuffering(false);
       });

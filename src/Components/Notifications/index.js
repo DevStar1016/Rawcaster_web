@@ -63,14 +63,28 @@ const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
           if (data.status === 1) {
             resolve(notification_id);
             setmarkallAsRead();
-
-            dispatch(handleNotificationUnreadCount(0));
-            dispatch(
-              handleLoginData({
-                ...loginuserData,
-                unread_notification_count: 0,
-              })
-            );
+            if (mark_all_as_read) {
+              dispatch(handleNotificationUnreadCount(0));
+              dispatch(
+                handleLoginData({
+                  ...loginuserData,
+                  unread_notification_count: 0,
+                })
+              );
+            } else {
+              dispatch(
+                handleNotificationUnreadCount(
+                  UnReadCount > 0 ? UnReadCount - 1 : 0
+                )
+              );
+              dispatch(
+                handleLoginData({
+                  ...loginuserData,
+                  unread_notification_count:
+                    UnReadCount > 0 ? UnReadCount - 1 : 0,
+                })
+              );
+            }
           } else {
             toast.remove("rawcaster");
             toast.error(data.msg, { id: "rawcaster" });

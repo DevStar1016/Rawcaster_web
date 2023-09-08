@@ -6,8 +6,10 @@ const TermsandConditions = () => {
   const [loader, setLoader] = useState(true);
 
   useEffect(() => {
-    getScript(document, "script", "termly-jssdk2");
-  }, []);
+    if (loader) {
+      getScript(document, "script", "termly-jssdk2");
+    }
+  }, [loader]);
 
   /**
    * Retrieves a script from a given URL and injects it into the document.

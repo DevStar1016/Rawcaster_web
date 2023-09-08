@@ -74,6 +74,29 @@ export const { actions, reducer } = createSlice({
         },
       ];
     },
+    handleUpdateChatGroupData: (state, action) => {
+      const id = action.payload.id;
+      const findIndex = state.groupsList.findIndex(
+        (ele) => ele.group_id === parseInt(id)
+      );
+      if (findIndex !== -1) {
+        state.groupsList = [
+          ...state.groupsList.slice(0, findIndex),
+          {
+            ...state.groupsList[findIndex],
+            chat_enabled: action.payload.chat_enabled,
+          },
+          ...state.groupsList.slice(findIndex + 1, state.groupsList.length),
+        ];
+      } else {
+        state.groupsList = [
+          ...state.groupsList,
+          {
+            ...action.payload.Group,
+          },
+        ];
+      }
+    },
     handleUpdateGroupData: (state, action) => {
       const id = action.payload.id;
       const findIndex = state.groupsList.findIndex(
@@ -153,6 +176,7 @@ export const {
   handleMeetingData,
   handleNotificationUnreadCount,
   handleClearActiveEvent,
+  handleUpdateChatGroupData,
 } = actions;
 
 export default reducer;

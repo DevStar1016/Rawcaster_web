@@ -55,17 +55,18 @@ const ResetPassword = () => {
   };
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
   const [otpRefId, setotpRefId] = useState();
-  const { values, handleChange, handleSubmit, errors, touched } = useFormik({
-    initialValues: {
-      otp: "",
-      new_password: "",
-      confirm_password: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      HandlesubmitResetPassword(values);
-    },
-  });
+  const { values, handleChange, handleSubmit, errors, touched, setFieldValue } =
+    useFormik({
+      initialValues: {
+        otp: "",
+        new_password: "",
+        confirm_password: "",
+      },
+      validationSchema: validationSchema,
+      onSubmit: (values) => {
+        HandlesubmitResetPassword(values);
+      },
+    });
 
   /**
    * useEffect hook that updates the otpRefId state variable if it is not already set.
@@ -250,6 +251,7 @@ const ResetPassword = () => {
                 <OtpInput
                   value={values.otp}
                   onChange={handleChange("otp")}
+                  isInputNum
                   numInputs={6}
                   className={classes.otpInput}
                   inputStyle={{

@@ -18,8 +18,6 @@ import {
 } from "../Store/Redux/Reducer/AuthReducer";
 import { useEffect } from "react";
 import { fetchuserInfobyToken } from "../Store/Redux/Action";
-import ConnectSocket from "../Services/SocketService";
-import { useAuth } from "../Shared/Reduxfetcher";
 import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
 
 const InitialRenderComponent = () => {
@@ -27,7 +25,7 @@ const InitialRenderComponent = () => {
   axios.interceptors.response.use(
     function (response) {
       if (response?.data?.status === -1) {
-        console.log(response?.data);
+        // console.log(response?.data);
         RemoveToken(dispatch);
         window.location.reload();
       }
@@ -50,9 +48,7 @@ const InitialRenderComponent = () => {
     if (getRawcaserToken()) {
       // if (!isSuccess) {
       let userData = getRawcaserToken();
-      dispatch(fetchuserInfobyToken(userData.token)).then(({ payload }) => {
-        ConnectSocket(payload);
-      });
+      dispatch(fetchuserInfobyToken(userData.token));
       // } else {
       //   dispatch(handleLoading(false));
       //   dispatch(handleisLoading(false));

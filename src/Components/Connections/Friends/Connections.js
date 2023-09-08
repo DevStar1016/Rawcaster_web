@@ -6,7 +6,6 @@
  * @returns The Connections component.
  */
 import React, { useEffect, useState } from "react";
-import { socketListen } from "../../../Services/SocketService";
 import { useAuthToken, useDashboard } from "../../../Shared/Reduxfetcher";
 import classes from "../Connections.module.css";
 import { listAllFriendRequestsService } from "../../../Services/ApiService";
@@ -15,7 +14,6 @@ import { handleFriendsList } from "../../../Store/Redux/Reducer/DashboardReducer
 import AddConnection from "./AddConnection";
 import Request from "../Components/Request";
 import Friends from "../Components/Friends";
-import { SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { Skeleton } from "antd";
 
 const Connections = ({ referral, profileClass }) => {
@@ -31,27 +29,6 @@ const Connections = ({ referral, profileClass }) => {
    * Sets up a socket listener to handle incoming messages and perform actions based on the event type.
    * @returns None
    */
-  useEffect(() => {
-    socketListen.on(
-      "message",
-      (message) => {
-        switch (message.event) {
-          case SOCKET_EVENTS.FRIEND_REQUEST:
-            FriendRequest(message);
-            break;
-          case SOCKET_EVENTS.FRIEND_RESPONSE:
-            FriendResponse(message);
-            break;
-          case SOCKET_EVENTS.FRIEND_STATUS:
-            friendStatusHandler(message);
-            break;
-          default:
-            break;
-        }
-      },
-      []
-    );
-  }, []);
 
   /**
    * Filters out duplicate objects from an array of data based on the "user_id" property.

@@ -52,6 +52,7 @@ const ProfileLayout = ({
   setprofileData,
   className = null,
   setisInfluencerChatModalOpen = null,
+  Addfriend = false,
 }) => {
   const loginUserData = useAuthData();
   const navigate = useNavigate();
@@ -332,7 +333,7 @@ const ProfileLayout = ({
           </div>
           <div className="d-md-flex flex-row justify-content-between">
             <div className="d-flex flex-row align-items-baseline">
-              {isAddFriend() && (
+              {isAddFriend() && !Addfriend && (
                 <div className="ms-3">
                   <img
                     src={AddFriendIcon}

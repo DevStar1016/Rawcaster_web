@@ -20,7 +20,6 @@ import {
   getisAddFriend,
 } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
-import { friendRequestSocket } from "../../Services/SocketList";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const AgreedusersListModal = ({ open, close, formData }) => {
@@ -85,8 +84,6 @@ const AgreedusersListModal = ({ open, close, formData }) => {
             profile_img: profileData.profile_image,
             user_id: profileData.user_id,
           };
-
-          friendRequestSocket(user_id, data);
           let find = ProfileList.findIndex((ele) => ele.user_id === user_id);
           let tempData = [...ProfileList];
           tempData[find] = { ...tempData[find], friend_request_status: 0 };

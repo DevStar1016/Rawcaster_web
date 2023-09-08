@@ -41,6 +41,7 @@ const ReplyList = ({
     getNuggetDetail,
     handleNuggetCommentLike,
     setAgreedUsersList,
+    setCommentList,
   } = useSingleNuggetContext();
   const { userSettings } = useAuth();
   const loginUserData = useAuthData();
@@ -160,7 +161,9 @@ const ReplyList = ({
       liked: !like,
       like_count: !like ? count + 1 : count - 1,
     };
-    setReplyList(tempData);
+    // setReplyList(tempData);
+    updateCommentList([...tempData]);
+
     let likeflag = like ? 2 : 1;
     handleNuggetCommentLike(id, likeflag)
       .then((res) => {
@@ -171,7 +174,8 @@ const ReplyList = ({
             liked: like,
             like_count: count,
           };
-          setReplyList(tempData);
+          // setReplyList(tempData);
+          updateCommentList([...tempData]);
         }
       })
       .catch((err) => {
@@ -181,8 +185,22 @@ const ReplyList = ({
           liked: like,
           like_count: count,
         };
-        setReplyList(tempData);
+        // setReplyList(tempData);
+        updateCommentList([...tempData]);
       });
+  };
+
+  const updateCommentList = (replyList) => {
+    let findIndex = CommentList.findIndex(
+      (ele) => ele.comment_id === comment_id
+    );
+    let tempData = [...CommentList];
+    tempData[findIndex] = {
+      ...tempData[findIndex],
+      reply: [...replyList],
+    };
+
+    setCommentList(tempData);
   };
 
   return ReplyList.length !== 0 || isReplyEnabled ? (
@@ -231,7 +249,9 @@ const ReplyList = ({
                                   };
                                   let tempData = [...ReplyList];
                                   tempData[ind].comment = e.target.value;
-                                  setReplyList(tempData);
+                                  // setReplyList(tempData);
+                                  updateCommentList([...tempData]);
+
                                   let findData = EditData.findIndex(
                                     (ele) => ele.comment_id === elem.comment_id
                                   );
@@ -278,7 +298,9 @@ const ReplyList = ({
                                         tempData[ind].comment = tempData[
                                           ind
                                         ].comment.concat(e.native);
-                                        setReplyList(tempData);
+                                        // setReplyList(tempData);
+                                        updateCommentList([...tempData]);
+
                                         let editData = {
                                           ...getCommentValue(elem.comment_id),
                                           comment: getCommentValue(
