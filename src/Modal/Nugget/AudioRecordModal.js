@@ -123,8 +123,8 @@ const AudioRecordModal = ({ onClose, visible, onSuccess }) => {
   useEffect(() => {
     setPreviewMediaData(mediaBlobUrl);
     if (mediaBlobUrl) {
-      const audioFile = new File([mediaBlobUrl], "RecordAudio.wav", {
-        type: "audio/wav",
+      const audioFile = new File([mediaBlobUrl], "RecordAudio.mp3", {
+        type: "audio/mpeg",
       });
       setPreviewMediaData({ file: audioFile, url: mediaBlobUrl });
     }

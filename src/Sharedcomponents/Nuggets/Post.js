@@ -780,6 +780,14 @@ const Post = ({
    * @returns {number} - 1 if the element is downloadable, 2 otherwise.
    */
 
+  const getisDownloadable = () => {
+    if (ele && ele?.share_type === 1) {
+      return 1;
+    } else {
+      return 2;
+    }
+  };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (
@@ -861,7 +869,9 @@ const Post = ({
               )}
               <i className="material-icons">fiber_manual_record</i>
               {ele?.total_views} Views{" "}
-              {ele?.share_type === 3 || ele?.share_type === 4 ? (
+              {(ele?.share_type === 3 || ele?.share_type === 4) &&
+              ele.shared_detail &&
+              ele.shared_detail.length !== 0 ? (
                 <Tooltip
                   placement="right"
                   color={"#fff"}
@@ -1012,7 +1022,7 @@ const Post = ({
                   <ImageGrid
                     imgArray={ele.media_list}
                     muted={muted}
-                    // downloadable={getisDownloadable()}
+                    downloadable={getisDownloadable()}
                     mutenuggetaudio={setmuted}
                     onPlay={() => {
                       let dashboardPlayer = document.getElementById(

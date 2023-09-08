@@ -11,6 +11,7 @@ import storage from "redux-persist/lib/storage";
 const persistedReducer = persistReducer(
   {
     key: "root",
+    blacklist: ["nuggets"],
     storage,
   },
   rootReducer

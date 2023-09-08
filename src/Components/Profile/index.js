@@ -42,7 +42,6 @@ import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { getfollowerfollowingService } from "./Components/Utility";
 import ProfileLayout from "./ProfileLayout";
 import { HandleAddFriend, HandleBecameaFan } from "../../Shared/SharedAPIs";
-import { friendRequestSocket } from "../../Services/SocketList";
 import { detectMob } from "../../Shared/Utility";
 import Seo from "../SEO/Seo";
 import { ProfileSEO } from "../SEO/SEOContent";
@@ -246,10 +245,6 @@ const Profile = () => {
                 : loginUserData.profile_image,
               user_id: ele ? ele.user_id : loginUserData.user_id,
             };
-            friendRequestSocket(
-              ele ? ele.user_id : loginUserData.user_id,
-              data
-            );
             if (ele === null) {
               setprofileData((pre) => ({
                 ...pre,

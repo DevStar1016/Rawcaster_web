@@ -91,7 +91,10 @@ const ConnectionModal = ({
         onSuccess();
       }}
       onCancel={() => {
-        getConnectionList(filterValidObject({}));
+        if (getConnectionList) {
+          getConnectionList(filterValidObject({}));
+        }
+
         onClose();
       }}
     >

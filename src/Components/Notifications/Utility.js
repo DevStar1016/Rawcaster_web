@@ -18,7 +18,6 @@ import {
 import MultiplePoll from "../../UIComponents/MultiplePoll/MultiplePoll";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { toast } from "react-hot-toast";
-import { sendMessage } from "../../Services/SocketService";
 import { respondToFriendRequestsService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
@@ -156,12 +155,7 @@ export const NotificationsList = ({
               login_from_web: 1,
               login_from: 1,
             };
-            const socketMes = {
-              event: "friendresponse",
-              receiverId: parseInt(ele.user_id),
-              data: data,
-            };
-            sendMessage(socketMes, "message");
+
             toast.remove("rawcaster");
             toast.success(
               `You and ${decodeHtml(

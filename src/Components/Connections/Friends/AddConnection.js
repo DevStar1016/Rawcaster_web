@@ -8,7 +8,6 @@
 import { Empty, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import { sendFriendRequestsService } from "../../../Services/ApiService";
-import { friendRequestSocket } from "../../../Services/SocketList";
 import {
   useAuthData,
   useAuthToken,
@@ -65,7 +64,6 @@ const AddConnection = ({ open, close }) => {
             user_id: profileData.user_id,
           };
 
-          friendRequestSocket(user_id, data);
           let find = ProfileList.findIndex((ele) => ele.user_id === user_id);
           let tempData = [...ProfileList];
           tempData[find] = { ...tempData[find], friend_request_status: 0 };
