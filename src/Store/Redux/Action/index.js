@@ -109,22 +109,32 @@ export const fetchgfollowerfollowingList = createAsyncThunk(
 export const fetchNuggetsbyId = createAsyncThunk(
   "dashboard/fetchNuggetsbyId",
   async (listData) => {
+    console.log(listData);
     const { token, formData } = listData;
     let nuggetData = {
       ...formData,
       token: token,
     };
-    try {
-      const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
-      if (data.status === 1) {
-        let resultData = {
-          current_page_no: data.current_page_no,
-          data: data.nuggets_list,
-          total_count: data.nuggets_count,
-          total_pages: data.total_pages,
-        };
-        return resultData;
-      } else {
+    if (token) {
+      try {
+        const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
+        if (data.status === 1) {
+          let resultData = {
+            current_page_no: data.current_page_no,
+            data: data.nuggets_list,
+            total_count: data.nuggets_count,
+            total_pages: data.total_pages,
+          };
+          return resultData;
+        } else {
+          return {
+            current_page_no: 0,
+            data: [],
+            total_count: 0,
+            total_pages: 0,
+          };
+        }
+      } catch (error) {
         return {
           current_page_no: 0,
           data: [],
@@ -132,7 +142,7 @@ export const fetchNuggetsbyId = createAsyncThunk(
           total_pages: 0,
         };
       }
-    } catch (error) {
+    } else {
       return {
         current_page_no: 0,
         data: [],

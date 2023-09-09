@@ -4,14 +4,9 @@
  * and connecting to a socket service.
  * @returns A React component that renders nothing.
  */
-import React from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import {
-  ErrorHandling,
-  RemoveToken,
-  getRawcaserToken,
-} from "../Shared/Utility";
+import { ErrorHandling, getRawcaserToken } from "../Shared/Utility";
 import {
   handleisLoading,
   handleisSuccess,
@@ -25,7 +20,7 @@ const InitialRenderComponent = () => {
   axios.interceptors.response.use(
     function (response) {
       if (response?.data?.status === -1) {
-        // console.log(response?.data);
+        console.log(response?.data);
         RemoveToken(dispatch);
         window.location.reload();
       }
