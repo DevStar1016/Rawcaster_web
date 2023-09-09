@@ -13,7 +13,6 @@ import {
   getValidarrayData,
 } from "./Utility";
 import { useFormik } from "formik";
-
 import * as yup from "yup";
 import {
   addLiveEventService,
@@ -26,7 +25,6 @@ import {
   getUtcToSystemTime,
   JSONtoformdata,
   userTimezonetoUtc,
-  utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import EventModal from "../../../Modal/Event/EventModal";
