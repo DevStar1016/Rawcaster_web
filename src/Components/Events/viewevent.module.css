@@ -1,6 +1,9 @@
 .eventContainer {
-    position: relative; height: 100vh; padding-top: 67px; margin: auto;  max-width: 1050px; width: 85%;
-   
+  position: relative;
+  height: 100vh;
+  margin: auto;
+  max-width: 1050px;
+  width: 85%;
 }
 .LoadingSec {
   height: 100%;
@@ -10,110 +13,143 @@
   justify-content: center;
 }
 .eventCard {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 2px 4px #00000027;
-    margin: 50px 0px;
-    padding: 20px;
-    position: relative;
-  }
-  .eventMes {
-    text-align: center;
-  }
-  .eventDate {
-    text-align: center;
-    margin-bottom: 25px;
-    columns: #333333;  
-    letter-spacing: 0;
-  }
-  .eventBanner {
-    width: 100%;
-    padding: 0 5px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
-  .eventBanner img {
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    /* min-width: 500px; */
-  }
-  .eventDur {
-    float: right;
-  }
-  .eventDetail {
-    margin-top: 20px;
-    text-align: center;
-    color: #315887;  
-    font-weight: 500;
-    font-size: 16px;
-  }
-  .eventDetail ul {
-    list-style: none;
-  }
-  .eventHost {
-    border-radius: 30px;
-    box-shadow: rgba(0, 0, 0, 0.153) 0px 2px 4px;
-    border: none;
-    margin: auto;
-    padding: 10px;
-    width: fit-content;
-    max-width: 100%;
-    display: flex;
-    align-items: center;
-    /* height: 48px; */
-    /* float: left; */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 2px 4px #00000027;
+  margin: 50px 0px;
+  padding: 20px;
+  position: relative;
+}
+.eventMes {
+  text-align: center;
+}
+.eventDate {
+  text-align: center;
+  margin-bottom: 25px;
+  columns: #333333;
+  letter-spacing: 0;
+}
+.eventBanner {
+  width: 100%;
+  padding: 0 5px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.eventBanner img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  /* min-width: 500px; */
+}
+.eventDur {
+  float: right;
+}
+.eventDetail {
+  margin-top: 20px;
+  text-align: center;
+  color: #315887;
+  font-weight: 500;
+  font-size: 16px;
+}
+.eventDetail ul {
+  list-style: none;
+}
+.eventHost {
+  border-radius: 30px;
+  box-shadow: rgba(0, 0, 0, 0.153) 0px 2px 4px;
+  border: none;
+  margin: auto;
+  padding: 10px;
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  /* height: 48px; */
+  /* float: left; */
+}
+.eventHost img {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  margin-right: 8px;
+  /* float: left; */
+}
 
-  }
-  .eventHost img {
-    width: 32px;
-    height: 32px;
-    border-radius: 16px;
-    margin-right: 8px;
-    /* float: left; */
-  }
-
-  .user_name{
-    text-align: center;
-    padding-right: 10px;
-    max-width: calc(100% - 35px);
-    margin: auto;
-    word-wrap: break-word;
-  }
-  .eventTitle h2 {
-    color: #315887;
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 0;
-    margin-top: 0 !important;
-    letter-spacing: 0;
-    margin-top: 15px;  
-    text-transform: capitalize;
-  }
-  .sub_heading {
-    color: #004040;
-    font-weight: bold;
-    font-size: 14px;
-    text-align: left;
-  }
-  .userName {
-    font-size: 16px;
-    color: #004040;
-    font-weight: bold;
-    margin-bottom: 4px;
-    width: 260px;
-  }
-  .userName span {
-    float: right !important;
-    text-align: right !important;
-    font-size: 12px;
-    font-weight: normal;
-  }
-  .notifi_msg {
-    font-size: 14px;
-  }
-  .unreadmsg {
-    background-color: #c1d6f7 !important;
-  }
+.user_name {
+  text-align: center;
+  padding-right: 10px;
+  max-width: calc(100% - 35px);
+  margin: auto;
+  word-wrap: break-word;
+}
+.eventTitle h2 {
+  color: #315887;
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 0;
+  margin-top: 0 !important;
+  letter-spacing: 0;
+  margin-top: 15px;
+  text-transform: capitalize;
+}
+.sub_heading {
+  color: #004040;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: left;
+}
+.userName {
+  font-size: 16px;
+  color: #004040;
+  font-weight: bold;
+  margin-bottom: 4px;
+  width: 260px;
+}
+.userName span {
+  float: right !important;
+  text-align: right !important;
+  font-size: 12px;
+  font-weight: normal;
+}
+.notifi_msg {
+  font-size: 14px;
+}
+.unreadmsg {
+  background-color: #c1d6f7 !important;
+}
+.MeetingLinkSec {
+  margin: auto;
+  padding: 7px;
+  margin-bottom: 20px !important;
+  border-radius: 5px;
+  background-color: #0000005f;
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+ 
+ 
+}
+.MeetingLinkSec span {
+  font-size: 18px;
+  line-height: 17px;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  margin-left: 20px;
+}
+.MeetingLinkSec p {
+  font-family: 'Gilroy-Bold';
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
   
+  white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+margin: 0px !important;
+}
