@@ -125,7 +125,7 @@ const SigninwithService = ({ type }) => {
           <LoginSocialGoogle
             client_id={GOOGLE_CLIENT_ID}
             redirect_uri={PRIMARY_REDIRECT_URI}
-            scope="openid profile email"
+            scope="profile email"
             discoveryDocs="claims_supported"
             access_type="offline"
             onResolve={({ provider, data }) => {
@@ -138,7 +138,6 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
-                console.log(data, "===> Error From Google Sign in");
                 toast.remove("Error");
                 toast.error("Something Went Wrong !", {
                   id: "Error",

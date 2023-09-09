@@ -113,16 +113,20 @@ const Profile = () => {
    * @returns None
    */
   const getprofile = () => {
-    let filterData = { ...nuggetFormData };
-    if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
-      filterData.formData = {
-        user_id: display_user_id,
-        page_number: 1,
-        nugget_type: 0,
-      };
-      dispatch(handleResetNuggets());
-      dispatch(handleNuggetFormData(filterData));
-      dispatch(fetchNuggetsbyId(filterData));
+    if (loginToken) {
+      let filterData = { ...nuggetFormData };
+      console.log(nuggetFormData);
+      if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
+        filterData.formData = {
+          user_id: display_user_id,
+          page_number: 1,
+          nugget_type: 0,
+          token: loginToken,
+        };
+        dispatch(handleResetNuggets());
+        dispatch(handleNuggetFormData(filterData));
+        dispatch(fetchNuggetsbyId(filterData));
+      }
     }
   };
 

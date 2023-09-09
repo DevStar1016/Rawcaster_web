@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { generatePath, useNavigate, useParams } from "react-router";
 import { viewEventsService } from "../../Services/ApiService";
 import {
   decodeHtml,
   eventDisplayDuration,
+  handleCopyText,
   utctoUserTimezone,
   utctoUserTimezonewithAbbr,
 } from "../../Shared/Utility";
@@ -18,6 +19,7 @@ import { Tooltip } from "antd";
 const Viewevent = () => {
   const { userSettings } = useAuth();
   const [ViewEventData, setViewEventData] = useState();
+  const [isCopied, setisCopied] = useState(false);
   const token = useAuthToken();
   const { event_id } = useParams();
   const navigate = useNavigate();
@@ -51,6 +53,16 @@ const Viewevent = () => {
         });
     }
   }, [event_id, token]);
+
+  const getInviteLink = () => {
+    return (
+      window.location.origin +
+      generatePath(`/join/:event/:ref_id`, {
+        event: ViewEventData?.type === 2 ? "talkshow" : "event",
+        ref_id: ViewEventData?.reference_id || "",
+      })
+    );
+  };
   return (
     <div className={classes.eventContainer}>
       <Seo
@@ -95,6 +107,32 @@ const Viewevent = () => {
               ) +
               ")"}
           </p>
+          <div className={classes.MeetingLinkSec}>
+            <p> {getInviteLink()}</p>
+            <Tooltip placement="top" title={"Copy"}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                {isCopied ? (
+                  <span className={`material-symbols-rounded`}>done</span>
+                ) : (
+                  <span
+                    class="material-symbols-outlined"
+                    onClick={() => {
+                      handleCopyText(getInviteLink()).then(() => {
+                        setisCopied(true);
+                      });
+                    }}
+                  >
+                    content_copy
+                  </span>
+                )}
+              </div>
+            </Tooltip>
+          </div>
           <div className={classes.eventBanner}>
             <img
               src={ViewEventData.banner_image}

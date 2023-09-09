@@ -25,39 +25,39 @@ export const uploadChatAttachmentService = (formData, progress, token) => {
   });
 };
 
-export const loginService = (formData) => {
+export const loginService = (formData: FormData) => {
   return axios.post("login", formData);
 };
 
-export const signupService = (formData) => {
+export const signupService = (formData: FormData) => {
   return axios.post("signup", formData);
 };
 
-export const forgotPasswordService = (formData) => {
+export const forgotPasswordService = (formData: FormData) => {
   return axios.post("forgotpassword", formData);
 };
 
-export const verifyotpsendPasswordService = (formData) => {
+export const verifyotpsendPasswordService = (formData: FormData) => {
   return axios.post("verifyotpandresetpassword", formData);
 };
 
-export const resendOtpService = (formData) => {
+export const resendOtpService = (formData: FormData) => {
   return axios.post("resendotp", formData);
 };
 
-export const signupVerifyService = (data) => {
+export const signupVerifyService = (data: FormData) => {
   return axios.post("signupverify", data);
 };
 
-export const logoutService = (data) => {
+export const logoutService = (data: FormData) => {
   return axios.post("logout", data);
 };
 
-export const changePasswordService = (data) => {
+export const changePasswordService = (data: FormData) => {
   return axios.post("changepassword", data);
 };
 
-export const getCountylistService = (data) => {
+export const getCountylistService = (data: FormData) => {
   return axios.post("getcountylist", data);
 };
 
