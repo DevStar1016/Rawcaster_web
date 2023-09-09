@@ -24,7 +24,6 @@ export const FACEBOOK_APP_ID = "501963974865826";
 export const APPLE_API_KEY = "CR8PDZDGNZcom.rawcaster.app";
 
 export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com/";
-export const REDIRECT_URI = "https://localhost:3000/signup/";
 export const SECONDARY_REDIRECT_URI = "https://dev.rawcaster.com/signup";
 // export const INSTA_REDIRECT_URI = "https://dev.rawcaster.com/signup/";
 // SECONDARY CONSTANTS
