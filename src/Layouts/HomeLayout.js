@@ -20,7 +20,7 @@ import btmSetting from "../Assets/Images/svg/settings.svg";
 import btmhome from "../Assets/Images/svg/btmhome.svg";
 import searchIcon from "../Assets/Icons/svg/topsearch.svg";
 import NotificationIcon from "../Assets/Icons/svg/Notification_Icon.svg";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logoutService } from "../Services/ApiService";
 import {
   DecryptionString,
@@ -58,12 +58,13 @@ import ArtificialIntelligence from "../Components/ArtificialIntelligence";
 import { GlobalContext } from "../Shared/Context";
 import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
 import ProfileImg from "../UIComponents/ProfileImg";
+import { useAppSelector } from "../Store/Redux/Config/Hooks";
 
 const HomeLayout = () => {
   const params = useParams();
   const inputRef = useRef();
   const meetingManager = useMeetingManager();
-  const unReadCount = useSelector(
+  const unReadCount = useAppSelector(
     (state) => state.dashboard.notificationUnreadCount
   );
   const token = useAuthToken();

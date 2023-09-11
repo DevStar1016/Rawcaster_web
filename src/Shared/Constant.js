@@ -9,7 +9,7 @@ export const DEFAULT_VIDEO_RAWCASTER =
 
 export const GOOGLE_CLIENT_ID =
   "749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com";
-
+export const NUGGET_SHARE_URL = "https://devshare.rawcaster.com/index.php?id=";
 export const FACEBOOK_APP_ID = "501963974865826";
 
 // export const INSTAGRAM_APP_ID = "1652047128572389";

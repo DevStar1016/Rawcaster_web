@@ -4,8 +4,9 @@
  */
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchNotificationList } from "../Action";
+import { NotificationProps } from "../types/Notification";
 
-const initialState = {
+const initialState: NotificationProps = {
   isTabChange: false,
   isLoading: false,
   Notifications: {
