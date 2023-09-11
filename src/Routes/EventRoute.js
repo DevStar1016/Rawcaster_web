@@ -25,7 +25,6 @@ const HandleNavigate = () => {
       });
     }
   }, [token]);
-
   return <Navigate to={`/dashboard`} />;
 };
 
