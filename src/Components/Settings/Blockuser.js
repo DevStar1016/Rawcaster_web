@@ -62,7 +62,7 @@ const Blockuser = () => {
   }, []);
 
   const getFriendslist = async () => {
-    dispatch(fetchFrindsbyId(token));
+    dispatch(fetchFrindsbyId({ token }));
   };
 
   /**
