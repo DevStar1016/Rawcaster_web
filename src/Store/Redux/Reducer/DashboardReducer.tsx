@@ -3,13 +3,10 @@
  * @module dashboard
  */
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  fetchActiveEventData,
-  fetchFrindsbyId,
-  fetchgroupsbyId,
-} from "../Action";
+import { fetchFrindsbyId, fetchgroupsbyId } from "../Action";
+import { DashoardProps } from "../types/Dashboard";
 
-const initialState = {
+const initialState: DashoardProps = {
   isLoading: false,
   isTwoStepVerified: false,
   loginModalShow: false,
@@ -27,9 +24,7 @@ const initialState = {
     show: false,
     msg: "",
   },
-  meetingData: null,
   notificationUnreadCount: 0,
-  ActiveEventData: null,
 };
 
 export const { actions, reducer } = createSlice({
@@ -124,14 +119,8 @@ export const { actions, reducer } = createSlice({
         (ele) => ele.group_id !== action.payload
       );
     },
-    handleMeetingData: (state, action) => {
-      state.meetingData = action.payload;
-    },
     handleNotificationUnreadCount: (state, action) => {
       state.notificationUnreadCount = action.payload;
-    },
-    handleClearActiveEvent: (state, action) => {
-      state.ActiveEventData = null;
     },
   },
   extraReducers: (builder) => {
@@ -139,21 +128,15 @@ export const { actions, reducer } = createSlice({
       state.friendsList = action.payload;
       state.isFriendsLoading = false;
     });
-    builder.addCase(fetchFrindsbyId.rejected, (state, action) => {
+    builder.addCase(fetchFrindsbyId.rejected, (state) => {
       state.isFriendsLoading = false;
     });
     builder.addCase(fetchgroupsbyId.fulfilled, (state, action) => {
       state.groupsList = action.payload;
       state.isGroupLoading = false;
     });
-    builder.addCase(fetchgroupsbyId.rejected, (state, action) => {
+    builder.addCase(fetchgroupsbyId.rejected, (state) => {
       state.isGroupLoading = false;
-    });
-    builder.addCase(fetchActiveEventData.fulfilled, (state, action) => {
-      state.ActiveEventData = action.payload;
-    });
-    builder.addCase(fetchActiveEventData.rejected, (state, action) => {
-      state.ActiveEventData = null;
     });
   },
 });
@@ -169,13 +152,10 @@ export const {
   handleisGlobalSearch,
   handleFriendsList,
   handleClaimAccount,
-  handleGroupData,
   handleAddGroupData,
   handleUpdateGroupData,
   handleDeleteGroupData,
-  handleMeetingData,
   handleNotificationUnreadCount,
-  handleClearActiveEvent,
   handleUpdateChatGroupData,
 } = actions;
 

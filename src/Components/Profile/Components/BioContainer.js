@@ -12,7 +12,7 @@ import {
   decodeHtml,
   getAuthToken,
 } from "../../../Shared/Utility";
-import { replaceBiodataHandler } from "../Utility";
+import useReplaceBiodataHandler from "../Utility";
 import classes from "../Profile.module.css";
 import { Button, Input, Select, Skeleton, Spin, Tooltip } from "antd";
 import { useState } from "react";
@@ -38,11 +38,16 @@ const BioContainer = ({ isLoginuser }) => {
   } = useProfileContext();
   const [selectedCategory, setselectedCategory] = useState([]);
   const loginToken = useAuthToken();
+
   const { isSuccess, loginUserData } = useAuth();
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [BecameFanStatus, setBecameFanStatus] = useState("");
   const [verifyProfilePopup, setverifyProfilePopup] = useState(false);
-
+  const BioData = useReplaceBiodataHandler(
+    profileData,
+    loginUserData && profileData?.user_id === loginUserData?.user_id
+  );
+  console.log(BioData, "BioData");
   const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues: {
       bio_data: "",
@@ -52,19 +57,6 @@ const BioContainer = ({ isLoginuser }) => {
       updateBioDataHandler(values);
     },
   });
-
-  /**
-   * Retrieves the bio data from the values object. If the bio data is not available,
-   * it calls the replaceBiodataHandler function to generate the bio data from the profileData.
-   * @returns The bio data string.
-   */
-  const getBioData = () => {
-    if (values?.bio_data !== "") {
-      return values?.bio_data;
-    } else {
-      return replaceBiodataHandler(profileData);
-    }
-  };
 
   /**
    * useEffect hook that runs when the profileData or influencerCategory changes.
@@ -214,8 +206,8 @@ const BioContainer = ({ isLoginuser }) => {
             style={{ display: isLoginuser ? "block" : "none" }}
             onClick={() => {
               setisAboutEdit(true);
-              let tempData = getBioData();
-              setFieldValue("bio_data", tempData);
+              console.log(BioData, "BioData");
+              // setFieldValue("bio_data", BioData);
             }}
           >
             <i className={classes.editIcon}></i>
@@ -273,7 +265,12 @@ const BioContainer = ({ isLoginuser }) => {
               setisLinkopenModal={setisLinkopenModal}
               isReadMoreValid={() => {}}
             >
-              {getBioData()}
+              {/**
+               * Retrieves the bio data from the values object. If the bio data is not available,
+               * it calls the useReplaceBiodataHandler function to generate the bio data from the profileData.
+               * @returns The bio data string.
+               */}
+              {values?.bio_data !== "" ? values?.bio_data : BioData}
             </ReadMore>
           ) : (
             <Skeleton active />

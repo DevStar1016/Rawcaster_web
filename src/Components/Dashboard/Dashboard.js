@@ -3,7 +3,7 @@
  * @returns The rendered dashboard page.
  */
 import React, { useEffect } from "react";
-import { Link, useActionData, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   useAuth,
   useAuthData,

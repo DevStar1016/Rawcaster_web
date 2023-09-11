@@ -17,7 +17,7 @@ import { ChimesocketURL } from "./ServiceConstants";
 const Chimesocket = io(ChimesocketURL, {
   reconnection: true,
   secure: true,
-  transports: ["websocket"],
+  // transports: ["websocket"],
   rejectUnauthorized: false,
 });
 

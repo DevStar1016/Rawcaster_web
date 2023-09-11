@@ -9,7 +9,6 @@ import {
   listAllFriendGroupsService,
   listAllFriendsService,
   listNuggetsService,
-  viewEventsService,
 } from "../../../Services/ApiService";
 import {
   JSONtoformdata,
@@ -61,7 +60,7 @@ export const fetchFrindsbyId = createAsyncThunk(
 
 export const fetchgroupsbyId = createAsyncThunk(
   "dashboard/fetchgroupsbyId",
-  async (res) => {
+  async (res: any) => {
     let listData = {
       token: res.token,
       auth_code: getAuthToken(res.token),
@@ -108,8 +107,7 @@ export const fetchgfollowerfollowingList = createAsyncThunk(
 
 export const fetchNuggetsbyId = createAsyncThunk(
   "dashboard/fetchNuggetsbyId",
-  async (listData) => {
-    console.log(listData);
+  async (listData: any) => {
     const { token, formData } = listData;
     let nuggetData = {
       ...formData,
@@ -117,7 +115,10 @@ export const fetchNuggetsbyId = createAsyncThunk(
     };
     if (token) {
       try {
-        const { data } = await listNuggetsService(JSONtoformdata(nuggetData));
+        const { data } = await listNuggetsService(
+          JSONtoformdata(nuggetData),
+          undefined
+        );
         if (data.status === 1) {
           let resultData = {
             current_page_no: data.current_page_no,
@@ -155,7 +156,7 @@ export const fetchNuggetsbyId = createAsyncThunk(
 
 export const fetchuserSettingsbyToken = createAsyncThunk(
   "dashboard/fetchuserSettingsbyToken",
-  async (token) => {
+  async (token: string) => {
     let profileData = {
       token: token,
       auth_code: getAuthToken(token),
@@ -177,8 +178,8 @@ export const fetchuserSettingsbyToken = createAsyncThunk(
 
 export const fetchuserInfobyToken = createAsyncThunk(
   "dashboard/fetchuserInfobyToken",
-  async (token, { dispatch, getState }) => {
-    const { auth } = getState();
+  async (token: string, { dispatch, getState }) => {
+    const { auth }: any = getState();
     const isSuccess = auth.isSuccess;
     let profileData = {
       token: token,
@@ -223,37 +224,23 @@ export const fetchuserInfobyToken = createAsyncThunk(
   }
 );
 
-export const fetchActiveEventData = createAsyncThunk(
-  "dashboard/fetchActiveEventData",
-  async (res) => {
-    const { token, ref_id } = res;
-    let profileData = {
-      token: token,
-      event_id: ref_id,
-    };
-    try {
-      const { data } = await viewEventsService(JSONtoformdata(profileData));
-      if (data.status === 1) {
-        return data.event_detail;
-      } else {
-        return null;
-      }
-    } catch (error) {
-      return null;
-    }
-  }
-);
+type NotificationReqProps = {
+  token: string;
+};
 
 export const fetchNotificationList = createAsyncThunk(
   "notifications/fetchNotificationList",
-  async (res, { getState }) => {
-    const state = getState();
+  async (res: any, { getState }) => {
+    const state: any = getState();
     const getTimeZone = (date) => {
-      return utctoUserTimezone(date, state?.time_zone);
+      return utctoUserTimezone(
+        date,
+        state?.auth?.userSettings?.time_zone || ""
+      );
     };
-    const { token } = res;
+    const { token }: NotificationReqProps = res;
     let notificationData = {
-      token,
+      token: token,
       ...res,
     };
     try {

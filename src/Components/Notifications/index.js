@@ -15,7 +15,7 @@ import {
   filterValidObject,
 } from "../../Shared/Utility";
 import { ViewNotificationService } from "../../Services/ApiService";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { NotificationContext } from "../../Shared/Context";
 import { toast } from "react-hot-toast";
@@ -23,10 +23,11 @@ import classes from "./Notification.module.css";
 import { handleNotificationUnreadCount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import { fetchNotificationList } from "../../Store/Redux/Action";
+import { useAppSelector } from "../../Store/Redux/Config/Hooks";
 
 const Notification = ({ className, src, onReadCountChange, unReadCount }) => {
   const loginuserData = useAuthData();
-  const UnReadCount = useSelector(
+  const UnReadCount = useAppSelector(
     (state) => state.dashboard.notificationUnreadCount
   );
   const dispatch = useDispatch();

@@ -25,9 +25,8 @@ import {
   shareNuggetService,
   getNuggetDetailService,
   NuggetAbuseReportService,
-  getNuggetContentAudioService,
 } from "../../Services/ApiService";
-import { SHARED_TYPE } from "../../Shared/Constant";
+import { NUGGET_SHARE_URL, SHARED_TYPE } from "../../Shared/Constant";
 import { SingleNuggetContext } from "../../Shared/Context";
 import {
   useAuth,
@@ -61,7 +60,6 @@ import {
   handleDeleteNuggetList,
   handleDeleteNuggetListByUserId,
   handleNuggetList,
-  handleNuggetTranslateUpdate,
   handlenuggetVideoPaused,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import _debounce from "lodash/debounce";
@@ -437,6 +435,86 @@ const Post = ({
             >
               <span className="material-symbols-outlined">report</span> Report
               Abuse
+            </div>
+          ),
+        },
+      ];
+      return resultData;
+    } else if (ele.share_type === 1) {
+      let resultData = [
+        {
+          key: 1,
+          label: (
+            <div
+              onClick={() => {
+                Modal.confirm({
+                  title: "Confirmation",
+                  okText: "Yes",
+                  cancelText: "No",
+                  cancelButtonProps: {
+                    danger: true,
+                  },
+                  content: (
+                    <div>Are You Sure Do you want to Block this user ? </div>
+                  ),
+                  onOk: () => {
+                    handleBlock(ele.user_id);
+                  },
+                });
+              }}
+              className={classes.dropdownItem}
+            >
+              <span className="material-symbols-outlined">block</span> Block
+              User
+            </div>
+          ),
+        },
+        {
+          key: 2,
+          label: (
+            <div
+              onClick={() => {
+                setisReport(true);
+              }}
+              className={classes.dropdownItem}
+            >
+              <span className="material-symbols-outlined">report</span> Report
+              Abuse
+            </div>
+          ),
+        },
+        {
+          key: 3,
+          label: (
+            <div
+              onClick={() => {
+                HandleBecameaFan(Token, ele.user_ref_id);
+              }}
+              className={classes.dropdownItem}
+            >
+              <span className="material-symbols-outlined">group</span>Become a
+              Fan
+            </div>
+          ),
+        },
+        {
+          key: 4,
+          label: (
+            <div
+              onClick={() => {
+                // const Value =
+                const el = document.createElement("input");
+                el.value = NUGGET_SHARE_URL + window.btoa(ele.nugget_id);
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand("copy");
+                document.body.removeChild(el);
+                toast.remove("rawcaster");
+                toast.success("Text copied to clipboard", { id: "rawcaster" });
+              }}
+              className={classes.dropdownItem}
+            >
+              <span className={classes.share_link_icon}></span>Share Link
             </div>
           ),
         },

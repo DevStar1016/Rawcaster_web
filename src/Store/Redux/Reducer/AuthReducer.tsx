@@ -5,6 +5,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getCookieData } from "../../Storage";
 import { fetchuserInfobyToken, fetchuserSettingsbyToken } from "../Action";
+import { AuthData } from "../types/Auth";
 
 const getRawcaserToken = () => {
   try {
@@ -19,7 +20,7 @@ const getRawcaserToken = () => {
   }
 };
 
-const initialState = {
+const initialState: AuthData = {
   isLoading: false,
   isSuccess: false,
   loginUserData: null,
@@ -37,10 +38,12 @@ export const { actions, reducer } = createSlice({
       state.loginUserData = action.payload;
     },
     handleAccountVerifyStatus: (state, action) => {
-      state.loginUserData = {
-        ...state.loginUserData,
-        account_verify_type: action.payload,
-      };
+      if (state.loginUserData) {
+        state.loginUserData = {
+          ...state.loginUserData,
+          account_verify_type: action.payload,
+        };
+      }
     },
     handleisSuccess: (state, action) => {
       state.isSuccess = action.payload;
@@ -62,7 +65,7 @@ export const { actions, reducer } = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchuserInfobyToken.pending, (state, action) => {
+    builder.addCase(fetchuserInfobyToken.pending, (state) => {
       state.isLoading = true;
     });
     builder.addCase(fetchuserInfobyToken.fulfilled, (state, action) => {

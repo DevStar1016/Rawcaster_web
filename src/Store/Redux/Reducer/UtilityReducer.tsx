@@ -4,8 +4,9 @@
  * @returns {Object} An object containing the actions and reducer for the utility module.
  */
 import { createSlice } from "@reduxjs/toolkit";
+import { UtilityReducerProps } from "../types/Utility";
 
-const initialState = {
+const initialState: UtilityReducerProps = {
   eventWindowRef: null,
 };
 
