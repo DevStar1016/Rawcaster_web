@@ -413,6 +413,7 @@ margin-top: 0px !important;
 
 @media (max-width:768px) {
   .claimBtnSec {margin-top: 0px !important;}
+  .aichatNone{display: none;}
 }
 @media (max-width:575px) {
   .profileContainer {

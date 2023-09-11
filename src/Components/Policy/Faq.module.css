@@ -1,9 +1,17 @@
 .faq_banner {background:#fff url(../../Assets/Images/fag_bg.jpg) center center  no-repeat; float: left; 
-    width: 100%; height: 250px; padding:25px 15px 10px 15px;  }
+    width: 100%; height: 250px; 
+    /* padding:25px 15px 10px 15px;  */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+ }
 p.subhead { color: #fff; font-size: 20px; font-weight: 500; text-align: center;  }
 p.subhead a { color: #77EFFF; font-weight: 600; cursor: pointer; }
 .heading_h1 { font-family: 'Montserrat', sans-serif !important; color: #191919 !important; 
-    font-size: 32px !important; margin-top: 50px !important; margin-bottom: 5px !important; 
+    font-size: 32px !important; 
+    /* margin-top: 50px !important;  */
+    margin-bottom: 5px !important; 
     font-weight: 700; text-align: center; } 
 .faq { background: #FAFAFA; width: 100%; padding:0px 15px; }
 .faq .contentSec { max-width: 1110px; margin: auto; margin-top: 20px !important; }
@@ -27,6 +35,7 @@ p.subhead a { color: #77EFFF; font-weight: 600; cursor: pointer; }
     top: 0;
      width: 100%; 
 }
+
 @media (max-width:768px) {
 .faq { padding: 30px 15px !important; } 
 .termsbg { min-height: calc(100vh - 40px); padding: 0 !important;}

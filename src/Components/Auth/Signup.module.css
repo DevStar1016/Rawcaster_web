@@ -157,17 +157,19 @@ text-transform: uppercase; color: #1D1C1C; margin-bottom: 0;
 .goBackBtn { 
    background: rgba(230, 232, 236, 0.5);
    border-radius: 34px;
-   padding: 10px 15px;
+   padding: 15px;
    height: fit-content;
    margin-right: 25px;
    margin-top: 20px;
    cursor: pointer;
+   display: flex;
+   justify-content: center;
+   align-items: center;
    font-size: 14px;
    line-height: 25px;
 }
 .backBtn {
    height: 12px;
-   margin-right: 7px;
 }
 .otpInput {
    height: 52px;
@@ -189,6 +191,24 @@ cursor: pointer;
 .rSec { background: url(../../Assets/Images/png/r-bg.png) no-repeat center center;  background-size: cover; width: 100%; height: calc(100vh - 40px); display: flex; justify-content: center; align-items: center;}
 
 .nopad { padding: 0 !important;}
+
+@media (max-width:1199px) {
+   .goBackBtn span{
+      display: none !important;
+   }
+   
+}
+
+@media (min-width:1200px) {
+   .goBackBtn span{
+     margin-left: 8px;
+
+   }
+   .goBackBtn{
+      padding: 10px 15px !important;
+   }
+   
+}
 @media (max-width:768px) {
 .loginSec { margin-top: 0 !important; }
 .altSignBtn { justify-content: left; padding-left: 20px;}
@@ -213,3 +233,10 @@ cursor: pointer;
 .mobHeader { display: none; }    
 }
 .subText span { color: #F2718D; font-weight: 500; }
+
+@media (max-width:575px) {
+   .loginBox{
+      padding: 12px !important;
+   }
+   
+}

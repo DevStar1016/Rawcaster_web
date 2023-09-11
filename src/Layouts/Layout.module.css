@@ -378,3 +378,14 @@ color: #E8EAEE;
   .logopart { width: 50%;}
   
  }
+ @media (max-width:575px) {
+  .footer {
+    padding: 0px 14px;
+  }
+  .footer .rightSec{
+    padding: 0 !important;
+  }
+  .founder {
+    padding: 50px 0 !important;
+  }
+ }

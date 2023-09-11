@@ -92,7 +92,7 @@ const Membership = () => {
       </div>
 
       <div className="row">
-        <div className="col-md-4">
+        <div className="col-lg-4 col-md-6">
           <div className={classes.packageSec}>
             <div className={classes.top}>
               <div className={classes.leftText}>
@@ -120,7 +120,7 @@ const Membership = () => {
             )}
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-lg-4 col-md-6">
           <div className={classes.packageSec}>
             <div className={classes.top}>
               <div className={classes.leftText}>
@@ -155,7 +155,7 @@ const Membership = () => {
             )}
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-lg-4 col-md-6">
           <div className={classes.packageSec}>
             <div className={classes.top}>
               <div className={classes.leftText}>

@@ -89,7 +89,10 @@
     cursor: pointer;
     text-align: center;
   }
-  
+  .textBoxContainer input::placeholder{
+    color: #191919 !important;
+    font-weight: 400 !important;
+  } 
   @media (max-width: 768px) {
     .meetingBox,
     .pauseBox {

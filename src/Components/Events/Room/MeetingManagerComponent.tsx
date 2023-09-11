@@ -181,7 +181,7 @@ const MeetingManagerComponent = () => {
   };
 
   const onReceiveMessage = (e) => {
-    const { type, message } = e;
+    const { type, message } = e.data;
 
     if (message) {
       switch (type) {
@@ -311,6 +311,8 @@ const MeetingManagerComponent = () => {
           break;
         case CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG:
           if (message) {
+            console.log(message);
+
             const message_data = message;
             if (
               parseInt(message_data.from_user_id) !== getUserData()?.user_id
@@ -460,21 +462,11 @@ const MeetingManagerComponent = () => {
    */
 
   useEffect(() => {
-    window.addEventListener("message", (event) => {
-      onReceiveMessage(event.data);
-    });
+    window.addEventListener("message", onReceiveMessage);
     return () => {
-      window.removeEventListener("message", (event) => {
-        onReceiveMessage(event.data);
-      });
+      window.removeEventListener("message", onReceiveMessage);
     };
-  }, [
-    muted,
-    isVideoEnabled,
-    EventMessages,
-    RequestStatusMessage,
-    isLocalUserSharing,
-  ]);
+  }, [muted, isVideoEnabled, isLocalUserSharing]);
 
   /**
    * Default Audio Settings for Attendee and Host

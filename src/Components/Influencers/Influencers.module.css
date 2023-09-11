@@ -1,7 +1,8 @@
 .headerSec {
     display: flex;
     flex-direction: row;
-    width: 100%; padding-top: 20px; margin-bottom: 20px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 .headerSec h1 {  
     font-weight: 600;
@@ -168,4 +169,9 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
 .headerSec .btnSec { display: block; width: 100%; text-align: center; margin-top: 15px; } 
 .selectCategory { margin-bottom: 20px;}
 .loadmoreSec { margin-bottom: 60px; }
+}
+@media (max-width:574px) {
+    .influencerContainer {
+         padding: 10px !important;
+     }
 }

@@ -156,7 +156,7 @@ const ForgotPassword = () => {
               alt="Back Button"
               src={require("../../Assets/Icons/png/Backbtn.png")}
             />
-            Go Back
+         <span>Go Back</span>
           </div>
         </div>
 

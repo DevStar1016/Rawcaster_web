@@ -198,6 +198,7 @@
     width: 100%;
     border: 0.929px solid #ECECEC;
     max-height: 220px;
+    margin-bottom: 20px;
   }
   .proBox .name {
     color: #1d1c1c;

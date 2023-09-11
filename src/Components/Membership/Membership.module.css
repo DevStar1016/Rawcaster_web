@@ -22,7 +22,7 @@
     margin: 10px auto;
     margin-top: 20px !important;
     border-radius: 41px;
-background: #F1F2F5;
+    background: #F1F2F5;
 }
 .tabContainer .tab {
     width: 48%;
@@ -48,4 +48,8 @@ margin-right: 5px;
 .memberSec h1 { font-size: 28px; }
 .packageSec .top h3 { font-size: 28px;}
 .memberSec h2, .packageSec .top p, .packageSec .top h5 { font-size: 17px;}
+}
+@media (max-width:574px) {
+    .tabContainer .tab {padding: 10px;font-size: 16px;}
+    .memberSec { padding-top:30px;}
 }
