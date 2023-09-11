@@ -217,6 +217,7 @@ export const HostExitOption = () => {
     handleExitMeeting,
     handleEndMeeting,
     userdata,
+    setisChatorParticipant,
   }: EventContextProp = useEventRoomContext();
   const meetingmanager = useMeetingManager();
   const [messageApi, contextHolder] = message.useMessage();
@@ -230,10 +231,13 @@ export const HostExitOption = () => {
         }}
         onClick={() => {
           if (userdata?.isHost) {
-            messageApi.open({
-              type: "warning",
-              content:
-                "Please make someone else host before leaving the meeting",
+            Modal.confirm({
+              type: "confirm",
+              content: "Please make someone as host before leaving the meeting",
+              onOk: () => {
+                setisChatorParticipant("participant");
+              },
+              onCancel: () => {},
             });
           } else {
             ExitMeeting({

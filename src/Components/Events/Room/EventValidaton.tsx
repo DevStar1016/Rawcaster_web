@@ -37,6 +37,7 @@ const EventValidaton = () => {
   const [isPinEnabled, setisPinEnabled] = useState<string | number | null>(
     null
   );
+  const [isPresentScreen, setisPresentScreen] = useState(false);
   const [isEndLoading, setisEndLoading] = useState<string | null>(null);
   const [userdata, setuserdata] = useState<AttendeeUserData | null>(null);
   const [isLoading, setisLoading] = useState(true);
@@ -196,6 +197,8 @@ const EventValidaton = () => {
     setisReactions,
     isEndLoading,
     setisEndLoading,
+    isPresentScreen,
+    setisPresentScreen,
   };
 
   const hasWaitingRoomEnabled = () => {
