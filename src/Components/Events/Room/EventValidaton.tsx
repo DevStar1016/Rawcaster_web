@@ -123,7 +123,7 @@ const EventValidaton = () => {
   const handleJoinMeeting = async (message: MeetingJoinedDataProp) => {
     const { Attendee, meeting }: any = message.joinInfo.result;
     const finduserData = message.AttendeeList.find(
-      (ele: AttendeeUserData) => ele.userId === parseInt(getUserData()?.user_id)
+      (ele: AttendeeUserData) => ele.userId === getUserData()?.user_id
     );
     if (finduserData) {
       setuserdata(finduserData);
@@ -196,8 +196,7 @@ const EventValidaton = () => {
     return (
       isWaitingRoom &&
       EventData &&
-      parseInt(EventData.original_user_id) !==
-        parseInt(getUserData()?.user_id) &&
+      parseInt(EventData.original_user_id) !== getUserData()?.user_id &&
       EventData?.waiting_room
     );
   };

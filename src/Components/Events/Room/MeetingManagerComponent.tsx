@@ -148,7 +148,7 @@ const MeetingManagerComponent = () => {
           }
         } else if (attendeeList) {
           const findAttendee = attendeeList.find(
-            (ele) => parseInt(ele.userId) === parseInt(getUserData()?.user_id)
+            (ele) => parseInt(ele.userId) === getUserData()?.user_id
           );
           if (!userdata.isHost) {
             setMeetingSettings((pre) => ({
@@ -248,8 +248,7 @@ const MeetingManagerComponent = () => {
             const raiseHandUser = user_data.UserData;
             if (
               raiseHandUser.handRaised &&
-              parseInt(raiseHandUser.userId) !==
-                parseInt(getUserData()?.user_id)
+              parseInt(raiseHandUser.userId) !== getUserData()?.user_id
             ) {
               setnotificationToast({
                 show: true,
@@ -260,8 +259,7 @@ const MeetingManagerComponent = () => {
                 icon: null,
               });
             } else if (
-              parseInt(raiseHandUser.userId) ===
-              parseInt(getUserData()?.user_id)
+              parseInt(raiseHandUser.userId) === getUserData()?.user_id
             ) {
               setuserdata(raiseHandUser);
             }
@@ -316,8 +314,7 @@ const MeetingManagerComponent = () => {
           if (message) {
             const message_data = message;
             if (
-              parseInt(message_data.from_user_id) !==
-              parseInt(getUserData()?.user_id)
+              parseInt(message_data.from_user_id) !== getUserData()?.user_id
             ) {
               setnotificationToast({
                 show: true,
@@ -344,7 +341,7 @@ const MeetingManagerComponent = () => {
             const kickeduser = kick_data.kickedUser;
             if (
               kick_data.statusCode === 1 &&
-              parseInt(kickeduser.userId) === parseInt(getUserData()?.user_id)
+              parseInt(kickeduser.userId) === getUserData()?.user_id
             ) {
               const endData = {
                 message: "Someone removed you from this meeting !",
@@ -358,8 +355,7 @@ const MeetingManagerComponent = () => {
             const attendees = message;
             const attendeeList = attendees.attendeeList;
             const findAttendee = attendeeList.find(
-              (ele: AttendeeUserData) =>
-                ele.userId === parseInt(getUserData()?.user_id)
+              (ele: AttendeeUserData) => ele.userId === getUserData()?.user_id
             );
             if (findAttendee) {
               setMeetingSettings((pre: MeetingSettingProp) => ({
@@ -419,9 +415,7 @@ const MeetingManagerComponent = () => {
             const hostData = message;
             if (hostData && hostData.statusCode === 1) {
               const updatedUserData = hostData.updatedUser;
-              if (
-                parseInt(updatedUserData.userId) === parseInt(userData.user_id)
-              ) {
+              if (parseInt(updatedUserData.userId) === userData?.user_id) {
                 setuserdata((pre) => ({
                   ...pre,
                   isHost: updatedUserData.isHost,
