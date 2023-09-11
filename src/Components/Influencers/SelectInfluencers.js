@@ -274,7 +274,7 @@ const SelectInfluencers = () => {
   const InfluencerComponent = ({ ele }) => {
     const BioData = useReplaceBiodataHandler(ele);
     return (
-      <Col sm={8}>
+      <Col xs={24} md={12} lg={8}>
         <div className={classes.influencers}>
           <div className="d-flex flex-row w-100">
             <div className={classes.top}>
@@ -557,6 +557,91 @@ const SelectInfluencers = () => {
 
         <Row gutter={15}>
           {influencerList?.map((ele) => {
+            // return (
+            //   <Col xs={24} md={12} lg={8}>
+            //     <div className={classes.influencers}>
+            //       <div className="d-flex flex-row w-100">
+            //         <div className={classes.top}>
+            //           <ProfileImg
+            //             src={ele.profile_img}
+            //             imgClassName={classes.profileimg}
+            //             badgeClassName={classes.diamond}
+            //             Badgetype={ele?.user_status_id}
+            //             user={ele}
+            //           />
+
+            //           <p className={classes.counts}>{ele.followers}</p>
+            //         </div>
+
+            //         <img
+            //           className={classes.checked_icon}
+            //           alt="Checked"
+            //           src={
+            //             SelectedInfluencersList.includes(ele?.user_ref_id)
+            //               ? Checked
+            //               : unChecked
+            //           }
+            //           onClick={() => {
+            //             if (
+            //               SelectedInfluencersList.includes(ele?.user_ref_id)
+            //             ) {
+            //               setSelectedInfluencersList((pre) =>
+            //                 pre.filter((elem) => elem !== ele?.user_ref_id)
+            //               );
+            //             } else {
+            //               if (SelectedInfluencersList.length === 0) {
+            //                 setSelectedInfluencersList([ele?.user_ref_id]);
+            //               } else {
+            //                 setSelectedInfluencersList((pre) => [
+            //                   ...pre,
+            //                   ele?.user_ref_id,
+            //                 ]);
+            //               }
+            //             }
+            //           }}
+            //         ></img>
+            //       </div>
+            //       <Tooltip placement="topLeft" title={ele.display_name}>
+            //         <p className={classes.name}>
+            //           <p>{ele.display_name}</p>
+
+            //           <span className={classes.author}>
+            //             {ele.category.toString()}
+            //           </span>
+            //         </p>
+            //       </Tooltip>
+            //       <p className={classes.desc}>
+            //         Lorem ipsum dolor sit amet, consectetur ipsum adipiscing
+            //         elit. Donec suscipit ex condim entum ante egestas suscipit
+            //         <span className={classes.readmore}>read more</span>
+            //       </p>
+            //       {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
+            //         <Link className={classes.selectedBtn}>
+            //           Selected{" "}
+            //           <span className="material-symbols-outlined">done</span>
+            //         </Link>
+            //       ) : (
+            //         <>
+            //           {isLoadMore === ele.user_ref_id ? (
+            //             // <Spin />
+            //             <></>
+            //           ) : (
+            //             <Link
+            //               className={classes.fanBtn}
+            //               onClick={() => {
+            //                 dispatch(handleLoading(true));
+            //                 HandleupdateFans([ele?.user_ref_id]);
+            //               }}
+            //             >
+            //               Become a Fan{" "}
+            //               <span className="material-icons">arrow_forward</span>
+            //             </Link>
+            //           )}
+            //         </>
+            //       )}
+            //     </div>
+            //   </Col>
+            // );
             return <InfluencerComponent ele={ele} />;
           })}
         </Row>

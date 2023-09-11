@@ -390,7 +390,7 @@ const General = () => {
               Choose if you want to lock your Nuggets, Fans, Connections and
               Influencers list from other users
             </p>
-            <div className="mt-2">
+            <div className={`mt-2 ${classes.linespace}`}>
               {ProfileswitchTypes.map((elem, i) => {
                 return (
                   <div className={classes.grp_switch}>

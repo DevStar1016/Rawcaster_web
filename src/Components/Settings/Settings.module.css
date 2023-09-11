@@ -66,7 +66,7 @@
     font-weight: bold;
     font-size: 15px;
     margin-bottom: 0;
-    margin-top: 12px;
+    margin-top: 24px;
     font-family: "DM Sans", sans-serif;
   }
   .contentSec p.text {
@@ -192,8 +192,8 @@
     font-weight: bold;
     font-size: 15px;
     height: 40px; 
-    margin-top: 10px;
-    margin-bottom: 15px;
+    /* margin-top: 10px;
+    margin-bottom: 15px; */
   }
   .blockedList {
     background: #eeeeee;
@@ -281,7 +281,7 @@
 }
 .blockuserSec div:first-child {
   background: #F1F2F5 !important;
-  /* height: 70px !important; */
+  height: 42px !important;
   overflow-y: scroll;  
 }
   .acttionTxt {
@@ -314,8 +314,10 @@
   }
   .w500 {
     width: 510px;
+    display: flex;
+    margin-top: 10px;
   }
-  
+ 
   .searchdropdown {
     padding: 10px;
   }
@@ -424,20 +426,7 @@
 .videoAudioSetting{
   display: inline;
 }
-  @media (max-width: 768px) {
-    .settingmobMenu {
-      display: block;
-    }
-    .settingSec{
-      min-height: calc(100vh - 110px);
-    }
-    .melodyBox video {
-      max-width: 100%;
-    }
-    .blockuserSec{
-      max-width: 100%;
-    }
-  }
+
   
   @media (max-width: 768px) {
     .searchdropdown .textbox, 
@@ -484,6 +473,22 @@
     }
     .videoAudioSetting{
       display: block;
+    }
+
+    .linespace{
+      line-height: 35px !important;
+    }
+    .settingmobMenu {
+      display: block;
+    }
+    .settingSec{
+      min-height: calc(100vh - 110px);
+    }
+    .melodyBox video {
+      max-width: 100%;
+    }
+    .blockuserSec{
+      max-width: 100%;
     }
   }
   

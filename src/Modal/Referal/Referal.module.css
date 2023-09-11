@@ -227,5 +227,14 @@
     .submitbtn {
       height: 45px;
     }
+    .centerSec .mailBox {
+      padding: 70px 15px 30px 15px;
+    }
+    .ant-modal-content{
+      padding: 20px 10px !important;
+    }
+    .centerSec .mailBox h1 {
+      line-height: 25px !important;
+    }
    
   }
