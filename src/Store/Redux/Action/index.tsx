@@ -29,9 +29,9 @@ import { handleNotificationUnreadCount } from "../Reducer/DashboardReducer";
 
 export const fetchFrindsbyId = createAsyncThunk(
   "dashboard/fetchFrindsbyId",
-  async (token) => {
+  async (res: any) => {
     let listData = {
-      token: token,
+      token: res?.token,
       allfriends: 1,
     };
     try {
@@ -211,7 +211,7 @@ export const fetchuserInfobyToken = createAsyncThunk(
         dispatch(handleToken(token));
         dispatch(fetchuserSettingsbyToken(token));
         dispatch(handlenuggetToken(token));
-        dispatch(fetchFrindsbyId(token));
+        dispatch(fetchFrindsbyId({ token }));
         dispatch(fetchgroupsbyId({ token: token, user_id: finalData.user_id }));
 
         return { token: token, ...finalData };
