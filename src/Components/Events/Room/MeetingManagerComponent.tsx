@@ -61,7 +61,6 @@ const MeetingManagerComponent = () => {
   /**
    * Handle Attendee Present By Amazon Chime SDK
    */
-
   const presenceCallback = (
     attendeeId: string,
     present: boolean,
