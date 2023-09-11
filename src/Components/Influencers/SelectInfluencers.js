@@ -466,7 +466,7 @@ const SelectInfluencers = () => {
         <Row gutter={15}>
           {influencerList?.map((ele) => {
             return (
-              <Col sm={8}>
+              <Col xs={24} md={12} lg={8}>
                 <div className={classes.influencers}>
                   <div className="d-flex flex-row w-100">
                     <div className={classes.top}>

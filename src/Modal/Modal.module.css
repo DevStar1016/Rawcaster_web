@@ -490,3 +490,13 @@ line-height: 23px;
     z-index: 2;
   } */
 }
+@media (max-width:574px) {
+  .profileModal p{
+    font-size: 20px !important;
+    margin: 15px auto;
+    line-height: 26px !important;
+}
+.profileModal {
+  padding: 25px 0;
+}
+}

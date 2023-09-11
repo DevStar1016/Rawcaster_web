@@ -45,6 +45,7 @@
     flex-direction: row;
     justify-content: flex-end;
     width: 100%;
+    align-items: center;
 }
 .actionBtn .fanBtn, .actionBtn .fanBtn:hover {
     border: #f2718d 1px solid;
@@ -97,8 +98,8 @@
   .profileContainer .rightSec .nameSec { margin:2px 0 0px 0; }
   .profileContainer .rightSec .nameSec p { font-size: 12px;}
   .profileContainer img { width: 45px; height: 45px; margin-right: 8px; }
-  .actionBtn .connectBtn { cursor: pointer; padding: 2px 0 !important; height: 24px; width: 24px; border-radius: 25px; background: #f2718d; }
-  .actionBtn .connectBtn span { margin-left: 0; color: #fff; }
+  .actionBtn .connectBtn { cursor: pointer; padding: 2px 0 !important; height: 24px; width: 24px; border-radius: 25px; background: #f2718d;display: flex;justify-content: center; align-items: center; }
+  .actionBtn .connectBtn span { margin-left: 0; color: #fff;}
   .actionBtn .fanBtn { margin-left: 5px; border-radius: 8px; background: #AE567A; color: #fff; border: none; font-size: 10px; height: 26px; padding:4px 5px; }
   .actionBtn .fanBtn span {display: none;}
   .bioSec p { margin-bottom: 5px;}
