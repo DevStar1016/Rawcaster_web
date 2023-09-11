@@ -34,9 +34,8 @@ const MeetingManagerComponent = () => {
     EventData,
     setattendeesList,
     setRequestStatusMessage,
-    RequestStatusMessage,
+    setisPresentScreen,
     setEventMessages,
-    EventMessages,
     setuserdata,
     setMeetingSettings,
     MeetingSettings,
@@ -88,6 +87,8 @@ const MeetingManagerComponent = () => {
           audiovideo?.stop();
         }
       }
+    } else if (attendeeId.includes("#content") && present) {
+      setisPresentScreen((pre) => true);
     }
   };
 
@@ -283,6 +284,8 @@ const MeetingManagerComponent = () => {
           if (message) {
             const user_data = message;
             const renamedUser = user_data.updatedUser;
+            console.log(renamedUser, "renamedUser");
+
             setattendeesList((pre) => {
               const targetIndex = pre.findIndex(
                 (item) => item.userId === renamedUser.userId
@@ -442,8 +445,10 @@ const MeetingManagerComponent = () => {
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
           try {
             const callEventData = message;
+            console.log(callEventData, "callEventData1");
             if (callEventData) {
               if (callEventData.screen_share_status === false) {
+                console.log(callEventData, "callEventData2");
                 if (isLocalUserSharing) {
                   toggleContentShare();
                 }
