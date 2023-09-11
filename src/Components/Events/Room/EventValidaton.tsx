@@ -74,7 +74,10 @@ const EventValidaton = () => {
     setisEndLoading("Leaving Please Wait ..");
     return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
-      formData.append("token", token);
+      if (token) {
+        formData.append("token", token);
+      }
+
       formData.append("meeting_id", EventData?.chime_meeting_id);
       formData.append("attendeeId", userdetails?.AttendeeId);
       ExitMeetingService(formData)
@@ -100,7 +103,10 @@ const EventValidaton = () => {
     setisEndLoading("Please Wait Meeting Has Been Ended ..");
     return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
-      formData.append("token", token);
+      if (token) {
+        formData.append("token", token);
+      }
+
       formData.append("meeting_id", EventData?.chime_meeting_id);
       EndMeetingService(formData)
         .then(() => {
