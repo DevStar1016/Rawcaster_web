@@ -1,10 +1,15 @@
 import moment from "moment";
-import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
+import {
+  JSONtoformdata,
+  decodeHtml,
+  utctoUserTimezone,
+} from "../../Shared/Utility";
 import {
   FollowandunfollowService,
   unFriendService,
 } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
+import { useAppSelector } from "../../Store/Redux/Config/Hooks";
 
 /**
  * Calculates the age based on the given date of birth.
@@ -18,13 +23,29 @@ export const calculate_age = (dob) => {
   return Math.abs(age_dt.getUTCFullYear() - 1970);
 };
 
+export const defaultRawcaterPage = (val) => {
+  switch (val) {
+    case 1:
+      return "Nugget";
+    case 2:
+      return "Event";
+    case 3:
+      return "Chat";
+    default:
+      return "Nugget";
+  }
+};
+
 /**
  * Replaces placeholders in a biodata string with actual values from the given data object.
  * @param {object} data - The data object containing the biodata information.
  * @param {string} [type="display"] - The type of replacement to perform. Defaults to "display".
  * @returns {string} The formatted biodata string with placeholders replaced.
  */
-export const replaceBiodataHandler = (data, type = "display") => {
+
+function useReplaceBiodataHandler(data, isMyBio = false) {
+  const userSettings = useAppSelector((state) => state.auth.userSettings);
+
   if (data) {
     let defaultBioDataformat = "";
 
@@ -39,39 +60,57 @@ export const replaceBiodataHandler = (data, type = "display") => {
         defaultBioDataformat +
         "<first_name> <last_name> presently resides in <location>. ";
     }
+    defaultBioDataformat = isMyBio
+      ? defaultBioDataformat +
+        "<first_name>’s preferred communication language is <language> . <first_name> has been a Rawcaster <user_status>  since <date_of_join> and prefers to be contacted in Rawcaster through <rawcaster_default_page>."
+      : defaultBioDataformat +
+        "<first_name>’s preferred communication language is <language> . <first_name> has been a Rawcaster <user_status>  since <date_of_join>";
+    let str = defaultBioDataformat;
+    if (data.first_name) {
+      str = str.replace(/<first_name>/g, decodeHtml(data.first_name));
+    }
+    if (data.last_name) {
+      str = str.replace(/<last_name>/g, decodeHtml(data.last_name));
+    }
+    if (data.dob) {
+      str = str.replace(/<age>/g, calculate_age(moment(data.dob)));
+    }
+    if (data.dob) {
+      str = str.replace(/<dob>/g, moment(data.dob).format(" MMM YYYY "));
+    }
+    if (data.geo_location) {
+      str = str.replace(/<location>/g, data.geo_location);
+    }
+    if (data.language) {
+      str = str.replace(/<language>/g, data.language);
+    }
+    if (data.user_status) {
+      str = str.replace(/<user_status>/g, data.user_status);
+    }
+    if (data?.date_of_join) {
+      str = str.replace(
+        /<date_of_join>/g,
+        utctoUserTimezone(data?.date_of_join, userSettings?.time_zone).format(
+          " DD MMM YYYY "
+        )
+      );
+    }
 
-    defaultBioDataformat =
-      defaultBioDataformat +
-      "<first_name>’s preferred communication language is <language> . <first_name> has been a Rawcaster <user_status>  since <date_of_join> and prefers to be contacted in Rawcaster through <rawcaster_default_page>.";
-    let str =
-      data.bio_data !== null && type === "display" && data.bio_data !== ""
-        ? decodeHtml(data.bio_data)
-        : defaultBioDataformat;
-
-    str = str.replace(/<first_name>/g, decodeHtml(data.first_name));
-    str = str.replace(/<last_name>/g, decodeHtml(data.last_name));
-    str = str.replace(/<age>/g, calculate_age(moment(data.dob)));
-    str = str.replace(/<dob>/g, moment(data.dob).format(" MMM YYYY "));
-    str = str.replace(/<location>/g, data.geo_location);
-    str = str.replace(/<language>/g, data.language);
-    str = str.replace(/<user_status>/g, data.user_status);
-    str = str.replace(
-      /<date_of_join>/g,
-      "02-11-2022"
-      //   utility
-      //     .utctoUserTimezone(data.date_of_join, userSetting.time_zone)
-      //     .format(" DD MMM YYYY ")
-    );
-    str = str.replace(
-      /<rawcaster_default_page>/g,
-      "test"
-      // defaultRawcaterPage(userSetting ? userSetting.mobile_default_page : 1)
-    );
+    if (userSettings?.mobile_default_page && isMyBio) {
+      str = str.replace(
+        /<rawcaster_default_page>/g,
+        defaultRawcaterPage(
+          userSettings ? userSettings?.mobile_default_page : 1
+        )
+      );
+    }
 
     return str;
   }
   return "";
-};
+}
+
+export default useReplaceBiodataHandler;
 
 /**
  * Handles the unfriend service by sending a request to the server to unfriend a user.

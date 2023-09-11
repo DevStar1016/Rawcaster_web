@@ -5,8 +5,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchNuggetsbyId } from "../Action";
 import { addNuggetView } from "../../../Shared/SharedAPIs";
+import { NuggetReducerProps } from "../types/Nuggets";
 
-const initialState = {
+const initialState: NuggetReducerProps = {
   token: null,
   nuggetVideoPaused: false,
   nuggetFormData: {},
@@ -67,7 +68,7 @@ export const { actions, reducer } = createSlice({
             total_views: state.Nuggets[index].total_views + 1,
             viewed: 1,
           },
-          ...state.Nuggets.slice(index + 1, state.length),
+          ...state.Nuggets.slice(index + 1, state.Nuggets.length),
         ];
       }
     },
@@ -92,7 +93,7 @@ export const { actions, reducer } = createSlice({
     handleNuggetReadoutUrlUpdate: (state, action) => {
       const nugget_id = action.payload.nugget_id;
       let findIndex = [...state.Nuggets].findIndex(
-        (ele, index) => parseInt(ele.nugget_id) === parseInt(nugget_id)
+        (ele) => ele.nugget_id === parseInt(nugget_id)
       );
       if (findIndex !== -1) {
         let TempData = [...state.Nuggets];
@@ -106,7 +107,7 @@ export const { actions, reducer } = createSlice({
     handleNuggetTranslateUpdate: (state, action) => {
       const nugget_id = action.payload.nugget_id;
       let findIndex = [...state.Nuggets].findIndex(
-        (ele, index) => parseInt(ele.nugget_id) === parseInt(nugget_id)
+        (ele) => ele.nugget_id === parseInt(nugget_id)
       );
       if (findIndex !== -1) {
         let TempData = [...state.Nuggets];

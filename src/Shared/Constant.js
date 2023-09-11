@@ -9,7 +9,7 @@ export const DEFAULT_VIDEO_RAWCASTER =
 
 export const GOOGLE_CLIENT_ID =
   "749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com";
-
+export const NUGGET_SHARE_URL = "https://devshare.rawcaster.com/index.php?id=";
 export const FACEBOOK_APP_ID = "501963974865826";
 
 // export const INSTAGRAM_APP_ID = "1652047128572389";
@@ -24,7 +24,6 @@ export const FACEBOOK_APP_ID = "501963974865826";
 export const APPLE_API_KEY = "CR8PDZDGNZcom.rawcaster.app";
 
 export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com/";
-export const REDIRECT_URI = "https://localhost:3000/signup/";
 export const SECONDARY_REDIRECT_URI = "https://dev.rawcaster.com/signup";
 // export const INSTA_REDIRECT_URI = "https://dev.rawcaster.com/signup/";
 // SECONDARY CONSTANTS

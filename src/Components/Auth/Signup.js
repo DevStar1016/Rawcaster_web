@@ -3,7 +3,6 @@
  * @returns The JSX elements representing the signup page.
  */
 import { Button, Form } from "antd";
-import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SignupImg from "../../Assets/Images/png/signup-intro.png";

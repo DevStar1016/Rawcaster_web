@@ -421,7 +421,7 @@ export const HangupComponent = () => {
    */
   const getCurrentAttendee = () => {
     return attendeesList.find(
-      (ele: AttendeeUserData) => ele.userId === parseInt(getUserData()?.user_id)
+      (ele: AttendeeUserData) => ele.userId === getUserData()?.user_id
     );
   };
 
@@ -431,19 +431,21 @@ export const HangupComponent = () => {
    * @returns None
    */
   const HandleEndMeeting = () => {
-    if (getCurrentAttendee()?.isHost) {
-      EndMeeting({
-        Attendee: getCurrentAttendee(),
-        EventData,
-        handleEndMeeting,
-        meetingmanager,
-      });
-    } else {
-      ExitMeeting({
-        Attendee: getCurrentAttendee(),
-        EventData,
-        handleExitMeeting,
-      });
+    if (getCurrentAttendee()) {
+      if (getCurrentAttendee()?.isHost) {
+        EndMeeting({
+          Attendee: getCurrentAttendee(),
+          EventData,
+          handleEndMeeting,
+          meetingmanager,
+        });
+      } else {
+        ExitMeeting({
+          Attendee: getCurrentAttendee(),
+          EventData,
+          handleExitMeeting,
+        });
+      }
     }
   };
   return (

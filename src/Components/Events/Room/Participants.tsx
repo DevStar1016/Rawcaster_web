@@ -93,7 +93,7 @@ const Participants = () => {
     const findAttendee = attendeesList.find(
       (elem) => elem.userId === parseInt(ele.externalUserId)
     );
-    const isYou = parseInt(getUserData()?.user_id) === findAttendee?.userId;
+    const isYou = getUserData()?.user_id === findAttendee?.userId;
 
     /* List of Attendee Handling Options */
 

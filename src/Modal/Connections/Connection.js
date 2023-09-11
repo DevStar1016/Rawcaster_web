@@ -11,7 +11,7 @@
  * @returns The ConnectionModal component.
  */
 import { Empty, InputNumber, Modal, Select } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { filterValidObject } from "../../Shared/Utility";
 import classes from "./Connection.module.css";
 import { getCountylistService } from "../../Services/ApiService";
@@ -28,11 +28,12 @@ const ConnectionModal = ({
   value,
   userType,
   getConnectionList,
+  closeCall,
   filters,
 }) => {
   const [LocationList, setLocationList] = useState([]);
 
-  const { values, setFieldValue, resetForm, handleReset } = useFormik({
+  const { values, setFieldValue } = useFormik({
     initialValues: {
       location: "",
       gender: "",
@@ -76,11 +77,11 @@ const ConnectionModal = ({
     }
   };
 
-  const AgeProcess = useCallback(
-    _debounce(HandleAgeSubmit, 500),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  // const AgeProcess = useCallback(
+  //   _debounce(HandleAgeSubmit, 500),
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   []
+  // );
 
   return (
     <Modal
@@ -91,10 +92,9 @@ const ConnectionModal = ({
         onSuccess();
       }}
       onCancel={() => {
-        if (getConnectionList) {
+        if (!closeCall) {
           getConnectionList(filterValidObject({}));
         }
-
         onClose();
       }}
     >
@@ -154,7 +154,7 @@ const ConnectionModal = ({
                   };
                   getConnectionList(filterValidObject(finalValue));
                 }}
-                onSelect={(val, { key }) => {
+                onSelect={(_, { key }) => {
                   setFieldValue("gender", parseInt(key));
                   let finalValue = {
                     ...values,

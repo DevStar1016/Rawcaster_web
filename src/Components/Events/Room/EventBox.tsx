@@ -229,7 +229,7 @@ const EventBox = () => {
     );
     const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
 
-    const isYou = parseInt(getUserData()?.user_id) === findAttendee?.userId;
+    const isYou = getUserData()?.user_id === findAttendee?.userId;
     return (
       <div>
         <div className={classes.customNamePlate}>
@@ -278,7 +278,7 @@ const EventBox = () => {
       (elem: AttendeeUserData) => elem?.userId === parseInt(ele.externalUserId)
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
-    const isYou = parseInt(getUserData()?.user_id) === findAttendee?.userId;
+    const isYou = getUserData()?.user_id === findAttendee?.userId;
 
     if (findAttendee) {
       if (isYou && isVideoEnabled) {

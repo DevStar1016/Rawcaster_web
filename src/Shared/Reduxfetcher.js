@@ -2,51 +2,52 @@
  * Custom React hook that returns the login user data from the Redux store.
  * @returns The login user data.
  */
-import { useSelector } from "react-redux";
+
+import { useAppSelector } from "../Store/Redux/Config/Hooks";
 
 export const useAuthData = () => {
-  return useSelector((state) => state.auth.loginUserData);
+  return useAppSelector((state) => state.auth.loginUserData);
 };
 
 export const useEventTempAuthData = () => {
-  return useSelector((state) => state.auth.eventTempUserData);
+  return useAppSelector((state) => state.auth.eventTempUserData);
 };
 
 export const useAuthToken = () => {
-  return useSelector((state) => state.auth.loginToken);
+  return useAppSelector((state) => state.auth.loginToken);
 };
 
 export const useDashboard = () => {
-  return useSelector((state) => state.dashboard);
+  return useAppSelector((state) => state.dashboard);
 };
 
 export const useNuggets = () => {
-  return useSelector((state) => state.nuggets);
+  return useAppSelector((state) => state.nuggets);
 };
 
 export const useFriends = () => {
-  return useSelector((state) => state.dashboard.friendsList);
+  return useAppSelector((state) => state.dashboard.friendsList);
 };
 export const useGroups = () => {
-  return useSelector((state) => state.dashboard.groupsList);
+  return useAppSelector((state) => state.dashboard.groupsList);
 };
 
 export const useAuth = () => {
-  return useSelector((state) => state.auth);
+  return useAppSelector((state) => state.auth);
 };
 
 export const useNotification = () => {
-  return useSelector((state) => state.notification);
+  return useAppSelector((state) => state.notification);
 };
 
 export const useProfileVerifyModal = () => {
-  return useSelector((state) => state.dashboard.profileVerifyModalShow);
+  return useAppSelector((state) => state.dashboard.profileVerifyModalShow);
 };
 
 export const useSocket = () => {
-  return useSelector((state) => state.socket);
+  return useAppSelector((state) => state.socket);
 };
 
 export const useEventWindow = () => {
-  return useSelector((state) => state.utility.eventWindowRef);
+  return useAppSelector((state) => state.utility.eventWindowRef);
 };

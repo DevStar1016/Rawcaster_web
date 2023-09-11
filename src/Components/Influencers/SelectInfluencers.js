@@ -1,8 +1,7 @@
-import { Checkbox, Col, Empty, Row, Select, Spin, Tooltip } from "antd";
-import React, { useEffect, useState } from "react";
+import { Checkbox, Col, Empty, Row, Select, Tooltip } from "antd";
+import { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Influencers.module.css";
-import influencerdiamond from "../../Assets/Images/svg/influencers-diamond.svg";
 import { Link, useNavigate } from "react-router-dom";
 import {
   getInfluencerCategoryService,
@@ -15,14 +14,17 @@ import {
   getAuthToken,
   JSONtoformdata,
   filterValidObject,
+  ReadMore,
 } from "../../Shared/Utility";
 import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import ProfileImg from "../../UIComponents/ProfileImg";
+import useReplaceBiodataHandler from "../Profile/Utility";
 
 const SelectInfluencers = () => {
+  const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserData = useAuthData();
@@ -269,6 +271,96 @@ const SelectInfluencers = () => {
     return promise;
   };
 
+  const InfluencerComponent = ({ ele }) => {
+    const BioData = useReplaceBiodataHandler(ele);
+    return (
+      <Col xs={24} md={12} lg={8}>
+        <div className={classes.influencers}>
+          <div className="d-flex flex-row w-100">
+            <div className={classes.top}>
+              <ProfileImg
+                src={ele.profile_img}
+                imgClassName={classes.profileimg}
+                badgeClassName={classes.diamond}
+                Badgetype={ele?.user_status_id}
+                user={ele}
+              />
+
+              <p className={classes.counts}>{ele.followers}</p>
+            </div>
+
+            <img
+              className={classes.checked_icon}
+              alt="Checked"
+              src={
+                SelectedInfluencersList.includes(ele?.user_ref_id)
+                  ? Checked
+                  : unChecked
+              }
+              onClick={() => {
+                if (SelectedInfluencersList.includes(ele?.user_ref_id)) {
+                  setSelectedInfluencersList((pre) =>
+                    pre.filter((elem) => elem !== ele?.user_ref_id)
+                  );
+                } else {
+                  if (SelectedInfluencersList.length === 0) {
+                    setSelectedInfluencersList([ele?.user_ref_id]);
+                  } else {
+                    setSelectedInfluencersList((pre) => [
+                      ...pre,
+                      ele?.user_ref_id,
+                    ]);
+                  }
+                }
+              }}
+            ></img>
+          </div>
+          <Tooltip placement="topLeft" title={ele.display_name}>
+            <p className={classes.name}>
+              <p>{ele.display_name}</p>
+
+              <span className={classes.author}>{ele.category.toString()}</span>
+            </p>
+          </Tooltip>
+          <p className={classes.desc}>
+            <ReadMore
+              maxheight={"64px"}
+              isReadMore={false}
+              isLinkopenModal={isLinkopenModal}
+              setisLinkopenModal={setisLinkopenModal}
+              isReadMoreValid={() => {}}
+            >
+              {ele.bio_data && ele?.bio_data !== "" ? ele?.bio_data : BioData}
+            </ReadMore>
+          </p>
+          {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
+            <Link className={classes.selectedBtn}>
+              Selected <span className="material-symbols-outlined">done</span>
+            </Link>
+          ) : (
+            <>
+              {isLoadMore === ele.user_ref_id ? (
+                // <Spin />
+                <></>
+              ) : (
+                <Link
+                  className={classes.fanBtn}
+                  onClick={() => {
+                    dispatch(handleLoading(true));
+                    HandleupdateFans([ele?.user_ref_id]);
+                  }}
+                >
+                  Become a Fan{" "}
+                  <span className="material-icons">arrow_forward</span>
+                </Link>
+              )}
+            </>
+          )}
+        </div>
+      </Col>
+    );
+  };
+
   return (
     <div className="mainWrapper innerContent">
       <div className={classes.headerSec}>
@@ -465,91 +557,92 @@ const SelectInfluencers = () => {
 
         <Row gutter={15}>
           {influencerList?.map((ele) => {
-            return (
-              <Col xs={24} md={12} lg={8}>
-                <div className={classes.influencers}>
-                  <div className="d-flex flex-row w-100">
-                    <div className={classes.top}>
-                      <ProfileImg
-                        src={ele.profile_img}
-                        imgClassName={classes.profileimg}
-                        badgeClassName={classes.diamond}
-                        Badgetype={ele?.user_status_id}
-                        user={ele}
-                      />
+            // return (
+            //   <Col xs={24} md={12} lg={8}>
+            //     <div className={classes.influencers}>
+            //       <div className="d-flex flex-row w-100">
+            //         <div className={classes.top}>
+            //           <ProfileImg
+            //             src={ele.profile_img}
+            //             imgClassName={classes.profileimg}
+            //             badgeClassName={classes.diamond}
+            //             Badgetype={ele?.user_status_id}
+            //             user={ele}
+            //           />
 
-                      <p className={classes.counts}>{ele.followers}</p>
-                    </div>
+            //           <p className={classes.counts}>{ele.followers}</p>
+            //         </div>
 
-                    <img
-                      className={classes.checked_icon}
-                      alt="Checked"
-                      src={
-                        SelectedInfluencersList.includes(ele?.user_ref_id)
-                          ? Checked
-                          : unChecked
-                      }
-                      onClick={() => {
-                        if (
-                          SelectedInfluencersList.includes(ele?.user_ref_id)
-                        ) {
-                          setSelectedInfluencersList((pre) =>
-                            pre.filter((elem) => elem !== ele?.user_ref_id)
-                          );
-                        } else {
-                          if (SelectedInfluencersList.length === 0) {
-                            setSelectedInfluencersList([ele?.user_ref_id]);
-                          } else {
-                            setSelectedInfluencersList((pre) => [
-                              ...pre,
-                              ele?.user_ref_id,
-                            ]);
-                          }
-                        }
-                      }}
-                    ></img>
-                  </div>
-                  <Tooltip placement="topLeft" title={ele.display_name}>
-                    <p className={classes.name}>
-                      <p>{ele.display_name}</p>
+            //         <img
+            //           className={classes.checked_icon}
+            //           alt="Checked"
+            //           src={
+            //             SelectedInfluencersList.includes(ele?.user_ref_id)
+            //               ? Checked
+            //               : unChecked
+            //           }
+            //           onClick={() => {
+            //             if (
+            //               SelectedInfluencersList.includes(ele?.user_ref_id)
+            //             ) {
+            //               setSelectedInfluencersList((pre) =>
+            //                 pre.filter((elem) => elem !== ele?.user_ref_id)
+            //               );
+            //             } else {
+            //               if (SelectedInfluencersList.length === 0) {
+            //                 setSelectedInfluencersList([ele?.user_ref_id]);
+            //               } else {
+            //                 setSelectedInfluencersList((pre) => [
+            //                   ...pre,
+            //                   ele?.user_ref_id,
+            //                 ]);
+            //               }
+            //             }
+            //           }}
+            //         ></img>
+            //       </div>
+            //       <Tooltip placement="topLeft" title={ele.display_name}>
+            //         <p className={classes.name}>
+            //           <p>{ele.display_name}</p>
 
-                      <span className={classes.author}>
-                        {ele.category.toString()}
-                      </span>
-                    </p>
-                  </Tooltip>
-                  <p className={classes.desc}>
-                    Lorem ipsum dolor sit amet, consectetur ipsum adipiscing
-                    elit. Donec suscipit ex condim entum ante egestas suscipit
-                    <span className={classes.readmore}>read more</span>
-                  </p>
-                  {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
-                    <Link className={classes.selectedBtn}>
-                      Selected{" "}
-                      <span className="material-symbols-outlined">done</span>
-                    </Link>
-                  ) : (
-                    <>
-                      {isLoadMore === ele.user_ref_id ? (
-                        // <Spin />
-                        <></>
-                      ) : (
-                        <Link
-                          className={classes.fanBtn}
-                          onClick={() => {
-                            dispatch(handleLoading(true));
-                            HandleupdateFans([ele?.user_ref_id]);
-                          }}
-                        >
-                          Become a Fan{" "}
-                          <span className="material-icons">arrow_forward</span>
-                        </Link>
-                      )}
-                    </>
-                  )}
-                </div>
-              </Col>
-            );
+            //           <span className={classes.author}>
+            //             {ele.category.toString()}
+            //           </span>
+            //         </p>
+            //       </Tooltip>
+            //       <p className={classes.desc}>
+            //         Lorem ipsum dolor sit amet, consectetur ipsum adipiscing
+            //         elit. Donec suscipit ex condim entum ante egestas suscipit
+            //         <span className={classes.readmore}>read more</span>
+            //       </p>
+            //       {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
+            //         <Link className={classes.selectedBtn}>
+            //           Selected{" "}
+            //           <span className="material-symbols-outlined">done</span>
+            //         </Link>
+            //       ) : (
+            //         <>
+            //           {isLoadMore === ele.user_ref_id ? (
+            //             // <Spin />
+            //             <></>
+            //           ) : (
+            //             <Link
+            //               className={classes.fanBtn}
+            //               onClick={() => {
+            //                 dispatch(handleLoading(true));
+            //                 HandleupdateFans([ele?.user_ref_id]);
+            //               }}
+            //             >
+            //               Become a Fan{" "}
+            //               <span className="material-icons">arrow_forward</span>
+            //             </Link>
+            //           )}
+            //         </>
+            //       )}
+            //     </div>
+            //   </Col>
+            // );
+            return <InfluencerComponent ele={ele} />;
           })}
         </Row>
         {influencerList?.length === 0 && <Empty />}

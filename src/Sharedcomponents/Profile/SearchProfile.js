@@ -5,7 +5,7 @@
  * @param {Array} PeopleList - The list of people.
  * @returns A React component that displays the profile information.
  */
-import React from "react";
+
 import classes from "./Profile.module.css";
 import { Button } from "react-bootstrap";
 import {
@@ -29,9 +29,10 @@ import {
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
-import { replaceBiodataHandler } from "../../Components/Profile/Utility";
+import useReplaceBiodataHandler from "../../Components/Profile/Utility";
 
 const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
+  const defaultBioData = useReplaceBiodataHandler(ele);
   const navigate = useNavigate();
   const token = useAuthToken();
   const profileData = useAuthData();
@@ -109,19 +110,6 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
         }
       })
       .catch((err) => {});
-  };
-
-  /**
-   * Retrieves the bio data for the given element.
-   * If the bio data is not available, it calls the replaceBiodataHandler function to generate it.
-   * @returns The bio data for the element.
-   */
-  const getBioData = () => {
-    if (ele.bio !== "") {
-      return ele.bio;
-    } else {
-      return replaceBiodataHandler(ele);
-    }
   };
 
   return (
@@ -232,7 +220,14 @@ const SearchProfile = ({ ele, setPeopleList, PeopleList }) => {
           }}
         >
           <p>
-            <ReadMore isReadMoreValid={() => {}}>{getBioData()}</ReadMore>
+            {/**
+             * Retrieves the bio data for the given element.
+             * If the bio data is not available, it calls the useReplaceBiodataHandler function to generate it.
+             * @returns The bio data for the element.
+             */}
+            <ReadMore isReadMoreValid={() => {}}>
+              {ele.bio !== "" ? ele.bio : defaultBioData}
+            </ReadMore>
           </p>
         </div>
       </div>

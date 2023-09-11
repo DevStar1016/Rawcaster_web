@@ -74,7 +74,10 @@ const EventValidaton = () => {
     setisEndLoading("Leaving Please Wait ..");
     return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
-      formData.append("token", token);
+      if (token) {
+        formData.append("token", token);
+      }
+
       formData.append("meeting_id", EventData?.chime_meeting_id);
       formData.append("attendeeId", userdetails?.AttendeeId);
       ExitMeetingService(formData)
@@ -100,7 +103,10 @@ const EventValidaton = () => {
     setisEndLoading("Please Wait Meeting Has Been Ended ..");
     return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
-      formData.append("token", token);
+      if (token) {
+        formData.append("token", token);
+      }
+
       formData.append("meeting_id", EventData?.chime_meeting_id);
       EndMeetingService(formData)
         .then(() => {
@@ -123,7 +129,7 @@ const EventValidaton = () => {
   const handleJoinMeeting = async (message: MeetingJoinedDataProp) => {
     const { Attendee, meeting }: any = message.joinInfo.result;
     const finduserData = message.AttendeeList.find(
-      (ele: AttendeeUserData) => ele.userId === parseInt(getUserData()?.user_id)
+      (ele: AttendeeUserData) => ele.userId === getUserData()?.user_id
     );
     if (finduserData) {
       setuserdata(finduserData);
@@ -196,8 +202,7 @@ const EventValidaton = () => {
     return (
       isWaitingRoom &&
       EventData &&
-      parseInt(EventData.original_user_id) !==
-        parseInt(getUserData()?.user_id) &&
+      parseInt(EventData.original_user_id) !== getUserData()?.user_id &&
       EventData?.waiting_room
     );
   };

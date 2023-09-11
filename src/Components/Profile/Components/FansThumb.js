@@ -90,6 +90,7 @@ const FansThumb = () => {
           onClose={() => {
             setisSeeMore(false);
           }}
+          closeCall={true}
         />
       )}
     </div>

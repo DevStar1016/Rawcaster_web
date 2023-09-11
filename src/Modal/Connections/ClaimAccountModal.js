@@ -5,7 +5,6 @@
  * @param {string} msg - The message to display in the modal.
  * @returns A modal component with the claim account request information.
  */
-import React from "react";
 import classes from "./ClaimAccount.module.css";
 import { Modal } from "antd";
 import claimedAccount from "../../Assets/Icons/svg/Claim_success.svg";

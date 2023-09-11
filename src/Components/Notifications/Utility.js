@@ -165,7 +165,7 @@ export const NotificationsList = ({
             );
           } else {
             toast.remove("rawcaster");
-            toast.success(`Sucessfully rejected`, { id: "rawcaster" });
+            toast.success(`Sucessfully Accepted`, { id: "rawcaster" });
           }
           handleUpdate(ele.notification_id);
         } else {

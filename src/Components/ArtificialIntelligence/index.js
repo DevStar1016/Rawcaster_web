@@ -27,6 +27,7 @@ const ArtificialIntelligence = () => {
 
   const generateRandomId = () => {
     const randomId = Math.random().toString(36).substr(2, 9);
+
     return parseInt(randomId);
     // Perform any additional actions with the randomId here
   };
