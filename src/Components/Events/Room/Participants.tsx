@@ -36,7 +36,7 @@ const Participants = () => {
   const [SpeakerState, setSpeakerState] = useState<boolean | number | string>(
     false
   );
-  const [renameAttendee, setrenameAttendee] = useState(false);
+  const [renameAttendee, setrenameAttendee] = useState<any>(false);
   const [SearchData, setSearchData] = useState("");
   const {
     setisChatorParticipant,
@@ -104,7 +104,7 @@ const Participants = () => {
             key: "1",
             label: "Rename user",
             onClick: () => {
-              setrenameAttendee(true);
+              setrenameAttendee(findAttendee);
             },
           },
         ];
@@ -136,7 +136,7 @@ const Participants = () => {
           key: "1",
           label: "Rename user",
           onClick: () => {
-            setrenameAttendee(true);
+            setrenameAttendee(findAttendee);
           },
         },
         {
@@ -258,20 +258,6 @@ const Participants = () => {
               </Dropdown>
             ) : null}
           </div>
-          {renameAttendee && (
-            <RenameModal
-              open={renameAttendee}
-              ele={findAttendee}
-              success={() => {
-                toast.remove("rawcaster");
-                toast.success("Renamed Successfully", { id: "rawcaster" });
-                setrenameAttendee(false);
-              }}
-              close={() => {
-                setrenameAttendee(false);
-              }}
-            />
-          )}
         </div>
         <Collapse in={SpeakerState === findAttendee?.userId}>
           <div
@@ -420,6 +406,19 @@ const Participants = () => {
         {attendees.map((ele, index) => {
           return ele ? AttendeeComponent({ ele }) : null;
         })}
+        <RenameModal
+          key={renameAttendee?.userId}
+          open={renameAttendee}
+          ele={renameAttendee}
+          success={() => {
+            toast.remove("rawcaster");
+            toast.success("Renamed Successfully", { id: "rawcaster" });
+            setrenameAttendee(false);
+          }}
+          close={() => {
+            setrenameAttendee(false);
+          }}
+        />
       </Content>
       <Footer className={classes.footerSec}>
         {RequestRef.current.length !== 0 && (
