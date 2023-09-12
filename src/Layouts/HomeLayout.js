@@ -426,11 +426,13 @@ const HomeLayout = () => {
           <Outlet />
         </Content>
 
-        {loginUserData && loginUserData.user_status_id > 0 && (
-          <div className={classes.chatbotsec}>
-            <ArtificialIntelligence />
-          </div>
-        )}
+        {loginUserData &&
+          loginUserData.user_status_id > 0 &&
+          !pathname?.includes("viewprofile") && (
+            <div className={classes.chatbotsec}>
+              <ArtificialIntelligence />
+            </div>
+          )}
       </Layout>
     </GlobalContext.Provider>
   );
