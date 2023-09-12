@@ -28,6 +28,7 @@ const ChimeSocketComponent = () => {
         type: type,
         message: message,
       };
+      console.log(EventData);
       EventWindowRef.postMessage(EventData, "*");
     }
   };
@@ -206,6 +207,7 @@ const ChimeSocketComponent = () => {
   // Message in Meeting Room Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (message) => {
+      console.log("MEETING_ROOM_MSG", message);
       HandleSendToNewWindow(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, message);
     });
     return () => {

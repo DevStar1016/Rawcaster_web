@@ -34,9 +34,8 @@ const MeetingManagerComponent = () => {
     EventData,
     setattendeesList,
     setRequestStatusMessage,
-    RequestStatusMessage,
+    setisPresentScreen,
     setEventMessages,
-    EventMessages,
     setuserdata,
     setMeetingSettings,
     MeetingSettings,
@@ -88,6 +87,8 @@ const MeetingManagerComponent = () => {
           audiovideo?.stop();
         }
       }
+    } else if (attendeeId.includes("#content") && present) {
+      setisPresentScreen((pre) => true);
     }
   };
 
@@ -181,7 +182,7 @@ const MeetingManagerComponent = () => {
   };
 
   const onReceiveMessage = (e) => {
-    const { type, message } = e;
+    const { type, message } = e.data;
 
     if (message) {
       switch (type) {
@@ -283,6 +284,8 @@ const MeetingManagerComponent = () => {
           if (message) {
             const user_data = message;
             const renamedUser = user_data.updatedUser;
+            console.log(renamedUser, "renamedUser");
+
             setattendeesList((pre) => {
               const targetIndex = pre.findIndex(
                 (item) => item.userId === renamedUser.userId
@@ -311,6 +314,8 @@ const MeetingManagerComponent = () => {
           break;
         case CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG:
           if (message) {
+            console.log(message);
+
             const message_data = message;
             if (
               parseInt(message_data.from_user_id) !== getUserData()?.user_id
@@ -440,8 +445,10 @@ const MeetingManagerComponent = () => {
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
           try {
             const callEventData = message;
+            console.log(callEventData, "callEventData1");
             if (callEventData) {
               if (callEventData.screen_share_status === false) {
+                console.log(callEventData, "callEventData2");
                 if (isLocalUserSharing) {
                   toggleContentShare();
                 }
@@ -460,21 +467,11 @@ const MeetingManagerComponent = () => {
    */
 
   useEffect(() => {
-    window.addEventListener("message", (event) => {
-      onReceiveMessage(event.data);
-    });
+    window.addEventListener("message", onReceiveMessage);
     return () => {
-      window.removeEventListener("message", (event) => {
-        onReceiveMessage(event.data);
-      });
+      window.removeEventListener("message", onReceiveMessage);
     };
-  }, [
-    muted,
-    isVideoEnabled,
-    EventMessages,
-    RequestStatusMessage,
-    isLocalUserSharing,
-  ]);
+  }, [muted, isVideoEnabled, isLocalUserSharing]);
 
   /**
    * Default Audio Settings for Attendee and Host

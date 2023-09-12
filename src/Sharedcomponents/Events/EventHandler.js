@@ -68,6 +68,7 @@ const EventHandler = ({ title, isHost, ele }) => {
         CHIME_SOCKET_EVENTS.JOIN_REQUEST
       );
     };
+
     EventWindowRef.onclose = (e) => {
       e.stopPropagation();
     };

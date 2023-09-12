@@ -33,6 +33,8 @@ const EventLayout = () => {
     isLoading,
     userdata,
     isEndLoading,
+    isPresentScreen,
+    setisPresentScreen,
   }: EventContextProp = useEventRoomContext();
   const { Header, Footer } = Layout;
   const [isReactions, setisReactions] = useState(false);
@@ -41,7 +43,7 @@ const EventLayout = () => {
   const { roster } = useRosterState();
   const { toggleContentShare } = useContentShareControls();
   const attendees = Object.values(roster);
-  const [isPresentScreen, setisPresentScreen] = useState(false);
+
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const [isNewMessage, setisNewMessage] = useState(false);
 
@@ -111,11 +113,18 @@ const EventLayout = () => {
       );
       // Check if the user has an external user id
       if (findExternalUserId && findExternalUserId.externalUserId) {
+        console.log({
+          screen_share_status: false,
+          refId: EventData?.reference_id,
+          userId: parseInt(findExternalUserId.externalUserId),
+        });
+
         // Send a message to the meeting in call
         ChimesendMessage(
           {
             screen_share_status: false,
             refId: EventData?.reference_id,
+            hostId: userdata?.userId,
             userId: parseInt(findExternalUserId.externalUserId),
           },
           CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
@@ -180,21 +189,20 @@ const EventLayout = () => {
                   </div>
                 </Tooltip>
 
-                {userdata?.isHost ||
-                  (isLocalUserSharing && (
-                    <Tooltip placement="bottomLeft" title={"Stop Presenting"}>
-                      <div className={classes.iconSec}>
-                        <span
-                          className={`material-symbols-outlined ${classes.cancelIcon}`}
-                          onClick={() => {
-                            HandleCloseShareScreen();
-                          }}
-                        >
-                          cancel
-                        </span>
-                      </div>
-                    </Tooltip>
-                  ))}
+                {(userdata?.isHost || isLocalUserSharing) && (
+                  <Tooltip placement="bottomLeft" title={"Stop Presenting"}>
+                    <div className={classes.iconSec}>
+                      <span
+                        className={`material-symbols-outlined ${classes.cancelIcon}`}
+                        onClick={() => {
+                          HandleCloseShareScreen();
+                        }}
+                      >
+                        cancel
+                      </span>
+                    </div>
+                  </Tooltip>
+                )}
               </div>
             )}
           </Header>
