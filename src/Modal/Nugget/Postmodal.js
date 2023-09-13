@@ -430,13 +430,12 @@ const Postmodal = ({ visible, onClose }) => {
                 onPaste={(event) => {
                   const pastedText = event.clipboardData.getData("text/plain");
                   const selectedText = window.getSelection().toString();
-                  console.log(selectedText, pastedText);
                   const updatedText = textinputRef.current?.value?.replace(
                     selectedText,
                     pastedText
                   );
                   setFieldValue("content", updatedText);
-                  console.log(updatedText, "updatedText");
+
                   getLinkInfo(updatedText);
                 }}
                 value={values.content}
