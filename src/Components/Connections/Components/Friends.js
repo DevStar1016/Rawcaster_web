@@ -4,7 +4,6 @@
  * @param {string} searchInput - The search input used to filter the friends list.
  * @returns The JSX representation of a friend in the friends list.
  */
-import React from "react";
 import { decodeHtml, handleProfileNavigate } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";

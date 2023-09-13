@@ -38,7 +38,6 @@ const BioContainer = ({ isLoginuser }) => {
   } = useProfileContext();
   const [selectedCategory, setselectedCategory] = useState([]);
   const loginToken = useAuthToken();
-
   const { isSuccess, loginUserData } = useAuth();
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [BecameFanStatus, setBecameFanStatus] = useState("");
@@ -47,8 +46,7 @@ const BioContainer = ({ isLoginuser }) => {
     profileData,
     loginUserData && profileData?.user_id === loginUserData?.user_id
   );
-  console.log(BioData, "BioData");
-  const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
+  const { values, handleSubmit, handleChange } = useFormik({
     initialValues: {
       bio_data: "",
       influencer_category: [],
@@ -108,7 +106,7 @@ const BioContainer = ({ isLoginuser }) => {
           toast.error(response.data.msg, { id: "rawcaster" });
         }
       })
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   /**
@@ -206,7 +204,7 @@ const BioContainer = ({ isLoginuser }) => {
             style={{ display: isLoginuser ? "block" : "none" }}
             onClick={() => {
               setisAboutEdit(true);
-              console.log(BioData, "BioData");
+
               // setFieldValue("bio_data", BioData);
             }}
           >

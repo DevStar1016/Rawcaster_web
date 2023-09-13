@@ -5,6 +5,7 @@ import SearchResult from "./SearchResult";
 import classes from "./ItemsList.module.css";
 import { useSpecificConnectionNugget } from "../../Shared/Context";
 import { Empty } from "antd";
+import { defaultGroupImg } from "../../Shared/CommonConstants";
 
 const Grouplist = () => {
   const {
@@ -31,13 +32,15 @@ const Grouplist = () => {
     }
     if (shareWithData && share_type === 3) {
       let findData = groupsList.map((ele) => {
-        if (shareWithData.includes(ele.group_id)) {
+        console.log(ele.my_group, "ele.my_group");
+        if (shareWithData.includes(ele.group_id) && ele.my_group === 1) {
           return { ...ele, listname: decodeHtml(ele.group_name) };
         }
       });
       findData = findData.filter((ele) => ele !== undefined);
       setFilteredList(findData);
-      setConnectionData(groupsList);
+      const filterGroupList = groupsList.filter((ele) => ele.my_group === 1);
+      setConnectionData(filterGroupList);
     }
   }, [groupsList]);
 
@@ -88,7 +91,14 @@ const Grouplist = () => {
                 }}
               >
                 <div className={classes.leftSec}>
-                  <img src={ele.group_icon} alt={decodeHtml(ele.group_name)} />
+                  <img
+                    src={ele.group_icon}
+                    alt={decodeHtml(ele.group_name)}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = defaultGroupImg;
+                    }}
+                  />
                   <div className={classes.nameSec}>
                     <p>{decodeHtml(ele.group_name)}</p>
                   </div>
