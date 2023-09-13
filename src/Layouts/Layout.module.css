@@ -42,11 +42,11 @@ width: 100%;
 .endContainer {
   margin-right: 2%;
 }
-.logopart { width: 320px; cursor: pointer;align-self: center;}
+.logopart { width: 360px; cursor: pointer;align-self: center;}
 .logopart img { height: 40px;}
 .rightMenus { float: right; display: flex; align-items: center; justify-content: flex-end; width: 370px; }
 .topSearch {
-  width: calc(100% - 550px);
+  width: calc(100% - 660px);
   height: 45px; 
   /* max-width: 520px; */
   margin: auto;
@@ -290,6 +290,12 @@ color: #E8EAEE;
 .footerSec {
   padding: 0px !important;
   background-color: #392342 !important;
+}
+@media (min-width:768px) and (max-width:1100px) {
+  .topSearch {
+    width: calc(100% - 470px) !important;
+  }
+  .logopart { width: 250px !important;}
 }
 
 @media (max-width: 1100px) {
