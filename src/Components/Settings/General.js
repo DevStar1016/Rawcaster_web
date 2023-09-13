@@ -6,7 +6,7 @@
 import { Button, Modal, Radio, Select, Switch } from "antd";
 import { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
-import { useAuth, useAuthToken, useDashboard } from "../../Shared/Reduxfetcher";
+import { useAuth, useDashboard } from "../../Shared/Reduxfetcher";
 import { getTimeZone, getlanguagelist } from "../../Shared/DropdownApis";
 import { useSettingsContext } from "../../Shared/Context";
 import {
@@ -99,7 +99,7 @@ const General = () => {
     // Create a Set to store unique objects
     let uniqueId = [];
 
-    const uniqueArray = data?.filter((ele, index) => {
+    const uniqueArray = data?.filter((ele) => {
       if (uniqueId?.includes(ele?.language_code)) {
         uniqueId = [...uniqueId, ele?.language_code];
 
@@ -247,7 +247,7 @@ const General = () => {
                       className={classes.connectionselectBox}
                       placeholder="Search group"
                       value={getGroupList()}
-                      onChange={(val, value) => {
+                      onChange={(val) => {
                         setFieldValue([ele.groupkeyword], val);
                       }}
                       optionLabelProp="label"

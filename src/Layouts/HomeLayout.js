@@ -48,7 +48,11 @@ import {
   handleprofileVerifyModalShow,
 } from "../Store/Redux/Reducer/DashboardReducer";
 import { removeSessionStorageData } from "../Store/Storage";
-import { fetchNotificationList, fetchNuggetsbyId } from "../Store/Redux/Action";
+import {
+  fetchNotificationList,
+  fetchNuggetsbyId,
+  fetchuserSettingsbyToken,
+} from "../Store/Redux/Action";
 import {
   handleNuggetFormData,
   handleResetNuggets,
@@ -87,6 +91,7 @@ const HomeLayout = () => {
       handleLogout();
     }
     if (parseInt(key) === 2) {
+      dispatch(fetchuserSettingsbyToken(token));
       navigate("/setting");
     }
     if (parseInt(key) === 1) {
@@ -403,6 +408,7 @@ const HomeLayout = () => {
             }}
             onClick={() => {
               navigate("/setting");
+              dispatch(fetchuserSettingsbyToken(token));
               // let finalData = {
               //   dispatch,
               //   navigate,

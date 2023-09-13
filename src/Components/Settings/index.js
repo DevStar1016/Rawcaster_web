@@ -2,7 +2,7 @@
  * A React component that renders the settings page.
  * @returns The rendered settings page.
  */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
 import { Nav, Tab } from "react-bootstrap";
 import General from "./General";
@@ -19,10 +19,13 @@ import Blockuser from "./Blockuser";
 import Event from "./Event";
 import { handleAccountActive } from "../../Store/Redux/Reducer/AuthReducer";
 import { fetchuserSettingsbyToken } from "../../Store/Redux/Action";
+import { Button, Result } from "antd";
+import { useNavigate } from "react-router";
 
 const Settings = () => {
   const { userSettings } = useAuth();
   const token = useAuthToken();
+  const navigate = useNavigate();
   const [updateValue, setupdateValue] = useState([]);
   const dispatch = useDispatch();
   const [Progress, setProgress] = useState({
@@ -161,7 +164,7 @@ const Settings = () => {
    * @returns {Promise} - A promise that resolves with the updated user settings payload.
    */
   const handleupdate = (objValue) => {
-    let promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve) => {
       let finalObj = {
         ...objValue,
         token: token,
@@ -181,7 +184,7 @@ const Settings = () => {
             resolve(payload);
           });
         })
-        .catch((err) => {})
+        .catch(() => {})
         .finally(() => {
           let keys = Object.keys(objValue);
           setupdateValue((pre) => pre.filter((ele) => !keys.includes(ele)));
@@ -279,186 +282,204 @@ const Settings = () => {
     ProgressValue: Progress,
   };
 
-  const getTitle = () => {
-    if (activeTab === 0) {
-      return "General";
-    } else if (activeTab === 1) {
-      return "Notifications";
-    } else if (activeTab === 2) {
-      return "Blocking";
-    } else if (activeTab === 3) {
-      return "Change Password";
-    } else if (activeTab === 4) {
-      return "Event Settings";
-    }
-  };
-
   return (
     <SettingsContext.Provider value={settingsValues}>
-      <div className={classes.settingSec}>
-        <div
-          className={`${classes.sidebar}  ${
-            !visibleSideBar ? classes.hideSlidebar : null
-          }`}
-        >
-          <h2>Settings</h2>
-          <ul>
-            <li
-              className={activeTab === 0 ? classes.active : ""}
-              onClick={() => {
-                setActiveTab(0);
-                setvisibleSideBar(false);
-              }}
-            >
-              General
-            </li>
-            <li
-              className={activeTab === 1 ? classes.active : ""}
-              onClick={() => {
-                setActiveTab(1);
-                setvisibleSideBar(false);
-              }}
-            >
-              Notifications
-            </li>
-            <li
-              className={activeTab === 2 ? classes.active : ""}
-              onClick={() => {
-                setActiveTab(2);
-                setvisibleSideBar(false);
-              }}
-            >
-              Blocking
-            </li>
-            <li
-              className={activeTab === 3 ? classes.active : ""}
-              onClick={() => {
-                setActiveTab(3);
-                setvisibleSideBar(false);
-              }}
-            >
-              Change Password
-            </li>
-            <li
-              className={activeTab === 4 ? classes.active : ""}
-              onClick={() => {
-                setActiveTab(4);
-                setvisibleSideBar(false);
-              }}
-            >
-              Event Settings
-            </li>
-          </ul>
-        </div>
-        <div className={classes.settingmobMenu}>
-          <span
-            className="material-icons"
-            onClick={() => setvisibleSideBar((p) => !p)}
-          >
-            menu
-          </span>
-        </div>
-
-        <Tab.Container
-          id="left-tabs-example"
-          defaultActiveKey="general"
-          className="mt-5"
-        >
+      {userSettings ? (
+        <div className={classes.settingSec}>
           <div
             className={`${classes.sidebar}  ${
               !visibleSideBar ? classes.hideSlidebar : null
             }`}
           >
-            <Nav variant="pills" className="flex-column">
-              <h2>Settings</h2>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 1 ? classes.active : ""}
-                  onClick={() => {
-                    setActiveTab(1);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="general"
-                >
-                  General
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 2 ? classes.active : ""}
-                  onClick={() => {
-                    setActiveTab(2);
-                    setvisibleSideBar(false);
-                  }}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  eventKey="notifications"
-                >
-                  Notifications
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 3 ? classes.active : ""}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  onClick={() => {
-                    setActiveTab(3);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="blocking"
-                >
-                  Blocking
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 4 ? classes.active : ""}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  onClick={() => {
-                    setActiveTab(4);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="change_password"
-                >
-                  Change Password
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link
-                  className={activeTab === 5 ? classes.active : ""}
-                  disabled={userSettings?.account_active_inactive === 0}
-                  onClick={() => {
-                    setActiveTab(5);
-                    setvisibleSideBar(false);
-                  }}
-                  eventKey="event_setting"
-                >
-                  Event Settings
-                </Nav.Link>
-              </Nav.Item>
-            </Nav>
+            <h2>Settings</h2>
+            <ul>
+              <li
+                className={activeTab === 0 ? classes.active : ""}
+                onClick={() => {
+                  setActiveTab(0);
+                  setvisibleSideBar(false);
+                }}
+              >
+                General
+              </li>
+              <li
+                className={activeTab === 1 ? classes.active : ""}
+                onClick={() => {
+                  setActiveTab(1);
+                  setvisibleSideBar(false);
+                }}
+              >
+                Notifications
+              </li>
+              <li
+                className={activeTab === 2 ? classes.active : ""}
+                onClick={() => {
+                  setActiveTab(2);
+                  setvisibleSideBar(false);
+                }}
+              >
+                Blocking
+              </li>
+              <li
+                className={activeTab === 3 ? classes.active : ""}
+                onClick={() => {
+                  setActiveTab(3);
+                  setvisibleSideBar(false);
+                }}
+              >
+                Change Password
+              </li>
+              <li
+                className={activeTab === 4 ? classes.active : ""}
+                onClick={() => {
+                  setActiveTab(4);
+                  setvisibleSideBar(false);
+                }}
+              >
+                Event Settings
+              </li>
+            </ul>
+          </div>
+          <div className={classes.settingmobMenu}>
+            <span
+              className="material-icons"
+              onClick={() => setvisibleSideBar((p) => !p)}
+            >
+              menu
+            </span>
           </div>
 
-          <div className={`${classes.contentSec}`}>
-            <Tab.Content>
-              <Tab.Pane eventKey="general">
-                <General />
-              </Tab.Pane>
-              <Tab.Pane eventKey="notifications">
-                <Notifications />
-              </Tab.Pane>
-              <Tab.Pane eventKey="blocking">
-                <Blockuser />
-              </Tab.Pane>
-              <Tab.Pane eventKey="change_password">
-                <Changepassword />
-              </Tab.Pane>
-              <Tab.Pane eventKey="event_setting">
-                <Event />
-              </Tab.Pane>
-            </Tab.Content>
-          </div>
-        </Tab.Container>
-      </div>
+          <Tab.Container
+            id="left-tabs-example"
+            defaultActiveKey="general"
+            className="mt-5"
+          >
+            <div
+              className={`${classes.sidebar}  ${
+                !visibleSideBar ? classes.hideSlidebar : null
+              }`}
+            >
+              <Nav variant="pills" className="flex-column">
+                <h2>Settings</h2>
+                <Nav.Item>
+                  <Nav.Link
+                    className={activeTab === 1 ? classes.active : ""}
+                    onClick={() => {
+                      setActiveTab(1);
+                      setvisibleSideBar(false);
+                    }}
+                    eventKey="general"
+                  >
+                    General
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    className={activeTab === 2 ? classes.active : ""}
+                    onClick={() => {
+                      setActiveTab(2);
+                      setvisibleSideBar(false);
+                    }}
+                    disabled={userSettings?.account_active_inactive === 0}
+                    eventKey="notifications"
+                  >
+                    Notifications
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    className={activeTab === 3 ? classes.active : ""}
+                    disabled={userSettings?.account_active_inactive === 0}
+                    onClick={() => {
+                      setActiveTab(3);
+                      setvisibleSideBar(false);
+                    }}
+                    eventKey="blocking"
+                  >
+                    Blocking
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    className={activeTab === 4 ? classes.active : ""}
+                    disabled={userSettings?.account_active_inactive === 0}
+                    onClick={() => {
+                      setActiveTab(4);
+                      setvisibleSideBar(false);
+                    }}
+                    eventKey="change_password"
+                  >
+                    Change Password
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    className={activeTab === 5 ? classes.active : ""}
+                    disabled={userSettings?.account_active_inactive === 0}
+                    onClick={() => {
+                      setActiveTab(5);
+                      setvisibleSideBar(false);
+                    }}
+                    eventKey="event_setting"
+                  >
+                    Event Settings
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+            </div>
+
+            <div className={`${classes.contentSec}`}>
+              <Tab.Content>
+                <Tab.Pane eventKey="general">
+                  <General />
+                </Tab.Pane>
+                <Tab.Pane eventKey="notifications">
+                  <Notifications />
+                </Tab.Pane>
+                <Tab.Pane eventKey="blocking">
+                  <Blockuser />
+                </Tab.Pane>
+                <Tab.Pane eventKey="change_password">
+                  <Changepassword />
+                </Tab.Pane>
+                <Tab.Pane eventKey="event_setting">
+                  <Event />
+                </Tab.Pane>
+              </Tab.Content>
+            </div>
+          </Tab.Container>
+        </div>
+      ) : (
+        <div
+          className={
+            "d-flex align-item-center justify-content-center h-100 w-100 m-auto"
+          }
+        >
+          <Result
+            status="error"
+            title="Something Went Wrong !"
+            extra={[
+              <Button
+                type="primary"
+                key="console"
+                onClick={() => {
+                  navigate(-1);
+                }}
+              >
+                Go Dashboard
+              </Button>,
+              <Button
+                key="buy"
+                onClick={() => {
+                  dispatch(fetchuserSettingsbyToken(token));
+                }}
+              >
+                Try Again
+              </Button>,
+            ]}
+          ></Result>
+        </div>
+      )}
     </SettingsContext.Provider>
   );
 };

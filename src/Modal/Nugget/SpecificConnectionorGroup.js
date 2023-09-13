@@ -43,7 +43,7 @@ const SpecificConnectionorGroup = ({
     if (type === "group") {
       if (shareWithData.length !== 0 && share_type === 3) {
         let findData = groupsList.map((ele) => {
-          if (shareWithData.includes(ele.group_id)) {
+          if (shareWithData.includes(ele.group_id) && ele.my_group === 1) {
             return { ...ele, listname: decodeHtml(ele.group_name) };
           }
         });

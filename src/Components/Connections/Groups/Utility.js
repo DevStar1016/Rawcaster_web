@@ -23,9 +23,11 @@ import {
   Empty,
 } from "antd";
 import { toast } from "react-hot-toast";
-import uploadImg from "../../../Assets/Icons/png/upload.png";
 import tickIcon from "../../../Assets/Icons/png/tick.png";
-import { defaultprofileImg } from "../../../Shared/CommonConstants";
+import {
+  defaultGroupImg,
+  defaultprofileImg,
+} from "../../../Shared/CommonConstants";
 import ReportGroup from "../../../Modal/Report/ReportGroup";
 import ImageCropModal from "../../../Modal/ImageCropModal";
 import { useDispatch } from "react-redux";
@@ -86,24 +88,6 @@ export const GroupHeader = () => {
         toast.error("Please Select Valid Image", { id: "rawcaster" });
       }
     }
-    // const imageFile = event.target.files[0];
-    // if (!imageFile) {
-    //   toast.error("Please select image.");
-    // } else if (!imageFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
-    //   toast.error("Please select valid image format (jpg,jpeg,png) .");
-    // } else if (imageFile.size > 1 * 1024 * 1024) {
-    //   toast.error("Image size is too big (max 1MB)");
-    // } else {
-    //   if (GroupData && GroupData.group_category === 1) {
-    //     const editData = {
-    //       group_name: values.group_name,
-    //       group_icon: imageFile,
-    //     };
-    //     HandleModifyGroup(editData, false);
-    //     return;
-    //   }
-    //   setFieldValue("group_icon", imageFile);
-    // }
   };
 
   const HeaderActions = () => {
@@ -281,7 +265,7 @@ export const GroupHeader = () => {
                 ? typeof values.group_icon === "string"
                   ? values.group_icon
                   : URL.createObjectURL(values.group_icon)
-                : uploadImg
+                : defaultGroupImg
             }
             style={{ borderRadius: "2px" }}
             alt="gropup-icon"
@@ -289,7 +273,7 @@ export const GroupHeader = () => {
             height="44px"
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
-              currentTarget.src = defaultprofileImg;
+              currentTarget.src = defaultGroupImg;
             }}
           ></img>
         </div>

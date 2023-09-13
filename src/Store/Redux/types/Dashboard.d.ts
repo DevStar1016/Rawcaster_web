@@ -38,6 +38,7 @@ type GroupData = {
     last_msg:string | null,
     last_msg_datetime: string,
     result_list:number,
+    my_group:number,
     group_member_ids: number[],
     group_members_list: GroupMemberData[],
   }

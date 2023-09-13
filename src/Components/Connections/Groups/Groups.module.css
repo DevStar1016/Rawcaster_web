@@ -36,7 +36,7 @@ font-style: normal;
 font-weight: 500;
 font-size: 15px;
 line-height: 20px;
-
+border: none !important;
 /* identical to box height */
 max-width: 100px;
 text-align: center;

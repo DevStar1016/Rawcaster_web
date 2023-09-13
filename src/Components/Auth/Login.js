@@ -151,7 +151,7 @@ const Login = () => {
                 alt="Back to Home"
               />
             </Link>
-            <h1 className={classes.heading_h1}> Welcome to Rawcaster</h1>
+            <h1 className={classes.heading_h1}>Welcome to Rawcaster</h1>
             <p className={classes.subText}>
               Log in now to access the latest insights, experience for your
               social media performance.
