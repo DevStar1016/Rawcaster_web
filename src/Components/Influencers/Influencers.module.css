@@ -50,7 +50,7 @@
 .rightarrow { float: right; font-size: 19px; margin-left: 5px;    margin-top: 2px;}
 .influencers {
     background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 15px; margin-top: 20px; padding: 20px; float: left;
+    border-radius: 15px; margin-top: 20px; padding: 20px; float: left;width: 100%;
 }
 .influencers .top { clear: both; width: 100%; float: left;}
 .influencers .counts { display: list-item; list-style: inside; color: #1D1C1C; margin-top: 20px; opacity: 0.7}
