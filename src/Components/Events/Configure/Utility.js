@@ -760,7 +760,9 @@ export const Connections = ({ onResult, values, onDeleteData }) => {
  */
 export const Groups = ({ onResult, values, onDeleteData }) => {
   const { groupsList } = useDashboard();
-  const [filterGroupList, setFilterGroupList] = useState([...groupsList]);
+  const [filterGroupList, setFilterGroupList] = useState([
+    ...groupsList.filter((ele) => ele.my_group === 1),
+  ]);
   const [selectedGroupList, setSelectedGroupList] = useState([]);
   const [selectedListVisible, setSelectedListVisible] = useState(false);
   const [GroupSearchInput, setGroupSearchInput] = useState(false);
@@ -773,7 +775,8 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
       return (
         decodeHtml(f.group_name).toLowerCase().includes(search.toLowerCase()) &&
         !selectedGroupList.includes(f) &&
-        f.group_id !== data.group_id
+        f.group_id !== data.group_id &&
+        f.my_group === 1
       );
     });
     setFilterGroupList([...filterData]);
@@ -788,13 +791,15 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
       setSelectedGroupList([]);
       const search = document.getElementById("Groupsearch").value;
       var filterData = groupsList.filter((f) => {
-        return decodeHtml(f.group_name)
-          .toLowerCase()
-          .includes(search.toLowerCase());
+        return (
+          decodeHtml(f.group_name)
+            .toLowerCase()
+            .includes(search.toLowerCase()) && f.my_group === 1
+        );
       });
       setFilterGroupList([...filterData]);
     } else {
-      setSelectedGroupList(groupsList);
+      setSelectedGroupList(groupsList.filter((ele) => ele.my_group === 1));
       setFilterGroupList([]);
     }
   };
@@ -803,7 +808,8 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
     var filterData = groupsList.filter((f) => {
       return (
         decodeHtml(f.group_name).toLowerCase().includes(search.toLowerCase()) &&
-        !selectedGroupList.includes(f)
+        !selectedGroupList.includes(f) &&
+        f.my_group === 1
       );
     });
     setFilterGroupList([...filterData]);
@@ -818,8 +824,9 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
       let finResult = groupsList.filter((ele) => values.includes(ele.group_id));
       setSelectedGroupList(finResult);
       let otherData = groupsList.filter(
-        (ele) => !values.includes(ele.group_id)
+        (ele) => !values.includes(ele.group_id) && ele.my_group === 1
       );
+      console.log(otherData, "otherData");
       setFilterGroupList([...otherData]);
     }
   }, [values]);
@@ -870,8 +877,8 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
             }
             onClick={selectAllGroupsHandler}
           >
-            {groupsList.length === selectedGroupList.length &&
-            selectedGroupList.length > 0
+            {groupsList.filter((ele) => ele.my_group === 1).length ===
+              selectedGroupList.length && selectedGroupList.length > 0
               ? "Remove all"
               : "Invite All"}
           </span>

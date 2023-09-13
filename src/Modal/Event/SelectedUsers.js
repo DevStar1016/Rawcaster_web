@@ -14,6 +14,10 @@ import React, { useState } from "react";
 import { decodeHtml } from "../../Shared/Utility";
 import classes from "./Event.module.css";
 import styles from "../Modal.module.css";
+import {
+  defaultGroupImg,
+  defaultprofileImg,
+} from "../../Shared/CommonConstants";
 
 const SelectedUsers = ({
   open,
@@ -72,6 +76,11 @@ const SelectedUsers = ({
                       <img
                         src={group.group_icon}
                         alt={decodeHtml(group.group_name)}
+                        onError={({ currentTarget }) => {
+                          currentTarget.onerror = null;
+                          currentTarget.src =
+                            type === 1 ? defaultprofileImg : defaultGroupImg;
+                        }}
                       />
                       <p>{decodeHtml(group.group_name)}</p>
                     </div>
