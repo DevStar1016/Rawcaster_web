@@ -109,15 +109,24 @@ const messageObserver = {
  * @returns None
  */
 export const connectChimeMessaging = (member) => {
-  const sessionConfig = new MessagingSessionConfiguration(
-    member.userId,
-    generateUniqueID(),
-    "node001.ue1.ws-messaging.chime.aws",
-    chimeClient
-  );
-  Session = new DefaultMessagingSession(sessionConfig, logger);
-  Session.addObserver(messageObserver);
-  Session.start();
+  try {
+    const sessionConfig = new MessagingSessionConfiguration(
+      member.userId,
+      generateUniqueID(),
+      "node001.ue1.ws-messaging.chime.aws",
+      chimeClient
+    );
+
+    Session = new DefaultMessagingSession(sessionConfig, logger);
+    Session.addObserver(messageObserver);
+    Session.start()
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (error) {
+    console.log("Failed to stop Messaging Session.", error);
+  }
 };
 
 /**
