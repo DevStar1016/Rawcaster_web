@@ -52,10 +52,10 @@
     background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 15px; margin-top: 20px; padding: 20px; float: left;width: 100%;
 }
-.influencers .top { clear: both; width: 100%; float: left;}
-.influencers .counts { display: list-item; list-style: inside; color: #1D1C1C; margin-top: 20px; opacity: 0.7}
-.influencers .profileimg {  width: 72px; height: 72px; border-radius: 50%; float: left; margin-right: 20px; margin-bottom: 20px;}
-.influencers .diamond { position: absolute;    left: 80px;    width: 30px;    top: 80px; }
+.influencers .top { clear: both; width: 100%; float: left;display: flex;justify-content: center;}
+.influencers .counts { display: list-item; list-style: inside; color: #1D1C1C; opacity: 0.7;align-self: center;}
+.influencers .profileimg {  width: 110px; border-radius: 50%; float: left; margin-right: 20px; margin-bottom: 20px;}
+.influencers .diamond { position: absolute;left: calc(100% - 51%);width: 30px;top: 118px; }
 .influencers .name { margin-bottom: 5px;
      font-size: 16px; font-weight: 400;
      display: flex;
@@ -101,6 +101,8 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
     cursor: pointer;
     width: 32px;
     height: 32px;
+    position: absolute;
+    right: 25px;
 }
 .becameFanBtn {
     cursor: default;
@@ -171,6 +173,7 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
 .headerSec .btnSec { display: block; width: 100%; text-align: center; margin-top: 15px; } 
 .selectCategory { margin-bottom: 20px;}
 .loadmoreSec { margin-bottom: 60px; }
+.influencers .diamond {left: calc(100% - 50.5%) !important;}
 }
 @media (max-width:574px) {
     .influencerContainer {
@@ -182,4 +185,5 @@ border-radius: 8px; color: #fff; width: 100%; float: left; padding: 12px 0; text
      .influencers .name p{
         margin-bottom: 4px !important;
      }
+    
 }
