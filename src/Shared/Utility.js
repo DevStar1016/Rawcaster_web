@@ -743,6 +743,7 @@ export const fetchGoogleContacts = async () => {
  * @param {boolean} isReadMoreValid - A function to check if the "Read More" functionality is valid
  */
 export const ReadMore = ({
+  Influencer,
   partialShowLines = 3,
   children,
   isReadMore = true,
@@ -859,7 +860,10 @@ export const ReadMore = ({
               expandable: true,
             }}
             // ellipsis={true}
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+              width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+            }}
           >
             {children}
           </Paragraph>

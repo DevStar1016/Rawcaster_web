@@ -324,7 +324,8 @@ const SelectInfluencers = () => {
           </Tooltip>
           <p className={classes.desc}>
             <ReadMore
-            partialShowLines={1}
+              Influencer={true}
+              partialShowLines={1}
               maxheight={"64px"}
               isReadMore={false}
               isLinkopenModal={isLinkopenModal}
