@@ -4,7 +4,7 @@
   width: calc(100% - 620px);
   background: #fff;
   /* border-top: 20px solid #fff; */
-  /* height: calc(100vh - 70px) !important; */
+  height: calc(100vh - 70px) !important;
   overflow-y: auto;
 }
 .nuggetSec::-webkit-scrollbar {
