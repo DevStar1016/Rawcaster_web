@@ -254,13 +254,15 @@ export const getNuggetDetailService = (data: FormData) => {
   return axios.post("getnuggetdetail", data);
 };
 
+type AbortType = {
+  signal: AbortSignal;
+};
+
 export const getNuggetContentAudioService = (
   data: FormData,
-  token: CancelToken | undefined
+  signal: AbortType | undefined
 ) => {
-  return axios.post("nuggetcontentaudio", data, {
-    cancelToken: token,
-  });
+  return axios.post("nuggetcontentaudio", data, signal);
 };
 
 export const getNuggetandCommentLikedUserListService = (data: FormData) => {

@@ -133,6 +133,9 @@ const PostNuggets = ({ isUserPostAvailable }) => {
     if (val.content !== "") {
       formData.append("content", val.content);
     }
+    if (MetaData && NuggetData.length === 0) {
+      formData.append("metadata", JSON.stringify(MetaData));
+    }
     if (deletedMedia.length !== 0) {
       formData.append("delete_media_id", JSON.stringify(deletedMedia));
     }
@@ -311,6 +314,9 @@ const PostNuggets = ({ isUserPostAvailable }) => {
             content: decodeHtml(res.data.nugget_detail.content),
             share_type: res.data.nugget_detail.share_type,
           });
+          if (res.data.nugget_detail.metadata) {
+            setMetaData(JSON.parse(res.data.nugget_detail.metadata));
+          }
           if (
             res.data.nugget_detail.share_type === 3 ||
             res.data.nugget_detail.share_type === 4

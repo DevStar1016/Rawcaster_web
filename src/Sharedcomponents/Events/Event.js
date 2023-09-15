@@ -239,7 +239,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
                 {decodeHtml(ele.event_name)}
               </h3>
             </Tooltip>
-            {isNotExpired() && isCreatedUser() && (
+            {isCreatedUser() && (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -317,14 +317,14 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
             </p>
           )}
         </div>
-        {isNotExpired() && (
-          <EventHandler
-            isHost={isCreatedUser()}
-            title={ele.type === 2 ? "Talkshow" : "Event"}
-            meetingId={ele.event_id}
-            ele={ele}
-          />
-        )}
+        {/* {isNotExpired() && ( */}
+        <EventHandler
+          isHost={isCreatedUser()}
+          title={ele.type === 2 ? "Talkshow" : "Event"}
+          meetingId={ele.event_id}
+          ele={ele}
+        />
+        {/* )} */}
       </div>
     </div>
   );

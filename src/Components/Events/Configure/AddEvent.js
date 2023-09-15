@@ -43,7 +43,6 @@ import {
   filterValidObject,
   getUtcToSystemTime,
   userTimezonetoUtc,
-  utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
@@ -770,6 +769,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             moment().add(10, "minutes").format("HH:mm") <=
                             moment(res, "hh:mm A").format("HH:mm")
                           ) {
+                            console.log(res, "res");
                             setFieldValue(
                               "event_start_time",
                               moment(res, "hh:mm A").format("HH:mm")
