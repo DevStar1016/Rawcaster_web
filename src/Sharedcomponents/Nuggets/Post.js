@@ -510,7 +510,7 @@ const Post = ({
                 document.execCommand("copy");
                 document.body.removeChild(el);
                 toast.remove("rawcaster");
-                toast.success("Text copied to clipboard", { id: "rawcaster" });
+                toast.success("Link copied to clipboard", { id: "rawcaster" });
               }}
               className={classes.dropdownItem}
             >

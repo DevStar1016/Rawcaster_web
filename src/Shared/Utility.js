@@ -939,14 +939,16 @@ export function formatBytes(bytes) {
  * @returns {Promise} - A promise that resolves when the text is successfully copied to the clipboard.
  *                     Rejects with an error if there was an issue copying the text.
  */
-export const handleCopyText = (url) => {
+export const handleCopyText = (url, successMsg = null) => {
   return new Promise((resolve, reject) => {
     navigator.clipboard
       .writeText(url)
       .then(() => {
         resolve();
         toast.remove("rawcaster");
-        toast.success("Text copied to clipboard", { id: "rawcaster" });
+        toast.success(successMsg ? successMsg : "Link copied to clipboard", {
+          id: "rawcaster",
+        });
       })
       .catch((error) => {
         console.error("Error copying text:", error);
