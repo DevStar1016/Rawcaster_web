@@ -239,7 +239,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
                 {decodeHtml(ele.event_name)}
               </h3>
             </Tooltip>
-            {isNotExpired() && isCreatedUser() && (
+            {isCreatedUser() && (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
