@@ -221,6 +221,7 @@ const Postmodal = ({ visible, onClose }) => {
       width={650}
       onCancel={() => {
         onClose();
+        setMetaData(null);
         setPostContent("");
       }}
     >
