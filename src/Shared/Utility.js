@@ -500,6 +500,7 @@ export const utctoUserTimezone = (time, zonename = null) => {
     let displayCutoff = moment1(utcCutoff)
       .tz(getTimezoneName(zonename))
       .format("YYYY-MM-DD HH:mm:ss");
+    console.log(displayCutoff, "displayCutoff");
     return moment(displayCutoff);
   } else {
     return moment(utcCutoff);

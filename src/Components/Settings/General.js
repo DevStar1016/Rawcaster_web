@@ -100,12 +100,12 @@ const General = () => {
     let uniqueId = [];
 
     const uniqueArray = data?.filter((ele) => {
-      if (uniqueId?.includes(ele?.language_code)) {
-        uniqueId = [...uniqueId, ele?.language_code];
+      if (uniqueId?.includes(ele?.id)) {
+        uniqueId = [...uniqueId, ele?.id];
 
         return undefined;
       }
-      uniqueId = [...uniqueId, ele?.language_code];
+      uniqueId = [...uniqueId, ele?.id];
       return ele;
     });
     return uniqueArray;

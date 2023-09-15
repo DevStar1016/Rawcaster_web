@@ -317,14 +317,14 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
             </p>
           )}
         </div>
-        {isNotExpired() && (
-          <EventHandler
-            isHost={isCreatedUser()}
-            title={ele.type === 2 ? "Talkshow" : "Event"}
-            meetingId={ele.event_id}
-            ele={ele}
-          />
-        )}
+        {/* {isNotExpired() && ( */}
+        <EventHandler
+          isHost={isCreatedUser()}
+          title={ele.type === 2 ? "Talkshow" : "Event"}
+          meetingId={ele.event_id}
+          ele={ele}
+        />
+        {/* )} */}
       </div>
     </div>
   );
