@@ -25,8 +25,8 @@ const InitialRenderComponent = () => {
     function (response) {
       if (response?.data?.status === -1) {
         console.log(response?.data);
-        // RemoveToken(dispatch);
-        // window.location.reload();
+        RemoveToken(dispatch);
+        window.location.reload();
       }
       return response;
     },
