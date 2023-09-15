@@ -11,12 +11,19 @@ import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { useMainContext } from "../../Shared/Context";
 import { downloadurl } from "../../Shared/Utility";
 
+type ImageProps = {
+  path: string;
+  media_type: string;
+  media_file_type: string;
+  media_id: string;
+};
+
 type props = {
-  imgArray: Array<object | any>;
+  imgArray: ImageProps[];
   downloadable: number;
   isPreview?: boolean;
   isThumb?: boolean;
-  onPlay: any;
+  onPlay: () => void;
 };
 
 function ImageGrid({
@@ -29,15 +36,15 @@ function ImageGrid({
   const dispatch = useDispatch();
   const { nuggetVideoPaused, isNuggetMuted } = useNuggets();
   const { player, setplayer } = useMainContext();
-  const [isPlaying, setisPlaying] = useState();
+  const [isPlaying, setisPlaying] = useState<string | number | undefined>();
   const [isVisible, setIsVisible] = useState(false);
   const [ActiveModalIndex, setActiveModalIndex] = useState(0);
 
   const [ref] = useInView({
     threshold: 0.5,
-    onEnter: (entry: any) => {
+    onEnter: (entry: IntersectionObserverEntry) => {
       if (entry.target) {
-        setisPlaying(entry?.target.id);
+        setisPlaying(entry.target.id);
       }
     },
     onLeave: () => {
@@ -115,7 +122,7 @@ function ImageGrid({
   useEffect(() => {
     if (imgArray.length !== 0) {
       let filter = imgArray.filter(
-        (ele: any) => `videoSingleId${ele?.media_id}` !== isPlaying
+        (ele: ImageProps) => `videoSingleId${ele?.media_id}` !== isPlaying
       );
       // eslint-disable-next-line  array-callback-return
       filter.map((ele) => {
@@ -127,7 +134,7 @@ function ImageGrid({
     }
   }, [imgArray, isPlaying]);
 
-  const ImageOrVideoThumb = ({ data }: any) => {
+  const ImageOrVideoThumb = ({ data }) => {
     if (data.media_type === "image") {
       return isValidImg(data.path) ? (
         <img
@@ -171,7 +178,7 @@ function ImageGrid({
     }
   };
 
-  const imageOrVideoSingle = (data: any, index: number) => {
+  const imageOrVideoSingle = (data: ImageProps, index: number) => {
     if (data.media_type === "image") {
       return isValidImg(data.path) ? (
         <img
@@ -293,7 +300,7 @@ function ImageGrid({
             const video = document.getElementById(`modal_video_${i}`);
             setplayer(video);
             // eslint-disable-next-line  array-callback-return
-            let findArray = imgArray?.map((ele: any, i: number) => {
+            let findArray = imgArray?.map((ele: ImageProps, i: number) => {
               if (`modal_video_${i}` !== e.target.id) {
                 return `modal_video_${i}`;
               } else {
@@ -302,13 +309,18 @@ function ImageGrid({
               }
             });
             // eslint-disable-next-line  array-callback-return
-            findArray = findArray.filter((ele: any) => ele !== undefined);
+            findArray = findArray.filter(
+              (ele: string | undefined) => ele !== undefined
+            );
             // eslint-disable-next-line  array-callback-return
-            findArray.map((ele: any) => {
-              let findVal: any = document.getElementById(ele);
+            findArray.map((ele: string | undefined) => {
+              if (ele) {
+                const findVal: HTMLElement | null =
+                  document.getElementById(ele);
 
-              if (findVal) {
-                findVal.pause();
+                if (findVal && findVal instanceof HTMLVideoElement) {
+                  findVal.pause();
+                }
               }
             });
 
@@ -317,7 +329,6 @@ function ImageGrid({
             }
           }}
           src={`${data.path}#t=0.001`}
-          // type="video/mp4"
           onVolumeChange={volumechanged}
         ></video>
       );
@@ -334,7 +345,7 @@ function ImageGrid({
     }
   };
 
-  const imageOrVideoSingleBg = (data: any) => {
+  const imageOrVideoSingleBg = (data: ImageProps) => {
     if (data.media_type === "image") {
       return `url(
         ${data.path}
@@ -344,7 +355,7 @@ function ImageGrid({
     }
   };
 
-  const imageOrVideo = (data: any, isThumb: boolean) => {
+  const imageOrVideo = (data: ImageProps, isThumb: boolean) => {
     if (data.media_type === "image") {
       return (
         <Fragment>
@@ -429,7 +440,7 @@ function ImageGrid({
     setIsVisible(true);
   };
 
-  const ImageorSingleModal = (data: any, index: number) => {
+  const ImageorSingleModal = (data: ImageProps, index: number) => {
     if (data.media_type === "image") {
       return (
         <div key={index} style={{ height: "100%" }}>
@@ -738,7 +749,7 @@ function ImageGrid({
             className={`gallery_popup ${classes.GalleryImgModal}`}
             open={isVisible}
             onCancel={() => {
-              let findArray = imgArray?.map((ele: any, i: number) => {
+              let findArray = imgArray?.map((ele: ImageProps, i: number) => {
                 return `modal_video_${i}`;
               });
               // eslint-disable-next-line  array-callback-return
@@ -792,7 +803,7 @@ function ImageGrid({
                     ) : null
                   }
                 >
-                  {imgArray?.map((ele: any, index: number) => {
+                  {imgArray?.map((ele: ImageProps, index: number) => {
                     return (
                       <Carousel.Item>
                         {ImageorSingleModal(ele, index)}

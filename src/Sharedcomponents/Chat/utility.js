@@ -928,7 +928,7 @@ export const MessageContent = (props) => {
       label: (
         <div
           onClick={() => {
-            handleCopyText(message);
+            handleCopyText(message, "Text copied to clipboard");
           }}
         >
           Copy
