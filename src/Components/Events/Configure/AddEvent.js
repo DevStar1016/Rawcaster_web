@@ -65,7 +65,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const [EventData, setEventData] = useState(null);
   const [isSuccesspage, setisSuccesspage] = useState(false);
   const [SelectedTime, setSelectedTime] = useState(
-    moment().add(10, "minutes").format("HH:mm")
+    moment().add(15, "minutes").format("HH:mm")
   );
 
   const {
@@ -726,25 +726,28 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         allowClear={false}
                         format={"YYYY-MM-DD"}
                         onChange={(date, dateString) => {
+                          console.log(dateString, "dateString");
                           setFieldValue("event_start_date", dateString);
+
                           if (
-                            moment(new Date()).format("DD:MM:YYYY") ==
-                            moment(dateString, "YYYY-MM-DD").format(
-                              "DD:MM:YYYY"
+                            moment().isSame(
+                              moment(dateString, "YYYY-MM-DD"),
+                              "day"
                             )
                           ) {
                             if (
-                              !(
-                                moment().format("HH:mm") <
-                                moment(values.event_start_time, "HH:mm").format(
-                                  "HH:mm"
+                              moment()
+                                .add(15, "minutes")
+                                .isAfter(
+                                  moment(values.event_start_time, "HH:mm")
                                 )
-                              )
                             ) {
                               setFieldValue("event_start_time", "");
                             }
                           } else {
-                            setFieldValue("event_start_time", SelectedTime);
+                            if (values.event_start_time !== "") {
+                              setFieldValue("event_start_time", SelectedTime);
+                            }
                           }
                         }}
                       />
@@ -760,18 +763,21 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                       onResult={(res) => {
                         // setSelectedTime(moment(res, "hh:mm A").format("HH:mm"));
                         if (
-                          moment().format("DD:MM:YYYY") ==
-                          moment(values.event_start_date, "YYYY-MM-DD").format(
-                            "DD:MM:YYYY"
+                          moment().isSame(
+                            moment(values.event_start_date, "YYYY-MM-DD"),
+                            "day"
                           )
                         ) {
                           if (
-                            moment().add(10, "minutes").format("HH:mm") <=
-                            moment(res, "hh:mm A").format("HH:mm")
+                            moment()
+                              .add(15, "minutes")
+                              .isSameOrBefore(moment(res, "hh:mm A"))
                           ) {
-                            console.log(res, "res");
                             setFieldValue(
                               "event_start_time",
+                              moment(res, "hh:mm A").format("HH:mm")
+                            );
+                            setSelectedTime(
                               moment(res, "hh:mm A").format("HH:mm")
                             );
                           } else {
@@ -780,6 +786,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         } else {
                           setFieldValue(
                             "event_start_time",
+                            moment(res, "hh:mm A").format("HH:mm")
+                          );
+                          setSelectedTime(
                             moment(res, "hh:mm A").format("HH:mm")
                           );
                         }

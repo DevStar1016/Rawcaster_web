@@ -25,7 +25,7 @@ import {
   handleNuggetFormData,
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
-import { message } from "antd";
+import { Popover, message } from "antd";
 import { Typography } from "antd";
 import axios, { isCancel } from "axios";
 import { toast } from "react-hot-toast";
@@ -256,7 +256,7 @@ export const getAuthenticated = () => {
     return false;
   }
 };
-
+console.log(getAuthenticated());
 /**
  * Loads a resource from the specified URL using XMLHttpRequest.
  * @param {string} url - The URL of the resource to load.
@@ -500,7 +500,7 @@ export const utctoUserTimezone = (time, zonename = null) => {
     let displayCutoff = moment1(utcCutoff)
       .tz(getTimezoneName(zonename))
       .format("YYYY-MM-DD HH:mm:ss");
-    console.log(displayCutoff, "displayCutoff");
+
     return moment(displayCutoff);
   } else {
     return moment(utcCutoff);
@@ -742,6 +742,8 @@ export const fetchGoogleContacts = async () => {
  * @param {boolean} isLinkopenModal - Whether to open a modal when a link is clicked.
  * @param {function} setisLinkopenModal - A function to set the state of isLinkopenModal.
  * @param {boolean} isReadMoreValid - A function to check if the "Read More" functionality is valid
+ *  @param {boolean} isMetaDataAvailable - A function to check if the "Meta Data Available" functionality is valid
+ * @param {function} MetaDataContent - A function to Display Meta Data
  */
 export const ReadMore = ({
   Influencer,
@@ -753,6 +755,8 @@ export const ReadMore = ({
   isReadMoreValid,
   onExpand,
   partialHeight,
+  isMetaDataAvailable = false,
+  MetaDataContent = <></>,
 }) => {
   const { Paragraph } = Typography;
   const [OnEllipsis, setOnEllipsis] = useState(false);
@@ -769,7 +773,22 @@ export const ReadMore = ({
           }}
           {...props}
         >
-          {decodeHtml(content)}
+          {isMetaDataAvailable ? (
+            <Popover
+              content={MetaDataContent}
+              overlayInnerStyle={{
+                padding: 0,
+                width: "100%",
+              }}
+              onClick={() => {
+                setisLinkopenModal(true);
+              }}
+            >
+              {decodeHtml(content)}
+            </Popover>
+          ) : (
+            decodeHtml(content)
+          )}
         </a>
 
         <LinkOpenModal
@@ -850,7 +869,8 @@ export const ReadMore = ({
       ) : (
         <>
           <Paragraph
-            className={`ReadMoreText ${classes.dNoneExpand}`}
+            // className={`ReadMoreText ${classes.dNoneExpand}`}
+            className="ReadMoreText"
             ellipsis={{
               rows: parseInt(partialShowLines),
               onExpand: onExpand,

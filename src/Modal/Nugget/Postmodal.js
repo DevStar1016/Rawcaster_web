@@ -162,33 +162,54 @@ const Postmodal = ({ visible, onClose }) => {
    * @param {string} val - The value to extract link information from.
    * @returns None
    */
-  const getLinkInfo = (url) => {
-    const isValidUrl = () => {
-      try {
-        new URL(url);
-        return true;
-      } catch (error) {
-        return false;
-      }
-    };
-    if (url && isValidUrl() && oldUrl !== url) {
-      const userData = {
-        token,
-        url,
-      };
-      GeturlmetadataService(JSONtoformdata(userData))
-        .then((res) => {
-          const { title, description, open_graph_image } = res.data.data;
-          if (title && description && open_graph_image)
-            setMetaData({
-              title,
-              description,
-              image: open_graph_image,
+
+  const getLinkInfo = (val) => {
+    if (val) {
+      // let expression = /([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?/gm;
+      let expression =
+        /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+      var regex = new RegExp(expression);
+      var t = val;
+      if (t.match(regex)) {
+        let url = t.match(regex);
+        let addHttp = url[url.length - 1].replace(
+          /^(?:(.*:)?\/\/)?(.*)/i,
+          (match, schemma, nonSchemmaUrl) =>
+            schemma ? match : `http://${nonSchemmaUrl}`
+        );
+        let index = addHttp.indexOf("http");
+        if (index > 0) {
+          addHttp = addHttp.substring(index, addHttp.length);
+        }
+
+        if (oldUrl !== addHttp) {
+          console.log(addHttp, "URLLLL");
+
+          setOldurl(addHttp);
+
+          const userData = {
+            token,
+            url,
+          };
+          GeturlmetadataService(JSONtoformdata(userData))
+            .then((res) => {
+              const { title, description, open_graph_image } = res.data.data;
+              // if (title && description && open_graph_image)
+              setMetaData({
+                title,
+                description,
+                image: open_graph_image,
+              });
+            })
+            .finally(() => {
+              setOldurl(url);
             });
-        })
-        .finally(() => {
-          setOldurl(url);
-        });
+          // let message = { event: "getmetadata", url: addHttp };
+          // handleSendMetadatamessage(message);
+        }
+      } else {
+        setMetaData(null);
+      }
     }
   };
 
@@ -571,7 +592,9 @@ const Postmodal = ({ visible, onClose }) => {
                     style={{ objectFit: "cover" }}
                   ></img>
                 ) : (
-                  <div className={classes.domainName}>{MetaData.source}</div>
+                  <div className={classes.domainName}>
+                    {MetaData.source || ""}
+                  </div>
                 )}
                 <p>{MetaData.description}</p>
               </div>
