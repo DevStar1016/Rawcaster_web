@@ -215,7 +215,7 @@ const PostNuggets = ({ isUserPostAvailable }) => {
         formData.append("content", val.content);
       }
     }
-    if (MetaData && NuggetData.length === 0) {
+    if (MetaData) {
       formData.append("metadata", JSON.stringify(MetaData));
     }
     if (parseInt(val.share_type) === 3 || parseInt(val.share_type) === 4) {

@@ -26,6 +26,18 @@
   width: calc(100% - 25px);
   float: left;
 }
+.PopoverShareLink {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 10px;
+}
+.PopoverShareLink img {
+  height: 55% !important;
+}
+.PopoverShareLink desc {
+  padding: 15px;
+}
 .dropdownItem {
   display: flex;
   flex-direction: row;

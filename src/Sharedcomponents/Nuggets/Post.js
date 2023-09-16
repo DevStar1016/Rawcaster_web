@@ -866,6 +866,143 @@ const Post = ({
     }
   };
 
+  const MetaDataContent = (isPopover = false) => {
+    if (JSON.parse(ele.metadata) && isPopover) {
+      return (
+        <div
+          className={classes.PopoverShareLink}
+          onClick={() => {
+            setisLinkopenModal(true);
+          }}
+        >
+          <div>
+            <p
+              className={classes.title}
+              style={{
+                paddingTop:
+                  JSON.parse(ele.metadata).image === "" ? "10px" : "0px",
+              }}
+            >
+              {JSON.parse(ele.metadata).title}
+            </p>
+            {JSON.parse(ele.metadata).image &&
+            JSON.parse(ele.metadata).image !== "" ? (
+              <img
+                src={JSON.parse(ele.metadata).image}
+                alt="meta_img"
+                style={{
+                  objectFit: "cover",
+                  maxWidth: "100%",
+                  height: 370,
+                  margin: "auto",
+                  justifyContent: "center",
+                  display: "flex",
+                }}
+              ></img>
+            ) : (
+              <div className={classes.domainName}>
+                {JSON.parse(ele.metadata).source}
+              </div>
+            )}
+            <p className={classes.dec}>
+              {JSON.parse(ele.metadata).description}
+            </p>
+          </div>
+
+          {/* <div className={classes.shareLinkSec}>
+            {JSON.parse(ele.metadata).image !== "" ? (
+              <p className={classes.source}>
+                <i className="material-icons">public</i>
+                {JSON.parse(ele.metadata).source}
+              </p>
+            ) : null}
+            <p
+              className={classes.title}
+              style={{
+                paddingTop:
+                  JSON.parse(ele.metadata).image === "" ? "10px" : "0px",
+              }}
+            >
+              {JSON.parse(ele.metadata).title}
+            </p>
+            {JSON.parse(ele.metadata).image &&
+            JSON.parse(ele.metadata).image !== "" ? (
+              <img
+                src={JSON.parse(ele.metadata).image}
+                height="370px"
+                alt="meta_img"
+                style={{
+                  objectFit: "cover",
+                  maxWidth: "100%",
+                  margin: "auto",
+                  justifyContent: "center",
+                  display: "flex",
+                }}
+              ></img>
+            ) : (
+              <div className={classes.domainName}>
+                {JSON.parse(ele.metadata).source}
+              </div>
+            )}
+            <p className={classes.dec}>
+              {JSON.parse(ele.metadata).description}
+            </p>
+          </div> */}
+        </div>
+      );
+    } else if (JSON.parse(ele.metadata) && !isPopover) {
+      return (
+        <div
+          className={classes.metaLink}
+          onClick={() => {
+            setisLinkopenModal(true);
+          }}
+        >
+          <div className={classes.shareLinkSec}>
+            {JSON.parse(ele.metadata).image !== "" ? (
+              <p className={classes.source}>
+                <i className="material-icons">public</i>
+                {JSON.parse(ele.metadata).source}
+              </p>
+            ) : null}
+            <p
+              className={classes.title}
+              style={{
+                paddingTop:
+                  JSON.parse(ele.metadata).image === "" ? "10px" : "0px",
+              }}
+            >
+              {JSON.parse(ele.metadata).title}
+            </p>
+            {JSON.parse(ele.metadata).image &&
+            JSON.parse(ele.metadata).image !== "" ? (
+              <img
+                src={JSON.parse(ele.metadata).image}
+                height="370px"
+                alt="meta_img"
+                style={{
+                  objectFit: "cover",
+                  maxWidth: "100%",
+                  margin: "auto",
+                  justifyContent: "center",
+                  display: "flex",
+                }}
+              ></img>
+            ) : (
+              <div className={classes.domainName}>
+                {JSON.parse(ele.metadata).source}
+              </div>
+            )}
+            <p className={classes.dec}>
+              {JSON.parse(ele.metadata).description}
+            </p>
+          </div>
+        </div>
+      );
+    }
+    return <></>;
+  };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (
@@ -980,7 +1117,7 @@ const Post = ({
               {ele?.follow_count} Fans
             </p>
           </div>
-          {getAuthenticated() && (
+          {Token && (
             <Dropdown
               placement="bottomRight"
               menu={{
@@ -1020,7 +1157,17 @@ const Post = ({
                   onClick={() => {}}
                 >
                   <ReadMore
+                    MetaDataContent={MetaDataContent(
+                      ele.media_list &&
+                        ele.media_list?.length !== 0 &&
+                        ele.metadata
+                    )}
                     isReadMore={isReadMore()}
+                    isMetaDataAvailable={
+                      ele.media_list &&
+                      ele.media_list?.length !== 0 &&
+                      ele.metadata
+                    }
                     isLinkopenModal={isLinkopenModal}
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
@@ -1039,58 +1186,13 @@ const Post = ({
                 </p>
               )}
 
-              {ele.media_list &&
-              ele.media_list?.length === 0 &&
-              ele.metadata ? (
-                <div
-                  className={classes.metaLink}
-                  onClick={() => {
-                    setisLinkopenModal(true);
-                  }}
-                >
-                  <div className={classes.shareLinkSec}>
-                    {JSON.parse(ele.metadata).image !== "" ? (
-                      <p className={classes.source}>
-                        <i className="material-icons">public</i>
-                        {JSON.parse(ele.metadata).source}
-                      </p>
-                    ) : null}
-                    <p
-                      className={classes.title}
-                      style={{
-                        paddingTop:
-                          JSON.parse(ele.metadata).image === ""
-                            ? "10px"
-                            : "0px",
-                      }}
-                    >
-                      {JSON.parse(ele.metadata).title}
-                    </p>
-                    {JSON.parse(ele.metadata).image &&
-                    JSON.parse(ele.metadata).image !== "" ? (
-                      <img
-                        src={JSON.parse(ele.metadata).image}
-                        height="370px"
-                        alt="meta_img"
-                        style={{
-                          objectFit: "cover",
-                          maxWidth: "100%",
-                          margin: "auto",
-                          justifyContent: "center",
-                          display: "flex",
-                        }}
-                      ></img>
-                    ) : (
-                      <div className={classes.domainName}>
-                        {JSON.parse(ele.metadata).source}
-                      </div>
-                    )}
-                    <p className={classes.dec}>
-                      {JSON.parse(ele.metadata).description}
-                    </p>
-                  </div>
-                </div>
-              ) : null}
+              {ele.media_list && ele.media_list?.length === 0 && ele.metadata
+                ? MetaDataContent(
+                    ele.media_list &&
+                      ele.media_list?.length !== 0 &&
+                      ele.metadata
+                  )
+                : null}
               <div
                 className={classes.imgContainer}
                 style={{

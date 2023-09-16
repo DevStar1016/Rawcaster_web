@@ -129,6 +129,7 @@ const SigninwithService = ({ type }) => {
             discoveryDocs="claims_supported"
             access_type="offline"
             onResolve={({ provider, data }) => {
+              console.log(data, "err");
               if (data.email) {
                 let resultVal = {
                   signin_type: 5,
@@ -146,6 +147,7 @@ const SigninwithService = ({ type }) => {
               }
             }}
             onReject={(err) => {
+              console.log(err, "err");
               dispatch(handleLoading(false));
             }}
           >
