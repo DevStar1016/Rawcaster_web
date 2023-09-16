@@ -41,7 +41,7 @@ const SectionList = ({
     <div
       ref={containerRef}
       onScroll={handleScroll}
-      style={{ height: "400px", overflowY: "scroll" }}
+      style={{ height: "300px", overflowY: "scroll" }}
     >
       {Data.map((section, index) => (
         <div key={index}>

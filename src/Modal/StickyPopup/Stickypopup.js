@@ -188,7 +188,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
           resolve();
         })
         .catch((err) => {
-          reject();
+          // reject();
         });
     });
   };
