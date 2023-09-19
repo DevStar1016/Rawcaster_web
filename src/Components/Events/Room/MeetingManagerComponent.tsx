@@ -314,8 +314,6 @@ const MeetingManagerComponent = () => {
           break;
         case CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG:
           if (message) {
-            console.log(message);
-
             const message_data = message;
             if (
               parseInt(message_data.from_user_id) !== getUserData()?.user_id
@@ -419,15 +417,10 @@ const MeetingManagerComponent = () => {
             const hostData = message;
             if (hostData && hostData.statusCode === 1) {
               const updatedUserData = hostData.updatedUser;
-              if (parseInt(updatedUserData.userId) === userData?.user_id) {
+              if (parseInt(updatedUserData.userId) === userdata?.userId) {
                 setuserdata((pre) => ({
                   ...pre,
-                  isHost: updatedUserData.isHost,
-                }));
-              } else {
-                setuserdata((pre) => ({
-                  ...pre,
-                  isHost: false,
+                  isCoHost: updatedUserData.isCoHost,
                 }));
               }
 
@@ -435,13 +428,36 @@ const MeetingManagerComponent = () => {
                 pre.map((ele) => {
                   return {
                     ...ele,
-                    isHost: updatedUserData.userId === ele.userId,
+                    isCoHost: updatedUserData.userId === ele.userId,
                   };
                 })
               );
             }
           }
           break;
+          case CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER:
+            if (message) {
+              const hostData = message;
+              if (hostData && hostData.statusCode === 1) {
+                const updatedUserData = hostData.updatedUser;
+                if (parseInt(updatedUserData.userId) === userdata?.userId) {
+                  setuserdata((pre) => ({
+                    ...pre,
+                    isCoHost: updatedUserData.isCoHost,
+                  }));
+                }
+  
+                setattendeesList((pre) =>
+                  pre.map((ele) => {
+                    return {
+                      ...ele,
+                      isCoHost: updatedUserData.userId === ele.userId && updatedUserData.isCoHost,
+                    };
+                  })
+                );
+              }
+            }
+            break;
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
           try {
             const callEventData = message;

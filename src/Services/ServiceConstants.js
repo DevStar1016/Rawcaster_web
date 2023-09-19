@@ -12,7 +12,7 @@ export const BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
 
 // SOCKET URL
 // export const ChimesocketURL = "http://34.239.41.21:5000";
-export const ChimesocketURL = "https://socket.rawcaster.com:5000";
+export const ChimesocketURL = "https://devsocket.rawcaster.com:5000";
 
 // Socket Values
 
@@ -52,6 +52,8 @@ export const CHIME_SOCKET_EVENTS = {
   KICK_USER_ANSWER: "kickUserAnswer",
   MAKE_HOST: "makeHost",
   MAKE_HOST_ANSWER: "makeHostAnswer",
+  REMOVE_HOST: "removeHost",
+  REMOVE_HOST_ANSWER: "removeHostAnswer",
   NOTIFICATIONS: "notifications",
   DISCONNECT_SOCKET: "disconnect",
 };
