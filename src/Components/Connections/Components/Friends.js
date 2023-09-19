@@ -141,8 +141,15 @@ const Friends = ({ friend, searchInput }) => {
                 onClick={(event) => {
                   if (!isFetching) {
                     event.stopPropagation();
-
-                    HandleIndividualCreate();
+                    if (!friend.channel_arn || friend.channel_arn === "") {
+                      HandleIndividualCreate();
+                    } else {
+                      setisChatOpen({
+                        show: true,
+                        type: "friend",
+                        id: friend.user_id,
+                      });
+                    }
                   }
                 }}
               />
