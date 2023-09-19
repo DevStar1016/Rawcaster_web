@@ -57,47 +57,35 @@ const ChatSocketComponent = () => {
   const messagesProcessor = async (message) => {
     const messageType = message?.headers["x-amz-chime-event-type"];
     const record = JSON.parse(message?.payload);
+    console.log(record, "record");
     switch (messageType) {
       case "CREATE_CHANNEL_MESSAGE":
         if (record.Sender.Arn !== userData.chime_user_id) {
-          if (isJSONString(record.Content)) {
-            const findSender = GroupDetails?.group_members_list.find(
-              (ele) => ele.member_arn === record.Sender.Arn
-            );
-            const indicator = {
-              SenderName: findSender
-                ? findSender.display_name
-                : record.Sender.Name,
-              LastUpdatedTimestamp: record.LastUpdatedTimestamp,
-            };
-            setisTyping(indicator);
-          } else {
-            const getvalidFileData = () => {
-              if (record.Metadata) {
-                const finalData = JSON.parse(record.Metadata);
-                return {
-                  type: finalData.type,
-                  file_path: finalData.file,
-                  file: finalData?.web_file,
-                };
-              } else {
-                return {
-                  type: "text",
-                };
-              }
-            };
-            setMessages((pre) => [
-              ...pre,
-              {
-                ...convertMessageFormat({
-                  ...getvalidFileData(),
-                  message: record.Content,
-                  user_name: "Other",
-                  user: record.Sender.Arn,
-                }),
-              },
-            ]);
-          }
+          const getvalidFileData = () => {
+            if (record.Metadata) {
+              const finalData = JSON.parse(record.Metadata);
+              return {
+                type: finalData.type,
+                file_path: finalData.file_path,
+                file: finalData?.file,
+              };
+            } else {
+              return {
+                type: "text",
+              };
+            }
+          };
+          setMessages((pre) => [
+            {
+              ...convertMessageFormat({
+                ...getvalidFileData(),
+                message: record.Content,
+                user_name: "Other",
+                user: record.Sender.Arn,
+              }),
+            },
+            ...pre,
+          ]);
         }
       case "PENDING_UPDATE_CHANNEL_MESSAGE":
         if (record.Content && record.Content.match(/Typing/)) {

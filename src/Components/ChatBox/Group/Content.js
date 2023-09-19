@@ -3,14 +3,14 @@
  * @param {Function} getContents - A function that handles getting the contents of the chat box.
  * @returns The rendered content of the chat box.
  */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageContent } from "../../../Sharedcomponents/Chat/utility";
 import { Layout, Modal } from "antd";
 import classes from "../ChatBox.module.css";
 import { useChatContext, useMainContext } from "../../../Shared/Context";
 import { MessageList, TypingIndicator } from "@chatscope/chat-ui-kit-react";
 import { deleteChannelMessage } from "../../../Services/Messaging/MessageAPIList";
-import { useAuth, useAuthData } from "../../../Shared/Reduxfetcher";
+import { useAuthData } from "../../../Shared/Reduxfetcher";
 import { toast } from "react-hot-toast";
 import moment from "moment";
 import SectionList from "../../../Sharedcomponents/SectionList";

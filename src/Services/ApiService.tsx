@@ -465,6 +465,14 @@ export const UpdateChannelMessageService = (data: FormData) => {
   return axios.post(`update_channel_message`, data);
 };
 
+export const AutoChannelCreateService = (data: FormData) => {
+  return axios.post(`auto_group_channel_create`, data);
+};
+
+export const AutoIndividualCreateService = (data: FormData) => {
+  return axios.post(`auto_individual_channel_create`, data);
+};
+
 //QR Code
 
 export const GenerateQRtokenService = (data: FormData) => {

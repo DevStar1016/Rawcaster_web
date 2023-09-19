@@ -4,7 +4,11 @@
  * @param {string} searchInput - The search input used to filter the friends list.
  * @returns The JSX representation of a friend in the friends list.
  */
-import { decodeHtml, handleProfileNavigate } from "../../../Shared/Utility";
+import {
+  JSONtoformdata,
+  decodeHtml,
+  handleProfileNavigate,
+} from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
@@ -12,14 +16,48 @@ import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { useNuggets } from "../../../Shared/Reduxfetcher";
+import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
 import { useMainContext } from "../../../Shared/Context";
+import { AutoIndividualCreateService } from "../../../Services/ApiService";
+import { useState } from "react";
+import { Spinner } from "react-bootstrap";
+import { handleUpdateIndividualArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
 
 const Friends = ({ friend, searchInput }) => {
   const { setisChatOpen } = useMainContext();
+  const [isFetching, setisFetching] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
+  const token = useAuthToken();
+
+  const HandleIndividualCreate = () => {
+    setisFetching(friend.user_id);
+    const FormData = {
+      token,
+      friend_id: friend.user_id,
+    };
+    AutoIndividualCreateService(JSONtoformdata(FormData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          dispatch(
+            handleUpdateIndividualArnData({
+              id: friend.user_id,
+              channel_arn: res.data.channel_arn,
+            })
+          );
+          setisChatOpen({
+            show: true,
+            type: "friend",
+            id: friend.user_id,
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setisFetching(false);
+      });
+  };
   return (
     <>
       <div
@@ -94,18 +132,21 @@ const Friends = ({ friend, searchInput }) => {
           >
             <img src={audiocall} alt={"audio call"} />
             <img src={videocall} alt={"video call"} />
-            <img
-              src={chatIcon}
-              alt={"Chat"}
-              onClick={(event) => {
-                event.stopPropagation();
-                setisChatOpen({
-                  show: true,
-                  type: "friend",
-                  id: friend.user_id,
-                });
-              }}
-            />
+            {isFetching === friend.user_id ? (
+              <Spinner size="sm" className="ms-2" />
+            ) : (
+              <img
+                src={chatIcon}
+                alt={"Group Chat"}
+                onClick={(event) => {
+                  if (!isFetching) {
+                    event.stopPropagation();
+
+                    HandleIndividualCreate();
+                  }
+                }}
+              />
+            )}
           </div>
         }
       </div>

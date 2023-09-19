@@ -153,38 +153,42 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
             const timestamp = ele.LastEditedTimestamp
               ? ele.LastEditedTimestamp
               : ele.CreatedTimestamp;
+            if (!ele.Content.match(/Typing/)) {
+              const getvalidFileData = () => {
+                if (ele.Metadata && isJSONString(ele.Metadata)) {
+                  const finalData = JSON.parse(ele.Metadata);
+                  return {
+                    type: finalData.type,
+                    file_path: finalData.file_path,
+                    file: finalData?.file,
+                  };
+                } else {
+                  return {
+                    type: "text",
+                  };
+                }
+              };
+              return {
+                ...convertMessageFormat({
+                  ...getvalidFileData(),
+                  isEdited: ele.LastEditedTimestamp !== undefined,
+                  message_id: ele.MessageId,
 
-            const getvalidFileData = () => {
-              if (ele.Metadata && isJSONString(ele.Metadata)) {
-                const finalData = JSON.parse(ele.Metadata);
-                return {
-                  type: finalData.type,
-                  file_path: finalData.file,
-                  file: finalData?.web_file,
-                };
-              } else {
-                return {
-                  type: "text",
-                };
-              }
-            };
-            return {
-              ...convertMessageFormat({
-                ...getvalidFileData(),
-                isEdited: ele.LastEditedTimestamp !== undefined,
-                message_id: ele.MessageId,
+                  message: ele.Content,
 
-                message: ele.Content,
-
-                user_name: "me",
-                user: ele.Sender.Arn,
-                created_at: moment(ele.CreatedTimestamp).format(
-                  "YYYY-MM-DD HH:mm:ss"
-                ),
-              }),
-            };
+                  user_name: "me",
+                  user: ele.Sender.Arn,
+                  created_at: moment(ele.CreatedTimestamp).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                }),
+              };
+            } else {
+              return null;
+            }
           });
-          setMessages((pre) => [...pre, ...finalResult]);
+          let filterData = finalResult.filter((ele) => ele);
+          setMessages((pre) => [...pre, ...filterData]);
           resolve();
         })
         .catch((err) => {
