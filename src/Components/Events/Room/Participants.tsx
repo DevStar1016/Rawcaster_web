@@ -68,6 +68,10 @@ const Participants = () => {
     return userdata?.isHost;
   };
 
+  const getISCoHost = () => {
+    return userdata?.isCoHost;
+  };
+
   /* Handle Accept the Attendee Join Request  */
   const handleAccept = (ele: RequestAttendee) => {
     ChimesendMessage(
@@ -98,7 +102,7 @@ const Participants = () => {
     /* List of Attendee Handling Options */
 
     const getDropdownList = (ele: AttendeeUserData) => {
-      if (ele?.isHost) {
+      if (isYou && (ele?.isHost || ele?.isCoHost)) {
         return [
           {
             key: "1",
@@ -112,20 +116,20 @@ const Participants = () => {
       return [
         {
           key: "0",
-          label: "Promote as Host",
+          label: `${!getISCoHost() ? 'Promote as' : 'Remove'} Co Host`,
           onClick: () => {
             Modal.confirm({
-              title: "Promote as Host",
+              title: `${!getISCoHost() ? 'Promote as': 'Remove'} Co Host`,
               content:
-                "Are you sure do you want to Promote as Host for this User !",
+                `Are you sure do you want to ${!getISCoHost() ? 'Promote': 'Remove'} as Co Host for this User !`,
               onOk: () => {
                 ChimesendMessage(
                   {
                     refId: EventData?.reference_id,
-                    hostId: EventData?.original_user_id,
+                    hostId: userData?.user_id,
                     userId: findAttendee?.userId,
                   },
-                  CHIME_SOCKET_EVENTS.MAKE_HOST
+                  !getISCoHost() ? CHIME_SOCKET_EVENTS.MAKE_HOST: CHIME_SOCKET_EVENTS.REMOVE_HOST
                 );
               },
               onCancel: () => {},
@@ -201,7 +205,9 @@ const Participants = () => {
             )}
             {findAttendee?.isHost ? (
               <div className={classes.hostIcon}>HOST</div>
-            ) : null}
+            ) : findAttendee?.isCoHost ? (
+              <div className={classes.hostIcon}>CO HOST</div>
+            ): null}
             {!isYou && (
               <VolumeStatusComponent
                 ele={ele}
@@ -246,7 +252,7 @@ const Participants = () => {
                 isGlobal={false}
               />
             )}
-            {getISHost() ? (
+            {getISHost() || getISCoHost()? (
               <Dropdown
                 menu={{
                   items: findAttendee ? getDropdownList(findAttendee) : [],

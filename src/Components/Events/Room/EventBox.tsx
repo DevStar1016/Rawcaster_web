@@ -287,6 +287,9 @@ const EventBox = () => {
             {findAttendee?.isHost && (
               <div className={classes.hostLogo}>Host</div>
             )}
+            {findAttendee?.isCoHost && (
+              <div className={classes.hostLogo}>Co Host</div>
+            )}
             <LocalVideo
               id={ele.id}
               className={classes.videoSec}
@@ -301,6 +304,9 @@ const EventBox = () => {
           <div className={classes.Child}>
             {findAttendee?.isHost && (
               <div className={classes.hostLogo}>Host</div>
+            )}
+             {findAttendee?.isCoHost && (
+              <div className={classes.hostLogo}>Co Host</div>
             )}
             <RemoteVideo
               id={findAttendee.userId.toString()}
@@ -318,6 +324,9 @@ const EventBox = () => {
           <div className={classes.Child}>
             {findAttendee?.isHost && (
               <div className={classes.hostLogo}>Host</div>
+            )}
+             {findAttendee?.isCoHost && (
+              <div className={classes.hostLogo}>Co Host</div>
             )}
             <EventBoxOptions isYou={isYou} ele={ele} />
             <img
