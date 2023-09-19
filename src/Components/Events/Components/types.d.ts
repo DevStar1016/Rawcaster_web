@@ -34,6 +34,7 @@ export type AttendeeUserData = {
     video?: boolean;
     kicked?: boolean;
     isHost?: boolean;
+    isCoHost?: boolean;
     handRaised?: boolean;
     screenShare?: number;
     audioDisabledByHost?: boolean;

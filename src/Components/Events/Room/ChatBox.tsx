@@ -28,6 +28,7 @@ const ChatBox = () => {
     EventMessages,
     userdata,
     EventData,
+    setEventMessages,
     attendeesList,
   } = useEventRoomContext();
   const userData = useAuthData();
@@ -113,6 +114,18 @@ const ChatBox = () => {
         },
         CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_SINGLE_USER
       );
+      // set private msg to sender state
+      setEventMessages((pre) => [
+        {
+          message:ChatMessage,
+          name: userdata.name,
+          from_user_id: userdata.userId,
+          send_to: finduser,
+          isPrivate: true,
+          refId: EventData?.reference_id,
+        },
+        ...pre,
+      ]);
       setChatMessage("");
       setisEmoji(false);
     }

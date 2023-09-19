@@ -42,6 +42,7 @@ const Footer = () => {
       token,
       channel_id: GroupDetails?.channel_arn,
       message: val,
+      ...params,
     };
     SendChannelMessageService(
       JSONtoformdata(filterValidObject(send_message_params))
@@ -123,7 +124,6 @@ const Footer = () => {
         HandleSendMessage={(val) => {
           sendMessage(val);
           setMessages((pre) => [
-            ...pre,
             {
               ...convertMessageFormat({
                 type: "text",
@@ -132,6 +132,7 @@ const Footer = () => {
                 user: userData.chime_user_id,
               }),
             },
+            ...pre,
           ]);
         }}
         onEdit={(val) => {
@@ -142,7 +143,7 @@ const Footer = () => {
         onCameraResult={(val) => {
           setPreviewData({
             File: val,
-            display_type: val.type,
+            type: val.type,
           });
         }}
         onEditClose={() => {
@@ -151,7 +152,7 @@ const Footer = () => {
         onFileResult={(val, isCapture = false) => {
           setPreviewData({
             File: val,
-            display_type: isCapture ? val.type : "doc",
+            type: isCapture ? val.type : "doc",
           });
         }}
         onAudioResult={(val) => {
@@ -164,7 +165,6 @@ const Footer = () => {
           };
           sendMessage("null", metaData);
           setMessages((pre) => [
-            ...pre,
             {
               ...convertMessageFormat({
                 type: "audio",
@@ -174,6 +174,7 @@ const Footer = () => {
                 file_path: val.message,
               }),
             },
+            ...pre,
           ]);
         }}
       />

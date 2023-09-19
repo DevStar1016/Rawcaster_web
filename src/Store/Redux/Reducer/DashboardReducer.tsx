@@ -114,6 +114,24 @@ export const { actions, reducer } = createSlice({
         ];
       }
     },
+    handleUpdateIndividualArnData: (state, action) => {
+      const id = action.payload.id;
+      const findIndex = state.friendsList.findIndex(
+        (ele) => ele.user_id === parseInt(id)
+      );
+      if (findIndex !== -1) {
+        state.friendsList[findIndex].channel_arn = action.payload.channel_arn;
+      }
+    },
+    handleUpdateGroupArnData: (state, action) => {
+      const id = action.payload.id;
+      const findIndex = state.groupsList.findIndex(
+        (ele) => ele.group_id === parseInt(id)
+      );
+      if (findIndex !== -1) {
+        state.groupsList[findIndex].channel_arn = action.payload.channel_arn;
+      }
+    },
     handleDeleteGroupData: (state, action) => {
       state.groupsList = state.groupsList.filter(
         (ele) => ele.group_id !== action.payload
@@ -157,6 +175,8 @@ export const {
   handleDeleteGroupData,
   handleNotificationUnreadCount,
   handleUpdateChatGroupData,
+  handleUpdateGroupArnData,
+  handleUpdateIndividualArnData,
 } = actions;
 
 export default reducer;

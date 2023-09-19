@@ -8,7 +8,7 @@
  * @param {boolean} loading - Indicates if the component is currently loading data.
  * @returns The rendered section list component.
  */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 const SectionList = ({
   HeaderComponent,

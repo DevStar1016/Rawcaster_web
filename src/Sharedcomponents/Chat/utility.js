@@ -874,7 +874,8 @@ export const MessageContent = (props) => {
         ) : null;
 
       default:
-        if (file && Object.keys(file).length !== 0) {
+        if (file && file.type && Object.keys(file).length !== 0) {
+          console.log(file);
           const validcontent = file.type.split("/")[1];
           return (
             <div

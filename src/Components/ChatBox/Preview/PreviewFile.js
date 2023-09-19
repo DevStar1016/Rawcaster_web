@@ -8,14 +8,19 @@ import { ChatInput } from "../../../Sharedcomponents/Chat/utility";
 import { Layout, Tooltip } from "antd";
 import { useChatContext } from "../../../Shared/Context";
 import ImageEditModal from "../../../Modal/ImageEditModal";
-import { filterValidObject, formatBytes } from "../../../Shared/Utility";
-import { useAuthData } from "../../../Shared/Reduxfetcher";
-import { sendChannelMessage } from "../../../Services/Messaging/MessageAPIList";
+import {
+  JSONtoformdata,
+  filterValidObject,
+  formatBytes,
+} from "../../../Shared/Utility";
+import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
+import { SendChannelMessageService } from "../../../Services/ApiService";
 
 const PreviewFile = () => {
   const [isEdit, setisEdit] = useState(false);
   const [isFetchingUrl, setisFetchingUrl] = useState(false);
   const userData = useAuthData();
+  const token = useAuthToken();
   const {
     GroupDetails,
     PreviewData,
@@ -33,7 +38,7 @@ const PreviewFile = () => {
     const validcontent = previewFile.type.split("/")[1];
 
     switch (true) {
-      case PreviewData.display_type.includes("image"):
+      case PreviewData.type.includes("image"):
         return (
           <>
             <div className={classes.actionSec}>
@@ -67,7 +72,7 @@ const PreviewFile = () => {
             </div>
           </>
         );
-      case PreviewData.display_type.includes("video"):
+      case PreviewData.type.includes("video"):
         return (
           <>
             <div className={classes.actionSec}>
@@ -91,7 +96,7 @@ const PreviewFile = () => {
             </div>
           </>
         );
-      case PreviewData.display_type.includes("doc"):
+      case PreviewData.type.includes("doc"):
         return (
           <>
             <div className={classes.actionSec}>
@@ -159,15 +164,15 @@ const PreviewFile = () => {
    * @returns None
    */
   const sendMessage = (val, params = {}) => {
-    let data = {
+    let send_message_params = {
       ...params,
-      Type: "STANDARD",
-      Persistence: "PERSISTENT",
-      ChannelArn: GroupDetails?.channel_arn,
-      ChimeBearer: userData.chime_user_id,
-      Content: val,
+      token,
+      channel_id: GroupDetails?.channel_arn,
+      message: val,
     };
-    sendChannelMessage(filterValidObject(data))
+    SendChannelMessageService(
+      JSONtoformdata(filterValidObject(send_message_params))
+    )
       .then((res) => {})
       .catch((err) => {});
   };
@@ -186,9 +191,9 @@ const PreviewFile = () => {
             .then((res) => {
               const metaData = {
                 meta_data: JSON.stringify({
-                  file: res.file_path,
-                  type: PreviewData.display_type,
-                  web_file: {
+                  file_path: res.file_path,
+                  type: PreviewData.type,
+                  file: {
                     name: res.file.name,
                     size: res.file.size,
                     type: res.file.type,
@@ -196,19 +201,23 @@ const PreviewFile = () => {
                 }),
               };
               sendMessage(val && val !== "" ? val : " null", metaData);
-
+              console.log(metaData);
               setMessages((pre) => [
-                ...pre,
                 {
                   ...convertMessageFormat({
-                    type: PreviewData.display_type,
-                    message: val,
-                    file: res.file,
                     file_path: res.file_path,
+                    type: PreviewData.type,
+                    file: {
+                      name: res.file.name,
+                      size: res.file.size,
+                      type: res.file.type,
+                    },
+                    message: val,
                     user_name: "me",
                     user: userData?.chime_user_id,
                   }),
                 },
+                ...pre,
               ]);
             })
             .catch((err) => {})
@@ -226,7 +235,7 @@ const PreviewFile = () => {
               type: url.Blob.type,
             });
             setisEdit(false);
-            setPreviewData({ File: file, display_type: url.Blob.type });
+            setPreviewData({ File: file, type: url.Blob.type });
           }}
           onFailure={() => {
             setisEdit(false);

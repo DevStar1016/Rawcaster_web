@@ -5,17 +5,52 @@
  * @param {function} onClick - The function to be called when the group is clicked.
  * @returns A React component representing a group in a connections list.
  */
-import React from "react";
-import { decodeHtml } from "../../../Shared/Utility";
+import React, { useState } from "react";
+import { JSONtoformdata, decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import GroupImg from "../../../Assets/Icons/svg/default_group.svg";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
 import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { useMainContext } from "../../../Shared/Context";
+import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { AutoChannelCreateService } from "../../../Services/ApiService";
+import { useDispatch } from "react-redux";
+import { handleUpdateGroupArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
+import { Spinner } from "react-bootstrap";
 
 const Group = ({ group, searchInput, onClick }) => {
   const { setisChatOpen } = useMainContext();
+  const [isFetching, setisFetching] = useState(false);
+  const dispatch = useDispatch();
+  const token = useAuthToken();
+  const HandleGroupCreate = () => {
+    setisFetching(group.group_id);
+    const FormData = {
+      token,
+      group_id: group.group_id,
+    };
+    AutoChannelCreateService(JSONtoformdata(FormData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          dispatch(
+            handleUpdateGroupArnData({
+              id: group.group_id,
+              channel_arn: res.data.channel_arn,
+            })
+          );
+          setisChatOpen({
+            show: true,
+            type: "group",
+            id: group.group_id,
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setisFetching(false);
+      });
+  };
   return (
     <>
       <div
@@ -56,18 +91,28 @@ const Group = ({ group, searchInput, onClick }) => {
         <div className={`${classes.friendsmenu}`}>
           <img src={audiocall} alt={"audio call"} />
           <img src={videocall} alt={"video call"} />
-          <img
-            src={chatIcon}
-            alt={"Group Chat"}
-            onClick={(event) => {
-              event.stopPropagation();
-              setisChatOpen({
-                show: true,
-                type: "group",
-                id: group.group_id,
-              });
-            }}
-          />
+          {isFetching === group.group_id ? (
+            <Spinner size="sm" className="ms-2" />
+          ) : (
+            <img
+              src={chatIcon}
+              alt={"Group Chat"}
+              onClick={(event) => {
+                if (!isFetching) {
+                  event.stopPropagation();
+                  if (group.my_group === 1 && !group.channel_arn) {
+                    HandleGroupCreate();
+                  } else {
+                    setisChatOpen({
+                      show: true,
+                      type: "group",
+                      id: group.group_id,
+                    });
+                  }
+                }
+              }}
+            />
+          )}
         </div>
       </div>
     </>

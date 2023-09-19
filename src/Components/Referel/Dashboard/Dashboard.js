@@ -9,7 +9,6 @@ import classes from "./Dashboard.module.css";
 import ReferralsList from "./ReferralsList";
 import ReferContainer from "./ReferContainer";
 import Connections from "../../Connections/Friends/Connections";
-import { Col, Row } from "react-bootstrap";
 import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { Tooltip } from "antd";
 import {
@@ -18,7 +17,6 @@ import {
   handleCopyText,
 } from "../../../Shared/Utility";
 import copyImg from "../../../Assets/Icons/svg/copy.svg";
-import { toast } from "react-hot-toast";
 import { ReferalContext } from "../../../Shared/Context";
 import { GetReferralListService } from "../../../Services/ApiService";
 

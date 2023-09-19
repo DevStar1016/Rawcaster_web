@@ -17,8 +17,10 @@
     cursor: pointer;
   }
   .friendslist:hover .friendsmenu {
-    display: block !important;
-
+margin: auto;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
   }
   .friendslist:hover .disName{
     width: 140px;
@@ -33,6 +35,7 @@
     position: absolute;
     right: 10px;
     top: 10px;
+    
   }
   .friendsmenu img{margin-left: 10px;
   height: 16px;}
