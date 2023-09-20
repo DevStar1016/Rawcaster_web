@@ -7,12 +7,7 @@ import React, { useEffect, useState } from "react";
 import { LoginSocialApple, LoginSocialGoogle } from "reactjs-social-login";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
-import {
-  APPLE_API_KEY,
-  GOOGLE_CLIENT_ID,
-  PRIMARY_REDIRECT_URI,
-  SECONDARY_REDIRECT_URI,
-} from "../../Shared/Constant";
+import { APPLE_API_KEY, SECONDARY_REDIRECT_URI } from "../../Shared/Constant";
 import jwt_decode from "jwt-decode";
 import { Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -32,11 +27,14 @@ import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Signup.module.css";
 import { toast } from "react-hot-toast";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
+import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleSigninService } from "../../Shared/SharedAPIs";
 
 const SigninwithService = ({ type }) => {
   const { nugget_id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
     latitude: "",
@@ -113,6 +111,29 @@ const SigninwithService = ({ type }) => {
         dispatch(handleLoading(false));
       });
   };
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      GoogleSigninService(codeResponse.access_token)
+        .then((data) => {
+          if (data && data.email) {
+            let resultVal = {
+              signin_type: 5,
+              first_name: data.name,
+              display_name: data.name,
+              email_id: data.email,
+            };
+            HandleSignup(resultVal);
+          }
+        })
+        .catch(() => {
+          dispatch(handleLoading(false));
+        });
+    },
+    enable_serial_consent: true,
+    flow: "implicit",
+  });
+
   return (
     <>
       <div className={classes.dividerSec}>
@@ -122,45 +143,17 @@ const SigninwithService = ({ type }) => {
       </div>
       <Row className="my-2 g-2">
         <Col sm={6}>
-          <LoginSocialGoogle
-            client_id={GOOGLE_CLIENT_ID}
-            redirect_uri={PRIMARY_REDIRECT_URI}
-            scope="profile email"
-            discoveryDocs="claims_supported"
-            access_type="offline"
-            onResolve={({ provider, data }) => {
-              console.log(data, "err");
-              if (data.email) {
-                let resultVal = {
-                  signin_type: 5,
-                  first_name: data.name,
-                  display_name: data.name,
-                  email_id: data.email,
-                };
-                HandleSignup(resultVal);
-              } else {
-                toast.remove("Error");
-                toast.error("Something Went Wrong !", {
-                  id: "Error",
-                });
-                dispatch(handleLoading(false));
-              }
-            }}
-            onReject={(err) => {
-              console.log(err, "err");
-              dispatch(handleLoading(false));
+          <button
+            className={classes.altSignBtn}
+            onClick={() => {
+              login();
+              // Makes sure the page reloads. Changes are only visible after you refresh.
             }}
           >
-            <button
-              className={classes.altSignBtn}
-              onClick={() => {
-                // Makes sure the page reloads. Changes are only visible after you refresh.
-              }}
-            >
-              <img src={GoogleIcon} alt={`${type} with Google`} /> {type} with
-              Google
-            </button>
-          </LoginSocialGoogle>
+            <img src={GoogleIcon} alt={`${type} with Google`} /> {type} with
+            Google
+          </button>
+          {/* </LoginSocialGoogle> */}
         </Col>
 
         <Col sm={6}>

@@ -43,6 +43,8 @@ import { useMainContext } from "../Shared/Context";
 import StickyPopup from "../Modal/StickyPopup/Stickypopup";
 import Header from "../Components/ChatBox/Header";
 import Content from "../Components/ChatBox/Group/Content";
+import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleSigninService } from "../Shared/SharedAPIs";
 
 const DashboardSignup = () => {
   const { player, setplayer, setisChatOpen, isChatOpen } = useMainContext();
@@ -113,6 +115,28 @@ const DashboardSignup = () => {
       });
   };
 
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      GoogleSigninService(codeResponse.access_token)
+        .then((data) => {
+          if (data.email) {
+            let resultVal = {
+              signin_type: 5,
+              first_name: data.name,
+              display_name: data.name,
+              email_id: data.email,
+            };
+            HandleSignup(resultVal);
+          }
+        })
+        .catch(() => {
+          dispatch(handleLoading(false));
+        });
+    },
+    enable_serial_consent: true,
+    flow: "implicit",
+  });
+
   return (
     <>
       <div className={classes.beforeloginSec}>
@@ -156,32 +180,17 @@ const DashboardSignup = () => {
                 shows, Events and more.
               </p>
             </div>
-            <LoginSocialGoogle
-              client_id={GOOGLE_CLIENT_ID}
-              redirect_uri={PRIMARY_REDIRECT_URI}
-              scope="openid profile email"
-              discoveryDocs="claims_supported"
-              access_type="offline"
-              onResolve={({ _, data }) => {
-                dispatch(handleLoading(true));
-                let resultVal = {
-                  signin_type: 5,
-                  first_name: data.name,
-                  display_name: data.name,
-                  email_id: data.email,
-                };
-                HandleSignup(resultVal);
-              }}
-              onReject={(err) => {
-                toast.remove("rawcaster");
-                toast.error("Something Went Wrong !!", { id: "rawcaster" });
+
+            <Button
+              className={classes.altSignBtn}
+              onClick={() => {
+                login();
               }}
             >
-              <Button className={classes.altSignBtn}>
-                <img src={GoogleIcon} alt="Signup_with_Google" /> Signup with
-                Google
-              </Button>
-            </LoginSocialGoogle>
+              <img src={GoogleIcon} alt="Signup_with_Google" /> Signup with
+              Google
+            </Button>
+
             <LoginSocialApple
               client_id={APPLE_API_KEY}
               scope={"name email"}
