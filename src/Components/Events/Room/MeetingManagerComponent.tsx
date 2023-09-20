@@ -428,14 +428,14 @@ const MeetingManagerComponent = () => {
                 pre.map((ele) => {
                   return {
                     ...ele,
-                    isCoHost: updatedUserData.userId === ele.userId,
+                    isCoHost: updatedUserData.userId === ele.userId ? updatedUserData.isCoHost : ele.isCoHost
                   };
                 })
               );
             }
           }
           break;
-          case CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER:
+        case CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER:
             if (message) {
               const hostData = message;
               if (hostData && hostData.statusCode === 1) {
@@ -451,7 +451,7 @@ const MeetingManagerComponent = () => {
                   pre.map((ele) => {
                     return {
                       ...ele,
-                      isCoHost: updatedUserData.userId === ele.userId && updatedUserData.isCoHost,
+                      isCoHost: updatedUserData.userId === ele.userId ? updatedUserData.isCoHost : ele.isCoHost
                     };
                   })
                 );
