@@ -88,6 +88,9 @@
   color: #fff ;
   border-color:  #563662 !important;
 }
+.ant-spin-container{
+  contain: content;
+}
 /* .owl-item{
   width: 340px !important;
 } */
