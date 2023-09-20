@@ -99,6 +99,8 @@ export interface loginUserSettingsProps  {
     talkshow_event_banner:string | null,
     read_out_language_id: number | null | string,
     read_out_language: string | null,
+    read_out_accent_id?:number | null,
+    read_out_accent_name?:string|null
 }
 
 export interface TempuserProps  {

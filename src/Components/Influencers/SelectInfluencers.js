@@ -323,17 +323,31 @@ const SelectInfluencers = () => {
             </p>
           </Tooltip>
           <p className={classes.desc}>
-            <ReadMore
-              Influencer={true}
-              partialShowLines={1}
-              maxheight={"64px"}
-              isReadMore={false}
-              isLinkopenModal={isLinkopenModal}
-              setisLinkopenModal={setisLinkopenModal}
-              isReadMoreValid={() => {}}
-            >
-              {ele.bio_data && ele?.bio_data !== "" ? ele?.bio_data : BioData}
-            </ReadMore>
+            {ele.bio_data && ele?.bio_data !== "" ? (
+              <ReadMore
+                Influencer={true}
+                partialShowLines={1}
+                maxheight={"64px"}
+                isReadMore={false}
+                isLinkopenModal={isLinkopenModal}
+                setisLinkopenModal={setisLinkopenModal}
+                isReadMoreValid={() => {}}
+              >
+                {ele?.bio_data}
+              </ReadMore>
+            ) : (
+              <ReadMore
+                Influencer={true}
+                partialShowLines={1}
+                maxheight={"64px"}
+                isReadMore={false}
+                isLinkopenModal={isLinkopenModal}
+                setisLinkopenModal={setisLinkopenModal}
+                isReadMoreValid={() => {}}
+              >
+                {BioData}
+              </ReadMore>
+            )}
           </p>
           {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
             <Link className={classes.selectedBtn}>

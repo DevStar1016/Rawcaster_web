@@ -21,6 +21,7 @@ import { ListNuggetContext } from "../../Shared/Context";
 const ViewNugget = () => {
   const { nugID } = useParams();
   const ReadSource = useRef(null);
+  const ReadoutRef = useRef(null);
   const navigate = useNavigate();
   const nugget_id = nugID ? DecryptionString(nugID) : null;
   const Token = useAuthToken();
@@ -85,6 +86,7 @@ const ViewNugget = () => {
     isPlaying,
     setisPlaying,
     ReadSource,
+    ReadoutRef,
   };
 
   return (

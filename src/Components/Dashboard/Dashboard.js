@@ -20,6 +20,7 @@ import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
 import {
   handleNuggetFormData,
+  handleNuggetList,
   handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Notifications";
@@ -64,6 +65,11 @@ const Dashboard = () => {
       dispatch(fetchNuggetsbyId(filterData));
     }
   }, [pathname]);
+  useEffect(() => {
+    return () => {
+      dispatch(handleNuggetList([]));
+    };
+  }, []);
   return (
     <div>
       {isSuccess && loginUserData === null && (

@@ -10,7 +10,7 @@
  * @param {object} user - The user object.
  * @returns {JSX.Element} - The rendered profile image and badge
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Diamond from "../Assets/Icons/svg/Diamond.svg";
 import Gold from "../Assets/Icons/svg/Gold.svg";
 import userImg from "../Assets/Images/svg/userImg.svg";
@@ -19,7 +19,7 @@ import NanoInfluencerImg from "../Assets/Icons/svg/Nano_Influencer.svg";
 import MicroInfluencerImg from "../Assets/Icons/svg/Micro_influencer.svg";
 import MacroInfluencerImg from "../Assets/Icons/svg/Macro_influencer.svg";
 import MegaInfluencerImg from "../Assets/Icons/svg/Mega_Influencer.svg";
-import { Tooltip } from "antd";
+import { Image, Tooltip } from "antd";
 import { useDispatch } from "react-redux";
 import { useNuggets } from "../Shared/Reduxfetcher";
 import { useNavigate } from "react-router";
@@ -52,6 +52,7 @@ const ProfileImg = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
+  const [DisplayImage, setDisplayImage] = useState(userImg);
 
   /**
    * Retrieves the badge information based on the given badge type.
@@ -79,12 +80,19 @@ const ProfileImg = ({
         return undefined;
     }
   };
+
+  useEffect(() => {
+    if (src && isLoggedIn) {
+      setDisplayImage(src);
+    }
+  }, [isLoggedIn, src]);
+
   return (
     <>
       <img
         className={imgClassName}
-        src={isLoggedIn ? (src ? src : userImg) : userImg}
-        alt={isLoggedIn ? (src ? src : userImg) : userImg}
+        src={DisplayImage}
+        alt={DisplayImage}
         onError={({ currentTarget }: { currentTarget: any }) => {
           currentTarget.onerror = null; // prevents looping
           currentTarget.src = userImg;

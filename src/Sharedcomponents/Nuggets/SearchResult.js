@@ -21,12 +21,14 @@ const SearchResult = ({ setConnectionData, type, allList }) => {
           placeholder="Enter Name to Search"
           aria-label="Enter  Name to Search"
           onChange={(e) => {
-            let findResult = allList.filter((ele) =>
-              decodeHtml(
-                type === "connection" ? ele.display_name : ele.group_name
-              )
-                .toLowerCase()
-                .includes(e.target.value.toLowerCase())
+            let findResult = allList.filter(
+              (ele) =>
+                ele.my_group === 1 &&
+                decodeHtml(
+                  type === "connection" ? ele.display_name : ele.group_name
+                )
+                  .toLowerCase()
+                  .includes(e.target.value.toLowerCase())
             );
             setConnectionData(findResult);
           }}

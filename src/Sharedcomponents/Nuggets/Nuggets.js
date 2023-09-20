@@ -153,6 +153,9 @@ const Nuggets = ({
    * @returns {Promise} - A promise that resolves with the retrieved nuggets data.
    */
   const GetNuggetList = (page = 1, formData = null) => {
+    if (page === 1) {
+      setisLoading(true);
+    }
     return new Promise((resolve, reject) => {
       if (formData) {
         dispatch(fetchNuggetsbyId(formData)).then((res) => {

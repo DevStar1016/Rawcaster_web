@@ -13,3 +13,16 @@ export const getValidDisplayData = (Data, val, idType = "value") => {
     return "";
   }
 };
+
+export const findValidDisplayAccentData = (Data, id = null) => {
+  let findValue = Data.find((ele) => parseInt(ele.id) === parseInt(id));
+  if (findValue) {
+    return findValue.accents.map((ele) => ({
+      ...ele,
+      value: ele.accent,
+      label: ele.accent,
+    }));
+  } else {
+    return [];
+  }
+};

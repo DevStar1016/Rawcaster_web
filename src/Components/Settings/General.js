@@ -16,7 +16,7 @@ import {
   ProfileswitchTypes,
   SettingsList,
 } from "./Constants";
-import { getValidDisplayData } from "./Utility";
+import { findValidDisplayAccentData, getValidDisplayData } from "./Utility";
 import { decodeHtml } from "../../Shared/Utility";
 import {
   defaultGroupImg,
@@ -111,6 +111,15 @@ const General = () => {
     return uniqueArray;
     // Use filter to iterate through the data and add unique objects to the Set
   }
+
+  const CheckValuesIsValid = (value) => {
+    try {
+      const val = JSON.parse(value);
+      return val.length !== 0;
+    } catch (err) {
+      return value.length !== 0;
+    }
+  };
   return (
     <div>
       <h1>General</h1>
@@ -295,16 +304,23 @@ const General = () => {
                     </Select>
                     <Button
                       className={classes.savebutton}
-                      disabled={updateValue.includes(ele.keyword)}
+                      disabled={
+                        updateValue.includes(ele.keyword) ||
+                        !CheckValuesIsValid(formikvalues[ele.groupkeyword])
+                      }
                       onClick={() => {
-                        handleGroupListUpdateService(
-                          ele.keyword,
-                          formikvalues[ele.groupkeyword],
-                          ele?.keyword === "public_nugget_display" ||
-                            ele?.keyword === "public_event_display"
-                            ? 5
-                            : 3
-                        );
+                        if (
+                          CheckValuesIsValid(formikvalues[ele.groupkeyword])
+                        ) {
+                          handleGroupListUpdateService(
+                            ele.keyword,
+                            formikvalues[ele.groupkeyword],
+                            ele?.keyword === "public_nugget_display" ||
+                              ele?.keyword === "public_event_display"
+                              ? 5
+                              : 3
+                          );
+                        }
                       }}
                     >
                       Save
@@ -367,13 +383,20 @@ const General = () => {
                     </Select>
                     <Button
                       className={classes.savebutton}
-                      disabled={updateValue.includes(ele.keyword)}
+                      disabled={
+                        updateValue.includes(ele.keyword) ||
+                        !CheckValuesIsValid(formikvalues[ele.groupkeyword])
+                      }
                       onClick={() => {
-                        handleGroupListUpdateService(
-                          ele.keyword,
-                          formikvalues[ele.groupkeyword],
-                          3
-                        );
+                        if (
+                          CheckValuesIsValid(formikvalues[ele.groupkeyword])
+                        ) {
+                          handleGroupListUpdateService(
+                            ele.keyword,
+                            formikvalues[ele.groupkeyword],
+                            3
+                          );
+                        }
                       }}
                     >
                       Save
@@ -444,40 +467,94 @@ const General = () => {
               }
             />
           </div> */}
-          <div>
-            <p className={classes.smallheading}>Readout Language</p>
-            <Select
-              showSearch
-              style={{ width: 200 }}
-              className={`mt-2 ${classes.SelectSec} settingsSelect`}
-              placeholder="Search Preference Language"
-              optionFilterProp="children"
-              value={getValidDisplayData(
+          <div className="d-flex flex-row">
+            <div>
+              <p className={classes.smallheading}>Readout Language</p>
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                className={`mt-2 ${classes.SelectSec} settingsSelect`}
+                placeholder="Search Preference Language"
+                optionFilterProp="children"
+                value={getValidDisplayData(
+                  LanguagesList.read_out,
+                  formikvalues.read_out_language_id,
+                  "id"
+                )}
+                filterOption={(input, option) =>
+                  (option?.label?.toLowerCase() ?? "").includes(
+                    input?.toLowerCase()
+                  )
+                }
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? "")
+                    .toLowerCase()
+                    .localeCompare((optionB?.label ?? "").toLowerCase())
+                }
+                options={RemoveDuplicates(LanguagesList.read_out)}
+                onChange={(_, { id }) => {
+                  setupdateValue("read_out_language_id", id);
+                  dispatch(handleRemoveReadoutURL());
+                  dispatch(handleRemoveTranslate());
+                }}
+                disabled={
+                  updateValue.includes("read_out_language_id") ||
+                  userSettings?.account_active_inactive === 0
+                }
+              />
+            </div>{" "}
+            {findValidDisplayAccentData(
+              LanguagesList.read_out,
+              formikvalues.read_out_language_id
+            ) &&
+              findValidDisplayAccentData(
                 LanguagesList.read_out,
-                formikvalues.read_out_language_id,
-                "id"
+                formikvalues.read_out_language_id
+              ).length !== 0 && (
+                <div className="ms-5">
+                  <p className={classes.smallheading}>Read-out Accent</p>
+                  <Select
+                    showSearch
+                    style={{ width: 200 }}
+                    className={`mt-2 ${classes.SelectSec} settingsSelect`}
+                    placeholder="Search Read-out Accent"
+                    optionFilterProp="children"
+                    value={getValidDisplayData(
+                      findValidDisplayAccentData(
+                        LanguagesList.read_out,
+                        formikvalues.read_out_language_id
+                      ),
+                      formikvalues.read_out_accent_id,
+                      "id"
+                    )}
+                    filterOption={(input, option) =>
+                      (option?.label?.toLowerCase() ?? "").includes(
+                        input?.toLowerCase()
+                      )
+                    }
+                    filterSort={(optionA, optionB) =>
+                      (optionA?.label ?? "")
+                        .toLowerCase()
+                        .localeCompare((optionB?.label ?? "").toLowerCase())
+                    }
+                    options={RemoveDuplicates(
+                      findValidDisplayAccentData(
+                        LanguagesList.read_out,
+                        formikvalues.read_out_language_id
+                      )
+                    )}
+                    onChange={(_, { id }) => {
+                      setupdateValue("read_out_accent_id", id);
+                      dispatch(handleRemoveReadoutURL());
+                      dispatch(handleRemoveTranslate());
+                    }}
+                    disabled={
+                      updateValue.includes("read_out_accent_id") ||
+                      userSettings?.account_active_inactive === 0
+                    }
+                  />
+                </div>
               )}
-              filterOption={(input, option) =>
-                (option?.label?.toLowerCase() ?? "").includes(
-                  input?.toLowerCase()
-                )
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA?.label ?? "")
-                  .toLowerCase()
-                  .localeCompare((optionB?.label ?? "").toLowerCase())
-              }
-              options={RemoveDuplicates(LanguagesList.read_out)}
-              onChange={(_, { id }) => {
-                setupdateValue("read_out_language_id", id);
-                dispatch(handleRemoveReadoutURL());
-                dispatch(handleRemoveTranslate());
-              }}
-              disabled={
-                updateValue.includes("read_out_language_id") ||
-                userSettings?.account_active_inactive === 0
-              }
-            />
           </div>
           <div>
             <p className={classes.smallheading}>Timezone</p>

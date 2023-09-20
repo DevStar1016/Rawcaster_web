@@ -100,7 +100,10 @@ const Group = ({ group, searchInput, onClick }) => {
               onClick={(event) => {
                 if (!isFetching) {
                   event.stopPropagation();
-                  if (group.my_group === 1 && !group.channel_arn) {
+                  if (
+                    group.my_group === 1 &&
+                    (!group.channel_arn || group.channel_arn === "")
+                  ) {
                     HandleGroupCreate();
                   } else {
                     setisChatOpen({

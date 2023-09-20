@@ -807,8 +807,12 @@ export const ReadMore = ({
         <>
           <Paragraph
             className="ReadMoreText"
-
-            // style={{ cursor: "pointer", wordBreak: "break-all" }}
+            n
+            style={{
+              cursor: "pointer",
+              width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+              wordBreak: "break-all",
+            }}
           >
             {children}
           </Paragraph>
@@ -830,8 +834,11 @@ export const ReadMore = ({
         <>
           <Paragraph
             className="ReadMoreText"
-            // ellipsis={true}
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+              width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+              wordBreak: "break-all",
+            }}
             onClick={() => {}}
           >
             {readMore
@@ -869,7 +876,6 @@ export const ReadMore = ({
       ) : (
         <>
           <Paragraph
-            // className={`ReadMoreText ${classes.dNoneExpand}`}
             className="ReadMoreText"
             ellipsis={{
               rows: parseInt(partialShowLines),
@@ -880,10 +886,10 @@ export const ReadMore = ({
               },
               expandable: true,
             }}
-            // ellipsis={true}
             style={{
               cursor: "pointer",
               width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+              wordBreak: "break-all",
             }}
           >
             {children}

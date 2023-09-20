@@ -133,7 +133,7 @@ const PostNuggets = ({ isUserPostAvailable }) => {
     if (val.content !== "") {
       formData.append("content", val.content);
     }
-    if (MetaData && NuggetData.length === 0) {
+    if (MetaData) {
       formData.append("metadata", JSON.stringify(MetaData));
     }
     if (deletedMedia.length !== 0) {
@@ -174,6 +174,7 @@ const PostNuggets = ({ isUserPostAvailable }) => {
         setdeletedMedia([]);
         setpreviewMedia([]);
         setisEdit();
+        setMetaData(null);
       });
   };
 
@@ -247,6 +248,7 @@ const PostNuggets = ({ isUserPostAvailable }) => {
         setPostContent("");
         setProgress((pre) => ({ ...pre, show: false }));
         dispatch(handleLoading(false));
+        setMetaData(null);
       });
   };
 
