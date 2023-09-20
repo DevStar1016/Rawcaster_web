@@ -484,7 +484,7 @@ const Post = ({
         },
       ];
       resultData.map((elem) => {
-        if (ele.share_type !== 1) {
+        if (ele.type !== 2) {
           resultData = resultData.filter((val) => parseInt(val.key) !== 4);
         }
         if (ele?.following) {

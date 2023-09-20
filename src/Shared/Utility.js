@@ -769,7 +769,11 @@ export const ReadMore = ({
         <a
           className="content_link"
           onClick={() => {
-            setisLinkopenModal(true);
+            if (href.contains("rawcaster")) {
+              window.open(href);
+            } else {
+              setisLinkopenModal(true);
+            }
           }}
           {...props}
         >

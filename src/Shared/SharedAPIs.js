@@ -9,6 +9,7 @@ import {
   sendFriendRequestsService,
 } from "../Services/ApiService";
 import { JSONtoformdata, getAuthToken } from "./Utility";
+import axios from "axios";
 
 /**
  * Adds a nugget view by sending the provided data to the server.
@@ -19,6 +20,29 @@ export const addNuggetView = (data) => {
   addNuggetViewService(JSONtoformdata(data))
     .then((res) => {})
     .catch((err) => {});
+};
+
+export const GoogleSigninService = (access_token) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${access_token}`
+      )
+      .then(({ data }) => {
+        if (data.email) {
+          resolve(data);
+        } else {
+          reject();
+          toast.remove("Error");
+          toast.error("Something Went Wrong !", {
+            id: "Error",
+          });
+        }
+      })
+      .catch((err) => {
+        reject();
+      });
+  });
 };
 
 /**
