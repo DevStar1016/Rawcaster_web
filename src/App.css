@@ -311,6 +311,10 @@ color: #FFFFFF !important;
   color: #563662 !important;
   text-decoration: none !important;
 }
+.content_link {
+  width: 100%;
+  overflow: hidden;
+}
 
 .readmore_text {
 

@@ -99,7 +99,9 @@ export const GroupHeader = () => {
               <img
                 src={tickIcon}
                 onClick={() => {
-                  handleSubmit();
+                  if (!errors.group_members) {
+                    handleSubmit();
+                  }
                 }}
               />
               <span

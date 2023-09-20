@@ -67,6 +67,7 @@ const Postmodal = ({ visible, onClose }) => {
   const [isAudioModal, setisAudioModal] = useState(false);
   const loginUserData = useAuthData();
   const ImageRef = useRef();
+  const oldURL = useRef();
   const VideoRef = useRef();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -77,7 +78,6 @@ const Postmodal = ({ visible, onClose }) => {
   const [ShareType, setShareType] = useState("Public");
   const [LimitExceeds, setLimitExceeds] = useState(false);
   const token = useAuthToken();
-  const [oldUrl, setOldurl] = useState("");
   const [GrouporConnectionModal, setGrouporConnectionModal] = useState({
     show: false,
     type: "",
@@ -167,7 +167,7 @@ const Postmodal = ({ visible, onClose }) => {
     if (val) {
       // let expression = /([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?/gm;
       let expression =
-        /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+        /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,6}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
       var regex = new RegExp(expression);
       var t = val;
       if (t.match(regex)) {
@@ -181,12 +181,9 @@ const Postmodal = ({ visible, onClose }) => {
         if (index > 0) {
           addHttp = addHttp.substring(index, addHttp.length);
         }
-
-        if (oldUrl !== addHttp) {
-          console.log(addHttp, "URLLLL");
-
-          setOldurl(addHttp);
-
+        if (oldURL.current !== addHttp) {
+          oldURL.current = addHttp;
+          console.log(addHttp, "addHttpaddHttp");
           const userData = {
             token,
             url,
@@ -195,7 +192,6 @@ const Postmodal = ({ visible, onClose }) => {
             .then((res) => {
               if (res.data.status === 1) {
                 const { title, description, open_graph_image } = res.data.data;
-                // if (title && description && open_graph_image)
                 setMetaData({
                   title,
                   description,
@@ -203,10 +199,8 @@ const Postmodal = ({ visible, onClose }) => {
                 });
               }
             })
-            .catch(() => {})
-            .finally(() => {
-              setOldurl(url);
-            });
+            .catch(() => {});
+
           // let message = { event: "getmetadata", url: addHttp };
           // handleSendMetadatamessage(message);
         }
@@ -454,14 +448,12 @@ const Postmodal = ({ visible, onClose }) => {
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
                 onPaste={(event) => {
                   const pastedText = event.clipboardData.getData("text/plain");
-                  const selectedText = window.getSelection().toString();
-                  const updatedText = textinputRef.current?.value?.replace(
-                    selectedText,
-                    pastedText
-                  );
-                  setFieldValue("content", updatedText);
-
-                  getLinkInfo(updatedText);
+                  if (
+                    values.content.concat(pastedText).length <=
+                    getNuggetTextLength()
+                  ) {
+                    getLinkInfo(pastedText);
+                  }
                 }}
                 value={values.content}
                 onChange={(e) => {
