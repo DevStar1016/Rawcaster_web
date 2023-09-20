@@ -113,15 +113,26 @@ const Participants = () => {
           },
         ];
       }
+      if (ele?.isHost) {
+        return [
+          {
+            key: "1",
+            label: "Rename user",
+            onClick: () => {
+              setrenameAttendee(findAttendee);
+            },
+          },
+        ];
+      }
       return [
         {
           key: "0",
-          label: `${!getISCoHost() ? 'Promote as' : 'Remove'} Co Host`,
+          label: `${!ele?.isCoHost ? 'Promote as' : 'Remove'} Co Host`,
           onClick: () => {
             Modal.confirm({
-              title: `${!getISCoHost() ? 'Promote as': 'Remove'} Co Host`,
+              title: `${!ele?.isCoHost ? 'Promote as': 'Remove'} Co Host`,
               content:
-                `Are you sure do you want to ${!getISCoHost() ? 'Promote': 'Remove'} as Co Host for this User !`,
+                `Are you sure do you want to ${!ele?.isCoHost ? 'Promote': 'Remove'} as Co Host for this User !`,
               onOk: () => {
                 ChimesendMessage(
                   {
@@ -129,7 +140,7 @@ const Participants = () => {
                     hostId: userData?.user_id,
                     userId: findAttendee?.userId,
                   },
-                  !getISCoHost() ? CHIME_SOCKET_EVENTS.MAKE_HOST: CHIME_SOCKET_EVENTS.REMOVE_HOST
+                  !ele?.isCoHost ? CHIME_SOCKET_EVENTS.MAKE_HOST: CHIME_SOCKET_EVENTS.REMOVE_HOST
                 );
               },
               onCancel: () => {},
