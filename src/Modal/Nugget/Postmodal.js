@@ -193,14 +193,17 @@ const Postmodal = ({ visible, onClose }) => {
           };
           GeturlmetadataService(JSONtoformdata(userData))
             .then((res) => {
-              const { title, description, open_graph_image } = res.data.data;
-              // if (title && description && open_graph_image)
-              setMetaData({
-                title,
-                description,
-                image: open_graph_image,
-              });
+              if (res.data.status === 1) {
+                const { title, description, open_graph_image } = res.data.data;
+                // if (title && description && open_graph_image)
+                setMetaData({
+                  title,
+                  description,
+                  image: open_graph_image,
+                });
+              }
             })
+            .catch(() => {})
             .finally(() => {
               setOldurl(url);
             });

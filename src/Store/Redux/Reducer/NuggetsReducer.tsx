@@ -122,6 +122,20 @@ export const { actions, reducer } = createSlice({
         state.Nuggets = TempData;
       }
     },
+    handleNuggetFollowingUpdate: (state, action) => {
+      const nugget_id = action.payload.nugget_id;
+      let findIndex = [...state.Nuggets].findIndex(
+        (ele) => ele.nugget_id === parseInt(nugget_id)
+      );
+      if (findIndex !== -1) {
+        let TempData = [...state.Nuggets];
+        TempData[findIndex] = {
+          ...TempData[findIndex],
+          following: action.payload.following,
+        };
+        state.Nuggets = TempData;
+      }
+    },
     handleNuggetFormData: (state, action) => {
       state.nuggetFormData = action.payload;
     },
@@ -202,6 +216,7 @@ export const {
   handleRemoveReadoutURL,
   handleNuggetTranslateUpdate,
   handleRemoveTranslate,
+  handleNuggetFollowingUpdate,
 } = actions;
 
 export default reducer;

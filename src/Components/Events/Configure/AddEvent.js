@@ -83,7 +83,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_title: "Rawcaster Event",
       event_type: 1,
       event_start_date: moment(new Date()).format("YYYY-MM-DD"),
-      event_start_time: moment().add(15, "minutes").format("HH:mm"),
+      event_start_time: moment(new Date()).add(15, "minutes").format("HH:mm"),
       waiting_room: "",
       join_before_host: "",
       sound_notify: "",
@@ -726,7 +726,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         allowClear={false}
                         format={"YYYY-MM-DD"}
                         onChange={(date, dateString) => {
-                          console.log(dateString, "dateString");
                           setFieldValue("event_start_date", dateString);
 
                           if (
@@ -771,7 +770,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                           if (
                             moment()
                               .add(15, "minutes")
-                              .isSameOrBefore(moment(res, "hh:mm A"))
+                              .isSameOrAfter(moment(res, "hh:mm A"))
                           ) {
                             setFieldValue(
                               "event_start_time",
