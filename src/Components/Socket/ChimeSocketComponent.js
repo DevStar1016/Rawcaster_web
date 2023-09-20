@@ -235,6 +235,16 @@ const ChimeSocketComponent = () => {
     };
   }, [EventWindowRef]);
 
+  // Promote Host Statue Received Here - Socket
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER, (message) => {
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER, message);
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER);
+    };
+  }, [EventWindowRef]);
+
   return <Outlet />;
 };
 
