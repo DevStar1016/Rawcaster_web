@@ -102,7 +102,7 @@ const Participants = () => {
     /* List of Attendee Handling Options */
 
     const getDropdownList = (ele: AttendeeUserData) => {
-      if (isYou && (ele?.isHost || ele?.isCoHost)) {
+      if (getISCoHost() && findAttendee?.isCoHost) {
         return [
           {
             key: "1",
@@ -111,9 +111,30 @@ const Participants = () => {
               setrenameAttendee(findAttendee);
             },
           },
+          {
+            key: "2",
+            label: "Remove user",
+            onClick: () => {
+              Modal.confirm({
+                title: "Remove User",
+                content: "Are you sure do you want to remove this User !",
+                onOk: () => {
+                  ChimesendMessage(
+                    {
+                      refId: EventData?.reference_id,
+                      hostId: EventData?.original_user_id,
+                      userId: findAttendee?.userId,
+                    },
+                    CHIME_SOCKET_EVENTS.KICK_USER
+                  );
+                },
+                onCancel: () => {},
+              });
+            },
+          },
         ];
       }
-      if (ele?.isHost) {
+      else if (isYou && (ele?.isHost || ele?.isCoHost)) {
         return [
           {
             key: "1",
@@ -242,7 +263,7 @@ const Participants = () => {
               <MicrophoneComponent
                 ele={ele}
                 attendee={findAttendee}
-                isHost={getISHost()}
+                isHost={getISHost() || getISCoHost()}
                 className={classes.micsmallIcon}
                 isGlobal={false}
               />
@@ -258,22 +279,28 @@ const Participants = () => {
               <CameraComponent
                 ele={ele}
                 attendee={findAttendee}
-                isHost={getISHost()}
+                isHost={getISHost() || getISCoHost()}
                 className={classes.videosmallIcon}
                 isGlobal={false}
               />
             )}
-            {getISHost() || getISCoHost()? (
-              <Dropdown
-                menu={{
-                  items: findAttendee ? getDropdownList(findAttendee) : [],
-                }}
-              >
-                <div className={classes.moreIcon}>
-                  <i className="material-symbols-outlined">more_vert</i>
-                </div>
-              </Dropdown>
-            ) : null}
+            {
+              getISCoHost() && findAttendee?.isHost ?  
+                  <div style={{opacity: '0'}}>
+                        <i className="material-symbols-outlined">more_vert</i>
+                  </div> :
+              getISHost() || getISCoHost() ? (
+                    <Dropdown
+                      menu={{
+                        items: findAttendee ? getDropdownList(findAttendee) : [],
+                      }}
+                    >
+                      <div className={classes.moreIcon}>
+                        <i className="material-symbols-outlined">more_vert</i>
+                      </div>
+                    </Dropdown>
+              ) : null
+            }
           </div>
         </div>
         <Collapse in={SpeakerState === findAttendee?.userId}>
