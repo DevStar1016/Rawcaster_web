@@ -29,6 +29,8 @@ import SigninwithService from "./SigninwithService";
 import { accountVerifyHandle } from "./Utility";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GOOGLE_CLIENT_ID } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -131,7 +133,7 @@ const Login = () => {
     loop: true,
   };
   return (
-    <>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Seo
         title={"Login"}
         description="Log in now to access the latest insights, experience for your social media performance."
@@ -274,7 +276,7 @@ const Login = () => {
           setredirectModal({ show: false, msg: "" });
         }}
       />
-    </>
+    </GoogleOAuthProvider>
   );
 };
 

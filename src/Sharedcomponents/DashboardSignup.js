@@ -2,17 +2,15 @@
  * A component that renders the signup page for the dashboard.
  * @returns JSX element
  */
-import { Button, Drawer } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button } from "antd";
+import { useEffect, useState } from "react";
 import classes from "./SuggestedInfluencers.module.css";
 import GoogleIcon from "../Assets/Icons/png/google_logo.png";
 import AppleIcon from "../Assets/Icons/png/apple_logo.png";
-import { LoginSocialApple, LoginSocialGoogle } from "reactjs-social-login";
+import { LoginSocialApple } from "reactjs-social-login";
 import {
   APPLE_API_KEY,
   DEFAULT_VIDEO,
-  GOOGLE_CLIENT_ID,
-  PRIMARY_REDIRECT_URI,
   SECONDARY_REDIRECT_URI,
 } from "../Shared/Constant";
 import { SocialMediaLoginService } from "../Services/ApiService";
@@ -43,7 +41,7 @@ import { useMainContext } from "../Shared/Context";
 import StickyPopup from "../Modal/StickyPopup/Stickypopup";
 import Header from "../Components/ChatBox/Header";
 import Content from "../Components/ChatBox/Group/Content";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { GoogleSigninService } from "../Shared/SharedAPIs";
 
 const DashboardSignup = () => {
@@ -117,6 +115,7 @@ const DashboardSignup = () => {
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
+      dispatch(handleLoading(true));
       GoogleSigninService(codeResponse.access_token)
         .then((data) => {
           if (data.email) {

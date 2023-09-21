@@ -176,12 +176,12 @@ const Footer = () => {
               type: isCapture ? val.type : "doc",
             });
           }}
-          onAudioResult={(val) => {
+          onAudioResult={(res) => {
             const metaData = {
               meta_data: JSON.stringify({
-                file: val.message,
+                file_path: res.message,
                 type: "audio",
-                web_file: val.file,
+                file: null,
               }),
             };
             sendMessage("null", metaData);
@@ -192,7 +192,9 @@ const Footer = () => {
                   message: "",
                   user_name: "me",
                   user: userData.chime_user_id,
-                  file_path: val.message,
+                  file_path: res.message,
+                  type: "audio",
+                  file: null,
                 }),
               },
               ...pre,

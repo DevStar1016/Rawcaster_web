@@ -7,7 +7,11 @@ import React, { useEffect, useState } from "react";
 import { LoginSocialApple, LoginSocialGoogle } from "reactjs-social-login";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
-import { APPLE_API_KEY, SECONDARY_REDIRECT_URI } from "../../Shared/Constant";
+import {
+  APPLE_API_KEY,
+  GOOGLE_CLIENT_ID,
+  SECONDARY_REDIRECT_URI,
+} from "../../Shared/Constant";
 import jwt_decode from "jwt-decode";
 import { Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -27,7 +31,7 @@ import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Signup.module.css";
 import { toast } from "react-hot-toast";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { GoogleSigninService } from "../../Shared/SharedAPIs";
 
 const SigninwithService = ({ type }) => {
@@ -112,6 +116,7 @@ const SigninwithService = ({ type }) => {
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
+      dispatch(handleLoading(true));
       GoogleSigninService(codeResponse.access_token)
         .then((data) => {
           if (data && data.email) {

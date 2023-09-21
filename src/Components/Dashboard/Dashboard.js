@@ -26,6 +26,8 @@ import {
 import Notification from "../Notifications";
 import * as rdd from "react-device-detect";
 import { useWindowWidth } from "../../Shared/Utility";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GOOGLE_CLIENT_ID } from "../../Shared/Constant";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
@@ -95,7 +97,9 @@ const Dashboard = () => {
         <div className={classes.fullcontainer}>
           <Events />
           <Nuggets />
-          <DashboardSignup />
+          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <DashboardSignup />
+          </GoogleOAuthProvider>
         </div>
       </rdd.CustomView>
 
@@ -106,7 +110,11 @@ const Dashboard = () => {
             <Notification onReadCountChange={() => {}} />
           )}
           {dashboardMenu === "nugget" && <Nuggets />}
-          {dashboardMenu === "usermenu" && <DashboardSignup />}
+          {dashboardMenu === "usermenu" && (
+            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+              <DashboardSignup />
+            </GoogleOAuthProvider>
+          )}
         </div>
       </rdd.CustomView>
     </div>
