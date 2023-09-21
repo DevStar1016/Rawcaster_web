@@ -829,6 +829,7 @@ export const MessageContent = (props) => {
   };
 
   const GetValidComponent = () => {
+    console.log(type, "type");
     switch (true) {
       case type.includes("image"):
         return (

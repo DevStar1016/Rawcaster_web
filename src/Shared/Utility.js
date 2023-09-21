@@ -729,7 +729,8 @@ export const fetchGoogleContacts = async () => {
       });
       resolve(response.result.otherContacts);
     } catch (error) {
-      reject(error);
+      console.log(error);
+      // reject(error);
     }
   });
 };
@@ -756,7 +757,7 @@ export const ReadMore = ({
   onExpand,
   partialHeight,
   isMetaDataAvailable = false,
-  MetaDataContent = <></>,
+  MetaDataContent,
 }) => {
   const { Paragraph } = Typography;
   const [OnEllipsis, setOnEllipsis] = useState(false);
@@ -769,7 +770,7 @@ export const ReadMore = ({
         <a
           className="content_link"
           onClick={() => {
-            if (href.contains("rawcaster")) {
+            if (href.includes("rawcaster")) {
               window.open(href);
             } else {
               setisLinkopenModal(true);
@@ -779,7 +780,7 @@ export const ReadMore = ({
         >
           {isMetaDataAvailable ? (
             <Popover
-              content={MetaDataContent}
+              content={() => MetaDataContent(href)}
               overlayInnerStyle={{
                 padding: 0,
                 width: "100%",

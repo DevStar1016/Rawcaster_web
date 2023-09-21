@@ -26,6 +26,7 @@ import InviteFansModal from "../../Modal/Referal/InviteFansModal";
 import { handleSendEmail } from "../../Modal/Referal/utility";
 import { fetchGoogleContacts } from "../../Shared/Utility";
 import { useNavigate } from "react-router";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const shareMessage =
   "Hi, I have joined Rawcaster. A one-stop platform for all social media needs. I am asking all my friends and special people to join this platform to make it easier to reach everyone with content, personalized messages, Nuggets, and invitations to participate in my special events. I expect to see you there soon.\n";
@@ -157,6 +158,7 @@ const InviteBox = () => {
             <img src={PhoneIcon} alt={"Call"} />
             <p>Contacts</p>
           </div>
+
           {isGmailOpen ? (
             <span className="material-symbols-outlined">expand_more</span>
           ) : (
@@ -176,6 +178,10 @@ const InviteBox = () => {
                         height={"25px"}
                         alt={"User_Img"}
                         src={ele?.profile_img}
+                        onError={({ currentTarget }) => {
+                          currentTarget.onerror = null;
+                          currentTarget.src = defaultprofileImg;
+                        }}
                       ></img>
                       <div className={classes.NameSec}>
                         <p

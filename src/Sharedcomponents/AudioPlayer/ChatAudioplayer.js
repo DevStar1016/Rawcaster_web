@@ -41,6 +41,7 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
   useEffect(() => {
     const audio = new Audio();
     audio.src = url;
+    console.log(url, "url");
     audio.addEventListener("loadedmetadata", () => {
       setAudioUrl(audio.src);
     });

@@ -71,6 +71,7 @@ import { ReadoutSec, SeeTranslate } from "./Utility";
 import AgreedusersListModal from "../../Modal/Nugget/AgreedusersListModal";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 import ProfileImg from "../../UIComponents/ProfileImg";
+import { isArray } from "lodash";
 
 const Post = ({
   ele,
@@ -780,8 +781,9 @@ const Post = ({
     }
   };
 
-  const MetaDataContent = (isPopover = false) => {
-    if (JSON.parse(ele.metadata) && isPopover) {
+  const MetaDataContent = (elem, isPopover = false) => {
+    if (elem && isPopover) {
+      console.log(elem, "elem");
       return (
         <div
           className={classes.PopoverShareLink}
@@ -794,15 +796,16 @@ const Post = ({
               className={classes.title}
               style={{
                 paddingTop:
-                  JSON.parse(ele.metadata).image === "" ? "10px" : "0px",
+                  !elem.open_graph_image || elem.open_graph_image === ""
+                    ? "10px"
+                    : "0px",
               }}
             >
-              {JSON.parse(ele.metadata).title}
+              {elem.title}
             </p>
-            {JSON.parse(ele.metadata).image &&
-            JSON.parse(ele.metadata).image !== "" ? (
+            {elem.open_graph_image && elem.open_graph_image !== "" ? (
               <img
-                src={JSON.parse(ele.metadata).image}
+                src={elem.open_graph_image}
                 alt="meta_img"
                 style={{
                   objectFit: "cover",
@@ -814,13 +817,9 @@ const Post = ({
                 }}
               ></img>
             ) : (
-              <div className={classes.domainName}>
-                {JSON.parse(ele.metadata).source}
-              </div>
+              <div className={classes.domainName}>{elem.source}</div>
             )}
-            <p className={classes.dec}>
-              {JSON.parse(ele.metadata).description}
-            </p>
+            <p className={classes.dec}>{elem.description}</p>
           </div>
 
           {/* <div className={classes.shareLinkSec}>
@@ -864,7 +863,7 @@ const Post = ({
           </div> */}
         </div>
       );
-    } else if (JSON.parse(ele.metadata) && !isPopover) {
+    } else if (elem && !isPopover) {
       return (
         <div
           className={classes.metaLink}
@@ -873,25 +872,23 @@ const Post = ({
           }}
         >
           <div className={classes.shareLinkSec}>
-            {JSON.parse(ele.metadata).image !== "" ? (
+            {elem.open_graph_image !== "" ? (
               <p className={classes.source}>
                 <i className="material-icons">public</i>
-                {JSON.parse(ele.metadata).source}
+                {elem.source}
               </p>
             ) : null}
             <p
               className={classes.title}
               style={{
-                paddingTop:
-                  JSON.parse(ele.metadata).image === "" ? "10px" : "0px",
+                paddingTop: elem.open_graph_image === "" ? "10px" : "0px",
               }}
             >
-              {JSON.parse(ele.metadata).title}
+              {elem.title}
             </p>
-            {JSON.parse(ele.metadata).image &&
-            JSON.parse(ele.metadata).image !== "" ? (
+            {elem.open_graph_image && elem.open_graph_image !== "" ? (
               <img
-                src={JSON.parse(ele.metadata).image}
+                src={elem.open_graph_image}
                 height="370px"
                 alt="meta_img"
                 style={{
@@ -903,13 +900,9 @@ const Post = ({
                 }}
               ></img>
             ) : (
-              <div className={classes.domainName}>
-                {JSON.parse(ele.metadata).source}
-              </div>
+              <div className={classes.domainName}>{elem.source}</div>
             )}
-            <p className={classes.dec}>
-              {JSON.parse(ele.metadata).description}
-            </p>
+            <p className={classes.dec}>{elem.description}</p>
           </div>
         </div>
       );
@@ -1071,17 +1064,21 @@ const Post = ({
                   onClick={() => {}}
                 >
                   <ReadMore
-                    MetaDataContent={MetaDataContent(
-                      ele.media_list &&
-                        ele.media_list?.length !== 0 &&
-                        ele.metadata
-                    )}
+                    MetaDataContent={(url) => {
+                      if (ele.metadata) {
+                        if (isArray(JSON.parse(ele.metadata))) {
+                          const FindMetaData = JSON.parse(ele.metadata).find(
+                            (elem, index) =>
+                              elem.url === url && ele.media_list?.length !== 0
+                          );
+                          if (FindMetaData) {
+                            return MetaDataContent(FindMetaData, true);
+                          }
+                        }
+                      }
+                    }}
                     isReadMore={isReadMore()}
-                    isMetaDataAvailable={
-                      ele.media_list &&
-                      ele.media_list?.length !== 0 &&
-                      ele.metadata
-                    }
+                    isMetaDataAvailable={ele.metadata}
                     isLinkopenModal={isLinkopenModal}
                     setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
@@ -1102,6 +1099,11 @@ const Post = ({
 
               {ele.media_list && ele.media_list?.length === 0 && ele.metadata
                 ? MetaDataContent(
+                    ele.metadata
+                      ? isArray(JSON.parse(ele.metadata))
+                        ? JSON.parse(ele.metadata)[0]
+                        : JSON.parse(ele.metadata)
+                      : null,
                     ele.media_list &&
                       ele.media_list?.length !== 0 &&
                       ele.metadata

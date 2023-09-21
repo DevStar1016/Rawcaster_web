@@ -20,22 +20,18 @@ import "tui-image-editor/dist/tui-image-editor.css";
 import { persistor, store } from "./Store/Redux/Config/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import EventProvider from "./Sharedcomponents/EventProvider";
-import { GOOGLE_CLIENT_ID } from "./Shared/Constant";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <StoreProvider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <EventProvider>
-            <App />
-            <Toaster />
-          </EventProvider>
-        </PersistGate>
-      </StoreProvider>
-    </GoogleOAuthProvider>
+    <StoreProvider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <EventProvider>
+          <App />
+          <Toaster />
+        </EventProvider>
+      </PersistGate>
+    </StoreProvider>
   </>
 );
 

@@ -191,12 +191,7 @@ const Postmodal = ({ visible, onClose }) => {
           GeturlmetadataService(JSONtoformdata(userData))
             .then((res) => {
               if (res.data.status === 1) {
-                const { title, description, open_graph_image } = res.data.data;
-                setMetaData({
-                  title,
-                  description,
-                  image: open_graph_image,
-                });
+                setMetaData(res.data.data);
               }
             })
             .catch(() => {});
@@ -446,15 +441,15 @@ const Postmodal = ({ visible, onClose }) => {
                 ref={textinputRef}
                 className={classes.postTextarea}
                 placeholder={`What's on your mind, ${loginUserData?.name}!`}
-                onPaste={(event) => {
-                  const pastedText = event.clipboardData.getData("text/plain");
-                  if (
-                    values.content.concat(pastedText).length <=
-                    getNuggetTextLength()
-                  ) {
-                    getLinkInfo(pastedText);
-                  }
-                }}
+                // onPaste={(event) => {
+                //   const pastedText = event.clipboardData.getData("text/plain");
+                //   if (
+                //     values.content.concat(pastedText).length <=
+                //     getNuggetTextLength()
+                //   ) {
+                //     getLinkInfo(pastedText);
+                //   }
+                // }}
                 value={values.content}
                 onChange={(e) => {
                   if (e.target.value.length <= getNuggetTextLength()) {
@@ -577,10 +572,11 @@ const Postmodal = ({ visible, onClose }) => {
                 >
                   <span className="material-icons">close</span>
                 </div>
-                <p className={classes.title}>{MetaData.title}</p>
-                {MetaData.image && MetaData.image !== "" ? (
+                <p className={classes.title}>{MetaData[0].title}</p>
+                {MetaData[0].open_graph_image &&
+                MetaData[0].open_graph_image !== "" ? (
                   <img
-                    src={MetaData.image}
+                    src={MetaData[0].open_graph_image}
                     alt="Meta Data"
                     width="100%"
                     height="200px"
@@ -588,10 +584,10 @@ const Postmodal = ({ visible, onClose }) => {
                   ></img>
                 ) : (
                   <div className={classes.domainName}>
-                    {MetaData.source || ""}
+                    {MetaData[0].source || ""}
                   </div>
                 )}
-                <p>{MetaData.description}</p>
+                <p>{MetaData[0].description}</p>
               </div>
             ) : null}
 
