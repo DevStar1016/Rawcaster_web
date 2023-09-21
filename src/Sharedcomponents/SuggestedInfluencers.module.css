@@ -95,6 +95,6 @@
 
 @media(max-width:768px) {
    /* .advideoSec { display: none;} */
-   .beforeloginSec { width: 100%; padding: 30px 15px; height: auto; margin: unset; }
+   .beforeloginSec { width: 100%; padding: 30px 15px; height: auto; margin: unset;overflow: scroll; }
    .suggInfluencersSec { max-height:inherit !important;}
 }

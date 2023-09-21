@@ -391,7 +391,7 @@ export const SelectConnections = () => {
   };
 
   const isChatSwichEnabled = () => {
-    if (groupId) {
+    if (!groupId) {
       return false;
     }
     return true;

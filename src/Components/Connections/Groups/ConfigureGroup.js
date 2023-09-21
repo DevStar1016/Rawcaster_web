@@ -80,7 +80,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
             return true;
           }
         ),
-      group_members: yup.string().required(`Please select Atleast One Member!`),
+      group_members: yup.string().optional(`Please select Atleast One Member!`),
     }),
     onSubmit: (values) => {
       if (isAddMember) {

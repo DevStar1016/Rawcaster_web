@@ -150,9 +150,6 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
           setmessageNextToken(res.data.data.next_page_token);
           const messages = res.data.data.messages;
           const finalResult = messages.map((ele) => {
-            const timestamp = ele.LastEditedTimestamp
-              ? ele.LastEditedTimestamp
-              : ele.CreatedTimestamp;
             if (!ele.Content.match(/Typing/)) {
               const getvalidFileData = () => {
                 if (ele.Metadata && isJSONString(ele.Metadata)) {
@@ -173,9 +170,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
                   ...getvalidFileData(),
                   isEdited: ele.LastEditedTimestamp !== undefined,
                   message_id: ele.MessageId,
-
                   message: ele.Content,
-
                   user_name: "me",
                   user: ele.Sender.Arn,
                   created_at: moment(ele.CreatedTimestamp).format(
@@ -188,6 +183,7 @@ const StickyPopup = ({ HeaderContainer, open, close }) => {
             }
           });
           let filterData = finalResult.filter((ele) => ele);
+
           setMessages((pre) => [...pre, ...filterData]);
           resolve();
         })

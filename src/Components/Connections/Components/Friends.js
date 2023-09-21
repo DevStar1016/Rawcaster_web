@@ -35,7 +35,7 @@ const Friends = ({ friend, searchInput }) => {
     setisFetching(friend.user_id);
     const FormData = {
       token,
-      friend_id: friend.user_id,
+      friend_request_id: friend.friend_request_id,
     };
     AutoIndividualCreateService(JSONtoformdata(FormData))
       .then((res) => {
