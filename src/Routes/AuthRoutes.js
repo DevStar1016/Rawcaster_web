@@ -7,6 +7,7 @@
  * @property {Array} [children] - An array of child routes.
  * @returns None
  */
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import ForgotPassword from "../Components/Auth/ForgotPassword";
 import Login from "../Components/Auth/Login";
 import ResetPassword from "../Components/Auth/ResetPassword";
@@ -24,6 +25,7 @@ import TermsandConditions from "../Components/Policy/TermsandConditions";
 import AuthLayout from "../Layouts/AuthLayout";
 import MainLayout from "../Layouts/MainLayout";
 import { AuthPrivateRoute } from "./PrivateRoute";
+import { GOOGLE_CLIENT_ID } from "../Shared/Constant";
 
 export const AuthRoute = [
   {
@@ -45,11 +47,19 @@ export const AuthRoute = [
           },
           {
             path: "/signup",
-            element: <Signup />,
+            element: (
+              <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                <Signup />
+              </GoogleOAuthProvider>
+            ),
           },
           {
             path: "/signup/:nugget_id",
-            element: <Signup />,
+            element: (
+              <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                <Signup />
+              </GoogleOAuthProvider>
+            ),
           },
           {
             path: "/signupwithemail",
