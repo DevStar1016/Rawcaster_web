@@ -18,7 +18,7 @@ padding-inline: 10px !important;
 .chatboxHeader h2 {
     font-family: 'Gilroy-Bold';
     font-size: 16px;
-    line-height: 8px;
+    line-height: 14px;
     color: #1D1C1C ;
 }
 .chatboxHeader p {
@@ -36,6 +36,7 @@ padding-inline: 10px !important;
   display: -webkit-box;
   -webkit-line-clamp: 1; /* number of lines to show */
           line-clamp: 1; 
+          overflow: hidden;
   -webkit-box-orient: vertical;
 }
 .groupintroSec {
