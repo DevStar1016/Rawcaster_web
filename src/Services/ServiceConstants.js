@@ -4,11 +4,11 @@
 
 // LOCAL BASE_URL
 
-export const BASE_URL = "http://192.168.1.162:8003/rawcaster";
+// export const BASE_URL = "http://192.168.1.162:8003/rawcaster";
 
 // DEV BASE_URL
 
-// export const BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
+export const BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
 
 // SOCKET URL
 // export const ChimesocketURL = "http://34.239.41.21:5000";
