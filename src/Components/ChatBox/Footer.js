@@ -120,12 +120,16 @@ const Footer = () => {
   }, [text]);
 
   const isChatEnabled = () => {
-    if (GroupDetails && GroupDetails?.my_group === 1) {
-      if (GroupDetails?.group_category === 3) {
-        return GroupDetails?.chat_enabled === 1 || isOwner();
-      } else if (GroupDetails?.group_category === 1) {
-        return true;
+    if (GroupDetails && GroupDetails?.group_id) {
+      if (GroupDetails && GroupDetails?.my_group === 1) {
+        if (GroupDetails?.group_category === 3) {
+          return GroupDetails?.chat_enabled === 1 || isOwner();
+        } else if (GroupDetails?.group_category === 1) {
+          return true;
+        }
       }
+    } else {
+      return true;
     }
   };
 
@@ -197,7 +201,11 @@ const Footer = () => {
         />
       ) : (
         <div className={classes.DisabledSec}>
-          <p>Chat Has Been Disabled By Owner</p>
+          {GroupDetails?.group_category === 2 ? (
+            <p>Send Messages not allowed in this Group</p>
+          ) : (
+            <p>Chat Has Been Disabled By Owner</p>
+          )}
         </div>
       )}
     </Layout.Footer>
