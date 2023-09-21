@@ -18,7 +18,7 @@ padding-inline: 10px !important;
 .chatboxHeader h2 {
     font-family: 'Gilroy-Bold';
     font-size: 16px;
-    line-height: 8px;
+    line-height: 14px;
     color: #1D1C1C ;
 }
 .chatboxHeader p {
@@ -36,6 +36,7 @@ padding-inline: 10px !important;
   display: -webkit-box;
   -webkit-line-clamp: 1; /* number of lines to show */
           line-clamp: 1; 
+          overflow: hidden;
   -webkit-box-orient: vertical;
 }
 .groupintroSec {
@@ -211,7 +212,21 @@ transition: 1s;
 .copyBtn>span{
   transition: 0.1s;
 }
-
+.DisabledSec {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 97%;
+  margin: auto;
+  background: #F1F2F5 !important;
+  padding: 10px 0;
+  border-radius: 11px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.DisabledSec p {
+  margin-bottom: 0px !important;
+  font-weight: bold;
+}
 @keyframes  Hide{
   0% {
     opacity: 0;

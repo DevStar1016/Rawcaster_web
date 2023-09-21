@@ -31,6 +31,12 @@ const Footer = () => {
     setEditData,
   } = useChatContext();
 
+  const isOwner = () => {
+    return (
+      GroupDetails && parseInt(GroupDetails?.group_owner) === userData?.user_id
+    );
+  };
+
   /**
    * Sends a message to a channel using the SendChannelMessageService.
    * @param {any} val - The message to send.
@@ -113,71 +119,95 @@ const Footer = () => {
     }
   }, [text]);
 
+  const isChatEnabled = () => {
+    if (GroupDetails && GroupDetails?.group_id) {
+      if (GroupDetails && GroupDetails?.my_group === 1) {
+        if (GroupDetails?.group_category === 3) {
+          return GroupDetails?.chat_enabled === 1 || isOwner();
+        } else if (GroupDetails?.group_category === 1) {
+          return true;
+        }
+      }
+    } else {
+      return true;
+    }
+  };
+
   return (
     <Layout.Footer className={classes.footerSec}>
-      <ChatInput
-        value={EditData?.msg || ""}
-        onInput={(val) => {
-          settext(val);
-        }}
-        isEdit={EditData}
-        HandleSendMessage={(val) => {
-          sendMessage(val);
-          setMessages((pre) => [
-            {
-              ...convertMessageFormat({
-                type: "text",
-                message: val,
-                user_name: "me",
-                user: userData.chime_user_id,
-              }),
-            },
-            ...pre,
-          ]);
-        }}
-        onEdit={(val) => {
-          editMessage(val);
-        }}
-        cameraenabled
-        fileuploadEnabled
-        onCameraResult={(val) => {
-          setPreviewData({
-            File: val,
-            type: val.type,
-          });
-        }}
-        onEditClose={() => {
-          setEditData(null);
-        }}
-        onFileResult={(val, isCapture = false) => {
-          setPreviewData({
-            File: val,
-            type: isCapture ? val.type : "doc",
-          });
-        }}
-        onAudioResult={(val) => {
-          const metaData = {
-            meta_data: JSON.stringify({
-              file: val.message,
-              type: "audio",
-              web_file: val.file,
-            }),
-          };
-          sendMessage("null", metaData);
-          setMessages((pre) => [
-            {
-              ...convertMessageFormat({
+      {isChatEnabled() ? (
+        <ChatInput
+          value={EditData?.msg || ""}
+          onInput={(val) => {
+            settext(val);
+          }}
+          isEdit={EditData}
+          HandleSendMessage={(val) => {
+            sendMessage(val);
+            setMessages((pre) => [
+              {
+                ...convertMessageFormat({
+                  type: "text",
+                  message: val,
+                  user_name: "me",
+                  user: userData.chime_user_id,
+                }),
+              },
+              ...pre,
+            ]);
+          }}
+          onEdit={(val) => {
+            editMessage(val);
+          }}
+          cameraenabled
+          fileuploadEnabled
+          onCameraResult={(val) => {
+            setPreviewData({
+              File: val,
+              type: val.type,
+            });
+          }}
+          onEditClose={() => {
+            setEditData(null);
+          }}
+          onFileResult={(val, isCapture = false) => {
+            setPreviewData({
+              File: val,
+              type: isCapture ? val.type : "doc",
+            });
+          }}
+          onAudioResult={(val) => {
+            const metaData = {
+              meta_data: JSON.stringify({
+                file: val.message,
                 type: "audio",
-                message: "",
-                user_name: "me",
-                user: userData.chime_user_id,
-                file_path: val.message,
+                web_file: val.file,
               }),
-            },
-            ...pre,
-          ]);
-        }}
-      />
+            };
+            sendMessage("null", metaData);
+            setMessages((pre) => [
+              {
+                ...convertMessageFormat({
+                  type: "audio",
+                  message: "",
+                  user_name: "me",
+                  user: userData.chime_user_id,
+                  file_path: val.message,
+                }),
+              },
+              ...pre,
+            ]);
+          }}
+        />
+      ) : (
+        <div className={classes.DisabledSec}>
+          {GroupDetails?.group_category === 2 ? (
+            <p>Send Messages not allowed in this Group</p>
+          ) : (
+            <p>Chat Has Been Disabled By Owner</p>
+          )}
+        </div>
+      )}
     </Layout.Footer>
   );
 };
