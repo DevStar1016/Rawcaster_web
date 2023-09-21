@@ -33,8 +33,6 @@ import { GoogleSigninService } from "../../Shared/SharedAPIs";
 const SigninwithService = ({ type }) => {
   const { nugget_id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
     latitude: "",
