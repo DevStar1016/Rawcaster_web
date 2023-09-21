@@ -41,8 +41,8 @@ import { useMainContext } from "../Shared/Context";
 import StickyPopup from "../Modal/StickyPopup/Stickypopup";
 import Header from "../Components/ChatBox/Header";
 import Content from "../Components/ChatBox/Group/Content";
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { GoogleSigninService } from "../Shared/SharedAPIs";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const DashboardSignup = () => {
   const { player, setplayer, setisChatOpen, isChatOpen } = useMainContext();
