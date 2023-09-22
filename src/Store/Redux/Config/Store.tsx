@@ -5,7 +5,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./RootReducer";
 import { persistReducer, persistStore } from "redux-persist";
-import thunk from "redux-thunk";
 import storage from "redux-persist/lib/storage";
 
 const persistedReducer = persistReducer(
@@ -23,7 +22,6 @@ export const store = configureStore({
     ...getDefaultMiddleware({
       serializableCheck: false,
     }),
-    thunk,
   ],
 });
 
