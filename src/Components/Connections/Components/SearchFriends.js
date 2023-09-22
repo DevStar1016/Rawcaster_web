@@ -9,18 +9,18 @@
  * @returns A React component that renders a search input field and displays the search results.
  */
 import axios from "axios";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { searchRawcasterUsersService } from "../../../Services/ApiService";
 import {
   getAuthToken,
   getisAddFriend,
-  getRawcaserToken,
   JSONtoformdata,
 } from "../../../Shared/Utility";
 
 import classes from "../Connections.module.css";
+import { useAuthToken } from "../../../Shared/Reduxfetcher";
 
 let isRequestCancel = false;
 
@@ -30,13 +30,12 @@ const SearchFriends = ({
   setPages,
   setSearchData,
   SearchData,
+  isFetching,
+  setisFetching,
 }) => {
   const [PeopleList, setPeopleList] = useState([]);
+  const token = useAuthToken();
   const source = useRef(null);
-  const getToken = () => {
-    const userData = getRawcaserToken();
-    return userData?.token;
-  };
 
   /**
    * Retrieves a list of people based on the given page number.
@@ -51,8 +50,8 @@ const SearchFriends = ({
     source.current = axios.CancelToken.source();
     let nuggetData = {
       nugget_type: 0,
-      token: getToken(),
-      auth_code: getAuthToken(getToken()),
+      token: token,
+      auth_code: getAuthToken(token),
       search_key: SearchData,
       page_number: page,
     };
@@ -73,8 +72,8 @@ const SearchFriends = ({
             let result;
 
             setPeopleList((pre) => {
-              let filterList = res.data.users_list.filter(
-                (ele) => ele.friend_request_status === ""
+              let filterList = res.data.users_list.filter((ele) =>
+                getisAddFriend(ele.friend_request_status)
               );
               return [...pre, ...filterList].reduce((acc, current) => {
                 const x = acc.find((item) => item.user_id === current.user_id);
@@ -101,9 +100,16 @@ const SearchFriends = ({
       })
       .catch((err) => {})
       .finally(() => {
+        setisFetching(false);
         loadingStatus(false);
       });
   };
+
+  useEffect(() => {
+    if (token) {
+      getPeopleList();
+    }
+  }, [token]);
 
   return (
     <div className={classes.filterSec}>

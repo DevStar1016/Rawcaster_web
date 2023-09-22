@@ -286,7 +286,7 @@ const Settings = () => {
 
   return (
     <SettingsContext.Provider value={settingsValues}>
-      {userSettings ? (
+      {userSettings && token ? (
         <div className={classes.settingSec}>
           <div
             className={`${classes.sidebar}  ${
@@ -451,7 +451,7 @@ const Settings = () => {
             </div>
           </Tab.Container>
         </div>
-      ) : (
+      ) : !token ? (
         <div
           className={
             "d-flex align-item-center justify-content-center h-100 w-100 m-auto"
@@ -481,7 +481,7 @@ const Settings = () => {
             ]}
           ></Result>
         </div>
-      )}
+      ) : null}
     </SettingsContext.Provider>
   );
 };

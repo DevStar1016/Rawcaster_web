@@ -1068,9 +1068,9 @@ const Post = ({
                       if (ele.metadata) {
                         if (isArray(JSON.parse(ele.metadata))) {
                           const FindMetaData = JSON.parse(ele.metadata).find(
-                            (elem, index) =>
-                              elem.url === url && ele.media_list?.length !== 0
+                            (elem) => elem.url === url
                           );
+                          console.log(FindMetaData, "FindMetaData");
                           if (FindMetaData) {
                             return MetaDataContent(FindMetaData, true);
                           }

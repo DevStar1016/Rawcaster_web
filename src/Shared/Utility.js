@@ -8,11 +8,7 @@ import {
   GOOGLE_CLIENT_ID,
 } from "./Constant";
 import { getCookieData, removeCookieData } from "../Store/Storage";
-import {
-  handleLoginData,
-  handleToken,
-  handleuserSettings,
-} from "../Store/Redux/Reducer/AuthReducer";
+import { handleAuthReset } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
 import { useEffect, useState } from "react";
@@ -89,10 +85,8 @@ export const DecryptionString = (str) => {
  * @returns None
  */
 export const RemoveToken = (dispatch) => {
-  dispatch(handleLoginData(null));
-  dispatch(handleToken(null));
-  dispatch(handleuserSettings(null));
   removeCookieData("rawcaster_user_token");
+  dispatch(handleAuthReset(null));
 };
 
 //GEO_CODE_CONFIGURE

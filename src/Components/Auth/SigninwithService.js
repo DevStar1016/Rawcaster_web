@@ -3,15 +3,11 @@
  * @param {string} type - The type of sign-in service (e.g., "Sign in", "Sign up").
  * @returns The SigninwithService component.
  */
-import React, { useEffect, useState } from "react";
-import { LoginSocialApple, LoginSocialGoogle } from "reactjs-social-login";
+import { useEffect, useState } from "react";
+import { LoginSocialApple } from "reactjs-social-login";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
-import {
-  APPLE_API_KEY,
-  GOOGLE_CLIENT_ID,
-  SECONDARY_REDIRECT_URI,
-} from "../../Shared/Constant";
+import { APPLE_API_KEY, SECONDARY_REDIRECT_URI } from "../../Shared/Constant";
 import jwt_decode from "jwt-decode";
 import { Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -26,12 +22,12 @@ import {
   removeSessionStorageData,
   setCookieData,
 } from "../../Store/Storage";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import classes from "./Signup.module.css";
 import { toast } from "react-hot-toast";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleSigninService } from "../../Shared/SharedAPIs";
 
 const SigninwithService = ({ type }) => {

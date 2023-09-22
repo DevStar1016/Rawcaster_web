@@ -4,7 +4,7 @@
  * @returns JSX elements representing the login page.
  */
 import { Button, Form, Input } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.png";
