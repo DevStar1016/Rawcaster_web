@@ -231,13 +231,22 @@ const HomeLayout = () => {
                       className={classes.liveIcon}
                       alt="referal_icon"
                       onClick={() => {
+                        console.log("test");
+                        let filterData = {
+                          token,
+                          formData: {
+                            page_number: 1,
+                            nugget_type: 0,
+                          },
+                        };
+                        dispatch(fetchNuggetsbyId(filterData));
                         navigate("/referel");
                       }}
                     />
                     <img
                       src={SettingsIcon}
                       className={`${classes.onlydes} ${classes.menuIcon}`}
-                      alt="Settings_logo"
+                      alt="Dashboard_logo"
                       onClick={() => {
                         navigate("/dashboard");
                       }}
