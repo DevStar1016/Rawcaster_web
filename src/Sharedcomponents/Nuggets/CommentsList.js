@@ -25,6 +25,7 @@ import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import ReplyList from "./ReplyList";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const CommentsList = ({ index }) => {
   const {
@@ -191,6 +192,10 @@ const CommentsList = ({ index }) => {
                           <img
                             src={loginUserData?.profile_image}
                             alt="profile_image"
+                            onError={({ currentTarget }) => {
+                              currentTarget.onerror = null;
+                              currentTarget.src = defaultprofileImg;
+                            }}
                           />
                         </div>
                         <div className={classes.textBox}>
@@ -332,6 +337,10 @@ const CommentsList = ({ index }) => {
                           <img
                             src={elem?.profile_image}
                             alt={elem?.profile_image}
+                            onError={({ currentTarget }) => {
+                              currentTarget.onerror = null;
+                              currentTarget.src = defaultprofileImg;
+                            }}
                           />
                         </div>
                         <div className={classes.rightitem}>

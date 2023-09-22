@@ -59,9 +59,9 @@ function useReplaceBiodataHandler(data, isMyBio = false) {
       return val && val !== "";
     };
 
-    const GetValidName = () => {
+    const GetValidName = (isPartial = false) => {
       if (isValidString(data.first_name)) {
-        if (isValidString(data.last_name)) {
+        if (isValidString(data.last_name) && !isPartial) {
           return `${data.first_name} ${data.last_name}`;
         } else {
           return `${data.first_name}`;
@@ -73,26 +73,28 @@ function useReplaceBiodataHandler(data, isMyBio = false) {
       }
     };
 
+    const momentDob = moment(data.dob, "YYYY-MM-DD");
+    const GetAge = moment().diff(momentDob, "years");
     // Create parts of the description
     const namePart = `${GetValidName()} is ${
-      !isNaN(calculate_age(data.dob)) ? calculate_age(data.dob) : ""
-    } years old,${
-      !isNaN(isValidString(data.dob)) ? ` was born in ${data.dob}.` : ""
-    }`;
-    const locationPart = `${GetValidName()} presently resides in ${
-      data.location
+      !isNaN(GetAge) ? GetAge : ""
+    } years old,${!isNaN(GetAge) ? ` was born in ${data.dob}.` : ""}`;
+    const locationPart = `${GetValidName(true)} presently resides in ${
+      data.geo_location
     }.`;
     const languagePart = replacePlaceholder(
-      `${GetValidName()}'s preferred communication language is`,
-      data.language
+      `${GetValidName(true)}'s preferred communication language is English`
     );
     const userStatusPart = replacePlaceholder(
-      `${GetValidName()} has been a Rawcaster`,
-      `${data.user_status} since ${data.date_of_join}`
+      `${GetValidName(true)} has been a Rawcaster`,
+      `${data.user_status} since ${utctoUserTimezone(
+        data.date_of_join,
+        userSettings.time_zone
+      ).format(" DD MMM YYYY ")}`
     );
     const defaultPagePart = replacePlaceholder(
-      `prefers to be contacted in Rawcaster through`,
-      data.rawcaster_default_page
+      `${GetValidName(true)} prefers to be contacted in Rawcaster through`,
+      defaultRawcaterPage(userSettings ? userSettings.mobile_default_page : 1)
     );
 
     // Join the parts to form the description
@@ -103,7 +105,7 @@ function useReplaceBiodataHandler(data, isMyBio = false) {
       userStatusPart,
       defaultPagePart,
     ];
-    const description = descriptionParts.join(" ");
+    const description = descriptionParts.join(",");
 
     // if (userSettings?.mobile_default_page && isMyBio) {
     //   str = str.replace(

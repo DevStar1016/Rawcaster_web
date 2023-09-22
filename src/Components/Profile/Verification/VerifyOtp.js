@@ -155,7 +155,7 @@ const VerifyOtp = () => {
     let ResendValues = {
       otp_ref_id: otpRefId,
       auth_code: getAuthToken(otpRefId),
-      otp_flag: "email",
+      otp_flag: state?.type,
     };
     resendOtpService(JSONtoformdata(ResendValues))
       .then((res) => {
@@ -242,7 +242,9 @@ const VerifyOtp = () => {
 
         <div className={classes.verifybg}>
           <div className={classes.verifyBox}>
-            <h1 className={classes.heading_h1}>Validate your {state?.type}</h1>
+            <h1 className={classes.heading_h1}>
+              Validate your {state?.type === "sms" ? "Mobile" : "Email"}
+            </h1>
             <p className={classes.subText}> {state?.msg}</p>
 
             <p className={classes.label}>Enter OTP</p>
