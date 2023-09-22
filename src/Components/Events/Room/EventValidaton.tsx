@@ -24,6 +24,8 @@ import {
   MeetingJoinedDataProp,
   MeetingSettingProp,
 } from "../Components/types";
+import { ChimesendMessage } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 
 const EventValidaton = () => {
   const token = useAuthToken();
@@ -155,6 +157,13 @@ const EventValidaton = () => {
       meetingManager.start().then((res) => {
         setisWaitingRoom(false);
         setisLoading(false);
+        ChimesendMessage(
+          {
+            userId: userData?.user_id,
+            refId: message.meetingSetting.ref_id,
+          },
+          CHIME_SOCKET_EVENTS.JOIN_EVENT_ROOM
+        );
       });
     } catch (error) {
       toast.remove("rawcaster");
