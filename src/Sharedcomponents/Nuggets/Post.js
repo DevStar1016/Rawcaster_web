@@ -27,7 +27,10 @@ import {
   NuggetAbuseReportService,
 } from "../../Services/ApiService";
 import { NUGGET_SHARE_URL, SHARED_TYPE } from "../../Shared/Constant";
-import { SingleNuggetContext } from "../../Shared/Context";
+import {
+  SingleNuggetContext,
+  useListNuggetContext,
+} from "../../Shared/Context";
 import {
   useAuth,
   useAuthData,
@@ -88,6 +91,7 @@ const Post = ({
   onSaveCountResult,
   Opened,
 }) => {
+  const { setNuggetCount } = useListNuggetContext();
   const source = useRef(null);
   const contentRef = useRef(null);
   const contentTextRef = useRef(null);
