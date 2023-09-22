@@ -449,10 +449,12 @@ const Post = ({
           label: (
             <div
               onClick={() => {
+                console.log(ele);
                 HandleBecameaFan(Token, ele.user_ref_id)
                   .then(() => {
                     dispatch(
                       handleNuggetFollowingUpdate({
+                        user_id: ele.user_id,
                         nugget_id: ele.nugget_id,
                         following: !ele.following,
                       })

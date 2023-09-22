@@ -123,18 +123,17 @@ export const { actions, reducer } = createSlice({
       }
     },
     handleNuggetFollowingUpdate: (state, action) => {
-      const nugget_id = action.payload.nugget_id;
-      let findIndex = [...state.Nuggets].findIndex(
-        (ele) => ele.nugget_id === parseInt(nugget_id)
-      );
-      if (findIndex !== -1) {
-        let TempData = [...state.Nuggets];
-        TempData[findIndex] = {
-          ...TempData[findIndex],
-          following: action.payload.following,
+      const user_id = parseInt(action.payload.user_id);
+      let TempData = [...state.Nuggets];
+      //@ts-ignore
+      TempData = TempData.map((ele) => {
+        return {
+          ...ele,
+          following:
+            user_id === ele.user_id ? action.payload.following : ele.following,
         };
-        state.Nuggets = TempData;
-      }
+      });
+      state.Nuggets = TempData;
     },
     handleNuggetFormData: (state, action) => {
       state.nuggetFormData = action.payload;
