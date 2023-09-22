@@ -7,7 +7,11 @@ import {
   GECODE_API_KEY,
   GOOGLE_CLIENT_ID,
 } from "./Constant";
-import { getCookieData, removeCookieData } from "../Store/Storage";
+import {
+  getCookieData,
+  removeCookieData,
+  removeLocalStorageData,
+} from "../Store/Storage";
 import { handleAuthReset } from "../Store/Redux/Reducer/AuthReducer";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { decode } from "html-entities";
@@ -85,8 +89,9 @@ export const DecryptionString = (str) => {
  * @returns None
  */
 export const RemoveToken = (dispatch) => {
-  removeCookieData("rawcaster_user_token");
   dispatch(handleAuthReset(null));
+  removeLocalStorageData("persist:root");
+  removeCookieData("rawcaster_user_token");
 };
 
 //GEO_CODE_CONFIGURE

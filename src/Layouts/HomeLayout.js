@@ -112,8 +112,8 @@ const HomeLayout = () => {
     logoutService(JSONtoformdata(logutData))
       .then((res) => {
         if (res.data.status === 1) {
-          dispatch(handleResetNuggets());
           RemoveToken(dispatch);
+          dispatch(handleResetNuggets());
           window.location.assign("/");
         } else if (res.data.status === 0) {
           toast.remove("rawcaster");
