@@ -28,6 +28,10 @@ const ViewNugget = () => {
   const [NuggetData, setNuggetData] = useState({});
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
+  const [NuggetCount, setNuggetCount] = useState({
+    my_nuggets: 0,
+    favorites: 0,
+  });
 
   /**
    * Retrieves the details of a nugget using the provided token and nugget ID.
@@ -87,6 +91,7 @@ const ViewNugget = () => {
     setisPlaying,
     ReadSource,
     ReadoutRef,
+    setNuggetCount,
   };
 
   return (

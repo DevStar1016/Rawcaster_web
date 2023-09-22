@@ -293,6 +293,7 @@ const Nuggets = ({
     handleProgress(val) {
       return handleProgress(val);
     },
+    setNuggetCount,
     ReadoutRef,
   };
 
@@ -677,7 +678,10 @@ const Nuggets = ({
                             }}
                             onDelete={() => {
                               dispatch(handleDeleteNuggetList(ele.nugget_id));
-
+                              setNuggetCount((pre) => ({
+                                ...pre,
+                                favorites: pre.favorites - 1,
+                              }));
                               if (GetNuggetList) {
                                 GetNuggetList();
                               }
