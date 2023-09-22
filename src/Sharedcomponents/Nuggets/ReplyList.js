@@ -26,6 +26,7 @@ import { Dropdown, Input, Popover } from "antd";
 import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const ReplyList = ({
   isReplyEnabled,
@@ -233,6 +234,10 @@ const ReplyList = ({
                             <img
                               src={loginUserData?.profile_image}
                               alt="profile_image"
+                              onError={({ currentTarget }) => {
+                                currentTarget.onerror = null;
+                                currentTarget.src = defaultprofileImg;
+                              }}
                             />
                           </div>
                           <div className={classes.textBox}>
@@ -379,7 +384,14 @@ const ReplyList = ({
                       ) : (
                         <div className={classes.item}>
                           <div className={classes.proImg}>
-                            <img src={elem?.profile_image} alt={elem?.name} />
+                            <img
+                              src={elem?.profile_image}
+                              alt={elem?.name}
+                              onError={({ currentTarget }) => {
+                                currentTarget.onerror = null;
+                                currentTarget.src = defaultprofileImg;
+                              }}
+                            />
                           </div>
                           <div className={classes.rightitem}>
                             <div className="d-flex flex-row">

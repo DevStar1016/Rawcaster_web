@@ -14,7 +14,6 @@ import smLogo from "../Assets/Images/png/r_logo.png";
 import SettingsIcon from "../Assets/Icons/svg/Settings_icon.svg";
 import btmevent from "../Assets/Images/svg/btmevent.svg";
 import btmbell from "../Assets/Images/svg/btmbell.svg";
-import btmtv from "../Assets/Images/svg/btmtv.svg";
 import btmuser from "../Assets/Images/svg/btmuser.svg";
 import btmSetting from "../Assets/Images/svg/settings.svg";
 import btmhome from "../Assets/Images/svg/btmhome.svg";
