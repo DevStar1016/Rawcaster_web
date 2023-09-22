@@ -87,7 +87,6 @@ const HomeLayout = () => {
   const { Content } = Layout;
   const onClick = ({ key }) => {
     if (parseInt(key) === 3) {
-      dispatch(handleResetNuggets());
       handleLogout();
     }
     if (parseInt(key) === 2) {
@@ -113,8 +112,8 @@ const HomeLayout = () => {
     logoutService(JSONtoformdata(logutData))
       .then((res) => {
         if (res.data.status === 1) {
+          dispatch(handleResetNuggets());
           RemoveToken(dispatch);
-          dispatch(handleLoading(false));
           window.location.assign("/");
         } else if (res.data.status === 0) {
           toast.remove("rawcaster");

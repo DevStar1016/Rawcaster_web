@@ -19,7 +19,6 @@ const Content = ({ getContents }) => {
   const userdata = useAuthData();
   const [headerScrolling, setheaderScrolling] = useState(false);
   const [isLoading, setisLoading] = useState(false);
-  const [scroll, setscroll] = useState(0);
   const {
     Messages,
     isTyping,

@@ -6,7 +6,6 @@
  * @returns JSX element representing the Forgot Password page.
  */
 import { Button, Form, Input } from "antd";
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import classes from "./Signup.module.css";
 import forgotImg from "../../Assets/Images/png/forgot-password.png";
@@ -156,7 +155,7 @@ const ForgotPassword = () => {
               alt="Back Button"
               src={require("../../Assets/Icons/png/Backbtn.png")}
             />
-         <span>Go Back</span>
+            <span>Go Back</span>
           </div>
         </div>
 

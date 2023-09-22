@@ -930,7 +930,10 @@ export const MessageContent = (props) => {
       label: (
         <div
           onClick={() => {
-            handleCopyText(message, "Text copied to clipboard");
+            handleCopyText(
+              message !== "null" ? message : "",
+              "Text copied to clipboard"
+            );
           }}
         >
           Copy
@@ -942,17 +945,20 @@ export const MessageContent = (props) => {
       label: (
         <div
           onClick={() => {
-            setEditData({ msg: message, message_id: message_id });
+            setEditData({
+              msg: message !== "null" ? message : "",
+              message_id: message_id,
+            });
           }}
         >
           Edit
         </div>
       ),
     },
-    {
-      key: "3",
-      label: <div onClick={onDelete}>Forward</div>,
-    },
+    // {
+    //   key: "3",
+    //   label: <div onClick={onDelete}>Forward</div>,
+    // },
     {
       key: "4",
       label: (
@@ -997,6 +1003,7 @@ export const MessageContent = (props) => {
         menu={{ items }}
         placement="bottomRight"
         arrow
+        disabled={!isUser(user)}
         trigger={["contextMenu"]}
       >
         <div className={classes.msgBox}>

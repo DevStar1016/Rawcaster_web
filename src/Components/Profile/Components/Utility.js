@@ -226,7 +226,7 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
                 />
               ) : null}
 
-              {type === "influencers" && !isLoginUser ? (
+              {type === "influencers" && !isUser ? (
                 <span
                   className={`material-symbols-outlined ${classes.plusIcon} ${classes.removeIcon}`}
                   style={{ display: "" }}
@@ -256,7 +256,7 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
             </>
           ) : (
             <>
-              {type === "influencers" && !isLoginUser ? (
+              {type === "influencers" && !isUser ? (
                 <span
                   className={`material-symbols-outlined ${classes.plusIcon}`}
                   style={{ display: "" }}
@@ -269,7 +269,7 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
                   add
                 </span>
               ) : null}
-              {type === "connections" ? (
+              {type === "connections" && !isUser ? (
                 <img
                   src={AddFriendIcon}
                   className={classes.addIcon}

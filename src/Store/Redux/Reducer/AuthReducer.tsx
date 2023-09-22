@@ -34,6 +34,9 @@ export const { actions, reducer } = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    handleAuthReset: (state, action) => {
+      state = initialState;
+    },
     handleLoginData: (state, action) => {
       state.loginUserData = action.payload;
     },
@@ -88,6 +91,7 @@ export const {
   handleAccountActive,
   handleeventTempUserData,
   handleAccountVerifyStatus,
+  handleAuthReset,
 } = actions;
 
 export default reducer;

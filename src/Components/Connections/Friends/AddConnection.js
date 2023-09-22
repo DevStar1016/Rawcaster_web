@@ -37,6 +37,7 @@ const AddConnection = ({ open, close }) => {
   const [isLoading, setisLoading] = useState(false);
   const [ProfileList, setProfileList] = useState([]);
   const [SearchData, setSearchData] = useState("");
+  const [isFetching, setisFetching] = useState(true);
   const [Pages, setPages] = useState({
     page: "",
     totalpage: "",
@@ -99,6 +100,8 @@ const AddConnection = ({ open, close }) => {
           loadingStatus={(status) => {
             setisLoading(status);
           }}
+          isFetching={isFetching}
+          setisFetching={setisFetching}
           onResult={(val) => {
             setProfileList(val);
           }}
@@ -107,7 +110,7 @@ const AddConnection = ({ open, close }) => {
           style={ProfileList?.length === 0 ? { justifyContent: "center" } : {}}
           className={classes.profileSec}
         >
-          {isLoading ? <Spin /> : null}
+          {isFetching || isLoading ? <Spin /> : null}
           {ProfileList?.length > 0
             ? ProfileList.map((ele) => (
                 <div
@@ -174,7 +177,7 @@ const AddConnection = ({ open, close }) => {
                   </div>
                 </div>
               ))
-            : !isLoading && <Empty />}
+            : !isLoading && !isFetching && <Empty />}
         </div>
       </div>
     </Modal>

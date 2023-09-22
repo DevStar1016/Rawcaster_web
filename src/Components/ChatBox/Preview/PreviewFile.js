@@ -54,7 +54,7 @@ const PreviewFile = () => {
                   </span>
                 </div>
               </Tooltip>
-              <Tooltip title="Edit" color={"orange"}>
+              {/* <Tooltip title="Edit" color={"orange"}>
                 <div>
                   <span
                     className="material-symbols-rounded"
@@ -65,7 +65,7 @@ const PreviewFile = () => {
                     tune
                   </span>
                 </div>
-              </Tooltip>
+              </Tooltip> */}
             </div>
             <div className={classes.previewImg}>
               <img src={URL.createObjectURL(previewFile)} />

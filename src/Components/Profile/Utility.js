@@ -47,65 +47,74 @@ function useReplaceBiodataHandler(data, isMyBio = false) {
   const userSettings = useAppSelector((state) => state.auth.userSettings);
 
   if (data) {
-    let defaultBioDataformat = "";
-
-    if (data.dob !== "") {
-      defaultBioDataformat =
-        defaultBioDataformat +
-        "<first_name> <last_name> is  <age> years old, was born in <dob>. ";
+    function replacePlaceholder(placeholder, value) {
+      // Check for null or undefined and convert them to empty string
+      if (value === null || value === undefined) {
+        value = "";
+      }
+      return `${placeholder} ${value}`;
     }
 
-    if (data.geo_location !== "") {
-      defaultBioDataformat =
-        defaultBioDataformat +
-        "<first_name> <last_name> presently resides in <location>. ";
-    }
-    defaultBioDataformat = isMyBio
-      ? defaultBioDataformat +
-        "<first_name>’s preferred communication language is <language> . <first_name> has been a Rawcaster <user_status>  since <date_of_join> and prefers to be contacted in Rawcaster through <rawcaster_default_page>."
-      : defaultBioDataformat +
-        "<first_name>’s preferred communication language is <language> . <first_name> has been a Rawcaster <user_status>  since <date_of_join>";
-    let str = defaultBioDataformat;
-    if (data.first_name) {
-      str = str.replace(/<first_name>/g, decodeHtml(data.first_name));
-    }
-    if (data.last_name) {
-      str = str.replace(/<last_name>/g, decodeHtml(data.last_name));
-    }
-    if (data.dob) {
-      str = str.replace(/<age>/g, calculate_age(moment(data.dob)));
-    }
-    if (data.dob) {
-      str = str.replace(/<dob>/g, moment(data.dob).format(" MMM YYYY "));
-    }
-    if (data.geo_location) {
-      str = str.replace(/<location>/g, data.geo_location);
-    }
-    if (data.language) {
-      str = str.replace(/<language>/g, data.language);
-    }
-    if (data.user_status) {
-      str = str.replace(/<user_status>/g, data.user_status);
-    }
-    if (data?.date_of_join) {
-      str = str.replace(
-        /<date_of_join>/g,
-        utctoUserTimezone(data?.date_of_join, userSettings?.time_zone).format(
-          " DD MMM YYYY "
-        )
-      );
-    }
+    const isValidString = (val) => {
+      return val && val !== "";
+    };
 
-    if (userSettings?.mobile_default_page && isMyBio) {
-      str = str.replace(
-        /<rawcaster_default_page>/g,
-        defaultRawcaterPage(
-          userSettings ? userSettings?.mobile_default_page : 1
-        )
-      );
-    }
+    const GetValidName = () => {
+      if (isValidString(data.first_name)) {
+        if (isValidString(data.last_name)) {
+          return `${data.first_name} ${data.last_name}`;
+        } else {
+          return `${data.first_name}`;
+        }
+      } else if (isValidString(data.last_name)) {
+        return data.last_name;
+      } else {
+        return "";
+      }
+    };
 
-    return str;
+    // Create parts of the description
+    const namePart = `${GetValidName()} is ${
+      !isNaN(calculate_age(data.dob)) ? calculate_age(data.dob) : ""
+    } years old,${
+      !isNaN(isValidString(data.dob)) ? ` was born in ${data.dob}.` : ""
+    }`;
+    const locationPart = `${GetValidName()} presently resides in ${
+      data.location
+    }.`;
+    const languagePart = replacePlaceholder(
+      `${GetValidName()}'s preferred communication language is`,
+      data.language
+    );
+    const userStatusPart = replacePlaceholder(
+      `${GetValidName()} has been a Rawcaster`,
+      `${data.user_status} since ${data.date_of_join}`
+    );
+    const defaultPagePart = replacePlaceholder(
+      `prefers to be contacted in Rawcaster through`,
+      data.rawcaster_default_page
+    );
+
+    // Join the parts to form the description
+    const descriptionParts = [
+      namePart,
+      locationPart,
+      languagePart,
+      userStatusPart,
+      defaultPagePart,
+    ];
+    const description = descriptionParts.join(" ");
+
+    // if (userSettings?.mobile_default_page && isMyBio) {
+    //   str = str.replace(
+    //     /<rawcaster_default_page>/g,
+    //     defaultRawcaterPage(
+    //       userSettings ? userSettings?.mobile_default_page : 1
+    //     )
+    //   );
+    // }
+
+    return description;
   }
   return "";
 }
