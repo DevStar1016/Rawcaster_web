@@ -47,6 +47,7 @@ export const CHIME_SOCKET_EVENTS = {
   UPDATE_LAYOUT: "updateLayout",
   UPDATE_LAYOUT_ANSWER: "updateLayoutAnswer",
   END_MEETING: "endMeeting",
+  JOIN_EVENT_ROOM: "joinEventRoom",
   END_MEETING_ANSWER: "endMeetingAnswer",
   KICK_USER: "kickUser",
   KICK_USER_ANSWER: "kickUserAnswer",
