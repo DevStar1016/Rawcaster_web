@@ -115,6 +115,7 @@ const SigninwithService = ({ type }) => {
       dispatch(handleLoading(true));
       GoogleSigninService(codeResponse.access_token)
         .then((data) => {
+          console.log(data, "GoogleSigninService");
           if (data && data.email) {
             let resultVal = {
               signin_type: 5,
@@ -161,9 +162,8 @@ const SigninwithService = ({ type }) => {
             scope={"name email"}
             redirect_uri={SECONDARY_REDIRECT_URI}
             onResolve={({ provider, data }) => {
-              console.log(data.authorization.id_token, "LoginSocialApple");
               var decoded = jwt_decode(data.authorization.id_token);
-              console.log(JSON.stringify(decoded), "LoginSocialApple");
+
               if (decoded?.email && decoded?.email !== "") {
                 let resultVal = {
                   signin_type: 2,
@@ -173,7 +173,6 @@ const SigninwithService = ({ type }) => {
                 };
                 HandleSignup(resultVal);
               } else {
-                console.log(data, "");
                 dispatch(handleLoading(false));
                 toast.remove("Error");
                 toast.error("Something Went Wrong !", {

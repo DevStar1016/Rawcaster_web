@@ -74,7 +74,7 @@ import { ReadoutSec, SeeTranslate } from "./Utility";
 import AgreedusersListModal from "../../Modal/Nugget/AgreedusersListModal";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 import ProfileImg from "../../UIComponents/ProfileImg";
-import { isArray } from "lodash";
+import { isArray, isObject } from "lodash";
 
 const Post = ({
   ele,
@@ -1080,6 +1080,13 @@ const Post = ({
                           if (FindMetaData) {
                             return MetaDataContent(FindMetaData, true);
                           }
+                        } else if (isObject(JSON.parse(ele.metadata))) {
+                          if (JSON.parse(ele.metadata)) {
+                            return MetaDataContent(
+                              JSON.parse(ele.metadata),
+                              true
+                            );
+                          }
                         }
                       }
                     }}
@@ -1108,7 +1115,9 @@ const Post = ({
                     ele.metadata
                       ? isArray(JSON.parse(ele.metadata))
                         ? JSON.parse(ele.metadata)[0]
-                        : JSON.parse(ele.metadata)
+                        : isObject(JSON.parse(ele.metadata))
+                        ? JSON.parse(ele.metadata)
+                        : null
                       : null,
                     ele.media_list &&
                       ele.media_list?.length !== 0 &&
