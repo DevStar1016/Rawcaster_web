@@ -25,7 +25,6 @@ import TermsandConditions from "../Components/Policy/TermsandConditions";
 import AuthLayout from "../Layouts/AuthLayout";
 import MainLayout from "../Layouts/MainLayout";
 import { AuthPrivateRoute } from "./PrivateRoute";
-import { GOOGLE_CLIENT_ID } from "../Shared/Constant";
 
 export const AuthRoute = [
   {
@@ -48,7 +47,9 @@ export const AuthRoute = [
           {
             path: "/signup",
             element: (
-              <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+              <GoogleOAuthProvider
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              >
                 <Signup />
               </GoogleOAuthProvider>
             ),
@@ -56,7 +57,9 @@ export const AuthRoute = [
           {
             path: "/signup/:nugget_id",
             element: (
-              <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+              <GoogleOAuthProvider
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              >
                 <Signup />
               </GoogleOAuthProvider>
             ),

@@ -3,11 +3,6 @@
  */
 import Geocode from "react-geocode";
 import {
-  ENCRIPTION_STRING,
-  GECODE_API_KEY,
-  GOOGLE_CLIENT_ID,
-} from "./Constant";
-import {
   getCookieData,
   removeCookieData,
   removeLocalStorageData,
@@ -27,10 +22,9 @@ import {
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import { Popover, message } from "antd";
 import { Typography } from "antd";
-import axios, { isCancel } from "axios";
+import axios from "axios";
 import { toast } from "react-hot-toast";
-import classes from "../Sharedcomponents/Nuggets/Nuggets.module.css";
-import { SALT_KEY } from "../Services/APIkeyID";
+import { ENCRIPTION_STRING } from "./Constant";
 
 // Auth
 
@@ -56,7 +50,7 @@ export const getRawcaserToken = () => {
  */
 export const getAuthToken = (value) => {
   var sha1 = require("sha1");
-  return sha1(SALT_KEY + value);
+  return sha1(process.env.REACT_APP_SALT_KEY + value);
 };
 
 /**
@@ -104,7 +98,7 @@ export const RemoveToken = (dispatch) => {
 export const getGeocodeData = () => {
   return new Promise((resolve, reject) => {
     try {
-      Geocode.setApiKey(GECODE_API_KEY);
+      Geocode.setApiKey(process.env.REACT_APP_GEOCODE_API_KEY);
       navigator.geolocation.getCurrentPosition((position) => {
         Geocode.fromLatLng(
           position.coords.latitude,
@@ -255,7 +249,7 @@ export const getAuthenticated = () => {
     return false;
   }
 };
-console.log(getAuthenticated());
+
 /**
  * Loads a resource from the specified URL using XMLHttpRequest.
  * @param {string} url - The URL of the resource to load.
@@ -713,7 +707,7 @@ export const fetchGoogleContacts = async () => {
 
       // Step 2: Initialize the client library
       await window.gapi.client.init({
-        clientId: GOOGLE_CLIENT_ID,
+        clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
         discoveryDocs: [
           "https://www.googleapis.com/discovery/v1/apis/people/v1/rest",
         ],
@@ -784,9 +778,13 @@ export const ReadMore = ({
                 padding: 0,
                 width: "100%",
               }}
-              onClick={() => {
-                setisLinkopenModal(true);
-              }}
+              // onClick={() => {
+              //   if (href.includes("rawcaster")) {
+              //     window.open(href);
+              //   } else {
+              //     setisLinkopenModal(true);
+              //   }
+              // }}
             >
               {decodeHtml(content)}
             </Popover>
@@ -815,7 +813,7 @@ export const ReadMore = ({
             style={{
               cursor: "pointer",
               width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
-              wordBreak: "break-all",
+              wordBreak: "break-word",
             }}
           >
             {children}
@@ -841,7 +839,7 @@ export const ReadMore = ({
             style={{
               cursor: "pointer",
               width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
-              wordBreak: "break-all",
+              wordBreak: "break-word",
             }}
             onClick={() => {}}
           >
@@ -893,7 +891,7 @@ export const ReadMore = ({
             style={{
               cursor: "pointer",
               width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
-              wordBreak: "break-all",
+              wordBreak: "break-word",
             }}
           >
             {children}

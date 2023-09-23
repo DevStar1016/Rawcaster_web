@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { LoginSocialApple } from "reactjs-social-login";
 import GoogleIcon from "../../Assets/Icons/png/google_logo.png";
 import AppleIcon from "../../Assets/Icons/png/apple_logo.png";
-import { APPLE_API_KEY, SECONDARY_REDIRECT_URI } from "../../Shared/Constant";
+import { SECONDARY_REDIRECT_URI } from "../../Shared/Constant";
 import jwt_decode from "jwt-decode";
 import { Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -157,7 +157,7 @@ const SigninwithService = ({ type }) => {
 
         <Col sm={6}>
           <LoginSocialApple
-            client_id={APPLE_API_KEY}
+            client_id={process.env.REACT_APP_APPLE_API_KEY}
             scope={"name email"}
             redirect_uri={SECONDARY_REDIRECT_URI}
             onResolve={({ provider, data }) => {

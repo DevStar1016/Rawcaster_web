@@ -4,17 +4,16 @@
  * @returns None
  */
 import { io } from "socket.io-client";
-import { ChimesocketURL } from "./ServiceConstants";
 
 // Chime Socket
 
 /**
- * Creates a Chimesocket connection using the provided ChimesocketURL and options.
- * @param {string} ChimesocketURL - The URL of the Chimesocket server.
+ * Creates a Chimesocket connection using the provided REACT_APP_SOCKET_URL and options.
+ * @param {string} process.env.REACT_APP_SOCKET_URL - The URL of the Chimesocket server.
  * @param {object} options - The options for the Chimesocket connection.
  * @returns None
  */
-const Chimesocket = io(ChimesocketURL, {
+const Chimesocket = io(process.env.REACT_APP_SOCKET_URL, {
   reconnection: true,
   secure: true,
   // transports: ["websocket"],

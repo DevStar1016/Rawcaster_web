@@ -27,7 +27,6 @@ import Notification from "../Notifications";
 import * as rdd from "react-device-detect";
 import { useWindowWidth } from "../../Shared/Utility";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GOOGLE_CLIENT_ID } from "../../Shared/Constant";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
@@ -97,7 +96,9 @@ const Dashboard = () => {
         <div className={classes.fullcontainer}>
           <Events />
           <Nuggets />
-          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+          <GoogleOAuthProvider
+            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+          >
             <DashboardSignup />
           </GoogleOAuthProvider>
         </div>
@@ -111,7 +112,9 @@ const Dashboard = () => {
           )}
           {dashboardMenu === "nugget" && <Nuggets />}
           {dashboardMenu === "usermenu" && (
-            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            >
               <DashboardSignup />
             </GoogleOAuthProvider>
           )}

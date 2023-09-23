@@ -9,9 +9,7 @@ import { Layout, Modal } from "antd";
 import classes from "../ChatBox.module.css";
 import { useChatContext, useMainContext } from "../../../Shared/Context";
 import { MessageList, TypingIndicator } from "@chatscope/chat-ui-kit-react";
-import { deleteChannelMessage } from "../../../Services/Messaging/MessageAPIList";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
-import { toast } from "react-hot-toast";
 import moment from "moment";
 import SectionList from "../../../Sharedcomponents/SectionList";
 
@@ -44,18 +42,6 @@ const Content = ({ getContents }) => {
       MessageId: id,
       ChimeBearer: userdata.chime_user_id,
     };
-    deleteChannelMessage(params)
-      .then((res) => {
-        toast.remove("rawcaster");
-        toast.success("Message Deleted Successfully", { id: "rawcaster" });
-        setMessages((pre) => pre.filter((ele) => ele.message_id !== id));
-      })
-      .catch((err) => {
-        toast.remove("Error");
-        toast.error(err.message, {
-          id: "Error",
-        });
-      });
   };
 
   /**
