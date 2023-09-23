@@ -82,7 +82,8 @@ const EventMenu = () => {
    */
   const enabledSettings = () => ({
     isHost: userdata?.isHost,
-    presentEnable: userdata?.screenShare || userdata?.isHost,
+    isCoHost: userdata?.isCoHost,
+    presentEnable: userdata?.screenShare || userdata?.isHost || userdata?.isCoHost,
     allowEnable: userdata?.isHost,
     allowActive: MeetingSettings?.user_screenshare === 1,
     viewEnable: userdata?.isHost,
@@ -381,7 +382,7 @@ const EventMenu = () => {
           </div>
           Chat
         </div>
-        {enabledSettings()?.isHost ? (
+        {enabledSettings()?.isHost || enabledSettings()?.isCoHost  ? (
           <Popover
             placement="topLeft"
             showArrow={false}

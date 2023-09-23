@@ -345,10 +345,11 @@ const MeetingManagerComponent = () => {
               kick_data.statusCode === 1 &&
               parseInt(kickeduser.userId) === getUserData()?.user_id
             ) {
-              const endData = {
-                message: "Someone removed you from this meeting !",
-              };
-              EndAttendeeMeeting(endData);
+              window.close();
+              // const endData = {
+              //   message: "Someone removed you from this meeting !",
+              // };
+              // EndAttendeeMeeting(endData);
             }
           }
           break;
