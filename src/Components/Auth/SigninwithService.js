@@ -161,6 +161,7 @@ const SigninwithService = ({ type }) => {
             scope={"name email"}
             redirect_uri={SECONDARY_REDIRECT_URI}
             onResolve={({ provider, data }) => {
+              console.log(data, "LoginSocialApple");
               var decoded = jwt_decode(data.authorization.id_token);
               if (decoded?.email && decoded?.email !== "") {
                 let resultVal = {

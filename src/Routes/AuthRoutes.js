@@ -25,6 +25,7 @@ import TermsandConditions from "../Components/Policy/TermsandConditions";
 import AuthLayout from "../Layouts/AuthLayout";
 import MainLayout from "../Layouts/MainLayout";
 import { AuthPrivateRoute } from "./PrivateRoute";
+import FirstSteps from "../Components/Policy/FirstSteps";
 
 export const AuthRoute = [
   {
@@ -102,6 +103,10 @@ export const AuthRoute = [
           {
             path: "privacypolicy",
             element: <Privacypolicy />,
+          },
+          {
+            path: "firststep",
+            element: <FirstSteps />,
           },
           {
             path: "termsandconditions",
