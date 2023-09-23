@@ -115,14 +115,15 @@ const SigninwithService = ({ type }) => {
       dispatch(handleLoading(true));
       GoogleSigninService(codeResponse.access_token)
         .then((data) => {
-          console.log(data, "GoogleSigninService");
           if (data && data.email) {
             let resultVal = {
               signin_type: 5,
               first_name: data.name,
               display_name: data.name,
               email_id: data.email,
+              signup_social_ref_id: data?.id,
             };
+            console.log(resultVal, "resultVal");
             HandleSignup(resultVal);
           }
         })
@@ -170,6 +171,7 @@ const SigninwithService = ({ type }) => {
                   first_name: data?.user?.name?.firstName || decoded.email,
                   display_name: data?.user?.name?.firstName || decoded.email,
                   email_id: decoded.email,
+                  signup_social_ref_id: decoded?.sub,
                 };
                 HandleSignup(resultVal);
               } else {

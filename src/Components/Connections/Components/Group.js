@@ -8,7 +8,6 @@
 import React, { useState } from "react";
 import { JSONtoformdata, decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
-import GroupImg from "../../../Assets/Icons/svg/default_group.svg";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
 import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
@@ -18,6 +17,7 @@ import { AutoChannelCreateService } from "../../../Services/ApiService";
 import { useDispatch } from "react-redux";
 import { handleUpdateGroupArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
+import { defaultGroupImg } from "../../../Shared/CommonConstants";
 
 const Group = ({ group, searchInput, onClick }) => {
   const { setisChatOpen } = useMainContext();
@@ -75,7 +75,7 @@ const Group = ({ group, searchInput, onClick }) => {
             src={group.group_icon}
             onError={({ currentTarget }) => {
               currentTarget.onerror = null;
-              currentTarget.src = GroupImg;
+              currentTarget.src = defaultGroupImg;
             }}
             alt={decodeHtml(group.group_name)}
           />
