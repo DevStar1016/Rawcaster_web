@@ -428,6 +428,9 @@ const Nuggets = ({
       ) : (
         <div
           ref={containerRef}
+          style={{
+            height: display_user_id ? "100%" : "",
+          }}
           // style={{ height: maxHeight ? maxHeight : "" }}
           className={` ${
             params?.key ? classes.resultnuggetSec : classes.nuggetSec

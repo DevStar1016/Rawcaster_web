@@ -315,91 +315,95 @@ const Post = ({
    */
   const getMoreValues = (ele) => {
     if (ele.user_id === loginUserData?.user_id) {
-      if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
-        let resultData = [
-          {
-            key: 2,
-            label: (
-              <div
-                onClick={() => {
-                  Modal.confirm({
-                    title: "Confirmation",
-                    okText: "Yes",
-                    cancelText: "No",
-                    cancelButtonProps: {
-                      danger: true,
-                    },
-                    content: <div>Do you want to delete this nugget? </div>,
-                    onOk: () => {
-                      deletenugget(ele.nugget_id);
-                    },
-                  });
-                }}
-              >
-                Delete
-              </div>
-            ),
-          },
-        ];
-        return resultData;
-      } else if (ele.type === 2) {
-        let resultData = [
-          {
-            key: 2,
-            label: (
-              <div
-                onClick={() => {
-                  Modal.confirm({
-                    title: "Confirmation",
-                    okText: "Yes",
-                    cancelText: "No",
-                    cancelButtonProps: {
-                      danger: true,
-                    },
-                    content: <div>Do you want to delete this nugget? </div>,
-                    onOk: () => {
-                      deletenugget(ele.nugget_id);
-                    },
-                  });
-                }}
-              >
-                Delete
-              </div>
-            ),
-          },
-        ];
-        return resultData;
+      if (!Opened) {
+        if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
+          let resultData = [
+            {
+              key: 2,
+              label: (
+                <div
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Confirmation",
+                      okText: "Yes",
+                      cancelText: "No",
+                      cancelButtonProps: {
+                        danger: true,
+                      },
+                      content: <div>Do you want to delete this nugget? </div>,
+                      onOk: () => {
+                        deletenugget(ele.nugget_id);
+                      },
+                    });
+                  }}
+                >
+                  Delete
+                </div>
+              ),
+            },
+          ];
+          return resultData;
+        } else if (ele.type === 2) {
+          let resultData = [
+            {
+              key: 2,
+              label: (
+                <div
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Confirmation",
+                      okText: "Yes",
+                      cancelText: "No",
+                      cancelButtonProps: {
+                        danger: true,
+                      },
+                      content: <div>Do you want to delete this nugget? </div>,
+                      onOk: () => {
+                        deletenugget(ele.nugget_id);
+                      },
+                    });
+                  }}
+                >
+                  Delete
+                </div>
+              ),
+            },
+          ];
+          return resultData;
+        } else {
+          let resultData = [
+            {
+              key: 1,
+              label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
+            },
+            {
+              key: 2,
+              label: (
+                <div
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Confirmation",
+                      okText: "Yes",
+                      cancelText: "No",
+                      cancelButtonProps: {
+                        danger: true,
+                      },
+                      content: <div>Do you want to delete this nugget ? </div>,
+                      onOk: () => {
+                        deletenugget(ele.nugget_id);
+                      },
+                    });
+                  }}
+                >
+                  Delete
+                </div>
+              ),
+            },
+          ];
+          return resultData;
+        }
       } else {
-        let resultData = [
-          {
-            key: 1,
-            label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
-          },
-          {
-            key: 2,
-            label: (
-              <div
-                onClick={() => {
-                  Modal.confirm({
-                    title: "Confirmation",
-                    okText: "Yes",
-                    cancelText: "No",
-                    cancelButtonProps: {
-                      danger: true,
-                    },
-                    content: <div>Do you want to delete this nugget ? </div>,
-                    onOk: () => {
-                      deletenugget(ele.nugget_id);
-                    },
-                  });
-                }}
-              >
-                Delete
-              </div>
-            ),
-          },
-        ];
-        return resultData;
+        return [];
       }
     } else {
       let resultData = [
@@ -1030,7 +1034,7 @@ const Post = ({
               {ele?.follow_count} Fans
             </p>
           </div>
-          {Token && (
+          {Token && getMoreValues(ele).length !== 0 && (
             <Dropdown
               placement="bottomRight"
               menu={{

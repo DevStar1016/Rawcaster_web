@@ -173,7 +173,6 @@ const Connections = ({ referral, profileClass }) => {
 
       <h2>
         My Connections <span>({friends.length})</span>
-   
         {friends.length !== 0 && !isFriendsLoading ? (
           <i
             className="material-symbols-outlined"

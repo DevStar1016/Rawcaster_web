@@ -51,12 +51,32 @@ const UpdateProfile = () => {
   const [tempGroupImage, settempGroupImage] = useState(null);
 
   const validationSchema = yup.object().shape({
-    first_name: yup.string().required(`Please input your First Name!`),
-    last_name: yup.string().required(`Please input your Last Name!`),
-    gender: yup.string().required(`Please input your Gender!`),
-    name: yup.string().required(`Please input your Display Name!`),
+    first_name: yup
+      .string()
+      .trim("The First Name cannot include leading and trailing spaces")
+      .strict(true)
+      .required(`Please input your First Name!`),
+    last_name: yup
+      .string()
+      .trim("The Last Name cannot include leading and trailing spaces")
+      .strict(true)
+      .required(`Please input your Last Name!`),
+    gender: yup
+      .string()
+      .trim("The Gender cannot include leading and trailing spaces")
+      .strict(true)
+      .required(`Please input your Gender!`),
+    name: yup
+      .string()
+      .trim("The Display Name cannot include leading and trailing spaces")
+      .strict(true)
+      .required(`Please input your Display Name!`),
     dob: yup.string().required(`Please input your Date of Birth!`),
-    geo_location: yup.string().required(`Please input your Location!`),
+    geo_location: yup
+      .string()
+      .trim("The Location cannot include leading and trailing spaces")
+      .strict(true)
+      .required(`Please input your Location!`),
     mobile_no:
       loginUserData?.mobile !== ""
         ? yup
