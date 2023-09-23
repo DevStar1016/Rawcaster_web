@@ -109,9 +109,7 @@ const InviteBox = () => {
             return {
               title: ele.names?.[0].displayName ?? ele.emailAddresses[0].value,
               email: ele.emailAddresses[0].value,
-              profile_img:
-                ele.photos[0].url ??
-                require("../../Assets/Icons/png/user_vector.png"),
+              profile_img: ele.photos[0].url ?? defaultprofileImg,
             };
           });
           contactDetails.sort(compareByName);

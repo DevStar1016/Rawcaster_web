@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import classes from "./Referal.module.css";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { handleSendEmail } from "./utility";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const GmailListModal = ({ open, close, Contacts }) => {
   const token = useAuthToken();
@@ -155,7 +156,7 @@ const GmailListModal = ({ open, close, Contacts }) => {
                         width="45px"
                         height={"45px"}
                         alt="User_img"
-                        src={require("../../Assets/Icons/png/user_vector.png")}
+                        src={defaultprofileImg}
                       ></img>
                       <div className={classes.NameSec}>
                         <p className={classes.name}>{ele.title}</p>
