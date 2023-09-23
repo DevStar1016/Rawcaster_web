@@ -8,11 +8,7 @@ import classes from "./SuggestedInfluencers.module.css";
 import GoogleIcon from "../Assets/Icons/png/google_logo.png";
 import AppleIcon from "../Assets/Icons/png/apple_logo.png";
 import { LoginSocialApple } from "reactjs-social-login";
-import {
-  APPLE_API_KEY,
-  DEFAULT_VIDEO,
-  SECONDARY_REDIRECT_URI,
-} from "../Shared/Constant";
+import { DEFAULT_VIDEO, SECONDARY_REDIRECT_URI } from "../Shared/Constant";
 import { SocialMediaLoginService } from "../Services/ApiService";
 import {
   getAuthToken,
@@ -191,7 +187,7 @@ const DashboardSignup = () => {
             </Button>
 
             <LoginSocialApple
-              client_id={APPLE_API_KEY}
+              client_id={process.env.REACT_APP_APPLE_API_KEY}
               scope={"name email"}
               redirect_uri={SECONDARY_REDIRECT_URI}
               onResolve={({ provider, data }) => {

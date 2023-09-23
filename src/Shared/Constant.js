@@ -1,37 +1,18 @@
 // PRIMARY CONSTANTS
-export const SHARE_URL = "https://dev.rawcaster.com/join/";
-export const GECODE_API_KEY = "AIzaSyBOEl17DNwCcE0sR9LGJh72rBGF_vDfk1c";
-export const ENCRIPTION_STRING = "rawcaster@!@#$QWERTxcvbn";
 export const DEFAULT_VIDEO =
   "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";
 export const DEFAULT_VIDEO_RAWCASTER =
   "https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_47841690153307.mp4#t=0.001";
-
-export const GOOGLE_CLIENT_ID =
-  "749429188201-u1e40oco3dejrfcnr7algubh0k0sf01e.apps.googleusercontent.com";
+export const SHARE_URL = "https://dev.rawcaster.com/join/";
 export const NUGGET_SHARE_URL = "https://devshare.rawcaster.com/index.php?id=";
-export const FACEBOOK_APP_ID = "501963974865826";
-
-// export const INSTAGRAM_APP_ID = "1652047128572389";
-
-// export const INSTAGRAM_APP_SECRET = "a4ccdb1961ffe87bd5f38861c7958586";
-
-// export const TWITTER_CLIENT_ID = "YTF4cTFKU25UVld2Yk1JUzFFSnU6MTpjaQ";
-
-// export const TWITTER_CLIENT_SECRET =
-//   "dwhNdl1A-GnBbKu63J77qSLApgyMQrnOFiKDzgcHjBQDfbENw2";
-
-export const APPLE_API_KEY = "CR8PDZDGNZcom.rawcaster.app";
-
 export const PRIMARY_REDIRECT_URI = "https://dev.rawcaster.com/";
 export const SECONDARY_REDIRECT_URI = "https://dev.rawcaster.com/signup";
-// export const INSTA_REDIRECT_URI = "https://dev.rawcaster.com/signup/";
-// SECONDARY CONSTANTS
+export const ENCRIPTION_STRING = "rawcaster@!@#$QWERTxcvbn";
 
+// SECONDARY CONSTANTS
 export const PASSWORD_EXP =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
 export const NAME_REGEX = /^[A-Za-z_ ]+$/;
-
 export const NUMBER_REGEX = /^[0-9]*$/;
 export const MOBILE_NUMBER_REGEX = "";
 export const EMAIL_REGEX =

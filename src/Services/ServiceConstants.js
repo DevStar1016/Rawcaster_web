@@ -8,13 +8,11 @@
 
 // DEV BASE_URL
 
-export const BASE_URL = process.env.REACT_APP_API_URL
-  ? process.env.REACT_APP_API_URL
-  : "https://devapi.rawcaster.com/rawcaster/";
+// export const BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
 
 // SOCKET URL
 // export const ChimesocketURL = "http://34.239.41.21:5000";
-export const ChimesocketURL = "https://devsocket.rawcaster.com:5000";
+// export const ChimesocketURL = "https://devsocket.rawcaster.com:5000";
 
 // Socket Values
 
