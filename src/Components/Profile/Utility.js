@@ -87,10 +87,13 @@ function useReplaceBiodataHandler(data, isMyBio = false) {
     );
     const userStatusPart = replacePlaceholder(
       `${GetValidName(true)} has been a Rawcaster`,
-      `${data.user_status} since ${utctoUserTimezone(
-        data.date_of_join,
-        userSettings.time_zone
-      ).format(" DD MMM YYYY ")}`
+      `${data.user_status} since ${
+        userSettings
+          ? utctoUserTimezone(data.date_of_join, userSettings.time_zone).format(
+              " DD MMM YYYY "
+            )
+          : ""
+      }`
     );
     const defaultPagePart = replacePlaceholder(
       `${GetValidName(true)} prefers to be contacted in Rawcaster through`,
