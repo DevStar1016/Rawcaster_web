@@ -18,7 +18,7 @@ import withErrorBoundary from "./Sharedcomponents/withErrorBoundary";
 function App() {
   const { isLoading } = useDashboard();
   const router = createBrowserRouter(routerpaths, { basename: "/" });
-
+  console.log(process.env.REACT_APP_API_URL, process.env.REACT_APP_SALT_KEY);
   return (
     <ThemeProvider theme={lightTheme}>
       <MeetingProvider>
