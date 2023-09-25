@@ -107,7 +107,7 @@ const BioContainer = ({ isLoginuser }) => {
         if (response.data.status === 1) {
           setisAboutEdit(false);
           toast.remove("rawcaster");
-          toast.success("Bio data updated sucessfully", { id: "rawcaster" });
+          toast.success("Bio data updated successfully", { id: "rawcaster" });
         } else {
           toast.remove("rawcaster");
           toast.error(response.data.msg, { id: "rawcaster" });
