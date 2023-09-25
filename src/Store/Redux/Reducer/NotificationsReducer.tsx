@@ -94,6 +94,12 @@ export const { actions, reducer } = createSlice({
           }, []);
           return filterData;
         };
+        console.log(
+          [...state.Notifications.today],
+          action.payload.today,
+          getMergedData(state.Notifications.today, action.payload.today)
+        );
+
         state.Notifications = {
           today: getMergedData(state.Notifications.today, action.payload.today),
           yesterday: getMergedData(
