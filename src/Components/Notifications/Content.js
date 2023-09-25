@@ -47,8 +47,10 @@ const Content = ({ elem }) => {
         notification_type: elem.id,
       };
       console.log(formData);
-      dispatch(fetchNotificationList({ token, ...formData }));
-      isFetching.current = false;
+      dispatch(fetchNotificationList({ token, ...formData })).finally(() => {
+        isFetching.current = false;
+      });
+
       //   .then((res) => {
       //     isFetching.current = null;
       //   })

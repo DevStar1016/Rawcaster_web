@@ -274,14 +274,16 @@ const Connections = ({ referral, profileClass }) => {
           </>
         )}
       </div>
-      <AddConnection
-        open={isAddFriend}
-        friends={friends}
-        setfriends={setfriends}
-        close={() => {
-          setisAddFriend(false);
-        }}
-      />
+      {isAddFriend && (
+        <AddConnection
+          open={isAddFriend}
+          friends={friends}
+          setfriends={setfriends}
+          close={() => {
+            setisAddFriend(false);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -74,6 +74,8 @@ export const { actions, reducer } = createSlice({
       if (action.payload.current_page_no === 1) {
         state.Notifications = action.payload;
       } else if (action.payload.current_page_no === 0) {
+        console.log(action.payload, "current_page_no = 0");
+
         state.Notifications = {
           today: [],
           yesterday: [],
@@ -95,8 +97,8 @@ export const { actions, reducer } = createSlice({
           return filterData;
         };
         console.log(
-          [...state.Notifications.today],
-          action.payload.today,
+          { ...state.Notifications },
+          action.payload,
           getMergedData(state.Notifications.today, action.payload.today)
         );
 
