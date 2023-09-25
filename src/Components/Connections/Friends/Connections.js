@@ -201,7 +201,8 @@ const Connections = ({ referral, profileClass }) => {
       </div>
       <h2>
         My Connections <span>({getValidConnections().friends.length})</span>
-        {getValidConnections().friends.length !== 0 && !isFriendsLoading ? (
+        {(getValidConnections().friends.length !== 0 || searchInput !== "") &&
+        !isFriendsLoading ? (
           <i
             className="material-symbols-outlined"
             onClick={() => {
@@ -235,10 +236,14 @@ const Connections = ({ referral, profileClass }) => {
           <div
             strong
             onClick={() => {
-              setisAddFriend(true);
+              if (searchInput === "") {
+                setisAddFriend(true);
+              }
             }}
           >
-            Start Inviting New Connections
+            {searchInput !== ""
+              ? "No Results Found"
+              : "Start Inviting New Connections"}
           </div>
         ) : null}
         {getValidConnections().requests.map((request) => {
