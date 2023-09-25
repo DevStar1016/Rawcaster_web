@@ -211,11 +211,11 @@ const Settings = () => {
     formikvalues: values,
     setValues,
     setFieldValue,
-    setupdateValue(key, value, type = "add") {
+    setupdateValue(key, value, type = "add", isNumber = true) {
       switch (type) {
         case "add":
           if (typeof value === "string") {
-            if (!isNaN(parseInt(value))) {
+            if (!isNaN(parseInt(value)) && isNumber) {
               setFieldValue([key], parseInt(value));
             } else {
               setFieldValue([key], value);
@@ -269,6 +269,27 @@ const Settings = () => {
             return setupdateValue((pre) => [...pre, key]);
           } else {
             return setupdateValue([key]);
+          }
+        case "add_multiple":
+          setValues((pre) => ({
+            ...pre,
+            ...value,
+          }));
+
+          handleupdate({
+            ...value,
+          }).then((response) => {
+            if (response.account_active_inactive === 0) {
+              dispatch(handleAccountActive(false));
+              RemoveToken(dispatch);
+              window.location.reload();
+            }
+          });
+          let keys = Object.keys(value);
+          if (updateValue.length !== 0) {
+            return setupdateValue((pre) => [...pre, ...keys]);
+          } else {
+            return setupdateValue([...key]);
           }
         case "delete":
           setFieldValue(key, "");

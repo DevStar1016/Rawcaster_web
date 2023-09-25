@@ -120,6 +120,16 @@ const General = () => {
       return value.length !== 0;
     }
   };
+
+  const getAccentData = (
+    read_out_language_id = formikvalues.read_out_language_id
+  ) => {
+    return findValidDisplayAccentData(
+      LanguagesList.read_out,
+      read_out_language_id
+    );
+  };
+
   return (
     <div>
       <h1>General</h1>
@@ -493,68 +503,67 @@ const General = () => {
                 }
                 options={RemoveDuplicates(LanguagesList.read_out)}
                 onChange={(_, { id }) => {
-                  setupdateValue("read_out_language_id", id);
+                  const GetAccentList = getAccentData(id);
+                  if (GetAccentList && GetAccentList.length !== 0) {
+                    setupdateValue(
+                      "add_multiple",
+                      {
+                        read_out_language_id: id,
+                        read_out_accent_id: GetAccentList[0].id,
+                      },
+                      "add_multiple"
+                    );
+                  } else {
+                    setupdateValue("read_out_language_id", id);
+                  }
                   dispatch(handleRemoveReadoutURL());
                   dispatch(handleRemoveTranslate());
                 }}
                 disabled={
                   updateValue.includes("read_out_language_id") ||
+                  updateValue.includes("add_multiple") ||
                   userSettings?.account_active_inactive === 0
                 }
               />
             </div>{" "}
-            {findValidDisplayAccentData(
-              LanguagesList.read_out,
-              formikvalues.read_out_language_id
-            ) &&
-              findValidDisplayAccentData(
-                LanguagesList.read_out,
-                formikvalues.read_out_language_id
-              ).length !== 0 && (
-                <div className="ms-5">
-                  <p className={classes.smallheading}>Read-out Accent</p>
-                  <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    className={`mt-2 ${classes.SelectSec} settingsSelect`}
-                    placeholder="Search Read-out Accent"
-                    optionFilterProp="children"
-                    value={getValidDisplayData(
-                      findValidDisplayAccentData(
-                        LanguagesList.read_out,
-                        formikvalues.read_out_language_id
-                      ),
-                      formikvalues.read_out_accent_id,
-                      "id"
-                    )}
-                    filterOption={(input, option) =>
-                      (option?.label?.toLowerCase() ?? "").includes(
-                        input?.toLowerCase()
-                      )
-                    }
-                    filterSort={(optionA, optionB) =>
-                      (optionA?.label ?? "")
-                        .toLowerCase()
-                        .localeCompare((optionB?.label ?? "").toLowerCase())
-                    }
-                    options={RemoveDuplicates(
-                      findValidDisplayAccentData(
-                        LanguagesList.read_out,
-                        formikvalues.read_out_language_id
-                      )
-                    )}
-                    onChange={(_, { id }) => {
-                      setupdateValue("read_out_accent_id", id);
-                      dispatch(handleRemoveReadoutURL());
-                      dispatch(handleRemoveTranslate());
-                    }}
-                    disabled={
-                      updateValue.includes("read_out_accent_id") ||
-                      userSettings?.account_active_inactive === 0
-                    }
-                  />
-                </div>
-              )}
+            <div className="ms-5">
+              <p className={classes.smallheading}>Readout Accent</p>
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                className={`mt-2 ${classes.SelectSec} settingsSelect`}
+                placeholder="Search Readout Accent"
+                optionFilterProp="children"
+                value={getValidDisplayData(
+                  getAccentData(),
+                  formikvalues.read_out_accent_id,
+                  "id"
+                )}
+                filterOption={(input, option) =>
+                  (option?.label?.toLowerCase() ?? "").includes(
+                    input?.toLowerCase()
+                  )
+                }
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? "")
+                    .toLowerCase()
+                    .localeCompare((optionB?.label ?? "").toLowerCase())
+                }
+                options={RemoveDuplicates(getAccentData())}
+                onChange={(_, { id }) => {
+                  setupdateValue("read_out_accent_id", id);
+                  dispatch(handleRemoveReadoutURL());
+                  dispatch(handleRemoveTranslate());
+                }}
+                disabled={
+                  updateValue.includes("read_out_accent_id") ||
+                  updateValue.includes("add_multiple") ||
+                  userSettings?.account_active_inactive === 0 ||
+                  !getAccentData() ||
+                  getAccentData().length === 0
+                }
+              />
+            </div>
           </div>
           <div>
             <p className={classes.smallheading}>Timezone</p>

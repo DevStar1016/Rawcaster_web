@@ -52,6 +52,7 @@ import {
   CHIME_SOCKET_EVENTS,
   COMMON_EVENTS_TYPES,
 } from "../../../Services/ServiceConstants";
+import { DEFAULT_DATE_FORMAT } from "../../../Shared/Constant";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -724,7 +725,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                           return moment().add(-1, "days") >= current;
                         }}
                         allowClear={false}
-                        format={"YYYY-MM-DD"}
+                        format={
+                          userSettings
+                            ? userSettings.default_date_format
+                            : DEFAULT_DATE_FORMAT
+                        }
                         onChange={(date, dateString) => {
                           setFieldValue("event_start_date", dateString);
 

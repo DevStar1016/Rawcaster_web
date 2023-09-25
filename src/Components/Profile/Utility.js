@@ -10,6 +10,7 @@ import {
 } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useAppSelector } from "../../Store/Redux/Config/Hooks";
+import { DEFAULT_DATE_FORMAT } from "../../Shared/Constant";
 
 /**
  * Calculates the age based on the given date of birth.
@@ -78,7 +79,15 @@ function useReplaceBiodataHandler(data, isMyBio = false) {
     // Create parts of the description
     const namePart = `${GetValidName()} is ${
       !isNaN(GetAge) ? GetAge : ""
-    } years old,${!isNaN(GetAge) ? ` was born in ${data.dob}.` : ""}`;
+    } years old,${
+      !isNaN(GetAge)
+        ? ` was born in ${moment(data.dob, " YYYY-MM-DD").format(
+            userSettings
+              ? userSettings.default_date_format
+              : DEFAULT_DATE_FORMAT
+          )}.`
+        : ""
+    }`;
     const locationPart = `${GetValidName(true)} presently resides in ${
       data.geo_location
     }.`;

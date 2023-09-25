@@ -190,3 +190,9 @@ display: block;
   .addFriends:hover{
     background: #ebebeb ;
   }
+.inputSec {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}

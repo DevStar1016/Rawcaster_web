@@ -10,6 +10,7 @@ export const SECONDARY_REDIRECT_URI = "https://dev.rawcaster.com/signup";
 export const ENCRIPTION_STRING = "rawcaster@!@#$QWERTxcvbn";
 
 // SECONDARY CONSTANTS
+export const DEFAULT_DATE_FORMAT = "MM/DD/YYYY";
 export const PASSWORD_EXP =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
 export const NAME_REGEX = /^[A-Za-z_ ]+$/;
