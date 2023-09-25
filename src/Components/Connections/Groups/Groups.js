@@ -68,6 +68,16 @@ const Groups = () => {
             : classes.connectionsLists
         }
       >
+        {getValidGroups() === 0 && !isGroupLoading ? (
+          <div
+            strong
+            onClick={() => {
+              setisConfigureGroup({ show: true, group_id: null });
+            }}
+          >
+            Start Inviting New Connections
+          </div>
+        ) : null}
         {getValidGroups()?.map((group) => {
           return (
             <Group
