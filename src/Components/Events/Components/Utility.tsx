@@ -1,6 +1,5 @@
 import {
   useAttendeeStatus,
-  useAudioVideo,
   useLocalVideo,
   useMeetingManager,
   useToggleLocalMute,
@@ -27,6 +26,7 @@ type MicrophoneComponentProps = {
   ele?: ChimeAttendee | null;
   attendee?: AttendeeUserData | null;
   isHost?: boolean;
+  isCoHost?: boolean;
   className?: string;
   isAllowed?: boolean;
   isGlobal?: boolean;
@@ -36,6 +36,7 @@ type CameraComponentProps = {
   ele?: ChimeAttendee | null;
   attendee?: AttendeeUserData | null;
   isHost?: boolean;
+  isCoHost?: boolean;
   className?: string;
   isGlobal?: boolean;
 };
@@ -54,6 +55,7 @@ export const MicrophoneComponent = ({
   className = "",
   isAllowed = true,
   isGlobal,
+  isCoHost
 }: MicrophoneComponentProps) => {
   const { EventData, MeetingSettings, setMeetingSettings } =
     useEventRoomContext();
@@ -121,14 +123,16 @@ export const MicrophoneComponent = ({
         <i
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isHost && !attendee?.isHost) {
-              const value = {
-                refId: EventData?.reference_id,
-                hostId: getUserData()?.user_id,
-                status: true,
-                userId: attendee?.userId,
-              };
-              ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+            if ((isHost || isCoHost) && !attendee?.isHost) {
+              // ** might be  needed in future
+
+              // const value = {
+              //   refId: EventData?.reference_id,
+              //   hostId: getUserData()?.user_id,
+              //   status: true,
+              //   userId: attendee?.userId,
+              // };
+              // ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
             } else if (userData?.user_id === attendee?.userId) {
               toggleMute();
             }
@@ -140,7 +144,7 @@ export const MicrophoneComponent = ({
         <i
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isHost && !attendee?.isHost) {
+            if ((isHost || isCoHost) && !attendee?.isHost) {
               const value = {
                 refId: EventData?.reference_id,
                 hostId: getUserData()?.user_id,
@@ -208,6 +212,7 @@ export const CameraComponent = ({
   isHost = false,
   className = "",
   isGlobal,
+  isCoHost,
 }: CameraComponentProps) => {
   const { EventData, MeetingSettings, setMeetingSettings } =
     useEventRoomContext();
@@ -272,7 +277,7 @@ export const CameraComponent = ({
         <i
           className={`${styles.video_off_icon} ${styles.icon} ${className}`}
           onClick={() => {
-            if (isHost && !attendee?.isHost) {
+            if ((isHost || isCoHost) && !attendee?.isHost) {
               const value = {
                 refId: EventData?.reference_id,
                 hostId: getUserData()?.user_id,

@@ -218,6 +218,7 @@ const Participants = () => {
         >
           <div className={classes.itemName}>
             <img
+              alt="participant"
               src={findAttendee?.image ? findAttendee?.image : ""}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
@@ -258,7 +259,9 @@ const Participants = () => {
               />
             )}
             {isYou ? (
-              <LocalMicrophoneComponent className={classes.micsmallIcon} />
+              <LocalMicrophoneComponent 
+                className={classes.micsmallIcon} 
+                isAllowed={findAttendee?.isCoHost || !findAttendee?.audioDisabledByHost} />
             ) : (
               <MicrophoneComponent
                 ele={ele}
@@ -274,6 +277,7 @@ const Participants = () => {
                 setselectedDevice={null}
                 selectedDevice={null}
                 className={classes.videosmallIcon}
+                isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost} 
               />
             ) : (
               <CameraComponent
@@ -406,7 +410,7 @@ const Participants = () => {
             </InputGroup>
           </Collapse>
         </div>
-        {getISHost() && (
+        {(getISHost() || getISCoHost()) && (
           <div className={classes.GlobalSettingContainer}>
             <div className={classes.itemName}>Global Settings</div>
             <div className={classes.itemAction}>
@@ -436,10 +440,14 @@ const Participants = () => {
               </Collapse>
               <MicrophoneComponent
                 isGlobal={true}
+                isHost={userdata?.isHost}
+                isCoHost={userdata?.isCoHost}
                 className={classes.micsmallIcon}
               />
               <CameraComponent
                 isGlobal={true}
+                isHost={userdata?.isHost}
+                isCoHost={userdata?.isCoHost}
                 className={classes.videosmallIcon}
               />
             </div>

@@ -127,20 +127,21 @@ const MeetingManagerComponent = () => {
         const attendeeList = attendees.attendeeList;
         if (singleAttendee) {
           if (singleAttendee.userId === userdata.userId) {
-            if (!userdata.isHost) {
+            if (!userdata.isHost || !userdata.isCoHost) {
               setuserdata((pre) => ({
                 ...pre,
                 [hostDisabledType]: singleAttendee[hostDisabledType],
                 [Type]: singleAttendee[hostDisabledType],
               }));
+               
               if (singleAttendee[hostDisabledType] === false && userStatus) {
-                Modal.confirm({
-                  title: popupmessage,
-                  async onOk() {
-                    resolve();
-                  },
-                  onCancel() {},
-                });
+                // Modal.confirm({
+                //   title: popupmessage,
+                //   async onOk() {
+                    // resolve();
+                  // },
+                  // onCancel() {},
+                // });
               } else if (singleAttendee[hostDisabledType]) {
                 resolve();
               }
@@ -150,30 +151,51 @@ const MeetingManagerComponent = () => {
           const findAttendee = attendeeList.find(
             (ele) => parseInt(ele.userId) === getUserData()?.user_id
           );
-          if (!userdata.isHost) {
-            setMeetingSettings((pre) => ({
-              ...pre,
-              [settingType]: findAttendee?.[hostDisabledType] ? 0 : 1,
-            }));
-            setuserdata((pre) => ({
-              ...pre,
-              [hostDisabledType]: findAttendee[hostDisabledType],
-              [Type]: findAttendee[hostDisabledType],
-            }));
-            if (findAttendee[hostDisabledType] === false && userStatus) {
-              Modal.confirm({
-                title: popupmessage,
-                async onOk() {
-                  resolve();
-                },
-                onCancel() {},
-              });
-            } else if (findAttendee[hostDisabledType]) {
-              if (!userStatus) {
-                resolve();
-              }
+
+           setMeetingSettings((pre) => ({
+             ...pre,
+            [settingType]: value.status ? 1 : 0,
+            hostDisabledType: value.status 
+          }));
+
+            setattendeesList(attendeeList);
+
+            // skip toggle mute 
+            if (!(findAttendee?.isHost || findAttendee?.isCoHost) && !userStatus) {
+              resolve();
             }
-          }
+
+            // setuserdata((pre) => ({
+            //   ...pre,
+            //   audio: findAttendee.audio,
+            //   [hostDisabledType]: findAttendee[hostDisabledType],
+            //   [Type]: findAttendee[hostDisabledType],
+            // }));
+         
+          // if (!userdata.isHost || !userdata.isCoHost) {
+          //   // setMeetingSettings((pre) => ({
+          //   //   ...pre,
+          //   //   [settingType]: findAttendee?.[hostDisabledType] ? 0 : 1,
+          //   // }));
+          //   setuserdata((pre) => ({
+          //     ...pre,
+          //     [hostDisabledType]: findAttendee[hostDisabledType],
+          //     [Type]: findAttendee[hostDisabledType],
+          //   }));
+          //   if (findAttendee[hostDisabledType] === false && userStatus) {
+          //     // Modal.confirm({
+          //     //   title: popupmessage,
+          //     //   async onOk() {
+          //         // resolve();
+          //     //   },
+          //     //   onCancel() {},
+          //     // });
+          //   } else if (findAttendee[hostDisabledType]) {
+          //     if (!userStatus) {
+          //       resolve();
+          //     }
+          //   }
+          // }
         }
       } catch (error) {
         reject();
