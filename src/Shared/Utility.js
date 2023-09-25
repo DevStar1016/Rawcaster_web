@@ -811,9 +811,11 @@ export const ReadMore = ({
             className="ReadMoreText"
             style={{
               cursor: "pointer",
-              width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+              width:
+                Influencer && !readMore && !expanded
+                  ? "calc(100% - 80px)"
+                  : "100%",
               wordBreak: "break-word",
-              wordWrap: "break-word",
             }}
           >
             {children}
@@ -840,7 +842,6 @@ export const ReadMore = ({
               cursor: "pointer",
               width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
               wordBreak: "break-word",
-              wordWrap: "break-word",
             }}
             onClick={() => {}}
           >
@@ -893,7 +894,6 @@ export const ReadMore = ({
               cursor: "pointer",
               width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
               wordBreak: "break-word",
-              wordWrap: "break-word",
             }}
           >
             {children}

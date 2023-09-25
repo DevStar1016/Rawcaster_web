@@ -62,9 +62,9 @@ const UpdateProfile = () => {
       .strict(true)
       .required(`Please input your Last Name!`),
     gender: yup
-      .string()
-      .trim("The Gender cannot include leading and trailing spaces")
-      .strict(true)
+      .mixed()
+      // .trim("The Gender cannot include leading and trailing spaces")
+      // .strict(true)
       .required(`Please input your Gender!`),
     name: yup
       .string()

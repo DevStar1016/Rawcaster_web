@@ -1,5 +1,5 @@
 import { Checkbox, Col, Empty, Row, Select, Spin, Tooltip } from "antd";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import classes from "./Influencers.module.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,19 +15,25 @@ import {
   JSONtoformdata,
   filterValidObject,
   ReadMore,
+  utctoUserTimezone,
 } from "../../Shared/Utility";
 import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import ProfileImg from "../../UIComponents/ProfileImg";
-import useReplaceBiodataHandler from "../Profile/Utility";
+import useReplaceBiodataHandler, {
+  defaultRawcaterPage,
+} from "../Profile/Utility";
+import moment from "moment";
+import { DEFAULT_DATE_FORMAT } from "../../Shared/Constant";
 
 const SelectInfluencers = () => {
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserData = useAuthData();
+  const { userSettings } = useAuth();
   const [isBecomeFanSent, setisBecomeFanSent] = useState(false);
   const [influencerCategory, setinfluencerCategory] = useState([]);
   const [influencerList, setinfluencerList] = useState([]);
@@ -43,6 +49,94 @@ const SelectInfluencers = () => {
     pageNum: 1,
     total_page: 1,
   });
+
+  function useReplaceBiodataHandler(data, isMyBio = false) {
+    if (data) {
+      function replacePlaceholder(placeholder, value) {
+        // Check for null or undefined and convert them to empty string
+        if (value === null || value === undefined) {
+          value = "";
+        }
+        return `${placeholder} ${value}`;
+      }
+
+      const isValidString = (val) => {
+        return val && val !== "";
+      };
+
+      const GetValidName = (isPartial = false) => {
+        if (isValidString(data.first_name)) {
+          if (isValidString(data.last_name) && !isPartial) {
+            return `${data.first_name} ${data.last_name}`;
+          } else {
+            return `${data.first_name}`;
+          }
+        } else if (isValidString(data.last_name)) {
+          return data.last_name;
+        } else {
+          return "";
+        }
+      };
+
+      const momentDob = moment(data.dob, "YYYY-MM-DD");
+      const GetAge = moment().diff(momentDob, "years");
+      // Create parts of the description
+      const namePart = `${GetValidName()} is ${
+        !isNaN(GetAge) ? GetAge : ""
+      } years old,${
+        !isNaN(GetAge)
+          ? ` was born in ${moment(data.dob, " YYYY-MM-DD").format(
+              userSettings
+                ? userSettings.default_date_format
+                : DEFAULT_DATE_FORMAT
+            )}.`
+          : ""
+      }`;
+      const locationPart = `${GetValidName(true)} presently resides in ${
+        data.geo_location
+      }.`;
+      const languagePart = replacePlaceholder(
+        `${GetValidName(true)}'s preferred communication language is English`
+      );
+      const userStatusPart = replacePlaceholder(
+        `${GetValidName(true)} has been a Rawcaster`,
+        `${data.user_status} since ${
+          userSettings
+            ? utctoUserTimezone(
+                data.date_of_join,
+                userSettings.time_zone
+              ).format(" DD MMM YYYY ")
+            : ""
+        }`
+      );
+      const defaultPagePart = replacePlaceholder(
+        `${GetValidName(true)} prefers to be contacted in Rawcaster through`,
+        defaultRawcaterPage(userSettings ? userSettings.mobile_default_page : 1)
+      );
+
+      // Join the parts to form the description
+      const descriptionParts = [
+        namePart,
+        locationPart,
+        languagePart,
+        userStatusPart,
+        defaultPagePart,
+      ];
+      const description = descriptionParts.join(",");
+
+      // if (userSettings?.mobile_default_page && isMyBio) {
+      //   str = str.replace(
+      //     /<rawcaster_default_page>/g,
+      //     defaultRawcaterPage(
+      //       userSettings ? userSettings?.mobile_default_page : 1
+      //     )
+      //   );
+      // }
+
+      return description;
+    }
+    return "";
+  }
 
   /**
    * Retrieves a list of influencers based on the specified page number, category, and search key.
@@ -378,6 +472,10 @@ const SelectInfluencers = () => {
     );
   };
 
+  const InfluencerRender = useCallback((ele) => {
+    return <InfluencerComponent ele={ele} />;
+  }, []);
+
   return (
     <div className="mainWrapper innerContent">
       <div className={classes.headerSec}>
@@ -576,7 +674,7 @@ const SelectInfluencers = () => {
         ) : (
           <Row gutter={15}>
             {influencerList?.map((ele) => {
-              return <InfluencerComponent ele={ele} />;
+              return InfluencerComponent({ ele });
             })}
           </Row>
         )}

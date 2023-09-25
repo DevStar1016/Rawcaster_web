@@ -26,68 +26,94 @@ import AuthLayout from "../Layouts/AuthLayout";
 import MainLayout from "../Layouts/MainLayout";
 import { AuthPrivateRoute } from "./PrivateRoute";
 import FirstSteps from "../Components/Policy/FirstSteps";
+import { Outlet } from "react-router";
 
 export const AuthRoute = [
   {
     path: "/",
-    element: <AuthPrivateRoute />,
-    errorElement: <NotFound />,
+    element: <Outlet />,
     children: [
       {
         path: "/",
-        element: <AuthLayout />,
+        element: <AuthPrivateRoute />,
+        errorElement: <NotFound />,
         children: [
           {
-            path: "/login",
-            element: <Login />,
+            path: "/",
+            element: <AuthLayout />,
+            children: [
+              {
+                path: "/login",
+                element: <Login />,
+              },
+              {
+                path: "/login/:nugget_id",
+                element: <Login />,
+              },
+              {
+                path: "/signup",
+                element: (
+                  <GoogleOAuthProvider
+                    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                  >
+                    <Signup />
+                  </GoogleOAuthProvider>
+                ),
+              },
+              {
+                path: "/signup/:nugget_id",
+                element: (
+                  <GoogleOAuthProvider
+                    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                  >
+                    <Signup />
+                  </GoogleOAuthProvider>
+                ),
+              },
+              {
+                path: "/signupwithemail",
+                element: <SignupwithCredentials />,
+              },
+              {
+                path: "/signupwithemail/:nugget_id",
+                element: <SignupwithCredentials />,
+              },
+              {
+                path: "/signupwithmobile",
+                element: <SignupwithCredentials />,
+              },
+              {
+                path: "/signupwithmobile/:nugget_id",
+                element: <SignupwithCredentials />,
+              },
+              {
+                path: "/forgotpassword",
+                element: <ForgotPassword />,
+              },
+              {
+                path: "/setpassword",
+                element: <ResetPassword />,
+              },
+            ],
           },
           {
-            path: "/login/:nugget_id",
-            element: <Login />,
-          },
-          {
-            path: "/signup",
-            element: (
-              <GoogleOAuthProvider
-                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              >
-                <Signup />
-              </GoogleOAuthProvider>
-            ),
-          },
-          {
-            path: "/signup/:nugget_id",
-            element: (
-              <GoogleOAuthProvider
-                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              >
-                <Signup />
-              </GoogleOAuthProvider>
-            ),
-          },
-          {
-            path: "/signupwithemail",
-            element: <SignupwithCredentials />,
-          },
-          {
-            path: "/signupwithemail/:nugget_id",
-            element: <SignupwithCredentials />,
-          },
-          {
-            path: "/signupwithmobile",
-            element: <SignupwithCredentials />,
-          },
-          {
-            path: "/signupwithmobile/:nugget_id",
-            element: <SignupwithCredentials />,
-          },
-          {
-            path: "/forgotpassword",
-            element: <ForgotPassword />,
-          },
-          {
-            path: "/setpassword",
-            element: <ResetPassword />,
+            path: "/",
+            element: <MainLayout />,
+            errorElement: <NotFound />,
+            children: [
+              {
+                index: true,
+                element: <Homepage />,
+              },
+              {
+                path: "/joinmeeting",
+                element: <JoinMeeting />,
+              },
+              {
+                path: "/join/:event/:ref_id",
+                element: <JoinMeeting />,
+              },
+            ],
           },
         ],
       },
@@ -96,10 +122,6 @@ export const AuthRoute = [
         element: <MainLayout />,
         errorElement: <NotFound />,
         children: [
-          {
-            index: true,
-            element: <Homepage />,
-          },
           {
             path: "privacypolicy",
             element: <Privacypolicy />,
@@ -127,14 +149,6 @@ export const AuthRoute = [
           {
             path: "appdownloadscreen",
             element: <AppdownloadScreen />,
-          },
-          {
-            path: "/joinmeeting",
-            element: <JoinMeeting />,
-          },
-          {
-            path: "/join/:event/:ref_id",
-            element: <JoinMeeting />,
           },
         ],
       },

@@ -49,7 +49,8 @@ const Groups = () => {
       </div>
       <h2>
         My Groups <span>({getValidGroups().length})</span>
-        {getValidGroups()?.length !== 0 && !isGroupLoading ? (
+        {(getValidGroups()?.length !== 0 || searchInput !== "") &&
+        !isGroupLoading ? (
           <i
             className="material-symbols-outlined"
             onClick={() => {
@@ -68,6 +69,20 @@ const Groups = () => {
             : classes.connectionsLists
         }
       >
+        {getValidGroups().length === 0 && !isGroupLoading ? (
+          <div
+            strong
+            onClick={() => {
+              if (searchInput === "") {
+                setisConfigureGroup({ show: true, group_id: null });
+              }
+            }}
+          >
+            {searchInput !== ""
+              ? "No Results Found"
+              : "Begin Building Your Network by Creating a New Group."}
+          </div>
+        ) : null}
         {getValidGroups()?.map((group) => {
           return (
             <Group
