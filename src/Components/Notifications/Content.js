@@ -28,10 +28,11 @@ const Content = ({ elem }) => {
   const { Notifications, isLoading, isTabChange } = useNotification();
   const containerRef = useRef();
   const dispatch = useDispatch();
-  const [isReachedEnd, setisReachedEnd] = useState(false);
   const { userSettings } = useAuth();
   const token = useAuthToken();
   const { handleViewNotification } = useNotificationContext();
+  const isFetching = useRef(false);
+  const isEndReached = useRef(false);
 
   /**
    * Retrieves fans data from the server.
@@ -40,11 +41,20 @@ const Content = ({ elem }) => {
    */
   const getFansData = (page = 1) => {
     if (userSettings && token) {
+      isFetching.current = true;
       let formData = {
         page_number: page,
         notification_type: elem.id,
       };
+      console.log(formData);
       dispatch(fetchNotificationList({ token, ...formData }));
+      isFetching.current = false;
+      //   .then((res) => {
+      //     isFetching.current = null;
+      //   })
+      //   .finally(() => {
+      //     isFetching.current = null;
+      //   });
     }
   };
 
@@ -87,9 +97,10 @@ const Content = ({ elem }) => {
    * @returns None
    */
   const loadMore = () => {
+    console.log("test");
     if (!getHasNextPage()) {
-      setisReachedEnd(false);
-    } else if (isReachedEnd && getHasNextPage() && !isLoading) {
+      isEndReached.current = false;
+    } else if (isEndReached.current && getHasNextPage() && !isLoading) {
       getFansData(Notifications.current_page_no + 1);
     }
   };
@@ -101,7 +112,8 @@ const Content = ({ elem }) => {
   const getHasNextPage = () => {
     return (
       Notifications.total_pages &&
-      Notifications.current_page_no < Notifications.total_pages
+      Notifications.current_page_no < Notifications.total_pages &&
+      !isFetching.current
     );
   };
 
@@ -123,7 +135,7 @@ const Content = ({ elem }) => {
     if (container) {
       const { scrollTop, clientHeight, scrollHeight } = container;
       if (scrollTop + clientHeight >= scrollHeight - 10) {
-        setisReachedEnd(true);
+        isEndReached.current = true;
       }
     }
   };
@@ -165,7 +177,8 @@ const Content = ({ elem }) => {
         Notifications.yesterday.length <
         9
     ) {
-      getFansData(Notifications.current_page_no);
+      console.log(Notifications.current_page_no);
+      // getFansData(Notifications.current_page_no);
     }
   }, [Notifications]);
 
