@@ -46,11 +46,13 @@ const BioContainer = ({ isLoginuser }) => {
     profileData,
     loginUserData && profileData?.user_id === loginUserData?.user_id
   );
-  const { values, handleSubmit, handleChange } = useFormik({
+  const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
     initialValues: {
-      bio_data: "",
+      bio_data:
+        typeof profileData?.bio_data === "string" ? profileData?.bio_data : "",
       influencer_category: [],
     },
+    enableReinitialize: true,
     onSubmit: (values) => {
       updateBioDataHandler(values);
     },
@@ -77,7 +79,12 @@ const BioContainer = ({ isLoginuser }) => {
         setselectedCategory(filterData);
       }
     }
-  }, [profileData, influencerCategory]);
+
+    if (profileData && profileData?.bio_data === "") {
+      console.log(profileData, "profileData");
+      setFieldValue("bio_data", BioData);
+    }
+  }, [profileData, influencerCategory, BioData]);
 
   /**
    * Handles the update of bio data for a user profile.
@@ -205,7 +212,7 @@ const BioContainer = ({ isLoginuser }) => {
             onClick={() => {
               setisAboutEdit(true);
 
-              // setFieldValue("bio_data", BioData);
+              //  setFieldValue("bio_data", BioData);
             }}
           >
             <i className={classes.editIcon}></i>
