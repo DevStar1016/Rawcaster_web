@@ -15,6 +15,7 @@ import AddConnection from "./AddConnection";
 import Request from "../Components/Request";
 import Friends from "../Components/Friends";
 import { Skeleton } from "antd";
+import { decodeHtml } from "../../../Shared/Utility";
 
 const Connections = ({ referral, profileClass }) => {
   const dispatch = useDispatch();
@@ -154,7 +155,23 @@ const Connections = ({ referral, profileClass }) => {
       return friendsList;
     });
   };
+  const getValidConnections = () => {
+    const Friends = friends.filter((friend) =>
+      decodeHtml(friend.display_name)
+        .toLowerCase()
+        .includes(searchInput.toLowerCase())
+    );
+    const Requests = requests.filter((friend) =>
+      decodeHtml(friend.display_name)
+        .toLowerCase()
+        .includes(searchInput.toLowerCase())
+    );
 
+    return {
+      friends: Friends,
+      requests: Requests,
+    };
+  };
   return (
     <div
       className={
@@ -163,17 +180,28 @@ const Connections = ({ referral, profileClass }) => {
           : classes.myconnectioin
       }
     >
-      <input
-        className={classes.textBox}
-        onChange={(e) => setsearchInput(e.target.value)}
-        value={searchInput}
-        placeholder="Search Connections"
-        autoComplete="off"
-      />
-
+      <div className={classes.inputSec}>
+        <input
+          className={classes.textBox}
+          onChange={(e) => setsearchInput(e.target.value)}
+          value={searchInput}
+          placeholder="Search Connections"
+          autoComplete="off"
+        />
+        {searchInput && searchInput !== "" && (
+          <span
+            class="material-symbols-outlined"
+            onClick={() => {
+              setsearchInput("");
+            }}
+          >
+            cancel
+          </span>
+        )}
+      </div>
       <h2>
-        My Connections <span>({friends.length})</span>
-        {friends.length !== 0 && !isFriendsLoading ? (
+        My Connections <span>({getValidConnections().friends.length})</span>
+        {getValidConnections().friends.length !== 0 && !isFriendsLoading ? (
           <i
             className="material-symbols-outlined"
             onClick={() => {
@@ -188,7 +216,9 @@ const Connections = ({ referral, profileClass }) => {
 
       <div
         className={
-          requests.length === 0 && friends.length === 0 && !isFriendsLoading
+          getValidConnections().friends.length === 0 &&
+          getValidConnections().requests.length === 0 &&
+          !isFriendsLoading
             ? classes.connectionsEmpty
             : referral
             ? `${classes.connectionsLists} ${
@@ -199,7 +229,9 @@ const Connections = ({ referral, profileClass }) => {
               }`
         }
       >
-        {requests.length === 0 && friends.length === 0 && !isFriendsLoading ? (
+        {getValidConnections().requests.length === 0 &&
+        getValidConnections().friends.length === 0 &&
+        !isFriendsLoading ? (
           <div
             strong
             onClick={() => {
@@ -209,7 +241,7 @@ const Connections = ({ referral, profileClass }) => {
             Start Inviting New Connections
           </div>
         ) : null}
-        {requests.map((request) => {
+        {getValidConnections().requests.map((request) => {
           return (
             <Request
               request={request}
@@ -226,7 +258,7 @@ const Connections = ({ referral, profileClass }) => {
             />
           );
         })}
-        {friends?.map((friend, index) => {
+        {getValidConnections()?.friends.map((friend, index) => {
           return <Friends friend={friend} searchInput={searchInput} />;
         })}
         {isFriendsLoading && (

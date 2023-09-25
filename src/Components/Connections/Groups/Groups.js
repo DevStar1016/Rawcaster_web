@@ -8,6 +8,7 @@ import classes from "../Connections.module.css";
 import Group from "../Components/Group";
 import { Skeleton } from "antd";
 import ConfigureGroup from "./ConfigureGroup";
+import { decodeHtml } from "../../../Shared/Utility";
 
 const Groups = () => {
   const { groupsList, isGroupLoading } = useDashboard();
@@ -17,18 +18,38 @@ const Groups = () => {
   });
   const [searchInput, setsearchInput] = useState("");
 
+  const getValidGroups = () => {
+    return groupsList.filter((group) =>
+      decodeHtml(group.group_name)
+        .toLowerCase()
+        .includes(searchInput.toLowerCase())
+    );
+  };
+
   return (
     <div className={classes.myconnectioin}>
-      <input
-        className={classes.textBox}
-        onChange={(e) => setsearchInput(e.target.value)}
-        value={searchInput}
-        placeholder="Search Groups"
-        autoComplete="off"
-      />
+      <div className={classes.inputSec}>
+        <input
+          className={classes.textBox}
+          onChange={(e) => setsearchInput(e.target.value)}
+          value={searchInput}
+          placeholder="Search Groups"
+          autoComplete="off"
+        />
+        {searchInput && searchInput !== "" && (
+          <span
+            class="material-symbols-outlined"
+            onClick={() => {
+              setsearchInput("");
+            }}
+          >
+            cancel
+          </span>
+        )}
+      </div>
       <h2>
-        My Groups <span>({groupsList.length})</span>
-        {groupsList?.length !== 0 && !isGroupLoading ? (
+        My Groups <span>({getValidGroups().length})</span>
+        {getValidGroups()?.length !== 0 && !isGroupLoading ? (
           <i
             className="material-symbols-outlined"
             onClick={() => {
@@ -42,12 +63,12 @@ const Groups = () => {
 
       <div
         className={
-          groupsList?.length === 0 && !isGroupLoading
+          getValidGroups()?.length === 0 && !isGroupLoading
             ? classes.connectionsEmpty
             : classes.connectionsLists
         }
       >
-        {groupsList?.map((group) => {
+        {getValidGroups()?.map((group) => {
           return (
             <Group
               group={group}

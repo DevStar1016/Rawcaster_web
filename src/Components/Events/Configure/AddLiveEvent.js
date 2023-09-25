@@ -32,6 +32,7 @@ import moment from "moment";
 import { AddEventContext, useEventContext } from "../../../Shared/Context";
 import dayjs from "dayjs";
 import EventSuccessPage from "./EventSuccessPage";
+import { DEFAULT_DATE_FORMAT } from "../../../Shared/Constant";
 
 const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -409,7 +410,11 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
                       return moment().add(-1, "days") >= current;
                     }}
                     allowClear={false}
-                    format={"YYYY-MM-DD"}
+                    format={
+                      userSettings
+                        ? userSettings.default_date_format
+                        : DEFAULT_DATE_FORMAT
+                    }
                     onChange={(date, dateString) => {
                       setFieldValue("event_start_date", dateString);
                       if (

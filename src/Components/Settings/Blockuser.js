@@ -154,11 +154,15 @@ const Blockuser = () => {
                     }}
                   >
                     <img
-                      src={opt.profile_img}
-                      alt="groupImg"
+                      src={opt.profile_img ? opt.profile_img : ""}
+                      alt={"User_img"}
                       style={{ borderRadius: "16px" }}
                       width="32px"
                       height="32px"
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src = defaultprofileImg;
+                      }}
                     ></img>
                     <span
                       style={{

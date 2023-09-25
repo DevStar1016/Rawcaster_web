@@ -32,18 +32,8 @@ const Notifications = () => {
   const getValidData = (nuggetType, type, value) => {
     let SwitchType = formikvalues[nuggetType]?.split("");
     SwitchType[type] = value;
-
+    console.log(SwitchType?.join(""), "SwitchType?.join()");
     return SwitchType?.join("");
-    // switch (type) {
-    //   case 0:
-    //     return "010";
-    //   case 1:
-    //     return "001";
-    //   case 2:
-    //     return "101";
-    //   default:
-    //     return "000";
-    // }
   };
 
   /**
@@ -74,9 +64,9 @@ const Notifications = () => {
       }
     }
     if (status) {
-      setupdateValue(type, getValidData(type, index, "1"));
+      setupdateValue(type, getValidData(type, index, "1"), "add", false);
     } else {
-      setupdateValue(type, getValidData(type, index, "0"));
+      setupdateValue(type, getValidData(type, index, "0"), "add", false);
     }
   };
 
@@ -118,15 +108,17 @@ const Notifications = () => {
                 <p className={classes.smallheading}>{ele?.title}</p>
                 <p className={classes.text}>{ele?.description}</p>
                 {switchTypes.map((elem, i) => {
+                  const getChecked = () => {
+                    return (
+                      formikvalues[ele.type]?.toString()?.split("")[i] === "1"
+                    );
+                  };
                   return (
                     <div className={classes.grp_switch}>
                       <Switch
                         size="small"
                         // checked={elem.value === formikvalues[ele.type]}
-                        checked={
-                          formikvalues[ele.type]?.toString()?.split("")[i] ===
-                          "1"
-                        }
+                        checked={getChecked()}
                         // disabled={getDisabled(i, ele.type)}
                         loading={updateValue.includes(ele.type)}
                         onChange={(e) => {

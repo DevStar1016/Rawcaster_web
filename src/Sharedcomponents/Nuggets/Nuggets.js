@@ -410,7 +410,7 @@ const Nuggets = ({
     <ListNuggetContext.Provider value={ListNuggetData}>
       {isLocked || isLoading ? (
         <div
-          className={` ${
+          className={`${display_user_id ? classes.profileSec : ""} ${
             params?.key ? classes.resultnuggetSec : classes.nuggetSec
           } ${isuserConnection ? classes.othersnuggetSec : ""} overflow-hidden`}
         >
@@ -432,7 +432,7 @@ const Nuggets = ({
             height: display_user_id ? "100%" : "",
           }}
           // style={{ height: maxHeight ? maxHeight : "" }}
-          className={` ${
+          className={`${display_user_id ? classes.profileSec : ""} ${
             params?.key ? classes.resultnuggetSec : classes.nuggetSec
           } ${isuserConnection ? classes.othersnuggetSec : ""} ${
             className ? className : ""
@@ -681,10 +681,19 @@ const Nuggets = ({
                             }}
                             onDelete={() => {
                               dispatch(handleDeleteNuggetList(ele.nugget_id));
-                              setNuggetCount((pre) => ({
-                                ...pre,
-                                favorites: pre.favorites - 1,
-                              }));
+                              if (display_user_id) {
+                                if (nuggetFormData.formData.saved === 1) {
+                                  setNuggetCount((pre) => ({
+                                    ...pre,
+                                    favorites: pre.favorites - 1,
+                                  }));
+                                } else {
+                                  setNuggetCount((pre) => ({
+                                    ...pre,
+                                    my_nuggets: pre.my_nuggets - 1,
+                                  }));
+                                }
+                              }
                               if (GetNuggetList) {
                                 GetNuggetList();
                               }

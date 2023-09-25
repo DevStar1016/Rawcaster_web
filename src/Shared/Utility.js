@@ -24,7 +24,7 @@ import { Popover, message } from "antd";
 import { Typography } from "antd";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { ENCRIPTION_STRING } from "./Constant";
+import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
 
 // Auth
 
@@ -541,12 +541,12 @@ export const getDisplayEventTime = (time) => {
 /**
  * Returns the formatted display event date based on the received date and the specified date format.
  * @param {Date} receivedDate - The received date of the event.
- * @param {string} [dateFormat="MM/DD/YYYY"] - The format in which the date should be displayed.
+ * @param {string} [dateFormat=DEFAULT_DATE_FORMAT] - The format in which the date should be displayed.
  * @returns {string} The formatted display event date.
  */
 export const getDisplayEventDate = (
   receivedDate,
-  dateFormat = "MM/DD/YYYY"
+  dateFormat = DEFAULT_DATE_FORMAT
 ) => {
   if (receivedDate) {
     let todaysDate;

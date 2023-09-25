@@ -64,6 +64,8 @@ export const GroupHeader = () => {
       } else if (!isOwner) {
         if (GroupData && GroupData.group_category === 1) {
           setisLogoEditable(false);
+        } else if (GroupData && GroupData?.group_category === 3) {
+          setisLogoEditable(false);
         }
       }
     }

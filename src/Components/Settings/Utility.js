@@ -10,7 +10,7 @@ export const getValidDisplayData = (Data, val, idType = "value") => {
   if (findValue) {
     return findValue.label;
   } else {
-    return "";
+    return null;
   }
 };
 
