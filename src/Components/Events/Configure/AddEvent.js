@@ -959,9 +959,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                       value={values.event_melody_id}
                       type={values.event_melody_type}
                       onResult={(val) => {
-                        if (parseInt(val.id) === 0) {
-                          setFieldValue("event_melody", "");
-                        }
+                        // if (parseInt(val.id) === 0) {
+                        //   setFieldValue("event_melody", "");
+                        // }
                         setFieldValue("event_melody_type", val.type);
                         setFieldValue("event_melody_id", val.id);
                       }}
@@ -1000,10 +1000,14 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     {touched.event_melody && (
                       <p className="ErrTxt mb-3">{errors?.event_melody}</p>
                     )}
-                    <div>
+                    <div className={classes.imagePreview}>
                       {values.event_melody !== "" && values?.event_melody ? (
                         <span>
-                          {values.event_melody?.name}{" "}
+                          {values.event_melody?.path
+                            ? values.event_melody?.path.split("/").pop()
+                            : values.event_melody?.name
+                            ? values.event_melody?.name
+                            : "Rawcaster Melody File"}{" "}
                           <span
                             style={{ color: "red", cursor: "pointer" }}
                             onClick={() => {
