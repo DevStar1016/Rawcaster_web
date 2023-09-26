@@ -694,9 +694,9 @@ const Nuggets = ({
                                   }));
                                 }
                               }
-                              if (GetNuggetList) {
-                                GetNuggetList();
-                              }
+                              // if (GetNuggetList) {
+                              //   GetNuggetList();
+                              // }
                             }}
                             HandleShare={() => {
                               if (GetNuggetList) {

@@ -74,8 +74,6 @@ export const { actions, reducer } = createSlice({
       if (action.payload.current_page_no === 1) {
         state.Notifications = action.payload;
       } else if (action.payload.current_page_no === 0) {
-        console.log(action.payload, "current_page_no = 0");
-
         state.Notifications = {
           today: [],
           yesterday: [],
@@ -87,7 +85,11 @@ export const { actions, reducer } = createSlice({
       } else {
         const getMergedData = (pre, newData) => {
           let filterData = [...pre, ...newData].reduce((acc, current) => {
-            const x = acc.find((item) => item.nugget_id === current.nugget_id);
+            const x = acc.find((item) =>
+              item.notification_id
+                ? item.notification_id === current.notification_id
+                : item.nugget_id === current.nugget_id
+            );
             if (!x) {
               return acc.concat([current]);
             } else {
@@ -96,11 +98,6 @@ export const { actions, reducer } = createSlice({
           }, []);
           return filterData;
         };
-        console.log(
-          { ...state.Notifications },
-          action.payload,
-          getMergedData(state.Notifications.today, action.payload.today)
-        );
 
         state.Notifications = {
           today: getMergedData(state.Notifications.today, action.payload.today),

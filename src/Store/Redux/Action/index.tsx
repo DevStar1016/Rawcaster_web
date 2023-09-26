@@ -247,37 +247,28 @@ export const fetchNotificationList = createAsyncThunk(
       const { data } = await ListNotificationService(
         JSONtoformdata(notificationData)
       );
+
       if (data.status === 1) {
         const result = data.notification_list;
         const today = moment().format("YYYY-MM-DD HH:mm:ss");
-        const yesterday = moment()
-          .subtract(1, "days")
-          .format("YYYY-MM-DD HH:mm:ss");
+        const yesterday = moment().subtract(1, "days");
 
         const todayItems = result.filter((item) => {
-          const todayValue = moment(getTimeZone(today)).format("YYYY-MM-DD");
-          const createdValue = moment(
-            getTimeZone(item.created_datetime)
-          ).format("YYYY-MM-DD");
+          const todayValue = moment(getTimeZone(today));
+          const createdValue = moment(getTimeZone(item.created_datetime));
 
-          return moment(todayValue).isSame(createdValue);
+          return moment(todayValue).isSame(createdValue, "day");
         });
         const yesterdayItems = result.filter((item) => {
-          const yesterdayValue = moment(getTimeZone(yesterday)).format(
-            "YYYY-MM-DD"
-          );
-          const createdValue = moment(
-            getTimeZone(item.created_datetime)
-          ).format("YYYY-MM-DD");
-          return moment(yesterdayValue).isSame(createdValue);
+          const yesterdayValue = moment(getTimeZone(yesterday));
+          const createdValue = moment(getTimeZone(item.created_datetime));
+          return moment(yesterdayValue).isSame(createdValue, "day");
         });
         const olderItems = result.filter((item) => {
-          const oldValue = moment(getTimeZone(yesterday)).format("YYYY-MM-DD");
-          const createdValue = moment(
-            getTimeZone(item.created_datetime)
-          ).format("YYYY-MM-DD");
+          const oldValue = moment(getTimeZone(yesterday));
+          const createdValue = moment(getTimeZone(item.created_datetime));
 
-          return moment(createdValue).isBefore(oldValue);
+          return moment(createdValue).isBefore(oldValue, "day");
         });
         return {
           today: todayItems,
@@ -286,6 +277,7 @@ export const fetchNotificationList = createAsyncThunk(
           total_pages: data.total_pages,
           current_page_no: data.current_page_no,
           msg: data.msg,
+          ...res,
         };
       } else {
         return {
@@ -295,6 +287,7 @@ export const fetchNotificationList = createAsyncThunk(
           total_pages: 0,
           current_page_no: 0,
           msg: 0,
+          ...res,
         };
       }
     } catch (error) {
@@ -305,6 +298,7 @@ export const fetchNotificationList = createAsyncThunk(
         total_pages: 0,
         current_page_no: 0,
         msg: 0,
+        ...res,
       };
     }
   }

@@ -38,17 +38,16 @@ const ContentLayout = () => {
     const findKey = TabsValues.find((ele, i) => i === index);
     console.log(findKey, "findKey");
     setselectedIndex(parseInt(findKey.key));
-    // if (findKey) {
-    //   dispatch(handleTabChange(true));
-    //   dispatch(
-    //     fetchNotificationList({
-    //       token,
-    //       notification_type: findKey.id,
-    //       page_number: 1,
-    //     })
-    //   );
-    //
-    // }
+    if (findKey) {
+      dispatch(handleTabChange(true));
+      dispatch(
+        fetchNotificationList({
+          token,
+          notification_type: findKey.id,
+          page_number: 1,
+        })
+      );
+    }
   };
 
   return (
@@ -65,8 +64,7 @@ const ContentLayout = () => {
             (ele) => parseInt(ele.key) === parseInt(key)
           );
           setselectedIndex(parseInt(key));
-          console.log(findId, "findId");
-          // dispatch(handleTabChange(true));
+          dispatch(handleTabChange(true));
           dispatch(
             fetchNotificationList({
               token,
@@ -74,7 +72,6 @@ const ContentLayout = () => {
               page_number: 1,
             })
           );
-          // setselectedIndex(parseInt(key));
         }}
       />
       <SwipeableViews index={selectedIndex} onChangeIndex={handleChangeIndex}>
