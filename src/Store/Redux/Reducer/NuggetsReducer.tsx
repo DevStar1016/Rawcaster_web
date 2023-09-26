@@ -60,11 +60,6 @@ export const { actions, reducer } = createSlice({
         state.Nuggets[index].viewed === 0 &&
         state.token
       ) {
-        // let apiData = {
-        //   token: state.token,
-        //   nugget_id: JSON.stringify([state.Nuggets[index].nugget_id]),
-        // };
-        // addNuggetView(apiData);
         state.Nuggets = [
           ...state.Nuggets.slice(0, index),
           {

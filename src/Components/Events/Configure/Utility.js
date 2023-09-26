@@ -163,6 +163,7 @@ export const EventLayoutComponent = ({
 export const EventMelodyComponent = ({
   onResult,
   value,
+  type,
   disabled,
   isLoading,
   isEnabledLabel = true,
@@ -180,11 +181,14 @@ export const EventMelodyComponent = ({
         if (isCustomize) {
           finalData = [
             ...finalData,
-            { id: 0, value: "Customize", label: "Customize" },
+            { id: 3, value: "Customize", label: "Customize", type: 3 },
           ];
         }
         setEventData(finalData);
-        onResult(finalData[0]);
+        const findDisplayData = finalData.find(
+          (ele) => parseInt(ele.type) === parseInt(type)
+        );
+        onResult(findDisplayData);
       })
       .finally(() => {
         setisFetching((pre) => pre.filter((ele) => ele !== "event_melody"));

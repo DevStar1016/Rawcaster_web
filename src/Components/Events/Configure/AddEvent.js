@@ -94,6 +94,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_duration: "",
       event_layout: "",
       event_melody_id: "",
+      event_melody_type: 1,
       event_melody: "",
       event_host_audio: "",
       event_host_video: "",
@@ -221,6 +222,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     setValues((pre) => ({
       ...pre,
       event_title: "Rawcaster Event",
+
       event_melody_id: userSettings?.melody,
       waiting_room: userSettings?.waiting_room,
       join_before_host: userSettings?.join_before_host,
@@ -407,6 +409,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
               )?.format("HH:mm"),
               event_message: eventData?.message,
               waiting_room: eventData?.waiting_room,
+              event_melody_type: eventData?.event_melody_type,
               join_before_host: eventData?.join_before_host,
               sound_notify: eventData?.sound_notify,
               user_screenshare: eventData?.user_screenshare,
@@ -416,7 +419,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
               ),
               event_layout: eventData?.event_layout_id,
               event_melody_id: eventData?.event_melody_id,
-              event_melody: eventData?.melodies,
+              event_melody:
+                eventData?.event_melody_type === 3 ? eventData?.melodies : "",
               event_host_audio: eventData?.default_host_audio,
               event_host_video: eventData?.default_host_video,
               event_guest_audio: eventData?.default_guest_audio,
@@ -953,10 +957,12 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     <EventMelodyComponent
                       isCustomize={true}
                       value={values.event_melody_id}
+                      type={values.event_melody_type}
                       onResult={(val) => {
                         if (parseInt(val.id) === 0) {
                           setFieldValue("event_melody", "");
                         }
+                        setFieldValue("event_melody_type", val.type);
                         setFieldValue("event_melody_id", val.id);
                       }}
                     />
@@ -965,7 +971,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                     id="addUploadMelodydiv"
                     style={{
                       display:
-                        parseInt(values.event_melody_id) === 0
+                        parseInt(values.event_melody_type) === 3
                           ? "block"
                           : "none",
                     }}

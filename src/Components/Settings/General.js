@@ -39,6 +39,7 @@ const General = () => {
     handleupdate,
   } = useSettingsContext();
   const dispatch = useDispatch();
+  const [isDropdownSaveEnabled, setisDropdownSaveEnabled] = useState(false);
   const { loginUserData, userSettings } = useAuth();
   const { groupsList, friendsList } = useDashboard();
   const [TimeZones, setTimeZones] = useState([]);
@@ -267,6 +268,7 @@ const General = () => {
                       placeholder="Search group"
                       value={getGroupList()}
                       onChange={(val) => {
+                        setisDropdownSaveEnabled(true);
                         setFieldValue([ele.groupkeyword], val);
                       }}
                       optionLabelProp="label"
@@ -316,6 +318,7 @@ const General = () => {
                       className={classes.savebutton}
                       disabled={
                         updateValue.includes(ele.keyword) ||
+                        !isDropdownSaveEnabled ||
                         !CheckValuesIsValid(formikvalues[ele.groupkeyword])
                       }
                       onClick={() => {
@@ -330,6 +333,7 @@ const General = () => {
                               ? 5
                               : 3
                           );
+                          setisDropdownSaveEnabled(false);
                         }
                       }}
                     >
@@ -346,6 +350,7 @@ const General = () => {
                       placeholder="Search Connection"
                       value={getFriendList()}
                       onChange={(val) => {
+                        setisDropdownSaveEnabled(true);
                         setFieldValue([ele.groupkeyword], val);
                       }}
                       optionLabelProp="label"
@@ -395,6 +400,7 @@ const General = () => {
                       className={classes.savebutton}
                       disabled={
                         updateValue.includes(ele.keyword) ||
+                        !isDropdownSaveEnabled ||
                         !CheckValuesIsValid(formikvalues[ele.groupkeyword])
                       }
                       onClick={() => {
@@ -406,6 +412,7 @@ const General = () => {
                             formikvalues[ele.groupkeyword],
                             3
                           );
+                          setisDropdownSaveEnabled(false);
                         }
                       }}
                     >
