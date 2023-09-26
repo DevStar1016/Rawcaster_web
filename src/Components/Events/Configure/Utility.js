@@ -181,7 +181,7 @@ export const EventMelodyComponent = ({
         if (isCustomize) {
           finalData = [
             ...finalData,
-            { id: 3, value: "Customize", label: "Customize", type: 3 },
+            { id: 0, value: "Customize", label: "Customize", type: 3 },
           ];
         }
         setEventData(finalData);
