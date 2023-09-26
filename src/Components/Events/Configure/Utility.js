@@ -196,6 +196,15 @@ export const EventMelodyComponent = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (EventData && EventData.length !== 0) {
+      const findDisplayData = EventData.find(
+        (ele) => parseInt(ele.type) === parseInt(type)
+      );
+      onResult(findDisplayData);
+    }
+  }, [type]);
+
   const getDisplayName = () => {
     let findEvent = EventData.find((ele) => ele.id === parseInt(value));
     if (findEvent) {
