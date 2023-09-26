@@ -109,7 +109,8 @@ const EventBox = () => {
               }}
             >
               {isYou ? (
-                <LocalMicrophoneComponent className={classes.icon} />
+                <LocalMicrophoneComponent className={classes.icon} 
+                isAllowed={findAttendee?.isCoHost || !findAttendee?.audioDisabledByHost} />
               ) : (
                 <MicrophoneComponent
                   ele={ele}
@@ -134,6 +135,7 @@ const EventBox = () => {
                   setselectedDevice={null}
                   selectedDevice={null}
                   className={classes.icon}
+                  isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost} 
                 />
               ) : (
                 <CameraComponent
