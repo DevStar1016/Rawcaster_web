@@ -551,14 +551,14 @@ const Participants = () => {
             </div>
           </div>
         )}
-        <div
+       {(userdata?.isHost || userdata?.isCoHost ) && <div
           className={classes.inviteContainer}
           onClick={() => {
             setisInvited((pre) => !pre);
           }}
         >
           <div className={classes.inviteBtn}>Invite Participants</div>
-        </div>
+        </div>}
         <Collapse in={isInvited}>
           <div className={classes.inviteModal}>
             <h2>Invite via Meeting Link</h2>
