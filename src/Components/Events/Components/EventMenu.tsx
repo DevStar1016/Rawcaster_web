@@ -87,8 +87,8 @@ const EventMenu = () => {
     allowEnable: userdata?.isHost,
     allowActive: MeetingSettings?.user_screenshare === 1,
     viewEnable: userdata?.isHost,
-    localvideoStatus: userdata?.isHost || !userdata?.videoDisabledByHost,
-    localMicStatus: userdata?.isHost || !userdata?.audioDisabledByHost,
+    localvideoStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
+    localMicStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
   });
 
   return (
@@ -290,7 +290,7 @@ const EventMenu = () => {
             {enabledSettings().allowActive ? "Disable" : "Allow"}
           </div>
         )}
-        {enabledSettings()?.isHost && (
+        {enabledSettings()?.isHost || enabledSettings()?.isCoHost && (
           <div
             className={styles.Actionsec}
             onClick={() => {
@@ -536,7 +536,7 @@ const EventMenu = () => {
                 </div>
                 <p>Switch Camera</p>
               </div>
-              {enabledSettings()?.isHost && (
+              {enabledSettings()?.isHost && enabledSettings()?.isCoHost && (
                 <div className={styles.iconSec}>
                   <div
                     className={`${styles.iconContainer} ${
