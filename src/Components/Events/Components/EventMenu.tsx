@@ -84,9 +84,9 @@ const EventMenu = () => {
     isHost: userdata?.isHost,
     isCoHost: userdata?.isCoHost,
     presentEnable: userdata?.screenShare || userdata?.isHost || userdata?.isCoHost,
-    allowEnable: userdata?.isHost,
+    allowEnable: userdata?.isHost || userdata?.isCoHost,
     allowActive: MeetingSettings?.user_screenshare === 1,
-    viewEnable: userdata?.isHost,
+    viewEnable: userdata?.isHost|| userdata?.isCoHost,
     localvideoStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
     localMicStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
   });
