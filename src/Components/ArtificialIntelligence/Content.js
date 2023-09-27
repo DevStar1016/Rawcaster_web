@@ -51,12 +51,12 @@ const ChatContent = () => {
           if (res.data.query) {
             tempData[0] = {
               ...tempData[0],
-              message: res.data.query,
+              query: res.data.query,
             };
           } else {
             tempData[0] = {
               ...tempData[0],
-              message: ChatMessage,
+              query: ChatMessage,
             };
           }
 
@@ -162,12 +162,15 @@ const ChatContent = () => {
   async function blobUrlToFile(blobUrl) {
     const response = await fetch(blobUrl);
     const blob = await response.blob();
+    try {
+      const filename = getFilenameFromUrl(blobUrl); // Replace with your own function to extract the filename from the URL
 
-    const filename = getFilenameFromUrl(blobUrl); // Replace with your own function to extract the filename from the URL
-
-    return new File([blob], filename);
+      return new File([blob], filename);
+    } catch (error) {
+      return new File([blob], "blobtofile.mp3");
+    }
   }
-
+  console.log(Messages);
   return (
     <div className={classes.Content}>
       <div className={classes.MessageBox}>

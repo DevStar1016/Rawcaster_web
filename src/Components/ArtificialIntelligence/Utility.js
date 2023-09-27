@@ -356,6 +356,7 @@ export const ChatVoice = ({ url, audioId, user, created_at, query = null }) => {
               <div className={classes.audioplayer}>
                 <ChatAudioplayer
                   textColor={isUser(user) ? "#FFFFFF" : "#000000"}
+                  id={audioId}
                   url={url}
                   time={moment(created_at, "YYYY-MM-DD HH:mm:ss").format(
                     "hh:mm A"
@@ -412,6 +413,7 @@ export const ChatInput = ({ HandleSendMessage, onAudioResult, disabled }) => {
       message: url,
       created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
       read_out_url: null,
+      file: blob,
     });
   };
 

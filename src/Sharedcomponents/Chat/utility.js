@@ -112,7 +112,7 @@ export const ChatInput = ({
       const audioFile = new File([mediaBlobUrl], "blobtofile.mp3", {
         type: "audio/wav",
       });
-      fetchAudioUrl(audioFile);
+      fetchAudioUrl(url);
     } else if (!audioDeleted) {
       const audio = new Audio(url);
 
@@ -299,25 +299,26 @@ export const ChatInput = ({
    * @param {string} file - The audio file to fetch the URL for.
    * @returns None
    */
-  const fetchAudioUrl = (file) => {
-    const formData = {
-      token,
-      chatattachment: file,
-    };
-    uploadChatAttachmentService(JSONtoformdata(formData))
-      .then((res) => {
-        onAudioResult({
-          user: 1,
-          type: "audio",
-          message: res.data.filepath,
-          created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-          read_out_url: null,
-        });
-      })
-      .finally(() => {
-        setisFetchingUrl(false);
-        setIsRecording(false);
-      });
+  const fetchAudioUrl = (filepath) => {
+    console.log(filepath, "filepath");
+    // const formData = {
+    //   token,
+    //   chatattachment: file,
+    // };
+    // uploadChatAttachmentService(JSONtoformdata(formData))
+    //   .then((res) => {
+    onAudioResult({
+      user: 1,
+      type: "audio",
+      message: filepath,
+      created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+      read_out_url: null,
+    });
+    // })
+    // .finally(() => {
+    setisFetchingUrl(false);
+    setIsRecording(false);
+    // });
   };
 
   /**
@@ -690,11 +691,11 @@ export const ChatInput = ({
                   if (!isFetchingUrl && !isSendLoading) {
                     setisFetchingUrl(true);
                     if (mediaBlobUrl) {
-                      BlobUrlToFile(mediaBlobUrl, "blobtofile.mp3").then(
-                        (res) => {
-                          fetchAudioUrl(res);
-                        }
-                      );
+                      // BlobUrlToFile(mediaBlobUrl, "blobtofile.mp3").then(
+                      //   (res) => {
+                      fetchAudioUrl(mediaBlobUrl);
+                      // }
+                      // );
                     } else {
                       isSend.current = true;
                       stopRecording();
