@@ -239,9 +239,6 @@ export const HostExitOption = () => {
       {contextHolder}
       <div
         className={`${styles.Actionsec} ${styles.HostEndActionsec}`}
-        style={{
-          color: "red",
-        }}
         onClick={() => {
           if (validateMeetingLeave()) {
             Modal.confirm({
@@ -272,9 +269,6 @@ export const HostExitOption = () => {
       </div>
       <div
         className={`${styles.Actionsec} ${styles.HostEndActionsec}`}
-        style={{
-          color: "red",
-        }}
         onClick={() => {
           EndMeeting({
             Attendee: userdata,

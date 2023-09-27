@@ -384,6 +384,7 @@ const EventMenu = () => {
         </div>
         {enabledSettings()?.isHost || enabledSettings()?.isCoHost  ? (
           <Popover
+            color='#563662'
             placement="topLeft"
             showArrow={false}
             content={<HostExitOption />}
@@ -391,9 +392,6 @@ const EventMenu = () => {
           >
             <div
               className={styles.Actionsec}
-              style={{
-                color: "red",
-              }}
             >
               <div className={styles.iconBox}>
                 <span
@@ -408,9 +406,6 @@ const EventMenu = () => {
         ) : (
           <div
             className={styles.Actionsec}
-            style={{
-              color: "red",
-            }}
             onClick={() => {
               ExitMeeting({
                 Attendee: userdata,

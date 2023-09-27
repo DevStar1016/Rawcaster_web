@@ -249,7 +249,7 @@ background-color: #f5f5f5;
     width: 100%;
 }
 .HostEndIcon {
-        background-color: red !important;
+        background-color: #F2718D !important;
         height: 35px !important;
         width: 40px !important;
         padding: 0px !important;
@@ -311,7 +311,7 @@ background-color: #f5f5f5;
     
    }
    .EndIcon {
-    background-color: rgba(255, 0, 0, 0.839) !important;
+    background-color: #F2718D !important;
     width: 50px;
 }
 .streamBtn {
