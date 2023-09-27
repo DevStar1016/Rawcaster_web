@@ -218,9 +218,22 @@ export const HostExitOption = () => {
     handleEndMeeting,
     userdata,
     setisChatorParticipant,
+    attendeesList,
   }: EventContextProp = useEventRoomContext();
   const meetingmanager = useMeetingManager();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const validateMeetingLeave = (): boolean => {
+    if (userdata?.isHost || userdata?.isCoHost) {
+      const validAttendees = attendeesList.filter(
+        (item) => item.userId !== userdata.userId && (item.isHost || item.isCoHost)
+      );
+      return validAttendees.length < 1;
+    }
+  
+    return false;
+  };
+  
   return (
     <div className={styles.HostLeaveSec}>
       {contextHolder}
@@ -230,7 +243,7 @@ export const HostExitOption = () => {
           color: "red",
         }}
         onClick={() => {
-          if (userdata?.isHost) {
+          if (validateMeetingLeave()) {
             Modal.confirm({
               type: "confirm",
               content: "Please make someone as host before leaving the meeting",

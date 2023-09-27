@@ -176,7 +176,7 @@ const EventBox = () => {
             </Tooltip>
           )}
 
-          {!isYou && (
+          {!isYou && (userdata?.isHost || userdata?.isCoHost) && !findAttendee?.isHost && (
             <Tooltip placement="topLeft" title={"Remove user"}>
               <div
                 className={`${userdata?.isHost ? "" : classes.disabledIcon} ${
@@ -188,7 +188,7 @@ const EventBox = () => {
                   justifyContent: "center",
                 }}
                 onClick={() => {
-                  if (userdata?.isHost) {
+                  if (userdata?.isHost || userdata?.isCoHost) {
                     Modal.confirm({
                       title: "Remove User",
                       content: "Are you sure do you want to remove this User !",
@@ -332,6 +332,7 @@ const EventBox = () => {
             )}
             <EventBoxOptions isYou={isYou} ele={ele} />
             <img
+              className={classes.eventBoxUserImg}
               src={findAttendee.image ? findAttendee.image : ""}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
@@ -355,6 +356,7 @@ const EventBox = () => {
         <EventBoxOptions isYou={isYou} ele={ele} />
 
         <img
+          className={classes.eventBoxUserImg}
           src={userImg}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null;
