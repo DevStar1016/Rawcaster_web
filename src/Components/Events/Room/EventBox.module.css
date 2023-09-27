@@ -175,8 +175,35 @@ position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-  } 
-  .eventMenu {
+  }
+
+  .eventBoxUserImg {
+    height: 100px !important;
+    width: 100px !important;
+  }
+
+  @media screen and (min-width: 600px) and (max-width: 900px) {
+    .eventBoxUserImg {
+      height: 70px !important;
+      width: 70px !important;
+    }
+  }
+
+  @media screen and (min-width: 900px) and (max-width: 1200px) {
+    .eventBoxUserImg {
+      height: 90px !important;
+      width: 90px !important;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .eventBoxUserImg {
+      height: 120px !important;
+      width: 120px !important;
+    }
+  }
+
+ .eventMenu {
     position: absolute;
     display: none;
     height: 100%;
