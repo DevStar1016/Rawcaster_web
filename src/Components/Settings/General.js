@@ -486,12 +486,12 @@ const General = () => {
           </div> */}
           <div className="d-flex flex-row">
             <div>
-              <p className={classes.smallheading}>Readout Language</p>
+              <p className={classes.smallheading}>Translation Language</p>
               <Select
                 showSearch
                 style={{ width: 200 }}
                 className={`mt-2 ${classes.SelectSec} settingsSelect`}
-                placeholder="Search Preference Language"
+                placeholder="Search Translation Language"
                 optionFilterProp="children"
                 value={getValidDisplayData(
                   LanguagesList.read_out,

@@ -11,8 +11,8 @@ import moment from "moment";
 import ReactPlayer from "react-player";
 import { Spinner } from "react-bootstrap";
 
-const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
-  const [audioUrl, setAudioUrl] = useState("");
+const ChatAudioplayer = ({ url = "", id, time, textColor = "#000000" }) => {
+  const [audioUrl, setAudioUrl] = useState(null);
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setisPlaying] = useState(false);
@@ -39,18 +39,18 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
    * @returns None
    */
   useEffect(() => {
-    const audio = new Audio();
-    audio.src = url;
-    console.log(url, "url");
-    audio.addEventListener("loadedmetadata", () => {
-      setAudioUrl(audio.src);
-    });
-
-    return () => {
-      audio.removeEventListener("loadedmetadata", () => {
-        setAudioUrl(audio.src);
+    if (url) {
+      const audio = new Audio(url);
+      audio.id = id;
+      audio.addEventListener("loadedmetadata", () => {
+        console.log("loadedmetadata");
+        setAudioUrl(url);
       });
-    };
+
+      return () => {
+        audio.removeEventListener("loadedmetadata", () => {});
+      };
+    }
   }, [url]);
 
   /**
@@ -67,29 +67,34 @@ const ChatAudioplayer = ({ url = "", time, textColor = "#000000" }) => {
 
   return (
     <div className={classes.audio_slider_container}>
-      <ReactPlayer
-        ref={audioRef}
-        url={audioUrl}
-        playing={isPlaying}
-        controls={false}
-        onEnded={() => {
-          setisPlaying(false);
-        }}
-        onBuffer={() => {
-          setisBuffering(true);
-          setisPlaying(false);
-        }}
-        onBufferEnd={() => {
-          setisBuffering(false);
-        }}
-        onPlay={() => {
-          setisPlaying(true);
-        }}
-        onProgress={handleProgress}
-        style={{
-          display: "none",
-        }}
-      />
+      {audioUrl && (
+        <ReactPlayer
+          ref={audioRef}
+          url={audioUrl}
+          playing={isPlaying}
+          onError={(err) => {
+            console.log(err);
+          }}
+          controls={false}
+          onEnded={() => {
+            setisPlaying(false);
+          }}
+          onBuffer={() => {
+            setisBuffering(true);
+            setisPlaying(false);
+          }}
+          onBufferEnd={() => {
+            setisBuffering(false);
+          }}
+          onPlay={() => {
+            setisPlaying(true);
+          }}
+          onProgress={handleProgress}
+          style={{
+            display: "none",
+          }}
+        />
+      )}
 
       {/* <AudioPlayer src={audioUrl} /> */}
 
