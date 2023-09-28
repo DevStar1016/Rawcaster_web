@@ -248,6 +248,11 @@ const MeetingManagerComponent = () => {
             }
           }
           break;
+        case CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST:
+            if (message) {
+              RequestRef.current = message.joinRequests
+            }
+            break;
         case CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING:
           if (message) {
             setnotificationToast({
