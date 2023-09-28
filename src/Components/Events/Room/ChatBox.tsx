@@ -64,7 +64,7 @@ const ChatBox = () => {
    */
   const getDropdownmembers = () => {
     const filter_current_user = attendeesList.filter(
-      (ele) => ele.userId !== userdata?.userId
+      (ele) => ele.userId !== userdata?.userId &&  !ele.kicked
     );
     return filter_current_user.map((ele) => {
       return { key: ele.userId, label: ele.name };
@@ -117,7 +117,7 @@ const ChatBox = () => {
       // set private msg to sender state
       setEventMessages((pre) => [
         {
-          message:ChatMessage,
+          message:message ? message : ChatMessage,
           name: userdata.name,
           from_user_id: userdata.userId,
           send_to: finduser,

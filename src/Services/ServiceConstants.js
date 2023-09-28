@@ -55,6 +55,7 @@ export const CHIME_SOCKET_EVENTS = {
   MAKE_HOST_ANSWER: "makeHostAnswer",
   REMOVE_HOST: "removeHost",
   REMOVE_HOST_ANSWER: "removeHostAnswer",
+  HANDLE_ACCEPT_REJECT_JOIN_REQUEST: "handleAcceptRejectJoinRequest",
   NOTIFICATIONS: "notifications",
   DISCONNECT_SOCKET: "disconnect",
 };
