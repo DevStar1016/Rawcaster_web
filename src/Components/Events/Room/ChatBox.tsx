@@ -64,7 +64,7 @@ const ChatBox = () => {
    */
   const getDropdownmembers = () => {
     const filter_current_user = attendeesList.filter(
-      (ele) => ele.userId !== userdata?.userId
+      (ele) => ele.userId !== userdata?.userId &&  !ele.kicked
     );
     return filter_current_user.map((ele) => {
       return { key: ele.userId, label: ele.name };
