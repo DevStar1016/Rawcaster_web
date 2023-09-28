@@ -235,13 +235,23 @@ const ChimeSocketComponent = () => {
     };
   }, [EventWindowRef]);
 
-  // Promote Host Statue Received Here - Socket
+  // Remove Host Statue Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER, (message) => {
       HandleSendToNewWindow(CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER, message);
     });
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER);
+    };
+  }, [EventWindowRef]);
+  
+  // Join Request Response Received Here - Socket
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST, (message) => {
+      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST, message);
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST);
     };
   }, [EventWindowRef]);
 

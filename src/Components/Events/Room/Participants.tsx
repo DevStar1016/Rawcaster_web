@@ -78,9 +78,6 @@ const Participants = () => {
       { ...ele, refId: EventData?.reference_id },
       CHIME_SOCKET_EVENTS.ALLOW_TO_JOIN_MEETING
     );
-    RequestRef.current = RequestRef.current.filter(
-      (elem: RequestAttendee) => elem.userId !== ele.userId
-    );
   };
 
   /* Handle Reject the Attendee Join Request  */
@@ -88,9 +85,6 @@ const Participants = () => {
   const handleReject = (ele: RequestAttendee) => {
     const value = { userId: ele.userId };
     ChimesendMessage(value, CHIME_SOCKET_EVENTS.REJECT_TO_JOIN_MEETING);
-    RequestRef.current = RequestRef.current.filter(
-      (elem: RequestAttendee) => elem.userId !== ele.userId
-    );
   };
 
   const AttendeeComponent = ({ ele }) => {
