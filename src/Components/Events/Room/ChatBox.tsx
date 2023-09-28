@@ -117,7 +117,7 @@ const ChatBox = () => {
       // set private msg to sender state
       setEventMessages((pre) => [
         {
-          message:ChatMessage,
+          message:message ? message : ChatMessage,
           name: userdata.name,
           from_user_id: userdata.userId,
           send_to: finduser,
