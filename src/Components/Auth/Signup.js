@@ -3,7 +3,7 @@
  * @returns The JSX elements representing the signup page.
  */
 import { Button, Form } from "antd";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import classes from "./Signup.module.css";
 import SignupImg from "../../Assets/Images/png/signup-intro.png";
 import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
@@ -14,8 +14,19 @@ import SignupwithEmailImg from "../../Assets/Images/png/signupwithemail-intro.pn
 import OwlCarousel from "react-owl-carousel";
 import Seo from "../SEO/Seo";
 import SigninwithService from "./SigninwithService";
+import React, { useEffect } from "react";
+import { useMainContext } from "../../Shared/Context";
 
 const Signup = () => {
+  const { setReferenceId } = useMainContext();
+  function useQuery() {
+    const { search } = useLocation();
+
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  }
+  const query = useQuery();
+  const referanceId = query.get("ref");
+
   const { nugget_id } = useParams();
   const navigate = useNavigate();
 
@@ -24,6 +35,12 @@ const Signup = () => {
     nav: false,
     loop: true,
   };
+
+  useEffect(() => {
+    if (referanceId) {
+      setReferenceId(referanceId);
+    }
+  }, [referanceId]);
 
   return (
     <>
