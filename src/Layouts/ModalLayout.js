@@ -95,8 +95,6 @@ const ModalLayout = () => {
         isChatOpen,
         setActiveEvent,
         ActiveEvent,
-        ReferenceId,
-        setReferenceId,
       }}
     >
       <HelmetComponent />

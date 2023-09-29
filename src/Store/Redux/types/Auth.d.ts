@@ -120,5 +120,6 @@ export type AuthData = {
     userSettings: loginUserSettingsProps | null;
     isAccountActive: boolean;
     eventTempUserData: TempuserProps | null;
+    reference_id:string|null
   };
 

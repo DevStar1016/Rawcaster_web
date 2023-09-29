@@ -28,6 +28,7 @@ const initialState: AuthData = {
   userSettings: null,
   isAccountActive: false,
   eventTempUserData: null,
+  reference_id: null,
 };
 
 export const { actions, reducer } = createSlice({
@@ -43,10 +44,14 @@ export const { actions, reducer } = createSlice({
         userSettings: null,
         isAccountActive: false,
         eventTempUserData: null,
+        reference_id: null,
       };
     },
     handleLoginData: (state, action) => {
       state.loginUserData = action.payload;
+    },
+    handleReferenceID: (state, action) => {
+      state.reference_id = action.payload;
     },
     handleAccountVerifyStatus: (state, action) => {
       if (state.loginUserData) {
@@ -100,6 +105,7 @@ export const {
   handleeventTempUserData,
   handleAccountVerifyStatus,
   handleAuthReset,
+  handleReferenceID,
 } = actions;
 
 export default reducer;
