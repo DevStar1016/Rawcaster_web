@@ -16,9 +16,11 @@ import Seo from "../SEO/Seo";
 import SigninwithService from "./SigninwithService";
 import React, { useEffect } from "react";
 import { useMainContext } from "../../Shared/Context";
+import { useDispatch } from "react-redux";
+import { handleReferenceID } from "../../Store/Redux/Reducer/AuthReducer";
 
 const Signup = () => {
-  const { setReferenceId } = useMainContext();
+  const dispatch = useDispatch();
   function useQuery() {
     const { search } = useLocation();
 
@@ -38,7 +40,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (referanceId) {
-      setReferenceId(referanceId);
+      dispatch(handleReferenceID(referanceId));
     }
   }, [referanceId]);
 

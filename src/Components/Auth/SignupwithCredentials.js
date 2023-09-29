@@ -33,6 +33,8 @@ import moment from "moment";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { accountVerifyHandle } from "./Utility";
 import { useMainContext } from "../../Shared/Context";
+import { handleReferenceID } from "../../Store/Redux/Reducer/AuthReducer";
+import { useAuth } from "../../Shared/Reduxfetcher";
 
 const SignupwithCredentials = () => {
   const { nugget_id } = useParams();
@@ -40,7 +42,7 @@ const SignupwithCredentials = () => {
   const { pathname } = useLocation();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const navigate = useNavigate();
-  const { ReferenceId, setReferenceId } = useMainContext();
+  const { reference_id } = useAuth();
   const getLoginType = () => {
     if (pathname.includes("signupwithemail")) {
       return {
@@ -150,10 +152,10 @@ const SignupwithCredentials = () => {
       auth_code: getAuthToken(values.email_id),
       signup_type: getLoginType().id,
     };
-    if (ReferenceId) {
+    if (reference_id) {
       signupValue = {
         ...signupValue,
-        ref_id: ReferenceId,
+        ref_id: reference_id,
       };
     }
     signupService(JSONtoformdata(signupValue))
@@ -171,7 +173,7 @@ const SignupwithCredentials = () => {
       })
       .catch((err) => {})
       .finally(() => {
-        setReferenceId(null);
+        dispatch(handleReferenceID(null));
         dispatch(handleLoading(false));
       });
   };

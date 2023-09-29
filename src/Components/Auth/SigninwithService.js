@@ -30,10 +30,12 @@ import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleSigninService } from "../../Shared/SharedAPIs";
 import { useMainContext } from "../../Shared/Context";
+import { handleReferenceID } from "../../Store/Redux/Reducer/AuthReducer";
+import { useAuth } from "../../Shared/Reduxfetcher";
 
 const SigninwithService = ({ type }) => {
   const { nugget_id } = useParams();
-  const { ReferenceId, setReferenceId } = useMainContext();
+  const { reference_id } = useAuth();
   const dispatch = useDispatch();
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
@@ -77,10 +79,10 @@ const SigninwithService = ({ type }) => {
       ...LocationValue,
       auth_code: getAuthToken(values.email_id),
     };
-    if (ReferenceId) {
+    if (reference_id) {
       finalData = {
         ...finalData,
-        ref_id: ReferenceId,
+        ref_id: reference_id,
       };
     }
     SocialMediaLoginService(JSONtoformdata(finalData))
@@ -114,7 +116,7 @@ const SigninwithService = ({ type }) => {
       })
       .catch((err) => {})
       .finally(() => {
-        setReferenceId(null);
+        dispatch(handleReferenceID(null));
         dispatch(handleLoading(false));
       });
   };
