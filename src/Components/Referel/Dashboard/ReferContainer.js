@@ -64,6 +64,8 @@ const ReferContainer = () => {
   const profileData = useAuthData();
   const { ReferalData } = useReferalContext();
   const shareUrl = profileData?.referral_link || "";
+
+  const isDisplayUpgradePremium = profileData.user_status_id === 1;
   return (
     <div className={classes.centerSec}>
       <div className={classes.centerImg}>
@@ -100,19 +102,31 @@ const ReferContainer = () => {
         </ul>
       </div>*/}
       <div className={classes.cardsecParent}>
-        <div className={classes.cardSec}>
+        <div
+          className={classes.cardSec}
+          style={{
+            margin: isDisplayUpgradePremium ? "" : "0px auto",
+          }}
+        >
           <p className={classes.value}>{ReferalData?.referral_count || 0}</p>
           <p className={classes.text}>Total number of Valid Referrals Credit</p>
         </div>
 
-        <div className={classes.cardSec}>
-          <p className={classes.value}>
-            {ReferalData?.referral_needed_count || 0}
-          </p>
-          <p className={classes.text}>
-            Referrals Needed for Upgrade to Premium{" "}
-          </p>
-        </div>
+        {isDisplayUpgradePremium && (
+          <div
+            className={classes.cardSec}
+            style={{
+              margin: isDisplayUpgradePremium ? "" : "0px auto",
+            }}
+          >
+            <p className={classes.value}>
+              {ReferalData?.referral_needed_count || 0}
+            </p>
+            <p className={classes.text}>
+              Referrals Needed for Upgrade to Premium{" "}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

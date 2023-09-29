@@ -628,6 +628,7 @@ export const handleProfileNavigate = (userData) => {
 export const ErrorHandling = (error) => {
   return new Promise((resolve, reject) => {
     if (axios.isCancel(error)) {
+    } else if (error.message === "NS_BINDING_ABORTED") {
     } else if (error.response) {
       if (error.response.status === 404) {
         handleErrorMsg(
