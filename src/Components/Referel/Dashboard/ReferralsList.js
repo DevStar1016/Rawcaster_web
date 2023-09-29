@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import classes from "./Dashboard.module.css";
 import { decodeHtml } from "../../../Shared/Utility";
 import moment from "moment";
-import { Empty } from "antd";
+import { Empty, Tooltip } from "antd";
 import { useReferalContext } from "../../../Shared/Context";
 
 const ReferralsList = () => {
@@ -23,18 +23,31 @@ const ReferralsList = () => {
       )}
       {ReferalData?.referral_list?.map((ele, ind) => (
         <div key={ind} className={classes.list}>
-          <img
-            className={classes.topicon}
-            src={
+          <Tooltip
+            placement="topLeft"
+            title={
               ele.account_verified
-                ? require("../../../Assets/Icons/png/circle-check.png")
-                : require("../../../Assets/Icons/png/circle-pending.png")
+                ? "Account Verified"
+                : "Account Verification Pending"
             }
-          />
+          >
+            <img
+              className={classes.topicon}
+              src={
+                ele.account_verified
+                  ? require("../../../Assets/Icons/png/circle-check.png")
+                  : require("../../../Assets/Icons/png/circle-pending.png")
+              }
+            />
+          </Tooltip>
           <img src={ele.profile_img} />
+
           <p className={classes.name}>{decodeHtml(ele.display_name)}</p>
+
           <div className={classes.clearfix}></div>
-          <p className={classes.mail}>{ele.email_id}</p>
+          <Tooltip placement="topLeft" title={ele.email_id}>
+            <p className={classes.mail}>{ele.email_id}</p>
+          </Tooltip>
           {ele.invited_date && ele.invited_date !== "" && (
             <p className={classes.date}>
               <span>Invited Date</span>

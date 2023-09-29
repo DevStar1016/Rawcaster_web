@@ -87,6 +87,9 @@ const ReferalDashboard = () => {
                     onClick={() => {
                       handleCopyText(shareUrl).then(() => {
                         setisCopied(true);
+                        setTimeout(() => {
+                          setisCopied(false);
+                        }, 3000);
                       });
                     }}
                     className={classes.copyIcon}
