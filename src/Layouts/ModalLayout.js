@@ -42,6 +42,7 @@ const ModalLayout = () => {
     type: "",
     id: "",
   });
+  const [ReferenceId, setReferenceId] = useState(null);
   const { loginModalShow, twostepVerifyModalshow } = useDashboard();
   const { isAccountActive, userSettings } = useAuth();
   const profileverifyStatus = useProfileVerifyModal();
@@ -94,6 +95,8 @@ const ModalLayout = () => {
         isChatOpen,
         setActiveEvent,
         ActiveEvent,
+        ReferenceId,
+        setReferenceId,
       }}
     >
       <HelmetComponent />

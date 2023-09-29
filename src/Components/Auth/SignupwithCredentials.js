@@ -32,6 +32,7 @@ import RedirectModal from "../../Modal/Verification/RedirectModal";
 import moment from "moment";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { accountVerifyHandle } from "./Utility";
+import { useMainContext } from "../../Shared/Context";
 
 const SignupwithCredentials = () => {
   const { nugget_id } = useParams();
@@ -39,6 +40,7 @@ const SignupwithCredentials = () => {
   const { pathname } = useLocation();
   const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const navigate = useNavigate();
+  const { ReferenceId, setReferenceId } = useMainContext();
   const getLoginType = () => {
     if (pathname.includes("signupwithemail")) {
       return {
@@ -148,6 +150,12 @@ const SignupwithCredentials = () => {
       auth_code: getAuthToken(values.email_id),
       signup_type: getLoginType().id,
     };
+    if (ReferenceId) {
+      signupValue = {
+        ...signupValue,
+        ref_id: ReferenceId,
+      };
+    }
     signupService(JSONtoformdata(signupValue))
       .then((res) => {
         if (res.data.status === 1) {
@@ -163,6 +171,7 @@ const SignupwithCredentials = () => {
       })
       .catch((err) => {})
       .finally(() => {
+        setReferenceId(null);
         dispatch(handleLoading(false));
       });
   };

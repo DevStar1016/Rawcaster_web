@@ -29,9 +29,11 @@ import { toast } from "react-hot-toast";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleSigninService } from "../../Shared/SharedAPIs";
+import { useMainContext } from "../../Shared/Context";
 
 const SigninwithService = ({ type }) => {
   const { nugget_id } = useParams();
+  const { ReferenceId, setReferenceId } = useMainContext();
   const dispatch = useDispatch();
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
@@ -75,6 +77,12 @@ const SigninwithService = ({ type }) => {
       ...LocationValue,
       auth_code: getAuthToken(values.email_id),
     };
+    if (ReferenceId) {
+      finalData = {
+        ...finalData,
+        ref_id: ReferenceId,
+      };
+    }
     SocialMediaLoginService(JSONtoformdata(finalData))
       .then((res) => {
         if (res.data.status === 1) {
@@ -106,6 +114,7 @@ const SigninwithService = ({ type }) => {
       })
       .catch((err) => {})
       .finally(() => {
+        setReferenceId(null);
         dispatch(handleLoading(false));
       });
   };
