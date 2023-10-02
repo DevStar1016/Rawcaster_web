@@ -90,10 +90,6 @@ export const EndAttendeeMeeting = (props: ExitMeeting) => {
  * @returns None
  */
 export const EndMeeting = (props: EndMeeting) => {
-  const {
-    userdata,
-    attendeesList,
-  }: EventContextProp = useEventRoomContext();
   const { Attendee, EventData, handleEndMeeting, meetingmanager } = props;
   const { confirm } = Modal;
 
@@ -108,10 +104,7 @@ export const EndMeeting = (props: EndMeeting) => {
             CHIME_SOCKET_EVENTS.END_MEETING
           );
 
-          const exitMeeting = validateMeetingLeave(userdata, attendeesList)
-          if (!exitMeeting) { 
-            meetingmanager?.meetingSession?.destroy();
-          }
+          meetingmanager?.meetingSession?.destroy();
           window.close();
         })
         .catch(() => {
@@ -283,7 +276,7 @@ export const HostExitOption = () => {
   );
 };
 
-const validateMeetingLeave = (userdata : AttendeeUserData, attendeesList: AttendeeUserData[]): boolean => {
+export const validateMeetingLeave = (userdata : AttendeeUserData, attendeesList: AttendeeUserData[]): boolean => {
   if (userdata?.isHost || userdata?.isCoHost) {
     const hostList = attendeesList.filter(
       (item) => item.userId !== userdata.userId && (item.isHost || item.isCoHost)
