@@ -90,6 +90,10 @@ export const EndAttendeeMeeting = (props: ExitMeeting) => {
  * @returns None
  */
 export const EndMeeting = (props: EndMeeting) => {
+  const {
+    userdata,
+    attendeesList,
+  }: EventContextProp = useEventRoomContext();
   const { Attendee, EventData, handleEndMeeting, meetingmanager } = props;
   const { confirm } = Modal;
 
@@ -104,7 +108,10 @@ export const EndMeeting = (props: EndMeeting) => {
             CHIME_SOCKET_EVENTS.END_MEETING
           );
 
-          meetingmanager?.meetingSession?.destroy();
+          const exitMeeting = validateMeetingLeave(userdata, attendeesList)
+          if (!exitMeeting) { 
+            meetingmanager?.meetingSession?.destroy();
+          }
           window.close();
         })
         .catch(() => {
@@ -222,17 +229,6 @@ export const HostExitOption = () => {
   }: EventContextProp = useEventRoomContext();
   const meetingmanager = useMeetingManager();
   const [messageApi, contextHolder] = message.useMessage();
-
-  const validateMeetingLeave = (): boolean => {
-    if (userdata?.isHost || userdata?.isCoHost) {
-      const validAttendees = attendeesList.filter(
-        (item) => item.userId !== userdata.userId && (item.isHost || item.isCoHost)
-      );
-      return validAttendees.length < 1;
-    }
-  
-    return false;
-  };
   
   return (
     <div className={styles.HostLeaveSec}>
@@ -240,7 +236,7 @@ export const HostExitOption = () => {
       <div
         className={`${styles.Actionsec} ${styles.HostEndActionsec}`}
         onClick={() => {
-          if (validateMeetingLeave()) {
+          if (validateMeetingLeave(userdata, attendeesList)) {
             Modal.confirm({
               type: "confirm",
               content: "Please make someone as host before leaving the meeting",
@@ -285,4 +281,15 @@ export const HostExitOption = () => {
       </div>
     </div>
   );
+};
+
+const validateMeetingLeave = (userdata : AttendeeUserData, attendeesList: AttendeeUserData[]): boolean => {
+  if (userdata?.isHost || userdata?.isCoHost) {
+    const hostList = attendeesList.filter(
+      (item) => item.userId !== userdata.userId && (item.isHost || item.isCoHost)
+    );
+    return hostList.length < 1;
+  }
+
+  return false;
 };
