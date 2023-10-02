@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import classes from "./Room.module.css";
 import { Dropdown, Layout, Modal, Slider, Tooltip } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
@@ -51,6 +51,11 @@ const Participants = () => {
   const attendees = Object.values(roster);
   const [isInvited, setisInvited] = useState(false);
   const [isCopied, setisCopied] = useState(false);
+
+  useEffect(() => {
+  setInterval(()=> { console.log('attendees', attendees)}, 5000)
+  }, [])
+  
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
