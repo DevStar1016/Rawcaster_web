@@ -13,7 +13,7 @@ import {
   useAuthData,
   useEventTempAuthData,
 } from "../../../Shared/Reduxfetcher";
-import { EndMeeting, ExitMeeting } from "./Methods";
+import { EndMeeting, ExitMeeting, validateMeetingLeave } from "./Methods";
 import { useEventRoomContext } from "../../../Shared/Context";
 import {
   AttendeeUserData,
@@ -402,6 +402,7 @@ export const HangupComponent = () => {
     handleExitMeeting,
     attendeesList,
     handleEndMeeting,
+    userdata,
   }: EventContextProp = useEventRoomContext();
   const meetingmanager = useMeetingManager();
   const userData = useAuthData();
@@ -437,7 +438,8 @@ export const HangupComponent = () => {
    */
   const HandleEndMeeting = () => {
     if (getCurrentAttendee()) {
-      if (getCurrentAttendee()?.isHost) {
+      const exitMeeting = validateMeetingLeave(userdata, attendeesList)
+      if (!exitMeeting) {
         EndMeeting({
           Attendee: getCurrentAttendee(),
           EventData,
