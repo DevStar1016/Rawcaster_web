@@ -54,7 +54,7 @@ const Participants = () => {
 
   useEffect(() => {
   setInterval(()=> { console.log('attendees', attendees)}, 5000)
-  }, [])
+  }, [attendees])
   
 
   /* To get Rawcaster user or non Rawcaster User */
