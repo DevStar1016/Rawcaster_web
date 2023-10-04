@@ -101,33 +101,37 @@ const ReferContainer = () => {
           })}
         </ul>
       </div>*/}
-      <div className={classes.cardsecParent}>
-        <div
-          className={classes.cardSec}
-          style={{
-            margin: isDisplayUpgradePremium ? "" : "0px auto",
-          }}
-        >
-          <p className={classes.value}>{ReferalData?.referral_count || 0}</p>
-          <p className={classes.text}>Total number of Valid Referrals Credit</p>
-        </div>
-
-        {isDisplayUpgradePremium && (
+      {isDisplayUpgradePremium && (
+        <div className={classes.cardsecParent}>
           <div
             className={classes.cardSec}
             style={{
               margin: isDisplayUpgradePremium ? "" : "0px auto",
             }}
           >
-            <p className={classes.value}>
-              {ReferalData?.referral_needed_count || 0}
-            </p>
+            <p className={classes.value}>{ReferalData?.referral_count || 0}</p>
             <p className={classes.text}>
-              Referrals Needed for Upgrade to Premium{" "}
+              Total number of Valid Referrals Credit
             </p>
           </div>
-        )}
-      </div>
+
+          {isDisplayUpgradePremium && (
+            <div
+              className={classes.cardSec}
+              style={{
+                margin: isDisplayUpgradePremium ? "" : "0px auto",
+              }}
+            >
+              <p className={classes.value}>
+                {ReferalData?.referral_needed_count || 0}
+              </p>
+              <p className={classes.text}>
+                Referrals Needed for Upgrade to Premium{" "}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
