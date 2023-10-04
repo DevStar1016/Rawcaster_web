@@ -7,7 +7,7 @@ COPY .env ./
 COPY declaration.d.ts ./
 COPY public/ public/
 COPY src/ src/
-COPY .well-known/ .well-known/
+COPY .well-known/ ./.well-known/
 RUN npm install -force
 RUN npm run build
 
