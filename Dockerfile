@@ -7,13 +7,14 @@ COPY .env ./
 COPY declaration.d.ts ./
 COPY public/ public/
 COPY src/ src/
+COPY .well-known/ .well-known/
 RUN npm install -force
 RUN npm run build
 
 FROM nginx:1.23.2-alpine
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/build /usr/share/nginx/html
-COPY --from=builder .well-known /usr/share/nginx/html
+COPY --from=builder /app/.well-known /usr/share/nginx/html
 RUN touch /var/run/nginx.pid
 RUN chown -R nginx:nginx /var/run/nginx.pid /usr/share/nginx/html /var/cache/nginx /var/log/nginx /etc/nginx/conf.d
 USER nginx
