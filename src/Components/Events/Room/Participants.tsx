@@ -52,8 +52,6 @@ const Participants = () => {
   const [isInvited, setisInvited] = useState(false);
   const [isCopied, setisCopied] = useState(false);
 
-  setInterval(()=> { console.log('attendees', attendees)}, 5000)  
-
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
     if (userData) {
