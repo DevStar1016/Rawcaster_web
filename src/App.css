@@ -826,7 +826,13 @@ padding: 0px !important;
     transform: scale(1, 1);
   }
 }
-
+.rtranslate_icon {
+  float: left;
+  mask: url("./Assets/Icons/svg/raw_translate.svg") no-repeat center / contain;
+  -webkit-mask:  url("./Assets/Icons/svg/raw_translate.svg") no-repeat center /
+    contain;
+    cursor: pointer;
+}
 .dot_typing {
   position: relative;
   left: -9999px;

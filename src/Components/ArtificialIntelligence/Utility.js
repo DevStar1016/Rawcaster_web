@@ -181,7 +181,9 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
  * @param {Function} props.OnReadout
  */
 export const MessageContent = (props) => {
+  const token = useAuthToken();
   const { setpostModalShow, setPostContent } = useGlobalContext();
+  const [isFetching, setisFetching] = useState(false);
   const {
     message,
     user,
@@ -189,9 +191,43 @@ export const MessageContent = (props) => {
     read_out_url,
     OnReadoutResponse,
     isshareavailble,
+    translated_text = null,
   } = props;
+  const { setMessages } = useChatBotContext();
 
   const loginUserData = useAuthData();
+
+  const GetTranslatedText = () => {
+    setisFetching(true);
+    const messageData = {
+      token,
+      message,
+      translation_type: 2,
+    };
+    TextToAudioService(JSONtoformdata(messageData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          setMessages((pre) => {
+            let findIndex = pre.findIndex((elem, i) => i === index);
+            let updatedData = [...pre];
+            if (findIndex !== -1) {
+              updatedData[findIndex] = {
+                ...updatedData[findIndex],
+                translated_text: res.data.translation,
+              };
+            }
+            return updatedData;
+          });
+        } else {
+          toast.remove("rawcaster");
+          toast.error(res?.data?.msg, { id: "rawcaster" });
+        }
+      })
+      .catch((err) => {})
+      .finally(() => {
+        setisFetching(false);
+      });
+  };
   return (
     <div
       className={
@@ -211,7 +247,7 @@ export const MessageContent = (props) => {
         </div>
         <div className={classes.content}>
           {/* <p className={classes.userNameSec}>David thompson</p> */}
-          <p>{message}</p>
+          <p>{translated_text ? translated_text : message}</p>
           {props.created_at && (
             <span className={classes.timestamp}>
               {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
@@ -227,6 +263,35 @@ export const MessageContent = (props) => {
             !isshareavailble && classes.isSingleOption
           }`}
         >
+          {isFetching ? (
+            <p className={` mx-2  ${classes.translationSec}`}>
+              <div className="dot_typing"></div>
+            </p>
+          ) : (
+            <p
+              className={translated_text ? classes.activeTranslate : ""}
+              onClick={() => {
+                if (translated_text) {
+                  setMessages((pre) => {
+                    let findIndex = pre.findIndex((elem, i) => i === index);
+                    let updatedData = [...pre];
+                    if (findIndex !== -1) {
+                      updatedData[findIndex] = {
+                        ...updatedData[findIndex],
+                        translated_text: null,
+                      };
+                    }
+                    return updatedData;
+                  });
+                } else {
+                  GetTranslatedText();
+                }
+              }}
+            >
+              <i className={`${classes.translate_icon} rtranslate_icon`}></i>
+              Translate
+            </p>
+          )}
           <ReadoutSec
             message={message}
             audiourl={read_out_url}

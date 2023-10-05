@@ -170,7 +170,7 @@ const ChatContent = () => {
       return new File([blob], "blobtofile.mp3");
     }
   }
-  console.log(Messages);
+
   return (
     <div className={classes.Content}>
       <div className={classes.MessageBox}>

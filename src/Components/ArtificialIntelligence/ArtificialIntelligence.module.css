@@ -205,9 +205,26 @@ min-width: 300px;
     display: flex;
     align-items: center;
    }
- 
-   .optionSec p:first-child{
+ .translate_icon {
+  background-color: #000000; 
+  width: 15px;
+  height: 15px;
+ }
+ .activeTranslate {
+  color: #F2718D !important;
 
+ }
+ .translationSec {
+  width: 70px !important;
+  margin-left: 18px !important;
+ }
+ .activeTranslate  .translate_icon {
+  background-color:#F2718D !important ;
+ }
+   .optionSec p:first-child{
+    border-right: 1px solid #D9D9D9;
+   }
+   .optionSec p:nth-child(2){
     border-right: 1px solid #D9D9D9;
    }
    .isSingleOption p:first-child {
