@@ -13,11 +13,7 @@ import mainlogo from "../../Assets/Images/svg/rawcaster_logo.svg";
 import mainlogowhite from "../../Assets/Images/svg/logo-white.svg";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import {
-  checkGeolocationPermission,
-  getAuthToken,
-  JSONtoformdata,
-} from "../../Shared/Utility";
+import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { loginService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -61,6 +57,7 @@ const Login = () => {
       },
       validationSchema: validationSchema,
       onSubmit: (values) => {
+        dispatch(handleLoading(true));
         HandleLoginService(values);
       },
     });
