@@ -79,12 +79,21 @@ const MeetingManagerComponent = () => {
           icon: null,
         });
         setattendeesList((pre) =>
-          pre.filter(
-            (ele) => externalUserId && ele.userId !== parseInt(externalUserId)
-          )
+          handleLeave(pre)
         );
-        if (user_data.isHost) {
-          audiovideo?.stop();
+       
+        const handleLeave = (pre)=> {
+          const remainingParticipants = pre.filter((participant) => participant.userId !== user_data.userId);
+          
+          const isHostOrCoHost = (participant) => participant.isHost || participant.isCoHost;
+          
+          const hostList = remainingParticipants.filter((participant) => isHostOrCoHost(participant));
+        
+          if (hostList.length === 0 && audiovideo) {
+            audiovideo.stop();
+          }
+        
+          return remainingParticipants
         }
       }
     } else if (attendeeId.includes("#content") && present) {
@@ -446,20 +455,9 @@ const MeetingManagerComponent = () => {
             if (hostData && hostData.statusCode === 1) {
               const updatedUserData = hostData.updatedUser;
               if (parseInt(updatedUserData.userId) === userdata?.userId) {
-                setuserdata((pre) => ({
-                  ...pre,
-                  isCoHost: updatedUserData.isCoHost,
-                }));
+                setuserdata(updatedUserData);
               }
-
-              setattendeesList((pre) =>
-                pre.map((ele) => {
-                  return {
-                    ...ele,
-                    isCoHost: updatedUserData.userId === ele.userId ? updatedUserData.isCoHost : ele.isCoHost
-                  };
-                })
-              );
+              setattendeesList(message.attendeeList);
             }
           }
           break;
@@ -469,22 +467,11 @@ const MeetingManagerComponent = () => {
               if (hostData && hostData.statusCode === 1) {
                 const updatedUserData = hostData.updatedUser;
                 if (parseInt(updatedUserData.userId) === userdata?.userId) {
-                  setuserdata((pre) => ({
-                    ...pre,
-                    isCoHost: updatedUserData.isCoHost,
-                  }));
+                    setuserdata(updatedUserData);
+                  }
+                  setattendeesList(message.attendeeList);
                 }
-  
-                setattendeesList((pre) =>
-                  pre.map((ele) => {
-                    return {
-                      ...ele,
-                      isCoHost: updatedUserData.userId === ele.userId ? updatedUserData.isCoHost : ele.isCoHost
-                    };
-                  })
-                );
               }
-            }
             break;
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
           try {
