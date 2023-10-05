@@ -27,6 +27,7 @@ import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
 import { useSingleNuggetContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { CommentReadoutSec, CommentTranslateSec } from "./Utility";
 
 const ReplyList = ({
   isReplyEnabled,
@@ -204,6 +205,284 @@ const ReplyList = ({
     setCommentList(tempData);
   };
 
+  const ReplyItem = ({ elem, ind }) => {
+    return (
+      <>
+        {isActiveEdit === elem.comment_id ? (
+          <div className={classes.comtArea}>
+            <div className={classes.proImg}>
+              <img
+                src={loginUserData?.profile_image}
+                alt="profile_image"
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null;
+                  currentTarget.src = defaultprofileImg;
+                }}
+              />
+            </div>
+            <div className={classes.textBox}>
+              <div className={classes.inputSec}>
+                <Input.TextArea
+                  placeholder="Write your Comment here..."
+                  value={decodeHtml(getCommentValue(elem.comment_id).comment)}
+                  onChange={(e) => {
+                    let editData = {
+                      ...getCommentValue(elem.comment_id),
+                      comment: e.target.value,
+                    };
+                    let tempData = [...ReplyList];
+                    tempData[ind].comment = e.target.value;
+                    // setReplyList(tempData);
+                    updateCommentList([...tempData]);
+
+                    let findData = EditData.findIndex(
+                      (ele) => ele.comment_id === elem.comment_id
+                    );
+                    if (findData !== -1) {
+                      let tempEdit = [...EditData];
+                      tempEdit[findData] = editData;
+                      seteditData(tempEdit);
+                    } else {
+                      if (EditData.length === 0) {
+                        seteditData([editData]);
+                      } else {
+                        seteditData((pre) => [...pre, editData]);
+                      }
+                    }
+                  }}
+                />
+                <Popover
+                  getPopupContainer={(trigger) => trigger.parentElement}
+                  overlayClassName="emojipopover"
+                  content={
+                    <div>
+                      <EmojiPicker
+                        emojiButtonColors={["#364157"]}
+                        emojiButtonRadius="8px"
+                        skinTonePosition="none"
+                        previewPosition="none"
+                        // onClickOutside={() => {
+                        //   setShowEmojis(!showEmojis);
+                        // }}
+                        categories={[
+                          "people",
+                          "nature",
+                          "foods",
+                          "activity",
+                          "places",
+                          "objects",
+                          "symbols",
+                          "flags",
+                        ]}
+                        onEmojiSelect={(e) => {
+                          let tempData = [...ReplyList];
+                          tempData[ind].comment = tempData[ind].comment.concat(
+                            e.native
+                          );
+                          // setReplyList(tempData);
+                          updateCommentList([...tempData]);
+
+                          let editData = {
+                            ...getCommentValue(elem.comment_id),
+                            comment: getCommentValue(
+                              elem.comment_id
+                            ).comment.concat(e.native),
+                          };
+                          let findIndex = EditData.findIndex(
+                            (ele) => ele.comment_id === elem.comment_id
+                          );
+                          if (findIndex !== -1) {
+                            let tmpData = [...EditData];
+                            tmpData[findIndex] = editData;
+                            seteditData(tmpData);
+                          } else {
+                            if (EditData.length === 0) {
+                              seteditData([editData]);
+                            } else {
+                              seteditData((pre) => [...pre, editData]);
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+                  }
+                  trigger="click"
+                >
+                  <img className={classes.emojiicon} alt="emoji" src={emoji} />
+                </Popover>
+
+                <img
+                  className={classes.sendicon}
+                  src={sendicon}
+                  alt="send_icon"
+                  onClick={() => {
+                    let findData = EditData.find(
+                      (ele) => ele.comment_id === elem.comment_id
+                    );
+
+                    if (findData) {
+                      if (isValidData(findData.comment)) {
+                        EditCommentforAnugget(
+                          elem.comment_id,
+                          findData.comment
+                        );
+                      } else {
+                        toast.remove("rawcaster");
+                        toast.error("Please Enter Valid Comment", {
+                          id: "rawcaster",
+                        });
+                      }
+                    } else {
+                      setisActiveEdit("");
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            <span
+              className={`material-symbols-outlined ${classes.closeIcon}`}
+              onClick={() => {
+                setisActiveEdit(null);
+              }}
+            >
+              close
+            </span>
+          </div>
+        ) : (
+          <div className={classes.item}>
+            <div className={classes.proImg}>
+              <img
+                src={elem?.profile_image}
+                alt={elem?.name}
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null;
+                  currentTarget.src = defaultprofileImg;
+                }}
+              />
+            </div>
+            <div className={classes.rightitem}>
+              <div className="d-flex flex-row">
+                <div className={classes.cmtText}>
+                  <p>{elem?.name}</p>
+                  <span>
+                    {elem.translated_text
+                      ? decodeHtml(elem?.translated_text)
+                      : decodeHtml(elem?.comment)}
+                  </span>
+                </div>
+                {elem.user_id === loginUserData.user_id && (
+                  <Dropdown
+                    menu={{
+                      items: [
+                        {
+                          label: (
+                            <div
+                              onClick={() => {
+                                setisActiveEdit(elem.comment_id);
+                              }}
+                            >
+                              Edit
+                            </div>
+                          ),
+                          key: "0",
+                        },
+                        {
+                          label: (
+                            <div
+                              onClick={() => {
+                                handleDeleteNuggetComment(elem.comment_id);
+                              }}
+                            >
+                              Delete
+                            </div>
+                          ),
+                          key: "1",
+                        },
+                      ],
+                    }}
+                    trigger={["click"]}
+                  >
+                    <div className={classes.moreBtn}>
+                      <i className="material-symbols-outlined">more_horiz</i>
+                    </div>
+                  </Dropdown>
+                )}
+              </div>
+              <div className="clearfix"></div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  marginBottom: 5,
+                }}
+              >
+                <div
+                  className={classes.agree}
+                  style={{ color: elem.liked ? "#e26386" : "#000" }}
+                >
+                  <i
+                    className={classes.agreeIcon}
+                    onClick={() => {
+                      handleAgree(elem.comment_id, elem.liked, elem.like_count);
+                    }}
+                    style={{
+                      background: elem.liked ? "#e26386" : "#000",
+                    }}
+                  />
+                  <span
+                    onClick={() => {
+                      handleAgree(elem.comment_id, elem.liked, elem.like_count);
+                    }}
+                  >
+                    Agree
+                  </span>
+                  <span
+                    onClick={() => {
+                      setAgreedUsersList({
+                        show: true,
+                        formData: {
+                          id: elem.comment_id,
+                          type: 2,
+                        },
+                      });
+                    }}
+                  >
+                    {elem.like_count ? `(${elem.like_count})` : null}
+                  </span>
+                </div>
+                <CommentTranslateSec
+                  elem={elem}
+                  onResult={(text) => {
+                    setReplyList((pre) => {
+                      let findIndex = pre.findIndex(
+                        (e, i) => e.comment_id === elem.comment_id
+                      );
+                      let updatedData = [...pre];
+                      if (findIndex !== -1) {
+                        updatedData[findIndex] = {
+                          ...updatedData[findIndex],
+                          translated_text: text,
+                        };
+                      }
+                      return updatedData;
+                    });
+                  }}
+                />
+                <CommentReadoutSec comment_id={elem.comment_id} />
+                <div className={classes.time}>
+                  {dateToShortDate(
+                    elem.commented_date,
+                    userSettings?.time_zone
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
   return ReplyList.length !== 0 || isReplyEnabled ? (
     <div
       style={{
@@ -215,288 +494,11 @@ const ReplyList = ({
     >
       <div className={classes.cmtSec} style={{ width: "90%" }}>
         {isCommentLoading ? null : (
-          // <div className="d-flex justify-content-center align-items-center py-2">
-          //   <Spin
-          //     size="large"
-          //     spinning={true}
-          //     style={{ textAlign: "center" }}
-          //   ></Spin>
-          // </div>
           <div>
             {ReplyList.length !== 0 ? (
               <>
                 {ReplyList.map((elem, ind) => {
-                  return (
-                    <>
-                      {isActiveEdit === elem.comment_id ? (
-                        <div className={classes.comtArea}>
-                          <div className={classes.proImg}>
-                            <img
-                              src={loginUserData?.profile_image}
-                              alt="profile_image"
-                              onError={({ currentTarget }) => {
-                                currentTarget.onerror = null;
-                                currentTarget.src = defaultprofileImg;
-                              }}
-                            />
-                          </div>
-                          <div className={classes.textBox}>
-                            <div className={classes.inputSec}>
-                              <Input.TextArea
-                                placeholder="Write your Comment here..."
-                                value={decodeHtml(
-                                  getCommentValue(elem.comment_id).comment
-                                )}
-                                onChange={(e) => {
-                                  let editData = {
-                                    ...getCommentValue(elem.comment_id),
-                                    comment: e.target.value,
-                                  };
-                                  let tempData = [...ReplyList];
-                                  tempData[ind].comment = e.target.value;
-                                  // setReplyList(tempData);
-                                  updateCommentList([...tempData]);
-
-                                  let findData = EditData.findIndex(
-                                    (ele) => ele.comment_id === elem.comment_id
-                                  );
-                                  if (findData !== -1) {
-                                    let tempEdit = [...EditData];
-                                    tempEdit[findData] = editData;
-                                    seteditData(tempEdit);
-                                  } else {
-                                    if (EditData.length === 0) {
-                                      seteditData([editData]);
-                                    } else {
-                                      seteditData((pre) => [...pre, editData]);
-                                    }
-                                  }
-                                }}
-                              />
-                              <Popover
-                                getPopupContainer={(trigger) =>
-                                  trigger.parentElement
-                                }
-                                overlayClassName="emojipopover"
-                                content={
-                                  <div>
-                                    <EmojiPicker
-                                      emojiButtonColors={["#364157"]}
-                                      emojiButtonRadius="8px"
-                                      skinTonePosition="none"
-                                      previewPosition="none"
-                                      // onClickOutside={() => {
-                                      //   setShowEmojis(!showEmojis);
-                                      // }}
-                                      categories={[
-                                        "people",
-                                        "nature",
-                                        "foods",
-                                        "activity",
-                                        "places",
-                                        "objects",
-                                        "symbols",
-                                        "flags",
-                                      ]}
-                                      onEmojiSelect={(e) => {
-                                        let tempData = [...ReplyList];
-                                        tempData[ind].comment = tempData[
-                                          ind
-                                        ].comment.concat(e.native);
-                                        // setReplyList(tempData);
-                                        updateCommentList([...tempData]);
-
-                                        let editData = {
-                                          ...getCommentValue(elem.comment_id),
-                                          comment: getCommentValue(
-                                            elem.comment_id
-                                          ).comment.concat(e.native),
-                                        };
-                                        let findIndex = EditData.findIndex(
-                                          (ele) =>
-                                            ele.comment_id === elem.comment_id
-                                        );
-                                        if (findIndex !== -1) {
-                                          let tmpData = [...EditData];
-                                          tmpData[findIndex] = editData;
-                                          seteditData(tmpData);
-                                        } else {
-                                          if (EditData.length === 0) {
-                                            seteditData([editData]);
-                                          } else {
-                                            seteditData((pre) => [
-                                              ...pre,
-                                              editData,
-                                            ]);
-                                          }
-                                        }
-                                      }}
-                                    />
-                                  </div>
-                                }
-                                trigger="click"
-                              >
-                                <img
-                                  className={classes.emojiicon}
-                                  alt="emoji"
-                                  src={emoji}
-                                />
-                              </Popover>
-
-                              <img
-                                className={classes.sendicon}
-                                src={sendicon}
-                                alt="send_icon"
-                                onClick={() => {
-                                  let findData = EditData.find(
-                                    (ele) => ele.comment_id === elem.comment_id
-                                  );
-
-                                  if (findData) {
-                                    if (isValidData(findData.comment)) {
-                                      EditCommentforAnugget(
-                                        elem.comment_id,
-                                        findData.comment
-                                      );
-                                    } else {
-                                      toast.remove("rawcaster");
-                                      toast.error(
-                                        "Please Enter Valid Comment",
-                                        { id: "rawcaster" }
-                                      );
-                                    }
-                                  } else {
-                                    setisActiveEdit("");
-                                  }
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <span
-                            className={`material-symbols-outlined ${classes.closeIcon}`}
-                            onClick={() => {
-                              setisActiveEdit(null);
-                            }}
-                          >
-                            close
-                          </span>
-                        </div>
-                      ) : (
-                        <div className={classes.item}>
-                          <div className={classes.proImg}>
-                            <img
-                              src={elem?.profile_image}
-                              alt={elem?.name}
-                              onError={({ currentTarget }) => {
-                                currentTarget.onerror = null;
-                                currentTarget.src = defaultprofileImg;
-                              }}
-                            />
-                          </div>
-                          <div className={classes.rightitem}>
-                            <div className="d-flex flex-row">
-                              <div className={classes.cmtText}>
-                                <p>{elem?.name}</p>
-                                <span>{decodeHtml(elem?.comment)}</span>
-                              </div>
-                              {elem.user_id === loginUserData.user_id && (
-                                <Dropdown
-                                  menu={{
-                                    items: [
-                                      {
-                                        label: (
-                                          <div
-                                            onClick={() => {
-                                              setisActiveEdit(elem.comment_id);
-                                            }}
-                                          >
-                                            Edit
-                                          </div>
-                                        ),
-                                        key: "0",
-                                      },
-                                      {
-                                        label: (
-                                          <div
-                                            onClick={() => {
-                                              handleDeleteNuggetComment(
-                                                elem.comment_id
-                                              );
-                                            }}
-                                          >
-                                            Delete
-                                          </div>
-                                        ),
-                                        key: "1",
-                                      },
-                                    ],
-                                  }}
-                                  trigger={["click"]}
-                                >
-                                  <div className={classes.moreBtn}>
-                                    <i className="material-symbols-outlined">
-                                      more_horiz
-                                    </i>
-                                  </div>
-                                </Dropdown>
-                              )}
-                            </div>
-                            <div className="clearfix"></div>
-                            <div
-                              className={classes.agree}
-                              style={{ color: elem.liked ? "#e26386" : "#000" }}
-                            >
-                              <i
-                                className={classes.agreeIcon}
-                                onClick={() => {
-                                  handleAgree(
-                                    elem.comment_id,
-                                    elem.liked,
-                                    elem.like_count
-                                  );
-                                }}
-                                style={{
-                                  background: elem.liked ? "#e26386" : "#000",
-                                }}
-                              />
-                              <span
-                                onClick={() => {
-                                  handleAgree(
-                                    elem.comment_id,
-                                    elem.liked,
-                                    elem.like_count
-                                  );
-                                }}
-                              >
-                                Agree
-                              </span>
-                              <span
-                                onClick={() => {
-                                  setAgreedUsersList({
-                                    show: true,
-                                    formData: {
-                                      id: elem.comment_id,
-                                      type: 2,
-                                    },
-                                  });
-                                }}
-                              >
-                                {elem.like_count
-                                  ? `(${elem.like_count})`
-                                  : null}
-                              </span>
-                            </div>
-                            <div className={classes.time}>
-                              {dateToShortDate(
-                                elem.commented_date,
-                                userSettings?.time_zone
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  );
+                  return ReplyItem({ elem, ind });
                 })}
               </>
             ) : (

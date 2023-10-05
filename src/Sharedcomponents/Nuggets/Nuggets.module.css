@@ -321,6 +321,17 @@ border-radius: 30px;
   margin-right: 10px;
   font-size: 12px;
 }
+.commnetReadout {
+  position: static !important;
+  padding-left: 0px !important;
+}
+.commnetReadout i {
+  height: 11px !important;
+  margin-right: 3px !important;
+}
+.commnetReadout p {
+  margin-bottom: 0px !important;
+}
 .cmtSec .rightitem .agree img {
   height: 11px;
   margin-right: 4px;
@@ -575,6 +586,25 @@ border-radius: 30px;
   font-size: 17px;
   margin-right: 5px;
 }
+.comment_read_mic_icon {
+  float: left;
+  width: 11px;
+  height: 11px;
+  background: #000000;
+  mask: url("../../Assets/Icons/svg/read_mic_icon.svg") no-repeat center / contain;
+  -webkit-mask:  url("../../Assets/Icons/svg/read_mic_icon.svg") no-repeat center /
+    contain;
+  margin-right: 3px;
+}
+.commentsDot {
+  margin-left: 0px !important;
+  margin-bottom: 0px !important;
+  padding-top: 5px;
+}
+.commentsDot div{
+width: 5px !important;
+height: 5px !important;
+}
 .read_mic_icon {
   float: left;
   width: 15px;
@@ -598,6 +628,9 @@ white-space: nowrap;
 .translationTxt span {
 font-size: 14px;
 margin:0 6px;
+height: 16px;
+width: 16px;
+background-color: #000;
 }
 .TabSec .activeSec {
   opacity: 1;
