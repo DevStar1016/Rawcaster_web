@@ -20,6 +20,7 @@ import {
   MOBILE_NUMBER_REGEX,
 } from "../../Shared/Constant";
 import {
+  checkGeolocationPermission,
   getAuthToken,
   getGeocodeData,
   JSONtoformdata,
@@ -86,71 +87,59 @@ const SignupwithCredentials = () => {
     dob: yup.string().required("Please input your Date of Birth!"),
   });
 
-  const {
-    values,
-    handleChange,
-    handleSubmit,
-    setFieldValue,
-    errors,
-    touched,
-    setValues,
-  } = useFormik({
-    initialValues: {
-      first_name: "",
-      email_id: "",
-      gender: "",
-      password: "",
-      dob: "",
-      geo_location: "",
-      latitude: "",
-      longitude: "",
-      other_gender: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      dispatch(handleLoading(true));
-      HandleSignup(values);
-    },
-  });
-
-  /**
-   * Executes the specified effect function after the component has rendered.
-   * The effect function retrieves geocode data and updates the component's state
-   * with the retrieved values.
-   * @returns None
-   */
-  useEffect(() => {
-    getGeocodeData()
-      .then((res) => {
-        setValues((pre) => ({
-          ...pre,
-          geo_location: res.address,
-          latitude: res.location.lat,
-          longitude: res.location.lng,
-        }));
-      })
-      .catch((err) => {
-        setValues((pre) => ({
-          ...pre,
-          geo_location: "",
-          latitude: "",
-          longitude: "",
-        }));
-      });
-  }, []);
+  const { values, handleChange, handleSubmit, setFieldValue, errors, touched } =
+    useFormik({
+      initialValues: {
+        first_name: "",
+        email_id: "",
+        gender: "",
+        password: "",
+        dob: "",
+        geo_location: "",
+        latitude: "",
+        longitude: "",
+        other_gender: "",
+      },
+      validationSchema: validationSchema,
+      onSubmit: (values) => {
+        checkGeolocationPermission()
+          .then((res) => {
+            if (res.status === 1) {
+              dispatch(handleLoading(true));
+              HandleSignup(values, res);
+            } else {
+              if (getLoginType().id === 2) {
+                toast.error(res.message);
+              } else {
+                HandleSignup(values, null);
+              }
+            }
+          })
+          .catch((message) => {
+            if (getLoginType().id === 2) {
+              toast.error(message);
+            } else {
+              HandleSignup(values, null);
+            }
+          });
+      },
+    });
 
   /**
    * Handles the signup process by sending the user's signup data to the server.
    * @param {object} values - The signup form values.
    * @returns None
    */
-  const HandleSignup = (values) => {
+  const HandleSignup = (values, res = null) => {
     let signupValue = {
       ...values,
       display_name: values.first_name,
       confirm_password: values.password,
       auth_code: getAuthToken(values.email_id),
       signup_type: getLoginType().id,
+      geo_location: res ? res.address : null,
+      latitude: res ? res.location.lat : null,
+      longitude: res ? res.location.lng : null,
     };
     if (reference_id) {
       signupValue = {

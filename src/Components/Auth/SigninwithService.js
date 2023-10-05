@@ -134,7 +134,7 @@ const SigninwithService = ({ type }) => {
               email_id: data.email,
               signup_social_ref_id: data?.id,
             };
-            console.log(resultVal, "resultVal");
+
             HandleSignup(resultVal);
           }
         })
