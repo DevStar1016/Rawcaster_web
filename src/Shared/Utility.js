@@ -99,47 +99,114 @@ export const getGeocodeData = () => {
   return new Promise((resolve, reject) => {
     try {
       Geocode.setApiKey(process.env.REACT_APP_GEOCODE_API_KEY);
-      navigator.geolocation.getCurrentPosition((position) => {
-        Geocode.fromLatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        ).then(
-          (response) => {
-            let locationArr = [
-              "locality",
-              "administrative_area_level_1",
-              "country",
-            ];
-            const addressArr = response.results[0].address_components.filter(
-              (data) => {
-                if (Array.isArray(data.types) && data.types.length > 0) {
-                  return locationArr.includes(data.types[0]);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          Geocode.fromLatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          ).then(
+            (response) => {
+              let locationArr = [
+                "locality",
+                "administrative_area_level_1",
+                "country",
+              ];
+              const addressArr = response.results[0].address_components.filter(
+                (data) => {
+                  if (Array.isArray(data.types) && data.types.length > 0) {
+                    return locationArr.includes(data.types[0]);
+                  }
                 }
-              }
-            );
-            let address = "";
-            addressArr.forEach((ele, ind) => {
-              address += ele.long_name;
-              address += addressArr.length - 1 === ind ? "." : ", ";
-            });
-            resolve({
-              address: address,
-              location: response.results[0].geometry.location,
-            });
-          },
-          (error) => {
-            resolve({
-              address: "",
-              location: "",
-            });
-          }
-        );
-      });
+              );
+              let address = "";
+              addressArr.forEach((ele, ind) => {
+                address += ele.long_name;
+                address += addressArr.length - 1 === ind ? "." : ", ";
+              });
+              resolve({
+                status: 1,
+                address: address,
+                location: response.results[0].geometry.location,
+              });
+            },
+            (error) => {
+              console.log(error, "Geocode.fromLatLng");
+              resolve({
+                status: 0,
+                address: "",
+                location: "",
+              });
+            }
+          );
+        },
+        () => {
+          resolve({
+            status: 0,
+            address: "",
+            location: "",
+          });
+        }
+      );
     } catch (error) {
       resolve({
+        status: 0,
         address: "",
         location: "",
       });
+    }
+  });
+};
+
+export const checkGeolocationPermission = () => {
+  return new Promise((resolve, reject) => {
+    if ("geolocation" in navigator) {
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then((permissionStatus) => {
+          if (permissionStatus.state === "granted") {
+            getGeocodeData().then((res) => {
+              if (res.status === 1) {
+                resolve({ status: 1, ...res });
+              } else {
+                resolve({
+                  status: 0,
+                  message: "Unable to fetch location details",
+                });
+              }
+            });
+          } else if (permissionStatus.state === "denied") {
+            resolve({
+              status: 0,
+              message:
+                "Please enable location permissions in your browser settings to sign-up",
+            });
+          } else {
+            getGeocodeData()
+              .then((res) => {
+                if (res.status === 1) {
+                  resolve({ status: 1, ...res });
+                } else {
+                  resolve({
+                    status: 0,
+                    message:
+                      "Please enable location permissions in your browser settings to sign-up",
+                  });
+                }
+              })
+              .catch(() => {
+                resolve({
+                  status: 0,
+                  message:
+                    "Please enable location permissions in your browser settings to sign-up",
+                });
+              });
+          }
+        })
+        .catch((error) => {
+          reject("Geolocation not supported or an error occurred.");
+        });
+    } else {
+      reject("Geolocation not supported or an error occurred.");
     }
   });
 };
