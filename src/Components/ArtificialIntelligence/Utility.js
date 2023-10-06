@@ -39,7 +39,6 @@ export const isUser = (id) => {
   }
   return false;
 };
-let isRequestCancel = false;
 
 /**
  * A component that displays a readout section for audio playback.
@@ -50,9 +49,16 @@ let isRequestCancel = false;
  * @returns The readout section component.
  */
 export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
-  const { player, setplayer, PlayerSource } = useMainContext();
+  const {
+    player,
+    setplayer,
+    PlayerSource,
+    isplayerFetching,
+    setisplayerFetching,
+  } = useMainContext();
   const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
   const [isFetchingurl, setisFetchingurl] = useState(false);
+
   const token = useAuthToken();
 
   const HandlegetNuggetContentAudio = (url) => {
@@ -60,19 +66,22 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
       player.pause();
     }
     if (audio) {
-      audio.pause();
+      audio?.pause();
     }
     const audioElement = new Audio(url);
     audioElement.id = index;
     setAudio(audioElement);
     setplayer(audioElement);
     audioElement.play();
+    PlayerSource.current = null;
+
+    setisFetchingurl(false);
     setisPlaying(index);
   };
 
   const handleStopAudio = () => {
     if (audio) {
-      audio.pause();
+      audio?.pause();
     }
     setisPlaying(null);
   };
@@ -105,26 +114,36 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
   }, [audio]);
 
   const convertToAudio = () => {
-    if (audiourl) {
-      HandlegetNuggetContentAudio(audiourl);
-    } else {
-      setisFetchingurl(true);
-      if (PlayerSource.current) {
-        isRequestCancel = true;
-        PlayerSource.current.cancel("Request Cancelled");
-      }
-      if (!PlayerSource.current) {
-        PlayerSource.current = axios.CancelToken.source();
-      }
-      TextToAudioService(
-        JSONtoformdata({
-          token,
-          message,
-        }),
-        PlayerSource.current.token
-      )
-        .then((res) => {
+    if (PlayerSource.current) {
+      PlayerSource.current.abort("Request Cancelled");
+    }
+
+    PlayerSource.current = new AbortController();
+
+    if (player) {
+      player?.pause();
+    }
+    if (audio) {
+      audio?.pause();
+      setAudio(null);
+      setisPlaying(false);
+    }
+
+    TextToAudioService(
+      JSONtoformdata({
+        token,
+        message,
+      }),
+      PlayerSource.current.signal
+    )
+      .then((res) => {
+        if (res) {
           if (res.data.status === 1) {
+            if (audio) {
+              audio?.pause();
+              setAudio(null);
+              setisPlaying(false);
+            }
             onResponse(res.data.url);
             HandlegetNuggetContentAudio(res.data.url);
           } else {
@@ -133,32 +152,42 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
               id: "Error",
             });
           }
-        })
-        .finally(() => {
+        }
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
           PlayerSource.current = null;
-          setisFetchingurl(false);
-        });
-    }
+        }
+      })
+      .finally(() => {
+        setisplayerFetching(false);
+      });
   };
 
   return isPlaying === index ? (
-    <p
-      style={{ color: "red" }}
-      onClick={() => {
-        handleStopAudio();
-      }}
-    >
-      <i className="material-symbols-outlined">mic_off</i>Stop
-    </p>
+    <>
+      <p
+        style={{ color: "red" }}
+        onClick={() => {
+          handleStopAudio();
+        }}
+      >
+        <i className="material-symbols-outlined">mic_off</i>Stop
+      </p>
+    </>
   ) : (
     <>
-      {isFetchingurl ? (
+      {isplayerFetching === index ? (
         <p className={`mx-2 ${classes.fetchingSec}`}>
           <div className="dot_typing"></div>
         </p>
       ) : (
         <p
           onClick={() => {
+            if (PlayerSource.current) {
+              PlayerSource.current.abort("Request Cancelled");
+            }
+            setisplayerFetching(index);
             convertToAudio();
           }}
         >
@@ -294,7 +323,7 @@ export const MessageContent = (props) => {
           )}
           <ReadoutSec
             message={message}
-            audiourl={read_out_url}
+            audiourl={null}
             index={index}
             onResponse={OnReadoutResponse}
           />

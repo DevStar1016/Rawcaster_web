@@ -79,7 +79,7 @@ export const ChatInput = ({
   const [AudioElement, setAudioElement] = useState();
   const timerRef = useRef(null);
   const recordingRef = useRef(null);
-  const [ChatMessage, setChatMessage] = useState("");
+  const [ChatMessage, setChatMessage] = useState(null);
   const loginUserData = useAuthData();
   const isSend = useRef(null);
   const [isChatContentValid, setisChatContentValid] = useState(true);
@@ -355,7 +355,13 @@ export const ChatInput = ({
       offScreenDiv.style.left = "-9999px";
       offScreenDiv.style.fontSize = fontSize;
       offScreenDiv.style.width = "261px";
-      offScreenDiv.textContent = value && value !== "" ? value : placeholder;
+      offScreenDiv.textContent = ChatMessage
+        ? ChatMessage && ChatMessage !== ""
+          ? ChatMessage
+          : placeholder
+        : value && value !== ""
+        ? value
+        : placeholder;
       document.body.appendChild(offScreenDiv);
       const initialHeight = offScreenDiv.clientHeight;
       document.body.removeChild(offScreenDiv);

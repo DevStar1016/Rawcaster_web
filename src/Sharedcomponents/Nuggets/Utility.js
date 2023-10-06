@@ -33,6 +33,9 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
     if (player && player.id !== nugget_id) {
       player.pause();
     }
+    if (audio) {
+      audio.pause();
+    }
     const audioElement = new Audio(url);
     audioElement.id = nugget_id;
     setAudio(audioElement);
