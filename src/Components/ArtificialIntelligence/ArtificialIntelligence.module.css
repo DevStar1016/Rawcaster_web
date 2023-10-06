@@ -320,7 +320,7 @@ min-width: 300px;
   justify-content: space-between;
 }
 .fetchingSec {
-  width: 50px  !important;
+  width: 90px  !important;
   margin-left: 18px !important;
 }
 .playSec button {
