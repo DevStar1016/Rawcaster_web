@@ -390,8 +390,7 @@ const EventBox = () => {
             width: !isFetching && isChatorParticipant ? "80" : "100%",
           }}
         >
-          {isReactions && (
-            <div
+          <div
               style={{
                 position: "absolute",
                 height: "100%",
@@ -400,9 +399,8 @@ const EventBox = () => {
                 pointerEvents: "none",
               }}
             >
-              <Reactions />
-            </div>
-          )}
+              <Reactions showEmojList={isReactions} />
+          </div>
           {isFetching ? (
             <div className="h-100 w-100 d-flex justify-content-center align-items-center">
               <Spin />
