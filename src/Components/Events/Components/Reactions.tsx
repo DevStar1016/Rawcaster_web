@@ -1,7 +1,13 @@
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState, useEffect } from "react";
 import { Easing } from "react-native-web";
 import Fly from "react-flying-objects";
+
 import classes from "./Reactions.module.css";
+import { ChimesendMessage } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { useEventRoomContext } from "../../../Shared/Context";
+import { EventContextProp } from "./types";
+import { useAuthData, useEventTempAuthData } from "../../../Shared/Reduxfetcher";
 
 const DELAY = 1000;
 const DURATION = 5000;
@@ -16,7 +22,15 @@ type EmojiObject = {
 };
 
 const Reactions = () => {
-  const [animatedEmoji, setAnimatedEmoji] = useState<ReactNode>(); // To randomly set values in the objectConfig
+  const {
+    EventData,
+    animatedEmoji,
+    setAnimatedEmoji,
+  }: EventContextProp = useEventRoomContext();
+  const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
+  // To randomly set values in the objectConfig
+  const [animate, setAnimate] = useState<ReactNode>();
   const [flyingObjects, setFlyingObjects] = useState<EmojiObject[]>([]); // Used to manage all flying currently objects by the Fly component
 
   const animatedEmojiList = [
@@ -58,18 +72,31 @@ const Reactions = () => {
     },
   ];
 
-  const onSelect = (emojiData: string) => {
-    const emoji = (
-      <div
-        style={{
-          fontSize: 25,
-        }}
-      >
-        {emojiData}
-      </div>
-    );
+  useEffect(() => {
+    if(animatedEmoji){
+      setAnimate(<div style={{fontSize: 25}}>{animatedEmoji}</div>);
+      setAnimatedEmoji([])
+    }
+  }, [animatedEmoji])
+  
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
 
-    setAnimatedEmoji(emoji); // Setting the object which would fly in a moment
+  const onSelect = (emojiData: string) => {
+    ChimesendMessage(
+      {
+        refId: EventData?.reference_id,
+        userId: getUserData()?.user_id,
+        emoji: emojiData,
+        senderName: getUserData()?.name
+      },
+      CHIME_SOCKET_EVENTS.POST_REACTION
+    );
   };
 
   const objectConfig = useMemo(
@@ -116,7 +143,7 @@ const Reactions = () => {
   return (
     <div className={classes.reactionsContainer}>
       <Fly
-        objectToFly={animatedEmoji}
+        objectToFly={animate}
         objectConfig={objectConfig}
         flyingObjects={flyingObjects}
         setFlyingObjects={setFlyingObjects}
