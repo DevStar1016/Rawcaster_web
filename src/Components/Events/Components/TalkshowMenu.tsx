@@ -31,6 +31,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
     userdata,
     isReactions,
     setisReactions,
+    MeetingSettings
   }: EventContextProp = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -55,6 +56,15 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
     }
   };
 
+  const enabledSettings = () => ({
+    isHost: userdata?.isHost,
+    isCoHost: userdata?.isCoHost,
+    allowEnable: userdata?.isHost || userdata?.isCoHost,
+    viewEnable: userdata?.isHost|| userdata?.isCoHost,
+    localvideoStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
+    localMicStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
+  });
+
   return (
     <div className={`${styles.BottomContainer} ${styles.TalkshowMenu}`}>
       <div className={styles.menuContainer}>
@@ -63,7 +73,8 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             !muted ? styles.activeiconContainer : ""
           }`}
         >
-          <LocalMicrophoneComponent />
+          <LocalMicrophoneComponent 
+            isAllowed={enabledSettings().localMicStatus}/>
 
           <Popover
             placement="top"
@@ -84,6 +95,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
           <LocalCameraComponent
             selectedDevice={selectedDevice}
             setselectedDevice={setselectedDevice}
+            isAllowed={enabledSettings().localvideoStatus}
           />
           {videoinput.devices.length !== 0 && (
             <Popover
@@ -139,7 +151,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             </Popover>
           )}
         </div>
-        {userdata?.isHost ? (
+        {userdata?.isHost || userdata?.isCoHost ? (
           <div
             className={`onlydes ${styles.streamBtn}`}
             onClick={() => {
@@ -174,7 +186,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             <span className={`material-symbols-outlined `}>
               radio_button_checked
             </span>
-            Stop Straming
+            Stop Streaming
           </div>
         ) : (
           <div
