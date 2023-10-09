@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState, useEffect } from "react";
+import { ReactNode, useMemo, useState, useEffect, FC } from "react";
 import { Easing } from "react-native-web";
 import Fly from "react-flying-objects";
 
@@ -20,8 +20,11 @@ type EmojiObject = {
   id: number;
   emoji: string;
 };
+interface ReactionsProps {
+  showEmojList: boolean;
+}
 
-const Reactions = () => {
+const Reactions: FC<ReactionsProps> = ({showEmojList}) => {
   const {
     EventData,
     animatedEmoji,
@@ -148,7 +151,7 @@ const Reactions = () => {
         flyingObjects={flyingObjects}
         setFlyingObjects={setFlyingObjects}
       />
-      <div className={classes.reactionsSec}>
+      {showEmojList && <div className={classes.reactionsSec}>
         {animatedEmojiList.map((ele) => (
           <div
             className={classes.emoji}
@@ -163,14 +166,9 @@ const Reactions = () => {
             >
               {ele.emoji}
             </div>
-            {/* <em-emoji
-              native={ele.emoji}
-              size={`${SIZE}`}
-              set="apple"
-            ></em-emoji> */}
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 };
