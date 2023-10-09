@@ -129,6 +129,8 @@ export type EventContextProp = {
     useAttendeesList:(val:any)=>void
     isEndLoading:string|null,
     setisEndLoading:(val:string|null)=>void,
+    animatedEmoji: ReactNode[],
+    setAnimatedEmoji:(val:ReactNode)=>void,
 }
 
 
