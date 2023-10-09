@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import classes from "./Room.module.css";
 import { Dropdown, Layout, Modal, Slider, Tooltip } from "antd";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
@@ -96,7 +96,7 @@ const Participants = () => {
     /* List of Attendee Handling Options */
 
     const getDropdownList = (ele: AttendeeUserData) => {
-      if (getISCoHost() && !ele?.isCoHost &&  !ele?.isHost) {
+      if (getISCoHost() && !ele?.isCoHost && !ele?.isHost) {
         return [
           {
             key: "1",
@@ -122,7 +122,7 @@ const Participants = () => {
                     CHIME_SOCKET_EVENTS.KICK_USER
                   );
                 },
-                onCancel: () => {},
+                onCancel: () => { },
               });
             },
           },
@@ -145,20 +145,24 @@ const Participants = () => {
           label: `${!ele?.isCoHost ? 'Promote as' : 'Remove'} Co Host`,
           onClick: () => {
             Modal.confirm({
-              title: `${!ele?.isCoHost ? 'Promote as': 'Remove'} Co Host`,
+              title: `${!ele?.isCoHost ? 'Promote as' : 'Remove'} Co Host`,
               content:
-                `Are you sure do you want to ${!ele?.isCoHost ? 'Promote': 'Remove'} as Co Host for this User !`,
+                `Are you sure do you want to ${!ele?.isCoHost ? 'Promote' : 'Remove'} as Co Host for this User !`,
               onOk: () => {
-                ChimesendMessage(
-                  {
-                    refId: EventData?.reference_id,
-                    hostId: userData?.user_id,
-                    userId: findAttendee?.userId,
-                  },
-                  !ele?.isCoHost ? CHIME_SOCKET_EVENTS.MAKE_HOST: CHIME_SOCKET_EVENTS.REMOVE_HOST
-                );
+                const hostList = attendeesList?.filter(list => list.isHost || list.isCoHost);
+                if (EventData?.type === 1 ||
+                    (EventData?.type === 2 && hostList.length < 5)) {
+                    ChimesendMessage(
+                    {
+                      refId: EventData?.reference_id,
+                      hostId: userData?.user_id,
+                      userId: findAttendee?.userId,
+                    },
+                    !ele?.isCoHost ? CHIME_SOCKET_EVENTS.MAKE_HOST : CHIME_SOCKET_EVENTS.REMOVE_HOST
+                  );
+                }
               },
-              onCancel: () => {},
+              onCancel: () => { },
             });
           },
         },
@@ -186,7 +190,7 @@ const Participants = () => {
                   CHIME_SOCKET_EVENTS.KICK_USER
                 );
               },
-              onCancel: () => {},
+              onCancel: () => { },
             });
           },
         },
@@ -234,7 +238,7 @@ const Participants = () => {
               <div className={classes.hostIcon}>HOST</div>
             ) : findAttendee?.isCoHost ? (
               <div className={classes.hostIcon}>CO HOST</div>
-            ): null}
+            ) : null}
             {!isYou && (
               <VolumeStatusComponent
                 ele={ele}
@@ -253,8 +257,8 @@ const Participants = () => {
               />
             )}
             {isYou ? (
-              <LocalMicrophoneComponent 
-                className={classes.micsmallIcon} 
+              <LocalMicrophoneComponent
+                className={classes.micsmallIcon}
                 isAllowed={findAttendee?.isCoHost || !findAttendee?.audioDisabledByHost} />
             ) : (
               <MicrophoneComponent
@@ -271,7 +275,7 @@ const Participants = () => {
                 setselectedDevice={null}
                 selectedDevice={null}
                 className={classes.videosmallIcon}
-                isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost} 
+                isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost}
               />
             ) : (
               <CameraComponent
@@ -283,21 +287,21 @@ const Participants = () => {
               />
             )}
             {
-              getISCoHost() && findAttendee?.isHost ?  
-                  <div style={{opacity: '0'}}>
-                        <i className="material-symbols-outlined">more_vert</i>
-                  </div> :
-              getISHost() || getISCoHost() ? (
-                    <Dropdown
-                      menu={{
-                        items: findAttendee ? getDropdownList(findAttendee) : [],
-                      }}
-                    >
-                      <div className={classes.moreIcon}>
-                        <i className="material-symbols-outlined">more_vert</i>
-                      </div>
-                    </Dropdown>
-              ) : null
+              getISCoHost() && findAttendee?.isHost ?
+                <div style={{ opacity: '0' }}>
+                  <i className="material-symbols-outlined">more_vert</i>
+                </div> :
+                getISHost() || getISCoHost() ? (
+                  <Dropdown
+                    menu={{
+                      items: findAttendee ? getDropdownList(findAttendee) : [],
+                    }}
+                  >
+                    <div className={classes.moreIcon}>
+                      <i className="material-symbols-outlined">more_vert</i>
+                    </div>
+                  </Dropdown>
+                ) : null
             }
           </div>
         </div>
@@ -348,9 +352,8 @@ const Participants = () => {
 
   return (
     <Layout
-      className={`${classes.popupContainer} ${
-        EventData?.type === 2 ? classes.talkshowPopup : ""
-      }`}
+      className={`${classes.popupContainer} ${EventData?.type === 2 ? classes.talkshowPopup : ""
+        }`}
     >
       <Header
         style={{
@@ -545,7 +548,7 @@ const Participants = () => {
             </div>
           </div>
         )}
-       {(userdata?.isHost || userdata?.isCoHost ) && <div
+        {(userdata?.isHost || userdata?.isCoHost) && <div
           className={classes.inviteContainer}
           onClick={() => {
             setisInvited((pre) => !pre);
