@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { Outlet } from "react-router";
 import {
   useAuthData,
@@ -59,6 +59,7 @@ const EventValidaton = () => {
     buttons: [],
     icon: null,
   });
+  const [animatedEmoji, setAnimatedEmoji] = useState<ReactNode>();
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -208,6 +209,8 @@ const EventValidaton = () => {
     setisEndLoading,
     isPresentScreen,
     setisPresentScreen,
+    animatedEmoji,
+    setAnimatedEmoji,
   };
 
   const hasWaitingRoomEnabled = () => {
