@@ -29,20 +29,12 @@ const CommentBox = () => {
    *  Send Comment to every attendee in Meeting Room
    */
   const handleSendMessage = (message: string | null) => {
-    setEventMessages((pre: any) => [
-      {
-        ...userdata,
-        refId: EventData?.chime_meeting_id,
-        message: message ? message : ChatMessage,
-        isPrivate: false,
-      },
-      ...pre,
-    ]);
     ChimesendMessage(
       {
         ...userdata,
-        refId: EventData?.chime_meeting_id,
+        refId: EventData?.reference_id,
         message: message ? message : ChatMessage,
+        from_user_id: userdata.userId,
         isPrivate: false,
       },
       CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_MEETING_ROOM
