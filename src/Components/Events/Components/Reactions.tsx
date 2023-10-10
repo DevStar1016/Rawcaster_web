@@ -63,7 +63,7 @@ const Reactions: FC<ReactionsProps> = ({showEmojList}) => {
     },
     {
       id: 7,
-      emoji: "🥲",
+      emoji: "❓",
     },
     {
       id: 8,
