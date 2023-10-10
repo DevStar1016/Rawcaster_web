@@ -42,6 +42,7 @@ const MeetingManagerComponent = () => {
     setisPinEnabled,
     userdata,
     attendeesList,
+    setAnimatedEmoji,
   }: EventContextProp = useEventRoomContext();
   const meetingManager = useMeetingManager();
   const audiovideo = useAudioVideo();
@@ -486,6 +487,11 @@ const MeetingManagerComponent = () => {
               }
             }
           } catch (error) {}
+          break;
+        case CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER:
+          if (message.emoji) {
+            setAnimatedEmoji(message.emoji)
+          }
           break;
         default:
           break;
