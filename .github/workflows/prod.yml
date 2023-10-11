@@ -9,6 +9,7 @@ env:
   AWS_REGION: us-east-1
   EKS_CLUSTER_NAME: rawcaster-prod-eks
   ECR_REPOSITORY_NAME: 	rawcaster-react-prod
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -50,13 +51,13 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: rawcaster-react-prod
-          tags: ai_and_chime
+          tags: rawcaster_react_2.0
           tag: ${{ steps.date.outputs.date }}
 
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$tags -t $ECR_REGISTRY/$ECR_REPOSITORY:$tag backend/
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$tags -t $ECR_REGISTRY/$ECR_REPOSITORY:$tag .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$tags
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$tag
       #- name: Deploy to EKS
       #  run: |
-      #    kubectl rollout restart deployment/user -n dev
+      #    kubectl rollout restart deployment/react -n dev
