@@ -137,9 +137,9 @@ const SignupwithCredentials = () => {
       confirm_password: values.password,
       auth_code: getAuthToken(values.email_id),
       signup_type: getLoginType().id,
-      geo_location: res ? res.address : null,
-      latitude: res ? res.location.lat : null,
-      longitude: res ? res.location.lng : null,
+      geo_location: res ? res.address : "",
+      latitude: res ? res.location.lat : "",
+      longitude: res ? res.location.lng : "",
     };
     if (reference_id) {
       signupValue = {

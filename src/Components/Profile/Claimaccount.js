@@ -115,7 +115,9 @@ const Claimaccount = () => {
               msg: res.data.msg,
             })
           );
-          dispatch(handleAccountVerifyStatus(1));
+          if (display_user_id) {
+            dispatch(handleAccountVerifyStatus(1));
+          }
           // Modal.success({
           //   content: res.data.msg,
           // });

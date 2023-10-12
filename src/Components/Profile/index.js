@@ -159,12 +159,13 @@ const Profile = () => {
    * @param {Object} [filterValues={}] - The filter values to apply to the followers list.
    * @returns {Promise} - A promise that resolves to the final object containing the followers list.
    */
-  const getFollowers = (filterValues = {}) => {
+  const getFollowers = (filterValues = {}, page = 1) => {
     let promise = new Promise((resolve, reject) => {
       let fansList = {
         ...filterValues,
         token: loginToken,
         type: 2,
+        page_number: page,
       };
       if (!getisLoginUser()) {
         fansList = {
