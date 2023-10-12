@@ -7,7 +7,6 @@ import {
 import {
   EncryptionString,
   JSONtoformdata,
-  getisAddFriend,
   handleProfileNavigate,
 } from "../../../Shared/Utility";
 import {
@@ -22,10 +21,15 @@ import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import AddFriendIcon from "../../../Assets/Icons/svg/add_friend_1.svg";
 import { handleUnFollowService } from "../Utility";
+import pendingIcon from "../../../Assets/Icons/svg/pending_icon.svg";
+import { isMobile } from "react-device-detect";
+const DEFAULT_PAGE_SIZE = isMobile ? 39 : 40;
 
 export const getfollowerfollowingService = (fansList) => {
   let promise = new Promise((resolve, reject) => {
-    getFollowListService(JSONtoformdata(fansList))
+    getFollowListService(
+      JSONtoformdata({ ...fansList, default_page_size: DEFAULT_PAGE_SIZE })
+    )
       .then((res) => {
         if (res.data.status === 1) {
           const getFansCount = () => {
@@ -36,6 +40,7 @@ export const getfollowerfollowingService = (fansList) => {
             }
           };
           resolve({
+            data: res.data,
             connections: res.data.follow_list.slice(0, 8),
             allconnections: res.data.follow_list,
             allconnectionscount: parseInt(res.data.follow_count),
@@ -65,11 +70,12 @@ export const getfollowerfollowingService = (fansList) => {
   return promise;
 };
 
-export const getUnclaimedInfluencerData = (token, value) => {
+export const getUnclaimedInfluencerData = (token, value, page) => {
   let promise = new Promise((resolve, reject) => {
     let listData = {
       ...value,
       token: token,
+      default_page_size: DEFAULT_PAGE_SIZE,
     };
     listClaimAccountService(JSONtoformdata(listData))
       .then(({ data }) => {
@@ -84,6 +90,7 @@ export const getUnclaimedInfluencerData = (token, value) => {
             }
           };
           resolve({
+            data: data,
             connections: contactlist.slice(0, 8),
             allconnections: contactlist,
             allconnectionscount: contactlist.length,
@@ -142,6 +149,7 @@ export const getConnectionData = (values) => {
             }
           };
           resolve({
+            data: data,
             connections: contactlist.slice(0, 8),
             allconnections: data.friends_list,
             allconnectionscount: data.friends_count,
@@ -185,11 +193,14 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
   const loginuserData = useAuthData();
   const loginToken = useAuthToken();
   const isUser = parseInt(loginuserData?.user_id) === parseInt(ele?.user_id);
+  const isShowClaimStatus =
+    ele?.unclaimed_status === 1 || ele?.unclaimed_status === 2;
+
   const isAddFriend = () => {
     if (isUser) {
       return false;
     } else if (
-      ele?.unclaimed_status === 0 &&
+      ele?.unclaimed_status === 1 &&
       type === "unclaimed_influencers"
     ) {
       return false;
@@ -199,7 +210,6 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
       return false;
     }
   };
-
   return (
     <div className={classes.list}>
       <Skeleton.Node
@@ -211,24 +221,34 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
           borderRadius: 50,
         }}
       >
-        <div className={`${classes.iconSec} ${!isLoginUser ? className : ""}`}>
+        <div className={`${classes.iconSec}  ${!isLoginUser ? className : ""}`}>
           {isLoginUser ? (
             <>
-              {type === "unclaimed_influencers" && isLoginUser ? (
-                <i
-                  className={classes.sheildIcon}
-                  style={{
-                    display: ele.unclaimed_status ? "none" : "",
-                  }}
-                  onClick={() => {
-                    navigate(`/claim/${EncryptionString(ele.user_id)}`);
-                  }}
-                />
+              {type === "unclaimed_influencers" &&
+              isLoginUser &&
+              (ele?.unclaimed_status === 1 || ele?.unclaimed_status === 2) ? (
+                <>
+                  {ele.unclaimed_status === 2 ? (
+                    <img src={pendingIcon} className={classes.pendingIcon} />
+                  ) : (
+                    <i
+                      className={classes.sheildIcon}
+                      style={{
+                        display: !ele.unclaimed_status ? "none" : "",
+                      }}
+                      onClick={() => {
+                        if (ele.unclaimed_status !== 2) {
+                          navigate(`/claim/${EncryptionString(ele.user_id)}`);
+                        }
+                      }}
+                    />
+                  )}
+                </>
               ) : null}
 
               {type === "influencers" && !isUser ? (
                 <span
-                  className={`material-symbols-outlined ${classes.plusIcon} ${classes.removeIcon}`}
+                  className={`material-symbols-outlined  ${classes.plusIcon} ${classes.removeIcon}`}
                   style={{ display: "" }}
                   onClick={() => {
                     Modal.confirm({

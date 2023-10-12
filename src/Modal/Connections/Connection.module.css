@@ -13,6 +13,10 @@
     flex-direction: row;
     justify-content: space-between;
 }
+.listContainer {
+    max-height: 350px;
+    overflow-y: auto;
+}
 .listSec { 
     width: 100%;
   display: grid;
@@ -20,8 +24,7 @@
   grid-gap: 10px; /* adjust as needed */
   margin: 20px 0;
   padding-top: 20px;
-max-height: 350px;
-overflow-y: auto;
+
 }
 .listSec .list { width: 100%; float: left; text-align: center; font-size: 12px; cursor: pointer;  position: relative;}
 .listSec .list p { margin: 5px 0px;
@@ -38,6 +41,18 @@ overflow-y: auto;
   }
 .ageSec input{
     height: 44px !important;
+}
+.loadSec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
+    cursor: pointer;
+}
+.loadSec span {
+    font-size: 15px;
+    margin-left: 10px;
 }
 .messageIcon {
     float: left;
