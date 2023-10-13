@@ -70,12 +70,12 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
       delete_invite_friends: "",
     },
     validationSchema: yup.object().shape({
-      event_title: yup.string().required(`Event Title is Required !`),
-      event_type: yup.string().required(`Event Type is Required !`),
-      event_start_date: yup.string().required(`Event Start Date is Required !`),
+      event_title: yup.string().required(`Talkshow Title is Required !`),
+      event_type: yup.string().required(`Talkshow Type is Required !`),
+      event_start_date: yup.string().required(`Talkshow Start Date is Required !`),
       event_start_time: yup
         .string()
-        .required(`Valid Event Start Time is Required !`),
+        .required(`Valid Talkshow Start Time is Required !`),
       // event_banner: yup.string().required(`Event Banner is Required !`),
       event_invite_friends: yup.string(),
       // .test(
@@ -145,9 +145,9 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
     onSubmit: (val) => {
       setisCreating(true);
       if (data) {
-        HandleEditLiveEvent(val);
+        handleEditTalkshow(val);
       } else {
-        HandleLiveEvent(val);
+        handleAddTalkshow(val);
       }
     },
   });
@@ -189,7 +189,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
    * @param {any} val - The event data object.
    * @returns None
    */
-  const HandleLiveEvent = (val) => {
+  const handleAddTalkshow = (val) => {
     const dateAndTime =
       moment(val.event_start_date).format("YYYY-MM-DD") +
       " " +
@@ -232,7 +232,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
    * @param {Object} val - The event data to be edited.
    * @returns None
    */
-  const HandleEditLiveEvent = (val) => {
+  const handleEditTalkshow = (val) => {
     const dateAndTime =
       moment(val.event_start_date).format("YYYY-MM-DD") +
       " " +
@@ -359,7 +359,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
             <Row>
               <Col sm={6}>
                 <Form.Item
-                  label="Event Title"
+                  label="Talkshow Title"
                   colon={false}
                   className={classes.textBoxSec}
                   initialValue={values.event_title}
@@ -478,7 +478,7 @@ const AddLiveEvent = ({ isTalkshowOpen, setisTalkshowOpen, data }) => {
               </Col>
               <Col sm={12}>
                 <Form.Item
-                  label="Event Description"
+                  label="Talkshow Description"
                   colon={false}
                   className={classes.textBoxSec}
                   initialValue={values.event_message}
