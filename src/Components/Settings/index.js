@@ -84,6 +84,7 @@ const Settings = () => {
     groupid: "",
     read_out_language_id: "",
     read_out_accent_id: "",
+    opt_in: "",
   });
 
   /**
@@ -142,6 +143,7 @@ const Settings = () => {
         talkshow_event_banner: userSettings?.talkshow_event_banner,
         read_out_language_id: userSettings?.read_out_language_id,
         read_out_accent_id: userSettings?.read_out_accent_id,
+        opt_in: userSettings?.opt_in,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

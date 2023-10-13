@@ -19,7 +19,7 @@ const secondaryShare = [
 ];
 
 export const AccountStatus = ["Inactive", "Active"];
-
+export const OptInStatus = ["Disable", "Enable"];
 export const SettingsList = [
   {
     title: "Phone",

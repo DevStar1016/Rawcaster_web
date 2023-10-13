@@ -171,6 +171,33 @@ color: #FFFFFF !important;
 .profileevent .intro .item span{
     font-weight: 600;
     padding-left: 5px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.memberitem {
+  float: left;
+ display: flex;
+ flex-direction: row;
+ align-items: flex-start !important;
+}
+.memberContent {
+  padding-left: 5px !important;
+}
+
+.memberitem .noWrap {
+  font-weight: normal !important;
+  padding-left: 0px !important;
+}
+.memberContent {
+  width: 100%;  
+}
+.breakAll {
+  font-weight: 600 !important;
+  padding-left: 0px !important;
+}
+.memberitem img {
+  height: 20px;
 }
 .profileevent .intro .item p img { height: 20px; }
 .othersprofileEvent { width: 40% !important; }  
