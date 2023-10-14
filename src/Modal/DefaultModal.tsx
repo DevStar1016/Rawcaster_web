@@ -48,13 +48,15 @@ const VerifyContent = (props: GlobalModalProps) => {
               primary === "success" ? classes.reportBtn : classes.cancelBtn
             }
             onClick={() => {
-              if (primary === "success") {
-                if (onSuccess) {
-                  onSuccess();
+              setTimeout(() => {
+                if (primary === "success") {
+                  if (onSuccess) {
+                    onSuccess();
+                  }
+                } else if (onClose) {
+                  onClose();
                 }
-              } else if (onClose) {
-                onClose();
-              }
+              }, 500);
               Modal.destroyAll();
             }}
           >
@@ -72,13 +74,15 @@ const VerifyContent = (props: GlobalModalProps) => {
               primary === "failure" ? classes.reportBtn : classes.cancelBtn
             }
             onClick={() => {
-              if (primary === "failure") {
-                if (onSuccess) {
-                  onSuccess();
+              setTimeout(() => {
+                if (primary === "failure") {
+                  if (onSuccess) {
+                    onSuccess();
+                  }
+                } else if (onClose) {
+                  onClose();
                 }
-              } else if (onClose) {
-                onClose();
-              }
+              }, 500);
               Modal.destroyAll();
             }}
           >

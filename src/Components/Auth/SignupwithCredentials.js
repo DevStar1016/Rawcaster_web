@@ -185,7 +185,7 @@ const SignupwithCredentials = () => {
             closeButtonTitle: "Cancel",
             SubmitButtonTitle: "Sign in",
             onSuccess: () => {
-              navigate("/login");
+              window.location.assign("/login");
             },
             onClose: () => {},
           });
