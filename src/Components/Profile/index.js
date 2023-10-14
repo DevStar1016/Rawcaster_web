@@ -12,6 +12,7 @@ import {
 } from "../../Shared/Reduxfetcher";
 import profile_work from "../../Assets/Images/svg/profile_work.svg";
 import profile_edu from "../../Assets/Images/svg/profile_edu.svg";
+import profile_member from "../../Assets/Icons/svg/profile_membership.svg";
 import profile_location from "../../Assets/Images/svg/profile_location.svg";
 import profile_bdy from "../../Assets/Images/svg/profile_bdy.svg";
 import profile_join from "../../Assets/Images/svg/profile_join.svg";
@@ -435,7 +436,7 @@ const Profile = () => {
                           className={`${classes.item} ${classes.memberitem}`}
                         >
                           <p>
-                            <img src={profile_join} alt={"Joined at"} />
+                            <img src={profile_member} alt={"Joined at"} />
                           </p>
                           <div className={classes.memberContent}>
                             <span className={classes.noWrap}>
