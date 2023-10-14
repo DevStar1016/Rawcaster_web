@@ -2,8 +2,8 @@
  * A component for signing up with credentials.
  * @returns JSX element representing the signup form.
  */
-import { Button, Form, Input, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Checkbox, Form, Input, Select } from "antd";
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
@@ -22,28 +22,27 @@ import {
 import {
   checkGeolocationPermission,
   getAuthToken,
-  getGeocodeData,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import { signupService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import OwlCarousel from "react-owl-carousel";
-import RedirectModal from "../../Modal/Verification/RedirectModal";
 import moment from "moment";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { accountVerifyHandle } from "./Utility";
-import { useMainContext } from "../../Shared/Context";
 import { handleReferenceID } from "../../Store/Redux/Reducer/AuthReducer";
 import { useAuth } from "../../Shared/Reduxfetcher";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { VALIDATION_MESSAGES } from "../Settings/Constants";
 
 const SignupwithCredentials = () => {
   const { nugget_id } = useParams();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const navigate = useNavigate();
   const { reference_id } = useAuth();
+
   const getLoginType = () => {
     if (pathname.includes("signupwithemail")) {
       return {
@@ -102,28 +101,56 @@ const SignupwithCredentials = () => {
       },
       validationSchema: validationSchema,
       onSubmit: (values) => {
-        checkGeolocationPermission()
-          .then((res) => {
-            if (res.status === 1) {
-              dispatch(handleLoading(true));
-              HandleSignup(values, res);
-            } else {
-              if (getLoginType().id === 2) {
-                toast.error(res.message);
-              } else {
-                HandleSignup(values, null);
-              }
-            }
-          })
-          .catch((message) => {
-            if (getLoginType().id === 2) {
-              toast.error(message);
-            } else {
-              HandleSignup(values, null);
-            }
+        if (getLoginType().id === 2) {
+          HandleVerifyModal({
+            SubmitButtonTitle: "Continue",
+            closeButtonTitle: "Register with email",
+            primary: "success",
+            onSuccess: () => {
+              SignUpValidate();
+            },
+            onClose: () => {
+              navigate(getLoginType().pathname);
+            },
+            message:
+              VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE_BEFORE_SIGNUP,
           });
+        } else {
+          SignUpValidate();
+        }
       },
     });
+
+  useEffect(() => {
+    // Your logic to clear the state when the route changes
+    // For example, you can clear the data when the pathname changes
+    if (pathname !== getLoginType().pathname) {
+      setFieldValue("email_id", "");
+    }
+  }, [pathname]);
+
+  const SignUpValidate = () => {
+    checkGeolocationPermission()
+      .then((res) => {
+        if (res.status === 1) {
+          dispatch(handleLoading(true));
+          HandleSignup(values, res);
+        } else {
+          if (getLoginType().id === 2) {
+            toast.error(res.message);
+          } else {
+            HandleSignup(values, null);
+          }
+        }
+      })
+      .catch((message) => {
+        if (getLoginType().id === 2) {
+          toast.error(message);
+        } else {
+          HandleSignup(values, null);
+        }
+      });
+  };
 
   /**
    * Handles the signup process by sending the user's signup data to the server.
@@ -152,7 +179,16 @@ const SignupwithCredentials = () => {
         if (res.data.status === 1) {
           handleProfileUpdate(res.data);
         } else if (res.data.status === 2) {
-          setredirectModal({ show: true, msg: res.data.msg });
+          HandleVerifyModal({
+            primary: "success",
+            message: res.data.msg,
+            closeButtonTitle: "Cancel",
+            SubmitButtonTitle: "Sign in",
+            onSuccess: () => {
+              navigate("/login");
+            },
+            onClose: () => {},
+          });
         } else if (res.data.status === 0) {
           toast.remove("Error");
           toast.error(res.data.msg, {
@@ -243,10 +279,35 @@ const SignupwithCredentials = () => {
                   maxLength={50}
                   status={touched.email_id && errors.email_id ? "error" : ""}
                 />
-                <div className="d-flex flex-row justify-content-between">
-                  <p className="ErrTxt">
-                    {touched.email_id ? errors?.email_id : ""}
-                  </p>
+                <p className="ErrTxt">
+                  {touched.email_id ? errors?.email_id : ""}
+                </p>
+                <div className="d-flex flex-row justify-content-between align-item-center">
+                  <div>
+                    <Checkbox
+                      checked={true}
+                      style={{
+                        display: getLoginType().id !== 2 ? "none" : "",
+                      }}
+                      className={classes.optinCheck}
+                      onChange={() => {
+                        HandleVerifyModal({
+                          SubmitButtonTitle: "Close",
+                          closeButtonTitle: "Register with email",
+                          primary: "success",
+                          onSuccess: () => {},
+                          onClose: () => {
+                            navigate(getLoginType().pathname);
+                          },
+                          message:
+                            VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_DISABLE_BEFORE_SIGNUP,
+                        });
+                      }}
+                    >
+                      Opt-in
+                    </Checkbox>
+                  </div>
+
                   <p
                     className={classes.changeTxt}
                     onClick={() => {
@@ -406,18 +467,6 @@ const SignupwithCredentials = () => {
           </OwlCarousel>
         </div>
       </div>
-      <RedirectModal
-        open={redirectModal.show}
-        msg={redirectModal.msg}
-        Btnname={"Sign in"}
-        onSuccess={() => {
-          navigate("/login");
-          setredirectModal({ show: false, msg: "" });
-        }}
-        onClose={() => {
-          setredirectModal({ show: false, msg: "" });
-        }}
-      />
     </>
   );
 };

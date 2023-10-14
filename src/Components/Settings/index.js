@@ -84,6 +84,7 @@ const Settings = () => {
     groupid: "",
     read_out_language_id: "",
     read_out_accent_id: "",
+    opt_in: "",
   });
 
   /**
@@ -142,6 +143,7 @@ const Settings = () => {
         talkshow_event_banner: userSettings?.talkshow_event_banner,
         read_out_language_id: userSettings?.read_out_language_id,
         read_out_accent_id: userSettings?.read_out_accent_id,
+        opt_in: userSettings?.opt_in,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -288,6 +290,26 @@ const Settings = () => {
           let keys = Object.keys(value);
           if (updateValue.length !== 0) {
             return setupdateValue((pre) => [...pre, ...keys]);
+          } else {
+            return setupdateValue([...key]);
+          }
+        case "opt_in_with_notification_sms":
+          setValues((pre) => ({
+            ...pre,
+            ...value,
+          }));
+          handleupdate({
+            ...value,
+          }).then((response) => {
+            if (response.account_active_inactive === 0) {
+              dispatch(handleAccountActive(false));
+              RemoveToken(dispatch);
+              window.location.reload();
+            }
+          });
+          let optin_keys = Object.keys(value);
+          if (updateValue.length !== 0) {
+            return setupdateValue((pre) => [...pre, ...optin_keys]);
           } else {
             return setupdateValue([...key]);
           }

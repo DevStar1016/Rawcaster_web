@@ -431,6 +431,22 @@ const Profile = () => {
                             </span>
                           </div>
                         )}
+                        <div
+                          className={`${classes.item} ${classes.memberitem}`}
+                        >
+                          <p>
+                            <img src={profile_join} alt={"Joined at"} />
+                          </p>
+                          <div className={classes.memberContent}>
+                            <span className={classes.noWrap}>
+                              Rawcaster membership is
+                            </span>
+                            <span className={classes.breakAll}>
+                              {" "}
+                              {profileData?.user_status}
+                            </span>
+                          </div>
+                        </div>
                         <div className={classes.item}>
                           <p>
                             <img src={profile_join} alt={"Joined at"} />

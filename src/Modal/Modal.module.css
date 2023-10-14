@@ -43,6 +43,20 @@
   width: 160px;
   height: 45px;
 }
+.globalModal {
+  padding: 30px 0 !important;
+}
+.globalModal p {
+  font-weight: 500;
+  font-size: 20px !important;
+  margin: 30px auto;
+  max-width: 450px;
+  line-height: 35px !important;
+  text-align: center;
+  font-family: "DM Sans", sans-serif;
+  color: #1d1c1c;
+}
+
 .profileModal .reportBtn:hover,.actionBtn .reportBtn:hover{
   background: #563662 !important;
   border: #563662 1px solid !important;
@@ -53,7 +67,7 @@
 }
 .profileModal p {
   font-weight: 500;
-  font-size: 23px !important;
+  font-size: 23px;
   margin: 30px auto;
   max-width: 450px;
   line-height: 35px !important;
@@ -396,7 +410,10 @@ text-align: center;
 .influencerModal .topProsec {
   margin: 20px 0;
 }
-.AccountactiveSec {
+.GlobalModalSec  {
+
+}
+.AccountactiveSec,.GlobalModalSec {
 display: flex;
 align-items: center;
 justify-content: center;
@@ -404,7 +421,7 @@ flex-direction: column;
 padding: 10px;
 text-align: center;
 }
-.AccountactiveSec img{
+.AccountactiveSec img,.GlobalModalSec img{
   margin: auto;
   height: 40px;
   margin-bottom: 20px !important;
@@ -413,13 +430,16 @@ text-align: center;
   font-weight: 700;
   color: #454545;
 }
-.AccountactiveSec p {
+.AccountactiveSec p,.GlobalModalSec p {
   font-family: 'DM Sans';
 font-style: normal;
 font-weight: 400;
 font-size: 16px;
 line-height: 23px;
 
+}
+.GlobalModalSec p {
+word-break: unset;
 }
 .AccountactiveSec a {
   background: #faa21b 0 0 no-repeat padding-box;

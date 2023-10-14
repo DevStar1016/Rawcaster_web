@@ -38,7 +38,16 @@
    line-height: 21px;
    color: #4A4949;
 }
-
+.optinCheck {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.optinCheck input {
+   height: 13px !important;
+}
+.optinCheck span {
+   font-family: 'DM Sans', sans-serif; font-size: 13px;}
 .loginBox { padding: 25px;  max-width: 470px; margin: auto; }
 .subText { font-size: 17px; margin-bottom: 20px; color: #1D1C1C; font-weight: 300; }
 .verifyBox { padding: 25px;  max-width: 570px; margin:40px auto 40px auto; padding:50px 100px 130px 100px; border-radius: 8px; border: 1px solid #E8EAEE; }

@@ -6,18 +6,20 @@
 import { Button, Modal, Radio, Select, Switch } from "antd";
 import { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
-import { useAuth, useDashboard } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthToken, useDashboard } from "../../Shared/Reduxfetcher";
 import { getTimeZone, getlanguagelist } from "../../Shared/DropdownApis";
 import { useSettingsContext } from "../../Shared/Context";
 import {
   AccountStatus,
   DateTypeFormats,
   DefaultRawcasterPage,
+  OptInStatus,
   ProfileswitchTypes,
   SettingsList,
+  VALIDATION_MESSAGES,
 } from "./Constants";
 import { findValidDisplayAccentData, getValidDisplayData } from "./Utility";
-import { decodeHtml } from "../../Shared/Utility";
+import { JSONtoformdata, decodeHtml, getAuthToken } from "../../Shared/Utility";
 import {
   defaultGroupImg,
   defaultprofileImg,
@@ -28,6 +30,10 @@ import {
   handleRemoveTranslate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { toast } from "react-hot-toast";
+import EmailorMobileUpdateModal from "../../Modal/Verification/EmailorMobileUpdateModal";
+import { ShowDefaultModal } from "../../Modal/DefaultModal";
+import { resendOtpService } from "../../Services/ApiService";
+import { useNavigate } from "react-router";
 
 const General = () => {
   const {
@@ -38,11 +44,17 @@ const General = () => {
     setValues,
     handleupdate,
   } = useSettingsContext();
+  const navigate = useNavigate();
+  const loginToken = useAuthToken();
   const dispatch = useDispatch();
   const [isDropdownSaveEnabled, setisDropdownSaveEnabled] = useState(false);
   const { loginUserData, userSettings } = useAuth();
   const { groupsList, friendsList } = useDashboard();
   const [TimeZones, setTimeZones] = useState([]);
+  const [OptinModal, setOptinModal] = useState({
+    status: false,
+    isEmail: false,
+  });
   const [LanguagesList, setLanguagesList] = useState({
     default: [],
     read_out: [],
@@ -129,6 +141,47 @@ const General = () => {
       LanguagesList.read_out,
       read_out_language_id
     );
+  };
+
+  const HandleVerifyModal = ({
+    primary,
+    onSuccess,
+    SubmitButtonTitle,
+    closeButtonTitle,
+    message,
+  }) => {
+    ShowDefaultModal({
+      open: true,
+      isCloseAvailable: true,
+      isSubmitAvailable: true,
+      primary,
+      onSuccess,
+      SubmitButtonTitle,
+      closeButtonTitle,
+      message,
+    });
+  };
+
+  const handleSendOTP = (value) => {
+    let finalData = {
+      auth_code: getAuthToken("Rawcaster"),
+      token: loginToken,
+      otp_flag: value,
+    };
+    resendOtpService(JSONtoformdata(finalData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          toast.remove("rawcaster");
+          toast.success(res.data.msg, { id: "rawcaster" });
+          navigate("/verifyotp", {
+            state: { navigatePath: "/setting", type: value, ...res.data },
+          });
+        } else {
+          toast.remove("rawcaster");
+          toast.error(res.data.message, { id: "rawcaster" });
+        }
+      })
+      .catch((err) => {});
   };
 
   return (
@@ -423,7 +476,98 @@ const General = () => {
               </>
             );
           })}
-
+          <div>
+            <p className={classes.smallheading}>SMS Opt-in</p>
+            <p className={classes.text}>
+              Opt-in to enable SMS notification from Rawcaster
+            </p>
+            <Radio.Group
+              defaultValue={formikvalues?.opt_in}
+              value={formikvalues?.opt_in}
+              className={classes.online_status}
+              onChange={(e) => {
+                if (e.target.value === 1) {
+                  if (loginUserData.is_mobile_no_verified === 1) {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Confirm",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        setupdateValue("opt_in", e.target.value);
+                      },
+                      message:
+                        VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE,
+                    });
+                  } else {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Continue",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        if (loginUserData.mobile) {
+                          handleSendOTP("sms");
+                        } else {
+                          setOptinModal({
+                            status: true,
+                            isEmail: false,
+                          });
+                        }
+                      },
+                      message: VALIDATION_MESSAGES.MOBILE_NUMBER_NOT_VERIFIED,
+                    });
+                  }
+                } else {
+                  if (loginUserData.is_email_id_verified === 1) {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Confirm",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        setupdateValue("opt_in", e.target.value);
+                      },
+                      message:
+                        VALIDATION_MESSAGES.EMAIL_VERIFIED_OPT_IN_DISABLE +
+                        loginUserData?.email_id,
+                    });
+                  } else {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Continue",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        if (loginUserData.email_id) {
+                          handleSendOTP("email");
+                        } else {
+                          setOptinModal({
+                            status: true,
+                            isEmail: true,
+                          });
+                        }
+                      },
+                      message: VALIDATION_MESSAGES.EMAIL_NOT_VERIFIED,
+                    });
+                  }
+                }
+              }}
+              disabled={updateValue.includes("opt_in")}
+            >
+              {OptInStatus.map((elem, index) => {
+                return (
+                  <Radio
+                    className={
+                      formikvalues.account_active_inactive === index
+                        ? classes.radio_active
+                        : null + " " + classes.radio_inactive
+                    }
+                    value={index}
+                    key={index}
+                  >
+                    {elem}
+                  </Radio>
+                );
+              })}
+            </Radio.Group>
+          </div>
           <div>
             <p className={classes.smallheading}>Profile Privacy</p>
             <p className={classes.text}>
@@ -453,37 +597,6 @@ const General = () => {
             </div>
           </div>
 
-          {/* <div>
-            <p className={classes.smallheading}>Preference Language</p>
-            <Select
-              showSearch
-              style={{ width: 200 }}
-              className={`mt-2 ${classes.SelectSec} settingsSelect`}
-              placeholder="Search Preference Language"
-              optionFilterProp="children"
-              value={getValidDisplayData(
-                LanguagesList.default,
-                formikvalues.language_id,
-                "id"
-              )}
-              filterOption={(input, option) =>
-                (option?.label ?? "").includes(input)
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA?.label ?? "")
-                  .toLowerCase()
-                  .localeCompare((optionB?.label ?? "").toLowerCase())
-              }
-              options={LanguagesList.default}
-              onChange={(_, { id }) => {
-                setupdateValue("language_id", id);
-              }}
-              disabled={
-                updateValue.includes("language_id") ||
-                userSettings?.account_active_inactive === 0
-              }
-            />
-          </div> */}
           <div className="d-flex flex-row">
             <div>
               <p className={classes.smallheading}>Translation Language</p>
@@ -672,6 +785,18 @@ const General = () => {
             </Radio.Group>
           </div>
         </>
+      )}
+      {OptinModal.status && (
+        <EmailorMobileUpdateModal
+          open={OptinModal.status}
+          type={OptinModal.isEmail ? "email_id" : "mobile_no"}
+          close={() => {
+            setOptinModal({
+              status: false,
+              isEmail: false,
+            });
+          }}
+        />
       )}
     </div>
   );
