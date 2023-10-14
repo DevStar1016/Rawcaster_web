@@ -3,7 +3,7 @@
  * @returns JSX element representing the signup form.
  */
 import { Button, Checkbox, Form, Input, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import classes from "./Signup.module.css";
@@ -22,35 +22,27 @@ import {
 import {
   checkGeolocationPermission,
   getAuthToken,
-  getGeocodeData,
   JSONtoformdata,
 } from "../../Shared/Utility";
 import { signupService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import OwlCarousel from "react-owl-carousel";
-import RedirectModal from "../../Modal/Verification/RedirectModal";
 import moment from "moment";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { accountVerifyHandle } from "./Utility";
-import { useMainContext } from "../../Shared/Context";
 import { handleReferenceID } from "../../Store/Redux/Reducer/AuthReducer";
 import { useAuth } from "../../Shared/Reduxfetcher";
-import GlobalModal from "../../Modal/GlobalModal";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { VALIDATION_MESSAGES } from "../Settings/Constants";
 
 const SignupwithCredentials = () => {
   const { nugget_id } = useParams();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const navigate = useNavigate();
   const { reference_id } = useAuth();
-  const [OptinModal, setOptinModal] = useState({
-    status: false,
-    message: "",
-    type: "",
-    isSubmitButton: false,
-  });
+
   const getLoginType = () => {
     if (pathname.includes("signupwithemail")) {
       return {
@@ -110,12 +102,18 @@ const SignupwithCredentials = () => {
       validationSchema: validationSchema,
       onSubmit: (values) => {
         if (getLoginType().id === 2) {
-          setOptinModal({
-            status: true,
+          HandleVerifyModal({
+            SubmitButtonTitle: "Continue",
+            closeButtonTitle: "Register with email",
+            primary: "success",
+            onSuccess: () => {
+              SignUpValidate();
+            },
+            onClose: () => {
+              navigate(getLoginType().pathname);
+            },
             message:
-              "By Providing your phone number, you agree to receive text messages from Rawcaster.com with your One-Time-Password, during signup or password reset. Message and data rates may apply. If you wish to STOP receiving SMS messages from Rawcaster.com, please uncheck this box and register with email",
-            type: "text",
-            isSubmitButton: true,
+              VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE_BEFORE_SIGNUP,
           });
         } else {
           SignUpValidate();
@@ -181,7 +179,16 @@ const SignupwithCredentials = () => {
         if (res.data.status === 1) {
           handleProfileUpdate(res.data);
         } else if (res.data.status === 2) {
-          setredirectModal({ show: true, msg: res.data.msg });
+          HandleVerifyModal({
+            primary: "success",
+            message: res.data.msg,
+            closeButtonTitle: "Cancel",
+            SubmitButtonTitle: "Sign in",
+            onSuccess: () => {
+              navigate("/login");
+            },
+            onClose: () => {},
+          });
         } else if (res.data.status === 0) {
           toast.remove("Error");
           toast.error(res.data.msg, {
@@ -284,12 +291,16 @@ const SignupwithCredentials = () => {
                       }}
                       className={classes.optinCheck}
                       onChange={() => {
-                        setOptinModal({
-                          status: true,
+                        HandleVerifyModal({
+                          SubmitButtonTitle: "Close",
+                          closeButtonTitle: "Register with email",
+                          primary: "success",
+                          onSuccess: () => {},
+                          onClose: () => {
+                            navigate(getLoginType().pathname);
+                          },
                           message:
-                            "No SMS messages will be sent to your phone. You will need to register with your email address to receive your One-Time-Password.",
-                          type: "text",
-                          isSubmitButton: false,
+                            VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_DISABLE_BEFORE_SIGNUP,
                         });
                       }}
                     >
@@ -456,56 +467,6 @@ const SignupwithCredentials = () => {
           </OwlCarousel>
         </div>
       </div>
-      {OptinModal.status && (
-        <>
-          {OptinModal.type === "text" ? (
-            <GlobalModal
-              open={OptinModal.status}
-              message={OptinModal.message}
-              SubmitButtonTitle="Register with email"
-              closeButtonTitle={
-                OptinModal.isSubmitButton ? "Continue" : "Cancel"
-              }
-              isCloseAvailable
-              isSubmitAvailable
-              primary="success"
-              onSuccess={() => {
-                if (OptinModal.isSubmitButton) {
-                  SignUpValidate();
-                }
-                setOptinModal({
-                  status: false,
-                  message: "",
-                  type: "",
-                  isSubmitButton: false,
-                });
-              }}
-              onClose={() => {
-                if (getLoginType().id === 2) {
-                  navigate(getLoginType().pathname);
-                }
-                setOptinModal({
-                  status: false,
-                  message: "",
-                  type: "",
-                });
-              }}
-            />
-          ) : null}
-        </>
-      )}
-      <RedirectModal
-        open={redirectModal.show}
-        msg={redirectModal.msg}
-        Btnname={"Sign in"}
-        onSuccess={() => {
-          navigate("/login");
-          setredirectModal({ show: false, msg: "" });
-        }}
-        onClose={() => {
-          setredirectModal({ show: false, msg: "" });
-        }}
-      />
     </>
   );
 };

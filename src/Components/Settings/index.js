@@ -293,6 +293,26 @@ const Settings = () => {
           } else {
             return setupdateValue([...key]);
           }
+        case "opt_in_with_notification_sms":
+          setValues((pre) => ({
+            ...pre,
+            ...value,
+          }));
+          handleupdate({
+            ...value,
+          }).then((response) => {
+            if (response.account_active_inactive === 0) {
+              dispatch(handleAccountActive(false));
+              RemoveToken(dispatch);
+              window.location.reload();
+            }
+          });
+          let optin_keys = Object.keys(value);
+          if (updateValue.length !== 0) {
+            return setupdateValue((pre) => [...pre, ...optin_keys]);
+          } else {
+            return setupdateValue([...key]);
+          }
         case "delete":
           setFieldValue(key, "");
           return setupdateValue((pre) => pre.filter((ele) => ele !== key));

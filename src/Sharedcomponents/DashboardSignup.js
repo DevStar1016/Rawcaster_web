@@ -27,7 +27,6 @@ import jwt_decode from "jwt-decode";
 import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
 import SuggestedInfluencers from "./SuggestedInfluencers";
 import { useAuth, useAuthData } from "../Shared/Reduxfetcher";
-import RedirectModal from "../Modal/Verification/RedirectModal";
 import Connections from "../Components/Connections/Friends/Connections";
 import Groups from "../Components/Connections/Groups/Groups";
 import VideoThumb from "../Assets/Images/Video_preview.jpg";
@@ -39,6 +38,7 @@ import Header from "../Components/ChatBox/Header";
 import Content from "../Components/ChatBox/Group/Content";
 import { GoogleSigninService } from "../Shared/SharedAPIs";
 import { useGoogleLogin } from "@react-oauth/google";
+import { HandleVerifyModal } from "../Modal/DefaultModal";
 
 const DashboardSignup = () => {
   const { player, setplayer, setisChatOpen, isChatOpen } = useMainContext();
@@ -46,7 +46,6 @@ const DashboardSignup = () => {
   const { isSuccess } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const [Controlls, setControlls] = useState(false);
   const [LocationValue, setLocationValue] = useState({
     geo_location: "",
@@ -97,7 +96,16 @@ const DashboardSignup = () => {
             }
           });
         } else if (res.data.status === 2) {
-          setredirectModal({ show: true, msg: res.data.msg });
+          HandleVerifyModal({
+            primary: "success",
+            message: res.data.msg,
+            closeButtonTitle: "Cancel",
+            SubmitButtonTitle: "Sign in",
+            onSuccess: () => {
+              navigate("/login");
+            },
+            onClose: () => {},
+          });
         } else if (res.data.status === 0) {
           toast.remove("rawcaster");
           toast.error(res.data.msg, { id: "rawcaster" });
@@ -221,18 +229,7 @@ const DashboardSignup = () => {
             >
               Signup with a phone number or email
             </Button>
-            <RedirectModal
-              open={redirectModal.show}
-              msg={redirectModal.msg}
-              Btnname={"Sign in"}
-              onSuccess={() => {
-                navigate("/login");
-                setredirectModal({ show: false, msg: "" });
-              }}
-              onClose={() => {
-                setredirectModal({ show: false, msg: "" });
-              }}
-            />
+
             <SuggestedInfluencers />
           </div>
         ) : (

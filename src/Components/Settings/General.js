@@ -16,6 +16,7 @@ import {
   OptInStatus,
   ProfileswitchTypes,
   SettingsList,
+  VALIDATION_MESSAGES,
 } from "./Constants";
 import { findValidDisplayAccentData, getValidDisplayData } from "./Utility";
 import { JSONtoformdata, decodeHtml, getAuthToken } from "../../Shared/Utility";
@@ -495,7 +496,7 @@ const General = () => {
                         setupdateValue("opt_in", e.target.value);
                       },
                       message:
-                        "By Providing your phone number, you agree to receive text messages from Rawcaster.com with your One-Time-Password, during signup or password reset. Message and data rates may apply. If you wish to STOP receiving SMS messages from Rawcaster.com, please uncheck this box.",
+                        VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE,
                     });
                   } else {
                     HandleVerifyModal({
@@ -512,8 +513,7 @@ const General = () => {
                           });
                         }
                       },
-                      message:
-                        "You need to complete your Mobile Number verification before you can do this. Do you want to verify your Mobile Number now?",
+                      message: VALIDATION_MESSAGES.MOBILE_NUMBER_NOT_VERIFIED,
                     });
                   }
                 } else {
@@ -525,7 +525,9 @@ const General = () => {
                       onSuccess: () => {
                         setupdateValue("opt_in", e.target.value);
                       },
-                      message: `Starting now no SMS messages will be sent to your phone. All the OTP will be sent to your registered email ID ${loginUserData?.email_id}`,
+                      message:
+                        VALIDATION_MESSAGES.EMAIL_VERIFIED_OPT_IN_DISABLE +
+                        loginUserData?.email_id,
                     });
                   } else {
                     HandleVerifyModal({
@@ -542,8 +544,7 @@ const General = () => {
                           });
                         }
                       },
-                      message:
-                        "You need to complete your Email verification before you can do this. Do you want to verify your Email now?",
+                      message: VALIDATION_MESSAGES.EMAIL_NOT_VERIFIED,
                     });
                   }
                 }

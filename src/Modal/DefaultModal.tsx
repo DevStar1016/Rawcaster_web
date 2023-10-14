@@ -100,3 +100,24 @@ export const ShowDefaultModal = (props: GlobalModalProps) => {
     footer: null,
   });
 };
+
+export const HandleVerifyModal = ({
+  primary,
+  onSuccess,
+  SubmitButtonTitle,
+  closeButtonTitle,
+  message,
+  onClose,
+}) => {
+  ShowDefaultModal({
+    open: true,
+    isCloseAvailable: true,
+    isSubmitAvailable: true,
+    primary,
+    onSuccess,
+    onClose,
+    SubmitButtonTitle,
+    closeButtonTitle,
+    message,
+  });
+};

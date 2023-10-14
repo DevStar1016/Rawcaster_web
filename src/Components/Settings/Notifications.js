@@ -5,22 +5,26 @@
 import { Switch } from "antd";
 import React, { useState } from "react";
 import classes from "./Settings.module.css";
-import { NotificationTypes, switchTypes } from "./Constants";
+import {
+  NotificationTypes,
+  VALIDATION_MESSAGES,
+  switchTypes,
+} from "./Constants";
 import { useSettingsContext } from "../../Shared/Context";
 import { useAuth } from "../../Shared/Reduxfetcher";
 import { JSONtoformdata, getAuthToken } from "../../Shared/Utility";
 import { toast } from "react-hot-toast";
 import { resendOtpService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
-import RedirectModal from "../../Modal/Verification/RedirectModal";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import EmailorMobileUpdateModal from "../../Modal/Verification/EmailorMobileUpdateModal";
 
 const Notifications = () => {
-  const { loginUserData } = useAuth();
+  const { loginUserData, userSettings } = useAuth();
   const navigate = useNavigate();
-  const [redirectModal, setredirectModal] = useState({
-    show: false,
-    msg: "",
-    type: "",
+  const [OptinModal, setOptinModal] = useState({
+    status: false,
+    isEmail: false,
   });
   const { formikvalues, setupdateValue, updateValue } = useSettingsContext();
 
@@ -34,40 +38,6 @@ const Notifications = () => {
     SwitchType[type] = value;
     console.log(SwitchType?.join(""), "SwitchType?.join()");
     return SwitchType?.join("");
-  };
-
-  /**
-   * Handles the notification based on the given type, index, and status.
-   * @param {string} type - The type of notification.
-   * @param {number} index - The index of the notification.
-   * @param {boolean} status - The status of the notification.
-   * @returns None
-   */
-  const handleNotification = (type, index, status) => {
-    if (index === 0) {
-      if (loginUserData?.is_email_id_verified === 0) {
-        setredirectModal({
-          show: true,
-          msg: "Email id is not validated,Do you want to validate now?",
-          type: "email",
-        });
-        return;
-      }
-    } else if (index === 1) {
-      if (loginUserData?.is_mobile_no_verified === 0) {
-        setredirectModal({
-          show: true,
-          msg: "Mobile Number is not validated,Do you want to validate now?",
-          type: "sms",
-        });
-        return;
-      }
-    }
-    if (status) {
-      setupdateValue(type, getValidData(type, index, "1"), "add", false);
-    } else {
-      setupdateValue(type, getValidData(type, index, "0"), "add", false);
-    }
   };
 
   /**
@@ -95,6 +65,84 @@ const Notifications = () => {
         }
       })
       .catch((err) => {});
+  };
+
+  /**
+   * Handles the notification based on the given type, index, and status.
+   * @param {string} type - The type of notification.
+   * @param {number} index - The index of the notification.
+   * @param {boolean} status - The status of the notification.
+   * @returns None
+   */
+
+  const handleNotification = (type, index, status) => {
+    if (index === 0) {
+      if (loginUserData?.is_email_id_verified === 0) {
+        HandleVerifyModal({
+          SubmitButtonTitle: "Verify",
+          closeButtonTitle: "Later",
+          primary: "success",
+          onSuccess: () => {
+            if (loginUserData.email_id) {
+              handleSendOTP("email");
+            } else {
+              setOptinModal({
+                status: true,
+                isEmail: true,
+              });
+            }
+          },
+          message: VALIDATION_MESSAGES.EMAIL_NOT_VERIFIED,
+        });
+
+        return;
+      } else {
+      }
+    } else if (index === 1) {
+      if (loginUserData?.is_mobile_no_verified === 0) {
+        HandleVerifyModal({
+          SubmitButtonTitle: "Verify",
+          closeButtonTitle: "Later",
+          primary: "success",
+          onSuccess: () => {
+            if (loginUserData.mobile) {
+              handleSendOTP("sms");
+            } else {
+              setOptinModal({
+                status: true,
+                isEmail: false,
+              });
+            }
+          },
+          message: VALIDATION_MESSAGES.MOBILE_NUMBER_NOT_VERIFIED,
+        });
+        return;
+      }
+    }
+    if (status) {
+      if (userSettings.opt_in) {
+        setupdateValue(type, getValidData(type, index, "1"), "add", false);
+      } else {
+        HandleVerifyModal({
+          SubmitButtonTitle: "Confirm",
+          closeButtonTitle: "Cancel",
+          primary: "success",
+          onSuccess: () => {
+            setupdateValue(
+              "opt_in_with_notification_sms",
+              {
+                opt_in: 1,
+                [type]: getValidData(type, index, "1"),
+              },
+              "add_multiple"
+            );
+          },
+          message: VALIDATION_MESSAGES.OPT_IN_ENABLE,
+        });
+      }
+    } else {
+      setupdateValue(type, getValidData(type, index, "0"), "add", false);
+    }
   };
 
   return (
@@ -134,27 +182,18 @@ const Notifications = () => {
           })}
         </>
       )}
-      <RedirectModal
-        open={redirectModal.show}
-        msg={redirectModal.msg}
-        closeBtnName="Later"
-        Btnname={"Verify"}
-        onSuccess={() => {
-          if (!loginUserData?.email_id || !loginUserData?.mobile) {
-            navigate(
-              { pathname: "/profile" },
-              { state: { data: "redirectToOtp" } }
-            );
-          } else {
-            handleSendOTP(redirectModal.type);
-          }
-
-          setredirectModal({ show: false, msg: "", type: "" });
-        }}
-        onClose={() => {
-          setredirectModal({ show: false, msg: "", type: "" });
-        }}
-      />
+      {OptinModal.status && (
+        <EmailorMobileUpdateModal
+          open={OptinModal.status}
+          type={OptinModal.isEmail ? "email_id" : "mobile_no"}
+          close={() => {
+            setOptinModal({
+              status: false,
+              isEmail: false,
+            });
+          }}
+        />
+      )}
     </div>
   );
 };
