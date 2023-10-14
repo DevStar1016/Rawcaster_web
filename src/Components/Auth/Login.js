@@ -4,7 +4,14 @@
  * @returns JSX elements representing the login page.
  */
 import { Button, Form, Input } from "antd";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useHref,
+  useNavigate,
+  useNavigation,
+  useParams,
+} from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
@@ -44,7 +51,9 @@ const validationSchema = yup.object().shape({
 });
 
 const Login = () => {
+  const navigation = useNavigation();
   const { nugget_id } = useParams();
+  const hrefNavigate = useHref();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { values, handleChange, handleSubmit, errors, touched, setFieldError } =
@@ -120,7 +129,7 @@ const Login = () => {
             closeButtonTitle: "Cancel",
             SubmitButtonTitle: "Sign up",
             onSuccess: () => {
-              navigate("/signup");
+              window.location.assign("/signup");
             },
             onClose: () => {},
           });
