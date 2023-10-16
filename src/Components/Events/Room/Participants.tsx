@@ -286,23 +286,39 @@ const Participants = () => {
                 isGlobal={false}
               />
             )}
-            {
-              getISCoHost() && findAttendee?.isHost ?
-                <div style={{ opacity: '0' }}>
+            {getISCoHost() && findAttendee?.isHost ? (
+              <div style={{ opacity: "0" }}>
+                <i className="material-symbols-outlined">more_vert</i>
+              </div>
+            ) : getISHost() || getISCoHost() ? (
+              <Dropdown
+                menu={{
+                  items: findAttendee ? getDropdownList(findAttendee) : [],
+                }}
+              >
+                <div className={classes.moreIcon}>
                   <i className="material-symbols-outlined">more_vert</i>
-                </div> :
-                getISHost() || getISCoHost() ? (
-                  <Dropdown
-                    menu={{
-                      items: findAttendee ? getDropdownList(findAttendee) : [],
-                    }}
-                  >
-                    <div className={classes.moreIcon}>
-                      <i className="material-symbols-outlined">more_vert</i>
-                    </div>
-                  </Dropdown>
-                ) : null
-            }
+                </div>
+              </Dropdown>
+            ) : isYou ? (
+              <Dropdown
+                menu={{
+                  items: findAttendee && [
+                    {
+                      key: "1",
+                      label: "Rename user",
+                      onClick: () => {
+                        setrenameAttendee(findAttendee);
+                      },
+                    },
+                  ],
+                }}
+              >
+                <div className={classes.moreIcon}>
+                  <i className="material-symbols-outlined">more_vert</i>
+                </div>
+              </Dropdown>
+            ) : null}
           </div>
         </div>
         <Collapse in={SpeakerState === findAttendee?.userId}>
