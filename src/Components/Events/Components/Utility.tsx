@@ -190,14 +190,7 @@ export const LocalMicrophoneComponent = ({
         <i
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={async () => {
-            if (isAllowed) {
-              toggleMute();
-            } else {
-              messageApi.open({
-                type: "warning",
-                content: "Your mic has been disabled. Please contact the host",
-              });
-            }
+            toggleMute();
           }}
         ></i>
       )}
@@ -345,7 +338,7 @@ export const LocalCameraComponent = ({
             videoinput.devices.length === 0 ? styles.disableIcon : ""
           }`}
           onClick={async () => {
-            if (isAllowed) {
+            // if (isAllowed) {
               if (videoinput.devices.length !== 0) {
                 if (!selectedDevice) {
                   await meetingmanager.startVideoInputDevice(
@@ -363,7 +356,7 @@ export const LocalCameraComponent = ({
                 }
                 toggleVideo();
               }
-            }
+            // }
           }}
         ></i>
       )}
