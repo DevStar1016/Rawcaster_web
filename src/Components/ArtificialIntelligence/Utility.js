@@ -58,7 +58,7 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
   } = useMainContext();
   const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
   const [isFetchingurl, setisFetchingurl] = useState(false);
-
+  console.log(isplayerFetching, "isplayerFetching", isplayerFetching === index);
   const token = useAuthToken();
 
   const HandlegetNuggetContentAudio = (url) => {
@@ -138,6 +138,7 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
     )
       .then((res) => {
         if (res) {
+          setisplayerFetching(false);
           if (res.data.status === 1) {
             if (audio) {
               audio?.pause();
@@ -157,10 +158,9 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
       .catch((err) => {
         if (axios.isCancel(err)) {
           PlayerSource.current = null;
+        } else {
+          setisplayerFetching(false);
         }
-      })
-      .finally(() => {
-        setisplayerFetching(false);
       });
   };
 
@@ -184,10 +184,12 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
       ) : (
         <p
           onClick={() => {
+            setisplayerFetching(index);
             if (PlayerSource.current) {
               PlayerSource.current.abort("Request Cancelled");
             }
-            setisplayerFetching(index);
+            console.log("test");
+
             convertToAudio();
           }}
         >

@@ -93,6 +93,10 @@ const Claimaccount = () => {
     }
   };
 
+  const getisLoginuserId = () => {
+    return parseInt(DecryptionString(params.user_id)) === loginUserData.user_id;
+  };
+
   /**
    * Handles the claim account functionality by sending a request to the server with the provided value.
    * @param {any} value - The value to be sent to the server for claiming the account.
@@ -104,7 +108,6 @@ const Claimaccount = () => {
       influencer_id: display_user_id ? parseInt(display_user_id) : null,
       token: loginUserData?.token,
     };
-
     VerifyType(JSONtoformdata(filterValidObject(finalData)))
       .then((res) => {
         if (res.data.status === 1) {
@@ -115,7 +118,7 @@ const Claimaccount = () => {
               msg: res.data.msg,
             })
           );
-          if (display_user_id) {
+          if (getisLoginuserId()) {
             dispatch(handleAccountVerifyStatus(1));
           }
           // Modal.success({

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import GlobalModal from "../GlobalModal";
 import { useFormik } from "formik";
 import { Form, Input } from "antd";
@@ -22,7 +22,7 @@ import { useDispatch } from "react-redux";
 
 type EmailorMobileUpdateModalProps = {
   open: boolean;
-  type: "email_id" | "mobile_no";
+  type: "email_id" | "mobile";
   submit: (val: any) => void;
   close: () => void;
 };
@@ -36,29 +36,34 @@ function EmailorMobileUpdateModal({
   const dispatch = useDispatch();
   const { loginUserData } = useAuth();
   const navigate = useNavigate();
+  const [Value, setValue] = useState("");
   const validationSchema = yup.object().shape({
     email_id:
       type === "email_id"
         ? yup.string().email().required(`Please input your Email!`)
         : yup.string().email(),
-    mobile_no:
-      type === "mobile_no"
-        ? yup.string().required(`Please input your Mobile number!`)
-        : yup.string(),
+    mobile:
+      type === "mobile"
+        ? yup
+            .string()
+            .min(5, `Please input Valid Mobile Number!`)
+            .required(`Please input your Mobile number!`)
+        : yup.string().min(5, `Please input Valid Mobile Number!`),
   });
 
-  const { values, handleChange, touched, errors, handleSubmit } = useFormik({
-    initialValues: {
-      email_id: "",
-      mobile_no: "",
-    },
-    validationSchema,
-    onSubmit: (value) => {
-      if (loginToken && loginUserData && loginUserData.name) {
-        handleupdateProfile(value);
-      }
-    },
-  });
+  const { values, handleChange, touched, errors, handleSubmit, setFieldValue } =
+    useFormik({
+      initialValues: {
+        email_id: "",
+        mobile: "",
+      },
+      validationSchema,
+      onSubmit: (value) => {
+        if (loginToken && loginUserData && loginUserData.name) {
+          handleupdateProfile(value);
+        }
+      },
+    });
 
   const handleSendOTP = (value: any, navigateFrom: any) => {
     let finalData = {
@@ -102,13 +107,14 @@ function EmailorMobileUpdateModal({
   const handleupdateProfile = (values, isNext = false) => {
     let profileValue = {
       ...values,
+      name: loginUserData?.name ? loginUserData?.name.trim() : "",
+      first_name: loginUserData?.first_name ? loginUserData?.first_name : "",
       token: loginToken,
       auth_code:
         loginToken && loginUserData?.name
           ? getAuthToken(loginToken + loginUserData?.name.trim())
           : "",
     };
-
     updateProfileService(JSONtoformdata(filterValidObject(profileValue)))
       .then((res) => {
         if (res.data.status === 1) {
@@ -149,9 +155,18 @@ function EmailorMobileUpdateModal({
               type === "email_id" ? "Email Id" : "Mobile Number"
             }`}
             autoComplete="off"
-            value={values[type]}
-            onChange={handleChange(type)}
-            maxLength={50}
+            value={Value}
+            onChange={(e) => {
+              if (type === "email_id" && e.target.value.length <= 50) {
+                setValue(e.target.value);
+                setFieldValue("email_id", e.target.value);
+              } else if (type === "mobile" && e.target.value.length <= 15) {
+                setValue(e.target.value);
+                setFieldValue("mobile", e.target.value);
+              } else {
+                e.stopPropagation();
+              }
+            }}
             status={touched[type] && errors[type] ? "error" : ""}
           />
           <p className="ErrTxt">{touched[type] ? errors?.[type] : ""}</p>

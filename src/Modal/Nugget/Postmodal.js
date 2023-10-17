@@ -59,6 +59,7 @@ const Postmodal = ({ visible, onClose }) => {
     setpreviewMedia,
     shareWithData,
     setdeletedMedia,
+    resetForm,
   } = useContext(PostNuggetContext);
   const { setPostContent } = useGlobalContext();
   const [messageApi] = message.useMessage();
@@ -82,6 +83,15 @@ const Postmodal = ({ visible, onClose }) => {
     show: false,
     type: "",
   });
+
+  const HandleClose = () => {
+    setisPostContentValid(true);
+    resetForm();
+    setLimitExceeds(false);
+    onClose();
+    setMetaData(null);
+    setPostContent("");
+  };
 
   /**
    * Handles the camera permission for a specific type.
@@ -233,9 +243,7 @@ const Postmodal = ({ visible, onClose }) => {
       height={600}
       width={650}
       onCancel={() => {
-        onClose();
-        setMetaData(null);
-        setPostContent("");
+        HandleClose();
       }}
     >
       <div className={classes.nuggetModal}>
