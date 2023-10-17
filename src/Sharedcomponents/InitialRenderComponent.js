@@ -24,8 +24,8 @@ const InitialRenderComponent = () => {
   axios.interceptors.response.use(
     function (response) {
       if (response?.data?.status === -1) {
-        // RemoveToken(dispatch);
-        // window.location.assign("/");
+        RemoveToken(dispatch);
+        window.location.assign("/");
       }
       return response;
     },
