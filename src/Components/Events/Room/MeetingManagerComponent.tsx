@@ -145,13 +145,13 @@ const MeetingManagerComponent = () => {
               }));
                
               if (singleAttendee[hostDisabledType] === false && userStatus) {
-                // Modal.confirm({
-                //   title: popupmessage,
-                //   async onOk() {
-                    // resolve();
-                  // },
-                  // onCancel() {},
-                // });
+                Modal.confirm({
+                  title: popupmessage,
+                  async onOk() {
+                    resolve();
+                  },
+                  onCancel() {},
+                });
               } else if (singleAttendee[hostDisabledType]) {
                 resolve();
               }

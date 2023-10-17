@@ -44,6 +44,7 @@ const Participants = () => {
     attendeesList,
     EventData,
     userdata,
+    MeetingSettings,
   }: EventContextProp = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -51,6 +52,11 @@ const Participants = () => {
   const attendees = Object.values(roster);
   const [isInvited, setisInvited] = useState(false);
   const [isCopied, setisCopied] = useState(false);
+
+  const enabledSettings = () => ({
+    localVideoChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
+    localMicChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
+  });
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -259,7 +265,7 @@ const Participants = () => {
             {isYou ? (
               <LocalMicrophoneComponent
                 className={classes.micsmallIcon}
-                isAllowed={findAttendee?.isCoHost || !findAttendee?.audioDisabledByHost} />
+                isAllowed={enabledSettings().localMicChangeAllowed} />
             ) : (
               <MicrophoneComponent
                 ele={ele}
@@ -275,7 +281,7 @@ const Participants = () => {
                 setselectedDevice={null}
                 selectedDevice={null}
                 className={classes.videosmallIcon}
-                isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost}
+                isAllowed={enabledSettings().localVideoChangeAllowed}
               />
             ) : (
               <CameraComponent
