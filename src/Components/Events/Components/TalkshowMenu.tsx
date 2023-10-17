@@ -58,11 +58,8 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
 
   const enabledSettings = () => ({
     isHost: userdata?.isHost,
-    isCoHost: userdata?.isCoHost,
-    allowEnable: userdata?.isHost || userdata?.isCoHost,
-    viewEnable: userdata?.isHost|| userdata?.isCoHost,
-    localvideoStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
-    localMicStatus: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
+    localvideoStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_video === 0 ? false : userdata.audioDisabledByHost ? false : true,
+    localMicStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_audio === 0 ? false : userdata.audioDisabledByHost ? false : true,
   });
 
   return (
@@ -151,7 +148,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             </Popover>
           )}
         </div>
-        {userdata?.isHost || userdata?.isCoHost ? (
+        {userdata?.isHost ? (
           <div
             className={`onlydes ${styles.streamBtn}`}
             onClick={() => {

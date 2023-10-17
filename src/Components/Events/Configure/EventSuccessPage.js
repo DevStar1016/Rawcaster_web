@@ -32,7 +32,7 @@ const EventSuccessPage = () => {
 
   return (
     <div className={classes.SuccessContainer}>
-      <h2>Your Event Has Been Scheduled !</h2>
+      <h2>Your {EventData?.type === 2 ? "Talkshow" : "Event"} Has Been Scheduled !</h2>
       <div className={classes.ScheduleSec}>
         <h3>{EventData?.event_name}</h3>
         <p>

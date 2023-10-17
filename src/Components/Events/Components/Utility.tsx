@@ -124,16 +124,15 @@ export const MicrophoneComponent = ({
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
             if ((isHost || isCoHost) && !attendee?.isHost) {
-              // ** might be  needed in future
 
-              // const value = {
-              //   refId: EventData?.reference_id,
-              //   hostId: getUserData()?.user_id,
-              //   status: true,
-              //   userId: attendee?.userId,
-              // };
-              // ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
-            } else if (userData?.user_id === attendee?.userId) {
+              const value = {
+                refId: EventData?.reference_id,
+                hostId: getUserData()?.user_id,
+                status: true,
+                userId: attendee?.userId,
+              };
+              ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+            } else if ((isHost || isCoHost) && userData?.user_id === attendee?.userId) {
               toggleMute();
             }
           }}

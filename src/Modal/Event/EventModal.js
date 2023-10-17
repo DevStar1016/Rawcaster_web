@@ -78,7 +78,7 @@ const EventModal = ({
           ? "Close"
           : okBtnTitle
           ? okBtnTitle
-          : `${isUpdate ? "Update" : "Create"} Event`
+          : `${isUpdate ? "Update" : "Create"} ${Type}`
       }
       cancelText={isLinkScreen ? "" : "Cancel"}
       className="eventmodal"

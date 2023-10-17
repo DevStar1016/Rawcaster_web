@@ -44,6 +44,7 @@ const Participants = () => {
     attendeesList,
     EventData,
     userdata,
+    MeetingSettings,
   }: EventContextProp = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -51,6 +52,11 @@ const Participants = () => {
   const attendees = Object.values(roster);
   const [isInvited, setisInvited] = useState(false);
   const [isCopied, setisCopied] = useState(false);
+
+  const enabledSettings = () => ({
+    localVideoChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
+    localMicChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
+  });
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -259,7 +265,7 @@ const Participants = () => {
             {isYou ? (
               <LocalMicrophoneComponent
                 className={classes.micsmallIcon}
-                isAllowed={findAttendee?.isCoHost || !findAttendee?.audioDisabledByHost} />
+                isAllowed={enabledSettings().localMicChangeAllowed} />
             ) : (
               <MicrophoneComponent
                 ele={ele}
@@ -275,7 +281,7 @@ const Participants = () => {
                 setselectedDevice={null}
                 selectedDevice={null}
                 className={classes.videosmallIcon}
-                isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost}
+                isAllowed={enabledSettings().localVideoChangeAllowed}
               />
             ) : (
               <CameraComponent
@@ -286,23 +292,39 @@ const Participants = () => {
                 isGlobal={false}
               />
             )}
-            {
-              getISCoHost() && findAttendee?.isHost ?
-                <div style={{ opacity: '0' }}>
+            {getISCoHost() && findAttendee?.isHost ? (
+              <div style={{ opacity: "0" }}>
+                <i className="material-symbols-outlined">more_vert</i>
+              </div>
+            ) : getISHost() || getISCoHost() ? (
+              <Dropdown
+                menu={{
+                  items: findAttendee ? getDropdownList(findAttendee) : [],
+                }}
+              >
+                <div className={classes.moreIcon}>
                   <i className="material-symbols-outlined">more_vert</i>
-                </div> :
-                getISHost() || getISCoHost() ? (
-                  <Dropdown
-                    menu={{
-                      items: findAttendee ? getDropdownList(findAttendee) : [],
-                    }}
-                  >
-                    <div className={classes.moreIcon}>
-                      <i className="material-symbols-outlined">more_vert</i>
-                    </div>
-                  </Dropdown>
-                ) : null
-            }
+                </div>
+              </Dropdown>
+            ) : isYou ? (
+              <Dropdown
+                menu={{
+                  items: findAttendee && [
+                    {
+                      key: "1",
+                      label: "Rename user",
+                      onClick: () => {
+                        setrenameAttendee(findAttendee);
+                      },
+                    },
+                  ],
+                }}
+              >
+                <div className={classes.moreIcon}>
+                  <i className="material-symbols-outlined">more_vert</i>
+                </div>
+              </Dropdown>
+            ) : null}
           </div>
         </div>
         <Collapse in={SpeakerState === findAttendee?.userId}>
