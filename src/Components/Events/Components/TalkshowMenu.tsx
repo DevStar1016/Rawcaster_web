@@ -58,8 +58,8 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
 
   const enabledSettings = () => ({
     isHost: userdata?.isHost,
-    localvideoStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_video === 0 ? false : userdata.audioDisabledByHost ? false : true,
-    localMicStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_audio === 0 ? false : userdata.audioDisabledByHost ? false : true,
+    localvideoStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_video === 0 ? false : userdata?.audioDisabledByHost ? false : true,
+    localMicStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_audio === 0 ? false : userdata?.audioDisabledByHost ? false : true,
   });
 
   return (
