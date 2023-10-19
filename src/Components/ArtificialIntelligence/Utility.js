@@ -22,7 +22,7 @@ import {
   useGlobalContext,
   useMainContext,
 } from "../../Shared/Context";
-import { JSONtoformdata, ReadMore, Timer } from "../../Shared/Utility";
+import { JSONtoformdata, Timer } from "../../Shared/Utility";
 import { TextToAudioService } from "../../Services/ApiService";
 import axios from "axios";
 import ChatAudioplayer from "../../Sharedcomponents/AudioPlayer/ChatAudioplayer";
@@ -188,8 +188,6 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
             if (PlayerSource.current) {
               PlayerSource.current.abort("Request Cancelled");
             }
-            console.log("test");
-
             convertToAudio();
           }}
         >
@@ -302,6 +300,7 @@ export const MessageContent = (props) => {
             <p
               className={translated_text ? classes.activeTranslate : ""}
               onClick={() => {
+                console.log("test");
                 if (translated_text) {
                   setMessages((pre) => {
                     let findIndex = pre.findIndex((elem, i) => i === index);

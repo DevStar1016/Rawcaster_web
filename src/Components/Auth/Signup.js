@@ -15,7 +15,6 @@ import OwlCarousel from "react-owl-carousel";
 import Seo from "../SEO/Seo";
 import SigninwithService from "./SigninwithService";
 import React, { useEffect } from "react";
-import { useMainContext } from "../../Shared/Context";
 import { useDispatch } from "react-redux";
 import { handleReferenceID } from "../../Store/Redux/Reducer/AuthReducer";
 

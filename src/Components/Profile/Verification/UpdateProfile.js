@@ -34,7 +34,7 @@ import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../../../Store/Storage";
 import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
 import moment from "moment";
-import { GENDER_TYPE } from "../../../Shared/Constant";
+import { GENDER_TYPE, MOBILE_NUMBER_REGEX } from "../../../Shared/Constant";
 import ImageCropModal from "../../../Modal/ImageCropModal";
 
 const UpdateProfile = () => {
@@ -77,13 +77,12 @@ const UpdateProfile = () => {
       .trim("The Location cannot include leading and trailing spaces")
       .strict(true)
       .required(`Please input your Location!`),
-    mobile_no:
-      loginUserData?.mobile !== ""
-        ? yup
-            .string()
-            .min(5, `Please input Valid Mobile Number!`)
-            .required(`Please input your Mobile Number!`)
-        : yup.string().min(5, `Please input Valid Mobile Number!`),
+    mobile_no: yup
+      .string()
+      .min(5, `Please input Valid Mobile Number!`)
+      .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`)
+      .required(`Please input your Mobile Number!`),
+
     email_id:
       loginUserData?.email_id !== ""
         ? yup
