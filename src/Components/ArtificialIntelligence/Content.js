@@ -120,12 +120,14 @@ const ChatContent = () => {
           <MessageContent
             {...ele}
             OnReadoutResponse={(url) => {
-              let tempData = [...Messages];
-              tempData[ele.index] = {
-                ...tempData[ele.index],
-                read_out_url: url,
-              };
-              setMessages(tempData);
+              setMessages((pre) => {
+                let tempData = [...pre];
+                tempData[ele.index] = {
+                  ...tempData[ele.index],
+                  read_out_url: url,
+                };
+                return tempData;
+              });
             }}
           />
         );

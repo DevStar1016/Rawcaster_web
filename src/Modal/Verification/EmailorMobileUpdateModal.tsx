@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { handletwostepVerifyModalshow } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
+import { MOBILE_NUMBER_REGEX } from "../../Shared/Constant";
 
 type EmailorMobileUpdateModalProps = {
   open: boolean;
@@ -46,6 +47,7 @@ function EmailorMobileUpdateModal({
       type === "mobile"
         ? yup
             .string()
+            .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`)
             .min(5, `Please input Valid Mobile Number!`)
             .required(`Please input your Mobile number!`)
         : yup.string().min(5, `Please input Valid Mobile Number!`),
@@ -109,12 +111,14 @@ function EmailorMobileUpdateModal({
       ...values,
       name: loginUserData?.name ? loginUserData?.name.trim() : "",
       first_name: loginUserData?.first_name ? loginUserData?.first_name : "",
+      mobile_no: values?.mobile ? values?.mobile : "",
       token: loginToken,
       auth_code:
         loginToken && loginUserData?.name
           ? getAuthToken(loginToken + loginUserData?.name.trim())
           : "",
     };
+
     updateProfileService(JSONtoformdata(filterValidObject(profileValue)))
       .then((res) => {
         if (res.data.status === 1) {
