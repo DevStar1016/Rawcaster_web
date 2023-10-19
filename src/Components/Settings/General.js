@@ -237,6 +237,98 @@ const General = () => {
               }
             />
           </div>
+          <div>
+            <p className={classes.smallheading}>SMS Opt-in</p>
+            <p className={classes.text}>
+              Opt-in to enable SMS notification from Rawcaster
+            </p>
+            <Radio.Group
+              defaultValue={formikvalues?.opt_in}
+              value={formikvalues?.opt_in}
+              className={classes.online_status}
+              onChange={(e) => {
+                if (e.target.value === 1) {
+                  if (loginUserData.is_mobile_no_verified === 1) {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Confirm",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        setupdateValue("opt_in", e.target.value);
+                      },
+                      message:
+                        VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE,
+                    });
+                  } else {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Continue",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        if (loginUserData.mobile) {
+                          handleSendOTP("sms");
+                        } else {
+                          setOptinModal({
+                            status: true,
+                            isEmail: false,
+                          });
+                        }
+                      },
+                      message: VALIDATION_MESSAGES.MOBILE_NUMBER_NOT_VERIFIED,
+                    });
+                  }
+                } else {
+                  if (loginUserData.is_email_id_verified === 1) {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Confirm",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        setupdateValue("opt_in", e.target.value);
+                      },
+                      message:
+                        VALIDATION_MESSAGES.EMAIL_VERIFIED_OPT_IN_DISABLE +
+                        loginUserData?.email_id,
+                    });
+                  } else {
+                    HandleVerifyModal({
+                      SubmitButtonTitle: "Continue",
+                      closeButtonTitle: "Cancel",
+                      primary: "success",
+                      onSuccess: () => {
+                        if (loginUserData.email_id) {
+                          handleSendOTP("email");
+                        } else {
+                          setOptinModal({
+                            status: true,
+                            isEmail: true,
+                          });
+                        }
+                      },
+                      message: VALIDATION_MESSAGES.EMAIL_NOT_VERIFIED,
+                    });
+                  }
+                }
+              }}
+              disabled={updateValue.includes("opt_in")}
+            >
+              {OptInStatus.map((elem, index) => {
+                return (
+                  <Radio
+                    className={
+                      formikvalues.account_active_inactive === index
+                        ? classes.radio_active
+                        : null + " " + classes.radio_inactive
+                    }
+                    value={index}
+                    key={index}
+                  >
+                    {elem}
+                  </Radio>
+                );
+              })}
+            </Radio.Group>
+          </div>
           {SettingsList.map((ele) => {
             const getGroupList = () => {
               const filteredData = groupsList.filter((elem) =>
@@ -476,98 +568,7 @@ const General = () => {
               </>
             );
           })}
-          <div>
-            <p className={classes.smallheading}>SMS Opt-in</p>
-            <p className={classes.text}>
-              Opt-in to enable SMS notification from Rawcaster
-            </p>
-            <Radio.Group
-              defaultValue={formikvalues?.opt_in}
-              value={formikvalues?.opt_in}
-              className={classes.online_status}
-              onChange={(e) => {
-                if (e.target.value === 1) {
-                  if (loginUserData.is_mobile_no_verified === 1) {
-                    HandleVerifyModal({
-                      SubmitButtonTitle: "Confirm",
-                      closeButtonTitle: "Cancel",
-                      primary: "success",
-                      onSuccess: () => {
-                        setupdateValue("opt_in", e.target.value);
-                      },
-                      message:
-                        VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE,
-                    });
-                  } else {
-                    HandleVerifyModal({
-                      SubmitButtonTitle: "Continue",
-                      closeButtonTitle: "Cancel",
-                      primary: "success",
-                      onSuccess: () => {
-                        if (loginUserData.mobile) {
-                          handleSendOTP("sms");
-                        } else {
-                          setOptinModal({
-                            status: true,
-                            isEmail: false,
-                          });
-                        }
-                      },
-                      message: VALIDATION_MESSAGES.MOBILE_NUMBER_NOT_VERIFIED,
-                    });
-                  }
-                } else {
-                  if (loginUserData.is_email_id_verified === 1) {
-                    HandleVerifyModal({
-                      SubmitButtonTitle: "Confirm",
-                      closeButtonTitle: "Cancel",
-                      primary: "success",
-                      onSuccess: () => {
-                        setupdateValue("opt_in", e.target.value);
-                      },
-                      message:
-                        VALIDATION_MESSAGES.EMAIL_VERIFIED_OPT_IN_DISABLE +
-                        loginUserData?.email_id,
-                    });
-                  } else {
-                    HandleVerifyModal({
-                      SubmitButtonTitle: "Continue",
-                      closeButtonTitle: "Cancel",
-                      primary: "success",
-                      onSuccess: () => {
-                        if (loginUserData.email_id) {
-                          handleSendOTP("email");
-                        } else {
-                          setOptinModal({
-                            status: true,
-                            isEmail: true,
-                          });
-                        }
-                      },
-                      message: VALIDATION_MESSAGES.EMAIL_NOT_VERIFIED,
-                    });
-                  }
-                }
-              }}
-              disabled={updateValue.includes("opt_in")}
-            >
-              {OptInStatus.map((elem, index) => {
-                return (
-                  <Radio
-                    className={
-                      formikvalues.account_active_inactive === index
-                        ? classes.radio_active
-                        : null + " " + classes.radio_inactive
-                    }
-                    value={index}
-                    key={index}
-                  >
-                    {elem}
-                  </Radio>
-                );
-              })}
-            </Radio.Group>
-          </div>
+
           <div>
             <p className={classes.smallheading}>Profile Privacy</p>
             <p className={classes.text}>
