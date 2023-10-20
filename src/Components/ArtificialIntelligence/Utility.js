@@ -57,8 +57,6 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
     setisplayerFetching,
   } = useMainContext();
   const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
-  const [isFetchingurl, setisFetchingurl] = useState(false);
-  console.log(isplayerFetching, "isplayerFetching", isplayerFetching === index);
   const token = useAuthToken();
 
   const HandlegetNuggetContentAudio = (url) => {
@@ -75,7 +73,6 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
     audioElement.play();
     PlayerSource.current = null;
 
-    setisFetchingurl(false);
     setisPlaying(index);
   };
 
