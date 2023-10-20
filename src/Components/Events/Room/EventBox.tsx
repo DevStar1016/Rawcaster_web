@@ -47,11 +47,17 @@ const EventBox = () => {
     userdata,
     EventData,
     isPresentScreen,
+    MeetingSettings,
   }: EventContextProp = useEventRoomContext();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
+
+  const enabledSettings = () => ({
+    localVideoChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
+    localMicChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
+  });
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -93,7 +99,7 @@ const EventBox = () => {
 
   const EventBoxOptions = ({ isYou, ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => elem.userId === parseInt(ele.externalUserId)
+      (elem) => elem.userRefId === ele.externalUserId
     );
 
     return (
@@ -110,7 +116,7 @@ const EventBox = () => {
             >
               {isYou ? (
                 <LocalMicrophoneComponent className={classes.icon} 
-                isAllowed={findAttendee?.isCoHost || !findAttendee?.audioDisabledByHost} />
+                isAllowed={enabledSettings().localMicChangeAllowed} />
               ) : (
                 <MicrophoneComponent
                   ele={ele}
@@ -135,7 +141,7 @@ const EventBox = () => {
                   setselectedDevice={null}
                   selectedDevice={null}
                   className={classes.icon}
-                  isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost} 
+                  isAllowed={enabledSettings().localVideoChangeAllowed} 
                 />
               ) : (
                 <CameraComponent
