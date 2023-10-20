@@ -156,6 +156,7 @@ const WaitingRoom = () => {
                 ChimesendMessage(
                   {
                     userId: getUserData()?.user_id,
+                    userRefId: userData?.user_ref_id,
                     refId: EventData?.reference_id,
                     name: getUserData()?.name,
                     image: getUserData()?.profile_image,

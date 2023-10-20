@@ -227,7 +227,7 @@ const EventBox = () => {
 
   const CustomNamePlate = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => elem.userId === parseInt(ele.externalUserId)
+      (elem) => elem.userRefId === ele.externalUserId
     );
     const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
 
@@ -277,7 +277,7 @@ const EventBox = () => {
 
   const GetDisplayComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem: AttendeeUserData) => elem?.userId === parseInt(ele.externalUserId)
+      (elem: AttendeeUserData) => elem?.userRefId === ele.externalUserId
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
     const isYou = getUserData()?.user_id === findAttendee?.userId;
