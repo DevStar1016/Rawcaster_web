@@ -61,6 +61,7 @@ const EventHandler = ({ title, isHost, ele }) => {
       ChimesendMessage(
         {
           userId: userData?.user_id,
+          userRefId: userData?.user_ref_id,
           refId: ele?.reference_id,
           name: userData?.name,
           image: userData?.profile_image,

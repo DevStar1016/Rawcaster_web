@@ -82,6 +82,7 @@ const JoinMeeting = () => {
         ChimesendMessage(
           {
             userId: user_data?.user_id,
+            userRefId: user_data?.user_ref_id,
             refId: ref_id,
             name: user_data?.name,
             image: user_data?.profile_image,

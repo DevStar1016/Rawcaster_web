@@ -95,7 +95,7 @@ const Participants = () => {
 
   const AttendeeComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => elem.userId === parseInt(ele.externalUserId)
+      (elem) => elem.userRefId === ele.externalUserId
     );
     const isYou = getUserData()?.user_id === findAttendee?.userId;
 

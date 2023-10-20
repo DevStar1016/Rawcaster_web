@@ -56,7 +56,7 @@ const EventLayout = () => {
     let filterValidAttendees = attendees.map((elem) => {
       let findAttendee = attendeesList.find(
         (ele) =>
-          elem.externalUserId && parseInt(elem.externalUserId) === ele.userId
+          elem.externalUserId && elem.externalUserId === ele.userRefId
       );
       if (findAttendee) {
         return { ...findAttendee };
@@ -80,7 +80,7 @@ const EventLayout = () => {
       const findAttendee = attendeesList.find(
         (ele) =>
           findExternalUserId.externalUserId &&
-          ele.userId === parseInt(findExternalUserId.externalUserId)
+          ele.userRefId === findExternalUserId.externalUserId
       );
       // If the attendee exists, return the name of the attendee plus's'
       if (findAttendee) {
@@ -125,7 +125,7 @@ const EventLayout = () => {
             screen_share_status: false,
             refId: EventData?.reference_id,
             hostId: userdata?.userId,
-            userId: parseInt(findExternalUserId.externalUserId),
+            userId: userdata.userId,
           },
           CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
         );
