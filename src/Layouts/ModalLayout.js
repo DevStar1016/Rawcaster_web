@@ -60,7 +60,7 @@ const ModalLayout = () => {
       player.pause();
     }
     if (PlayerSource.current) {
-      PlayerSource.current.cancel("Request Cancelled");
+      PlayerSource.current.abort("Request Cancelled");
     }
   }, [location]);
 
