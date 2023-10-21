@@ -58,6 +58,7 @@ const Dashboard = () => {
       filterData?.formData?.saved
     ) {
       filterData.formData = {
+        filter_type: filterData?.formData?.filter_type ?? 0,
         page_number: 1,
         nugget_type: 0,
       };
