@@ -301,7 +301,7 @@ padding-right: 10px;
      mask: url("../../../Assets/Icons/svg/Events/raisehand_active.svg") no-repeat center / contain;
      -webkit-mask: url("../../../Assets/Icons/svg/Events/raisehand_active.svg") no-repeat center /
        contain;
-       background: #000 !important;
+       background: #f1f1f1 !important;
    }
    .RaisehandContainer {
   position:absolute;
@@ -315,7 +315,7 @@ padding-right: 10px;
     cursor: pointer;
    }
    .isRaiseHand {
-background-color: #FFFFFF;
+background-color: #F2718D;
 border-radius: 20px;
 margin-left: 5px;
    }
