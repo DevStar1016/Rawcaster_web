@@ -418,7 +418,7 @@ const MeetingManagerComponent = () => {
               hostDisabledType: "audioDisabledByHost",
               userStatus: muted,
               settingType: "default_guest_audio",
-              popupmessage: "Host requests that you unmute your microphone",
+              popupmessage: "Host requests you to turn on your Microphone",
               Type: "audio",
             };
             HandleVideoAudio(AudioData).then(() => {
@@ -433,7 +433,7 @@ const MeetingManagerComponent = () => {
               hostDisabledType: "videoDisabledByHost",
               userStatus: !isVideoEnabled,
               settingType: "default_guest_video",
-              popupmessage: "Host requests that you enable your camera",
+              popupmessage: "Host requests you to turn on your Camera",
               Type: "video",
             };
             HandleVideoAudio(VideoData).then(() => {
