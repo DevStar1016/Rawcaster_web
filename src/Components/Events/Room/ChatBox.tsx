@@ -180,7 +180,7 @@ const ChatBox = () => {
                   <span>
                     {ele.name + `${ele.isPrivate ? " (Private)" : ""} `}
                   </span>
-                  <p> {ele.message}</p>
+                  <p style={{wordBreak: 'break-all'}}>{ele.message}</p>
                 </div>
               </div>
             </div>

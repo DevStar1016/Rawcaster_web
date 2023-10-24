@@ -429,7 +429,7 @@ const Participants = () => {
             </InputGroup>
           </Collapse>
         </div>
-        {(getISHost() || getISCoHost()) && (
+        {EventData?.type !== 2 && (getISHost() || getISCoHost()) && (
           <div className={classes.GlobalSettingContainer}>
             <div className={classes.itemName}>Global Settings</div>
             <div className={classes.itemAction}>
@@ -570,7 +570,7 @@ const Participants = () => {
             </div>
           </div>
         )}
-        {(userdata?.isHost || userdata?.isCoHost) && <div
+        {userdata && <div
           className={classes.inviteContainer}
           onClick={() => {
             setisInvited((pre) => !pre);

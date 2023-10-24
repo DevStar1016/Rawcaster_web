@@ -57,7 +57,7 @@ export const MicrophoneComponent = ({
   isGlobal,
   isCoHost
 }: MicrophoneComponentProps) => {
-  const { EventData, MeetingSettings, setMeetingSettings } =
+  const { EventData, MeetingSettings, setMeetingSettings,setnotificationToast } =
     useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -132,6 +132,12 @@ export const MicrophoneComponent = ({
                 userId: attendee?.userId,
               };
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+              setnotificationToast({
+                show: true,
+                title: 'Unmute Request Sent',
+                icon: null,
+                buttons: [],
+              });
             } else if ((isHost || isCoHost) && userData?.user_id === attendee?.userId) {
               toggleMute();
             }

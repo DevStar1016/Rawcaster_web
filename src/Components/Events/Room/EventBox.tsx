@@ -304,7 +304,8 @@ const EventBox = () => {
               // @ts-ignore
               nameplate={<CustomNamePlate ele={ele} />}
             ></LocalVideo>
-            <EventBoxOptions isYou={isYou} ele={ele} />
+           {/* removing audio video for now */}
+          {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
           </div>
         );
       } else if (value) {
@@ -323,8 +324,8 @@ const EventBox = () => {
               name={<CustomNamePlate ele={ele} />}
               tileId={value}
             />
-
-            <EventBoxOptions isYou={isYou} ele={ele} />
+            {/* removing audio video for now */}
+            {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
           </div>
         );
       } else {
@@ -336,7 +337,8 @@ const EventBox = () => {
              {findAttendee?.isCoHost && (
               <div className={classes.hostLogo}>Co Host</div>
             )}
-            <EventBoxOptions isYou={isYou} ele={ele} />
+            {/* removing audio video for now */}
+            {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
             <img
               className={classes.eventBoxUserImg}
               src={findAttendee.image ? findAttendee.image : ""}
@@ -359,7 +361,8 @@ const EventBox = () => {
     }
     return (
       <div className={classes.Child}>
-        <EventBoxOptions isYou={isYou} ele={ele} />
+        {/* removing audio video for now */}
+        {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
 
         <img
           className={classes.eventBoxUserImg}

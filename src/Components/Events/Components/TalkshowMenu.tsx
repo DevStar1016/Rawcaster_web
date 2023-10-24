@@ -70,8 +70,9 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             !muted ? styles.activeiconContainer : ""
           }`}
         >
-          <LocalMicrophoneComponent 
-            isAllowed={enabledSettings().localMicStatus}/>
+          <LocalMicrophoneComponent
+            isAllowed={enabledSettings().localMicStatus}
+          />
 
           <Popover
             placement="top"
@@ -84,70 +85,72 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             </span>
           </Popover>
         </div>
-        <div
-          className={`${styles.iconContainer} ${styles.switchIconSec} ${
-            styles.videoIconSec
-          } ${isVideoEnabled ? styles.activeiconContainer : ""}`}
-        >
-          <LocalCameraComponent
-            selectedDevice={selectedDevice}
-            setselectedDevice={setselectedDevice}
-            isAllowed={enabledSettings().localvideoStatus}
-          />
-          {videoinput.devices.length !== 0 && (
-            <Popover
-              placement="top"
-              showArrow={false}
-              content={
-                <div className={styles.micdropDown}>
-                  {videoinput.devices.map((ele) => {
-                    const getisActive = () =>
-                      videoinput.selectedDevice === ele.deviceId;
-                    return (
-                      <span
-                        onClick={async () => {
-                          if (audiovideo) {
-                            try {
-                              await meetingmanager.startVideoInputDevice(
-                                ele.deviceId
-                              );
-                            } catch (error) {
-                              console.error(
-                                "Error setting speaker device:",
-                                error
-                              );
+        {(userdata?.isHost || userdata?.isCoHost) && (
+          <div
+            className={`${styles.iconContainer} ${styles.switchIconSec} ${
+              styles.videoIconSec
+            } ${isVideoEnabled ? styles.activeiconContainer : ""}`}
+          >
+            <LocalCameraComponent
+              selectedDevice={selectedDevice}
+              setselectedDevice={setselectedDevice}
+              isAllowed={enabledSettings().localvideoStatus}
+            />
+            {videoinput.devices.length !== 0 && (
+              <Popover
+                placement="top"
+                showArrow={false}
+                content={
+                  <div className={styles.micdropDown}>
+                    {videoinput.devices.map((ele) => {
+                      const getisActive = () =>
+                        videoinput.selectedDevice === ele.deviceId;
+                      return (
+                        <span
+                          onClick={async () => {
+                            if (audiovideo) {
+                              try {
+                                await meetingmanager.startVideoInputDevice(
+                                  ele.deviceId
+                                );
+                              } catch (error) {
+                                console.error(
+                                  "Error setting speaker device:",
+                                  error
+                                );
+                              }
                             }
-                          }
-                        }}
-                      >
-                        <i
-                          className="material-symbols-outlined"
-                          style={{
-                            color: getisActive() ? "black" : "transparent",
                           }}
                         >
-                          done
-                        </i>
-                        {ele.label}
-                      </span>
-                    );
-                  })}
-                </div>
-              }
-              trigger="click"
-            >
-              <div
-                style={{
-                  color: "white",
-                }}
+                          <i
+                            className="material-symbols-outlined"
+                            style={{
+                              color: getisActive() ? "black" : "transparent",
+                            }}
+                          >
+                            done
+                          </i>
+                          {ele.label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                }
+                trigger="click"
               >
-                <span className="material-symbols-outlined onlydes">
-                  expand_less
-                </span>
-              </div>
-            </Popover>
-          )}
-        </div>
+                <div
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  <span className="material-symbols-outlined onlydes">
+                    expand_less
+                  </span>
+                </div>
+              </Popover>
+            )}
+          </div>
+        )}
         {userdata?.isHost ? (
           <div
             className={`onlydes ${styles.streamBtn}`}

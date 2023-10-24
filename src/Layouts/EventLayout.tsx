@@ -144,7 +144,7 @@ const EventLayout = () => {
             ? isEndLoading
             : userdata
             ? userdata.isHost
-              ? " "
+              ? ""
               : "Joining Event Please Wait ..."
             : "Fetching Event Details ..."
         }
