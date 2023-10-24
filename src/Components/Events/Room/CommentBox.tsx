@@ -76,7 +76,7 @@ const CommentBox = () => {
                   <span>
                     {ele?.name + `${ele?.isPrivate ? " (Private)" : ""} `}
                   </span>
-                  <p> {ele?.message}</p>
+                  <p style={{wordBreak: "break-word"}}> {ele?.message}</p>
                 </div>
               </div>
             </div>
