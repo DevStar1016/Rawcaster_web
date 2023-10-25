@@ -344,7 +344,7 @@ const MeetingManagerComponent = () => {
           if (message) {
             const end_data = message;
             if (end_data.ended) {
-              const endData = { message: "Meeting Has Been Ended !" };
+              const endData = { message: "This meeting has ended !" };
               EndAttendeeMeeting(endData);
             }
           }
