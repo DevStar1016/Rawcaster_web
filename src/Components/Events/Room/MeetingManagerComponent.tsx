@@ -496,6 +496,14 @@ const MeetingManagerComponent = () => {
         break;
         case CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER:
           if (message) {
+            setnotificationToast({
+              buttons: [],
+              icon: null,
+              msg: 'Meeting will be ended in 2 minutes',
+              show: true,
+              title: null,
+              type: null
+            })
             setMeetingTimer(true)
           }
         break;

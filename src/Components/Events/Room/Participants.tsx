@@ -179,7 +179,7 @@ const Participants = () => {
                   else {
                     if (
                       EventData?.type === 1 ||
-                      (EventData?.type === 2 && hostList.length < 3)
+                      (EventData?.type === 2 && hostList.length < 4)
                     )
                       sendChimeSendMessage(CHIME_SOCKET_EVENTS.MAKE_HOST);
                     else
