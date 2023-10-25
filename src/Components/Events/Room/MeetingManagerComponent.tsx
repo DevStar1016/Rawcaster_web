@@ -43,6 +43,7 @@ const MeetingManagerComponent = () => {
     userdata,
     attendeesList,
     setAnimatedEmoji,
+    setMeetingTimer,
   }: EventContextProp = useEventRoomContext();
   const meetingManager = useMeetingManager();
   const audiovideo = useAudioVideo();
@@ -492,7 +493,12 @@ const MeetingManagerComponent = () => {
           if (message.emoji) {
             setAnimatedEmoji(message.emoji)
           }
-          break;
+        break;
+        case CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER:
+          if (message) {
+            setMeetingTimer(true)
+          }
+        break;
         default:
           break;
       }

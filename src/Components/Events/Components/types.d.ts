@@ -132,6 +132,8 @@ export type EventContextProp = {
     setisEndLoading:(val:string|null)=>void,
     animatedEmoji: ReactNode[],
     setAnimatedEmoji:(val:ReactNode)=>void,
+    meetingTimer:false,
+    setMeetingTimer:(val:boolean)=>void,
 }
 
 
