@@ -166,9 +166,7 @@ const EventLayout = () => {
                 <h2>{EventData?.event_name}</h2>
               </div>
             </div>
-          {!meetingTimer && <MeetingTimer />}
-          
-         
+          {meetingTimer && <MeetingTimer />}
             {(isLocalUserSharing || sharingAttendeeId) ? (
               <div
                 className={`${classes.meetingHeader} ${classes.endContainer}`}
