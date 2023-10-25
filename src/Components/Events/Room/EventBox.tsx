@@ -269,9 +269,14 @@ const EventBox = () => {
 
     const otherAttendee = attendees.filter(
       (ele) =>
-        ele.externalUserId &&
-        //@ts-ignore
-        parseInt(ele.externalUserId) !== parseInt(isPinEnabled)
+        (ele.externalUserId && EventData?.type === 1) ||
+        (((EventData?.type === 2 &&
+          attendeesList.find((user) => user.userRefId === ele.externalUserId)
+            ?.isHost) ||
+          attendeesList.find((user) => user.userRefId === ele.externalUserId)
+            ?.isCoHost) &&
+          //@ts-ignore
+          parseInt(ele.externalUserId) !== parseInt(isPinEnabled))
     );
     return {
       spotlightAttendee,
