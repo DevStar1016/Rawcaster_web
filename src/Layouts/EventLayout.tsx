@@ -35,6 +35,7 @@ const EventLayout = () => {
     isEndLoading,
     isPresentScreen,
     setisPresentScreen,
+    meetingTimer,
   }: EventContextProp = useEventRoomContext();
   const { Header, Footer } = Layout;
   const [isReactions, setisReactions] = useState(false);
@@ -164,6 +165,7 @@ const EventLayout = () => {
                 <h2>{EventData?.event_name}</h2>
               </div>
             </div>
+          {!meetingTimer && <div style={{color: 'white'}}>End Meeting : <span style={{color: 'red', marginRight:20}}>1:53</span></div>}
             {(isLocalUserSharing || sharingAttendeeId) && (
               <div
                 className={`${classes.meetingHeader} ${classes.endContainer}`}
