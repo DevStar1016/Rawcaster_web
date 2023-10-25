@@ -94,7 +94,7 @@ export const EndMeeting = (props: EndMeeting) => {
   const { confirm } = Modal;
 
   confirm({
-    title: "Are you sure Do you want to End Meeting For All?",
+    title: "Do you really want to end this meeting?",
     icon: <ExclamationCircleFilled />,
     onOk() {
       handleEndMeeting(Attendee)
@@ -222,7 +222,7 @@ export const HostExitOption = () => {
   }: EventContextProp = useEventRoomContext();
   const meetingmanager = useMeetingManager();
   const [messageApi, contextHolder] = message.useMessage();
-  
+
   return (
     <div className={styles.HostLeaveSec}>
       {contextHolder}
@@ -232,7 +232,7 @@ export const HostExitOption = () => {
           if (validateMeetingLeave(userdata, attendeesList)) {
             Modal.confirm({
               type: "confirm",
-              content: "Please make someone as host before leaving the meeting",
+              content: "Please make someone a host before leaving the meeting",
               onOk: () => {
                 setisChatorParticipant("participant");
               },

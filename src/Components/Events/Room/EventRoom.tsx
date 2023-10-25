@@ -12,7 +12,7 @@ const EventRoom = () => {
   useEffect(() => {
     meetingManager.subscribeToEventDidReceive((eventname, message) => {
       if (eventname === "meetingEnded") {
-        const endData = { message: "Meeting Has Been Ended !" };
+        const endData = { message: "This meeting has ended !" };
         EndAttendeeMeeting(endData);
       }
     });

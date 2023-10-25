@@ -103,7 +103,7 @@ const Participants = () => {
 
     const getDropdownList = (ele: AttendeeUserData) => {
       if (getISCoHost() && !ele?.isCoHost && !ele?.isHost) {
-        return [
+        const coHostDropdownArr = [
           {
             key: "1",
             label: "Rename user",
@@ -111,30 +111,31 @@ const Participants = () => {
               setrenameAttendee(findAttendee);
             },
           },
-          {
-            key: "2",
-            label: "Remove user",
-            onClick: () => {
-              Modal.confirm({
-                title: "Remove User",
-                content: "Are you sure do you want to remove this User !",
-                onOk: () => {
-                  ChimesendMessage(
-                    {
-                      refId: EventData?.reference_id,
-                      hostId: EventData?.original_user_id,
-                      userId: findAttendee?.userId,
-                    },
-                    CHIME_SOCKET_EVENTS.KICK_USER
-                  );
-                },
-                onCancel: () => { },
-              });
-            },
-          },
         ];
-      }
-      else if (isYou && (ele?.isHost || ele?.isCoHost)) {
+        const removeUser = {
+          key: "2",
+          label: "Remove user",
+          onClick: () => {
+            Modal.confirm({
+              title: "Remove User",
+              content: "Are you sure do you want to remove this User !",
+              onOk: () => {
+                ChimesendMessage(
+                  {
+                    refId: EventData?.reference_id,
+                    hostId: EventData?.original_user_id,
+                    userId: findAttendee?.userId,
+                  },
+                  CHIME_SOCKET_EVENTS.KICK_USER
+                );
+              },
+              onCancel: () => {},
+            });
+          },
+        };
+        if (EventData?.type !== 2) coHostDropdownArr.push(removeUser);
+        return coHostDropdownArr;
+      } else if (isYou && (ele?.isHost || ele?.isCoHost)) {
         return [
           {
             key: "1",
@@ -154,20 +155,40 @@ const Participants = () => {
               title: `${!ele?.isCoHost ? 'Promote as' : 'Remove'} Co Host`,
               content:
                 `Are you sure do you want to ${!ele?.isCoHost ? 'Promote' : 'Remove'} as Co Host for this User !`,
-              onOk: () => {
-                const hostList = attendeesList?.filter(list => list.isHost || list.isCoHost);
-                if (EventData?.type === 1 ||
-                    (EventData?.type === 2 && hostList.length < 5)) {
-                    ChimesendMessage(
-                    {
-                      refId: EventData?.reference_id,
-                      hostId: userData?.user_id,
-                      userId: findAttendee?.userId,
-                    },
-                    !ele?.isCoHost ? CHIME_SOCKET_EVENTS.MAKE_HOST : CHIME_SOCKET_EVENTS.REMOVE_HOST
+                onOk: () => {
+                  const hostList = attendeesList?.filter(
+                    (list) => list.isHost || list.isCoHost
                   );
-                }
-              },
+  
+                  const sendChimeSendMessage = (
+                    chimeEvent: string,
+                    chimeBody = {}
+                  ) =>
+                    ChimesendMessage(
+                      {
+                        refId: EventData?.reference_id,
+                        hostId: userData?.user_id,
+                        userId: findAttendee?.userId,
+                        ...chimeBody,
+                      },
+                      chimeEvent
+                    );
+  
+                  if (ele?.isCoHost)
+                    sendChimeSendMessage(CHIME_SOCKET_EVENTS.REMOVE_HOST);
+                  else {
+                    if (
+                      EventData?.type === 1 ||
+                      (EventData?.type === 2 && hostList.length < 3)
+                    )
+                      sendChimeSendMessage(CHIME_SOCKET_EVENTS.MAKE_HOST);
+                    else
+                      Modal.confirm({
+                        title: "You cannot add more than 3 co-hosts",
+                        onOk() {},
+                      });
+                  }
+                },
               onCancel: () => { },
             });
           },
