@@ -19,6 +19,7 @@ import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
 import { ChimesendMessage } from "../Services/SocketService";
 import { EventContextProp } from "../Components/Events/Components/types";
 import { useEventRoomContext } from "../Shared/Context";
+import MeetingTimer from "../Components/Events/Components/MeetingTimer";
 
 export const useLayoutContect = () => {
   return useOutletContext<EventContextProp>();
@@ -165,8 +166,10 @@ const EventLayout = () => {
                 <h2>{EventData?.event_name}</h2>
               </div>
             </div>
-          {!meetingTimer && <div style={{color: 'white'}}>End Meeting : <span style={{color: 'red', marginRight:20}}>1:53</span></div>}
-            {(isLocalUserSharing || sharingAttendeeId) && (
+          {!meetingTimer && <MeetingTimer />}
+          
+         
+            {(isLocalUserSharing || sharingAttendeeId) ? (
               <div
                 className={`${classes.meetingHeader} ${classes.endContainer}`}
               >
@@ -206,7 +209,7 @@ const EventLayout = () => {
                   </Tooltip>
                 )}
               </div>
-            )}
+            ):  <div></div>}
           </Header>
 
           <Outlet
