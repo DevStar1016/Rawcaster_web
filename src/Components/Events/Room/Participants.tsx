@@ -286,7 +286,8 @@ const Participants = () => {
             {isYou ? (
               <LocalMicrophoneComponent
                 className={classes.micsmallIcon}
-                isAllowed={enabledSettings().localMicChangeAllowed} />
+                isAllowed={enabledSettings().localMicChangeAllowed}
+              />
             ) : (
               <MicrophoneComponent
                 ele={ele}
@@ -297,7 +298,7 @@ const Participants = () => {
               />
             )}
 
-            {isYou ? (
+            {isYou && (userdata?.isHost || userdata?.isCoHost) ? (
               <LocalCameraComponent
                 setselectedDevice={null}
                 selectedDevice={null}
@@ -305,13 +306,15 @@ const Participants = () => {
                 isAllowed={enabledSettings().localVideoChangeAllowed}
               />
             ) : (
-              <CameraComponent
-                ele={ele}
-                attendee={findAttendee}
-                isHost={getISHost() || getISCoHost()}
-                className={classes.videosmallIcon}
-                isGlobal={false}
-              />
+              (findAttendee?.isHost || findAttendee?.isCoHost) && (
+                <CameraComponent
+                  ele={ele}
+                  attendee={findAttendee}
+                  isHost={getISHost() || getISCoHost()}
+                  className={classes.videosmallIcon}
+                  isGlobal={false}
+                />
+              )
             )}
             {getISCoHost() && findAttendee?.isHost ? (
               <div style={{ opacity: "0" }}>
