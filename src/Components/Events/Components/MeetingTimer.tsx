@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-const MeetingTimer = ()=>{
-  const [timer, setTimer] = useState('');
+const MeetingTimer = () => {
+  const [timer, setTimer] = useState("");
 
   useEffect(() => {
-    let minutes = 2 ;
+    let minutes = 5; // hardcoding for now
     let seconds = minutes * 60;
-
 
     const countdownInterval = setInterval(() => {
       seconds--;
 
       const remainingMinutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;    
+      const remainingSeconds = seconds % 60;
 
-      const updatedMinutes =remainingMinutes.toString().length !== 1 ?  remainingMinutes : '0' + remainingMinutes
-const updatedSeconds =remainingSeconds.toString().length !== 1 ? remainingSeconds : '0' + remainingSeconds    
+      const updatedMinutes =
+        remainingMinutes.toString().length !== 1
+          ? remainingMinutes
+          : "0" + remainingMinutes;
+      const updatedSeconds =
+        remainingSeconds.toString().length !== 1
+          ? remainingSeconds
+          : "0" + remainingSeconds;
 
       setTimer(`${updatedMinutes}:${updatedSeconds}`);
 
@@ -29,7 +34,12 @@ const updatedSeconds =remainingSeconds.toString().length !== 1 ? remainingSecond
     };
   }, []);
 
-    return <div style={{color: 'white', fontSize:'22px'}}>End Meeting :  <span style={{color: 'red', marginRight:20}}>{timer}</span></div>
-}
+  return (
+    <div style={{ color: "white", fontSize: "22px" }}>
+      End Meeting :{" "}
+      <span style={{ color: "red", marginRight: 20 }}>{timer}</span>
+    </div>
+  );
+};
 
-export default MeetingTimer
+export default MeetingTimer;
