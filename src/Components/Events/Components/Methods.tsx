@@ -23,6 +23,7 @@ type ExitMeeting = {
 };
 
 type EndMeeting = {
+  modalTitle?: string;
   Attendee?: AttendeeUserData | undefined;
   EventData?: EventDataProp | null;
   handleEndMeeting: any;
@@ -90,11 +91,11 @@ export const EndAttendeeMeeting = (props: ExitMeeting) => {
  * @returns None
  */
 export const EndMeeting = (props: EndMeeting) => {
-  const { Attendee, EventData, handleEndMeeting, meetingmanager } = props;
+  const { Attendee, EventData, handleEndMeeting, meetingmanager, modalTitle } = props;
   const { confirm } = Modal;
 
   confirm({
-    title: "Do you really want to end this meeting?",
+    title: modalTitle ?? "Do you really want to end this meeting?",
     icon: <ExclamationCircleFilled />,
     onOk() {
       handleEndMeeting(Attendee)
