@@ -41,7 +41,7 @@ export const ExitMeeting = (props: ExitMeeting) => {
   const { Attendee, EventData, handleExitMeeting } = props;
   const { confirm } = Modal;
   confirm({
-    title: "Are you sure Do you want to Exit Meeting?",
+    title: "Are you sure you want to leave this meeting?",
     icon: <ExclamationCircleFilled />,
     onOk() {
       handleExitMeeting(Attendee)

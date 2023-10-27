@@ -499,7 +499,7 @@ const MeetingManagerComponent = () => {
             setnotificationToast({
               buttons: [],
               icon: null,
-              msg: 'Meeting will be ended in 2 minutes',
+              msg: 'Meeting will be ended in 5 minutes',
               show: true,
               title: null,
               type: null
