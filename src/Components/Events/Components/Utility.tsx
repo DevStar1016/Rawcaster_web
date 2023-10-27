@@ -57,7 +57,7 @@ export const MicrophoneComponent = ({
   isGlobal,
   isCoHost
 }: MicrophoneComponentProps) => {
-  const { EventData, MeetingSettings, setMeetingSettings,setnotificationToast } =
+  const { EventData, MeetingSettings, setMeetingSettings, setnotificationToast } =
     useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -212,7 +212,7 @@ export const CameraComponent = ({
   isGlobal,
   isCoHost,
 }: CameraComponentProps) => {
-  const { EventData, MeetingSettings, setMeetingSettings } =
+  const { EventData, MeetingSettings, setMeetingSettings, setnotificationToast } =
     useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -282,6 +282,12 @@ export const CameraComponent = ({
                 status: true,
                 userId: attendee?.userId,
               };
+              setnotificationToast({
+                show: true,
+                title: 'Camera On Request Sent',
+                icon: null,
+                buttons: [],
+              });
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
             }
           }}
