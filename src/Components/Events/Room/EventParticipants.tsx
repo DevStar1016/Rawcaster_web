@@ -31,7 +31,7 @@ import { useEventRoomContext } from "../../../Shared/Context";
 
 const { Header, Footer, Content } = Layout;
 
-const Participants = () => {
+const EventParticipants = () => {
   const [isSearchEnable, setisSearchEnable] = useState(false);
   const [SpeakerState, setSpeakerState] = useState<boolean | number | string>(
     false
@@ -53,10 +53,17 @@ const Participants = () => {
   const [isInvited, setisInvited] = useState(false);
   const [isCopied, setisCopied] = useState(false);
 
-  const enabledSettings = () => ({
-    localVideoChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
-    localMicChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
-  });
+  const enabledSettings = () => {
+    const isHostOrCoHost = userdata?.isHost || userdata?.isCoHost;
+    const defaultGuestAudio = MeetingSettings?.default_guest_audio;
+
+    const defaultGuestVideo = MeetingSettings?.default_guest_video;
+
+    return {
+      localVideoChangeAllowed: isHostOrCoHost || defaultGuestVideo !== 0,
+      localMicChangeAllowed: isHostOrCoHost || defaultGuestAudio !== 0,
+    };
+  };
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -103,7 +110,7 @@ const Participants = () => {
 
     const getDropdownList = (ele: AttendeeUserData) => {
       if (getISCoHost() && !ele?.isCoHost && !ele?.isHost) {
-        const coHostDropdownArr = [
+        return [
           {
             key: "1",
             label: "Rename user",
@@ -111,30 +118,28 @@ const Participants = () => {
               setrenameAttendee(findAttendee);
             },
           },
-        ];
-        const removeUser = {
-          key: "2",
-          label: "Remove user",
-          onClick: () => {
-            Modal.confirm({
-              title: "Remove User",
-              content: "Are you sure do you want to remove this User !",
-              onOk: () => {
-                ChimesendMessage(
-                  {
-                    refId: EventData?.reference_id,
-                    hostId: EventData?.original_user_id,
-                    userId: findAttendee?.userId,
-                  },
-                  CHIME_SOCKET_EVENTS.KICK_USER
-                );
-              },
-              onCancel: () => {},
-            });
+          {
+            key: "2",
+            label: "Remove user",
+            onClick: () => {
+              Modal.confirm({
+                title: "Remove User",
+                content: "Are you sure do you want to remove this User !",
+                onOk: () => {
+                  ChimesendMessage(
+                    {
+                      refId: EventData?.reference_id,
+                      hostId: EventData?.original_user_id,
+                      userId: findAttendee?.userId,
+                    },
+                    CHIME_SOCKET_EVENTS.KICK_USER
+                  );
+                },
+                onCancel: () => {},
+              });
+            },
           },
-        };
-        if (EventData?.type !== 2) coHostDropdownArr.push(removeUser);
-        return coHostDropdownArr;
+        ];
       } else if (isYou && (ele?.isHost || ele?.isCoHost)) {
         return [
           {
@@ -149,47 +154,35 @@ const Participants = () => {
       return [
         {
           key: "0",
-          label: `${!ele?.isCoHost ? 'Promote as' : 'Remove'} Co Host`,
+          label: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
           onClick: () => {
             Modal.confirm({
-              title: `${!ele?.isCoHost ? 'Promote as' : 'Remove'} Co Host`,
-              content:
-                `Are you sure do you want to ${!ele?.isCoHost ? 'Promote' : 'Remove'} as Co Host for this User !`,
-                onOk: () => {
-                  const hostList = attendeesList?.filter(
-                    (list) => list.isHost || list.isCoHost
+              title: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
+              content: `Are you sure do you want to ${
+                !ele?.isCoHost ? "Promote" : "Remove"
+              } as Co Host for this User !`,
+              onOk: () => {
+                if (ele?.isCoHost) {
+                  ChimesendMessage(
+                    {
+                      refId: EventData?.reference_id,
+                      hostId: userData?.user_id,
+                      userId: findAttendee?.userId,
+                    },
+                    CHIME_SOCKET_EVENTS.REMOVE_HOST
                   );
-  
-                  const sendChimeSendMessage = (
-                    chimeEvent: string,
-                    chimeBody = {}
-                  ) =>
-                    ChimesendMessage(
-                      {
-                        refId: EventData?.reference_id,
-                        hostId: userData?.user_id,
-                        userId: findAttendee?.userId,
-                        ...chimeBody,
-                      },
-                      chimeEvent
-                    );
-  
-                  if (ele?.isCoHost)
-                    sendChimeSendMessage(CHIME_SOCKET_EVENTS.REMOVE_HOST);
-                  else {
-                    if (
-                      EventData?.type === 1 ||
-                      (EventData?.type === 2 && hostList.length < 4)
-                    )
-                      sendChimeSendMessage(CHIME_SOCKET_EVENTS.MAKE_HOST);
-                    else
-                      Modal.confirm({
-                        title: "You cannot add more than 3 co-hosts",
-                        onOk() {},
-                      });
-                  }
-                },
-              onCancel: () => { },
+                } else {
+                  ChimesendMessage(
+                    {
+                      refId: EventData?.reference_id,
+                      hostId: userData?.user_id,
+                      userId: findAttendee?.userId,
+                    },
+                    CHIME_SOCKET_EVENTS.MAKE_HOST
+                  );
+                }
+              },
+              onCancel: () => {},
             });
           },
         },
@@ -217,7 +210,7 @@ const Participants = () => {
                   CHIME_SOCKET_EVENTS.KICK_USER
                 );
               },
-              onCancel: () => { },
+              onCancel: () => {},
             });
           },
         },
@@ -298,7 +291,7 @@ const Participants = () => {
               />
             )}
 
-            {isYou && (userdata?.isHost || userdata?.isCoHost) ? (
+            {isYou ? (
               <LocalCameraComponent
                 setselectedDevice={null}
                 selectedDevice={null}
@@ -306,15 +299,13 @@ const Participants = () => {
                 isAllowed={enabledSettings().localVideoChangeAllowed}
               />
             ) : (
-              (findAttendee?.isHost || findAttendee?.isCoHost) && (
-                <CameraComponent
-                  ele={ele}
-                  attendee={findAttendee}
-                  isHost={getISHost() || getISCoHost()}
-                  className={classes.videosmallIcon}
-                  isGlobal={false}
-                />
-              )
+              <CameraComponent
+                ele={ele}
+                attendee={findAttendee}
+                isHost={getISHost() || getISCoHost()}
+                className={classes.videosmallIcon}
+                isGlobal={false}
+              />
             )}
             {getISCoHost() && findAttendee?.isHost ? (
               <div style={{ opacity: "0" }}>
@@ -390,7 +381,7 @@ const Participants = () => {
     return (
       window.location.origin +
       generatePath(`/join/:event/:ref_id`, {
-        event: EventData?.type === 2 ? "talkshow" : "event",
+        event: "event",
         ref_id: EventData?.reference_id || "",
       })
     );
@@ -398,7 +389,7 @@ const Participants = () => {
 
   return (
     <Layout
-      className={`${classes.popupContainer} ${EventData?.type === 2 ? classes.talkshowPopup : ""
+      className={`${classes.popupContainer}
         }`}
     >
       <Header
@@ -413,7 +404,7 @@ const Participants = () => {
         <div className={classes.popupHeader}>
           <div>
             <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            <p>Participants</p>
+            <p>Event</p>
           </div>
           <div>
             <i
@@ -453,7 +444,7 @@ const Participants = () => {
             </InputGroup>
           </Collapse>
         </div>
-        {EventData?.type !== 2 && (getISHost() || getISCoHost()) && (
+        {(getISHost() || getISCoHost()) && (
           <div className={classes.GlobalSettingContainer}>
             <div className={classes.itemName}>Global Settings</div>
             <div className={classes.itemAction}>
@@ -594,14 +585,16 @@ const Participants = () => {
             </div>
           </div>
         )}
-        {userdata && <div
-          className={classes.inviteContainer}
-          onClick={() => {
-            setisInvited((pre) => !pre);
-          }}
-        >
-          <div className={classes.inviteBtn}>Invite Participants</div>
-        </div>}
+        {userdata && (
+          <div
+            className={classes.inviteContainer}
+            onClick={() => {
+              setisInvited((pre) => !pre);
+            }}
+          >
+            <div className={classes.inviteBtn}>Invite Participants</div>
+          </div>
+        )}
         <Collapse in={isInvited}>
           <div className={classes.inviteModal}>
             <h2>Invite via Meeting Link</h2>
@@ -638,4 +631,4 @@ const Participants = () => {
   );
 };
 
-export default Participants;
+export default EventParticipants;
