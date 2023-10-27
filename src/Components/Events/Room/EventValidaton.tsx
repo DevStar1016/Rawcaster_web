@@ -105,7 +105,7 @@ const EventValidaton = () => {
    *  Host The meeting
    */
   const handleEndMeeting = () => {
-    setisEndLoading("Please Wait Meeting Has Been Ended ..");
+    setisEndLoading("Please wait, terminating meeting..");
     return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
       if (token) {
