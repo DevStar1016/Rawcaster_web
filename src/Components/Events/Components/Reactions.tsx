@@ -78,7 +78,7 @@ const Reactions: FC<ReactionsProps> = ({showEmojList}) => {
   useEffect(() => {
     if(animatedEmoji){
       setAnimate(<div style={{fontSize: 25}}>{animatedEmoji}</div>);
-      setAnimatedEmoji([])
+      setAnimatedEmoji('')
     }
   }, [animatedEmoji])
   
@@ -140,7 +140,7 @@ const Reactions: FC<ReactionsProps> = ({showEmojList}) => {
         delay: DELAY,
       },
     }),
-    [animatedEmoji]
+    [animate]
   ); // On animatedEmoji change we calculate new random values for the next flying object
 
   return (

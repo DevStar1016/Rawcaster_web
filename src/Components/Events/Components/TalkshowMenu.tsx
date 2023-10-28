@@ -18,7 +18,7 @@ import {
   useAuthData,
   useEventTempAuthData,
 } from "../../../Shared/Reduxfetcher";
-import { MicOptions } from "./Methods";
+import { EndMeeting, MicOptions } from "./Methods";
 import { EventContextProp } from "./types";
 import { useEventRoomContext } from "../../../Shared/Context";
 
@@ -28,6 +28,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
     setisChatorParticipant,
     EventData,
     handleExitMeeting,
+    handleEndMeeting,
     userdata,
     isReactions,
     setisReactions,
@@ -58,8 +59,8 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
 
   const enabledSettings = () => ({
     isHost: userdata?.isHost,
-    localvideoStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_video === 0 ? false : userdata?.audioDisabledByHost ? false : true,
-    localMicStatus: userdata?.isHost ? true : MeetingSettings?.default_guest_audio === 0 ? false : userdata?.audioDisabledByHost ? false : true,
+    localMicStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : MeetingSettings?.default_guest_audio === 0 ? false : userdata?.audioDisabledByHost ? false : true,
+    localvideoStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : MeetingSettings?.default_guest_video === 0 ? false : userdata?.audioDisabledByHost ? false : true,
   });
 
   return (
@@ -154,34 +155,15 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
         {userdata?.isHost ? (
           <div
             className={`onlydes ${styles.streamBtn}`}
-            onClick={() => {
-              Modal.confirm({
-                title: "Are you sure Do you want to Stop Talkshow Streaming ? ",
-                icon: <ExclamationCircleFilled />,
-                onOk() {
-                  handleExitMeeting(userdata)
-                    .then(() => {
-                      ChimesendMessage(
-                        {
-                          name: userdata?.name,
-                          userId: userdata?.userId,
-                          meetingId: EventData?.chime_meeting_id,
-                          isHost: userdata?.isHost,
-                        },
-                        CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
-                      );
-                      window.close();
-                    })
-                    .catch(() => {
-                      toast.remove("Error");
-                      toast.error("Unable to exit Meeting !", {
-                        id: "Error",
-                      });
-                    });
-                },
-                onCancel() {},
-              });
-            }}
+            onClick={() =>
+              EndMeeting({
+                modalTitle: "Are you sure Do you want to Stop Talkshow Streaming ?",
+                Attendee: userdata,
+                EventData,
+                handleEndMeeting,
+                meetingmanager,
+              })
+            }
           >
             <span className={`material-symbols-outlined `}>
               radio_button_checked

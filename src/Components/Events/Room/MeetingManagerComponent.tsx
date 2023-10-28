@@ -43,6 +43,7 @@ const MeetingManagerComponent = () => {
     userdata,
     attendeesList,
     setAnimatedEmoji,
+    setMeetingTimer,
   }: EventContextProp = useEventRoomContext();
   const meetingManager = useMeetingManager();
   const audiovideo = useAudioVideo();
@@ -344,7 +345,7 @@ const MeetingManagerComponent = () => {
           if (message) {
             const end_data = message;
             if (end_data.ended) {
-              const endData = { message: "Meeting Has Been Ended !" };
+              const endData = { message: "This meeting has ended !" };
               EndAttendeeMeeting(endData);
             }
           }
@@ -492,7 +493,20 @@ const MeetingManagerComponent = () => {
           if (message.emoji) {
             setAnimatedEmoji(message.emoji)
           }
-          break;
+        break;
+        case CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER:
+          if (message) {
+            setnotificationToast({
+              buttons: [],
+              icon: null,
+              msg: 'Meeting will be ended in 5 minutes',
+              show: true,
+              title: null,
+              type: null
+            })
+            setMeetingTimer(true)
+          }
+        break;
         default:
           break;
       }

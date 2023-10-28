@@ -10,7 +10,7 @@ import {
   useRemoteVideoTileState,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
-import Participants from "./Participants";
+import TalkshowParticipants from "./TalkshowParticipants";
 import ChatBox from "./ChatBox";
 import { Alert, Drawer, Layout, Modal, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
@@ -30,6 +30,7 @@ import { useEventRoomContext } from "../../../Shared/Context";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { AttendeeUserData, EventContextProp } from "../Components/types";
+import EventParticipants from "./EventParticipants";
 
 const EventBox = () => {
   const userData = useAuthData();
@@ -269,9 +270,14 @@ const EventBox = () => {
 
     const otherAttendee = attendees.filter(
       (ele) =>
-        ele.externalUserId &&
-        //@ts-ignore
-        parseInt(ele.externalUserId) !== parseInt(isPinEnabled)
+        (ele.externalUserId && EventData?.type === 1) ||
+        (((EventData?.type === 2 &&
+          attendeesList.find((user) => user.userRefId === ele.externalUserId)
+            ?.isHost) ||
+          attendeesList.find((user) => user.userRefId === ele.externalUserId)
+            ?.isCoHost) &&
+          //@ts-ignore
+          parseInt(ele.externalUserId) !== parseInt(isPinEnabled))
     );
     return {
       spotlightAttendee,
@@ -510,7 +516,7 @@ const EventBox = () => {
         {isChatorParticipant && (
           <div className={classes.participantsSec}>
             {isChatorParticipant === "participant" ? (
-              <Participants />
+              EventData?.type === 1 ? <EventParticipants /> : <TalkshowParticipants/>
             ) : isChatorParticipant === "chat" ? (
               <ChatBox />
             ) : isChatorParticipant === "comment" ? (
@@ -531,7 +537,7 @@ const EventBox = () => {
         >
           <div className={classes.participantsSec}>
             {isChatorParticipant === "participant" ? (
-              <Participants />
+               EventData?.type === 1 ? <EventParticipants /> : <TalkshowParticipants/>
             ) : isChatorParticipant === "chat" ? (
               <ChatBox />
             ) : isChatorParticipant === "comment" ? (
