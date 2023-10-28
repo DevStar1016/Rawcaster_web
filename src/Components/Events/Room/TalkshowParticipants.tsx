@@ -55,13 +55,10 @@ const TalkshowParticipants = () => {
 
   const enabledSettings = () => {
     const isHostOrCoHost = userdata?.isHost || userdata?.isCoHost;
-    const defaultGuestAudio = MeetingSettings?.default_guest_audio;
-
-    const defaultGuestVideo = MeetingSettings?.default_guest_video;
 
     return {
-      localVideoChangeAllowed: isHostOrCoHost || defaultGuestVideo !== 0,
-      localMicChangeAllowed: isHostOrCoHost || defaultGuestAudio !== 0,
+      localVideoChangeAllowed: isHostOrCoHost? true : false,
+      localMicChangeAllowed: isHostOrCoHost ? true : false,
     };
   };
 
