@@ -304,7 +304,7 @@ const SignupwithCredentials = () => {
                         });
                       }}
                     >
-                      Opt-in
+                      Opt-in for SMS messages
                     </Checkbox>
                   </div>
 
