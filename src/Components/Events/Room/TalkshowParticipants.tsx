@@ -54,11 +54,9 @@ const TalkshowParticipants = () => {
   const [isCopied, setisCopied] = useState(false);
 
   const enabledSettings = () => {
-    const isHostOrCoHost = userdata?.isHost || userdata?.isCoHost;
-
     return {
-      localVideoChangeAllowed: isHostOrCoHost? true : false,
-      localMicChangeAllowed: isHostOrCoHost ? true : false,
+      localVideoChangeAllowed: userdata?.isHost ? true : false,
+      localMicChangeAllowed: userdata?.isHost ? true : false,
     };
   };
 
