@@ -104,16 +104,17 @@ const TalkshowParticipants = () => {
     /* List of Attendee Handling Options */
 
     const getDropdownList = (ele: AttendeeUserData) => {
-      if (getISCoHost() && !ele?.isCoHost && !ele?.isHost) {
-        return [
-          {
-            key: "1",
-            label: "Rename user",
-            onClick: () => {
-              setrenameAttendee(findAttendee);
-            },
-          },
-        ];
+      if (getISCoHost() && !ele?.isCoHost && !ele?.isHost ) {
+        // return [
+        //   {
+        //     key: "1",
+        //     label: "Rename user",
+        //     onClick: () => {
+        //       setrenameAttendee(findAttendee);
+        //     },
+        //   },
+        // ];
+        return []
       } else if (isYou && (ele?.isHost || ele?.isCoHost)) {
         return [
           {
