@@ -72,7 +72,9 @@ const EventBox = () => {
   /* Dynamic Classname for Attendee Display boxes */
 
   const getContainerClassName = () => {
-    switch (attendees.length) {
+    const attendeesList = EventData?.type === 1 ? attendees.length : 
+            ConvertSpotLightAttendee().otherAttendee?.length
+    switch (attendeesList) {
       case 1:
         return classes.full_container;
       case 2:
@@ -260,7 +262,7 @@ const EventBox = () => {
 
   /* List for whose layout is pinned by Host */
 
-  const ConvertSpotLightAttendee = () => {
+  function ConvertSpotLightAttendee  ()  {
     const spotlightAttendee = attendees.find(
       (ele) =>
         ele.externalUserId &&

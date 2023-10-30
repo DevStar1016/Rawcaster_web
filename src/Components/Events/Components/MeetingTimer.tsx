@@ -36,7 +36,7 @@ const MeetingTimer = () => {
 
   return (
     <div style={{ color: "white", fontSize: "22px" }}>
-      End Meeting :{" "}
+      Meeting ends in :{" "}
       <span style={{ color: "red", marginRight: 20 }}>{timer}</span>
     </div>
   );
