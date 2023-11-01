@@ -108,22 +108,18 @@ const Claimaccount = () => {
       influencer_id: display_user_id ? parseInt(display_user_id) : null,
       token: loginUserData?.token,
     };
+
     VerifyType(JSONtoformdata(filterValidObject(finalData)))
       .then((res) => {
         if (res.data.status === 1) {
-          navigate(-1);
-          dispatch(
-            handleClaimAccount({
-              show: true,
-              msg: res.data.msg,
-            })
-          );
-          if (getisLoginuserId()) {
-            dispatch(handleAccountVerifyStatus(1));
+          // dispatch(handleAccountVerifyStatus(1));
+          if (!display_user_id) {
+            navigate(`/documentverify`, {
+              state: {
+                url: res.data.redirect_url,
+              },
+            });
           }
-          // Modal.success({
-          //   content: res.data.msg,
-          // });
         } else if (res.data.status === 0) {
           Modal.error({
             content: res.data.msg,

@@ -20,6 +20,7 @@ import Settings from "../Components/Settings";
 import HomeLayout from "../Layouts/HomeLayout";
 import ViewNugget from "../Sharedcomponents/Nuggets/ViewNugget";
 import { HomePrivateRoute } from "./PrivateRoute";
+import IdenfyVerification from "../Components/Idenfy/IdenfyVerification";
 
 export const DashboardRoute = [
   {
@@ -70,6 +71,10 @@ export const DashboardRoute = [
           {
             path: "verifyaccount",
             element: <Claimaccount />,
+          },
+          {
+            path: "documentverify",
+            element: <IdenfyVerification />,
           },
         ],
       },

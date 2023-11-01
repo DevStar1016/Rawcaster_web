@@ -25,6 +25,7 @@ import { Typography } from "antd";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
+import { HandleVerifyModal } from "../Modal/DefaultModal";
 
 // Auth
 
