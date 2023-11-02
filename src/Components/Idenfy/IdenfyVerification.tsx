@@ -18,11 +18,11 @@ export default function IdenfyVerification() {
   }, []);
   return (
     <iframe
-      title="Google Homepage"
+      id="iframe"
       width="100%"
       height={iframeHeight}
       src={state.url}
-      frameBorder="0"
+      allow="camera"
     />
   );
 }
