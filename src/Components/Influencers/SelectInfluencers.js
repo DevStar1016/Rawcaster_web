@@ -414,7 +414,11 @@ const SelectInfluencers = () => {
             <p className={classes.name}>
               <p>{ele.display_name}</p>
 
-              <span className={classes.author}>{ele.category.toString()}</span>
+              {ele.category && (
+                <span className={classes.author}>
+                  {ele.category.toString()}
+                </span>
+              )}
             </p>
           </Tooltip>
           <p className={classes.desc}>
