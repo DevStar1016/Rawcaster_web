@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: react
-  namespace: dev
+  namespace: prod
   labels:
     app: react
 spec:
@@ -17,15 +17,33 @@ spec:
     spec:
       containers:
         - name: react
-          image: 562114208112.dkr.ecr.us-east-1.amazonaws.com/rawcaster-react:rawcaster_react_2.0
+          image: 562114208112.dkr.ecr.us-east-1.amazonaws.com/rawcaster-react-prod:rawcaster_react_2.0
           imagePullPolicy: Always
-          envFrom:
+          envFrom: []
           ports:
             - containerPort: 3000
-          resources:
+          resources: # Optional: Add resource requests and limits as per your requirements
             requests:
               cpu: "500m"
               memory: "512Mi"
             limits:
               cpu: "1000m"
               memory: "1024Mi"
+
+---              
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: react
+  name: react
+  namespace: prod
+spec:
+  type: NodePort
+  ports:
+    - name: react
+      port: 80
+      targetPort: 3000
+  selector:
+    app: react
