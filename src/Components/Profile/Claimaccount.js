@@ -114,11 +114,12 @@ const Claimaccount = () => {
         if (res.data.status === 1) {
           // dispatch(handleAccountVerifyStatus(1));
           if (!display_user_id) {
-            navigate(`/documentverify`, {
-              state: {
-                url: res.data.redirect_url,
-              },
-            });
+            window.open(res.data.redirect_url, "self");
+            // navigate(`/documentverify`, {
+            //   state: {
+            //     url: res.data.redirect_url,
+            //   },
+            // });
           }
         } else if (res.data.status === 0) {
           Modal.error({
