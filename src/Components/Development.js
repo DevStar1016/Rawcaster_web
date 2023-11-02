@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import { Alert, Button, notification } from "antd";
+import { Alert, Button, Modal, notification } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
+import { ShowDefaultModal } from "../Modal/DefaultModal";
 
 // import { Typography } from "antd";
 // import { ReadMoreParagraph } from "../Shared/Utility";
@@ -12,10 +13,18 @@ const Development = () => {
   const [NotificationApi, notificationcontextHolder] =
     notification.useNotification();
 
+  const showConfirm = () => {
+    ShowDefaultModal({
+      open: true,
+      message: "test",
+    });
+  };
+
   return (
     <div>
       {notificationcontextHolder}
-      <div className="h-100 p-5 mt-5 m-auto w-100">
+      <Button onClick={showConfirm}>Confirm</Button>
+      {/* <div className="h-100 p-5 mt-5 m-auto w-100">
         <button className="mx-2">Create Channel</button>
         <input
           className="mx-2"
@@ -36,7 +45,7 @@ const Development = () => {
         >
           Join Meeting
         </button>
-      </div>
+      </div> */}
       <ToastContainer position="bottom-end" className="eventpopupContainer">
         <Toast onClose={() => setShow(false)} show={show}>
           <Toast.Body

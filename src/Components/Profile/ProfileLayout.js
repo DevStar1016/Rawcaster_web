@@ -40,7 +40,10 @@ import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
-import { defaultprofileImg } from "../../Shared/CommonConstants";
+import {
+  defaultprofileImg,
+  defaultProfileBannerImg,
+} from "../../Shared/CommonConstants";
 
 const ProfileLayout = ({
   children,
@@ -124,8 +127,8 @@ const ProfileLayout = ({
   const isAddFriend = () => {
     if (isLoginUser) {
       return false;
-    } else if (profileData?.unclaimed_status === 0) {
-      return false;
+      // } else if (profileData?.unclaimed_status) {
+      //   return false;
     } else if (pathname.includes("claim")) {
       return false;
     } else if (getisAddFriend(profileData?.friend_status)) {
@@ -263,6 +266,10 @@ const ProfileLayout = ({
           preview={false}
           rootClassName={classes.bannerImg}
           src={profileData?.cover_image}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = defaultProfileBannerImg;
+          }}
           placeholder={
             <Skeleton.Node active={true} className={classes.bannerImg}>
               <div className={classes.bannerLoading}></div>
@@ -374,14 +381,23 @@ const ProfileLayout = ({
             </div>
 
             <div className={classes.claimBtnSec}>
-              {profileData?.unclaimed_status === 0 && (
+              {(profileData?.unclaimed_status === 1 ||
+                profileData?.unclaimed_status === 2) && (
                 <Button
                   className={`${classes.becomeafanbtn} mx-4`}
                   onClickCapture={() => {
-                    navigate(`/claim/${EncryptionString(profileData.user_id)}`);
+                    if (profileData?.unclaimed_status === 1) {
+                      navigate(
+                        `/claim/${EncryptionString(profileData.user_id)}`
+                      );
+                    }
                   }}
                 >
-                  Claim this Account
+                  {profileData?.unclaimed_status === 1
+                    ? "Claim this Account"
+                    : profileData?.unclaimed_status === 2
+                    ? "Claim Account Pending"
+                    : ""}
                 </Button>
               )}
               {getValidItems().length !== 0 && (

@@ -40,6 +40,8 @@ import { parseInt } from "lodash";
 import ImageEditModal from "../ImageEditModal";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
 import { GeturlmetadataService } from "../../Services/ApiService";
+import { HandleVerifyModal } from "../DefaultModal";
+import { defaultprofileImg } from "../../Shared/CommonConstants";
 
 const Postmodal = ({ visible, onClose }) => {
   const {
@@ -59,6 +61,7 @@ const Postmodal = ({ visible, onClose }) => {
     setpreviewMedia,
     shareWithData,
     setdeletedMedia,
+    resetForm,
   } = useContext(PostNuggetContext);
   const { setPostContent } = useGlobalContext();
   const [messageApi] = message.useMessage();
@@ -82,6 +85,15 @@ const Postmodal = ({ visible, onClose }) => {
     show: false,
     type: "",
   });
+
+  const HandleClose = () => {
+    setisPostContentValid(true);
+    resetForm();
+    setLimitExceeds(false);
+    onClose();
+    setMetaData(null);
+    setPostContent("");
+  };
 
   /**
    * Handles the camera permission for a specific type.
@@ -233,9 +245,7 @@ const Postmodal = ({ visible, onClose }) => {
       height={600}
       width={650}
       onCancel={() => {
-        onClose();
-        setMetaData(null);
-        setPostContent("");
+        HandleClose();
       }}
     >
       <div className={classes.nuggetModal}>
@@ -244,7 +254,14 @@ const Postmodal = ({ visible, onClose }) => {
         </h1>
 
         <div className={classes.topProsec}>
-          <img className={classes.imguser} src={loginUserData?.profile_image} />
+          <img
+            className={classes.imguser}
+            src={loginUserData?.profile_image}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null;
+              currentTarget.src = defaultprofileImg;
+            }}
+          />
           <p className={classes.name}>{loginUserData?.name}</p>
           <Dropdown
             menu={{
@@ -511,7 +528,15 @@ const Postmodal = ({ visible, onClose }) => {
                         className={classes.upgradeBtn}
                         type="primary"
                         onClick={() => {
-                          window.location.assign("/membership");
+                          HandleVerifyModal({
+                            primary: "success",
+                            onSuccess: () => {},
+                            isCloseAvailable: false,
+                            SubmitButtonTitle: "Ok",
+                            message:
+                              "you have been granted a complementary upgrade for xx days",
+                          });
+                          // window.location.assign("/membership");
                         }}
                       >
                         Upgrade

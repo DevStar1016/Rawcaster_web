@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import React, { useState } from "react";
-import AddLiveEvent from "./Configure/AddLiveEvent";
+import AddTalkshow from "./Configure/AddTalkshow";
 import classes from "./Events.module.css";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import eventIcon from "../../Assets/Images/svg/eventIcon.svg";
@@ -56,7 +56,7 @@ const CreateEvent = ({ isSearch, onSearchEnter }) => {
       )}
 
       {isTalkshowOpen && (
-        <AddLiveEvent
+        <AddTalkshow
           isTalkshowOpen={isTalkshowOpen}
           setisTalkshowOpen={setisTalkshowOpen}
         />

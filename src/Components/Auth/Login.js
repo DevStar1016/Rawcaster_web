@@ -4,8 +4,14 @@
  * @returns JSX elements representing the login page.
  */
 import { Button, Form, Input } from "antd";
-import { useState } from "react";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useHref,
+  useNavigate,
+  useNavigation,
+  useParams,
+} from "react-router-dom";
 import classes from "./Signup.module.css";
 import SigninImg from "../../Assets/Images/svg/signin-intro.png";
 import RawcasterLogo from "../../Assets/Images/png/r_logo.png";
@@ -24,12 +30,12 @@ import {
 } from "../../Store/Storage";
 import OwlCarousel from "react-owl-carousel";
 import Seo from "../SEO/Seo";
-import RedirectModal from "../../Modal/Verification/RedirectModal";
 import SigninwithService from "./SigninwithService";
 import { accountVerifyHandle } from "./Utility";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -45,10 +51,11 @@ const validationSchema = yup.object().shape({
 });
 
 const Login = () => {
+  const navigation = useNavigation();
   const { nugget_id } = useParams();
+  const hrefNavigate = useHref();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [redirectModal, setredirectModal] = useState({ show: false, msg: "" });
   const { values, handleChange, handleSubmit, errors, touched, setFieldError } =
     useFormik({
       initialValues: {
@@ -116,7 +123,16 @@ const Login = () => {
             }
           });
         } else if (res.data.status === 2) {
-          setredirectModal({ show: true, msg: res.data.msg });
+          HandleVerifyModal({
+            primary: "success",
+            message: res.data.msg,
+            closeButtonTitle: "Cancel",
+            SubmitButtonTitle: "Sign up",
+            onSuccess: () => {
+              window.location.assign("/signup");
+            },
+            onClose: () => {},
+          });
         } else if (res.data.status === 0) {
           setFieldError("username", res.data.msg);
         }
@@ -264,18 +280,6 @@ const Login = () => {
           </OwlCarousel>
         </div>
       </div>
-      <RedirectModal
-        open={redirectModal.show}
-        msg={redirectModal.msg}
-        Btnname={"Sign up"}
-        onSuccess={() => {
-          navigate("/signup");
-          setredirectModal({ show: false, msg: "" });
-        }}
-        onClose={() => {
-          setredirectModal({ show: false, msg: "" });
-        }}
-      />
     </GoogleOAuthProvider>
   );
 };

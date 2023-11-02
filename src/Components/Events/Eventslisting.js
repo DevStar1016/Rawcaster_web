@@ -5,7 +5,7 @@ import { listEventsService } from "../../Services/ApiService";
 import { useAuth, useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { JSONtoformdata, decodeHtml } from "../../Shared/Utility";
 import Event from "../../Sharedcomponents/Events/Event";
-import AddLiveEvent from "./Configure/AddLiveEvent";
+import AddTalkshow from "./Configure/AddTalkshow";
 import CreateEvent from "./CreateEvent";
 import classes from "./Events.module.css";
 import { DropdownItems, UserDropdownItems } from "./Configure/Constants";
@@ -210,7 +210,7 @@ const Eventslisting = ({
           />
         )}
         {isTalkshowOpen && (
-          <AddLiveEvent
+          <AddTalkshow
             data={EventData}
             isTalkshowOpen={isTalkshowOpen}
             setisTalkshowOpen={setisTalkshowOpen}

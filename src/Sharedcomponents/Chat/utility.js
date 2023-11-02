@@ -565,7 +565,7 @@ export const ChatInput = ({
                   done
                 </span>
               </div>
-            ) : ChatMessage === "" && !isSendOnly ? (
+            ) : (!ChatMessage || ChatMessage === "") && !isSendOnly ? (
               <div className={classes.searchIcon}>
                 <i
                   className={classes.mic_icon}

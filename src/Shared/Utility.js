@@ -25,6 +25,7 @@ import { Typography } from "antd";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
+import { HandleVerifyModal } from "../Modal/DefaultModal";
 
 // Auth
 
@@ -740,6 +741,8 @@ export const getisAddFriend = (status) => {
     case 1:
       return false;
     case 3:
+      return false;
+    case 4:
       return false;
     default:
       return true;

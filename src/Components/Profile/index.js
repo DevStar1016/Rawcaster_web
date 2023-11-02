@@ -12,6 +12,7 @@ import {
 } from "../../Shared/Reduxfetcher";
 import profile_work from "../../Assets/Images/svg/profile_work.svg";
 import profile_edu from "../../Assets/Images/svg/profile_edu.svg";
+import profile_member from "../../Assets/Icons/svg/profile_membership.svg";
 import profile_location from "../../Assets/Images/svg/profile_location.svg";
 import profile_bdy from "../../Assets/Images/svg/profile_bdy.svg";
 import profile_join from "../../Assets/Images/svg/profile_join.svg";
@@ -24,7 +25,7 @@ import {
 import { getOthersProfileService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { Skeleton } from "antd";
+import { Modal, Skeleton } from "antd";
 import { useNavigate, useParams } from "react-router";
 import Connections from "../Connections/Friends/Connections";
 import moment from "moment";
@@ -46,6 +47,7 @@ import { detectMob } from "../../Shared/Utility";
 import Seo from "../SEO/Seo";
 import { ProfileSEO } from "../SEO/SEOContent";
 import { ScrollRestoration } from "react-router-dom";
+import { ShowUnclaimedAccountModal } from "../../Modal/DefaultModal";
 
 const Profile = () => {
   const params = useParams();
@@ -100,6 +102,15 @@ const Profile = () => {
           if (res.data.profile.lock_nugget === 1) {
             getprofile();
           }
+          // if (res.data.profile.unclaimed_status === 1) {
+          //   ShowUnclaimedAccountModal({
+          //     message: "This is Unclaimed Account",
+          //     isSubmitAvailable: false,
+          //   });
+          //   setTimeout(() => {
+          //     Modal.destroyAll();
+          //   }, 5000);
+          // }
         }
       })
       .catch((err) => {});
@@ -159,12 +170,13 @@ const Profile = () => {
    * @param {Object} [filterValues={}] - The filter values to apply to the followers list.
    * @returns {Promise} - A promise that resolves to the final object containing the followers list.
    */
-  const getFollowers = (filterValues = {}) => {
+  const getFollowers = (filterValues = {}, page = 1) => {
     let promise = new Promise((resolve, reject) => {
       let fansList = {
         ...filterValues,
         token: loginToken,
         type: 2,
+        page_number: page,
       };
       if (!getisLoginUser()) {
         fansList = {
@@ -290,6 +302,16 @@ const Profile = () => {
     }
     return 4;
   };
+
+  // useEffect(() => {
+  //   ShowUnclaimedAccountModal({
+  //     message: "This is Unclaimed Account",
+  //     isSubmitAvailable: false,
+  //   });
+  //   setTimeout(() => {
+  //     Modal.destroyAll();
+  //   }, 5000);
+  // }, []);
 
   const profileValue = {
     FansList,
@@ -430,6 +452,22 @@ const Profile = () => {
                             </span>
                           </div>
                         )}
+                        <div
+                          className={`${classes.item} ${classes.memberitem}`}
+                        >
+                          <p>
+                            <img src={profile_member} alt={"Joined at"} />
+                          </p>
+                          <div className={classes.memberContent}>
+                            <span className={classes.noWrap}>
+                              Rawcaster membership is
+                            </span>
+                            <span className={classes.breakAll}>
+                              {" "}
+                              {profileData?.user_status}
+                            </span>
+                          </div>
+                        </div>
                         <div className={classes.item}>
                           <p>
                             <img src={profile_join} alt={"Joined at"} />

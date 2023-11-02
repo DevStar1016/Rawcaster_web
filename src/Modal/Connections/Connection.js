@@ -10,7 +10,7 @@
  * @param {boolean} filters - Whether to display filters or not.
  * @returns The ConnectionModal component.
  */
-import { Empty, InputNumber, Modal, Select } from "antd";
+import { Empty, InputNumber, Modal, Select, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { filterValidObject } from "../../Shared/Utility";
 import classes from "./Connection.module.css";
@@ -30,6 +30,10 @@ const ConnectionModal = ({
   getConnectionList,
   closeCall,
   filters,
+  page = 1,
+  total_page = 1,
+  setisLoadMore,
+  isLoadMore,
 }) => {
   const [LocationList, setLocationList] = useState([]);
 
@@ -66,14 +70,14 @@ const ConnectionModal = ({
         ...values,
         age: parseInt(value),
       };
-      getConnectionList(filterValidObject(finalValue));
+      getConnectionList(filterValidObject(finalValue), 1);
     } else {
       setFieldValue("age", "");
       let finalValue = {
         ...values,
         age: "",
       };
-      getConnectionList(filterValidObject(finalValue));
+      getConnectionList(filterValidObject(finalValue), 1);
     }
   };
 
@@ -93,7 +97,7 @@ const ConnectionModal = ({
       }}
       onCancel={() => {
         if (!closeCall) {
-          getConnectionList(filterValidObject({}));
+          getConnectionList(filterValidObject({}), 1);
         }
         onClose();
       }}
@@ -120,7 +124,7 @@ const ConnectionModal = ({
                     ...values,
                     location: "",
                   };
-                  getConnectionList(filterValidObject(finalValue));
+                  getConnectionList(filterValidObject(finalValue), 1);
                 }}
                 onSelect={(value) => {
                   setFieldValue("location", value);
@@ -128,7 +132,7 @@ const ConnectionModal = ({
                     ...values,
                     location: value,
                   };
-                  getConnectionList(filterValidObject(finalValue));
+                  getConnectionList(filterValidObject(finalValue), 1);
                 }}
               >
                 {LocationList.map((ele) => {
@@ -152,7 +156,7 @@ const ConnectionModal = ({
                     ...values,
                     gender: "",
                   };
-                  getConnectionList(filterValidObject(finalValue));
+                  getConnectionList(filterValidObject(finalValue), 1);
                 }}
                 onSelect={(_, { key }) => {
                   setFieldValue("gender", parseInt(key));
@@ -160,7 +164,7 @@ const ConnectionModal = ({
                     ...values,
                     gender: parseInt(key),
                   };
-                  getConnectionList(filterValidObject(finalValue));
+                  getConnectionList(filterValidObject(finalValue), 1);
                 }}
               >
                 <Select.Option key={1} value={"Male"}>
@@ -205,18 +209,41 @@ const ConnectionModal = ({
             </Col>
           </Row>
         )}
-
-        <div className={classes.listSec}>
-          {value.filteredConnections?.map((ele) => {
-            return (
-              <UserProfile
-                ele={ele}
-                type={userType}
-                className={classes.modalOthersIcon}
-                getConnectionList={() => getConnectionList(values)}
-              />
-            );
-          })}
+        <div className={classes.listContainer}>
+          <div className={classes.listSec}>
+            {value.filteredConnections?.map((ele) => {
+              return (
+                <UserProfile
+                  ele={ele}
+                  type={userType}
+                  className={classes.modalOthersIcon}
+                  getConnectionList={() => getConnectionList(values)}
+                />
+              );
+            })}
+          </div>
+          {page !== total_page && (
+            <>
+              {isLoadMore ? (
+                <div className={classes.loadSec}>
+                  <Spin></Spin>
+                </div>
+              ) : (
+                <p
+                  className={classes.loadSec}
+                  onClick={() => {
+                    setisLoadMore(true);
+                    getConnectionList(filterValidObject(values), page + 1);
+                  }}
+                >
+                  View more
+                  <span className="material-symbols-outlined">
+                    arrow_forward
+                  </span>
+                </p>
+              )}
+            </>
+          )}
         </div>
         {value.filteredConnections?.length === 0 && (
           <Empty description="No data found" />

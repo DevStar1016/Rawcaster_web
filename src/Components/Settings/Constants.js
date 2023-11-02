@@ -19,7 +19,7 @@ const secondaryShare = [
 ];
 
 export const AccountStatus = ["Inactive", "Active"];
-
+export const OptInStatus = ["Disable", "Enable"];
 export const SettingsList = [
   {
     title: "Phone",
@@ -178,3 +178,22 @@ export const EventSettings = [
     isprimary: false,
   },
 ];
+
+// Validation Messages
+
+export const VALIDATION_MESSAGES = {
+  MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE_BEFORE_SIGNUP:
+    "By Providing your phone number, you agree to receive text messages from Rawcaster.com with your One-Time-Password, during signup or password reset. Message and data rates may apply. If you wish to STOP receiving SMS messages from Rawcaster.com, please uncheck this box and register with email",
+  MOBILE_NUMBER_VERIFIED_OPT_IN_DISABLE_BEFORE_SIGNUP:
+    "No SMS messages will be sent to your phone. You will need to register with your email address to receive your One-Time-Password.",
+  MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE:
+    "By Providing your phone number, you agree to receive text messages from Rawcaster.com with your One-Time-Password, during signup or password reset. Message and data rates may apply. If you wish to STOP receiving SMS messages from Rawcaster.com, please uncheck this box.",
+  MOBILE_NUMBER_NOT_VERIFIED:
+    "You need to complete your Mobile Number verification before you can do this. Do you want to verify your Mobile Number now?",
+  EMAIL_VERIFIED_OPT_IN_DISABLE:
+    "Starting now no SMS messages will be sent to your phone. All the OTP will be sent to your registered email ID ",
+  EMAIL_NOT_VERIFIED:
+    "You need to complete your Email verification before you can do this. Do you want to verify your Email now?",
+  OPT_IN_ENABLE:
+    "By enabling SMS, you agree to receive text messages from Rawcaster.com. Message and data rates may apply. If you wish to STOP receiving SMS messages from Rawcaster.com, please disable this option.",
+};

@@ -14,6 +14,7 @@ import {
   handleNuggetReadoutUrlUpdate,
   handleNuggetTranslateUpdate,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
+import axios from "axios";
 
 /**
  * A component that displays a readout section for a nugget.
@@ -22,12 +23,16 @@ import {
  * @returns The readout section component.
  */
 export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
-  const { player, setplayer, PlayerSource } = useMainContext();
+  const {
+    player,
+    setplayer,
+    PlayerSource,
+    isplayerFetching,
+    setisplayerFetching,
+  } = useMainContext();
   const token = useAuthToken();
   const dispatch = useDispatch();
   const { audio, setAudio, isPlaying, setisPlaying } = useListNuggetContext();
-  const { ReadoutRef } = useListNuggetContext();
-  const [isFetchingurl, setisFetchingurl] = useState(false);
 
   const handleplayaudio = (url) => {
     if (player && player.id !== nugget_id) {
@@ -45,11 +50,10 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
   };
 
   const HandlegetNuggetContentAudio = () => {
-    if (ReadoutRef.current) {
-      ReadoutRef.current.abort("Request Cancelled");
+    if (PlayerSource.current) {
+      PlayerSource.current.abort("Request Cancelled");
     }
-    ReadoutRef.current = new AbortController();
-
+    PlayerSource.current = new AbortController();
     if (audio) {
       audio.pause();
       setAudio(null);
@@ -60,16 +64,18 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       handleplayaudio(readout_url);
       return;
     }
+    setisplayerFetching(`nugget_${nugget_id}`);
 
-    setisFetchingurl(true);
     const formData = {
       token,
       nugget_id,
     };
     getNuggetContentAudioService(JSONtoformdata(formData), {
-      signal: ReadoutRef.current.signal,
+      signal: PlayerSource.current.signal,
     })
       .then((res) => {
+        console.log("test");
+        setisplayerFetching(false);
         if (res?.data?.status === 1) {
           if (audio) {
             audio.pause();
@@ -89,10 +95,12 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
           }
         }
       })
-      .catch((err) => {})
-      .finally(() => {
-        PlayerSource.current = null;
-        setisFetchingurl(false);
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          PlayerSource.current = null;
+        } else {
+          setisplayerFetching(false);
+        }
       });
   };
 
@@ -135,7 +143,7 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
     </div>
   ) : (
     <>
-      {isFetchingurl ? (
+      {isplayerFetching === `nugget_${nugget_id}` ? (
         <p className={`mx-2 ${classes.fetchingSec}`}>
           <div className="dot_typing"></div>
         </p>
@@ -161,12 +169,15 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
  * @returns The readout section component.
  */
 export const CommentReadoutSec = ({ comment_id, readout_url = null }) => {
-  const { player, setplayer, PlayerSource } = useMainContext();
+  const {
+    player,
+    setplayer,
+    PlayerSource,
+    isplayerFetching,
+    setisplayerFetching,
+  } = useMainContext();
   const token = useAuthToken();
-  const dispatch = useDispatch();
   const { audio, setAudio, isPlaying, setisPlaying } = useListNuggetContext();
-  const { ReadoutRef } = useListNuggetContext();
-  const [isFetchingurl, setisFetchingurl] = useState(false);
 
   const handleplayaudio = (url) => {
     if (player && player.id !== comment_id) {
@@ -181,10 +192,10 @@ export const CommentReadoutSec = ({ comment_id, readout_url = null }) => {
   };
 
   const HandlegetCommentContentAudio = () => {
-    if (ReadoutRef.current) {
-      ReadoutRef.current.abort("Request Cancelled");
+    if (PlayerSource.current) {
+      PlayerSource.current.abort("Request Cancelled");
     }
-    ReadoutRef.current = new AbortController();
+    PlayerSource.current = new AbortController();
     if (audio) {
       audio.pause();
       setAudio(null);
@@ -194,7 +205,8 @@ export const CommentReadoutSec = ({ comment_id, readout_url = null }) => {
       handleplayaudio(readout_url);
       return;
     }
-    setisFetchingurl(true);
+    setisplayerFetching(`comment_${comment_id}`);
+
     const formData = {
       token,
       nugget_id: comment_id,
@@ -202,9 +214,10 @@ export const CommentReadoutSec = ({ comment_id, readout_url = null }) => {
       translation_type: 1,
     };
     getNuggetContentAudioService(JSONtoformdata(formData), {
-      signal: ReadoutRef.current.signal,
+      signal: PlayerSource.current.signal,
     })
       .then((res) => {
+        setisplayerFetching(false);
         if (res?.data?.status === 1) {
           if (audio) {
             audio.pause();
@@ -220,11 +233,15 @@ export const CommentReadoutSec = ({ comment_id, readout_url = null }) => {
           }
         }
       })
-      .catch((err) => {})
-      .finally(() => {
-        PlayerSource.current = null;
-        setisFetchingurl(false);
-      });
+      .catch((err) => {
+        console.log(err, "err");
+        if (axios.isCancel(err)) {
+          PlayerSource.current = null;
+        } else {
+          setisplayerFetching(false);
+        }
+      })
+      .finally(() => {});
   };
 
   const handleStopAudio = () => {
@@ -255,7 +272,7 @@ export const CommentReadoutSec = ({ comment_id, readout_url = null }) => {
 
   return (
     <>
-      {isFetchingurl ? (
+      {isplayerFetching === `comment_${comment_id}` ? (
         <p className={`mx-2 ${classes.fetchingSec} ${classes.commentsDot}`}>
           <div className="dot_typing"></div>
         </p>

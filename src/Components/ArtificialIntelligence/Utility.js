@@ -22,7 +22,7 @@ import {
   useGlobalContext,
   useMainContext,
 } from "../../Shared/Context";
-import { JSONtoformdata, ReadMore, Timer } from "../../Shared/Utility";
+import { JSONtoformdata, Timer } from "../../Shared/Utility";
 import { TextToAudioService } from "../../Services/ApiService";
 import axios from "axios";
 import ChatAudioplayer from "../../Sharedcomponents/AudioPlayer/ChatAudioplayer";
@@ -57,8 +57,6 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
     setisplayerFetching,
   } = useMainContext();
   const { audio, setAudio, isPlaying, setisPlaying } = useChatBotContext();
-  const [isFetchingurl, setisFetchingurl] = useState(false);
-
   const token = useAuthToken();
 
   const HandlegetNuggetContentAudio = (url) => {
@@ -75,7 +73,6 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
     audioElement.play();
     PlayerSource.current = null;
 
-    setisFetchingurl(false);
     setisPlaying(index);
   };
 
@@ -138,6 +135,7 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
     )
       .then((res) => {
         if (res) {
+          setisplayerFetching(false);
           if (res.data.status === 1) {
             if (audio) {
               audio?.pause();
@@ -157,10 +155,9 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
       .catch((err) => {
         if (axios.isCancel(err)) {
           PlayerSource.current = null;
+        } else {
+          setisplayerFetching(false);
         }
-      })
-      .finally(() => {
-        setisplayerFetching(false);
       });
   };
 
@@ -184,10 +181,10 @@ export const ReadoutSec = ({ audiourl, index, message, onResponse }) => {
       ) : (
         <p
           onClick={() => {
+            setisplayerFetching(index);
             if (PlayerSource.current) {
               PlayerSource.current.abort("Request Cancelled");
             }
-            setisplayerFetching(index);
             convertToAudio();
           }}
         >
@@ -300,6 +297,7 @@ export const MessageContent = (props) => {
             <p
               className={translated_text ? classes.activeTranslate : ""}
               onClick={() => {
+                console.log("test");
                 if (translated_text) {
                   setMessages((pre) => {
                     let findIndex = pre.findIndex((elem, i) => i === index);

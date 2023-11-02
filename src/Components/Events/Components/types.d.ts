@@ -40,8 +40,9 @@ export type AttendeeUserData = {
     audioDisabledByHost?: boolean;
     videoDisabledByHost?: boolean;
     isRequested?: boolean;  
-    AttendeeId?:string | undefined
-    externalUserId?:string | undefined
+    AttendeeId?:string | undefined;
+    externalUserId?:string | undefined;
+    userRefId?:string| undefined;
 }
 
 
@@ -131,6 +132,8 @@ export type EventContextProp = {
     setisEndLoading:(val:string|null)=>void,
     animatedEmoji: ReactNode[],
     setAnimatedEmoji:(val:ReactNode)=>void,
+    meetingTimer:false,
+    setMeetingTimer:(val:boolean)=>void,
 }
 
 

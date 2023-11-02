@@ -1,0 +1,576 @@
+import { useState } from "react";
+import classes from "./Room.module.css";
+import { Dropdown, Layout, Modal, Slider, Tooltip } from "antd";
+import { defaultprofileImg } from "../../../Shared/CommonConstants";
+import styles from "../../../Layouts/MeetingLayout.module.css";
+import { ChimesendMessage } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { useRosterState } from "amazon-chime-sdk-component-library-react";
+import {
+  useAuthData,
+  useEventTempAuthData,
+} from "../../../Shared/Reduxfetcher";
+import { Collapse, Form, InputGroup } from "react-bootstrap";
+import {
+  CameraComponent,
+  LocalCameraComponent,
+  LocalMicrophoneComponent,
+  MicrophoneComponent,
+  VolumeStatusComponent,
+} from "../Components/Utility";
+import RenameModal from "../Components/RenameModal";
+import { toast } from "react-hot-toast";
+import { generatePath } from "react-router";
+import { handleCopyText } from "../../../Shared/Utility";
+import {
+  AttendeeUserData,
+  EventContextProp,
+  RequestAttendee,
+} from "../Components/types";
+import { useEventRoomContext } from "../../../Shared/Context";
+
+const { Header, Footer, Content } = Layout;
+
+const TalkshowParticipants = () => {
+  const [isSearchEnable, setisSearchEnable] = useState(false);
+  const [SpeakerState, setSpeakerState] = useState<boolean | number | string>(
+    false
+  );
+  const [renameAttendee, setrenameAttendee] = useState<any>(false);
+  const [SearchData, setSearchData] = useState("");
+  const {
+    setisChatorParticipant,
+    RequestRef,
+    attendeesList,
+    EventData,
+    userdata,
+    MeetingSettings,
+  }: EventContextProp = useEventRoomContext();
+  const userData = useAuthData();
+  const tempuserData = useEventTempAuthData();
+  const { roster } = useRosterState();
+  const attendees = Object.values(roster);
+  const [isInvited, setisInvited] = useState(false);
+  const [isCopied, setisCopied] = useState(false);
+
+  const enabledSettings = () => {
+    return {
+      localVideoChangeAllowed: userdata?.isHost ? true : false,
+      localMicChangeAllowed: userdata?.isHost ? true : false,
+    };
+  };
+
+  /* To get Rawcaster user or non Rawcaster User */
+  const getUserData = () => {
+    if (userData) {
+      return userData;
+    } else {
+      return tempuserData;
+    }
+  };
+
+  /**
+   * Get Updated Status for Host
+   */
+  const getISHost = () => {
+    return userdata?.isHost;
+  };
+
+  const getISCoHost = () => {
+    return userdata?.isCoHost;
+  };
+
+  /* Handle Accept the Attendee Join Request  */
+  const handleAccept = (ele: RequestAttendee) => {
+    ChimesendMessage(
+      { ...ele, refId: EventData?.reference_id },
+      CHIME_SOCKET_EVENTS.ALLOW_TO_JOIN_MEETING
+    );
+  };
+
+  /* Handle Reject the Attendee Join Request  */
+
+  const handleReject = (ele: RequestAttendee) => {
+    const value = { userId: ele.userId };
+    ChimesendMessage(value, CHIME_SOCKET_EVENTS.REJECT_TO_JOIN_MEETING);
+  };
+
+  const AttendeeComponent = ({ ele }) => {
+    const findAttendee = attendeesList.find(
+      (elem) => elem.userRefId === ele.externalUserId
+    );
+    const isYou = getUserData()?.user_id === findAttendee?.userId;
+
+    /* List of Attendee Handling Options */
+
+    const getDropdownList = (ele: AttendeeUserData) => {
+      if (getISCoHost() && !ele?.isCoHost && !ele?.isHost ) {
+        // return [
+        //   {
+        //     key: "1",
+        //     label: "Rename user",
+        //     onClick: () => {
+        //       setrenameAttendee(findAttendee);
+        //     },
+        //   },
+        // ];
+        return []
+      } else if (isYou && (ele?.isHost || ele?.isCoHost)) {
+        return [
+          {
+            key: "1",
+            label: "Rename user",
+            onClick: () => {
+              setrenameAttendee(findAttendee);
+            },
+          },
+        ];
+      }
+      return [
+        {
+          key: "0",
+          label: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
+          onClick: () => {
+            Modal.confirm({
+              title: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
+              content: `Are you sure do you want to ${
+                !ele?.isCoHost ? "Promote" : "Remove"
+              } as Co Host for this User !`,
+              onOk: () => {
+                const hostList = attendeesList?.filter(
+                  (list) => list.isHost || list.isCoHost
+                );
+
+                if (ele?.isCoHost) {
+                  ChimesendMessage(
+                    {
+                      refId: EventData?.reference_id,
+                      hostId: userData?.user_id,
+                      userId: findAttendee?.userId,
+                    },
+                    CHIME_SOCKET_EVENTS.REMOVE_HOST
+                  );
+                } else {
+                  if (hostList.length < 4) {
+                    ChimesendMessage(
+                      {
+                        refId: EventData?.reference_id,
+                        hostId: userData?.user_id,
+                        userId: findAttendee?.userId,
+                      },
+                      CHIME_SOCKET_EVENTS.MAKE_HOST
+                    );
+                  } else {
+                    Modal.confirm({
+                      title: "You cannot add more than 3 co-hosts",
+                      onOk() {},
+                    });
+                  }
+                }
+              },
+              onCancel: () => {},
+            });
+          },
+        },
+        {
+          key: "1",
+          label: "Rename user",
+          onClick: () => {
+            setrenameAttendee(findAttendee);
+          },
+        },
+        {
+          key: "2",
+          label: "Remove user",
+          onClick: () => {
+            Modal.confirm({
+              title: "Remove User",
+              content: "Are you sure do you want to remove this User !",
+              onOk: () => {
+                ChimesendMessage(
+                  {
+                    refId: EventData?.reference_id,
+                    hostId: EventData?.original_user_id,
+                    userId: findAttendee?.userId,
+                  },
+                  CHIME_SOCKET_EVENTS.KICK_USER
+                );
+              },
+              onCancel: () => {},
+            });
+          },
+        },
+      ];
+    };
+
+    return (
+      <>
+        <audio
+          style={{
+            display: "none",
+          }}
+        />
+        <div
+          className={classes.participantContainer}
+          style={{
+            display: findAttendee?.name
+              ?.toLowerCase()
+              .includes(SearchData?.toLowerCase())
+              ? ""
+              : "none",
+          }}
+        >
+          <div className={classes.itemName}>
+            <img
+              alt="participant"
+              src={findAttendee?.image ? findAttendee?.image : ""}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = defaultprofileImg;
+              }}
+            />
+            <div className={classes.nameSec}>
+              <span className={classes.participantName}>
+                {findAttendee?.name}
+              </span>
+              {`${isYou ? " (You)" : ""}`}
+            </div>
+          </div>
+          <div className={classes.itemAction}>
+            {findAttendee?.handRaised && (
+              <span className={styles.raise_hand_active_icon_sm} />
+            )}
+            {findAttendee?.isHost ? (
+              <div className={classes.hostIcon}>HOST</div>
+            ) : findAttendee?.isCoHost ? (
+              <div className={classes.hostIcon}>CO HOST</div>
+            ) : null}
+            {!isYou && (
+              <VolumeStatusComponent
+                ele={ele}
+                className={classes.speakersmallIcon}
+                onClick={() => {
+                  if (
+                    SpeakerState &&
+                    findAttendee &&
+                    SpeakerState !== findAttendee?.userId
+                  ) {
+                    setSpeakerState(findAttendee.userId);
+                  } else {
+                    setSpeakerState(false);
+                  }
+                }}
+              />
+            )}
+            {isYou ? (
+              <LocalMicrophoneComponent
+                className={classes.micsmallIcon}
+                isAllowed={enabledSettings().localMicChangeAllowed}
+              />
+            ) : (
+              <MicrophoneComponent
+                ele={ele}
+                attendee={findAttendee}
+                isHost={getISHost() || getISCoHost()}
+                className={classes.micsmallIcon}
+                isGlobal={false}
+              />
+            )}
+
+            {isYou && (userdata?.isHost || userdata?.isCoHost) ? (
+              <LocalCameraComponent
+                setselectedDevice={null}
+                selectedDevice={null}
+                className={classes.videosmallIcon}
+                isAllowed={enabledSettings().localVideoChangeAllowed}
+              />
+            ) : (
+              (findAttendee?.isHost || findAttendee?.isCoHost) && (
+                <CameraComponent
+                  ele={ele}
+                  attendee={findAttendee}
+                  isHost={getISHost() || getISCoHost()}
+                  className={classes.videosmallIcon}
+                  isGlobal={false}
+                />
+              )
+            )}
+            {getISCoHost() && findAttendee?.isHost ? (
+              <div style={{ opacity: "0" }}>
+                <i className="material-symbols-outlined">more_vert</i>
+              </div>
+            ) : getISHost() || getISCoHost() ? (
+              <Dropdown
+                menu={{
+                  items: findAttendee ? getDropdownList(findAttendee) : [],
+                }}
+              >
+                <div className={classes.moreIcon}>
+                  <i className="material-symbols-outlined">more_vert</i>
+                </div>
+              </Dropdown>
+            ) : isYou ? (
+              <Dropdown
+                menu={{
+                  items: findAttendee && [
+                    {
+                      key: "1",
+                      label: "Rename user",
+                      onClick: () => {
+                        setrenameAttendee(findAttendee);
+                      },
+                    },
+                  ],
+                }}
+              >
+                <div className={classes.moreIcon}>
+                  <i className="material-symbols-outlined">more_vert</i>
+                </div>
+              </Dropdown>
+            ) : null}
+          </div>
+        </div>
+        <Collapse in={SpeakerState === findAttendee?.userId}>
+          <div
+            className={classes.speakerContainer}
+            style={{
+              background: "#f5f5f5",
+            }}
+          >
+            <div className={classes.speakerSec}>
+              <VolumeStatusComponent
+                onClick={() => {
+                  if (findAttendee && SpeakerState !== findAttendee?.userId) {
+                    setSpeakerState(findAttendee?.userId);
+                  } else {
+                    setSpeakerState(false);
+                  }
+                }}
+              />
+
+              <Slider
+                min={0}
+                defaultValue={ele.volume}
+                max={100}
+                className="ms-3"
+                tooltip={{
+                  open: true,
+                }}
+              />
+            </div>
+          </div>
+        </Collapse>
+      </>
+    );
+  };
+
+  /* Generate Invite Link  */
+  const getInviteLink = () => {
+    return (
+      window.location.origin +
+      generatePath(`/join/:event/:ref_id`, {
+        event: "talkshow",
+        ref_id: EventData?.reference_id || "",
+      })
+    );
+  };
+
+  return (
+    <Layout className={`${classes.popupContainer} ${classes.talkshowPopup}`}>
+      <Header
+        style={{
+          textAlign: "center",
+          color: "#fff",
+          lineHeight: 64,
+          backgroundColor: "#7dbcea",
+        }}
+        className={classes.headerStyle}
+      >
+        <div className={classes.popupHeader}>
+          <div>
+            <i className={`${styles.participant_icon} ${styles.icon}`}></i>
+            <p>Participants</p>
+          </div>
+          <div>
+            <i
+              className="material-symbols-outlined"
+              onClick={() => {
+                setisSearchEnable((pre) => !pre);
+              }}
+            >
+              search
+            </i>
+            <i
+              className="material-symbols-outlined"
+              onClick={() => {
+                setisChatorParticipant(null);
+              }}
+            >
+              cancel
+            </i>
+          </div>
+        </div>
+        <div>
+          <Collapse in={isSearchEnable} className={classes.filterSec}>
+            <InputGroup className="mb-2">
+              <Form.Control
+                className={`${classes.inSearch} ${classes.participantSearch}`}
+                placeholder="Search Participants by name"
+                aria-label="Search Participants by name"
+                onChange={(e) => {
+                  setSearchData(e.target.value);
+                }}
+              />
+              <InputGroup.Text
+                className={`${classes.searchIcon} ${classes.participantSearchIcon}`}
+              >
+                <span className="material-icons">search</span>
+              </InputGroup.Text>
+            </InputGroup>
+          </Collapse>
+        </div>
+      </Header>
+      <Content className={classes.participantSec}>
+        {attendees.map((ele, index) => {
+          return ele ? AttendeeComponent({ ele }) : null;
+        })}
+        <RenameModal
+          key={renameAttendee?.userId}
+          open={renameAttendee}
+          ele={renameAttendee}
+          success={() => {
+            toast.remove("rawcaster");
+            toast.success("Renamed Successfully", { id: "rawcaster" });
+            setrenameAttendee(false);
+          }}
+          close={() => {
+            setrenameAttendee(false);
+          }}
+        />
+      </Content>
+      <Footer className={classes.footerSec}>
+        {RequestRef.current.length !== 0 && (
+          <div
+            style={{
+              marginTop: 15,
+              marginBottom: RequestRef.current.length !== 0 ? 20 : 0,
+            }}
+          >
+            <div
+              className={`${classes.participantContainer} ${classes.lobbyHeader}`}
+            >
+              <p
+                style={{
+                  marginBottom: 0,
+                }}
+              >
+                Lobby ({RequestRef.current.length})
+              </p>
+              <div className={classes.itemAction}>
+                <div
+                  className={classes.greenicon}
+                  onClick={() => {
+                    RequestRef.current.map((ele) => {
+                      handleAccept(ele);
+                    });
+                  }}
+                >
+                  <i className="material-symbols-outlined">done</i>
+                </div>
+                <div
+                  className={classes.redicon}
+                  onClick={() => {
+                    RequestRef.current.map((ele) => {
+                      handleReject(ele);
+                    });
+                  }}
+                >
+                  <i className="material-symbols-outlined">close</i>
+                </div>
+              </div>
+            </div>
+            <div
+              style={{
+                maxHeight: 150,
+                overflowY: "scroll",
+                overflowX: "hidden",
+              }}
+            >
+              {RequestRef.current.map((ele, index) => {
+                return (
+                  <div className={classes.participantContainer}>
+                    <div className={classes.itemName}>
+                      <img src={ele.image} alt={`request_${index}`} />
+                      {ele.name}
+                    </div>
+                    <div className={classes.itemAction}>
+                      <div
+                        className={classes.greenicon}
+                        onClick={() => {
+                          handleAccept(ele);
+                        }}
+                      >
+                        <i className="material-symbols-outlined">done</i>
+                      </div>
+                      <div
+                        className={classes.redicon}
+                        onClick={() => {
+                          handleReject(ele);
+                        }}
+                      >
+                        <i className="material-symbols-outlined">close</i>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {userdata && (
+          <div
+            className={classes.inviteContainer}
+            onClick={() => {
+              setisInvited((pre) => !pre);
+            }}
+          >
+            <div className={classes.inviteBtn}>Invite Participants</div>
+          </div>
+        )}
+        <Collapse in={isInvited}>
+          <div className={classes.inviteModal}>
+            <h2>Invite via Meeting Link</h2>
+            <div className={classes.MeetingLinkSec}>
+              <p> {getInviteLink()}</p>
+              <Tooltip placement="top" title={"Copy"}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {isCopied ? (
+                    <span className={`material-symbols-rounded`}>done</span>
+                  ) : (
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => {
+                        handleCopyText(getInviteLink()).then(() => {
+                          setisCopied(true);
+                        });
+                      }}
+                    >
+                      content_copy
+                    </span>
+                  )}
+                </div>
+              </Tooltip>
+            </div>
+          </div>
+        </Collapse>
+      </Footer>
+    </Layout>
+  );
+};
+
+export default TalkshowParticipants;

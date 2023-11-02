@@ -41,8 +41,13 @@ const ConnectionsList = ({
     setisInfluencerChatModalOpen,
   } = useProfileContext();
   const params = useParams();
+  const [isLoadMore, setisLoadMore] = useState(false);
   const display_user_id = DecryptionString(params.user_id);
   const [isLoadingConnection, setisLoadingConnection] = useState(false);
+  const [Page, setPage] = useState({
+    pages: 1,
+    total_pages: 1,
+  });
   const loginToken = useAuthToken();
   const [ConnectionsList, setConnectionsList] = useState({
     connections: [],
@@ -55,11 +60,61 @@ const ConnectionsList = ({
   });
   const [isSeeMore, setisSeeMore] = useState(false);
 
-  const getUserList = (val = {}) => {
+  const HandleConnections = (res, page, val) => {
+    let isFilterEnable = Object.keys(val).length !== 0;
+    setPage({
+      pages: res.data.current_page_no,
+      total_pages: res.data.total_pages,
+    });
+    if (isFilterEnable) {
+      if (page === 1) {
+        setConnectionsList((pre) => {
+          return {
+            ...pre,
+            allconnections: res.allconnections,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        });
+      } else {
+        setConnectionsList((pre) => {
+          return {
+            ...pre,
+            allconnections: [...pre.allconnections, ...res.allconnections],
+            filteredConnections: [...pre.allconnections, ...res.allconnections],
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        });
+      }
+    } else {
+      if (page === 1) {
+        setConnectionsList((pre) => {
+          return {
+            ...res,
+            allconnections: res.allconnections,
+            filteredConnections: res.allconnections,
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        });
+      } else {
+        setConnectionsList((pre) => {
+          return {
+            ...pre,
+            allconnections: [...pre.allconnections, ...res.allconnections],
+            filteredConnections: [...pre.allconnections, ...res.allconnections],
+            filteredConnectionCount: res.allconnectionscount,
+          };
+        });
+      }
+    }
+  };
+
+  const getUserList = (val = {}, page = Page.pages) => {
     let fansList = {
       ...val,
       token: loginToken,
       type: 1,
+      page_number: page,
     };
     if (!isLoginUser) {
       fansList = {
@@ -69,35 +124,20 @@ const ConnectionsList = ({
     }
     getfollowerfollowingService(fansList)
       .then((res) => {
-        let isFilterEnable = Object.keys(val).length !== 0;
-        let finalObj = {
-          ...res,
-        };
-        if (isFilterEnable) {
-          finalObj = {
-            ...ConnectionsList,
-            filteredConnections: res.allconnections,
-            filteredConnectionCount: res.allconnectionscount,
-          };
-        } else {
-          finalObj = {
-            ...res,
-            filteredConnections: res.allconnections,
-            filteredConnectionCount: res.allconnectionscount,
-          };
-        }
-        setConnectionsList(finalObj);
+        HandleConnections(res, page, val);
       })
       .catch((err) => {})
       .finally(() => {
+        setisLoadMore(false);
         setisLoadingConnection(false);
       });
   };
 
-  const getConnectionList = (val = {}) => {
+  const getConnectionList = (val = {}, page = Page.pages) => {
     let validData = {
       ...val,
       token: loginToken,
+      page_number: page,
     };
     if (!isLoginUser) {
       validData = {
@@ -107,69 +147,34 @@ const ConnectionsList = ({
     }
     getConnectionData(validData)
       .then((res) => {
-        let isFilterEnable = Object.keys(val).length !== 0;
-        let finalObj = {
-          ...res,
-        };
-        if (isFilterEnable) {
-          finalObj = {
-            ...ConnectionsList,
-            filteredConnections: res.allconnections,
-            filteredConnectionCount: res.allconnectionscount,
-          };
-        } else {
-          finalObj = {
-            ...res,
-            filteredConnections: res.allconnections,
-            filteredConnectionCount: res.allconnectionscount,
-          };
-        }
-        setConnectionsList(finalObj);
+        HandleConnections(res, page, val);
       })
       .catch((err) => {})
       .finally(() => {
+        setisLoadMore(false);
         setisLoadingConnection(false);
       });
   };
 
-  const getUnclaimedInfluencer = (val = {}) => {
-    getUnclaimedInfluencerData(loginToken, val)
+  const getUnclaimedInfluencer = (val = {}, page = Page.pages) => {
+    getUnclaimedInfluencerData(loginToken, val, page)
       .then((res) => {
-        let isFilterEnable = Object.keys(val).length !== 0;
-        let finalObj = {
-          ...res,
-        };
-        if (isFilterEnable) {
-          finalObj = {
-            ...ConnectionsList,
-            filteredConnections: res.allconnections,
-            filteredConnectionCount: res.allconnectionscount,
-          };
-        } else {
-          finalObj = {
-            ...res,
-            filteredConnections: res.allconnections,
-            filteredConnectionCount: res.allconnectionscount,
-          };
-        }
-        setConnectionsList(finalObj);
+        HandleConnections(res, page, val);
       })
       .catch((err) => {})
       .finally(() => {
+        setisLoadMore(false);
         setisLoadingConnection(false);
       });
   };
 
-  const GetList = (val = {}) => {
+  const GetList = (val = {}, page = Page.pages) => {
     if (type === "influencers") {
-      setisLoadingConnection("influencers");
-      getUserList(val);
+      getUserList(val, page);
     } else if (type === "connections") {
-      setisLoadingConnection("connections");
-      getConnectionList(val);
+      getConnectionList(val, page);
     } else if (type === "fans") {
-      setisLoadingConnection("fans");
-      getFollowers(val)
+      getFollowers(val, page)
         .then((res) => {
           setConnectionsList(res);
         })
@@ -177,14 +182,14 @@ const ConnectionsList = ({
           setisLoadingConnection(false);
         });
     } else if (type === "unclaimed_influencers" && isMyProfile) {
-      setisLoadingConnection("unclaimed_influencers");
-      getUnclaimedInfluencer(val);
+      getUnclaimedInfluencer(val, page);
     }
   };
 
   useEffect(() => {
     if (loginToken && !isLoading) {
       if (!isLocked) {
+        setisLoadingConnection(type);
         GetList();
       }
     }
@@ -310,19 +315,24 @@ const ConnectionsList = ({
           )}
         </>
       )}
+
       {isSeeMore && (
         <ConnectionModal
           type={title}
           userType={type}
           open={isSeeMore}
           value={ConnectionsList}
+          isLoadMore={isLoadMore}
           getConnectionList={GetList}
+          setisLoadMore={setisLoadMore}
           onSuccess={() => {
             setisSeeMore(false);
           }}
           onClose={() => {
             setisSeeMore(false);
           }}
+          page={Page.pages}
+          total_page={Page.total_pages}
         />
       )}
       {isInfluencerChatModalOpen.show && (

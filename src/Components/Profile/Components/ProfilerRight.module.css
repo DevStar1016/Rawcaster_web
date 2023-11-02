@@ -17,14 +17,18 @@ justify-content: space-between;
     grid-template-columns: 23% 23% 23% 23%;
     grid-template-rows: 50% 50%; margin-top:20px; margin-bottom: 10px; border-bottom: 1px solid #ececec; padding-bottom: 10px;
 }
+
 .list {position: relative; width: 100%; float: left; text-align: center; font-size: 12px; cursor: pointer;}
+.modalOthersIconSec .list {
+  overflow: hidden !important;
+}
 .list p {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* width: 85px; */
+    width: 85px;
     margin: auto;
     margin-bottom: 5px;
 }
@@ -66,6 +70,13 @@ justify-content: space-between;
       contain;
     cursor: pointer;
   }
+  .pendingIcon {
+    float: left;
+    width: 22px !important;
+    height: 22px !important;
+   
+    cursor: pointer;
+  }
  
   .addIcon {
     float: left;
@@ -76,7 +87,9 @@ justify-content: space-between;
   }
  
  
-
+.iconSec p {
+  overflow: hidden;
+}
 .iconSec {
     display: none;
     position: absolute;

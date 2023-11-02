@@ -36,6 +36,7 @@ const CommentBox = () => {
         message: message ? message : ChatMessage,
         from_user_id: userdata.userId,
         isPrivate: false,
+        eventType: EventData?.type,
       },
       CHIME_SOCKET_EVENTS.SEND_MESSAGE_TO_MEETING_ROOM
     );
@@ -75,7 +76,7 @@ const CommentBox = () => {
                   <span>
                     {ele?.name + `${ele?.isPrivate ? " (Private)" : ""} `}
                   </span>
-                  <p> {ele?.message}</p>
+                  <p style={{wordBreak: "break-word"}}> {ele?.message}</p>
                 </div>
               </div>
             </div>

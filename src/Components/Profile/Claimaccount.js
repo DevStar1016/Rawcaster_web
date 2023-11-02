@@ -93,6 +93,10 @@ const Claimaccount = () => {
     }
   };
 
+  const getisLoginuserId = () => {
+    return parseInt(DecryptionString(params.user_id)) === loginUserData.user_id;
+  };
+
   /**
    * Handles the claim account functionality by sending a request to the server with the provided value.
    * @param {any} value - The value to be sent to the server for claiming the account.
@@ -108,17 +112,15 @@ const Claimaccount = () => {
     VerifyType(JSONtoformdata(filterValidObject(finalData)))
       .then((res) => {
         if (res.data.status === 1) {
-          navigate(-1);
-          dispatch(
-            handleClaimAccount({
-              show: true,
-              msg: res.data.msg,
-            })
-          );
-          dispatch(handleAccountVerifyStatus(1));
-          // Modal.success({
-          //   content: res.data.msg,
-          // });
+          // dispatch(handleAccountVerifyStatus(1));
+          if (!display_user_id) {
+            window.open(res.data.redirect_url, "self");
+            // navigate(`/documentverify`, {
+            //   state: {
+            //     url: res.data.redirect_url,
+            //   },
+            // });
+          }
         } else if (res.data.status === 0) {
           Modal.error({
             content: res.data.msg,
