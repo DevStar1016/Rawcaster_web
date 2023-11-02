@@ -25,7 +25,7 @@ import {
 import { getOthersProfileService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { Skeleton } from "antd";
+import { Modal, Skeleton } from "antd";
 import { useNavigate, useParams } from "react-router";
 import Connections from "../Connections/Friends/Connections";
 import moment from "moment";
@@ -47,6 +47,7 @@ import { detectMob } from "../../Shared/Utility";
 import Seo from "../SEO/Seo";
 import { ProfileSEO } from "../SEO/SEOContent";
 import { ScrollRestoration } from "react-router-dom";
+import { ShowUnclaimedAccountModal } from "../../Modal/DefaultModal";
 
 const Profile = () => {
   const params = useParams();
@@ -101,6 +102,15 @@ const Profile = () => {
           if (res.data.profile.lock_nugget === 1) {
             getprofile();
           }
+          // if (res.data.profile.unclaimed_status === 1) {
+          //   ShowUnclaimedAccountModal({
+          //     message: "This is Unclaimed Account",
+          //     isSubmitAvailable: false,
+          //   });
+          //   setTimeout(() => {
+          //     Modal.destroyAll();
+          //   }, 5000);
+          // }
         }
       })
       .catch((err) => {});
@@ -292,6 +302,16 @@ const Profile = () => {
     }
     return 4;
   };
+
+  // useEffect(() => {
+  //   ShowUnclaimedAccountModal({
+  //     message: "This is Unclaimed Account",
+  //     isSubmitAvailable: false,
+  //   });
+  //   setTimeout(() => {
+  //     Modal.destroyAll();
+  //   }, 5000);
+  // }, []);
 
   const profileValue = {
     FansList,

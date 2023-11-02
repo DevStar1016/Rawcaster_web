@@ -12,11 +12,13 @@ import PollDateinputBox from "../../Sharedcomponents/PollDateinputBox";
 import classes from "../Modal.module.css";
 import * as Yup from "yup";
 import { isArray } from "lodash";
-import { useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
+import { HandleVerifyModal } from "../DefaultModal";
 
 const Postpoll = ({ setisPoll }) => {
   const context = useContext(PostNuggetContext);
   const loginUserData = useAuthData();
+  const token = useAuthToken();
   const [PollData, setPollData] = useState([
     { choiceData: "" },
     { choiceData: "" },
@@ -111,15 +113,6 @@ const Postpoll = ({ setisPoll }) => {
           maxLength={loginUserData?.nugget_content_length}
           onChange={handleChange("content")}
         />
-        {/* {LimitExceeds && loginUserData?.user_status_id !== 4 && (
-          <LoginModal
-            open={LimitExceeds}
-            close={handleLimitExceedsClose}
-            AIclose={true}
-            AIopen="Upgrade"
-            AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
-          />
-        )} */}
 
         {touched.content && <p className="ErrTxt">{errors?.content}</p>}
         <div className={classes.pollContainer}>
@@ -241,7 +234,14 @@ const Postpoll = ({ setisPoll }) => {
                     className={classes.upgradeBtn}
                     type="primary"
                     onClick={() => {
-                      window.location.assign("/membership");
+                      HandleVerifyModal({
+                        primary: "success",
+                        onSuccess: () => {},
+                        isCloseAvailable: false,
+                        SubmitButtonTitle: "Ok",
+                        message:
+                          "you have been granted a complementary upgrade for xx days",
+                      });
                     }}
                   >
                     Upgrade

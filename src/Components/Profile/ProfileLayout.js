@@ -40,7 +40,10 @@ import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
-import { defaultprofileImg } from "../../Shared/CommonConstants";
+import {
+  defaultprofileImg,
+  defaultProfileBannerImg,
+} from "../../Shared/CommonConstants";
 
 const ProfileLayout = ({
   children,
@@ -263,6 +266,10 @@ const ProfileLayout = ({
           preview={false}
           rootClassName={classes.bannerImg}
           src={profileData?.cover_image}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = defaultProfileBannerImg;
+          }}
           placeholder={
             <Skeleton.Node active={true} className={classes.bannerImg}>
               <div className={classes.bannerLoading}></div>

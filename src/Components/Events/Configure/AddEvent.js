@@ -53,6 +53,7 @@ import {
   COMMON_EVENTS_TYPES,
 } from "../../../Services/ServiceConstants";
 import { DEFAULT_DATE_FORMAT } from "../../../Shared/Constant";
+import { HandleVerifyModal } from "../../../Modal/DefaultModal";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
   const { getEvents, ActiveEvent } = useEventContext();
@@ -932,6 +933,15 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         }}
                         hideDisabledOptions={true}
                         minuteStep={15}
+                        disabledMinutes={(h) => {
+                          if (h >= 10) {
+                            // If the hour is 10, disable minutes after 0.
+                            return [15, 30, 45];
+                          } else {
+                            // If the hour is greater than 10, all minutes are disabled.
+                            return [];
+                          }
+                        }}
                         disabledHours={() => {
                           return [
                             11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
@@ -1054,7 +1064,15 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               }}
                               type="primary"
                               onClick={() => {
-                                window.location.assign("/membership");
+                                HandleVerifyModal({
+                                  primary: "success",
+                                  onSuccess: () => {},
+                                  isCloseAvailable: false,
+                                  SubmitButtonTitle: "Ok",
+                                  message:
+                                    "you have been granted a complementary upgrade for xx days",
+                                });
+                                // window.location.assign("/membership");
                               }}
                             >
                               Upgrade

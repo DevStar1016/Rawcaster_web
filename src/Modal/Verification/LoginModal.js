@@ -12,10 +12,12 @@ import { Button, Modal } from "antd";
 import { useNavigate } from "react-router";
 import { removeSessionStorageData } from "../../Store/Storage";
 import classes from "../Modal.module.css";
+import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { HandleVerifyModal } from "../DefaultModal";
 
 const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
   const navigate = useNavigate();
-
+  const token = useAuthToken();
   return (
     <Modal centered open={open} closable={false} footer={null}>
       <div className={classes.profileModal}>
@@ -53,7 +55,15 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
             onClick={() => {
               if (AIopen) {
                 close();
-                window.location.assign("/membership");
+                HandleVerifyModal({
+                  primary: "success",
+                  onSuccess: () => {},
+                  isCloseAvailable: false,
+                  SubmitButtonTitle: "Ok",
+                  message:
+                    "you have been granted a complementary upgrade for xx days",
+                });
+                // window.location.assign("/membership");
               } else {
                 navigate("/login");
                 close();
