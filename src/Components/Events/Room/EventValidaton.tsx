@@ -60,7 +60,7 @@ const EventValidaton = () => {
     icon: null,
   });
   const [animatedEmoji, setAnimatedEmoji] = useState<ReactNode>();
-  const [meetingTimer, setMeetingTimer] = useState<boolean>();
+  const [meetingTimer, setMeetingTimer] = useState<number|null>(null);
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
