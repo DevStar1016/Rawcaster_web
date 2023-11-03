@@ -485,6 +485,23 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     }
   }, [upgradePlanPopup]);
 
+  // function convertToDoubleDigit(number) {
+  //   if (number >= 0 && number <= 9) {
+  //     return `0${number}`;
+  //   } else {
+  //     return number.toString();
+  //   }
+  // }
+
+  const getDisabledHours = () => {
+    let filteredArray = [...new Array(24)].map((ele, index) => {
+      if (parseInt(userSettings.max_event_duration) < index) {
+        return index;
+      }
+    });
+    return filteredArray.filter((ele) => ele);
+  };
+
   return (
     <AddEventContext.Provider
       value={{
@@ -934,18 +951,20 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         hideDisabledOptions={true}
                         minuteStep={15}
                         disabledMinutes={(h) => {
-                          if (h >= 10) {
+                          const validDuration =
+                            userSettings.max_event_duration ?? 10;
+                          if (h >= validDuration) {
                             // If the hour is 10, disable minutes after 0.
                             return [15, 30, 45];
+                          } else if (h <= 0) {
+                            return [0];
                           } else {
                             // If the hour is greater than 10, all minutes are disabled.
                             return [];
                           }
                         }}
                         disabledHours={() => {
-                          return [
-                            11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-                          ];
+                          return getDisabledHours();
                         }}
                       />
                     </Form.Item>
