@@ -13,6 +13,7 @@ import { useAuthData } from "../../Shared/Reduxfetcher";
 import { ChimesendMessage } from "../../Services/SocketService";
 import { useDispatch } from "react-redux";
 import { handleEventWindowRef } from "../../Store/Redux/Reducer/UtilityReducer";
+import { nanoid } from "@reduxjs/toolkit";
 
 const EventHandler = ({ title, isHost, ele }) => {
   const userData = useAuthData();
@@ -61,6 +62,7 @@ const EventHandler = ({ title, isHost, ele }) => {
       ChimesendMessage(
         {
           userId: userData?.user_id,
+          userRefId: userData?.user_ref_id ?? nanoid(),
           refId: ele?.reference_id,
           name: userData?.name,
           image: userData?.profile_image,

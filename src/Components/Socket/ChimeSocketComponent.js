@@ -255,6 +255,30 @@ const ChimeSocketComponent = () => {
     };
   }, [EventWindowRef]);
 
+  // Reaction in Talkshow Received Here - Socket
+  useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER, (message) => {
+      if (EventWindowRef) {
+        HandleSendToNewWindow(CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER, message);
+      }
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER);
+    };
+  }, [EventWindowRef]);
+
+   // End Event Meeting Alert Received Here - Socket
+   useEffect(() => {
+    ChimesocketListen.on(CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER, (message) => {
+      if (EventWindowRef) {
+        HandleSendToNewWindow(CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER, message);
+      }
+    });
+    return () => {
+      ChimesocketListen.off(CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER);
+    };
+  }, [EventWindowRef]);
+
   return <Outlet />;
 };
 

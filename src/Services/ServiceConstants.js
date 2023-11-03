@@ -58,6 +58,9 @@ export const CHIME_SOCKET_EVENTS = {
   HANDLE_ACCEPT_REJECT_JOIN_REQUEST: "handleAcceptRejectJoinRequest",
   NOTIFICATIONS: "notifications",
   DISCONNECT_SOCKET: "disconnect",
+  POST_REACTION: "postReaction",
+  POST_REACTION_ANSWER: "postReactionAnswer",
+  END_MEETING_ALERT_ANSWER: "endMeetingAlertAnswer"
 };
 
 export const COMMON_EVENTS_TYPES = {

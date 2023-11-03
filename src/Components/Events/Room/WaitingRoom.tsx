@@ -8,6 +8,7 @@ import {
   useEventTempAuthData,
 } from "../../../Shared/Reduxfetcher";
 import { ChimesendMessage } from "../../../Services/SocketService";
+import { nanoid } from "@reduxjs/toolkit";
 
 const WaitingRoom = () => {
   const userData = useAuthData();
@@ -156,6 +157,7 @@ const WaitingRoom = () => {
                 ChimesendMessage(
                   {
                     userId: getUserData()?.user_id,
+                    userRefId: userData?.user_ref_id ?? nanoid(),
                     refId: EventData?.reference_id,
                     name: getUserData()?.name,
                     image: getUserData()?.profile_image,

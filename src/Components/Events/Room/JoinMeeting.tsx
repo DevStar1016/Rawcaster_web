@@ -13,6 +13,7 @@ import { ChimesendMessage } from "../../../Services/SocketService";
 import { useDispatch } from "react-redux";
 import { handleeventTempUserData } from "../../../Store/Redux/Reducer/AuthReducer";
 import { handleEventWindowRef } from "../../../Store/Redux/Reducer/UtilityReducer";
+import { nanoid } from "@reduxjs/toolkit";
 
 const validationSchema = yup.object().shape({
   reference_id: yup
@@ -82,6 +83,7 @@ const JoinMeeting = () => {
         ChimesendMessage(
           {
             userId: user_data?.user_id,
+            userRefId: user_data?.user_ref_id ?? nanoid(),
             refId: ref_id,
             name: user_data?.name,
             image: user_data?.profile_image,
