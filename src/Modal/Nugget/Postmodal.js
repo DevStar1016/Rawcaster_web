@@ -39,11 +39,19 @@ import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
 import { parseInt } from "lodash";
 import ImageEditModal from "../ImageEditModal";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { GeturlmetadataService } from "../../Services/ApiService";
+import {
+  GeturlmetadataService,
+  complementaryMembershipService,
+} from "../../Services/ApiService";
 import { HandleVerifyModal } from "../DefaultModal";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const Postmodal = ({ visible, onClose }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     setFileValues,
     setNuggetValues,
@@ -236,6 +244,35 @@ const Postmodal = ({ visible, onClose }) => {
    * @returns None
    */
   const handleLimitExceedsClose = () => setLimitExceeds(false);
+
+  const ComplementaryMemberShip = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    complementaryMembershipService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          HandleVerifyModal({
+            primary: "success",
+            onSuccess: () => {
+              handleLimitExceedsClose();
+              dispatch(
+                handleLoginData({
+                  ...loginUserData,
+                  user_status: res.data.user_status,
+                  user_status_id: res.data.user_status_id,
+                })
+              );
+            },
+            isCloseAvailable: false,
+            SubmitButtonTitle: "Ok",
+            message: res.data.msg,
+          });
+        } else {
+          navigate("/membership");
+        }
+      })
+      .catch((err) => {});
+  };
 
   return (
     <Modal
@@ -528,15 +565,11 @@ const Postmodal = ({ visible, onClose }) => {
                         className={classes.upgradeBtn}
                         type="primary"
                         onClick={() => {
-                          HandleVerifyModal({
-                            primary: "success",
-                            onSuccess: () => {},
-                            isCloseAvailable: false,
-                            SubmitButtonTitle: "Ok",
-                            message:
-                              "you have been granted a complementary upgrade for xx days",
-                          });
-                          // window.location.assign("/membership");
+                          if (loginUserData.complementary_status === 1) {
+                            ComplementaryMemberShip();
+                          } else {
+                            navigate("/membership");
+                          }
                         }}
                       >
                         Upgrade

@@ -14,8 +14,14 @@ import * as Yup from "yup";
 import { isArray } from "lodash";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { HandleVerifyModal } from "../DefaultModal";
+import { complementaryMembershipService } from "../../Services/ApiService";
+import { useNavigate } from "react-router";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import { useDispatch } from "react-redux";
 
 const Postpoll = ({ setisPoll }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const context = useContext(PostNuggetContext);
   const loginUserData = useAuthData();
   const token = useAuthToken();
@@ -101,6 +107,35 @@ const Postpoll = ({ setisPoll }) => {
   }, [values.content]);
 
   const handleLimitExceedsClose = () => setLimitExceeds(false);
+
+  const ComplementaryMemberShip = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    complementaryMembershipService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          HandleVerifyModal({
+            primary: "success",
+            onSuccess: () => {
+              handleLimitExceedsClose();
+              dispatch(
+                handleLoginData({
+                  ...loginUserData,
+                  user_status: res.data.user_status,
+                  user_status_id: res.data.user_status_id,
+                })
+              );
+            },
+            isCloseAvailable: false,
+            SubmitButtonTitle: "Ok",
+            message: res.data.msg,
+          });
+        } else {
+          navigate("/membership");
+        }
+      })
+      .catch((err) => {});
+  };
 
   return (
     <>
@@ -234,14 +269,11 @@ const Postpoll = ({ setisPoll }) => {
                     className={classes.upgradeBtn}
                     type="primary"
                     onClick={() => {
-                      HandleVerifyModal({
-                        primary: "success",
-                        onSuccess: () => {},
-                        isCloseAvailable: false,
-                        SubmitButtonTitle: "Ok",
-                        message:
-                          "you have been granted a complementary upgrade for xx days",
-                      });
+                      if (loginUserData.complementary_status === 1) {
+                        ComplementaryMemberShip();
+                      } else {
+                        navigate("/membership");
+                      }
                     }}
                   >
                     Upgrade

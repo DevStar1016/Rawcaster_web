@@ -149,6 +149,7 @@ function ImageGrid({
         />
       ) : null;
     } else if (data.media_type === "video") {
+      console.log(`${data.path}#t=0.001`);
       return (
         <>
           <video
@@ -160,7 +161,12 @@ function ImageGrid({
             disablePictureInPicture
             playsInline={false}
             controlsList="nodownload"
-            style={{ width: "100%", height: "100%", borderRadius: 10 }}
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 10,
+              // backgroundColor: "red",
+            }}
           ></video>
           <span className={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
             play_circle
