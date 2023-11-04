@@ -289,8 +289,11 @@ const Event = () => {
                           disablePictureInPicture
                           playsInline
                           controlsList="nodownload"
-                          loop
+                          // loop
                           style={{ display: "none" }}
+                          onEnded={() => {
+                            audioHandler();
+                          }}
                         >
                           {" "}
                           <source src={formikvalues.default_melody?.path} />

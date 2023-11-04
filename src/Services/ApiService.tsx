@@ -179,6 +179,9 @@ export const groupAbuseReportService = (data: FormData) => {
 export const exitFromGroupService = (data: FormData) => {
   return axios.post("exitfromgroup", data);
 };
+export const complementaryMembershipService = (data: FormData) => {
+  return axios.post("complementary_membership", data);
+};
 // Nugget services
 
 export const addNuggetsService = (

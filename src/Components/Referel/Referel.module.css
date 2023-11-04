@@ -163,6 +163,30 @@ height: 200px;
 .EmptyResultSec p {
   margin-top: 20px;
 }
+.inputSec {
+    display: flex;
+    flex-direction: row;
+     align-items: center;
+    justify-content: center;
+}
+.inputSec span {
+  margin-bottom: 6px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+  color: red;
+}
+.textBox {
+  margin-bottom: 6px;
+  border: 1px solid #e8eaee;
+  color: #1d1c1c;
+  padding-left: 20px;
+  border-radius: 30px;
+  height: 35px;
+  width: 100%;
+  background-color: #F1F2F5 !important;
+}
+.textBox:focus { outline: none; box-shadow: none; }
 @media (max-width:1100px) {
   .suggestSec{
     width: 600px;max-width: 100%;margin: 0 auto;float: unset;}

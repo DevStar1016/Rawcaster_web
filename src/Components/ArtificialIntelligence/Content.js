@@ -198,6 +198,7 @@ const ChatContent = () => {
         <ChatInput
           disabled={!ChatEnabled}
           placeholderValue={PlaceHolderText}
+          chatTextMaxLength={100}
           HandleSendMessage={(ChatMessage) => {
             if (ChatMessage.trim() !== "") {
               setChatEnabled(false);

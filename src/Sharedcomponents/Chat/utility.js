@@ -59,6 +59,7 @@ export const ChatInput = ({
   onEditClose,
   onEdit,
   placeholderValue = "Enter Your Message Here ...",
+  chatTextMaxLength,
 }) => {
   const token = useAuthToken();
   const BotContext = useChatBotContext();
@@ -376,7 +377,8 @@ export const ChatInput = ({
       {contextHolder}
       {!isChatContentValid && (
         <p className="ErrTxt mx-auto text-center mb-1">
-          Message Content cannot be longer than {getNuggetTextLength() + " "}
+          Message Content cannot be longer than{" "}
+          {chatTextMaxLength ? chatTextMaxLength : getNuggetTextLength() + " "}
           characters
         </p>
       )}
@@ -424,7 +426,19 @@ export const ChatInput = ({
                 if (onInput) {
                   onInput(e.target.value);
                 }
-                if (e.target.value.length <= getNuggetTextLength()) {
+                if (
+                  chatTextMaxLength &&
+                  e.target.value.length <= chatTextMaxLength
+                ) {
+                  setChatMessage(e.target.value);
+                  setisChatContentValid(true);
+                } else if (
+                  chatTextMaxLength &&
+                  e.target.value.length > chatTextMaxLength
+                ) {
+                  setChatMessage(e.target.value.slice(0, chatTextMaxLength));
+                  setisChatContentValid(false);
+                } else if (e.target.value.length <= getNuggetTextLength()) {
                   setChatMessage(e.target.value);
                   setisChatContentValid(true);
                 } else {

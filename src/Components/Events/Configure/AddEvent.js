@@ -34,6 +34,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { toast } from "react-hot-toast";
 import {
   addEventService,
+  complementaryMembershipService,
   editEventService,
   viewEventsService,
 } from "../../../Services/ApiService";
@@ -54,8 +55,13 @@ import {
 } from "../../../Services/ServiceConstants";
 import { DEFAULT_DATE_FORMAT } from "../../../Shared/Constant";
 import { HandleVerifyModal } from "../../../Modal/DefaultModal";
+import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { getEvents, ActiveEvent } = useEventContext();
   const token = useAuthToken();
   const { userSettings, loginUserData } = useAuth();
@@ -502,6 +508,35 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
     return filteredArray.filter((ele) => ele);
   };
 
+  const ComplementaryMemberShip = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    complementaryMembershipService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          HandleVerifyModal({
+            primary: "success",
+            onSuccess: () => {
+              setupgradePlanPopup(false);
+              dispatch(
+                handleLoginData({
+                  ...loginUserData,
+                  user_status: res.data.user_status,
+                  user_status_id: res.data.user_status_id,
+                })
+              );
+            },
+            isCloseAvailable: false,
+            SubmitButtonTitle: "Ok",
+            message: res.data.msg,
+          });
+        } else {
+          navigate("/membership");
+        }
+      })
+      .catch((err) => {});
+  };
+
   return (
     <AddEventContext.Provider
       value={{
@@ -795,9 +830,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                           )
                         ) {
                           if (
-                            moment()
-                              .add(15, "minutes")
-                              .isSameOrAfter(moment(res, "hh:mm A"))
+                            moment().add(15, "minutes").format("HH:mm") <=
+                            moment(res, "hh:mm A").format("HH:mm")
                           ) {
                             setFieldValue(
                               "event_start_time",
@@ -1083,15 +1117,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               }}
                               type="primary"
                               onClick={() => {
-                                HandleVerifyModal({
-                                  primary: "success",
-                                  onSuccess: () => {},
-                                  isCloseAvailable: false,
-                                  SubmitButtonTitle: "Ok",
-                                  message:
-                                    "you have been granted a complementary upgrade for xx days",
-                                });
-                                // window.location.assign("/membership");
+                                if (loginUserData.complementary_status === 1) {
+                                  ComplementaryMemberShip();
+                                } else {
+                                  navigate("/membership");
+                                }
                               }}
                             >
                               Upgrade
