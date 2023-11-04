@@ -57,7 +57,7 @@ export const MicrophoneComponent = ({
   isGlobal,
   isCoHost
 }: MicrophoneComponentProps) => {
-  const { EventData, MeetingSettings, setMeetingSettings } =
+  const { EventData, MeetingSettings, setMeetingSettings, setnotificationToast } =
     useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -124,16 +124,21 @@ export const MicrophoneComponent = ({
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
             if ((isHost || isCoHost) && !attendee?.isHost) {
-              // ** might be  needed in future
 
-              // const value = {
-              //   refId: EventData?.reference_id,
-              //   hostId: getUserData()?.user_id,
-              //   status: true,
-              //   userId: attendee?.userId,
-              // };
-              // ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
-            } else if (userData?.user_id === attendee?.userId) {
+              const value = {
+                refId: EventData?.reference_id,
+                hostId: getUserData()?.user_id,
+                status: true,
+                userId: attendee?.userId,
+              };
+              ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
+              setnotificationToast({
+                show: true,
+                title: 'Unmute Request Sent',
+                icon: null,
+                buttons: [],
+              });
+            } else if ((isHost || isCoHost) && userData?.user_id === attendee?.userId) {
               toggleMute();
             }
           }}
@@ -191,14 +196,7 @@ export const LocalMicrophoneComponent = ({
         <i
           className={`${styles.mute_icon} ${styles.icon} ${className}`}
           onClick={async () => {
-            if (isAllowed) {
-              toggleMute();
-            } else {
-              messageApi.open({
-                type: "warning",
-                content: "Your mic has been disabled. Please contact the host",
-              });
-            }
+            toggleMute();
           }}
         ></i>
       )}
@@ -214,7 +212,7 @@ export const CameraComponent = ({
   isGlobal,
   isCoHost,
 }: CameraComponentProps) => {
-  const { EventData, MeetingSettings, setMeetingSettings } =
+  const { EventData, MeetingSettings, setMeetingSettings, setnotificationToast } =
     useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -284,6 +282,12 @@ export const CameraComponent = ({
                 status: true,
                 userId: attendee?.userId,
               };
+              setnotificationToast({
+                show: true,
+                title: 'Camera On Request Sent',
+                icon: null,
+                buttons: [],
+              });
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_VIDEO);
             }
           }}
@@ -346,7 +350,7 @@ export const LocalCameraComponent = ({
             videoinput.devices.length === 0 ? styles.disableIcon : ""
           }`}
           onClick={async () => {
-            if (isAllowed) {
+            // if (isAllowed) {
               if (videoinput.devices.length !== 0) {
                 if (!selectedDevice) {
                   await meetingmanager.startVideoInputDevice(
@@ -364,7 +368,7 @@ export const LocalCameraComponent = ({
                 }
                 toggleVideo();
               }
-            }
+            // }
           }}
         ></i>
       )}

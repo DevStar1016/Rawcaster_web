@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { Outlet } from "react-router";
 import {
   useAuthData,
@@ -59,6 +59,8 @@ const EventValidaton = () => {
     buttons: [],
     icon: null,
   });
+  const [animatedEmoji, setAnimatedEmoji] = useState<ReactNode>();
+  const [meetingTimer, setMeetingTimer] = useState<number|null>(null);
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -103,7 +105,7 @@ const EventValidaton = () => {
    *  Host The meeting
    */
   const handleEndMeeting = () => {
-    setisEndLoading("Please Wait Meeting Has Been Ended ..");
+    setisEndLoading("Please wait, terminating meeting..");
     return new Promise<void>((resolve, reject) => {
       let formData = new FormData();
       if (token) {
@@ -208,6 +210,10 @@ const EventValidaton = () => {
     setisEndLoading,
     isPresentScreen,
     setisPresentScreen,
+    animatedEmoji,
+    setAnimatedEmoji,
+    meetingTimer,
+    setMeetingTimer,
   };
 
   const hasWaitingRoomEnabled = () => {

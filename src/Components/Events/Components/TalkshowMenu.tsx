@@ -18,7 +18,7 @@ import {
   useAuthData,
   useEventTempAuthData,
 } from "../../../Shared/Reduxfetcher";
-import { MicOptions } from "./Methods";
+import { EndMeeting, MicOptions } from "./Methods";
 import { EventContextProp } from "./types";
 import { useEventRoomContext } from "../../../Shared/Context";
 
@@ -28,9 +28,11 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
     setisChatorParticipant,
     EventData,
     handleExitMeeting,
+    handleEndMeeting,
     userdata,
     isReactions,
     setisReactions,
+    MeetingSettings
   }: EventContextProp = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -55,6 +57,12 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
     }
   };
 
+  const enabledSettings = () => ({
+    isHost: userdata?.isHost,
+    localMicStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : MeetingSettings?.default_guest_audio === 0 ? false : userdata?.audioDisabledByHost ? false : true,
+    localvideoStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : MeetingSettings?.default_guest_video === 0 ? false : userdata?.audioDisabledByHost ? false : true,
+  });
+
   return (
     <div className={`${styles.BottomContainer} ${styles.TalkshowMenu}`}>
       <div className={styles.menuContainer}>
@@ -63,7 +71,9 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             !muted ? styles.activeiconContainer : ""
           }`}
         >
-          <LocalMicrophoneComponent />
+          <LocalMicrophoneComponent
+            isAllowed={enabledSettings().localMicStatus}
+          />
 
           <Popover
             placement="top"
@@ -76,105 +86,89 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             </span>
           </Popover>
         </div>
-        <div
-          className={`${styles.iconContainer} ${styles.switchIconSec} ${
-            styles.videoIconSec
-          } ${isVideoEnabled ? styles.activeiconContainer : ""}`}
-        >
-          <LocalCameraComponent
-            selectedDevice={selectedDevice}
-            setselectedDevice={setselectedDevice}
-          />
-          {videoinput.devices.length !== 0 && (
-            <Popover
-              placement="top"
-              showArrow={false}
-              content={
-                <div className={styles.micdropDown}>
-                  {videoinput.devices.map((ele) => {
-                    const getisActive = () =>
-                      videoinput.selectedDevice === ele.deviceId;
-                    return (
-                      <span
-                        onClick={async () => {
-                          if (audiovideo) {
-                            try {
-                              await meetingmanager.startVideoInputDevice(
-                                ele.deviceId
-                              );
-                            } catch (error) {
-                              console.error(
-                                "Error setting speaker device:",
-                                error
-                              );
+        {(userdata?.isHost || userdata?.isCoHost) && (
+          <div
+            className={`${styles.iconContainer} ${styles.switchIconSec} ${
+              styles.videoIconSec
+            } ${isVideoEnabled ? styles.activeiconContainer : ""}`}
+          >
+            <LocalCameraComponent
+              selectedDevice={selectedDevice}
+              setselectedDevice={setselectedDevice}
+              isAllowed={enabledSettings().localvideoStatus}
+            />
+            {videoinput.devices.length !== 0 && (
+              <Popover
+                placement="top"
+                showArrow={false}
+                content={
+                  <div className={styles.micdropDown}>
+                    {videoinput.devices.map((ele) => {
+                      const getisActive = () =>
+                        videoinput.selectedDevice === ele.deviceId;
+                      return (
+                        <span
+                          onClick={async () => {
+                            if (audiovideo) {
+                              try {
+                                await meetingmanager.startVideoInputDevice(
+                                  ele.deviceId
+                                );
+                              } catch (error) {
+                                console.error(
+                                  "Error setting speaker device:",
+                                  error
+                                );
+                              }
                             }
-                          }
-                        }}
-                      >
-                        <i
-                          className="material-symbols-outlined"
-                          style={{
-                            color: getisActive() ? "black" : "transparent",
                           }}
                         >
-                          done
-                        </i>
-                        {ele.label}
-                      </span>
-                    );
-                  })}
-                </div>
-              }
-              trigger="click"
-            >
-              <div
-                style={{
-                  color: "white",
-                }}
+                          <i
+                            className="material-symbols-outlined"
+                            style={{
+                              color: getisActive() ? "black" : "transparent",
+                            }}
+                          >
+                            done
+                          </i>
+                          {ele.label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                }
+                trigger="click"
               >
-                <span className="material-symbols-outlined onlydes">
-                  expand_less
-                </span>
-              </div>
-            </Popover>
-          )}
-        </div>
+                <div
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  <span className="material-symbols-outlined onlydes">
+                    expand_less
+                  </span>
+                </div>
+              </Popover>
+            )}
+          </div>
+        )}
         {userdata?.isHost ? (
           <div
             className={`onlydes ${styles.streamBtn}`}
-            onClick={() => {
-              Modal.confirm({
-                title: "Are you sure Do you want to Stop Talkshow Streaming ? ",
-                icon: <ExclamationCircleFilled />,
-                onOk() {
-                  handleExitMeeting(userdata)
-                    .then(() => {
-                      ChimesendMessage(
-                        {
-                          name: userdata?.name,
-                          userId: userdata?.userId,
-                          meetingId: EventData?.chime_meeting_id,
-                          isHost: userdata?.isHost,
-                        },
-                        CHIME_SOCKET_EVENTS.USER_LEFT_MEETING
-                      );
-                      window.close();
-                    })
-                    .catch(() => {
-                      toast.remove("Error");
-                      toast.error("Unable to exit Meeting !", {
-                        id: "Error",
-                      });
-                    });
-                },
-                onCancel() {},
-              });
-            }}
+            onClick={() =>
+              EndMeeting({
+                modalTitle: "Do you really want to end this Talkshow Streaming ?",
+                Attendee: userdata,
+                EventData,
+                handleEndMeeting,
+                meetingmanager,
+              })
+            }
           >
             <span className={`material-symbols-outlined `}>
               radio_button_checked
             </span>
-            Stop Straming
+            Stop Streaming
           </div>
         ) : (
           <div
@@ -288,7 +282,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
           className={`${styles.iconContainer} ${styles.EndIcon} onlyMob`}
           onClick={() => {
             Modal.confirm({
-              title: "Are you sure Do you want to Exit Talkshow Streaming ?",
+              title: "Do you really want to Exit Talkshow Streaming ?",
               icon: <ExclamationCircleFilled />,
               onOk() {
                 handleExitMeeting(userdata)

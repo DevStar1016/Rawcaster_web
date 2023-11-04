@@ -10,7 +10,7 @@ import {
   useRemoteVideoTileState,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
-import Participants from "./Participants";
+import TalkshowParticipants from "./TalkshowParticipants";
 import ChatBox from "./ChatBox";
 import { Alert, Drawer, Layout, Modal, Spin, Tooltip } from "antd";
 import { Toast, ToastContainer } from "react-bootstrap";
@@ -30,6 +30,7 @@ import { useEventRoomContext } from "../../../Shared/Context";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { AttendeeUserData, EventContextProp } from "../Components/types";
+import EventParticipants from "./EventParticipants";
 
 const EventBox = () => {
   const userData = useAuthData();
@@ -47,11 +48,17 @@ const EventBox = () => {
     userdata,
     EventData,
     isPresentScreen,
+    MeetingSettings,
   }: EventContextProp = useEventRoomContext();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
+
+  const enabledSettings = () => ({
+    localVideoChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
+    localMicChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_audio === 0 ? false : true,
+  });
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -65,7 +72,9 @@ const EventBox = () => {
   /* Dynamic Classname for Attendee Display boxes */
 
   const getContainerClassName = () => {
-    switch (attendees.length) {
+    const attendeesList = EventData?.type === 1 ? attendees.length : 
+            ConvertSpotLightAttendee().otherAttendee?.length
+    switch (attendeesList) {
       case 1:
         return classes.full_container;
       case 2:
@@ -93,7 +102,7 @@ const EventBox = () => {
 
   const EventBoxOptions = ({ isYou, ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => elem.userId === parseInt(ele.externalUserId)
+      (elem) => elem.userRefId === ele.externalUserId
     );
 
     return (
@@ -110,7 +119,7 @@ const EventBox = () => {
             >
               {isYou ? (
                 <LocalMicrophoneComponent className={classes.icon} 
-                isAllowed={findAttendee?.isCoHost || !findAttendee?.audioDisabledByHost} />
+                isAllowed={enabledSettings().localMicChangeAllowed} />
               ) : (
                 <MicrophoneComponent
                   ele={ele}
@@ -135,7 +144,7 @@ const EventBox = () => {
                   setselectedDevice={null}
                   selectedDevice={null}
                   className={classes.icon}
-                  isAllowed={findAttendee?.isCoHost || !findAttendee?.videoDisabledByHost} 
+                  isAllowed={enabledSettings().localVideoChangeAllowed} 
                 />
               ) : (
                 <CameraComponent
@@ -227,7 +236,7 @@ const EventBox = () => {
 
   const CustomNamePlate = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem) => elem.userId === parseInt(ele.externalUserId)
+      (elem) => elem.userRefId === ele.externalUserId
     );
     const { muted } = useAttendeeStatus(ele?.chimeAttendeeId);
 
@@ -253,7 +262,7 @@ const EventBox = () => {
 
   /* List for whose layout is pinned by Host */
 
-  const ConvertSpotLightAttendee = () => {
+  function ConvertSpotLightAttendee  ()  {
     const spotlightAttendee = attendees.find(
       (ele) =>
         ele.externalUserId &&
@@ -263,9 +272,14 @@ const EventBox = () => {
 
     const otherAttendee = attendees.filter(
       (ele) =>
-        ele.externalUserId &&
-        //@ts-ignore
-        parseInt(ele.externalUserId) !== parseInt(isPinEnabled)
+        (ele.externalUserId && EventData?.type === 1) ||
+        (((EventData?.type === 2 &&
+          attendeesList.find((user) => user.userRefId === ele.externalUserId)
+            ?.isHost) ||
+          attendeesList.find((user) => user.userRefId === ele.externalUserId)
+            ?.isCoHost) &&
+          //@ts-ignore
+          parseInt(ele.externalUserId) !== parseInt(isPinEnabled))
     );
     return {
       spotlightAttendee,
@@ -277,7 +291,7 @@ const EventBox = () => {
 
   const GetDisplayComponent = ({ ele }) => {
     const findAttendee = attendeesList.find(
-      (elem: AttendeeUserData) => elem?.userId === parseInt(ele.externalUserId)
+      (elem: AttendeeUserData) => elem?.userRefId === ele.externalUserId
     );
     const value = attendeeIdToTileId[ele.chimeAttendeeId];
     const isYou = getUserData()?.user_id === findAttendee?.userId;
@@ -298,7 +312,8 @@ const EventBox = () => {
               // @ts-ignore
               nameplate={<CustomNamePlate ele={ele} />}
             ></LocalVideo>
-            <EventBoxOptions isYou={isYou} ele={ele} />
+           {/* removing audio video for now */}
+          {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
           </div>
         );
       } else if (value) {
@@ -317,8 +332,8 @@ const EventBox = () => {
               name={<CustomNamePlate ele={ele} />}
               tileId={value}
             />
-
-            <EventBoxOptions isYou={isYou} ele={ele} />
+            {/* removing audio video for now */}
+            {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
           </div>
         );
       } else {
@@ -330,7 +345,8 @@ const EventBox = () => {
              {findAttendee?.isCoHost && (
               <div className={classes.hostLogo}>Co Host</div>
             )}
-            <EventBoxOptions isYou={isYou} ele={ele} />
+            {/* removing audio video for now */}
+            {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
             <img
               className={classes.eventBoxUserImg}
               src={findAttendee.image ? findAttendee.image : ""}
@@ -353,7 +369,8 @@ const EventBox = () => {
     }
     return (
       <div className={classes.Child}>
-        <EventBoxOptions isYou={isYou} ele={ele} />
+        {/* removing audio video for now */}
+        {/* <EventBoxOptions isYou={isYou} ele={ele} /> */}
 
         <img
           className={classes.eventBoxUserImg}
@@ -390,8 +407,7 @@ const EventBox = () => {
             width: !isFetching && isChatorParticipant ? "80" : "100%",
           }}
         >
-          {isReactions && (
-            <div
+          <div
               style={{
                 position: "absolute",
                 height: "100%",
@@ -400,9 +416,8 @@ const EventBox = () => {
                 pointerEvents: "none",
               }}
             >
-              <Reactions />
-            </div>
-          )}
+              <Reactions showEmojList={isReactions} />
+          </div>
           {isFetching ? (
             <div className="h-100 w-100 d-flex justify-content-center align-items-center">
               <Spin />
@@ -503,7 +518,7 @@ const EventBox = () => {
         {isChatorParticipant && (
           <div className={classes.participantsSec}>
             {isChatorParticipant === "participant" ? (
-              <Participants />
+              EventData?.type === 1 ? <EventParticipants /> : <TalkshowParticipants/>
             ) : isChatorParticipant === "chat" ? (
               <ChatBox />
             ) : isChatorParticipant === "comment" ? (
@@ -524,7 +539,7 @@ const EventBox = () => {
         >
           <div className={classes.participantsSec}>
             {isChatorParticipant === "participant" ? (
-              <Participants />
+               EventData?.type === 1 ? <EventParticipants /> : <TalkshowParticipants/>
             ) : isChatorParticipant === "chat" ? (
               <ChatBox />
             ) : isChatorParticipant === "comment" ? (

@@ -19,6 +19,7 @@ import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
 import { ChimesendMessage } from "../Services/SocketService";
 import { EventContextProp } from "../Components/Events/Components/types";
 import { useEventRoomContext } from "../Shared/Context";
+import MeetingTimer from "../Components/Events/Components/MeetingTimer";
 
 export const useLayoutContect = () => {
   return useOutletContext<EventContextProp>();
@@ -35,6 +36,7 @@ const EventLayout = () => {
     isEndLoading,
     isPresentScreen,
     setisPresentScreen,
+    meetingTimer,
   }: EventContextProp = useEventRoomContext();
   const { Header, Footer } = Layout;
   const [isReactions, setisReactions] = useState(false);
@@ -56,7 +58,7 @@ const EventLayout = () => {
     let filterValidAttendees = attendees.map((elem) => {
       let findAttendee = attendeesList.find(
         (ele) =>
-          elem.externalUserId && parseInt(elem.externalUserId) === ele.userId
+          elem.externalUserId && elem.externalUserId === ele.userRefId
       );
       if (findAttendee) {
         return { ...findAttendee };
@@ -80,7 +82,7 @@ const EventLayout = () => {
       const findAttendee = attendeesList.find(
         (ele) =>
           findExternalUserId.externalUserId &&
-          ele.userId === parseInt(findExternalUserId.externalUserId)
+          ele.userRefId === findExternalUserId.externalUserId
       );
       // If the attendee exists, return the name of the attendee plus's'
       if (findAttendee) {
@@ -125,7 +127,7 @@ const EventLayout = () => {
             screen_share_status: false,
             refId: EventData?.reference_id,
             hostId: userdata?.userId,
-            userId: parseInt(findExternalUserId.externalUserId),
+            userId: userdata.userId,
           },
           CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS
         );
@@ -144,7 +146,7 @@ const EventLayout = () => {
             ? isEndLoading
             : userdata
             ? userdata.isHost
-              ? "Meeting Has Been Started ..."
+              ? ""
               : "Joining Event Please Wait ..."
             : "Fetching Event Details ..."
         }
@@ -164,7 +166,8 @@ const EventLayout = () => {
                 <h2>{EventData?.event_name}</h2>
               </div>
             </div>
-            {(isLocalUserSharing || sharingAttendeeId) && (
+          {meetingTimer && <MeetingTimer />}
+            {(isLocalUserSharing || sharingAttendeeId) ? (
               <div
                 className={`${classes.meetingHeader} ${classes.endContainer}`}
               >
@@ -204,7 +207,7 @@ const EventLayout = () => {
                   </Tooltip>
                 )}
               </div>
-            )}
+            ):  <div></div>}
           </Header>
 
           <Outlet

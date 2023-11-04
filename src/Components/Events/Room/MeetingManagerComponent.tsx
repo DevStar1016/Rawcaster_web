@@ -42,6 +42,8 @@ const MeetingManagerComponent = () => {
     setisPinEnabled,
     userdata,
     attendeesList,
+    setAnimatedEmoji,
+    setMeetingTimer,
   }: EventContextProp = useEventRoomContext();
   const meetingManager = useMeetingManager();
   const audiovideo = useAudioVideo();
@@ -144,13 +146,13 @@ const MeetingManagerComponent = () => {
               }));
                
               if (singleAttendee[hostDisabledType] === false && userStatus) {
-                // Modal.confirm({
-                //   title: popupmessage,
-                //   async onOk() {
-                    // resolve();
-                  // },
-                  // onCancel() {},
-                // });
+                Modal.confirm({
+                  title: popupmessage,
+                  async onOk() {
+                    resolve();
+                  },
+                  onCancel() {},
+                });
               } else if (singleAttendee[hostDisabledType]) {
                 resolve();
               }
@@ -343,7 +345,7 @@ const MeetingManagerComponent = () => {
           if (message) {
             const end_data = message;
             if (end_data.ended) {
-              const endData = { message: "Meeting Has Been Ended !" };
+              const endData = { message: "This meeting has ended !" };
               EndAttendeeMeeting(endData);
             }
           }
@@ -417,7 +419,7 @@ const MeetingManagerComponent = () => {
               hostDisabledType: "audioDisabledByHost",
               userStatus: muted,
               settingType: "default_guest_audio",
-              popupmessage: "Host requests that you unmute your microphone",
+              popupmessage: "Host requests you to turn on your Microphone ",
               Type: "audio",
             };
             HandleVideoAudio(AudioData).then(() => {
@@ -432,7 +434,7 @@ const MeetingManagerComponent = () => {
               hostDisabledType: "videoDisabledByHost",
               userStatus: !isVideoEnabled,
               settingType: "default_guest_video",
-              popupmessage: "Host requests that you enable your camera",
+              popupmessage: "Host requests you to turn on your Camera ",
               Type: "video",
             };
             HandleVideoAudio(VideoData).then(() => {
@@ -487,6 +489,25 @@ const MeetingManagerComponent = () => {
             }
           } catch (error) {}
           break;
+        case CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER:
+          if (message.emoji) {
+            setAnimatedEmoji(message.emoji)
+          }
+        break;
+        case CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER:
+          if (message) {
+            let endtime = new Date(message.time).getMinutes()
+            setnotificationToast({
+              buttons: [],
+              icon: null,
+              msg: `Meeting will be ended in ${endtime} minutes`,
+              show: true,
+              title: null,
+              type: null
+            })
+            setMeetingTimer(message.time)
+          }
+        break;
         default:
           break;
       }
