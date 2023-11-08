@@ -165,6 +165,19 @@ export const GroupHeader = () => {
                   </span>
                 </div>
               </Tooltip>
+              <Tooltip title="Share Group" color={"#F2718D"}>
+                <div className="d-flex justify-content-center">
+                  <span
+                    className="material-symbols-outlined"
+                    // style={{ display: getValidConnections() ? "" : "none" }}
+                    onClick={() => {
+                      navigator.clipboard.writeText(GroupData.referral_link);
+                    }}
+                  >
+                    share
+                  </span>
+                </div>
+              </Tooltip>
             </>
           );
         } else {

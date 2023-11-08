@@ -30,6 +30,7 @@ import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
 import { handleAccountVerifyStatus } from "../../Store/Redux/Reducer/AuthReducer";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -75,7 +76,31 @@ const Claimaccount = () => {
     },
     validationSchema,
     onSubmit: (val) => {
-      HandleClaimAccount(val);
+      if (display_user_id && loginUserData?.account_verify_type === 0) {
+        HandleVerifyModal({
+          primary: "failure",
+          message:
+            "Claim account feature is only for Verified members.Please verify your account.",
+          SubmitButtonTitle: "OK",
+          onSuccess: () => {
+            navigate("/verifyaccount");
+          },
+          isCloseAvailable: false,
+        });
+      } else if (display_user_id && loginUserData?.account_verify_type === 1) {
+        HandleVerifyModal({
+          primary: "failure",
+          message:
+            "Claim account feature is only for Verified members.Your account Verification is in pending.Please wait till the verification process complete.",
+          SubmitButtonTitle: "OK",
+          onSuccess: () => {
+            navigate(-1);
+          },
+          isCloseAvailable: false,
+        });
+      } else {
+        HandleClaimAccount(val);
+      }
     },
   });
 

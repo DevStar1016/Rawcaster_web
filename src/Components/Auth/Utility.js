@@ -11,7 +11,7 @@ import {
  * @returns None
  */
 export const accountVerifyHandle = (res, type, navigate, nugget_id = null) => {
-  const { otp_ref_id, remaining_seconds, alt_token_id } = res;
+  const { otp_ref_id, remaining_seconds, alt_token_id, group_id } = res;
   const handleNavigateValue = () => {
     if (nugget_id) {
       return `/view/${nugget_id}`;
@@ -32,6 +32,7 @@ export const accountVerifyHandle = (res, type, navigate, nugget_id = null) => {
       otp_ref_id,
       remaining_seconds,
       alt_token_id,
+      group_id: group_id,
     },
   });
   window.location.reload();
