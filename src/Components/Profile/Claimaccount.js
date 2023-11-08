@@ -30,6 +30,7 @@ import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
 import { handleAccountVerifyStatus } from "../../Store/Redux/Reducer/AuthReducer";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -75,7 +76,31 @@ const Claimaccount = () => {
     },
     validationSchema,
     onSubmit: (val) => {
-      HandleClaimAccount(val);
+      if (display_user_id && loginUserData?.account_verify_type === 0) {
+        HandleVerifyModal({
+          primary: "success",
+          message:
+            "Your profile should be a verified profile to claim an influencer profile",
+          SubmitButtonTitle: "Verify Account",
+          onSuccess: () => {
+            navigate("/verifyaccount");
+          },
+          isCloseAvailable: false,
+        });
+      } else if (display_user_id && loginUserData?.account_verify_type === 1) {
+        HandleVerifyModal({
+          primary: "success",
+          message:
+            "Your profile verification status is pending, you can claim an influencer profile only when verification status is success",
+          SubmitButtonTitle: "Back to Profile",
+          onSuccess: () => {
+            navigate(-1);
+          },
+          isCloseAvailable: false,
+        });
+      } else {
+        HandleClaimAccount(val);
+      }
     },
   });
 

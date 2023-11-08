@@ -240,6 +240,7 @@ const Nuggets = ({
           ...finalData,
           formData: {
             ...finalData.formData,
+            global_search: 1,
             search_key: DecryptionString(splitData[2]),
           },
         };
@@ -492,6 +493,7 @@ const Nuggets = ({
                           let FormData = { ...nuggetFormData };
                           FormData["formData"] = {
                             ...FormData["formData"],
+                            global_search: 1,
                             search_key: SearchKey,
                           };
                           dispatch(handleNuggetFormData(FormData));
@@ -511,6 +513,7 @@ const Nuggets = ({
                         let FormData = { ...nuggetFormData };
                         FormData["formData"] = {
                           ...FormData["formData"],
+                          global_search: 1,
                           search_key: SearchKey,
                         };
                         dispatch(handleNuggetFormData(FormData));

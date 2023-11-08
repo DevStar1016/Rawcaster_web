@@ -23,6 +23,8 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import VerifiedModal from "../../../Modal/Verification/VerifiedModal";
 import { fetchuserInfobyToken } from "../../../Store/Redux/Action";
+import { HandleVerifyModal } from "../../../Modal/DefaultModal";
+import { handleisFromGroup } from "../../../Store/Redux/Reducer/UtilityReducer";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -103,14 +105,16 @@ const VerifyOtp = () => {
     }
   }, []);
 
-  const handleContinue = (token = loginToken) => {
+  const handleContinue = (token = loginToken, group_name) => {
     dispatch(fetchuserInfobyToken(token)).then(({ payload }) => {
       if (state?.navigatePath) {
         // navigate(state?.navigatePath);
-        window.location.assign(state?.navigatePath);
+        window.open(state?.navigatePath, "_self");
+        if (group_name) {
+          dispatch(handleisFromGroup(group_name));
+        }
       } else {
         window.location.assign("/dashboard");
-        // navigate("/dashboard");
       }
       setverifiedModalShow(false);
     });
@@ -203,6 +207,9 @@ const VerifyOtp = () => {
       otp_ref_id: otpRefId,
       auth_code: getAuthToken(otpRefId),
     };
+    if (state?.group_id) {
+      ResetPasswordValue = { ...ResetPasswordValue, group_id: state.group_id };
+    }
     signupVerifyService(JSONtoformdata(ResetPasswordValue))
       .then((res) => {
         if (res.data.status === 1) {
@@ -212,7 +219,11 @@ const VerifyOtp = () => {
             if (res.data.token) {
               setCookieData("rawcaster_user_token", res.data);
             }
-            handleContinue(res.data.token);
+            if (res.data.group_id) {
+              handleContinue(res.data.token, res.data.group_name);
+            } else {
+              handleContinue(res.data.token);
+            }
           }
         } else if (res.data.status === 0) {
           toast.remove("rawcaster");
