@@ -187,7 +187,11 @@ const ProfileLayout = ({
               okButtonProps: {
                 danger: true,
               },
-              content: <div>Are you sure to Unfollow this User ?</div>,
+              content: (
+                <div>
+                  Are you sure you want to stop being a fan of this Influencer?
+                </div>
+              ),
               onOk: () => {
                 UnfollowService();
               },

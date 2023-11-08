@@ -1,6 +1,8 @@
 // PRIMARY CONSTANTS
+// export const DEFAULT_VIDEO =
+//   "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";
 export const DEFAULT_VIDEO =
-  "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";
+  "https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_83461699330855.mp4#t=0.001";
 export const DEFAULT_VIDEO_RAWCASTER =
   "https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_47841690153307.mp4#t=0.001";
 export const SHARE_URL = "https://dev.rawcaster.com/join/";

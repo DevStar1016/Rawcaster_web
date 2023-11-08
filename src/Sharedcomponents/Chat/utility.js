@@ -378,7 +378,7 @@ export const ChatInput = ({
       {!isChatContentValid && (
         <p className="ErrTxt mx-auto text-center mb-1">
           Message Content cannot be longer than{" "}
-          {chatTextMaxLength ? chatTextMaxLength : getNuggetTextLength() + " "}
+          {chatTextMaxLength ? chatTextMaxLength : getNuggetTextLength()}{" "}
           characters
         </p>
       )}
@@ -616,6 +616,7 @@ export const ChatInput = ({
                         if (ChatMessage && ChatMessage.trim() !== "") {
                           HandleSendMessage(ChatMessage);
                           setChatMessage("");
+                          setisChatContentValid(true);
                         }
                       }
                     }}

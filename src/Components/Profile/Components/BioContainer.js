@@ -323,7 +323,7 @@ const BioContainer = ({ isLoginuser }) => {
               close={handleVerifyPopupClose}
               AIclose={true}
               AIopen="Get Diamond"
-              AImessgae="To access this feature become a diamond member!"
+              AImessgae="Verified account feature is only for Diamond members and Influencers"
             />
           )}
 
