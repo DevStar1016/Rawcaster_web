@@ -194,7 +194,9 @@ const Eventslisting = ({
                   <Empty
                     image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
                     imageStyle={{ height: 80 }}
-                    description={<p className="pt-1">No Events Found</p>}
+                    description={
+                      <p className="pt-1">No new or future events found</p>
+                    }
                   />
                 </div>
               )}

@@ -263,7 +263,7 @@ const DashboardSignup = () => {
                   setControlls(true);
                 }}
               >
-                <source src="https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4" />
+                <source src={DEFAULT_VIDEO} />
               </video>
             </div>
             <Groups />

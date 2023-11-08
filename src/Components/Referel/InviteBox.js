@@ -11,7 +11,7 @@ import ReferalIcon from "../../Assets/Icons/svg/Referal.svg";
 import FansIcon from "../../Assets/Icons/svg/Other_fans.svg";
 import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
 import TelegramIcon from "../../Assets/Icons/svg/telegram.svg";
-import TwitterIcon from "../../Assets/Icons/svg/twitterIcon.svg";
+import TwitterIcon from "../../Assets/Icons/svg/twitter_x_logo.svg";
 import linkedinIcon from "../../Assets/Icons/svg/LinkedinIcon.svg";
 import {
   FacebookShareButton,
@@ -54,7 +54,7 @@ const ShareList = [
   },
   {
     id: 4,
-    title: "Twitter",
+    title: "X",
     img: TwitterIcon,
     Component: TwitterShareButton,
   },

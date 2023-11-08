@@ -120,6 +120,8 @@ const Claimaccount = () => {
             //     url: res.data.redirect_url,
             //   },
             // });
+          } else {
+            navigate(-1);
           }
         } else if (res.data.status === 0) {
           Modal.error({

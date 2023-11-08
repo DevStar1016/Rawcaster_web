@@ -14,11 +14,12 @@ import { useEffect, useRef } from "react";
  * @returns {Promise} - A promise that resolves when the email is successfully sent.
  */
 export const handleSendEmail = (token, contacts) => {
+  const ValidContact = typeof contacts === "string" ? [contacts] : contacts;
   let promise = new Promise((resolve, reject) => {
     let inviteData = {
       token: token,
       auth_code: getAuthToken(token),
-      email_id: JSON.stringify(contacts),
+      email_id: JSON.stringify(ValidContact),
     };
     inviteToRawcasterService(JSONtoformdata(inviteData))
       .then((res) => {
