@@ -152,11 +152,26 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
               });
             } else if (
               currentDuration.isAfter(
-                moment().add(userSettings?.max_event_duration, "hours")
+                moment()
+                  .add(
+                    moment(userSettings.max_event_duration, "HH:mm").get(
+                      "hours"
+                    ),
+                    "hours"
+                  )
+                  .add(
+                    moment(userSettings.max_event_duration, "HH:mm").get(
+                      "minutes"
+                    ),
+                    "minutes"
+                  )
               )
             ) {
               return this.createError({
-                message: `Max Allowed hours is ${userSettings?.max_event_duration}`,
+                message: `Max Allowed hours is ${moment(
+                  userSettings.max_event_duration,
+                  "HH:mm"
+                ).get("hours")}`,
               });
             }
             return true;
@@ -240,7 +255,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_guest_audio: userSettings?.participant_audio,
       event_guest_video: userSettings?.participant_video,
       event_participants: userSettings?.max_event_participants_count,
-      event_duration: moment(userSettings?.max_event_duration, "H").format(
+      event_duration: moment(userSettings?.max_event_duration, "HH:mm").format(
         "HH:mm"
       ),
       event_banner: userSettings?.meeting_header_image,
@@ -459,9 +474,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           event_guest_audio: userSettings?.participant_audio,
           event_guest_video: userSettings?.participant_video,
           event_participants: userSettings?.max_event_participants_count,
-          event_duration: moment(userSettings?.max_event_duration, "H").format(
+          event_duration: moment(
+            userSettings?.max_event_duration,
             "HH:mm"
-          ),
+          ).format("HH:mm"),
           event_banner: userSettings?.meeting_header_image,
         }));
       }
@@ -501,7 +517,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
 
   const getDisabledHours = () => {
     let filteredArray = [...new Array(24)].map((ele, index) => {
-      if (parseInt(userSettings.max_event_duration) < index) {
+      if (
+        parseInt(
+          moment(userSettings.max_event_duration, "HH:mm").get("hours")
+        ) < index
+      ) {
         return index;
       }
     });
@@ -986,7 +1006,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         minuteStep={15}
                         disabledMinutes={(h) => {
                           const validDuration =
-                            userSettings.max_event_duration ?? 10;
+                            moment(
+                              userSettings.max_event_duration,
+                              "HH:mm"
+                            ).get("hours") ?? 10;
                           if (h >= validDuration) {
                             // If the hour is 10, disable minutes after 0.
                             return [15, 30, 45];
@@ -1095,9 +1118,18 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             ? `To add more than ${userSettings?.max_event_participants_count} participants upgrade your membership!`
                             : errors?.event_duration
                             ? `To host event for longer than ${
-                                userSettings?.max_event_duration === 1
-                                  ? `${userSettings?.max_event_duration} hour`
-                                  : `${userSettings?.max_event_duration} hours`
+                                moment(
+                                  userSettings.max_event_duration,
+                                  "HH:mm"
+                                ).get("hours") === 1
+                                  ? `${moment(
+                                      userSettings.max_event_duration,
+                                      "HH:mm"
+                                    ).get("hours")} hour`
+                                  : `${moment(
+                                      userSettings.max_event_duration,
+                                      "HH:mm"
+                                    ).get("hours")} hours`
                               } upgrade your membership!`
                             : "To access this feature upgrade your membership!"
                         }
