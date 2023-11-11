@@ -102,15 +102,17 @@ const Profile = () => {
           if (res.data.profile.lock_nugget === 1) {
             getprofile();
           }
-          // if (res.data.profile.unclaimed_status === 1) {
-          //   ShowUnclaimedAccountModal({
-          //     message: "This is Unclaimed Account",
-          //     isSubmitAvailable: false,
-          //   });
-          //   setTimeout(() => {
-          //     Modal.destroyAll();
-          //   }, 5000);
-          // }
+          if (res.data.profile.unclaimed_status === 1) {
+            ShowUnclaimedAccountModal({
+              message:
+                "Rawcaster generated profile Page to be claimed by the owner",
+              isSubmitAvailable: true,
+              SubmitButtonTitle: "OK",
+            });
+            setTimeout(() => {
+              Modal.destroyAll();
+            }, 5000);
+          }
         }
       })
       .catch((err) => {});
