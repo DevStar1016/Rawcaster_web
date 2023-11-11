@@ -78,10 +78,10 @@ const Claimaccount = () => {
     onSubmit: (val) => {
       if (display_user_id && loginUserData?.account_verify_type === 0) {
         HandleVerifyModal({
-          primary: "failure",
+          primary: "success",
           message:
-            "Claim account feature is only for Verified members.Please verify your account.",
-          SubmitButtonTitle: "OK",
+            "Your profile should be a verified profile to claim an influencer profile",
+          SubmitButtonTitle: "Verify Account",
           onSuccess: () => {
             navigate("/verifyaccount");
           },
@@ -89,10 +89,10 @@ const Claimaccount = () => {
         });
       } else if (display_user_id && loginUserData?.account_verify_type === 1) {
         HandleVerifyModal({
-          primary: "failure",
+          primary: "success",
           message:
-            "Claim account feature is only for Verified members.Your account Verification is in pending.Please wait till the verification process complete.",
-          SubmitButtonTitle: "OK",
+            "Your profile verification status is pending, you can claim an influencer profile only when verification status is success",
+          SubmitButtonTitle: "Back to Profile",
           onSuccess: () => {
             navigate(-1);
           },

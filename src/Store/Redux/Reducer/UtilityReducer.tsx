@@ -8,6 +8,7 @@ import { UtilityReducerProps } from "../types/Utility";
 
 const initialState: UtilityReducerProps = {
   eventWindowRef: null,
+  isFromGroup: null,
 };
 
 const { actions, reducer } = createSlice({
@@ -17,8 +18,11 @@ const { actions, reducer } = createSlice({
     handleEventWindowRef: (state, action) => {
       state.eventWindowRef = action.payload;
     },
+    handleisFromGroup: (state, action) => {
+      state.isFromGroup = action.payload;
+    },
   },
 });
 
-export const { handleEventWindowRef } = actions;
+export const { handleEventWindowRef, handleisFromGroup } = actions;
 export default reducer;

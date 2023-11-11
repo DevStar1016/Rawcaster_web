@@ -24,6 +24,7 @@ import moment from "moment";
 import VerifiedModal from "../../../Modal/Verification/VerifiedModal";
 import { fetchuserInfobyToken } from "../../../Store/Redux/Action";
 import { HandleVerifyModal } from "../../../Modal/DefaultModal";
+import { handleisFromGroup } from "../../../Store/Redux/Reducer/UtilityReducer";
 
 const validationSchema = yup.object().shape({
   otp: yup
@@ -104,14 +105,16 @@ const VerifyOtp = () => {
     }
   }, []);
 
-  const handleContinue = (token = loginToken) => {
+  const handleContinue = (token = loginToken, group_name) => {
     dispatch(fetchuserInfobyToken(token)).then(({ payload }) => {
       if (state?.navigatePath) {
         // navigate(state?.navigatePath);
-        window.location.assign(state?.navigatePath);
+        window.open(state?.navigatePath, "_self");
+        if (group_name) {
+          dispatch(handleisFromGroup(group_name));
+        }
       } else {
         window.location.assign("/dashboard");
-        // navigate("/dashboard");
       }
       setverifiedModalShow(false);
     });
@@ -217,15 +220,7 @@ const VerifyOtp = () => {
               setCookieData("rawcaster_user_token", res.data);
             }
             if (res.data.group_id) {
-              HandleVerifyModal({
-                primary: "success",
-                onSuccess: () => {
-                  handleContinue(res.data.token);
-                },
-                isCloseAvailable: false,
-                SubmitButtonTitle: "Ok",
-                message: `You have been added to the group "${res.data.group_name}"`,
-              });
+              handleContinue(res.data.token, res.data.group_name);
             } else {
               handleContinue(res.data.token);
             }

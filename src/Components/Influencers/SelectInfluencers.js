@@ -20,18 +20,21 @@ import {
 import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
-import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useUtility } from "../../Shared/Reduxfetcher";
 import ProfileImg from "../../UIComponents/ProfileImg";
 import useReplaceBiodataHandler, {
   defaultRawcaterPage,
 } from "../Profile/Utility";
 import moment from "moment";
 import { DEFAULT_DATE_FORMAT } from "../../Shared/Constant";
+import { handleisFromGroup } from "../../Store/Redux/Reducer/UtilityReducer";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
 
 const SelectInfluencers = () => {
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isFromGroup } = useUtility();
   const loginUserData = useAuthData();
   const { userSettings } = useAuth();
   const [isBecomeFanSent, setisBecomeFanSent] = useState(false);
@@ -137,6 +140,20 @@ const SelectInfluencers = () => {
     }
     return "";
   }
+
+  useEffect(() => {
+    if (isFromGroup) {
+      HandleVerifyModal({
+        primary: "success",
+        onSuccess: () => {
+          dispatch(handleisFromGroup(null));
+        },
+        isCloseAvailable: false,
+        SubmitButtonTitle: "Continue",
+        message: `You have been added to the group "${isFromGroup}"`,
+      });
+    }
+  }, [isFromGroup]);
 
   /**
    * Retrieves a list of influencers based on the specified page number, category, and search key.
