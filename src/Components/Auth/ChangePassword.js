@@ -39,6 +39,7 @@ const validationSchema = yup.object().shape({
 
 const ChangePassword = () => {
   const token = useAuthToken();
+  const [form] = Form.useForm();
   const [isDisable, setisDisable] = useState(false);
   const {
     values,
@@ -77,6 +78,7 @@ const ChangePassword = () => {
       .then((res) => {
         if (res.data.status === 1) {
           resetForm();
+          form.resetFields();
           toast.remove("rawcaster");
           toast.success(res.data.msg, { id: "rawcaster" });
         } else {
@@ -92,6 +94,7 @@ const ChangePassword = () => {
   return (
     <div className={classes.chgPassword}>
       <Form
+        form={form}
         name="change_password"
         className="rawcaster_change_password"
         onSubmitCapture={handleSubmit}

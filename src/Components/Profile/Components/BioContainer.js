@@ -11,6 +11,7 @@ import {
   ReadMore,
   decodeHtml,
   getAuthToken,
+  getAuthenticated,
 } from "../../../Shared/Utility";
 import useReplaceBiodataHandler from "../Utility";
 import classes from "../Profile.module.css";
@@ -25,9 +26,12 @@ import { toast } from "react-hot-toast";
 import shieldIcon from "../../../Assets/Icons/svg/claim_account_white.svg";
 import { useNavigate } from "react-router";
 import LoginModal from "../../../Modal/Verification/LoginModal";
+import { handleloginModalShow } from "../../../Store/Redux/Reducer/DashboardReducer";
+import { useDispatch } from "react-redux";
 
 const BioContainer = ({ isLoginuser }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isAboutEdit, setisAboutEdit] = useState(false);
   const {
     profileData,
@@ -331,11 +335,15 @@ const BioContainer = ({ isLoginuser }) => {
             <Button
               className={classes.becomeafanbtn}
               onClickCapture={() => {
-                if (BecameFanStatus === "") {
-                  setBecameFanStatus("pending");
-                  handleBecameFan().then(() => {
-                    setBecameFanStatus("");
-                  });
+                if (getAuthenticated()) {
+                  if (BecameFanStatus === "") {
+                    setBecameFanStatus("pending");
+                    handleBecameFan().then(() => {
+                      setBecameFanStatus("");
+                    });
+                  }
+                } else {
+                  dispatch(handleloginModalShow(true));
                 }
               }}
               style={{

@@ -71,7 +71,7 @@ const Postmodal = ({ visible, onClose }) => {
     setdeletedMedia,
     resetForm,
   } = useContext(PostNuggetContext);
-  const { setPostContent } = useGlobalContext();
+  const { setPostContent } = useGlobalContext() ?? {};
   const [messageApi] = message.useMessage();
   const { isEdit } = useListNuggetContext();
   const textinputRef = useRef(null);
