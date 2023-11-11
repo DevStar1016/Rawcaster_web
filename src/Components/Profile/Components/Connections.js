@@ -112,7 +112,7 @@ const ConnectionsList = ({
   const getUserList = (val = {}, page = Page.pages) => {
     let fansList = {
       ...val,
-      token: loginToken,
+      token: loginToken ? loginToken : "RAWCAST",
       type: 1,
       page_number: page,
     };
@@ -136,7 +136,7 @@ const ConnectionsList = ({
   const getConnectionList = (val = {}, page = Page.pages) => {
     let validData = {
       ...val,
-      token: loginToken,
+      token: loginToken ? loginToken : "RAWCAST",
       page_number: page,
     };
     if (!isLoginUser) {
@@ -187,7 +187,7 @@ const ConnectionsList = ({
   };
 
   useEffect(() => {
-    if (loginToken && !isLoading) {
+    if (!isLoading) {
       if (!isLocked) {
         setisLoadingConnection(type);
         GetList();

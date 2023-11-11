@@ -40,7 +40,7 @@ import { isArray } from "lodash";
 
 const PostNuggets = ({ isUserPostAvailable }) => {
   const { postModalShow, setpostModalShow, PostContent, setPostContent } =
-    useGlobalContext();
+    useGlobalContext() ?? {};
   const { GetNuggetList, setisNuggetModify } = useListNuggetContext();
   const dispatch = useDispatch();
   const Token = useAuthToken();
