@@ -36,10 +36,7 @@ export const DashboardRoute = [
             path: "/selectinfluencers",
             element: <SelectInfluencers />,
           },
-          {
-            path: "/viewprofile/:user_id",
-            element: <Profile />,
-          },
+
           {
             path: "/setting",
             element: <Settings />,
@@ -89,6 +86,10 @@ export const DashboardRoute = [
       {
         path: "/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/viewprofile/:user_id",
+        element: <Profile />,
       },
       {
         path: "/globalsearch/:key",

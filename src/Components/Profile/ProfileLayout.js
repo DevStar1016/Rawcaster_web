@@ -11,6 +11,7 @@
  */
 import React, { useRef, useState } from "react";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
+import linkIcon from "../../Assets/Icons/svg/link.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import FansThumb from "./Components/FansThumb";
 import { toast } from "react-hot-toast";
@@ -31,7 +32,7 @@ import {
 import classes from "./Profile.module.css";
 import { updateProfileService } from "../../Services/ApiService";
 import { useDispatch } from "react-redux";
-import { Button, Dropdown, Image, Modal, Skeleton, Spin } from "antd";
+import { Button, Dropdown, Image, Modal, Skeleton, Spin, Tooltip } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
@@ -344,7 +345,7 @@ const ProfileLayout = ({
           </div>
           <div className="d-md-flex flex-row justify-content-between">
             <div className="d-flex flex-row align-items-baseline">
-              {isAddFriend() && !Addfriend && (
+              {isAddFriend() && !Addfriend && loginToken && (
                 <div className="ms-3">
                   <img
                     src={AddFriendIcon}
@@ -385,6 +386,26 @@ const ProfileLayout = ({
             </div>
 
             <div className={classes.claimBtnSec}>
+              {loginToken ? (
+                <Tooltip title="Copy Link" color={"#F2718D"}>
+                  <div className="d-flex justify-content-center">
+                    <img
+                      src={linkIcon}
+                      alt="Link"
+                      style={{ cursor: "pointer", height: "40px" }}
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          profileData?.referral_link
+                        );
+                        toast.remove("profile");
+                        toast.success("Profile Link Copied!", {
+                          id: "profile",
+                        });
+                      }}
+                    />
+                  </div>
+                </Tooltip>
+              ) : null}
               {(profileData?.unclaimed_status === 1 ||
                 profileData?.unclaimed_status === 2) && (
                 <Button

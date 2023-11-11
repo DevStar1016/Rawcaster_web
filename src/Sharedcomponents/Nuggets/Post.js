@@ -399,6 +399,28 @@ const Post = ({
                 </div>
               ),
             },
+            {
+              key: 3,
+              label: (
+                <div
+                  onClick={() => {
+                    const el = document.createElement("input");
+                    el.value = NUGGET_SHARE_URL + window.btoa(ele.nugget_id);
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(el);
+                    toast.remove("rawcaster");
+                    toast.success("Link copied to clipboard", {
+                      id: "rawcaster",
+                    });
+                  }}
+                  className={classes.dropdownItem}
+                >
+                  <span className={classes.share_link_icon}></span>Share Link
+                </div>
+              ),
+            },
           ];
           return resultData;
         }

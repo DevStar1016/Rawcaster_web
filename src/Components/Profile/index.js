@@ -91,9 +91,9 @@ const Profile = () => {
    */
   const getuserprofile = (id) => {
     let otherprofileValue = {
-      token: loginToken,
+      token: loginToken ? loginToken : "RAWCAST",
       user_id: id,
-      auth_code: getAuthToken(loginToken),
+      auth_code: getAuthToken(loginToken ? loginToken : "RAWCAST"),
     };
     getOthersProfileService(JSONtoformdata(otherprofileValue))
       .then((res) => {
@@ -124,21 +124,21 @@ const Profile = () => {
    * @returns None
    */
   const getprofile = () => {
-    if (loginToken) {
-      let filterData = { ...nuggetFormData };
-      console.log(nuggetFormData);
-      if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
-        filterData.formData = {
-          user_id: display_user_id,
-          page_number: 1,
-          nugget_type: 0,
-          token: loginToken,
-        };
-        dispatch(handleResetNuggets());
-        dispatch(handleNuggetFormData(filterData));
-        dispatch(fetchNuggetsbyId(filterData));
-      }
+    // if (loginToken) {
+    let filterData = { ...nuggetFormData };
+    console.log(nuggetFormData);
+    if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
+      filterData.formData = {
+        user_id: display_user_id,
+        page_number: 1,
+        nugget_type: 0,
+        token: loginToken ? loginToken : "RAWCAST",
+      };
+      dispatch(handleResetNuggets());
+      dispatch(handleNuggetFormData(filterData));
+      dispatch(fetchNuggetsbyId(filterData));
     }
+    // }
   };
 
   /**
@@ -152,17 +152,17 @@ const Profile = () => {
    * @returns None
    */
   useEffect(() => {
-    if (loginUserData) {
-      if (getisLoginUser()) {
-        if (loginUserData) {
-          setprofileData(loginUserData);
-          getprofile();
-        }
-      } else {
-        setprofileData();
-        getuserprofile(display_user_id);
+    // if (loginUserData) {
+    if (getisLoginUser()) {
+      if (loginUserData) {
+        setprofileData(loginUserData);
+        getprofile();
       }
+    } else {
+      setprofileData();
+      getuserprofile(display_user_id);
     }
+    // }
   }, [display_user_id, loginUserData]);
 
   /**
@@ -174,7 +174,7 @@ const Profile = () => {
     let promise = new Promise((resolve, reject) => {
       let fansList = {
         ...filterValues,
-        token: loginToken,
+        token: loginToken ? loginToken : "RAWCAST",
         type: 2,
         page_number: page,
       };
@@ -393,7 +393,7 @@ const Profile = () => {
                     )}
                   </>
                 )}
-                {!getisLoginUser() && <OthersEventListing />}
+                {!getisLoginUser() && loginToken && <OthersEventListing />}
                 {getisLoginUser() && (
                   <>
                     {isSuccess ? (

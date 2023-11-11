@@ -172,6 +172,8 @@ export const GroupHeader = () => {
                     // style={{ display: getValidConnections() ? "" : "none" }}
                     onClick={() => {
                       navigator.clipboard.writeText(GroupData.referral_link);
+                      toast.remove("group");
+                      toast.success("Group Link Copied!", { id: "group" });
                     }}
                   >
                     share
