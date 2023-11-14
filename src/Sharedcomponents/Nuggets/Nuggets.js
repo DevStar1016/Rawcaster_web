@@ -302,6 +302,7 @@ const Nuggets = ({
    * Checks if the current page is valid based on authentication and user data.
    * @returns {boolean} - true if the page is valid, false otherwise.
    */
+
   const isValidPage = () => {
     if (getAuthenticated() && loginuserData) {
       if (parseInt(display_user_id) === parseInt(userData?.user_id)) {

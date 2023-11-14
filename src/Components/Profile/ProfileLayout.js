@@ -394,9 +394,7 @@ const ProfileLayout = ({
                       alt="Link"
                       style={{ cursor: "pointer", height: "40px" }}
                       onClick={() => {
-                        navigator.clipboard.writeText(
-                          profileData?.referral_link
-                        );
+                        navigator.clipboard.writeText(profileData?.profile_url);
                         toast.remove("profile");
                         toast.success("Profile Link Copied!", {
                           id: "profile",

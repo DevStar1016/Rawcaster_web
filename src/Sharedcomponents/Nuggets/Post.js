@@ -780,7 +780,7 @@ const Post = ({
       } else if (ele.poll_option?.length === 2) {
         return 5;
       }
-    } else if (ele?.content?.split("\n")?.length > 10) {
+    } else {
       return 10;
     }
   };

@@ -139,7 +139,7 @@ const Claimaccount = () => {
         if (res.data.status === 1) {
           // dispatch(handleAccountVerifyStatus(1));
           if (!display_user_id) {
-            window.open(res.data.redirect_url, "self");
+            window.open(res.data.redirect_url, "_self");
             // navigate(`/documentverify`, {
             //   state: {
             //     url: res.data.redirect_url,

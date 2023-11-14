@@ -26,6 +26,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
 import { HandleVerifyModal } from "../Modal/DefaultModal";
+import { CustomParagraph } from "./UtilityComponents";
 
 // Auth
 
@@ -827,6 +828,7 @@ export const ReadMore = ({
   const [OnEllipsis, setOnEllipsis] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [readMore, setReadmore] = useState(false);
+  console.log(children, "children");
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -874,11 +876,30 @@ export const ReadMore = ({
       </>
     );
   };
+
   return (
     <Linkify options={{ render: renderLink }}>
-      {expanded || isReadMore ? (
+      <CustomParagraph
+        className="ReadMoreText"
+        children={children}
+        ellipsis={{
+          rows: parseInt(partialShowLines),
+          onExpand: onExpand,
+          onEllipsis: (status) => {
+            isReadMoreValid();
+            setOnEllipsis(status);
+          },
+          expandable: true,
+        }}
+        style={{
+          cursor: "pointer",
+          width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+          wordBreak: "break-word",
+        }}
+      ></CustomParagraph>
+      {/* {expanded || isReadMore ? (
         <>
-          <Paragraph
+          <CustomParagraph
             className="ReadMoreText"
             style={{
               cursor: "pointer",
@@ -890,7 +911,7 @@ export const ReadMore = ({
             }}
           >
             {children}
-          </Paragraph>
+          </CustomParagraph>
           {OnEllipsis && (
             <span
               style={{ color: "#e26386", cursor: "pointer" }}
@@ -907,7 +928,7 @@ export const ReadMore = ({
         </>
       ) : children?.split("\n")?.length > partialHeight ? (
         <>
-          <Paragraph
+          <CustomParagraph
             className="ReadMoreText"
             style={{
               cursor: "pointer",
@@ -923,7 +944,7 @@ export const ReadMore = ({
                   ?.filter((ele, index) => index < partialHeight)
                   .join("\n")
                   .concat("...")}
-          </Paragraph>
+          </CustomParagraph>
           {children?.split("\n")?.length > partialHeight && (
             <>
               {!readMore ? (
@@ -950,7 +971,7 @@ export const ReadMore = ({
         </>
       ) : (
         <>
-          <Paragraph
+          <CustomParagraph
             className="ReadMoreText"
             ellipsis={{
               rows: parseInt(partialShowLines),
@@ -968,7 +989,7 @@ export const ReadMore = ({
             }}
           >
             {children}
-          </Paragraph>
+          </CustomParagraph>
           {OnEllipsis && (
             <span
               style={{ color: "#e26386", cursor: "pointer" }}
@@ -983,7 +1004,7 @@ export const ReadMore = ({
             </span>
           )}
         </>
-      )}
+      )} */}
     </Linkify>
   );
 };
