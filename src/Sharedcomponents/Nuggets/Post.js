@@ -417,7 +417,7 @@ const Post = ({
                   }}
                   className={classes.dropdownItem}
                 >
-                  <span className={classes.share_link_icon}></span>Share Link
+                  Share Link
                 </div>
               ),
             },
@@ -517,7 +517,7 @@ const Post = ({
         },
       ];
       resultData.map((elem) => {
-        if (ele.type !== 2) {
+        if (ele.type === 2) {
           resultData = resultData.filter((val) => parseInt(val.key) !== 4);
         }
         if (ele?.following) {
@@ -780,7 +780,7 @@ const Post = ({
       } else if (ele.poll_option?.length === 2) {
         return 5;
       }
-    } else if (ele?.content?.split("\n")?.length > 10) {
+    } else {
       return 10;
     }
   };
