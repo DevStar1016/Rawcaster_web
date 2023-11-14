@@ -158,9 +158,9 @@ const EventParticipants = () => {
           onClick: () => {
             Modal.confirm({
               title: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
-              content: `Are you sure do you want to ${
+              content: `Are you sure you want to ${
                 !ele?.isCoHost ? "Promote" : "Remove"
-              } as Co Host for this User !`,
+              } this participant to co-host?`,
               onOk: () => {
                 if (ele?.isCoHost) {
                   ChimesendMessage(

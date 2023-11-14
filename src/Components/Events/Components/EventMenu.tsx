@@ -327,7 +327,7 @@ const EventMenu = () => {
               {
                 refId: EventData?.reference_id,
                 userId: getUserData()?.user_id,
-                status: !userdata.handRaised,
+                status: !userdata?.handRaised,
               },
               CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
             );
@@ -444,7 +444,7 @@ const EventMenu = () => {
                       {
                         refId: EventData?.reference_id,
                         userId: getUserData()?.user_id,
-                        status: !userdata.handRaised,
+                        status: !userdata?.handRaised,
                       },
                       CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
                     );

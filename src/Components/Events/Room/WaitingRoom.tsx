@@ -55,7 +55,7 @@ const WaitingRoom = () => {
                 ? RequestStatusMessage.message
                 : EventData?.waiting_room === 1 && EventData?.type !== 2
                 ? "Please wait for a moment while host approves your request."
-                : "Please wait for a moment, host not available yet.."}
+                : "Joining please wait for a moment..."}
             </span>
             {!RequestStatusMessage && (
               <img

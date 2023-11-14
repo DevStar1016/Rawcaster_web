@@ -285,7 +285,7 @@ const MeetingManagerComponent = () => {
             const user_data = message;
             const raiseHandUser = user_data.UserData;
             if (
-              raiseHandUser.handRaised &&
+              raiseHandUser?.handRaised &&
               parseInt(raiseHandUser.userId) !== getUserData()?.user_id
             ) {
               setnotificationToast({

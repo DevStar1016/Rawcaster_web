@@ -364,7 +364,7 @@ const EventBox = () => {
               }}
             />
             <p>{findAttendee.name + `${isYou ? " (You)" : ""}`}</p>
-            {findAttendee.handRaised && (
+            {findAttendee?.handRaised && (
               <div className={classes.RaisehandContainer}>
                 <div className={classes.isRaiseHand}>
                   <i className={classes.raise_hand_active_icon}></i>
