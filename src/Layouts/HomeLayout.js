@@ -230,7 +230,6 @@ const HomeLayout = () => {
                       className={classes.liveIcon}
                       alt="referal_icon"
                       onClick={() => {
-                        console.log("test");
                         let filterData = {
                           token,
                           formData: {

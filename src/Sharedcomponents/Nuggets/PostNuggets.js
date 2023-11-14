@@ -196,7 +196,6 @@ const PostNuggets = ({ isUserPostAvailable }) => {
     formData.append("token", LoginUserData?.token);
     formData.append("share_type", val.share_type);
     if (!PollData) {
-      console.log(NuggetData, "NuggetData");
       for (const file of NuggetData) {
         formData.append("nuggets_media", file);
       }

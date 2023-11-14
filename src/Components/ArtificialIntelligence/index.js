@@ -136,6 +136,7 @@ const ArtificialIntelligence = () => {
           AIclose={true}
           AIopen="Get Premium"
           AImessgae="To access this feature become a premium member!"
+          isAI={true}
         />
       )}
     </ChatBotContext.Provider>

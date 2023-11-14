@@ -85,7 +85,6 @@ const BioContainer = ({ isLoginuser }) => {
     }
 
     if (profileData && profileData?.bio_data === "") {
-      console.log(profileData, "profileData");
       setFieldValue("bio_data", BioData);
     }
   }, [profileData, influencerCategory, BioData]);

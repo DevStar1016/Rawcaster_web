@@ -311,7 +311,6 @@ export const MessageContent = (props) => {
             <p
               className={translated_text ? classes.activeTranslate : ""}
               onClick={() => {
-                console.log("test");
                 if (translated_text) {
                   setMessages((pre) => {
                     let findIndex = pre.findIndex((elem, i) => i === index);

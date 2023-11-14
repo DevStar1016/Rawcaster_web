@@ -96,7 +96,6 @@ const ChatSocketComponent = () => {
               GroupDetails.channel_arn === record?.ChannelArn
             ) {
               if (GroupDetails?.group_members_list) {
-                console.log(GroupDetails);
                 const findSender = GroupDetails?.group_members_list.find(
                   (ele) => ele.member_arn === record.Sender.Arn
                 );

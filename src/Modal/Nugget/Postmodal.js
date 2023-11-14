@@ -203,7 +203,6 @@ const Postmodal = ({ visible, onClose }) => {
         }
         if (oldURL.current !== addHttp) {
           oldURL.current = addHttp;
-          console.log(addHttp, "addHttpaddHttp");
           const userData = {
             token,
             url,

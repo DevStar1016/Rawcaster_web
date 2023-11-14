@@ -18,7 +18,7 @@ import { useDispatch } from "react-redux";
 import { complementaryMembershipService } from "../../Services/ApiService";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
-const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
+const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useAuthToken();
@@ -67,36 +67,42 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
         </p>
 
         <div className={classes.actionBtn}>
-          <Button
-            ghost
-            type="primary"
-            htmlType="button"
-            onClick={() => {
-              if (AIclose) {
-                close();
-              } else {
-                removeSessionStorageData("influencerData");
-                close();
-              }
-            }}
-            size="large"
-            className={classes.cancelBtn}
-          >
-            Later
-          </Button>
-          <Button
-            type="primary"
-            onClick={() => {
-              if (AIopen) {
-                close();
-                if (loginUserData.complementary_status === 1) {
-                  ComplementaryMemberShip();
+          {!isAI ? (
+            <Button
+              ghost
+              type="primary"
+              htmlType="button"
+              onClick={() => {
+                if (AIclose) {
+                  close();
                 } else {
-                  navigate("/membership");
+                  removeSessionStorageData("influencerData");
+                  close();
                 }
-              } else {
-                navigate("/login");
+              }}
+              size="large"
+              className={classes.cancelBtn}
+            >
+              Later
+            </Button>
+          ) : null}
+          <Button
+            type="primary"
+            onClick={() => {
+              if (isAI) {
                 close();
+              } else {
+                if (AIopen) {
+                  close();
+                  if (loginUserData.complementary_status === 1) {
+                    ComplementaryMemberShip();
+                  } else {
+                    navigate("/membership");
+                  }
+                } else {
+                  navigate("/login");
+                  close();
+                }
               }
             }}
             style={{ marginLeft: "10px" }}
@@ -104,7 +110,7 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
             size="large"
             className={classes.reportBtn}
           >
-            {AIopen ? "Upgrade" : "Login"}
+            {isAI ? "Ok" : AIopen ? "Upgrade" : "Login"}
           </Button>
         </div>
       </div>

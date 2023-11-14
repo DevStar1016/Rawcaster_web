@@ -99,7 +99,6 @@ const Login = () => {
           if (res.data.acc_verify_status === 0) {
             toast.remove("rawcaster");
             toast.success(res.data.msg, { id: "rawcaster" });
-            console.log(JSON.stringify(res.data));
             handleProfileUpdate(res.data, res.data.signup_type);
             return;
           }
