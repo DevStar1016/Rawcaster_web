@@ -808,13 +808,16 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             : DEFAULT_DATE_FORMAT
                         }
                         onChange={(date, dateString) => {
-                          setFieldValue("event_start_date", dateString);
+                          let Date = moment(
+                            dateString,
+                            userSettings
+                              ? userSettings.default_date_format
+                              : DEFAULT_DATE_FORMAT
+                          ).format("YYYY-MM-DD");
+                          setFieldValue("event_start_date", Date);
 
                           if (
-                            moment().isSame(
-                              moment(dateString, "YYYY-MM-DD"),
-                              "day"
-                            )
+                            moment().isSame(moment(Date, "YYYY-MM-DD"), "day")
                           ) {
                             if (
                               moment()

@@ -53,9 +53,9 @@ const Eventslisting = ({
             let filterEventList = res.data.events_list.filter((ele) => {
               return ele.original_user_id === userData?.user_id;
             });
-            setEventListData(filterEventList.reverse());
+            setEventListData(filterEventList);
           } else {
-            setEventListData(res.data.events_list.reverse());
+            setEventListData(res.data.events_list);
           }
         } else {
           setEventListData([]);

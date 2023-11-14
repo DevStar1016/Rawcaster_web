@@ -441,7 +441,8 @@ const HomeLayout = () => {
 
         {loginUserData &&
           loginUserData.user_status_id > 0 &&
-          !pathname?.includes("viewprofile") && (
+          !pathname?.includes("viewprofile") &&
+          !pathname?.includes("selectinfluencers") && (
             <div className={classes.chatbotsec}>
               <ArtificialIntelligence />
             </div>

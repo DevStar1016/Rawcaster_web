@@ -83,7 +83,11 @@ const Claimaccount = () => {
             "Your profile should be a verified profile to claim an influencer profile",
           SubmitButtonTitle: "Verify Account",
           onSuccess: () => {
-            navigate("/verifyaccount");
+            if (loginUserData?.user_status_id === 4) {
+              navigate("/verifyaccount");
+            } else {
+              navigate(-1);
+            }
           },
           isCloseAvailable: false,
         });
