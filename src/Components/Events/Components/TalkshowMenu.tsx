@@ -157,7 +157,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             className={`onlydes ${styles.streamBtn}`}
             onClick={() =>
               EndMeeting({
-                modalTitle: "Do you really want to end this Talkshow Streaming ?",
+                modalTitle: "Are you sure you want to end this Talkshow event?",
                 Attendee: userdata,
                 EventData,
                 handleEndMeeting,
@@ -175,7 +175,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
             className={`${styles.iconContainer} ${styles.EndIcon} onlydes`}
             onClick={() => {
               Modal.confirm({
-                title: "Are you sure Do you want to Exit Talkshow Streaming ?",
+                title: "Are you sure you want to leave this Talkshow event?",
                 icon: <ExclamationCircleFilled />,
                 onOk() {
                   handleExitMeeting(userdata)
@@ -282,7 +282,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
           className={`${styles.iconContainer} ${styles.EndIcon} onlyMob`}
           onClick={() => {
             Modal.confirm({
-              title: "Do you really want to Exit Talkshow Streaming ?",
+              title: "Are you sure you want to leave this Talkshow event?",
               icon: <ExclamationCircleFilled />,
               onOk() {
                 handleExitMeeting(userdata)
