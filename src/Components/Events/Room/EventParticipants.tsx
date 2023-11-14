@@ -124,7 +124,7 @@ const EventParticipants = () => {
             onClick: () => {
               Modal.confirm({
                 title: "Remove User",
-                content: "Are you sure do you want to remove this User !",
+                content: " Are you sure you want to remove this participant?",
                 onOk: () => {
                   ChimesendMessage(
                     {
@@ -199,7 +199,7 @@ const EventParticipants = () => {
           onClick: () => {
             Modal.confirm({
               title: "Remove User",
-              content: "Are you sure do you want to remove this User !",
+              content: "Are you sure you want to remove this participant?",
               onOk: () => {
                 ChimesendMessage(
                   {

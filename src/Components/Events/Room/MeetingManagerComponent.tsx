@@ -137,7 +137,7 @@ const MeetingManagerComponent = () => {
         const singleAttendee = attendees.updatedUser;
         const attendeeList = attendees.attendeeList;
         if (singleAttendee) {
-          if (singleAttendee.userId === userdata.userId) {
+          if (singleAttendee.userId === userdata?.userId) {
             if (!userdata.isHost || !userdata.isCoHost) {
               setuserdata((pre) => ({
                 ...pre,

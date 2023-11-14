@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import classes from "./EventBox.module.css";
 import userImg from "../../../Assets/Images/svg/userImg.svg";
 import {
@@ -40,6 +41,7 @@ const EventBox = () => {
   const {
     isPinEnabled,
     isChatorParticipant,
+    setisChatorParticipant,
     isReactions,
     isFetching,
     notificationToast,
@@ -54,6 +56,12 @@ const EventBox = () => {
   const attendees = Object.values(roster);
   const { isLocalUserSharing, sharingAttendeeId } = useContentShareState();
   const { attendeeIdToTileId } = useRemoteVideoTileState();
+
+  useEffect(()=>{
+    if(EventData?.type === 2){
+      setisChatorParticipant("participant")
+    }
+  },[EventData?.type])
 
   const enabledSettings = () => ({
     localVideoChangeAllowed: (userdata?.isHost || userdata?.isCoHost) ? true : MeetingSettings?.default_guest_video === 0 ? false : true,
@@ -200,7 +208,7 @@ const EventBox = () => {
                   if (userdata?.isHost || userdata?.isCoHost) {
                     Modal.confirm({
                       title: "Remove User",
-                      content: "Are you sure do you want to remove this User !",
+                      content: "Are you sure you want to remove this participant?",
                       onOk: () => {
                         ChimesendMessage(
                           {
