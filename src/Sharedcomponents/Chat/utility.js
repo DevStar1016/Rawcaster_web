@@ -758,7 +758,7 @@ export const ChatInput = ({
               "flags",
             ]}
             onEmojiSelect={(e) => {
-              setChatMessage((pre) => pre.concat(e.native));
+              setChatMessage((pre) => (pre ? pre.concat(e.native) : e.native));
             }}
           />
         </div>

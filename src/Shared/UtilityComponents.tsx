@@ -48,6 +48,9 @@ export const CustomParagraph = (props: CustomParagraphprops) => {
       if (textRef.current?.offsetHeight < textRef.current?.scrollHeight) {
         return true;
       }
+      if (rows && textRef.current?.textContent?.split(/\n/).length > rows) {
+        return true;
+      }
       return false;
     }
     return false;

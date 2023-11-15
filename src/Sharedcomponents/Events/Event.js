@@ -29,7 +29,7 @@ import {
 } from "react-share";
 import FaceBookIcon from "../../Assets/Icons/svg/facebook.svg";
 import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
-import TwitterIcon from "../../Assets/Icons/svg/twitterIcon.svg";
+import TwitterIcon from "../../Assets/Icons/svg/twitter_x_logo.svg";
 import GmailIcon from "../../Assets/Icons/svg/gmail_icon.svg";
 import EventHandler from "./EventHandler";
 
