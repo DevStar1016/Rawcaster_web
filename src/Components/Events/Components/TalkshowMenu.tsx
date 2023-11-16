@@ -59,14 +59,14 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
 
   const enabledSettings = () => ({
     isHost: userdata?.isHost,
-    localMicStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : MeetingSettings?.default_guest_audio === 0 ? false : userdata?.audioDisabledByHost ? false : true,
-    localvideoStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : MeetingSettings?.default_guest_video === 0 ? false : userdata?.audioDisabledByHost ? false : true,
+    localMicStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : false,
+    localvideoStatus: (userdata?.isHost || userdata?.isCoHost ) ? true : false,
   });
 
   return (
     <div className={`${styles.BottomContainer} ${styles.TalkshowMenu}`}>
       <div className={styles.menuContainer}>
-        <div
+      {!userdata?.audioDisabledByHost && <div
           className={`${styles.iconContainer} ${styles.switchIconSec} ${
             !muted ? styles.activeiconContainer : ""
           }`}
@@ -85,7 +85,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
               expand_less
             </span>
           </Popover>
-        </div>
+        </div>}
         {(userdata?.isHost || userdata?.isCoHost) && (
           <div
             className={`${styles.iconContainer} ${styles.switchIconSec} ${
@@ -224,7 +224,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
               {
                 refId: EventData?.reference_id,
                 userId: getUserData()?.user_id,
-                status: !userdata.handRaised,
+                status: !userdata?.handRaised,
               },
               CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
             );
@@ -330,7 +330,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
                         {
                           refId: EventData?.reference_id,
                           userId: getUserData()?.user_id,
-                          status: !userdata.handRaised,
+                          status: !userdata?.handRaised,
                         },
                         CHIME_SOCKET_EVENTS.MEETING_RAISE_HAND
                       );

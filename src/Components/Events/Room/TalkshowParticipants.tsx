@@ -5,7 +5,9 @@ import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import styles from "../../../Layouts/MeetingLayout.module.css";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { useRosterState } from "amazon-chime-sdk-component-library-react";
+import {
+  useRosterState,
+} from "amazon-chime-sdk-component-library-react";
 import {
   useAuthData,
   useEventTempAuthData,
@@ -44,7 +46,6 @@ const TalkshowParticipants = () => {
     attendeesList,
     EventData,
     userdata,
-    MeetingSettings,
   }: EventContextProp = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -55,8 +56,10 @@ const TalkshowParticipants = () => {
 
   const enabledSettings = () => {
     return {
-      localVideoChangeAllowed: userdata?.isHost ? true : false,
-      localMicChangeAllowed: userdata?.isHost ? true : false,
+      localVideoChangeAllowed:
+        userdata?.isHost || userdata?.isCoHost ? true : false,
+      localMicChangeAllowed:
+        userdata?.isHost || userdata?.isCoHost ? true : false,
     };
   };
 
@@ -185,7 +188,7 @@ const TalkshowParticipants = () => {
           onClick: () => {
             Modal.confirm({
               title: "Remove User",
-              content: "Are you sure do you want to remove this User !",
+              content: "Are you sure you want to remove this participant?",
               onOk: () => {
                 ChimesendMessage(
                   {
@@ -195,6 +198,32 @@ const TalkshowParticipants = () => {
                   },
                   CHIME_SOCKET_EVENTS.KICK_USER
                 );
+              },
+              onCancel: () => {},
+            });
+          },
+        },
+        {
+          key: "3",
+          label: `${
+            findAttendee?.audioDisabledByHost ? "Allow to speak" : "Mute"
+          }`,
+          onClick: () => {
+            Modal.confirm({
+              title: `${
+                findAttendee?.audioDisabledByHost ? "Allow to speak" : "Mute"
+              }`,
+              content: `Are you sure do you want to ${
+                findAttendee?.audioDisabledByHost ? "allow to speak" : "mute"
+              } this user!`,
+              onOk: () => {
+                const value = {
+                  refId: EventData?.reference_id,
+                  hostId: EventData?.original_user_id,
+                  userId: findAttendee?.userId,
+                  status: findAttendee?.audioDisabledByHost,
+                };
+                ChimesendMessage(value, CHIME_SOCKET_EVENTS.ALLOW_TO_SPEAK);
               },
               onCancel: () => {},
             });
@@ -262,16 +291,18 @@ const TalkshowParticipants = () => {
                 }}
               />
             )}
-            {isYou ? (
+            {!findAttendee?.audioDisabledByHost && isYou && (
               <LocalMicrophoneComponent
                 className={classes.micsmallIcon}
                 isAllowed={enabledSettings().localMicChangeAllowed}
               />
-            ) : (
+            )}
+
+            {!findAttendee?.audioDisabledByHost && !isYou && (
               <MicrophoneComponent
                 ele={ele}
                 attendee={findAttendee}
-                isHost={getISHost() || getISCoHost()}
+                isHost={getISHost()}
                 className={classes.micsmallIcon}
                 isGlobal={false}
               />
@@ -285,21 +316,17 @@ const TalkshowParticipants = () => {
                 isAllowed={enabledSettings().localVideoChangeAllowed}
               />
             ) : (
-              (findAttendee?.isHost || findAttendee?.isCoHost) && (
+              findAttendee?.isHost && (
                 <CameraComponent
                   ele={ele}
                   attendee={findAttendee}
-                  isHost={getISHost() || getISCoHost()}
+                  isHost={getISHost()}
                   className={classes.videosmallIcon}
                   isGlobal={false}
                 />
               )
             )}
-            {getISCoHost() && findAttendee?.isHost ? (
-              <div style={{ opacity: "0" }}>
-                <i className="material-symbols-outlined">more_vert</i>
-              </div>
-            ) : getISHost() || getISCoHost() ? (
+            {getISHost() ? (
               <Dropdown
                 menu={{
                   items: findAttendee ? getDropdownList(findAttendee) : [],

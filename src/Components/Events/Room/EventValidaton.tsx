@@ -152,7 +152,8 @@ const EventValidaton = () => {
       Attendee
     );
     const meetingOptions = {
-      deviceLabels: DeviceLabels.AudioAndVideo,
+      deviceLabels: (finduserData?.isHost || finduserData?.isCoHost) ? 
+                      DeviceLabels.AudioAndVideo : DeviceLabels.None,
     };
     try {
       await meetingManager.join(meetingSessionConfiguration, meetingOptions);

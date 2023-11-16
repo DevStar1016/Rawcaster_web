@@ -60,7 +60,9 @@ export const CHIME_SOCKET_EVENTS = {
   DISCONNECT_SOCKET: "disconnect",
   POST_REACTION: "postReaction",
   POST_REACTION_ANSWER: "postReactionAnswer",
-  END_MEETING_ALERT_ANSWER: "endMeetingAlertAnswer"
+  END_MEETING_ALERT_ANSWER: "endMeetingAlertAnswer",
+  ALLOW_TO_SPEAK: 'allowToSpeak',
+  ALLOW_TO_SPEAK_ANSWER: 'allowToSpeakAnswer'
 };
 
 export const COMMON_EVENTS_TYPES = {

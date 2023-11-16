@@ -121,8 +121,11 @@ const MeetingManagerComponent = () => {
   /**
    * Audio Video Settings Handle By Socket
    */
-
+  console.log('userdata', userdata)
+  console.log('attendeesList', attendeesList)
   const HandleVideoAudio = (props) => {
+    console.log('userdata in fucntion', userdata)
+    console.log('attendeesList in function', attendeesList)
     return new Promise<void>((resolve, reject) => {
       const {
         value,
@@ -422,6 +425,7 @@ const MeetingManagerComponent = () => {
               popupmessage: "Host requests you to turn on your Microphone ",
               Type: "audio",
             };
+            console.log('ENABLE_AUDIO_ANSWER  userdata', userdata)
             HandleVideoAudio(AudioData).then(() => {
               toggleMute();
             });
