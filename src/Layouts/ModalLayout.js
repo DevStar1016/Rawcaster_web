@@ -10,6 +10,7 @@ import { VerificationModal } from "../Modal/Verification/ProfileVerificationModa
 import ValidateTypeModal from "../Modal/Verification/ValidateTypeModal";
 import {
   useAuth,
+  useAuthToken,
   useDashboard,
   useProfileVerifyModal,
 } from "../Shared/Reduxfetcher";
@@ -29,6 +30,7 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 
 const ModalLayout = () => {
+  const token = useAuthToken();
   const PlayerSource = useRef(null);
   const location = useLocation();
   const dispatch = useDispatch();
@@ -77,7 +79,8 @@ const ModalLayout = () => {
     if (location.pathname !== "/verifyotp") {
       removeSessionStorageData("verifyCountDown");
     }
-    if (location.pathname !== "/setting") {
+    if (location.pathname !== "/setting" && token) {
+      console.log("TESTTTTTT", token);
       if (userSettings && userSettings.account_active_inactive === 0) {
         dispatch(handleAccountActive(true));
       }

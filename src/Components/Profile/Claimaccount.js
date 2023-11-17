@@ -37,8 +37,8 @@ const validationSchema = yup.object().shape({
   last_name: yup.string().required(`Please input your Last Name!`),
   telephone: yup
     .string()
-    .min(5, "Telephone must be atleast 5 characters")
-    .required(`Please input your Telephone!`),
+    .min(5, "Mobile number must be atleast 5 characters")
+    .required(`Please input your mobile number!`),
   dob: yup.string().required(`Please input your Date of Birth!`),
   email_id: yup
     .string()
@@ -232,13 +232,16 @@ const Claimaccount = () => {
             <Row>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>First Name </p>
+                  <p className={classes.label}>
+                    First Name <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
                     maxLength={25}
                     autoComplete="off"
                     value={values.first_name}
                     onChange={handleChange("first_name")}
+                    placeholder="Enter your first name"
                   />
                 </div>
                 {touched.first_name && (
@@ -247,13 +250,16 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Last Name </p>
+                  <p className={classes.label}>
+                    Last Name <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
                     maxLength={25}
                     autoComplete="off"
                     value={values.last_name}
                     onChange={handleChange("last_name")}
+                    placeholder="Enter your last name"
                   />
                 </div>
                 {touched.last_name && (
@@ -262,13 +268,16 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Telephone </p>
+                  <p className={classes.label}>
+                    Mobile Number <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
                     maxLength={20}
                     autoComplete="off"
                     value={values.telephone}
                     onChange={handleChange("telephone")}
+                    placeholder="Enter your mobile number"
                   />
                 </div>
                 {touched.telephone && (
@@ -277,13 +286,16 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Email id </p>
+                  <p className={classes.label}>
+                    Email Id <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox}`}
                     maxLength={25}
                     autoComplete="off"
                     value={values.email_id}
                     onChange={handleChange("email_id")}
+                    placeholder="Enter your email id"
                   />
                 </div>
                 {touched.email_id && (
@@ -292,7 +304,9 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Date of Birth </p>
+                  <p className={classes.label}>
+                    Date of Birth <span className="text-danger">*</span>{" "}
+                  </p>
                   <DateInputBox
                     displayDate={values.dob}
                     onSelectDate={(date) => {
@@ -308,7 +322,9 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Location</p>
+                  <p className={classes.label}>
+                    Location <span className="text-danger">*</span>{" "}
+                  </p>
                   <Form.Item name="location">
                     <PlacesAutocomplete
                       value={values.location}

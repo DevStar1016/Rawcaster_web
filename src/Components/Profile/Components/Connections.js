@@ -176,6 +176,7 @@ const ConnectionsList = ({
     } else if (type === "fans") {
       getFollowers(val, page)
         .then((res) => {
+          console.log(res, "FANS RESPONSEEEEE");
           setConnectionsList(res);
         })
         .finally(() => {
