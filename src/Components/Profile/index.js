@@ -128,7 +128,6 @@ const Profile = () => {
   const getprofile = () => {
     // if (loginToken) {
     let filterData = { ...nuggetFormData };
-    console.log(nuggetFormData);
     if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
       filterData.formData = {
         user_id: display_user_id,

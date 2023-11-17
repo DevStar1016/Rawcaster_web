@@ -181,7 +181,6 @@ const ConfigureGroup = ({ groupId, close, open }) => {
       (ele) => parseInt(ele.group_id) === parseInt(groupId)
     );
     if (findData) {
-      console.log(findData);
       setGroupData(findData);
       if (findData?.locked !== 1) {
         let members = [...findData?.group_members_list];
@@ -199,9 +198,8 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         setValues((pre) => ({
           group_name: findData?.group_name,
           group_icon: findData?.group_icon,
-          group_members: findUser
-            ? JSON.stringify(findData?.group_member_ids)
-            : [],
+          group_members:
+            findUser !== -1 ? JSON.stringify(findData?.group_member_ids) : [],
         }));
       } else {
         setValues((pre) => ({
@@ -447,7 +445,6 @@ const ConfigureGroup = ({ groupId, close, open }) => {
     ChatEnableDisableService(JSONtoformdata(chatEnableStatus))
       .then((res) => {
         if (res.data.status === 1) {
-          console.log(res.data);
           dispatch(
             handleUpdateChatGroupData({
               id: groupId,

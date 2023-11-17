@@ -276,7 +276,7 @@ const Postpoll = ({ setisPoll }) => {
                       }
                     }}
                   >
-                    Upgrade
+                    Ok
                   </Button>
                   <Button
                     className={classes.LaterBtn}
@@ -285,7 +285,7 @@ const Postpoll = ({ setisPoll }) => {
                     danger
                     type="primary"
                   >
-                    Later
+                    Cancel
                   </Button>
                 </Space>
               }

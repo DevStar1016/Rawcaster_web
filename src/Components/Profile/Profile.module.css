@@ -385,6 +385,16 @@ margin-top: 0px !important;
   transform: translateY(-10px);
 
 }
+
+.verifyAccountOutlineContainer{
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 7px;
+  padding: 6px;
+}
+.verifyAccountOutlineContainer p{
+  /* color: var(--dangerColor); */
+}
 .thumbImg , .fansList>div{
   transition: 0.5s;
   cursor: pointer;

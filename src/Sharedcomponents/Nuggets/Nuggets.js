@@ -44,7 +44,10 @@ import _debounce from "lodash/debounce";
 import { Form, InputGroup } from "react-bootstrap";
 import FavImg from "../../Assets/Icons/svg/Favorite.svg";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
-import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import {
+  handleLoginData,
+  handleupdateSavedCount,
+} from "../../Store/Redux/Reducer/AuthReducer";
 
 const Nuggets = ({
   isLocked = false,
@@ -175,7 +178,7 @@ const Nuggets = ({
             page: res.payload.current_page_no,
             totalpage: res.payload.total_pages,
           });
-          setNuggetsData(res.payload.data);
+          setNuggetsData([...res.payload.data]);
           setloading(false);
           setisLoading(false);
           setisReachedEnd(false);
@@ -342,9 +345,9 @@ const Nuggets = ({
   };
 
   useEffect(() => {
-    // if (NuggetsData.length === 0) {
-    setNuggetsData(Nuggets);
-    // }
+    if (NuggetsData.length === 0) {
+      setNuggetsData(Nuggets);
+    }
   }, [Nuggets]);
 
   /**
@@ -646,15 +649,27 @@ const Nuggets = ({
                             handleSave={(save) => {
                               if (ActiveTab === 1 && save !== 1) {
                                 setNuggetsData((pre) => {
-                                  const data = pre.filter(
-                                    (elem) => elem.nugget_id !== ele.nugget_id
+                                  let refData = [...pre];
+                                  refData = refData.filter(
+                                    (element) =>
+                                      element.nugget_id !== ele.nugget_id
                                   );
-                                  return data;
+                                  return refData;
                                 });
-                                setNuggetCount((pre) => ({
-                                  ...pre,
-                                  favorites: pre.favorites - 1,
-                                }));
+
+                                setNuggetCount((prev) => {
+                                  return {
+                                    ...prev,
+                                    favorites:
+                                      prev.favorites !== 0
+                                        ? prev.favorites - 1
+                                        : 0,
+                                  };
+                                });
+                                // setNuggetCount((pre) => ({
+                                //     ...pre,
+                                //   favorites: pre.favorites - 1,
+                                // }));
                               } else {
                                 let findIndex = Nuggets.findIndex(
                                   (elem) => elem.nugget_id === ele.nugget_id
@@ -673,12 +688,6 @@ const Nuggets = ({
                                 ...pre,
                                 favorites: val,
                               }));
-                              dispatch(
-                                handleLoginData({
-                                  ...loginuserData,
-                                  saved_nugget_count: val,
-                                })
-                              );
                             }}
                             onEdit={(id) => {
                               setisEdit(id);
@@ -689,18 +698,21 @@ const Nuggets = ({
                                 if (nuggetFormData.formData.saved === 1) {
                                   setNuggetCount((pre) => ({
                                     ...pre,
-                                    favorites: pre.favorites - 1,
+                                    favorites:
+                                      pre.favorites !== 0
+                                        ? pre.favorites - 1
+                                        : 0,
                                   }));
                                 } else {
                                   setNuggetCount((pre) => ({
                                     ...pre,
-                                    my_nuggets: pre.my_nuggets - 1,
+                                    my_nuggets:
+                                      pre.my_nuggets !== 0
+                                        ? pre.my_nuggets - 1
+                                        : 0,
                                   }));
                                 }
                               }
-                              // if (GetNuggetList) {
-                              //   GetNuggetList();
-                              // }
                             }}
                             HandleShare={() => {
                               if (GetNuggetList) {

@@ -36,7 +36,6 @@ const ContentLayout = () => {
   const handleChangeIndex = (index) => {
     setselectedIndex(index);
     const findKey = TabsValues.find((ele, i) => i === index);
-    console.log(findKey, "findKey");
     setselectedIndex(parseInt(findKey.key));
     if (findKey) {
       dispatch(handleTabChange(true));

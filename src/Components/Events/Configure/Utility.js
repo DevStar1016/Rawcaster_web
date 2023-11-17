@@ -839,7 +839,6 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
       let otherData = groupsList.filter(
         (ele) => !values.includes(ele.group_id) && ele.my_group === 1
       );
-      console.log(otherData, "otherData");
       setFilterGroupList([...otherData]);
     }
   }, [values]);

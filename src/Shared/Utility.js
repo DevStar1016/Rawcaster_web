@@ -828,7 +828,6 @@ export const ReadMore = ({
   const [OnEllipsis, setOnEllipsis] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [readMore, setReadmore] = useState(false);
-  console.log(children, "children");
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (

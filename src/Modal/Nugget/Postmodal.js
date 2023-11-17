@@ -203,7 +203,6 @@ const Postmodal = ({ visible, onClose }) => {
         }
         if (oldURL.current !== addHttp) {
           oldURL.current = addHttp;
-          console.log(addHttp, "addHttpaddHttp");
           const userData = {
             token,
             url,
@@ -572,7 +571,7 @@ const Postmodal = ({ visible, onClose }) => {
                           }
                         }}
                       >
-                        Upgrade
+                        Ok
                       </Button>
                       <Button
                         className={classes.LaterBtn}
@@ -581,7 +580,7 @@ const Postmodal = ({ visible, onClose }) => {
                         danger
                         type="primary"
                       >
-                        Later
+                        Cancel
                       </Button>
                     </Space>
                   }

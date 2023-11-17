@@ -301,7 +301,6 @@ export const ChatInput = ({
    * @returns None
    */
   const fetchAudioUrl = (filepath) => {
-    console.log(filepath, "filepath");
     // const formData = {
     //   token,
     //   chatattachment: file,
@@ -759,7 +758,7 @@ export const ChatInput = ({
               "flags",
             ]}
             onEmojiSelect={(e) => {
-              setChatMessage((pre) => pre.concat(e.native));
+              setChatMessage((pre) => (pre ? pre.concat(e.native) : e.native));
             }}
           />
         </div>
@@ -851,7 +850,6 @@ export const MessageContent = (props) => {
   };
 
   const GetValidComponent = () => {
-    console.log(type, "type");
     switch (true) {
       case type.includes("image"):
         return (
@@ -898,7 +896,6 @@ export const MessageContent = (props) => {
 
       default:
         if (file && file.type && Object.keys(file).length !== 0) {
-          console.log(file);
           const validcontent = file.type.split("/")[1];
           return (
             <div

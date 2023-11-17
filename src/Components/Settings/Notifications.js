@@ -36,7 +36,6 @@ const Notifications = () => {
   const getValidData = (nuggetType, type, value) => {
     let SwitchType = formikvalues[nuggetType]?.split("");
     SwitchType[type] = value;
-    console.log(SwitchType?.join(""), "SwitchType?.join()");
     return SwitchType?.join("");
   };
 

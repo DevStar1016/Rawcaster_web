@@ -475,7 +475,6 @@ const Post = ({
           label: (
             <div
               onClick={() => {
-                console.log(ele);
                 HandleBecameaFan(Token, ele.user_ref_id)
                   .then(() => {
                     dispatch(
@@ -815,7 +814,6 @@ const Post = ({
 
   const MetaDataContent = (elem, isPopover = false) => {
     if (elem && isPopover) {
-      console.log(elem, "elem");
       return (
         <div
           className={classes.PopoverShareLink}
@@ -1102,7 +1100,6 @@ const Post = ({
                           const FindMetaData = JSON.parse(ele.metadata).find(
                             (elem) => elem.url === url
                           );
-                          console.log(FindMetaData, "FindMetaData");
                           if (FindMetaData) {
                             return MetaDataContent(FindMetaData, true);
                           }
@@ -1347,7 +1344,11 @@ const Post = ({
                           if (isAccountValid(loginUserData)) {
                             let save = ele.saved ? 2 : 1;
                             handleSave(save);
-                            SaveProcess(ele.nugget_id, save);
+                            if (ele.saved) {
+                              HandleSave(ele.nugget_id, save);
+                            } else {
+                              SaveProcess(ele.nugget_id, save);
+                            }
                           } else {
                             dispatch(
                               handleprofileVerifyModalShow({

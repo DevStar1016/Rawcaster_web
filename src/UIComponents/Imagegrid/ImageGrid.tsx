@@ -149,7 +149,6 @@ function ImageGrid({
         />
       ) : null;
     } else if (data.media_type === "video") {
-      console.log(`${data.path}#t=0.001`);
       return (
         <>
           <video

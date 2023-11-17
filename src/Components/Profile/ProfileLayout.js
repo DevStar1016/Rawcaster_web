@@ -38,7 +38,10 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import AddFriendIcon from "../../Assets/Icons/svg/profile_add_friend.svg";
 import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
-import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleClaimAccount,
+  handleloginModalShow,
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 import {
@@ -409,10 +412,14 @@ const ProfileLayout = ({
                 <Button
                   className={`${classes.becomeafanbtn} mx-4`}
                   onClickCapture={() => {
-                    if (profileData?.unclaimed_status === 1) {
-                      navigate(
-                        `/claim/${EncryptionString(profileData.user_id)}`
-                      );
+                    if (loginToken) {
+                      if (profileData?.unclaimed_status === 1) {
+                        navigate(
+                          `/claim/${EncryptionString(profileData.user_id)}`
+                        );
+                      }
+                    } else {
+                      dispatch(handleloginModalShow(true));
                     }
                   }}
                 >

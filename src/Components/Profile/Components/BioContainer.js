@@ -15,7 +15,16 @@ import {
 } from "../../../Shared/Utility";
 import useReplaceBiodataHandler from "../Utility";
 import classes from "../Profile.module.css";
-import { Button, Input, Select, Skeleton, Spin, Tooltip } from "antd";
+import {
+  Alert,
+  Button,
+  Input,
+  Select,
+  Skeleton,
+  Space,
+  Spin,
+  Tooltip,
+} from "antd";
 import { useState } from "react";
 import { useFormik } from "formik";
 import {
@@ -85,7 +94,6 @@ const BioContainer = ({ isLoginuser }) => {
     }
 
     if (profileData && profileData?.bio_data === "") {
-      console.log(profileData, "profileData");
       setFieldValue("bio_data", BioData);
     }
   }, [profileData, influencerCategory, BioData]);
@@ -284,42 +292,79 @@ const BioContainer = ({ isLoginuser }) => {
           ) : (
             <Skeleton active />
           )}
-
-          {(DiamondVerifyType === 3 || DiamondVerifyType === 2) && (
-            <Button
-              className={`${classes.becomeafanbtn} ${classes.verifyAccount} ${
-                DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
-              }`}
-              onClickCapture={() => {
-                if (
-                  DiamondVerifyType === 3 &&
-                  loginUserData?.user_status_id === 4
-                ) {
-                  navigate("/verifyaccount");
-                } else {
-                  setverifyProfilePopup((pre) => !pre);
-                }
-              }}
-              disabled={DiamondVerifyType === 2}
-              style={{
-                display: "flex",
-                background: "#E26386",
-              }}
-            >
-              {DiamondVerifyType === 3 ? (
+          {profileData?.last_verify_status !== null &&
+          (DiamondVerifyType === 3 || DiamondVerifyType === 2) ? (
+            <div className={classes.verifyAccountOutlineContainer}>
+              <div className="d-flex align-items-center">
+                <span class="material-symbols-outlined text-danger">
+                  cancel
+                </span>
+                <p className="text-danger ms-2 mb-1">
+                  {profileData?.last_verify_status || ""}
+                </p>
+              </div>
+              <Button
+                className={`${classes.becomeafanbtn} ${classes.verifyAccount}`}
+                style={{
+                  display: "flex",
+                  background: "#E26386",
+                }}
+                onClickCapture={() => {
+                  if (
+                    DiamondVerifyType === 3 &&
+                    loginUserData?.user_status_id === 4
+                  ) {
+                    navigate("/verifyaccount");
+                  }
+                }}
+              >
                 <div className={classes.becomeSec}>
                   <img src={shieldIcon} />
                   <p>Verify my Account</p>
                 </div>
-              ) : (
-                DiamondVerifyType === 2 && (
-                  <div className={classes.becomeSec}>
-                    <img src={shieldIcon} />
-                    <p>Approval Pending</p>
-                  </div>
-                )
+              </Button>
+            </div>
+          ) : (
+            <>
+              {(DiamondVerifyType === 3 || DiamondVerifyType === 2) && (
+                <Button
+                  className={`${classes.becomeafanbtn} ${
+                    classes.verifyAccount
+                  } ${
+                    DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
+                  }`}
+                  onClickCapture={() => {
+                    if (
+                      DiamondVerifyType === 3 &&
+                      loginUserData?.user_status_id === 4
+                    ) {
+                      navigate("/verifyaccount");
+                    } else {
+                      setverifyProfilePopup((pre) => !pre);
+                    }
+                  }}
+                  disabled={DiamondVerifyType === 2}
+                  style={{
+                    display: "flex",
+                    background: "#E26386",
+                  }}
+                >
+                  {DiamondVerifyType === 3 ? (
+                    <div className={classes.becomeSec}>
+                      <img src={shieldIcon} />
+                      <p>Verify my Account</p>
+                    </div>
+                  ) : (
+                    DiamondVerifyType === 2 && (
+                      <div className={classes.becomeSec}>
+                        <img src={shieldIcon} />
+                        <p>Approval Pending</p>
+                      </div>
+                    )
+                  )}
+                </Button>
               )}
-            </Button>
+            </>
           )}
           {verifyProfilePopup && (
             <LoginModal
