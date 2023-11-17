@@ -198,9 +198,8 @@ const ConfigureGroup = ({ groupId, close, open }) => {
         setValues((pre) => ({
           group_name: findData?.group_name,
           group_icon: findData?.group_icon,
-          group_members: findUser
-            ? JSON.stringify(findData?.group_member_ids)
-            : [],
+          group_members:
+            findUser !== -1 ? JSON.stringify(findData?.group_member_ids) : [],
         }));
       } else {
         setValues((pre) => ({

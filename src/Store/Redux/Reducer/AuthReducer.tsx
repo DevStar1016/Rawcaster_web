@@ -50,6 +50,14 @@ export const { actions, reducer } = createSlice({
     handleLoginData: (state, action) => {
       state.loginUserData = action.payload;
     },
+    handleupdateSavedCount: (state, action) => {
+      if (state.loginUserData) {
+        state.loginUserData = {
+          ...state.loginUserData,
+          saved_nugget_count: action.payload,
+        };
+      }
+    },
     handleReferenceID: (state, action) => {
       state.reference_id = action.payload;
     },
@@ -106,6 +114,7 @@ export const {
   handleAccountVerifyStatus,
   handleAuthReset,
   handleReferenceID,
+  handleupdateSavedCount,
 } = actions;
 
 export default reducer;

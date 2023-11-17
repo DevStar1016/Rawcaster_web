@@ -1159,7 +1159,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                                 }
                               }}
                             >
-                              Upgrade
+                              Ok
                             </Button>
                             <Button
                               style={{
@@ -1179,7 +1179,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               danger
                               type="primary"
                             >
-                              Later
+                              Cancel
                             </Button>
                           </Space>
                         }

@@ -1344,7 +1344,11 @@ const Post = ({
                           if (isAccountValid(loginUserData)) {
                             let save = ele.saved ? 2 : 1;
                             handleSave(save);
-                            SaveProcess(ele.nugget_id, save);
+                            if (ele.saved) {
+                              HandleSave(ele.nugget_id, save);
+                            } else {
+                              SaveProcess(ele.nugget_id, save);
+                            }
                           } else {
                             dispatch(
                               handleprofileVerifyModalShow({

@@ -89,7 +89,7 @@ function EmailorMobileUpdateModal({
       .catch((err) => {});
   };
 
-  const HandleprofileUpdate = (value) => {
+  const HandleprofileUpdate = (value: any) => {
     if (
       value.two_type_verification === 1 &&
       isValidData(value.email_id) &&
@@ -106,7 +106,7 @@ function EmailorMobileUpdateModal({
     }
   };
 
-  const handleupdateProfile = (values, isNext = false) => {
+  const handleupdateProfile = (values: any, isNext = false) => {
     let profileValue = {
       ...values,
       name: loginUserData?.name ? loginUserData?.name.trim() : "",
