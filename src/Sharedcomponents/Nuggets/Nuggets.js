@@ -345,9 +345,9 @@ const Nuggets = ({
   };
 
   useEffect(() => {
-    if (NuggetsData.length === 0) {
-      setNuggetsData(Nuggets);
-    }
+    // if (NuggetsData.length === 0) {
+    setNuggetsData(Nuggets);
+    // }
   }, [Nuggets]);
 
   /**
