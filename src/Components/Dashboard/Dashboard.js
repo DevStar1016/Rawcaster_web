@@ -73,7 +73,7 @@ const Dashboard = () => {
       page_number: 1,
       nugget_type: 0,
     };
-    dispatch(handleResetNuggets());
+    // dispatch(handleResetNuggets());
     dispatch(handleNuggetFormData(filterData));
     dispatch(fetchNuggetsbyId(filterData));
   };

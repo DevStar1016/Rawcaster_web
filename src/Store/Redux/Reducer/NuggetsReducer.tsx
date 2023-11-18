@@ -170,7 +170,7 @@ export const { actions, reducer } = createSlice({
       if (action.payload.current_page_no === 1) {
         state.Nuggets = action.payload.data;
       } else if (action.payload.current_page_no === 0) {
-        state.Nuggets = [];
+        // state.Nuggets = [];
       } else {
         let filterData = [...state.Nuggets, ...action.payload.data].reduce(
           (acc, current) => {

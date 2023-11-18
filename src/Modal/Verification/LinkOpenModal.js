@@ -40,6 +40,7 @@ const LinkOpenModal = ({ open, close, url }) => {
           <Button
             type="primary"
             onClick={() => {
+              console.log(url, "URLLLLL");
               close();
               window.open(url);
             }}

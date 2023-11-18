@@ -828,9 +828,9 @@ export const ReadMore = ({
   const [OnEllipsis, setOnEllipsis] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [readMore, setReadmore] = useState(false);
+  const [openUrl, setopenUrl] = useState("");
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
-    console.log(href, "HREFFFFF");
     return (
       <>
         <a
@@ -839,6 +839,7 @@ export const ReadMore = ({
             if (href.includes("rawcaster")) {
               window.open(href);
             } else {
+              setopenUrl(href);
               setisLinkopenModal(true);
             }
           }}
@@ -868,7 +869,7 @@ export const ReadMore = ({
 
         <LinkOpenModal
           open={isLinkopenModal}
-          url={href}
+          url={openUrl}
           close={() => {
             setisLinkopenModal(false);
           }}
