@@ -80,7 +80,6 @@ const ModalLayout = () => {
       removeSessionStorageData("verifyCountDown");
     }
     if (location.pathname !== "/setting" && token) {
-      console.log("TESTTTTTT", token);
       if (userSettings && userSettings.account_active_inactive === 0) {
         dispatch(handleAccountActive(true));
       }

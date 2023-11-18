@@ -499,14 +499,21 @@ const Post = ({
           label: (
             <div
               onClick={() => {
+                // if (ele?.share_link) {
                 const el = document.createElement("input");
                 el.value = NUGGET_SHARE_URL + window.btoa(ele.nugget_id);
+                // el.value = ele?.share_link;
                 document.body.appendChild(el);
                 el.select();
                 document.execCommand("copy");
                 document.body.removeChild(el);
                 toast.remove("rawcaster");
-                toast.success("Link copied to clipboard", { id: "rawcaster" });
+                toast.success("Link copied to clipboard", {
+                  id: "rawcaster",
+                });
+                // } else {
+                //   toast.error("Link not found!");
+                // }
               }}
               className={classes.dropdownItem}
             >
