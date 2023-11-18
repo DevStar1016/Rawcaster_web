@@ -255,7 +255,7 @@ const TagsList = () => {
                           <p className="mt-1">{ele.nugget_count} Nuggets</p>
                         </div>
                         <div className={classes.graphSec}>
-                          <Dropdown
+                          {/* <Dropdown
                             menu={{
                               items: [
                                 {
@@ -277,7 +277,7 @@ const TagsList = () => {
                                 more_horiz
                               </span>
                             </div>
-                          </Dropdown>
+                          </Dropdown> */}
                           <TagsChart Data={ele.trends} />
                         </div>
                       </div>
