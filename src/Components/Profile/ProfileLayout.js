@@ -430,7 +430,7 @@ const ProfileLayout = ({
                     : ""}
                 </Button>
               )}
-              {getValidItems().length !== 0 && (
+              {getValidItems().length !== 0 && loginToken && (
                 <Dropdown
                   placement="bottomRight"
                   menu={{
