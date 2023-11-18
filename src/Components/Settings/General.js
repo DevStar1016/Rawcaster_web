@@ -19,7 +19,12 @@ import {
   VALIDATION_MESSAGES,
 } from "./Constants";
 import { findValidDisplayAccentData, getValidDisplayData } from "./Utility";
-import { JSONtoformdata, decodeHtml, getAuthToken } from "../../Shared/Utility";
+import {
+  JSONtoformdata,
+  RemoveToken,
+  decodeHtml,
+  getAuthToken,
+} from "../../Shared/Utility";
 import {
   defaultGroupImg,
   defaultprofileImg,
@@ -28,6 +33,7 @@ import { useDispatch } from "react-redux";
 import {
   handleRemoveReadoutURL,
   handleRemoveTranslate,
+  handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { toast } from "react-hot-toast";
 import EmailorMobileUpdateModal from "../../Modal/Verification/EmailorMobileUpdateModal";

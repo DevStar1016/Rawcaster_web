@@ -454,6 +454,20 @@ word-break: unset;
   font-weight: 600;
   text-decoration: none;
 }
+.AccountactiveSec button{
+  background: transparent 0 0 no-repeat padding-box;
+  border-radius: 25px;
+  opacity: 1;
+  font-size: 14px;
+  min-width: 100px;
+  border: 1px solid #faa21b;
+  padding: 10px 30px;
+  color: #faa21b;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 10px;
+}
 .AccountactiveSec a:hover {
   color:#fff ;
 }

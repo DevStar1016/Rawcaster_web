@@ -10,6 +10,7 @@ import { VerificationModal } from "../Modal/Verification/ProfileVerificationModa
 import ValidateTypeModal from "../Modal/Verification/ValidateTypeModal";
 import {
   useAuth,
+  useAuthData,
   useAuthToken,
   useDashboard,
   useProfileVerifyModal,
@@ -28,8 +29,10 @@ import {
   useMeetingManager,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
+import { getRawcaserToken } from "../Shared/Utility";
 
 const ModalLayout = () => {
+  const loginUserData = useAuthData();
   const token = useAuthToken();
   const PlayerSource = useRef(null);
   const location = useLocation();
@@ -45,7 +48,6 @@ const ModalLayout = () => {
     type: "",
     id: "",
   });
-
   const { loginModalShow, twostepVerifyModalshow } = useDashboard();
   const { isAccountActive, userSettings } = useAuth();
   const profileverifyStatus = useProfileVerifyModal();
@@ -79,7 +81,7 @@ const ModalLayout = () => {
     if (location.pathname !== "/verifyotp") {
       removeSessionStorageData("verifyCountDown");
     }
-    if (location.pathname !== "/setting" && token) {
+    if (location.pathname !== "/setting" && getRawcaserToken() !== null) {
       if (userSettings && userSettings.account_active_inactive === 0) {
         dispatch(handleAccountActive(true));
       }
@@ -123,12 +125,14 @@ const ModalLayout = () => {
           dispatch(handleprofileVerifyModalShow({ show: false, msg: "" }));
         }}
       />
-      <AccountActivateModal
-        open={isAccountActive}
-        close={() => {
-          dispatch(handleAccountActive(false));
-        }}
-      />
+      {getRawcaserToken() !== null && (
+        <AccountActivateModal
+          open={isAccountActive}
+          close={() => {
+            dispatch(handleAccountActive(false));
+          }}
+        />
+      )}
     </MainContext.Provider>
   );
 };
