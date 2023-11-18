@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ImageGrid.module.css";
 import BackgroundImg from "../../Assets/Images/png/audioImg.png";
 import { useInView } from "react-hook-inview";
-import { useNuggets } from "../../Shared/Reduxfetcher";
+import { useAuthData, useNuggets } from "../../Shared/Reduxfetcher";
 import AudioPlayer from "../../Sharedcomponents/AudioPlayer";
 import { Carousel } from "react-bootstrap";
 import { useDispatch } from "react-redux";
