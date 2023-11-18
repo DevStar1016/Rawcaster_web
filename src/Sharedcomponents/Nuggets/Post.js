@@ -812,7 +812,7 @@ const Post = ({
    */
 
   const getisDownloadable = () => {
-    if (ele && ele?.share_type === 1 && loginUserData?.user_status_id === 4) {
+    if (ele && ele?.share_type === 1 && loginUserData?.user_status_id > 3) {
       return 1;
     } else {
       return 2;
