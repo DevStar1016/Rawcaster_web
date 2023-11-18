@@ -336,7 +336,7 @@ const BioContainer = ({ isLoginuser }) => {
                   onClickCapture={() => {
                     if (
                       DiamondVerifyType === 3 &&
-                      loginUserData?.user_status_id === 4
+                      loginUserData?.user_status_id > 3
                     ) {
                       navigate("/verifyaccount");
                     } else {
