@@ -21,7 +21,7 @@ import {
 import RenameModal from "../Components/RenameModal";
 import { toast } from "react-hot-toast";
 import { generatePath } from "react-router";
-import { handleCopyText } from "../../../Shared/Utility";
+import { getParticipantCount, handleCopyText } from "../../../Shared/Utility";
 import {
   AttendeeUserData,
   EventContextProp,
@@ -404,7 +404,7 @@ const EventParticipants = () => {
         <div className={classes.popupHeader}>
           <div>
             <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            <p>Event</p>
+            <p>Participants {attendees?.length ?`( ${getParticipantCount(attendees.length)} )`: ""}</p>
           </div>
           <div>
             <i
