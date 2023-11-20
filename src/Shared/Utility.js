@@ -1130,3 +1130,12 @@ export const getUtcToSystemTime = (dateTime) => {
     "minutes"
   );
 };
+
+// return participants count in K format
+export const getParticipantCount =(numOfParticipants)=>{
+  if (numOfParticipants >= 1000) {
+    return (numOfParticipants / 1000).toFixed(2) + 'k';
+  } else {
+    return numOfParticipants.toString();
+  }
+}
