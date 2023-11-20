@@ -36,6 +36,7 @@ import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
 import moment from "moment";
 import { GENDER_TYPE, MOBILE_NUMBER_REGEX } from "../../../Shared/Constant";
 import ImageCropModal from "../../../Modal/ImageCropModal";
+import { useMainContext } from "../../../Shared/Context";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const UpdateProfile = () => {
   const { state } = useLocation();
   const loginUserData = useAuthData();
   const loginToken = useAuthToken();
+  const { isAccountVerified } = useMainContext();
   const [IsValidCredentials, setIsValidCredentials] = useState({
     email: false,
     mobile: false,
@@ -446,6 +448,7 @@ const UpdateProfile = () => {
                   }
                   value={values?.first_name ? values?.first_name : ""}
                   onClick={() => {}}
+                  disabled={isAccountVerified !== "unverified"}
                   onChange={(e) => {
                     setFieldValue("first_name", e.target.value);
                   }}
@@ -466,6 +469,7 @@ const UpdateProfile = () => {
                   maxLength={50}
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
+                  disabled={isAccountVerified !== "unverified"}
                   onChange={(e) => {
                     setFieldValue("last_name", e.target.value);
                   }}
@@ -501,6 +505,7 @@ const UpdateProfile = () => {
                   name="gender"
                   className={classes.selectBox}
                   placeholder="Select Gender"
+                  disabled={isAccountVerified !== "unverified"}
                   status={touched.gender && errors.gender ? "error" : ""}
                   value={values.gender}
                   onSelect={(val) => {
@@ -521,6 +526,7 @@ const UpdateProfile = () => {
                   size="large"
                   name="other_gender"
                   className={classes.textBox}
+                  // disabled={isAccountVerified !== "unverified"}
                   placeholder="Gender"
                   maxLength={50}
                   status={
@@ -540,6 +546,7 @@ const UpdateProfile = () => {
               <p className={classes.label}>Date of Birth</p>
               <DateInputBox
                 displayDate={values.dob}
+                isDisabled={isAccountVerified !== "unverified"}
                 onSelectDate={(date) => {
                   if (date !== "") {
                     setFieldValue("dob", moment(date).format("YYYY-MM-DD"));

@@ -30,6 +30,7 @@ import { NUGGET_SHARE_URL, SHARED_TYPE } from "../../Shared/Constant";
 import {
   SingleNuggetContext,
   useListNuggetContext,
+  useMainContext,
 } from "../../Shared/Context";
 import {
   useAuth,
@@ -91,6 +92,7 @@ const Post = ({
   onSaveCountResult,
   Opened,
 }) => {
+  const { AccountAccessType } = useMainContext();
   const { setNuggetCount } = useListNuggetContext();
   const source = useRef(null);
   const contentRef = useRef(null);
@@ -812,7 +814,11 @@ const Post = ({
    */
 
   const getisDownloadable = () => {
-    if (ele && ele?.share_type === 1 && loginUserData?.user_status_id > 3) {
+    if (
+      ele &&
+      ele?.share_type === 1 &&
+      AccountAccessType === "diamond_and_above"
+    ) {
       return 1;
     } else {
       return 2;

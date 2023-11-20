@@ -1,6 +1,6 @@
 import { TooltipProps } from "antd";
 import { EllipsisConfig } from "antd/es/typography/Base";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type ellipsisProps = {
   rows?: number;
@@ -19,9 +19,21 @@ type CustomParagraphprops = {
 };
 export const CustomParagraph = (props: CustomParagraphprops) => {
   const [isExpanded, setisExpanded] = useState(false);
-  const textRef = useRef<any>(null);
+  const [isReadMoreEnable, setisReadMoreEnable] = useState(false);
+
   const { ellipsis, children, className } = props;
   const { onExpand, onEllipsis, rows } = ellipsis ?? {};
+  const textRef = useRef((initialRef: any) => {
+    if (initialRef) {
+      if (initialRef?.offsetHeight < initialRef?.scrollHeight) {
+        setisReadMoreEnable((pre) => true);
+      } else {
+        setisReadMoreEnable((pre) => false);
+      }
+    } else {
+      setisReadMoreEnable((pre) => false);
+    }
+  });
 
   const toggleReadMore = () => {
     setisExpanded((pre: boolean) => {
@@ -42,27 +54,19 @@ export const CustomParagraph = (props: CustomParagraphprops) => {
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
-
-  const shouldShowButton = () => {
-    if (textRef.current) {
-      if (textRef.current?.offsetHeight < textRef.current?.scrollHeight) {
-        return true;
-      }
-      if (rows && textRef.current?.textContent?.split(/\n/).length > rows) {
-        return true;
-      }
-      return false;
-    }
-    return false;
-  };
+  console.log(isReadMoreEnable, "isReadMoreEnable");
 
   return (
-    <div>
-      {/*@ts-ignore*/}
-      <p style={style} className={className} ref={textRef}>
+    <>
+      <p
+        /*@ts-ignore*/
+        style={style}
+        className={className}
+        ref={textRef.current}
+      >
         {children}
       </p>
-      {(shouldShowButton() || isExpanded) && (
+      {isReadMoreEnable && (
         <span
           onClick={toggleReadMore}
           style={{ color: "#e26386", cursor: "pointer" }}
@@ -70,6 +74,6 @@ export const CustomParagraph = (props: CustomParagraphprops) => {
           {isExpanded ? "Read Less" : "Read More"}
         </span>
       )}
-    </div>
+    </>
   );
 };

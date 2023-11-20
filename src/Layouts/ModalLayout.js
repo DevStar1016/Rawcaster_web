@@ -30,6 +30,10 @@ import {
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
 import { getRawcaserToken } from "../Shared/Utility";
+import {
+  AccountVerifedStatus,
+  getisValidAccount,
+} from "../Components/Events/Components/Utility";
 
 const ModalLayout = () => {
   const loginUserData = useAuthData();
@@ -43,6 +47,7 @@ const ModalLayout = () => {
   const meetingManager = useMeetingManager();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
+
   const [isChatOpen, setisChatOpen] = useState({
     show: false,
     type: "",
@@ -102,6 +107,10 @@ const ModalLayout = () => {
         ActiveEvent,
         isplayerFetching,
         setisplayerFetching,
+        isAccountVerified: AccountVerifedStatus(
+          loginUserData?.account_verify_type
+        ),
+        AccountAccessType: getisValidAccount(loginUserData?.user_status_id),
       }}
     >
       <HelmetComponent />

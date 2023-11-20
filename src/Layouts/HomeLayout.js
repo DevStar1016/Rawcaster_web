@@ -59,7 +59,7 @@ import {
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Components/Notifications";
 import ArtificialIntelligence from "../Components/ArtificialIntelligence";
-import { GlobalContext } from "../Shared/Context";
+import { GlobalContext, useMainContext } from "../Shared/Context";
 import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
 import ProfileImg from "../UIComponents/ProfileImg";
 import { useAppSelector } from "../Store/Redux/Config/Hooks";
@@ -73,6 +73,7 @@ const HomeLayout = () => {
   const unReadCount = useAppSelector(
     (state) => state.dashboard.notificationUnreadCount
   );
+
   const token = useAuthToken();
   const [postModalShow, setpostModalShow] = useState(false);
   const [PostContent, setPostContent] = useState(null);

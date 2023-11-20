@@ -20,7 +20,7 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
-import { useReferalContext } from "../../../Shared/Context";
+import { useMainContext, useReferalContext } from "../../../Shared/Context";
 
 const shareMessage =
   "Hi, I have joined Rawcaster. A one-stop platform for all social media needs. I am asking all my friends and special people to join this platform to make it easier to reach everyone with content, personalized messages, Nuggets, and invitations to participate in my special events. I expect to see you there soon.\n";
@@ -62,10 +62,11 @@ const ShareList = [
 
 const ReferContainer = () => {
   const profileData = useAuthData();
+  const { AccountAccessType } = useMainContext();
   const { ReferalData } = useReferalContext();
   const shareUrl = profileData?.referral_link || "";
 
-  const isDisplayUpgradePremium = profileData.user_status_id === 1;
+  const isDisplayUpgradePremium = AccountAccessType === "valued_only";
   return (
     <div className={classes.centerSec}>
       <div className={classes.centerImg}>
