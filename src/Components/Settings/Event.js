@@ -7,7 +7,11 @@ import React, { useEffect, useState } from "react";
 import classes from "./Settings.module.css";
 import { Button, Checkbox, Progress, Spin, Switch } from "antd";
 import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
-import { AddEventContext, useSettingsContext } from "../../Shared/Context";
+import {
+  AddEventContext,
+  useMainContext,
+  useSettingsContext,
+} from "../../Shared/Context";
 import { EventSettings } from "./Constants";
 import { EventTypeComponent } from "../Events/Configure/Utility";
 import { toast } from "react-hot-toast";
@@ -16,6 +20,7 @@ import { getMelodyData } from "../../Shared/DropdownApis";
 import { Col, Row } from "react-bootstrap";
 
 const Event = () => {
+  const { AccountAccessType } = useMainContext();
   const { loginUserData } = useAuth();
   const token = useAuthToken();
   const [melodyData, setmelodyData] = useState(null);
@@ -38,7 +43,7 @@ const Event = () => {
    * @returns {boolean} - True if the primary disabled state should be applied, false otherwise.
    */
   const handlePrimaryDisabled = (type, isprimary) => {
-    if (loginUserData?.user_status_id === 1 && isprimary) {
+    if (AccountAccessType === "valued_only" && isprimary) {
       return true;
     } else if (updateValue.includes(type)) {
       return true;

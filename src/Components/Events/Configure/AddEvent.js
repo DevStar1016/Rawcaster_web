@@ -45,7 +45,11 @@ import {
   getUtcToSystemTime,
   userTimezonetoUtc,
 } from "../../../Shared/Utility";
-import { AddEventContext, useEventContext } from "../../../Shared/Context";
+import {
+  AddEventContext,
+  useEventContext,
+  useMainContext,
+} from "../../../Shared/Context";
 import dayjs from "dayjs";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import EventSuccessPage from "./EventSuccessPage";
@@ -60,6 +64,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
+  const { AccountAccessType } = useMainContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { getEvents, ActiveEvent } = useEventContext();
@@ -908,7 +913,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             <div
                               onClick={(e) => {
                                 if (
-                                  loginUserData?.user_status_id === 1 &&
+                                  AccountAccessType === "valued_only" &&
                                   ele.isprimary
                                 ) {
                                   if (upgradePlanPopup) {
@@ -923,7 +928,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               <Checkbox
                                 checked={values[ele.type]}
                                 disabled={
-                                  loginUserData?.user_status_id === 1 &&
+                                  AccountAccessType === "valued_only" &&
                                   ele.isprimary
                                 }
                                 onChange={(e) => {

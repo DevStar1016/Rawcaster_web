@@ -31,6 +31,7 @@ import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
 import { handleAccountVerifyStatus } from "../../Store/Redux/Reducer/AuthReducer";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { useMainContext } from "../../Shared/Context";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -49,6 +50,7 @@ const validationSchema = yup.object().shape({
 
 const Claimaccount = () => {
   const navigate = useNavigate();
+  const { AccountAccessType } = useMainContext();
   const dispatch = useDispatch();
   const params = useParams();
   const display_user_id = params?.user_id
@@ -83,7 +85,7 @@ const Claimaccount = () => {
             "Your profile should be a verified profile to claim an influencer profile",
           SubmitButtonTitle: "Verify Account",
           onSuccess: () => {
-            if (loginUserData?.user_status_id === 4) {
+            if (AccountAccessType === "premium_and_above") {
               navigate("/verifyaccount");
             } else {
               navigate(-1);

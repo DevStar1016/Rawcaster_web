@@ -815,19 +815,13 @@ export const ReadMore = ({
   Influencer,
   partialShowLines = 3,
   children,
-  isReadMore = true,
   isLinkopenModal,
   setisLinkopenModal,
   isReadMoreValid,
   onExpand,
-  partialHeight,
   isMetaDataAvailable = false,
   MetaDataContent,
 }) => {
-  const { Paragraph } = Typography;
-  const [OnEllipsis, setOnEllipsis] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [readMore, setReadmore] = useState(false);
   const [openUrl, setopenUrl] = useState("");
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
@@ -852,13 +846,6 @@ export const ReadMore = ({
                 padding: 0,
                 width: "100%",
               }}
-              // onClick={() => {
-              //   if (href.includes("rawcaster")) {
-              //     window.open(href);
-              //   } else {
-              //     setisLinkopenModal(true);
-              //   }
-              // }}
             >
               {decodeHtml(content)}
             </Popover>
@@ -888,13 +875,12 @@ export const ReadMore = ({
           onExpand: onExpand,
           onEllipsis: (status) => {
             isReadMoreValid();
-            setOnEllipsis(status);
           },
           expandable: true,
         }}
         style={{
           cursor: "pointer",
-          width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+          width: Influencer ? "calc(100% - 80px)" : "100%",
           wordBreak: "break-word",
         }}
       ></CustomParagraph>

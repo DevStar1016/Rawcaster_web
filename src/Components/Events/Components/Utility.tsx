@@ -55,10 +55,14 @@ export const MicrophoneComponent = ({
   className = "",
   isAllowed = true,
   isGlobal,
-  isCoHost
+  isCoHost,
 }: MicrophoneComponentProps) => {
-  const { EventData, MeetingSettings, setMeetingSettings, setnotificationToast } =
-    useEventRoomContext();
+  const {
+    EventData,
+    MeetingSettings,
+    setMeetingSettings,
+    setnotificationToast,
+  } = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
   const { muted } = useAttendeeStatus(ele ? ele?.chimeAttendeeId : "");
@@ -124,7 +128,6 @@ export const MicrophoneComponent = ({
           className={`${styles.unmute_icon} ${styles.icon} ${className}`}
           onClick={() => {
             if ((isHost || isCoHost) && !attendee?.isHost) {
-
               const value = {
                 refId: EventData?.reference_id,
                 hostId: getUserData()?.user_id,
@@ -134,11 +137,14 @@ export const MicrophoneComponent = ({
               ChimesendMessage(value, CHIME_SOCKET_EVENTS.ENABLE_AUDIO);
               setnotificationToast({
                 show: true,
-                title: 'Unmute Request Sent',
+                title: "Unmute Request Sent",
                 icon: null,
                 buttons: [],
               });
-            } else if ((isHost || isCoHost) && userData?.user_id === attendee?.userId) {
+            } else if (
+              (isHost || isCoHost) &&
+              userData?.user_id === attendee?.userId
+            ) {
               toggleMute();
             }
           }}
@@ -212,8 +218,12 @@ export const CameraComponent = ({
   isGlobal,
   isCoHost,
 }: CameraComponentProps) => {
-  const { EventData, MeetingSettings, setMeetingSettings, setnotificationToast } =
-    useEventRoomContext();
+  const {
+    EventData,
+    MeetingSettings,
+    setMeetingSettings,
+    setnotificationToast,
+  } = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
   const { videoEnabled } = useAttendeeStatus(ele ? ele?.chimeAttendeeId : "");
@@ -284,7 +294,7 @@ export const CameraComponent = ({
               };
               setnotificationToast({
                 show: true,
-                title: 'Camera On Request Sent',
+                title: "Camera On Request Sent",
                 icon: null,
                 buttons: [],
               });
@@ -351,23 +361,23 @@ export const LocalCameraComponent = ({
           }`}
           onClick={async () => {
             // if (isAllowed) {
-              if (videoinput.devices.length !== 0) {
-                if (!selectedDevice) {
-                  await meetingmanager.startVideoInputDevice(
-                    videoinput.devices[0]
-                  );
+            if (videoinput.devices.length !== 0) {
+              if (!selectedDevice) {
+                await meetingmanager.startVideoInputDevice(
+                  videoinput.devices[0]
+                );
 
-                  if (setselectedDevice) {
-                    setselectedDevice(videoinput.devices[0]);
-                  }
-                } else {
-                  await meetingmanager.startVideoInputDevice(selectedDevice);
-                  if (setselectedDevice) {
-                    setselectedDevice(selectedDevice);
-                  }
+                if (setselectedDevice) {
+                  setselectedDevice(videoinput.devices[0]);
                 }
-                toggleVideo();
+              } else {
+                await meetingmanager.startVideoInputDevice(selectedDevice);
+                if (setselectedDevice) {
+                  setselectedDevice(selectedDevice);
+                }
               }
+              toggleVideo();
+            }
             // }
           }}
         ></i>
@@ -442,7 +452,7 @@ export const HangupComponent = () => {
    */
   const HandleEndMeeting = () => {
     if (getCurrentAttendee()) {
-      const exitMeeting = validateMeetingLeave(userdata, attendeesList)
+      const exitMeeting = validateMeetingLeave(userdata, attendeesList);
       if (!exitMeeting) {
         EndMeeting({
           Attendee: getCurrentAttendee(),
@@ -487,4 +497,50 @@ export const HangupComponent = () => {
       </div>
     </>
   );
+};
+
+export type AccountVerifedStatusResult = (
+  account_verify_type: number
+) => "unverified" | "pending" | "verified" | null;
+
+export const AccountVerifedStatus: AccountVerifedStatusResult = (
+  account_verify_type: number
+) => {
+  switch (account_verify_type) {
+    case 0:
+      return "unverified";
+    case 1:
+      return "pending";
+    case 2:
+      return "verified";
+    default:
+      return null;
+  }
+};
+
+export type isValidAccountResult = (
+  user_status_id: number
+) =>
+  | "diamond_and_above"
+  | "diamond_only"
+  | "premium_and_above"
+  | "premium_only"
+  | "valued_only"
+  | null;
+
+export const getisValidAccount: isValidAccountResult = (
+  user_status_id: number
+) => {
+  if (user_status_id >= 4) {
+    return "diamond_and_above";
+  } else if (user_status_id === 4) {
+    return "diamond_only";
+  } else if (user_status_id >= 3) {
+    return "premium_and_above";
+  } else if (user_status_id === 3) {
+    return "premium_only";
+  } else if (user_status_id === 1) {
+    return "valued_only";
+  }
+  return null;
 };

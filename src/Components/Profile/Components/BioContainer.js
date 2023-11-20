@@ -5,7 +5,7 @@
  */
 import React, { useEffect } from "react";
 import { useAuth, useAuthToken } from "../../../Shared/Reduxfetcher";
-import { useProfileContext } from "../../../Shared/Context";
+import { useMainContext, useProfileContext } from "../../../Shared/Context";
 import {
   JSONtoformdata,
   ReadMore,
@@ -39,6 +39,7 @@ import { handleloginModalShow } from "../../../Store/Redux/Reducer/DashboardRedu
 import { useDispatch } from "react-redux";
 
 const BioContainer = ({ isLoginuser }) => {
+  const { AccountAccessType } = useMainContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isAboutEdit, setisAboutEdit] = useState(false);
@@ -336,7 +337,7 @@ const BioContainer = ({ isLoginuser }) => {
                   onClickCapture={() => {
                     if (
                       DiamondVerifyType === 3 &&
-                      loginUserData?.user_status_id > 3
+                      AccountAccessType === "premium_and_above"
                     ) {
                       navigate("/verifyaccount");
                     } else {
@@ -372,7 +373,7 @@ const BioContainer = ({ isLoginuser }) => {
               close={handleVerifyPopupClose}
               AIclose={true}
               AIopen="Get Diamond"
-              AImessgae="Verified account feature is only for Diamond members and Influencers"
+              AImessgae="Account Verification feature is only for Premium, Diamond members and Influencers"
             />
           )}
 

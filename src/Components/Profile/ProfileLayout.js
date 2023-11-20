@@ -11,7 +11,7 @@
  */
 import React, { useRef, useState } from "react";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
-import linkIcon from "../../Assets/Icons/svg/link.svg";
+import linkIcon from "../../Assets/Icons/svg/link_secondary.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import FansThumb from "./Components/FansThumb";
 import { toast } from "react-hot-toast";

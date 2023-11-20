@@ -8,13 +8,14 @@ import ChatContent from "./Content";
 import AIIcon from "../../Assets/Icons/svg/AI_icon.svg";
 import classes from "./ArtificialIntelligence.module.css";
 import { Button, Drawer, Popover } from "antd";
-import { ChatBotContext } from "../../Shared/Context";
+import { ChatBotContext, useMainContext } from "../../Shared/Context";
 import { detectMob } from "../../Shared/Utility";
 import { useLocation } from "react-router";
 import { useAuthData } from "../../Shared/Reduxfetcher";
 import LoginModal from "../../Modal/Verification/LoginModal";
 
 const ArtificialIntelligence = () => {
+  const { AccountAccessType } = useMainContext();
   const { pathname } = useLocation();
   const loginUserData = useAuthData();
   const [ChatMessage, setChatMessage] = useState("");
@@ -119,7 +120,7 @@ const ArtificialIntelligence = () => {
         <Button
           className={classes.ChatBotBtn}
           onClick={() => {
-            if (loginUserData && loginUserData?.user_status_id > 1) {
+            if (loginUserData && AccountAccessType === "premium_and_above") {
               setisChatOpen(!isChatOpen);
             } else {
               setgetPremiumModal((pre) => !pre);
