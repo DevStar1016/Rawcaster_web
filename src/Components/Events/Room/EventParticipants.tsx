@@ -101,9 +101,10 @@ const EventParticipants = () => {
   };
 
   const AttendeeComponent = ({ ele }) => {
-    const findAttendee = attendeesList.find(
-      (elem) => elem.userRefId === ele.externalUserId
-    );
+    // const findAttendee = attendeesList.find(
+    //   (elem) => elem.userRefId === ele.externalUserId
+    // );
+    const findAttendee = ele;
     const isYou = getUserData()?.user_id === findAttendee?.userId;
 
     /* List of Attendee Handling Options */
@@ -387,6 +388,15 @@ const EventParticipants = () => {
     );
   };
 
+  const isHandRaised = (participant1, participant2) => {
+    if (participant1.handRaised > participant2.handRaised) {
+      return -1;
+    } else if (participant1.handRaised < participant2.handRaised) {
+      return 1;
+    }
+    return 0;
+  };
+
   return (
     <Layout
       className={`${classes.popupContainer}
@@ -404,7 +414,12 @@ const EventParticipants = () => {
         <div className={classes.popupHeader}>
           <div>
             <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            <p>Participants {attendees?.length ?`( ${getParticipantCount(attendees.length)} )`: ""}</p>
+            <p>
+              Participants{" "}
+              {attendees?.length
+                ? `( ${getParticipantCount(attendees.length)} )`
+                : ""}
+            </p>
           </div>
           <div>
             <i
@@ -489,9 +504,22 @@ const EventParticipants = () => {
         )}
       </Header>
       <Content className={classes.participantSec}>
-        {attendees.map((ele, index) => {
-          return ele ? AttendeeComponent({ ele }) : null;
-        })}
+        {attendeesList
+          ?.filter((item) => item.isHost)
+          .map((ele) => {
+            return ele ? AttendeeComponent({ ele }) : null;
+          })}
+        {attendeesList
+          ?.filter((item) => item.isCoHost)
+          .map((ele) => {
+            return ele ? AttendeeComponent({ ele }) : null;
+          })}
+        {attendeesList
+          ?.filter((item) => !item.isHost && !item.isCoHost)
+          .sort(isHandRaised)
+          .map((ele) => {
+            return ele ? AttendeeComponent({ ele }) : null;
+          })}
         <RenameModal
           key={renameAttendee?.userId}
           open={renameAttendee}
