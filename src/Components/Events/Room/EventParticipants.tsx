@@ -101,10 +101,9 @@ const EventParticipants = () => {
   };
 
   const AttendeeComponent = ({ ele }) => {
-    // const findAttendee = attendeesList.find(
-    //   (elem) => elem.userRefId === ele.externalUserId
-    // );
-    const findAttendee = ele;
+    const findAttendee = attendeesList.find(
+      (elem) => elem.userRefId === ele.externalUserId
+    );
     const isYou = getUserData()?.user_id === findAttendee?.userId;
 
     /* List of Attendee Handling Options */
@@ -397,6 +396,12 @@ const EventParticipants = () => {
     return 0;
   };
 
+  const getUserDetails = (externalUserId) => {
+    return attendeesList.find(
+      (attendee) => attendee.userRefId === externalUserId
+    );
+  };
+
   return (
     <Layout
       className={`${classes.popupContainer}
@@ -504,22 +509,29 @@ const EventParticipants = () => {
         )}
       </Header>
       <Content className={classes.participantSec}>
-        {attendeesList
-          ?.filter((item) => item.isHost && !item.kicked)
-          .map((ele) => {
-            return ele ? AttendeeComponent({ ele }) : null;
-          })}
-        {attendeesList
-          ?.filter((item) => item.isCoHost && !item.kicked)
-          .map((ele) => {
-            return ele ? AttendeeComponent({ ele }) : null;
-          })}
-        {attendeesList
-          ?.filter((item) => !item.isHost && !item.isCoHost && !item.kicked)
+        {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.kicked
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              !getUserDetails(item.externalUserId)?.kicked
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              !getUserDetails(item.externalUserId)?.kicked
+          )
           .sort(isHandRaised)
-          .map((ele) => {
-            return ele ? AttendeeComponent({ ele }) : null;
-          })}
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
         <RenameModal
           key={renameAttendee?.userId}
           open={renameAttendee}
