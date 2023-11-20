@@ -505,17 +505,17 @@ const EventParticipants = () => {
       </Header>
       <Content className={classes.participantSec}>
         {attendeesList
-          ?.filter((item) => item.isHost)
+          ?.filter((item) => item.isHost && !item.kicked)
           .map((ele) => {
             return ele ? AttendeeComponent({ ele }) : null;
           })}
         {attendeesList
-          ?.filter((item) => item.isCoHost)
+          ?.filter((item) => item.isCoHost && !item.kicked)
           .map((ele) => {
             return ele ? AttendeeComponent({ ele }) : null;
           })}
         {attendeesList
-          ?.filter((item) => !item.isHost && !item.isCoHost)
+          ?.filter((item) => !item.isHost && !item.isCoHost && !item.kicked)
           .sort(isHandRaised)
           .map((ele) => {
             return ele ? AttendeeComponent({ ele }) : null;
