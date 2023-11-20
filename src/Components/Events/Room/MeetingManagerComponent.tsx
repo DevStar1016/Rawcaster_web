@@ -121,11 +121,7 @@ const MeetingManagerComponent = () => {
   /**
    * Audio Video Settings Handle By Socket
    */
-  console.log('userdata', userdata)
-  console.log('attendeesList', attendeesList)
   const HandleVideoAudio = (props) => {
-    console.log('userdata in fucntion', userdata)
-    console.log('attendeesList in function', attendeesList)
     return new Promise<void>((resolve, reject) => {
       const {
         value,
@@ -325,7 +321,6 @@ const MeetingManagerComponent = () => {
           if (message) {
             const user_data = message;
             const renamedUser = user_data.updatedUser;
-            console.log(renamedUser, "renamedUser");
 
             setattendeesList((pre) => {
               const targetIndex = pre.findIndex(
@@ -431,6 +426,18 @@ const MeetingManagerComponent = () => {
             });
           }
           break;
+        case CHIME_SOCKET_EVENTS.ALLOW_TO_SPEAK_ANSWER:
+            if (message) {
+              const updatedUser = message.updatedUser;
+              const attendeeList = message.attendeeList;
+              
+              if (updatedUser) setuserdata(updatedUser);
+
+              if (attendeeList?.length > 0)
+              setattendeesList(attendeeList);
+
+            }
+          break;
         case CHIME_SOCKET_EVENTS.ENABLE_VIDEO_ANSWER:
           if (message) {
             const VideoData = {
@@ -482,10 +489,8 @@ const MeetingManagerComponent = () => {
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
           try {
             const callEventData = message;
-            console.log(callEventData, "callEventData1");
             if (callEventData) {
               if (callEventData.screen_share_status === false) {
-                console.log(callEventData, "callEventData2");
                 if (isLocalUserSharing) {
                   toggleContentShare();
                 }

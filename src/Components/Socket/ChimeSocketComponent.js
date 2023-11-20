@@ -279,6 +279,16 @@ const ChimeSocketComponent = () => {
     };
   }, [EventWindowRef]);
 
+    // Mic Allowed Received Here - Socket
+    useEffect(() => {
+      ChimesocketListen.on(CHIME_SOCKET_EVENTS.ALLOW_TO_SPEAK_ANSWER, (message) => {
+        HandleSendToNewWindow(CHIME_SOCKET_EVENTS.ALLOW_TO_SPEAK_ANSWER, message);
+      });
+      return () => {
+        ChimesocketListen.off(CHIME_SOCKET_EVENTS.ALLOW_TO_SPEAK_ANSWER);
+      };
+    }, [EventWindowRef]);
+
   return <Outlet />;
 };
 
