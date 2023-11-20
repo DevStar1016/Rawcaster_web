@@ -500,6 +500,7 @@ const EventParticipants = () => {
         )}
       </Header>
       <Content className={classes.participantSec}>
+         {/* TODO Will Refactor this later */}
         {attendees
           ?.filter(
             (item) =>
