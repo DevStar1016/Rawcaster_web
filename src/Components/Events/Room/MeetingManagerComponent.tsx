@@ -420,7 +420,6 @@ const MeetingManagerComponent = () => {
               popupmessage: "Host requests you to turn on your Microphone ",
               Type: "audio",
             };
-            console.log('ENABLE_AUDIO_ANSWER  userdata', userdata)
             HandleVideoAudio(AudioData).then(() => {
               toggleMute();
             });
@@ -430,7 +429,7 @@ const MeetingManagerComponent = () => {
             if (message) {
               const updatedUser = message.updatedUser;
               const attendeeList = message.attendeeList;
-              
+
               if (updatedUser) setuserdata(updatedUser);
 
               if (attendeeList?.length > 0)
