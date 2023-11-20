@@ -512,23 +512,20 @@ const EventParticipants = () => {
         {attendees
           ?.filter(
             (item) =>
-              !getUserDetails(item.externalUserId)?.isHost &&
-              !getUserDetails(item.externalUserId)?.kicked
+              getUserDetails(item.externalUserId)?.isHost
           )
           .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
         {attendees
           ?.filter(
             (item) =>
-              !getUserDetails(item.externalUserId)?.isCoHost &&
-              !getUserDetails(item.externalUserId)?.kicked
+              getUserDetails(item.externalUserId)?.isCoHost
           )
           .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
         {attendees
           ?.filter(
             (item) =>
               !getUserDetails(item.externalUserId)?.isHost &&
-              !getUserDetails(item.externalUserId)?.isCoHost &&
-              !getUserDetails(item.externalUserId)?.kicked
+              !getUserDetails(item.externalUserId)?.isCoHost
           )
           .sort(isHandRaised)
           .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
