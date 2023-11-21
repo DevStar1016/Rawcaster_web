@@ -375,6 +375,12 @@ const TalkshowParticipants = () => {
     );
   };
 
+  const getUserDetails = (externalUserId) => {
+    return attendeesList.find(
+      (attendee) => attendee.userRefId === externalUserId
+    );
+  };
+
   return (
     <Layout className={`${classes.popupContainer} ${classes.talkshowPopup}`}>
       <Header
@@ -431,9 +437,35 @@ const TalkshowParticipants = () => {
         </div>
       </Header>
       <Content className={classes.participantSec}>
-        {attendees.map((ele, index) => {
-          return ele ? AttendeeComponent({ ele }) : null;
-        })}
+                 {/* TODO Will Refactor this later */}
+                 {attendees
+          ?.filter(
+            (item) =>
+              getUserDetails(item.externalUserId)?.isHost
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              getUserDetails(item.externalUserId)?.isCoHost
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              getUserDetails(item.externalUserId)?.handRaised
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+          {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              !getUserDetails(item.externalUserId)?.handRaised
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
         <RenameModal
           key={renameAttendee?.userId}
           open={renameAttendee}
