@@ -197,7 +197,7 @@ const Nuggets = ({
         });
         return;
       }
-      let finalData = { ...nuggetFormData, signal: nuggetsRef.current };
+      let finalData = { ...nuggetFormData, signal: nuggetsRef.current.signal };
       finalData.formData = {
         ...finalData.formData,
         page_number: page,
@@ -208,6 +208,7 @@ const Nuggets = ({
         setloading(false);
         setisReachedEnd(false);
         setisLoading(false);
+        nuggetsRef.current = null;
       });
     });
   };
