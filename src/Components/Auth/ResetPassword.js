@@ -239,10 +239,7 @@ const ResetPassword = () => {
               />
             </Link>
             <h1 className={classes.heading_h1}>Reset Password</h1>
-            <p className={classes.subText}>
-              A one time passcode (OTP) has been sent to the email address you
-              provided
-            </p>
+            <p className={classes.subText}>{state.msg}</p>
             <Form
               name="rawcaster_reset_password"
               autoComplete={"off"}
