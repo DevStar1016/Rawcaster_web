@@ -76,6 +76,7 @@ const Nuggets = ({
     totalpages,
     DashboardfilterType,
   } = useNuggets();
+  const nuggetsRef = useRef(null);
 
   const userData = getRawcaserToken();
   const [isloading, setisLoading] = useState(false);
@@ -155,13 +156,23 @@ const Nuggets = ({
    * @param {object} [formData=null] - The form data to filter the nuggets.
    * @returns {Promise} - A promise that resolves with the retrieved nuggets data.
    */
-  const GetNuggetList = (page = 1, formData = null) => {
+  const GetNuggetList = (page = 1, formData = null, isMyFan = false) => {
+    if (!isMyFan) {
+      setActiveTab(0);
+    }
     if (page === 1) {
       setisLoading(true);
     }
+    if (nuggetsRef.current) {
+      nuggetsRef.current.abort("Request Cancelled");
+    }
+    nuggetsRef.current = new AbortController();
+
     return new Promise((resolve, reject) => {
       if (formData) {
-        dispatch(fetchNuggetsbyId(formData)).then((res) => {
+        dispatch(
+          fetchNuggetsbyId({ ...formData, signal: nuggetsRef.current.signal })
+        ).then((res) => {
           if (formData.formData.saved === 1) {
             setNuggetCount((pre) => ({
               ...pre,
@@ -182,14 +193,16 @@ const Nuggets = ({
           setloading(false);
           setisLoading(false);
           setisReachedEnd(false);
+          nuggetsRef.current = null;
         });
         return;
       }
-      let finalData = { ...nuggetFormData };
+      let finalData = { ...nuggetFormData, signal: nuggetsRef.current };
       finalData.formData = {
         ...finalData.formData,
         page_number: page,
       };
+
       dispatch(fetchNuggetsbyId(finalData)).then((res) => {
         setisNuggetModify(null);
         setloading(false);
@@ -346,6 +359,7 @@ const Nuggets = ({
 
   useEffect(() => {
     // if (NuggetsData.length === 0) {
+
     setNuggetsData(Nuggets);
     // }
   }, [Nuggets]);
@@ -405,6 +419,7 @@ const Nuggets = ({
       nugget_type: 0,
       filter_type: type,
     };
+
     dispatch(handleResetNuggets());
     dispatch(handleDashboardFilterType(type));
     dispatch(handleNuggetFormData(filterData));
@@ -571,7 +586,7 @@ const Nuggets = ({
                         formData: { page_number: 1, nugget_type: 0, saved: 1 },
                       };
                       dispatch(handleNuggetFormData(finalData));
-                      GetNuggetList(1, finalData);
+                      GetNuggetList(1, finalData, true);
                     }
                     setActiveTab(1);
                   }}

@@ -27,6 +27,7 @@ import { toast } from "react-hot-toast";
 import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
 import { HandleVerifyModal } from "../Modal/DefaultModal";
 import { CustomParagraph } from "./UtilityComponents";
+import { fetchNuggetsbyId } from "../Store/Redux/Action";
 
 // Auth
 
@@ -132,7 +133,6 @@ export const getGeocodeData = () => {
               });
             },
             (error) => {
-              console.log(error, "Geocode.fromLatLng");
               resolve({
                 status: 0,
                 address: "",
@@ -684,7 +684,7 @@ export const handleProfileNavigate = (userData) => {
     filterData.formData = filterValidObject(filterData.formData);
     dispatch(handleResetNuggets());
     dispatch(handleNuggetFormData(filterValidObject(filterData)));
-    // dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
+    dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
     navigate(`/viewprofile/${EncryptionString(user_id)}`);
   }
 };
@@ -1132,10 +1132,10 @@ export const getUtcToSystemTime = (dateTime) => {
 };
 
 // return participants count in K format
-export const getParticipantCount =(numOfParticipants)=>{
+export const getParticipantCount = (numOfParticipants) => {
   if (numOfParticipants >= 1000) {
-    return (numOfParticipants / 1000).toFixed(2) + 'k';
+    return (numOfParticipants / 1000).toFixed(2) + "k";
   } else {
     return numOfParticipants.toString();
   }
-}
+};

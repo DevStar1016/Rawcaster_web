@@ -43,7 +43,6 @@ const ChatAudioplayer = ({ url = "", id, time, textColor = "#000000" }) => {
       const audio = new Audio(url);
       audio.id = id;
       audio.addEventListener("loadedmetadata", () => {
-        console.log("loadedmetadata");
         setAudioUrl(url);
       });
 
