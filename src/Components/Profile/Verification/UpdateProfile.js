@@ -39,16 +39,14 @@ import ImageCropModal from "../../../Modal/ImageCropModal";
 import { useMainContext } from "../../../Shared/Context";
 
 const UpdateProfile = () => {
+  const { IsValidCredentials } = useMainContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
   const loginUserData = useAuthData();
   const loginToken = useAuthToken();
   const { isAccountVerified } = useMainContext();
-  const [IsValidCredentials, setIsValidCredentials] = useState({
-    email: false,
-    mobile: false,
-  });
+
   const [ProfileImage, setProfileImage] = useState("");
   const [tempGroupImage, settempGroupImage] = useState(null);
 
@@ -82,16 +80,9 @@ const UpdateProfile = () => {
     mobile_no: yup
       .string()
       .min(5, `Please input Valid Mobile Number!`)
-      .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`)
-      .required(`Please input your Mobile Number!`),
-
-    email_id:
-      loginUserData?.email_id !== ""
-        ? yup
-            .string()
-            .email(`Please input Valid Email Id!`)
-            .required(`Please input your Email!`)
-        : yup.string().email(`Please input Valid Email Id!`),
+      .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`),
+    // .required(`Please input your Mobile Number!`),
+    email_id: yup.string().email(`Please input Valid Email Id!`),
   });
 
   const {
@@ -187,10 +178,6 @@ const UpdateProfile = () => {
           ) {
             handleSendOTP("email", true);
           }
-          setIsValidCredentials({
-            email: profileData.is_email_id_verified === 1,
-            mobile: profileData.is_mobile_no_verified === 1,
-          });
 
           setProfileImage(profileData.profile_image);
         }

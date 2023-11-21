@@ -7,7 +7,10 @@ export interface GlobalContextProps {
   PostContent: string;
   meetingManager?: MeetingManager;
 }
-
+type IsValidCredentialsProps = {
+  email: boolean;
+  mobile: boolean;
+};
 export interface MainContextProps {
   meetingManager?: any;
   attendees?: any;
@@ -18,6 +21,8 @@ export interface MainContextProps {
   isChatOpen?: any;
   setActiveEvent?: any;
   ActiveEvent?: any;
+  IsValidCredentials: IsValidCredentialsProps;
+  setIsValidCredentials: (val: IsValidCredentialsProps) => void;
   isplayerFetching?: boolean;
   setisplayerFetching?: (val: boolean) => void;
   isAccountVerified?: "unverified" | "pending" | "verified" | null;

@@ -55,12 +55,19 @@ const Dashboard = () => {
     if (
       filterData?.formData?.search_key ||
       filterData?.formData?.user_id ||
-      filterData?.formData?.saved ||
-      state?.isLogoPress
+      filterData?.formData?.saved
     ) {
+      getDashboardDetails(filterData);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    let filterData = { ...nuggetFormData };
+    if (state?.isLogoPress) {
       handleDashboardApi(filterData);
     }
-  }, [pathname, state?.isLogoPress]);
+  }, [state?.isLogoPress]);
+
   useEffect(() => {
     return () => {
       dispatch(handleNuggetList([]));
@@ -68,18 +75,19 @@ const Dashboard = () => {
   }, []);
 
   const getDashboardDetails = (filterData) => {
+    filterData.token = loginToken;
     filterData.formData = {
       filter_type: filterData?.formData?.filter_type ?? 0,
       page_number: 1,
       nugget_type: 0,
     };
-    // dispatch(handleResetNuggets());
+    dispatch(handleResetNuggets());
     dispatch(handleNuggetFormData(filterData));
     dispatch(fetchNuggetsbyId(filterData));
   };
 
   const handleDashboardApi = useCallback(
-    debounce(getDashboardDetails, 2000),
+    debounce(getDashboardDetails, 500),
     []
   );
 

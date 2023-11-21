@@ -3,7 +3,11 @@
  * request headers.
  * @returns None
  */
-import axios, { AxiosProgressEvent, CancelToken } from "axios";
+import axios, {
+  AxiosProgressEvent,
+  CancelToken,
+  GenericAbortSignal,
+} from "axios";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
@@ -195,10 +199,10 @@ export const addNuggetsService = (
 
 export const listNuggetsService = (
   data: FormData,
-  token: CancelToken | undefined
+  signal: AbortSignal | undefined
 ) => {
   return axios.post("listnuggets", data, {
-    cancelToken: token,
+    signal,
   });
 };
 

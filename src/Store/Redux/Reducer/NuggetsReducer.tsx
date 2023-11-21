@@ -10,6 +10,7 @@ import { NuggetReducerProps } from "../types/Nuggets";
 const initialState: NuggetReducerProps = {
   token: null,
   nuggetVideoPaused: false,
+  nuggetCancelRef: null,
   nuggetFormData: {},
   Nuggets: [],
   isNuggetsLoading: true,
@@ -27,6 +28,9 @@ export const { actions, reducer } = createSlice({
   reducers: {
     handlenuggetToken: (state, action) => {
       state.token = action.payload;
+    },
+    handleCancelRef: (state, action) => {
+      state.nuggetCancelRef = action.payload;
     },
     handlenuggetVideoPaused: (state, action) => {
       state.nuggetVideoPaused = action.payload;
@@ -170,7 +174,7 @@ export const { actions, reducer } = createSlice({
       if (action.payload.current_page_no === 1) {
         state.Nuggets = action.payload.data;
       } else if (action.payload.current_page_no === 0) {
-        // state.Nuggets = [];
+        state.Nuggets = [];
       } else {
         let filterData = [...state.Nuggets, ...action.payload.data].reduce(
           (acc, current) => {
@@ -211,6 +215,7 @@ export const {
   handleNuggetTranslateUpdate,
   handleRemoveTranslate,
   handleNuggetFollowingUpdate,
+  handleCancelRef,
 } = actions;
 
 export default reducer;

@@ -54,7 +54,6 @@ export const CustomParagraph = (props: CustomParagraphprops) => {
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
-  console.log(isReadMoreEnable, "isReadMoreEnable");
 
   return (
     <>
