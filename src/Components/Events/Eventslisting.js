@@ -22,7 +22,7 @@ const Eventslisting = ({
   const loginUserData = useAuthData();
   const { isSuccess } = useAuth();
   const token = useAuthToken();
-  const [EventListData, setEventListData] = useState();
+  const [EventListData, setEventListData] = useState([]);
   const [SearchData, setSearchData] = useState("");
   const [isEventOpen, setisEventOpen] = useState(false);
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
@@ -34,31 +34,85 @@ const Eventslisting = ({
   });
   const [isFetching, setisFetching] = useState(true);
   const [EnableEvents, setEnableEvents] = useState(false);
+  const [Pages, setPages] = useState({
+    current_page: 1,
+    total_pages: 0,
+  });
 
   /**
    * Retrieves a list of events based on the specified event type.
    * @param {number} [event_type=0] - The type of event to retrieve. Defaults to 0.
    * @returns None
    */
-  const getEvents = (event_type = 0) => {
+  const getEvents = (event_type = ActiveEvent.key, page_number = 1) => {
     let eventData = {
       token: token,
       event_type: event_type,
-      page_number: 1,
+      page_number,
     };
     listEventsService(JSONtoformdata(eventData))
       .then((res) => {
         if (res.data.status === 1) {
+          setPages({
+            current_page: res.data.current_page_no,
+            total_pages: res.data.total_pages,
+          });
+
           if (isUser) {
             let filterEventList = res.data.events_list.filter((ele) => {
               return ele.original_user_id === userData?.user_id;
             });
-            setEventListData(filterEventList);
+            setEventListData((pre) => {
+              if (res.data.current_page_no > 1) {
+                let tempData = [...pre];
+                return [...tempData, ...filterEventList].reduce(
+                  (acc, current) => {
+                    const x = acc.find(
+                      (item) => item.event_id === current.event_id
+                    );
+                    if (!x) {
+                      return acc.concat([current]);
+                    } else {
+                      return acc;
+                    }
+                  },
+                  []
+                );
+              } else {
+                return filterEventList;
+              }
+            });
           } else {
-            setEventListData(res.data.events_list);
+            setEventListData((pre) => {
+              if (res.data.current_page_no > 1) {
+                let tempData = [...pre];
+                return [...tempData, ...res.data.events_list].reduce(
+                  (acc, current) => {
+                    const x = acc.find(
+                      (item) => item.event_id === current.event_id
+                    );
+                    if (!x) {
+                      return acc.concat([current]);
+                    } else {
+                      return acc;
+                    }
+                  },
+                  []
+                );
+              } else {
+                return res.data.events_list;
+              }
+            });
           }
         } else {
-          setEventListData([]);
+          setEventListData((pre) => {
+            let tempData = [...pre];
+            if (res.data.current_page_no > 1) {
+              return tempData;
+            } else {
+              return [];
+            }
+          });
         }
       })
       .catch((err) => {})
@@ -82,7 +136,7 @@ const Eventslisting = ({
   useEffect(() => {
     if (loginUserData !== null) {
       if (token) {
-        getEvents(ActiveEvent.key);
+        getEvents(ActiveEvent.key, 1);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +193,7 @@ const Eventslisting = ({
                   );
                   if (findValue) {
                     setisFetching(true);
-                    getEvents(findValue.key);
+                    getEvents(findValue.key, 1);
                     setActiveEvent(findValue);
                   }
                 },
@@ -189,6 +243,18 @@ const Eventslisting = ({
                   />
                 </div>
               ))}
+              {Pages.current_page !== Pages.total_pages &&
+                Pages.total_pages > 1 && (
+                  <div
+                    className={classes.loadSec}
+                    onClick={() => {
+                      getEvents(ActiveEvent.key, Pages.current_page + 1);
+                    }}
+                  >
+                    Load More
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                  </div>
+                )}
               {(EventListData?.length === 0 || isEmptyEvents) && (
                 <div className={classes.noeventfound}>
                   <Empty

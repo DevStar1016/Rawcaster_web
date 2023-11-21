@@ -26,10 +26,8 @@ import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import moment from "moment";
 import PlacesAutocomplete from "react-places-autocomplete";
 import { useDispatch } from "react-redux";
-import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
-import { handleAccountVerifyStatus } from "../../Store/Redux/Reducer/AuthReducer";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
 import { useMainContext } from "../../Shared/Context";
 
@@ -50,7 +48,8 @@ const validationSchema = yup.object().shape({
 
 const Claimaccount = () => {
   const navigate = useNavigate();
-  const { AccountAccessType } = useMainContext();
+  const { AccountAccessType, isAccountVerified, IsValidCredentials } =
+    useMainContext();
   const dispatch = useDispatch();
   const params = useParams();
   const display_user_id = params?.user_id
@@ -244,6 +243,7 @@ const Claimaccount = () => {
                     value={values.first_name}
                     onChange={handleChange("first_name")}
                     placeholder="Enter your first name"
+                    disabled={isAccountVerified !== "unverified"}
                   />
                 </div>
                 {touched.first_name && (
@@ -262,6 +262,7 @@ const Claimaccount = () => {
                     value={values.last_name}
                     onChange={handleChange("last_name")}
                     placeholder="Enter your last name"
+                    disabled={isAccountVerified !== "unverified"}
                   />
                 </div>
                 {touched.last_name && (
@@ -280,6 +281,7 @@ const Claimaccount = () => {
                     value={values.telephone}
                     onChange={handleChange("telephone")}
                     placeholder="Enter your mobile number"
+                    disabled={IsValidCredentials.mobile}
                   />
                 </div>
                 {touched.telephone && (
@@ -298,6 +300,7 @@ const Claimaccount = () => {
                     value={values.email_id}
                     onChange={handleChange("email_id")}
                     placeholder="Enter your email id"
+                    disabled={IsValidCredentials.email}
                   />
                 </div>
                 {touched.email_id && (
@@ -310,6 +313,7 @@ const Claimaccount = () => {
                     Date of Birth <span className="text-danger">*</span>{" "}
                   </p>
                   <DateInputBox
+                    isDisabled={isAccountVerified !== "unverified"}
                     displayDate={values.dob}
                     onSelectDate={(date) => {
                       if (date !== "") {

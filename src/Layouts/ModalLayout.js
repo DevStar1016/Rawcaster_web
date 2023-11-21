@@ -47,6 +47,10 @@ const ModalLayout = () => {
   const meetingManager = useMeetingManager();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
+  const [IsValidCredentials, setIsValidCredentials] = useState({
+    email: false,
+    mobile: false,
+  });
 
   const [isChatOpen, setisChatOpen] = useState({
     show: false,
@@ -72,6 +76,15 @@ const ModalLayout = () => {
       PlayerSource.current.abort("Request Cancelled");
     }
   }, [location]);
+
+  useEffect(() => {
+    if (loginUserData) {
+      setIsValidCredentials({
+        email: loginUserData.is_email_id_verified === 1,
+        mobile: loginUserData.is_mobile_no_verified === 1,
+      });
+    }
+  }, [loginUserData]);
 
   /**
    * Executes the specified side effects when the location pathname changes.
@@ -107,6 +120,8 @@ const ModalLayout = () => {
         ActiveEvent,
         isplayerFetching,
         setisplayerFetching,
+        IsValidCredentials,
+        setIsValidCredentials,
         isAccountVerified: AccountVerifedStatus(
           loginUserData?.account_verify_type
         ),
