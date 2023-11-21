@@ -517,7 +517,7 @@ const Nuggets = ({
                             search_key: SearchKey,
                           };
                           dispatch(handleNuggetFormData(FormData));
-                          GetNuggetList(1, FormData);
+                          GetNuggetList(1, FormData, ActiveTab === 1);
                         }
                       }
                     }}
@@ -537,7 +537,7 @@ const Nuggets = ({
                           search_key: SearchKey,
                         };
                         dispatch(handleNuggetFormData(FormData));
-                        GetNuggetList(1, FormData);
+                        GetNuggetList(1, FormData, ActiveTab === 1);
                       }
                     }}
                   >

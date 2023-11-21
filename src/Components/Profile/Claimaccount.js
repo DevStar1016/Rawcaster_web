@@ -30,6 +30,7 @@ import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
 import { useMainContext } from "../../Shared/Context";
+import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(`Please input your First Name!`),
@@ -151,6 +152,12 @@ const Claimaccount = () => {
             //   },
             // });
           } else {
+            dispatch(
+              handleClaimAccount({
+                show: true,
+                msg: res.data.msg,
+              })
+            );
             navigate(-1);
           }
         } else if (res.data.status === 0) {

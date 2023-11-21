@@ -63,6 +63,7 @@ const ForgotPassword = () => {
         if (res.data.status === 1) {
           navigate("/setpassword", {
             state: {
+              ...res.data,
               sms_type: res.data.sms_type,
               otp_ref_id: res.data.otp_ref_id,
               remaining_seconds: res.data.remaining_seconds,
