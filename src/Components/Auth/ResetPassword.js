@@ -55,6 +55,7 @@ const ResetPassword = () => {
   };
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
   const [otpRefId, setotpRefId] = useState();
+
   const { values, handleChange, handleSubmit, errors, touched, setFieldValue } =
     useFormik({
       initialValues: {
@@ -193,6 +194,7 @@ const ResetPassword = () => {
    */
   const handleresendOTP = () => {
     let ResendValues = {
+      sms_type: state?.sms_type,
       otp_ref_id: otpRefId,
       auth_code: getAuthToken(otpRefId),
     };
