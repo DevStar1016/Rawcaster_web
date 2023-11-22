@@ -196,6 +196,18 @@ const BioContainer = ({ isLoginuser }) => {
   };
   const handleVerifyPopupClose = () => setverifyProfilePopup(false);
 
+  const getBioData = () => {
+    if (typeof profileData?.bio_data === "string") {
+      if (values.bio_data !== "") {
+        return values?.bio_data;
+      } else if (typeof profileData?.bio_data !== "string") {
+        return BioData;
+      }
+      return profileData?.bio_data;
+    }
+    return null;
+  };
+
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
@@ -275,7 +287,7 @@ const BioContainer = ({ isLoginuser }) => {
         </div>
       ) : (
         <>
-          {isSuccess && profileData ? (
+          {isSuccess && profileData && getBioData() ? (
             <ReadMore
               maxheight={"64px"}
               isReadMore={false}
@@ -288,7 +300,7 @@ const BioContainer = ({ isLoginuser }) => {
                * it calls the useReplaceBiodataHandler function to generate the bio data from the profileData.
                * @returns The bio data string.
                */}
-              {values?.bio_data !== "" ? values?.bio_data : BioData}
+              {getBioData()}
             </ReadMore>
           ) : (
             <Skeleton active />

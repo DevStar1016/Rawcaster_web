@@ -24,6 +24,12 @@ export const CustomParagraph = (props: CustomParagraphprops) => {
   const { ellipsis, children, className } = props;
   const { onExpand, onEllipsis, rows } = ellipsis ?? {};
   const textRef = useRef((initialRef: any) => {
+    console.log(
+      initialRef?.offsetHeight < initialRef?.scrollHeight,
+      children,
+      "initialRef?.offsetHeight < initialRef?.scrollHeight"
+    );
+
     if (initialRef) {
       if (initialRef?.offsetHeight < initialRef?.scrollHeight) {
         setisReadMoreEnable((pre) => true);
