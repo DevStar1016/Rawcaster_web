@@ -817,7 +817,8 @@ const Post = ({
     if (
       ele &&
       ele?.share_type === 1 &&
-      AccountAccessType === "diamond_and_above"
+      // AccountAccessType === "diamond_and_above"
+      loginUserData?.user_status_id >= 4
     ) {
       return 1;
     } else {
