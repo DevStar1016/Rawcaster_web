@@ -531,16 +531,16 @@ export type isValidAccountResult = (
 export const getisValidAccount: isValidAccountResult = (
   user_status_id: number
 ) => {
-  if (user_status_id >= 4) {
-    return "diamond_and_above";
-  } else if (user_status_id === 4) {
-    return "diamond_only";
+  if (user_status_id === 1) {
+    return "valued_only";
+    // } else if (user_status_id === 3) {
+    //   return "premium_only";
   } else if (user_status_id >= 3) {
     return "premium_and_above";
-  } else if (user_status_id === 3) {
-    return "premium_only";
-  } else if (user_status_id === 1) {
-    return "valued_only";
+    // } else if (user_status_id === 4) {
+    //   return "diamond_only";
+  } else if (user_status_id >= 4) {
+    return "diamond_and_above";
   }
   return null;
 };

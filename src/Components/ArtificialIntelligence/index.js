@@ -15,7 +15,6 @@ import { useAuthData } from "../../Shared/Reduxfetcher";
 import LoginModal from "../../Modal/Verification/LoginModal";
 
 const ArtificialIntelligence = () => {
-  const { AccountAccessType } = useMainContext();
   const { pathname } = useLocation();
   const loginUserData = useAuthData();
   const [ChatMessage, setChatMessage] = useState("");
@@ -120,7 +119,7 @@ const ArtificialIntelligence = () => {
         <Button
           className={classes.ChatBotBtn}
           onClick={() => {
-            if (loginUserData && AccountAccessType === "premium_and_above") {
+            if (loginUserData && loginUserData.user_status_id >= 3) {
               setisChatOpen(!isChatOpen);
             } else {
               setgetPremiumModal((pre) => !pre);

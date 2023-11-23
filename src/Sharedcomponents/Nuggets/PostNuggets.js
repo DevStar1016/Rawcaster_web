@@ -170,11 +170,15 @@ const PostNuggets = ({ isUserPostAvailable }) => {
       })
       .catch((err) => {})
       .finally(() => {
+        resetForm();
+
+        setNuggetData([]);
         setPostContent("");
         setdeletedMedia([]);
         setpreviewMedia([]);
         setisEdit();
         setMetaData(null);
+        setisNuggetModify({ type: "", id: null });
       });
   };
 
@@ -244,6 +248,9 @@ const PostNuggets = ({ isUserPostAvailable }) => {
       })
       .catch((err) => {})
       .finally(() => {
+        resetForm();
+        setisNuggetModify({ type: "", id: null });
+        setNuggetData([]);
         setPostContent("");
         setProgress((pre) => ({ ...pre, show: false }));
         dispatch(handleLoading(false));

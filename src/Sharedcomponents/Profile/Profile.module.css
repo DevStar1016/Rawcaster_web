@@ -33,8 +33,10 @@
   font-weight: 600;
   font-size: 14px;
   max-height: 38px;
+  max-width: 240px;
   overflow: hidden;
   line-height: 19px;
+  text-overflow: ellipsis;
 }
 .profileContainer .rightSec .nameSec span {
     font-size: 15px;

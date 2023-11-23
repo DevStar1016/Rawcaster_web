@@ -64,7 +64,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
-  const { AccountAccessType } = useMainContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { getEvents, ActiveEvent } = useEventContext();
@@ -913,7 +912,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             <div
                               onClick={(e) => {
                                 if (
-                                  AccountAccessType === "valued_only" &&
+                                  loginUserData.user_status_id === 1 &&
                                   ele.isprimary
                                 ) {
                                   if (upgradePlanPopup) {
@@ -928,7 +927,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               <Checkbox
                                 checked={values[ele.type]}
                                 disabled={
-                                  AccountAccessType === "valued_only" &&
+                                  loginUserData.user_status_id === 1 &&
                                   ele.isprimary
                                 }
                                 onChange={(e) => {

@@ -62,11 +62,10 @@ const ShareList = [
 
 const ReferContainer = () => {
   const profileData = useAuthData();
-  const { AccountAccessType } = useMainContext();
   const { ReferalData } = useReferalContext();
   const shareUrl = profileData?.referral_link || "";
 
-  const isDisplayUpgradePremium = AccountAccessType === "valued_only";
+  const isDisplayUpgradePremium = profileData.user_status_id === 1;
   return (
     <div className={classes.centerSec}>
       <div className={classes.centerImg}>

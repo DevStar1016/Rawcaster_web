@@ -331,6 +331,8 @@ const Profile = () => {
     setisInfluencerChatModalOpen,
     isInfluencerChatModalOpen,
   };
+
+  const getUserData = () => profileData;
   return (
     <ProfileContext.Provider value={profileValue}>
       <Seo
@@ -489,7 +491,7 @@ const Profile = () => {
                         isCreateEnabled={getisLoginUser()}
                         isSearchEnabled={true}
                         isUser={true}
-                        userData={profileData}
+                        userData={getUserData()}
                       />
                     )}
                   </>
