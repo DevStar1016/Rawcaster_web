@@ -49,8 +49,7 @@ const validationSchema = yup.object().shape({
 
 const Claimaccount = () => {
   const navigate = useNavigate();
-  const { AccountAccessType, isAccountVerified, IsValidCredentials } =
-    useMainContext();
+  const { isAccountVerified, IsValidCredentials } = useMainContext();
   const dispatch = useDispatch();
   const params = useParams();
   const display_user_id = params?.user_id
@@ -85,7 +84,7 @@ const Claimaccount = () => {
             "Your profile should be a verified profile to claim an influencer profile",
           SubmitButtonTitle: "Verify Account",
           onSuccess: () => {
-            if (AccountAccessType === "premium_and_above") {
+            if (loginUserData.user_status_id >= 3) {
               navigate("/verifyaccount");
             } else {
               navigate(-1);

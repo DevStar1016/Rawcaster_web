@@ -48,6 +48,7 @@ const Eventslisting = ({
     let eventData = {
       token: token,
       event_type: event_type,
+      user_id: userData?.user_id,
       page_number,
     };
     listEventsService(JSONtoformdata(eventData))
@@ -59,13 +60,10 @@ const Eventslisting = ({
           });
 
           if (isUser) {
-            let filterEventList = res.data.events_list.filter((ele) => {
-              return ele.original_user_id === userData?.user_id;
-            });
             setEventListData((pre) => {
               if (res.data.current_page_no > 1) {
                 let tempData = [...pre];
-                return [...tempData, ...filterEventList].reduce(
+                return [...tempData, ...res.data.events_list].reduce(
                   (acc, current) => {
                     const x = acc.find(
                       (item) => item.event_id === current.event_id
@@ -79,7 +77,7 @@ const Eventslisting = ({
                   []
                 );
               } else {
-                return filterEventList;
+                return res.data.events_list;
               }
             });
           } else {
@@ -149,6 +147,7 @@ const Eventslisting = ({
    * @returns The appropriate dropdown list based on the value of `isUser`.
    */
   const Dropdownlist = isUser ? UserDropdownItems : DropdownItems;
+  console.log(EventListData, "EventListData");
 
   return (
     <EventContext.Provider

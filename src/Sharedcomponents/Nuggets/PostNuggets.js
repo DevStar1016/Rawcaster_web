@@ -175,6 +175,7 @@ const PostNuggets = ({ isUserPostAvailable }) => {
         setpreviewMedia([]);
         setisEdit();
         setMetaData(null);
+        setisNuggetModify({ type: "", id: null });
       });
   };
 

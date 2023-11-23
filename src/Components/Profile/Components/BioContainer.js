@@ -349,7 +349,7 @@ const BioContainer = ({ isLoginuser }) => {
                   onClickCapture={() => {
                     if (
                       DiamondVerifyType === 3 &&
-                      AccountAccessType === "premium_and_above"
+                      loginUserData.user_status_id >= 3
                     ) {
                       navigate("/verifyaccount");
                     } else {
