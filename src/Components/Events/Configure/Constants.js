@@ -45,13 +45,6 @@ export const DropdownItems = [
  */
 export const UserDropdownItems = [
   {
-    label: "Upcoming Events",
-    key: "0",
-  },
-  {
-    type: "divider",
-  },
-  {
     label: "My Events",
     key: "1",
   },

@@ -170,6 +170,9 @@ const PostNuggets = ({ isUserPostAvailable }) => {
       })
       .catch((err) => {})
       .finally(() => {
+        resetForm();
+
+        setNuggetData([]);
         setPostContent("");
         setdeletedMedia([]);
         setpreviewMedia([]);
@@ -245,6 +248,9 @@ const PostNuggets = ({ isUserPostAvailable }) => {
       })
       .catch((err) => {})
       .finally(() => {
+        resetForm();
+        setisNuggetModify({ type: "", id: null });
+        setNuggetData([]);
         setPostContent("");
         setProgress((pre) => ({ ...pre, show: false }));
         dispatch(handleLoading(false));

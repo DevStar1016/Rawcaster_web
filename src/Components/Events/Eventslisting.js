@@ -28,10 +28,17 @@ const Eventslisting = ({
   const [isTalkshowOpen, setisTalkshowOpen] = useState(false);
   const [isEmptyEvents, setisEmptyEvents] = useState(false);
   const [EventData, setEventData] = useState();
-  const [ActiveEvent, setActiveEvent] = useState({
-    label: "Upcoming Events",
-    key: 0,
-  });
+  const [ActiveEvent, setActiveEvent] = useState(
+    isUser
+      ? {
+          label: "My Events",
+          key: 1,
+        }
+      : {
+          label: "Upcoming Events",
+          key: 0,
+        }
+  );
   const [isFetching, setisFetching] = useState(true);
   const [EnableEvents, setEnableEvents] = useState(false);
   const [Pages, setPages] = useState({
@@ -48,9 +55,15 @@ const Eventslisting = ({
     let eventData = {
       token: token,
       event_type: event_type,
-      user_id: userData?.user_id,
+
       page_number,
     };
+    if (isUser) {
+      eventData = {
+        ...eventData,
+        user_id: userData?.user_id,
+      };
+    }
     listEventsService(JSONtoformdata(eventData))
       .then((res) => {
         if (res.data.status === 1) {
@@ -133,12 +146,16 @@ const Eventslisting = ({
    */
   useEffect(() => {
     if (loginUserData !== null) {
-      if (token) {
+      if (token && isUser) {
+        if (userData) {
+          getEvents(ActiveEvent.key, 1);
+        }
+      } else if (token) {
         getEvents(ActiveEvent.key, 1);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, isTalkshowOpen, isSuccess]);
+  }, [token, isTalkshowOpen, isSuccess, userData]);
 
   /**
    * Determines the appropriate dropdown list based on the value of `isUser`.
