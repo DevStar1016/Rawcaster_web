@@ -66,10 +66,12 @@ const ConnectionsList = ({
 
   const HandleConnections = (res, page, val) => {
     let isFilterEnable = Object.keys(val).length !== 0;
-    setPage({
-      pages: res.data.current_page_no,
-      total_pages: res.data.total_pages,
-    });
+    if (res.data) {
+      setPage({
+        pages: res.data.current_page_no,
+        total_pages: res.data.total_pages,
+      });
+    }
     if (isFilterEnable) {
       if (page === 1) {
         setConnectionsList((pre) => {

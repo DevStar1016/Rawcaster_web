@@ -67,43 +67,43 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
         </p>
 
         <div className={classes.actionBtn}>
-          {!isAI ? (
-            <Button
-              ghost
-              type="primary"
-              htmlType="button"
-              onClick={() => {
-                if (AIclose) {
-                  close();
-                } else {
-                  removeSessionStorageData("influencerData");
-                  close();
-                }
-              }}
-              size="large"
-              className={classes.cancelBtn}
-            >
-              Later
-            </Button>
-          ) : null}
+          {/* {!isAI ? ( */}
+          <Button
+            ghost
+            type="primary"
+            htmlType="button"
+            onClick={() => {
+              if (AIclose) {
+                close();
+              } else {
+                removeSessionStorageData("influencerData");
+                close();
+              }
+            }}
+            size="large"
+            className={classes.cancelBtn}
+          >
+            Later
+          </Button>
+          {/* ) : null} */}
           <Button
             type="primary"
             onClick={() => {
-              if (isAI) {
+              // if (isAI) {
+              //   close();
+              // } else {
+              if (AIopen) {
                 close();
-              } else {
-                if (AIopen) {
-                  close();
-                  if (loginUserData.complementary_status === 1) {
-                    ComplementaryMemberShip();
-                  } else {
-                    navigate("/membership");
-                  }
+                if (loginUserData.complementary_status === 1) {
+                  ComplementaryMemberShip();
                 } else {
-                  navigate("/login");
-                  close();
+                  navigate("/membership");
                 }
+              } else {
+                navigate("/login");
+                close();
               }
+              // }
             }}
             style={{ marginLeft: "10px" }}
             htmlType="Continue"

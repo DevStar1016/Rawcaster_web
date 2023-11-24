@@ -310,6 +310,132 @@ const Post = ({
     });
   };
 
+  const DropdownArray = [
+    {
+      key: 1,
+      isLoginuser: true,
+      isBoth: false,
+      label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
+    },
+    {
+      key: 2,
+      isLoginuser: true,
+      isBoth: false,
+      label: (
+        <div
+          onClick={() => {
+            Modal.confirm({
+              title: "Confirmation",
+              okText: "Yes",
+              cancelText: "No",
+              cancelButtonProps: {
+                danger: true,
+              },
+              content: <div>Do you want to delete this nugget? </div>,
+              onOk: () => {
+                deletenugget(ele.nugget_id);
+              },
+            });
+          }}
+        >
+          Delete
+        </div>
+      ),
+    },
+    {
+      key: 3,
+      isLoginuser: false,
+      isBoth: true,
+      label: (
+        <div
+          onClick={() => {
+            const el = document.createElement("input");
+            el.value = NUGGET_SHARE_URL + window.btoa(ele.nugget_id);
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand("copy");
+            document.body.removeChild(el);
+            toast.remove("rawcaster");
+            toast.success("Link copied to clipboard", {
+              id: "rawcaster",
+            });
+          }}
+          className={classes.dropdownItem}
+        >
+          Share Link
+        </div>
+      ),
+    },
+    {
+      key: 4,
+      isLoginuser: false,
+      isBoth: false,
+      label: (
+        <div
+          onClick={() => {
+            Modal.confirm({
+              title: "Confirmation",
+              okText: "Yes",
+              cancelText: "No",
+              cancelButtonProps: {
+                danger: true,
+              },
+              content: (
+                <div>Are You Sure Do you want to Block this user ? </div>
+              ),
+              onOk: () => {
+                handleBlock(ele.user_id);
+              },
+            });
+          }}
+          className={classes.dropdownItem}
+        >
+          <span className="material-symbols-outlined">block</span> Block User
+        </div>
+      ),
+    },
+    {
+      key: 5,
+      isLoginuser: false,
+      isBoth: false,
+      label: (
+        <div
+          onClick={() => {
+            setisReport(true);
+          }}
+          className={classes.dropdownItem}
+        >
+          <span className="material-symbols-outlined">report</span> Report Abuse
+        </div>
+      ),
+    },
+    {
+      key: 5,
+      isLoginuser: false,
+      isBoth: false,
+      label: (
+        <div
+          onClick={() => {
+            HandleBecameaFan(Token, ele.user_ref_id)
+              .then(() => {
+                dispatch(
+                  handleNuggetFollowingUpdate({
+                    user_id: ele.user_id,
+                    nugget_id: ele.nugget_id,
+                    following: !ele.following,
+                  })
+                );
+              })
+              .catch(() => {});
+          }}
+          className={classes.dropdownItem}
+        >
+          <span className="material-symbols-outlined">group</span>Become a Fan
+        </div>
+      ),
+    },
+  ];
+
   /**
    * Returns an array of objects containing key-value pairs based on the given element.
    * @param {any} ele - The element to process.
@@ -318,220 +444,40 @@ const Post = ({
   const getMoreValues = (ele) => {
     if (ele.user_id === loginUserData?.user_id) {
       if (!Opened) {
-        if (ele && ele?.poll_option && ele.poll_option?.length !== 0) {
-          let resultData = [
-            {
-              key: 2,
-              label: (
-                <div
-                  onClick={() => {
-                    Modal.confirm({
-                      title: "Confirmation",
-                      okText: "Yes",
-                      cancelText: "No",
-                      cancelButtonProps: {
-                        danger: true,
-                      },
-                      content: <div>Do you want to delete this nugget? </div>,
-                      onOk: () => {
-                        deletenugget(ele.nugget_id);
-                      },
-                    });
-                  }}
-                >
-                  Delete
-                </div>
-              ),
-            },
-          ];
-          return resultData;
-        } else if (ele.type === 2) {
-          let resultData = [
-            {
-              key: 2,
-              label: (
-                <div
-                  onClick={() => {
-                    Modal.confirm({
-                      title: "Confirmation",
-                      okText: "Yes",
-                      cancelText: "No",
-                      cancelButtonProps: {
-                        danger: true,
-                      },
-                      content: <div>Do you want to delete this nugget? </div>,
-                      onOk: () => {
-                        deletenugget(ele.nugget_id);
-                      },
-                    });
-                  }}
-                >
-                  Delete
-                </div>
-              ),
-            },
-          ];
+        if (
+          (ele && ele?.poll_option && ele.poll_option?.length !== 0) ||
+          ele.type === 2
+        ) {
+          let resultData = DropdownArray.filter((elem) => elem.key === 2);
           return resultData;
         } else {
-          let resultData = [
-            {
-              key: 1,
-              label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
-            },
-            {
-              key: 2,
-              label: (
-                <div
-                  onClick={() => {
-                    Modal.confirm({
-                      title: "Confirmation",
-                      okText: "Yes",
-                      cancelText: "No",
-                      cancelButtonProps: {
-                        danger: true,
-                      },
-                      content: <div>Do you want to delete this nugget ? </div>,
-                      onOk: () => {
-                        deletenugget(ele.nugget_id);
-                      },
-                    });
-                  }}
-                >
-                  Delete
-                </div>
-              ),
-            },
-            {
-              key: 3,
-              label: (
-                <div
-                  onClick={() => {
-                    const el = document.createElement("input");
-                    el.value = NUGGET_SHARE_URL + window.btoa(ele.nugget_id);
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand("copy");
-                    document.body.removeChild(el);
-                    toast.remove("rawcaster");
-                    toast.success("Link copied to clipboard", {
-                      id: "rawcaster",
-                    });
-                  }}
-                  className={classes.dropdownItem}
-                >
-                  Share Link
-                </div>
-              ),
-            },
-          ];
+          let resultData = DropdownArray.filter(
+            (elem) => elem.isLoginuser || elem.isBoth
+          );
+
+          if (ele.share_type !== 1) {
+            resultData = resultData.filter((elem) => parseInt(elem.key) !== 3);
+          }
+
           return resultData;
         }
       } else {
         return [];
       }
     } else {
-      let resultData = [
-        {
-          key: 1,
-          label: (
-            <div
-              onClick={() => {
-                Modal.confirm({
-                  title: "Confirmation",
-                  okText: "Yes",
-                  cancelText: "No",
-                  cancelButtonProps: {
-                    danger: true,
-                  },
-                  content: (
-                    <div>Are You Sure Do you want to Block this user ? </div>
-                  ),
-                  onOk: () => {
-                    handleBlock(ele.user_id);
-                  },
-                });
-              }}
-              className={classes.dropdownItem}
-            >
-              <span className="material-symbols-outlined">block</span> Block
-              User
-            </div>
-          ),
-        },
-        {
-          key: 2,
-          label: (
-            <div
-              onClick={() => {
-                setisReport(true);
-              }}
-              className={classes.dropdownItem}
-            >
-              <span className="material-symbols-outlined">report</span> Report
-              Abuse
-            </div>
-          ),
-        },
-        {
-          key: 3,
-          label: (
-            <div
-              onClick={() => {
-                HandleBecameaFan(Token, ele.user_ref_id)
-                  .then(() => {
-                    dispatch(
-                      handleNuggetFollowingUpdate({
-                        user_id: ele.user_id,
-                        nugget_id: ele.nugget_id,
-                        following: !ele.following,
-                      })
-                    );
-                  })
-                  .catch(() => {});
-              }}
-              className={classes.dropdownItem}
-            >
-              <span className="material-symbols-outlined">group</span>Become a
-              Fan
-            </div>
-          ),
-        },
-        {
-          key: 4,
-          label: (
-            <div
-              onClick={() => {
-                // if (ele?.share_link) {
-                const el = document.createElement("input");
-                el.value = NUGGET_SHARE_URL + window.btoa(ele.nugget_id);
-                // el.value = ele?.share_link;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand("copy");
-                document.body.removeChild(el);
-                toast.remove("rawcaster");
-                toast.success("Link copied to clipboard", {
-                  id: "rawcaster",
-                });
-                // } else {
-                //   toast.error("Link not found!");
-                // }
-              }}
-              className={classes.dropdownItem}
-            >
-              <span className={classes.share_link_icon}></span>Share Link
-            </div>
-          ),
-        },
-      ];
-      resultData.map((elem) => {
-        if (ele.type === 2) {
-          resultData = resultData.filter((val) => parseInt(val.key) !== 4);
-        }
-        if (ele?.following) {
-          resultData = resultData.filter((val) => parseInt(val.key) !== 3);
-        }
-      });
+      let resultData = DropdownArray.filter(
+        (elem) => !elem.isLoginuser || elem.isBoth
+      );
+
+      if (ele.share_type !== 1) {
+        resultData = resultData.filter((elem) => parseInt(elem.key) !== 3);
+      }
+      if (ele.type === 2) {
+        resultData = resultData.filter((elem) => parseInt(elem.key) !== 4);
+      }
+      if (ele?.following) {
+        resultData = resultData.filter((elem) => parseInt(elem.key) !== 3);
+      }
 
       return resultData;
     }
@@ -1111,9 +1057,15 @@ const Post = ({
                     MetaDataContent={(url) => {
                       if (ele.metadata) {
                         if (isArray(JSON.parse(ele.metadata))) {
+                          function normalizeURL(url) {
+                            var parsedURL = new URL(url);
+                            return parsedURL.hostname;
+                          }
                           const FindMetaData = JSON.parse(ele.metadata).find(
-                            (elem) => elem.url === url
+                            (elem) =>
+                              normalizeURL(elem.url) === normalizeURL(url)
                           );
+
                           if (FindMetaData) {
                             return MetaDataContent(FindMetaData, true);
                           }

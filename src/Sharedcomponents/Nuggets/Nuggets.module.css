@@ -26,6 +26,12 @@
   width: calc(100% - 25px);
   float: left;
 }
+.verifiedImg {
+  height: 12px;
+  width: 12px;
+  margin-left: 5px;
+  margin-bottom: 2px;
+}
 .PopoverShareLink {
   display: flex;
   flex-direction: row;
