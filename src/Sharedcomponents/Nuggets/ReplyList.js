@@ -28,6 +28,7 @@ import { useSingleNuggetContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { CommentReadoutSec, CommentTranslateSec } from "./Utility";
+import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 
 const ReplyList = ({
   isReplyEnabled,
@@ -363,7 +364,19 @@ const ReplyList = ({
             <div className={classes.rightitem}>
               <div className="d-flex flex-row">
                 <div className={classes.cmtText}>
-                  <p>{elem?.name}</p>
+                  <p>
+                    {elem?.name}
+
+                    {elem && elem.account_verify_status === 1 && (
+                      <img
+                        src={DiamonVerified}
+                        className={classes.verifiedImg}
+                        // style={{
+                        //   display: "none",
+                        // }}
+                      />
+                    )}
+                  </p>
                   <span>
                     {elem.translated_text
                       ? decodeHtml(elem?.translated_text)

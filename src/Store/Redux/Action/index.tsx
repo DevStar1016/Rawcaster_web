@@ -115,7 +115,6 @@ export const fetchNuggetsbyId = createAsyncThunk(
       ...formData,
       token: token,
     };
-    console.log(signal, "signal");
 
     if (token) {
       try {

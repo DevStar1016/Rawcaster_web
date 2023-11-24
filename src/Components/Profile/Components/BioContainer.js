@@ -305,17 +305,28 @@ const BioContainer = ({ isLoginuser }) => {
           ) : (
             <Skeleton active />
           )}
-          {profileData?.last_verify_status !== null &&
-          (DiamondVerifyType === 3 || DiamondVerifyType === 2) ? (
+          {(profileData?.last_verify_status !== null &&
+            profileData?.verification_reason !== null &&
+            DiamondVerifyType === 3) ||
+          DiamondVerifyType === 2 ? (
             <div className={classes.verifyAccountOutlineContainer}>
               <div className="d-flex align-items-center">
                 <span class="material-symbols-outlined text-danger">
                   cancel
                 </span>
-                <p className="text-danger ms-2 mb-1">
+                <p
+                  className="text-danger ms-2 mb-1"
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "normal",
+                  }}
+                >
                   {profileData?.last_verify_status || ""}
                 </p>
               </div>
+              <p className="text-danger ms-4 ps-2 mb-1">
+                {profileData?.verification_reason || ""}
+              </p>
               <Button
                 className={`${classes.becomeafanbtn} ${classes.verifyAccount}`}
                 style={{

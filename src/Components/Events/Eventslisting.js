@@ -164,7 +164,6 @@ const Eventslisting = ({
    * @returns The appropriate dropdown list based on the value of `isUser`.
    */
   const Dropdownlist = isUser ? UserDropdownItems : DropdownItems;
-  console.log(EventListData, "EventListData");
 
   return (
     <EventContext.Provider
