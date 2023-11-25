@@ -76,7 +76,6 @@ const Request = ({ request, setrequests, onSuccess, onReject }) => {
               { id: "rawcaster" }
             );
             onSuccess(res.data.friend_details);
-            console.log("requested");
           } else {
             toast.remove("rawcaster");
             toast.success(`Sucessfully Accepted`, { id: "rawcaster" });

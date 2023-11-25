@@ -74,7 +74,6 @@ export const ReadoutSec = ({ nugget_id, readout_url = null }) => {
       signal: PlayerSource.current.signal,
     })
       .then((res) => {
-        console.log("test");
         setisplayerFetching(false);
         if (res?.data?.status === 1) {
           if (audio) {
@@ -234,7 +233,6 @@ export const CommentReadoutSec = ({ comment_id, readout_url = null }) => {
         }
       })
       .catch((err) => {
-        console.log(err, "err");
         if (axios.isCancel(err)) {
           PlayerSource.current = null;
         } else {

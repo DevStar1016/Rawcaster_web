@@ -26,19 +26,26 @@ import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import moment from "moment";
 import PlacesAutocomplete from "react-places-autocomplete";
 import { useDispatch } from "react-redux";
-import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
-import { handleAccountVerifyStatus } from "../../Store/Redux/Reducer/AuthReducer";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { useMainContext } from "../../Shared/Context";
+import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
+import { NAME_REGEX } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
-  first_name: yup.string().required(`Please input your First Name!`),
-  last_name: yup.string().required(`Please input your Last Name!`),
+  first_name: yup
+    .string()
+    .matches(NAME_REGEX, "Please input valid First Name")
+    .required(`Please input your First Name!`),
+  last_name: yup
+    .string()
+    .matches(NAME_REGEX, "Please input valid Last Name")
+    .required(`Please input your Last Name!`),
   telephone: yup
     .string()
-    .min(5, "Telephone must be atleast 5 characters")
-    .required(`Please input your Telephone!`),
+    .min(5, "Mobile number must be atleast 5 characters")
+    .required(`Please input your mobile number!`),
   dob: yup.string().required(`Please input your Date of Birth!`),
   email_id: yup
     .string()
@@ -49,6 +56,7 @@ const validationSchema = yup.object().shape({
 
 const Claimaccount = () => {
   const navigate = useNavigate();
+  const { isAccountVerified, IsValidCredentials } = useMainContext();
   const dispatch = useDispatch();
   const params = useParams();
   const display_user_id = params?.user_id
@@ -83,7 +91,11 @@ const Claimaccount = () => {
             "Your profile should be a verified profile to claim an influencer profile",
           SubmitButtonTitle: "Verify Account",
           onSuccess: () => {
-            navigate("/verifyaccount");
+            if (loginUserData.user_status_id >= 3) {
+              navigate("/verifyaccount");
+            } else {
+              navigate(-1);
+            }
           },
           isCloseAvailable: false,
         });
@@ -146,6 +158,12 @@ const Claimaccount = () => {
             //   },
             // });
           } else {
+            dispatch(
+              handleClaimAccount({
+                show: true,
+                msg: res.data.msg,
+              })
+            );
             navigate(-1);
           }
         } else if (res.data.status === 0) {
@@ -228,13 +246,17 @@ const Claimaccount = () => {
             <Row>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>First Name </p>
+                  <p className={classes.label}>
+                    First Name <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
                     maxLength={25}
                     autoComplete="off"
                     value={values.first_name}
                     onChange={handleChange("first_name")}
+                    placeholder="Enter your first name"
+                    disabled={isAccountVerified !== "unverified"}
                   />
                 </div>
                 {touched.first_name && (
@@ -243,13 +265,17 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Last Name </p>
+                  <p className={classes.label}>
+                    Last Name <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
                     maxLength={25}
                     autoComplete="off"
                     value={values.last_name}
                     onChange={handleChange("last_name")}
+                    placeholder="Enter your last name"
+                    disabled={isAccountVerified !== "unverified"}
                   />
                 </div>
                 {touched.last_name && (
@@ -258,13 +284,17 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Telephone </p>
+                  <p className={classes.label}>
+                    Mobile Number <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
                     maxLength={20}
                     autoComplete="off"
                     value={values.telephone}
                     onChange={handleChange("telephone")}
+                    placeholder="Enter your mobile number"
+                    disabled={IsValidCredentials.mobile}
                   />
                 </div>
                 {touched.telephone && (
@@ -273,13 +303,17 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Email id </p>
+                  <p className={classes.label}>
+                    Email Id <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox}`}
                     maxLength={25}
                     autoComplete="off"
                     value={values.email_id}
                     onChange={handleChange("email_id")}
+                    placeholder="Enter your email id"
+                    disabled={IsValidCredentials.email}
                   />
                 </div>
                 {touched.email_id && (
@@ -288,8 +322,11 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Date of Birth </p>
+                  <p className={classes.label}>
+                    Date of Birth <span className="text-danger">*</span>{" "}
+                  </p>
                   <DateInputBox
+                    isDisabled={isAccountVerified !== "unverified"}
                     displayDate={values.dob}
                     onSelectDate={(date) => {
                       if (date !== "") {
@@ -304,7 +341,9 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Location</p>
+                  <p className={classes.label}>
+                    Location <span className="text-danger">*</span>{" "}
+                  </p>
                   <Form.Item name="location">
                     <PlacesAutocomplete
                       value={values.location}

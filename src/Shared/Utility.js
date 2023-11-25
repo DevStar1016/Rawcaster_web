@@ -27,6 +27,7 @@ import { toast } from "react-hot-toast";
 import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
 import { HandleVerifyModal } from "../Modal/DefaultModal";
 import { CustomParagraph } from "./UtilityComponents";
+import { fetchNuggetsbyId } from "../Store/Redux/Action";
 
 // Auth
 
@@ -62,6 +63,16 @@ export const getAuthToken = (value) => {
  */
 export const EncryptionString = (str) => {
   return window.btoa(str + ENCRIPTION_STRING);
+};
+
+export const getCustomPartialDisplayName = (displayName, length = 20) => {
+  if (displayName) {
+    if (displayName.length > length) {
+      return displayName.substring(0, length) + "...";
+    }
+    return displayName;
+  }
+  return "User";
 };
 
 /**
@@ -132,7 +143,6 @@ export const getGeocodeData = () => {
               });
             },
             (error) => {
-              console.log(error, "Geocode.fromLatLng");
               resolve({
                 status: 0,
                 address: "",
@@ -684,7 +694,7 @@ export const handleProfileNavigate = (userData) => {
     filterData.formData = filterValidObject(filterData.formData);
     dispatch(handleResetNuggets());
     dispatch(handleNuggetFormData(filterValidObject(filterData)));
-    // dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
+    dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
     navigate(`/viewprofile/${EncryptionString(user_id)}`);
   }
 };
@@ -815,20 +825,14 @@ export const ReadMore = ({
   Influencer,
   partialShowLines = 3,
   children,
-  isReadMore = true,
   isLinkopenModal,
   setisLinkopenModal,
   isReadMoreValid,
   onExpand,
-  partialHeight,
   isMetaDataAvailable = false,
   MetaDataContent,
 }) => {
-  const { Paragraph } = Typography;
-  const [OnEllipsis, setOnEllipsis] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [readMore, setReadmore] = useState(false);
-  console.log(children, "children");
+  const [openUrl, setopenUrl] = useState("");
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -839,6 +843,7 @@ export const ReadMore = ({
             if (href.includes("rawcaster")) {
               window.open(href);
             } else {
+              setopenUrl(href);
               setisLinkopenModal(true);
             }
           }}
@@ -851,13 +856,6 @@ export const ReadMore = ({
                 padding: 0,
                 width: "100%",
               }}
-              // onClick={() => {
-              //   if (href.includes("rawcaster")) {
-              //     window.open(href);
-              //   } else {
-              //     setisLinkopenModal(true);
-              //   }
-              // }}
             >
               {decodeHtml(content)}
             </Popover>
@@ -868,7 +866,7 @@ export const ReadMore = ({
 
         <LinkOpenModal
           open={isLinkopenModal}
-          url={href}
+          url={openUrl}
           close={() => {
             setisLinkopenModal(false);
           }}
@@ -887,13 +885,12 @@ export const ReadMore = ({
           onExpand: onExpand,
           onEllipsis: (status) => {
             isReadMoreValid();
-            setOnEllipsis(status);
           },
           expandable: true,
         }}
         style={{
           cursor: "pointer",
-          width: Influencer && !readMore ? "calc(100% - 80px)" : "100%",
+          width: Influencer ? "calc(100% - 80px)" : "100%",
           wordBreak: "break-word",
         }}
       ></CustomParagraph>
@@ -1142,4 +1139,13 @@ export const getUtcToSystemTime = (dateTime) => {
     -moment().utcOffset(),
     "minutes"
   );
+};
+
+// return participants count in K format
+export const getParticipantCount = (numOfParticipants) => {
+  if (numOfParticipants >= 1000) {
+    return (numOfParticipants / 1000).toFixed(2) + "k";
+  } else {
+    return numOfParticipants.toString();
+  }
 };

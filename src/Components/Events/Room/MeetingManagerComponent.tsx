@@ -80,23 +80,26 @@ const MeetingManagerComponent = () => {
           buttons: [],
           icon: null,
         });
-        setattendeesList((pre) =>
-          handleLeave(pre)
-        );
-       
-        const handleLeave = (pre)=> {
-          const remainingParticipants = pre.filter((participant) => participant.userId !== user_data.userId);
-          
-          const isHostOrCoHost = (participant) => participant.isHost || participant.isCoHost;
-          
-          const hostList = remainingParticipants.filter((participant) => isHostOrCoHost(participant));
-        
+        setattendeesList((pre) => handleLeave(pre));
+
+        const handleLeave = (pre) => {
+          const remainingParticipants = pre.filter(
+            (participant) => participant.userId !== user_data.userId
+          );
+
+          const isHostOrCoHost = (participant) =>
+            participant.isHost || participant.isCoHost;
+
+          const hostList = remainingParticipants.filter((participant) =>
+            isHostOrCoHost(participant)
+          );
+
           if (hostList.length === 0 && audiovideo) {
             audiovideo.stop();
           }
-        
-          return remainingParticipants
-        }
+
+          return remainingParticipants;
+        };
       }
     } else if (attendeeId.includes("#content") && present) {
       setisPresentScreen((pre) => true);
@@ -143,7 +146,7 @@ const MeetingManagerComponent = () => {
                 [hostDisabledType]: singleAttendee[hostDisabledType],
                 [Type]: singleAttendee[hostDisabledType],
               }));
-               
+
               if (singleAttendee[hostDisabledType] === false && userStatus) {
                 Modal.confirm({
                   title: popupmessage,
@@ -162,26 +165,29 @@ const MeetingManagerComponent = () => {
             (ele) => parseInt(ele.userId) === getUserData()?.user_id
           );
 
-           setMeetingSettings((pre) => ({
-             ...pre,
+          setMeetingSettings((pre) => ({
+            ...pre,
             [settingType]: value.status ? 1 : 0,
-            hostDisabledType: value.status 
+            hostDisabledType: value.status,
           }));
 
-            setattendeesList(attendeeList);
+          setattendeesList(attendeeList);
 
-            // skip toggle mute 
-            if (!(findAttendee?.isHost || findAttendee?.isCoHost) && !userStatus) {
-              resolve();
-            }
+          // skip toggle mute
+          if (
+            !(findAttendee?.isHost || findAttendee?.isCoHost) &&
+            !userStatus
+          ) {
+            resolve();
+          }
 
-            // setuserdata((pre) => ({
-            //   ...pre,
-            //   audio: findAttendee.audio,
-            //   [hostDisabledType]: findAttendee[hostDisabledType],
-            //   [Type]: findAttendee[hostDisabledType],
-            // }));
-         
+          // setuserdata((pre) => ({
+          //   ...pre,
+          //   audio: findAttendee.audio,
+          //   [hostDisabledType]: findAttendee[hostDisabledType],
+          //   [Type]: findAttendee[hostDisabledType],
+          // }));
+
           // if (!userdata.isHost || !userdata.isCoHost) {
           //   // setMeetingSettings((pre) => ({
           //   //   ...pre,
@@ -259,10 +265,10 @@ const MeetingManagerComponent = () => {
           }
           break;
         case CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST:
-            if (message) {
-              RequestRef.current = message.joinRequests
-            }
-            break;
+          if (message) {
+            RequestRef.current = message.joinRequests;
+          }
+          break;
         case CHIME_SOCKET_EVENTS.NEW_USER_JOINED_MEETING:
           if (message) {
             setnotificationToast({
@@ -474,17 +480,17 @@ const MeetingManagerComponent = () => {
           }
           break;
         case CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER:
-            if (message) {
-              const hostData = message;
-              if (hostData && hostData.statusCode === 1) {
-                const updatedUserData = hostData.updatedUser;
-                if (parseInt(updatedUserData.userId) === userdata?.userId) {
-                    setuserdata(updatedUserData);
-                  }
-                  setattendeesList(message.attendeeList);
-                }
+          if (message) {
+            const hostData = message;
+            if (hostData && hostData.statusCode === 1) {
+              const updatedUserData = hostData.updatedUser;
+              if (parseInt(updatedUserData.userId) === userdata?.userId) {
+                setuserdata(updatedUserData);
               }
-            break;
+              setattendeesList(message.attendeeList);
+            }
+          }
+          break;
         case CHIME_SOCKET_EVENTS.MEETING_IN_CALL_EVENTS:
           try {
             const callEventData = message;
@@ -499,23 +505,23 @@ const MeetingManagerComponent = () => {
           break;
         case CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER:
           if (message.emoji) {
-            setAnimatedEmoji(message.emoji)
+            setAnimatedEmoji(message.emoji);
           }
-        break;
+          break;
         case CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER:
           if (message) {
-            let endtime = new Date(message.time).getMinutes()
+            let endtime = new Date(message.time).getMinutes();
             setnotificationToast({
               buttons: [],
               icon: null,
               msg: `Meeting will be ended in ${endtime} minutes`,
               show: true,
               title: null,
-              type: null
-            })
-            setMeetingTimer(message.time)
+              type: null,
+            });
+            setMeetingTimer(message.time);
           }
-        break;
+          break;
         default:
           break;
       }

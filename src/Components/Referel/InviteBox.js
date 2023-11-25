@@ -185,7 +185,7 @@ const InviteBox = () => {
                 className={classes.textBox}
                 onChange={(e) => setsearchInput(e.target.value)}
                 value={searchInput}
-                placeholder="Search Groups"
+                placeholder="Search Contacts"
                 autoComplete="off"
               />
               {searchInput && searchInput !== "" && (

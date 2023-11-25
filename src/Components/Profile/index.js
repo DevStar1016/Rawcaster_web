@@ -128,7 +128,6 @@ const Profile = () => {
   const getprofile = () => {
     // if (loginToken) {
     let filterData = { ...nuggetFormData };
-    console.log(nuggetFormData);
     if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
       filterData.formData = {
         user_id: display_user_id,
@@ -332,6 +331,8 @@ const Profile = () => {
     setisInfluencerChatModalOpen,
     isInfluencerChatModalOpen,
   };
+
+  const getUserData = () => profileData;
   return (
     <ProfileContext.Provider value={profileValue}>
       <Seo
@@ -490,7 +491,7 @@ const Profile = () => {
                         isCreateEnabled={getisLoginUser()}
                         isSearchEnabled={true}
                         isUser={true}
-                        userData={profileData}
+                        userData={getUserData()}
                       />
                     )}
                   </>

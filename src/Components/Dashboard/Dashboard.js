@@ -2,7 +2,7 @@
  * A React component that represents the dashboard page.
  * @returns The rendered dashboard page.
  */
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   useAuth,
@@ -27,17 +27,17 @@ import Notification from "../Notifications";
 import * as rdd from "react-device-detect";
 import { useWindowWidth } from "../../Shared/Utility";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { debounce } from "lodash";
 
 const Dashboard = () => {
   const loginUserData = useAuthData();
   const { isSuccess } = useAuth();
   const loginToken = useAuthToken();
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
   const { dashboardMenu } = useDashboard();
   const { nuggetFormData } = useNuggets();
   const dispatch = useDispatch();
   const WINDOW_WIDTH = useWindowWidth();
-
   /**
    * Executes a side effect when the value of `pathname` changes.
    * If `loginToken` is `null`, removes the "influencerData" from session storage.
@@ -57,21 +57,40 @@ const Dashboard = () => {
       filterData?.formData?.user_id ||
       filterData?.formData?.saved
     ) {
-      filterData.formData = {
-        filter_type: filterData?.formData?.filter_type ?? 0,
-        page_number: 1,
-        nugget_type: 0,
-      };
-      dispatch(handleResetNuggets());
-      dispatch(handleNuggetFormData(filterData));
-      dispatch(fetchNuggetsbyId(filterData));
+      getDashboardDetails(filterData);
     }
   }, [pathname]);
+
+  useEffect(() => {
+    let filterData = { ...nuggetFormData };
+    if (state?.isLogoPress) {
+      handleDashboardApi(filterData);
+    }
+  }, [state?.isLogoPress]);
+
   useEffect(() => {
     return () => {
       dispatch(handleNuggetList([]));
     };
   }, []);
+
+  const getDashboardDetails = (filterData) => {
+    filterData.token = loginToken;
+    filterData.formData = {
+      filter_type: filterData?.formData?.filter_type ?? 0,
+      page_number: 1,
+      nugget_type: 0,
+    };
+    dispatch(handleResetNuggets());
+    dispatch(handleNuggetFormData(filterData));
+    dispatch(fetchNuggetsbyId(filterData));
+  };
+
+  const handleDashboardApi = useCallback(
+    debounce(getDashboardDetails, 500),
+    []
+  );
+
   return (
     <div>
       {isSuccess && loginUserData === null && (

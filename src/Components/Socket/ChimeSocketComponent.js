@@ -28,7 +28,6 @@ const ChimeSocketComponent = () => {
         type: type,
         message: message,
       };
-      console.log(EventData);
       EventWindowRef.postMessage(EventData, "*");
     }
   };
@@ -207,7 +206,6 @@ const ChimeSocketComponent = () => {
   // Message in Meeting Room Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, (message) => {
-      console.log("MEETING_ROOM_MSG", message);
       HandleSendToNewWindow(CHIME_SOCKET_EVENTS.MEETING_ROOM_MSG, message);
     });
     return () => {
@@ -244,36 +242,56 @@ const ChimeSocketComponent = () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.REMOVE_HOST_ANSWER);
     };
   }, [EventWindowRef]);
-  
+
   // Join Request Response Received Here - Socket
   useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST, (message) => {
-      HandleSendToNewWindow(CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST, message);
-    });
+    ChimesocketListen.on(
+      CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST,
+      (message) => {
+        HandleSendToNewWindow(
+          CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST,
+          message
+        );
+      }
+    );
     return () => {
-      ChimesocketListen.off(CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST);
+      ChimesocketListen.off(
+        CHIME_SOCKET_EVENTS.HANDLE_ACCEPT_REJECT_JOIN_REQUEST
+      );
     };
   }, [EventWindowRef]);
 
   // Reaction in Talkshow Received Here - Socket
   useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER, (message) => {
-      if (EventWindowRef) {
-        HandleSendToNewWindow(CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER, message);
+    ChimesocketListen.on(
+      CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER,
+      (message) => {
+        if (EventWindowRef) {
+          HandleSendToNewWindow(
+            CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER,
+            message
+          );
+        }
       }
-    });
+    );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.POST_REACTION_ANSWER);
     };
   }, [EventWindowRef]);
 
-   // End Event Meeting Alert Received Here - Socket
-   useEffect(() => {
-    ChimesocketListen.on(CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER, (message) => {
-      if (EventWindowRef) {
-        HandleSendToNewWindow(CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER, message);
+  // End Event Meeting Alert Received Here - Socket
+  useEffect(() => {
+    ChimesocketListen.on(
+      CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER,
+      (message) => {
+        if (EventWindowRef) {
+          HandleSendToNewWindow(
+            CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER,
+            message
+          );
+        }
       }
-    });
+    );
     return () => {
       ChimesocketListen.off(CHIME_SOCKET_EVENTS.END_MEETING_ALERT_ANSWER);
     };

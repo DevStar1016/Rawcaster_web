@@ -53,15 +53,18 @@ import {
   fetchuserSettingsbyToken,
 } from "../Store/Redux/Action";
 import {
+  handleDashboardFilterType,
   handleNuggetFormData,
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Components/Notifications";
 import ArtificialIntelligence from "../Components/ArtificialIntelligence";
-import { GlobalContext } from "../Shared/Context";
+import { GlobalContext, useMainContext } from "../Shared/Context";
 import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
 import ProfileImg from "../UIComponents/ProfileImg";
 import { useAppSelector } from "../Store/Redux/Config/Hooks";
+import { setCookie } from "../Store/Storage/Cookie";
+import { rootReducer } from "../Store/Redux/Config/RootReducer";
 
 const HomeLayout = () => {
   const params = useParams();
@@ -70,6 +73,7 @@ const HomeLayout = () => {
   const unReadCount = useAppSelector(
     (state) => state.dashboard.notificationUnreadCount
   );
+
   const token = useAuthToken();
   const [postModalShow, setpostModalShow] = useState(false);
   const [PostContent, setPostContent] = useState(null);
@@ -185,7 +189,16 @@ const HomeLayout = () => {
         <div className={`${classes.topheader}`}>
           <div className={classes.fullcontainer}>
             <div mode="horizontal" className="d-flex flex-row">
-              <Link className={classes.logopart} to="/dashboard">
+              <Link
+                className={classes.logopart}
+                onClick={() => {
+                  dispatch(handleDashboardFilterType(0));
+                }}
+                to="/dashboard"
+                state={{
+                  isLogoPress: Math.floor(Math.random() * 6) + 1,
+                }}
+              >
                 <img
                   className="d-none d-sm-block"
                   src={RawcasterLogo}
@@ -230,7 +243,7 @@ const HomeLayout = () => {
                       className={classes.liveIcon}
                       alt="referal_icon"
                       onClick={() => {
-                        console.log("test");
+                        dispatch(handleDashboardFilterType(0));
                         let filterData = {
                           token,
                           formData: {
@@ -441,7 +454,7 @@ const HomeLayout = () => {
 
         {loginUserData &&
           loginUserData.user_status_id > 0 &&
-          !pathname?.includes("viewprofile") && (
+          pathname?.includes("dashboard") && (
             <div className={classes.chatbotsec}>
               <ArtificialIntelligence />
             </div>

@@ -10,6 +10,8 @@ import { VerificationModal } from "../Modal/Verification/ProfileVerificationModa
 import ValidateTypeModal from "../Modal/Verification/ValidateTypeModal";
 import {
   useAuth,
+  useAuthData,
+  useAuthToken,
   useDashboard,
   useProfileVerifyModal,
 } from "../Shared/Reduxfetcher";
@@ -27,8 +29,15 @@ import {
   useMeetingManager,
   useRosterState,
 } from "amazon-chime-sdk-component-library-react";
+import { getRawcaserToken } from "../Shared/Utility";
+import {
+  AccountVerifedStatus,
+  getisValidAccount,
+} from "../Components/Events/Components/Utility";
 
 const ModalLayout = () => {
+  const loginUserData = useAuthData();
+  const token = useAuthToken();
   const PlayerSource = useRef(null);
   const location = useLocation();
   const dispatch = useDispatch();
@@ -38,12 +47,16 @@ const ModalLayout = () => {
   const meetingManager = useMeetingManager();
   const { roster } = useRosterState();
   const attendees = Object.values(roster);
+  const [IsValidCredentials, setIsValidCredentials] = useState({
+    email: false,
+    mobile: false,
+  });
+
   const [isChatOpen, setisChatOpen] = useState({
     show: false,
     type: "",
     id: "",
   });
-
   const { loginModalShow, twostepVerifyModalshow } = useDashboard();
   const { isAccountActive, userSettings } = useAuth();
   const profileverifyStatus = useProfileVerifyModal();
@@ -64,6 +77,15 @@ const ModalLayout = () => {
     }
   }, [location]);
 
+  useEffect(() => {
+    if (loginUserData) {
+      setIsValidCredentials({
+        email: loginUserData.is_email_id_verified === 1,
+        mobile: loginUserData.is_mobile_no_verified === 1,
+      });
+    }
+  }, [loginUserData]);
+
   /**
    * Executes the specified side effects when the location pathname changes.
    * @param {function} callback - The callback function to execute.
@@ -77,7 +99,7 @@ const ModalLayout = () => {
     if (location.pathname !== "/verifyotp") {
       removeSessionStorageData("verifyCountDown");
     }
-    if (location.pathname !== "/setting") {
+    if (location.pathname !== "/setting" && getRawcaserToken() !== null) {
       if (userSettings && userSettings.account_active_inactive === 0) {
         dispatch(handleAccountActive(true));
       }
@@ -98,6 +120,12 @@ const ModalLayout = () => {
         ActiveEvent,
         isplayerFetching,
         setisplayerFetching,
+        IsValidCredentials,
+        setIsValidCredentials,
+        isAccountVerified: AccountVerifedStatus(
+          loginUserData?.account_verify_type
+        ),
+        AccountAccessType: getisValidAccount(loginUserData?.user_status_id),
       }}
     >
       <HelmetComponent />
@@ -121,12 +149,14 @@ const ModalLayout = () => {
           dispatch(handleprofileVerifyModalShow({ show: false, msg: "" }));
         }}
       />
-      <AccountActivateModal
-        open={isAccountActive}
-        close={() => {
-          dispatch(handleAccountActive(false));
-        }}
-      />
+      {getRawcaserToken() !== null && (
+        <AccountActivateModal
+          open={isAccountActive}
+          close={() => {
+            dispatch(handleAccountActive(false));
+          }}
+        />
+      )}
     </MainContext.Provider>
   );
 };

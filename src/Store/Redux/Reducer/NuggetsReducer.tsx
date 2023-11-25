@@ -10,6 +10,7 @@ import { NuggetReducerProps } from "../types/Nuggets";
 const initialState: NuggetReducerProps = {
   token: null,
   nuggetVideoPaused: false,
+  nuggetCancelRef: null,
   nuggetFormData: {},
   Nuggets: [],
   isNuggetsLoading: true,
@@ -27,6 +28,9 @@ export const { actions, reducer } = createSlice({
   reducers: {
     handlenuggetToken: (state, action) => {
       state.token = action.payload;
+    },
+    handleCancelRef: (state, action) => {
+      state.nuggetCancelRef = action.payload;
     },
     handlenuggetVideoPaused: (state, action) => {
       state.nuggetVideoPaused = action.payload;
@@ -211,6 +215,7 @@ export const {
   handleNuggetTranslateUpdate,
   handleRemoveTranslate,
   handleNuggetFollowingUpdate,
+  handleCancelRef,
 } = actions;
 
 export default reducer;

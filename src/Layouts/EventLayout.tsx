@@ -57,8 +57,7 @@ const EventLayout = () => {
     // Filter out any attendees that have an externalUserId but not the userId
     let filterValidAttendees = attendees.map((elem) => {
       let findAttendee = attendeesList.find(
-        (ele) =>
-          elem.externalUserId && elem.externalUserId === ele.userRefId
+        (ele) => elem.externalUserId && elem.externalUserId === ele.userRefId
       );
       if (findAttendee) {
         return { ...findAttendee };
@@ -115,12 +114,6 @@ const EventLayout = () => {
       );
       // Check if the user has an external user id
       if (findExternalUserId && findExternalUserId.externalUserId) {
-        console.log({
-          screen_share_status: false,
-          refId: EventData?.reference_id,
-          userId: parseInt(findExternalUserId.externalUserId),
-        });
-
         // Send a message to the meeting in call
         ChimesendMessage(
           {
@@ -166,8 +159,8 @@ const EventLayout = () => {
                 <h2>{EventData?.event_name}</h2>
               </div>
             </div>
-          {meetingTimer && <MeetingTimer />}
-            {(isLocalUserSharing || sharingAttendeeId) ? (
+            {meetingTimer && <MeetingTimer />}
+            {isLocalUserSharing || sharingAttendeeId ? (
               <div
                 className={`${classes.meetingHeader} ${classes.endContainer}`}
               >
@@ -207,7 +200,9 @@ const EventLayout = () => {
                   </Tooltip>
                 )}
               </div>
-            ):  <div></div>}
+            ) : (
+              <div></div>
+            )}
           </Header>
 
           <Outlet

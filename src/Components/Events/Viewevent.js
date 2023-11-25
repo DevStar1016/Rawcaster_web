@@ -143,7 +143,7 @@ const Viewevent = () => {
           {ViewEventData?.type === 1 && (
             <div className={classes.eventDetail}>
               <p>
-                Maximun Participants : {ViewEventData.no_of_participants} |
+                Maximum Participants : {ViewEventData.no_of_participants} |
                 Total Duration : {eventDisplayDuration(ViewEventData.duration)}
               </p>
             </div>

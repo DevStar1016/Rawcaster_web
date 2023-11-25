@@ -21,11 +21,13 @@ import {
   getUnclaimedInfluencerData,
   getfollowerfollowingService,
 } from "./Utility";
-import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { useProfileContext } from "../../../Shared/Context";
 import msgIcon from "../../../Assets/Images/svg/msgIcon.svg";
 import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
 import InfluencerSend from "../../../Modal/InfluencerSend";
+import { fetchuserInfobyToken } from "../../../Store/Redux/Action";
+import { useDispatch } from "react-redux";
 
 const ConnectionsList = ({
   title = "",
@@ -34,6 +36,7 @@ const ConnectionsList = ({
   isMyProfile,
   isLoading = false,
 }) => {
+  const dispatch = useDispatch();
   const {
     isLoginUser,
     getFollowers,
@@ -41,6 +44,7 @@ const ConnectionsList = ({
     setisInfluencerChatModalOpen,
   } = useProfileContext();
   const params = useParams();
+  const loginUserData = useAuthData();
   const [isLoadMore, setisLoadMore] = useState(false);
   const display_user_id = DecryptionString(params.user_id);
   const [isLoadingConnection, setisLoadingConnection] = useState(false);
@@ -62,10 +66,12 @@ const ConnectionsList = ({
 
   const HandleConnections = (res, page, val) => {
     let isFilterEnable = Object.keys(val).length !== 0;
-    setPage({
-      pages: res.data.current_page_no,
-      total_pages: res.data.total_pages,
-    });
+    if (res.data) {
+      setPage({
+        pages: res.data.current_page_no,
+        total_pages: res.data.total_pages,
+      });
+    }
     if (isFilterEnable) {
       if (page === 1) {
         setConnectionsList((pre) => {
@@ -176,6 +182,12 @@ const ConnectionsList = ({
     } else if (type === "fans") {
       getFollowers(val, page)
         .then((res) => {
+          if (
+            isLoginUser &&
+            loginUserData?.followers_count !== res?.data?.follow_count
+          ) {
+            dispatch(fetchuserInfobyToken(loginToken));
+          }
           setConnectionsList(res);
         })
         .finally(() => {

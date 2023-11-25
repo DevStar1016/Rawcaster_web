@@ -44,7 +44,10 @@ import _debounce from "lodash/debounce";
 import { Form, InputGroup } from "react-bootstrap";
 import FavImg from "../../Assets/Icons/svg/Favorite.svg";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
-import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import {
+  handleLoginData,
+  handleupdateSavedCount,
+} from "../../Store/Redux/Reducer/AuthReducer";
 
 const Nuggets = ({
   isLocked = false,
@@ -73,6 +76,7 @@ const Nuggets = ({
     totalpages,
     DashboardfilterType,
   } = useNuggets();
+  const nuggetsRef = useRef(null);
 
   const userData = getRawcaserToken();
   const [isloading, setisLoading] = useState(false);
@@ -152,13 +156,23 @@ const Nuggets = ({
    * @param {object} [formData=null] - The form data to filter the nuggets.
    * @returns {Promise} - A promise that resolves with the retrieved nuggets data.
    */
-  const GetNuggetList = (page = 1, formData = null) => {
+  const GetNuggetList = (page = 1, formData = null, isMyFan = false) => {
+    if (!isMyFan) {
+      setActiveTab(0);
+    }
     if (page === 1) {
       setisLoading(true);
     }
+    if (nuggetsRef.current) {
+      nuggetsRef.current.abort("Request Cancelled");
+    }
+    nuggetsRef.current = new AbortController();
+
     return new Promise((resolve, reject) => {
       if (formData) {
-        dispatch(fetchNuggetsbyId(formData)).then((res) => {
+        dispatch(
+          fetchNuggetsbyId({ ...formData, signal: nuggetsRef.current.signal })
+        ).then((res) => {
           if (formData.formData.saved === 1) {
             setNuggetCount((pre) => ({
               ...pre,
@@ -175,23 +189,26 @@ const Nuggets = ({
             page: res.payload.current_page_no,
             totalpage: res.payload.total_pages,
           });
-          setNuggetsData(res.payload.data);
+          setNuggetsData([...res.payload.data]);
           setloading(false);
           setisLoading(false);
           setisReachedEnd(false);
+          nuggetsRef.current = null;
         });
         return;
       }
-      let finalData = { ...nuggetFormData };
+      let finalData = { ...nuggetFormData, signal: nuggetsRef.current.signal };
       finalData.formData = {
         ...finalData.formData,
         page_number: page,
       };
+
       dispatch(fetchNuggetsbyId(finalData)).then((res) => {
         setisNuggetModify(null);
         setloading(false);
         setisReachedEnd(false);
         setisLoading(false);
+        nuggetsRef.current = null;
       });
     });
   };
@@ -343,6 +360,7 @@ const Nuggets = ({
 
   useEffect(() => {
     // if (NuggetsData.length === 0) {
+
     setNuggetsData(Nuggets);
     // }
   }, [Nuggets]);
@@ -402,6 +420,7 @@ const Nuggets = ({
       nugget_type: 0,
       filter_type: type,
     };
+
     dispatch(handleResetNuggets());
     dispatch(handleDashboardFilterType(type));
     dispatch(handleNuggetFormData(filterData));
@@ -498,7 +517,7 @@ const Nuggets = ({
                             search_key: SearchKey,
                           };
                           dispatch(handleNuggetFormData(FormData));
-                          GetNuggetList(1, FormData);
+                          GetNuggetList(1, FormData, ActiveTab === 1);
                         }
                       }
                     }}
@@ -518,7 +537,7 @@ const Nuggets = ({
                           search_key: SearchKey,
                         };
                         dispatch(handleNuggetFormData(FormData));
-                        GetNuggetList(1, FormData);
+                        GetNuggetList(1, FormData, ActiveTab === 1);
                       }
                     }}
                   >
@@ -568,7 +587,7 @@ const Nuggets = ({
                         formData: { page_number: 1, nugget_type: 0, saved: 1 },
                       };
                       dispatch(handleNuggetFormData(finalData));
-                      GetNuggetList(1, finalData);
+                      GetNuggetList(1, finalData, true);
                     }
                     setActiveTab(1);
                   }}
@@ -646,15 +665,27 @@ const Nuggets = ({
                             handleSave={(save) => {
                               if (ActiveTab === 1 && save !== 1) {
                                 setNuggetsData((pre) => {
-                                  const data = pre.filter(
-                                    (elem) => elem.nugget_id !== ele.nugget_id
+                                  let refData = [...pre];
+                                  refData = refData.filter(
+                                    (element) =>
+                                      element.nugget_id !== ele.nugget_id
                                   );
-                                  return data;
+                                  return refData;
                                 });
-                                setNuggetCount((pre) => ({
-                                  ...pre,
-                                  favorites: pre.favorites - 1,
-                                }));
+
+                                setNuggetCount((prev) => {
+                                  return {
+                                    ...prev,
+                                    favorites:
+                                      prev.favorites !== 0
+                                        ? prev.favorites - 1
+                                        : 0,
+                                  };
+                                });
+                                // setNuggetCount((pre) => ({
+                                //     ...pre,
+                                //   favorites: pre.favorites - 1,
+                                // }));
                               } else {
                                 let findIndex = Nuggets.findIndex(
                                   (elem) => elem.nugget_id === ele.nugget_id
@@ -673,12 +704,6 @@ const Nuggets = ({
                                 ...pre,
                                 favorites: val,
                               }));
-                              dispatch(
-                                handleLoginData({
-                                  ...loginuserData,
-                                  saved_nugget_count: val,
-                                })
-                              );
                             }}
                             onEdit={(id) => {
                               setisEdit(id);
@@ -689,18 +714,21 @@ const Nuggets = ({
                                 if (nuggetFormData.formData.saved === 1) {
                                   setNuggetCount((pre) => ({
                                     ...pre,
-                                    favorites: pre.favorites - 1,
+                                    favorites:
+                                      pre.favorites !== 0
+                                        ? pre.favorites - 1
+                                        : 0,
                                   }));
                                 } else {
                                   setNuggetCount((pre) => ({
                                     ...pre,
-                                    my_nuggets: pre.my_nuggets - 1,
+                                    my_nuggets:
+                                      pre.my_nuggets !== 0
+                                        ? pre.my_nuggets - 1
+                                        : 0,
                                   }));
                                 }
                               }
-                              // if (GetNuggetList) {
-                              //   GetNuggetList();
-                              // }
                             }}
                             HandleShare={() => {
                               if (GetNuggetList) {

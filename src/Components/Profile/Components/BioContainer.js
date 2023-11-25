@@ -5,7 +5,7 @@
  */
 import React, { useEffect } from "react";
 import { useAuth, useAuthToken } from "../../../Shared/Reduxfetcher";
-import { useProfileContext } from "../../../Shared/Context";
+import { useMainContext, useProfileContext } from "../../../Shared/Context";
 import {
   JSONtoformdata,
   ReadMore,
@@ -15,7 +15,16 @@ import {
 } from "../../../Shared/Utility";
 import useReplaceBiodataHandler from "../Utility";
 import classes from "../Profile.module.css";
-import { Button, Input, Select, Skeleton, Spin, Tooltip } from "antd";
+import {
+  Alert,
+  Button,
+  Input,
+  Select,
+  Skeleton,
+  Space,
+  Spin,
+  Tooltip,
+} from "antd";
 import { useState } from "react";
 import { useFormik } from "formik";
 import {
@@ -28,8 +37,12 @@ import { useNavigate } from "react-router";
 import LoginModal from "../../../Modal/Verification/LoginModal";
 import { handleloginModalShow } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
+import useDataHandler from "../../../Shared/ReduxCustomHooks";
 
 const BioContainer = ({ isLoginuser }) => {
+  const { AccountAccessType } = useMainContext();
+  const { usePartialDisplayName } = useDataHandler();
+  const displayName = usePartialDisplayName(5);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isAboutEdit, setisAboutEdit] = useState(false);
@@ -85,7 +98,6 @@ const BioContainer = ({ isLoginuser }) => {
     }
 
     if (profileData && profileData?.bio_data === "") {
-      console.log(profileData, "profileData");
       setFieldValue("bio_data", BioData);
     }
   }, [profileData, influencerCategory, BioData]);
@@ -187,11 +199,23 @@ const BioContainer = ({ isLoginuser }) => {
   };
   const handleVerifyPopupClose = () => setverifyProfilePopup(false);
 
+  const getBioData = () => {
+    if (typeof profileData?.bio_data === "string") {
+      if (values.bio_data !== "") {
+        return values?.bio_data;
+      } else if (typeof profileData?.bio_data !== "string") {
+        return BioData;
+      }
+      return profileData?.bio_data;
+    }
+    return null;
+  };
+
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
         <h2>
-          About {profileData?.first_name}{" "}
+          About {displayName}{" "}
           {selectedCategory.length !== 0 && (
             <i className="material-icons">fiber_manual_record</i>
           )}
@@ -266,7 +290,7 @@ const BioContainer = ({ isLoginuser }) => {
         </div>
       ) : (
         <>
-          {isSuccess && profileData ? (
+          {isSuccess && profileData && getBioData() ? (
             <ReadMore
               maxheight={"64px"}
               isReadMore={false}
@@ -279,47 +303,94 @@ const BioContainer = ({ isLoginuser }) => {
                * it calls the useReplaceBiodataHandler function to generate the bio data from the profileData.
                * @returns The bio data string.
                */}
-              {values?.bio_data !== "" ? values?.bio_data : BioData}
+              {getBioData()}
             </ReadMore>
           ) : (
             <Skeleton active />
           )}
-
-          {(DiamondVerifyType === 3 || DiamondVerifyType === 2) && (
-            <Button
-              className={`${classes.becomeafanbtn} ${classes.verifyAccount} ${
-                DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
-              }`}
-              onClickCapture={() => {
-                if (
-                  DiamondVerifyType === 3 &&
-                  loginUserData?.user_status_id === 4
-                ) {
-                  navigate("/verifyaccount");
-                } else {
-                  setverifyProfilePopup((pre) => !pre);
-                }
-              }}
-              disabled={DiamondVerifyType === 2}
-              style={{
-                display: "flex",
-                background: "#E26386",
-              }}
-            >
-              {DiamondVerifyType === 3 ? (
+          {profileData?.last_verify_status !== null &&
+          profileData?.verification_reason !== null &&
+          (DiamondVerifyType === 3 || DiamondVerifyType === 2) ? (
+            <div className={classes.verifyAccountOutlineContainer}>
+              <div className="d-flex align-items-center">
+                <span class="material-symbols-outlined text-danger">
+                  cancel
+                </span>
+                <p
+                  className="text-danger ms-2 mb-1"
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "normal",
+                  }}
+                >
+                  {profileData?.last_verify_status || ""}
+                </p>
+              </div>
+              <p className="text-danger ms-4 ps-2 mb-1">
+                {profileData?.verification_reason || ""}
+              </p>
+              <Button
+                className={`${classes.becomeafanbtn} ${classes.verifyAccount}`}
+                style={{
+                  display: "flex",
+                  background: "#E26386",
+                }}
+                onClickCapture={() => {
+                  if (
+                    DiamondVerifyType === 3 &&
+                    loginUserData?.user_status_id === 4
+                  ) {
+                    navigate("/verifyaccount");
+                  }
+                }}
+              >
                 <div className={classes.becomeSec}>
                   <img src={shieldIcon} />
                   <p>Verify my Account</p>
                 </div>
-              ) : (
-                DiamondVerifyType === 2 && (
-                  <div className={classes.becomeSec}>
-                    <img src={shieldIcon} />
-                    <p>Approval Pending</p>
-                  </div>
-                )
+              </Button>
+            </div>
+          ) : (
+            <>
+              {(DiamondVerifyType === 3 || DiamondVerifyType === 2) && (
+                <Button
+                  className={`${classes.becomeafanbtn} ${
+                    classes.verifyAccount
+                  } ${
+                    DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
+                  }`}
+                  onClickCapture={() => {
+                    if (
+                      DiamondVerifyType === 3 &&
+                      loginUserData.user_status_id >= 3
+                    ) {
+                      navigate("/verifyaccount");
+                    } else {
+                      setverifyProfilePopup((pre) => !pre);
+                    }
+                  }}
+                  disabled={DiamondVerifyType === 2}
+                  style={{
+                    display: "flex",
+                    background: "#E26386",
+                  }}
+                >
+                  {DiamondVerifyType === 3 ? (
+                    <div className={classes.becomeSec}>
+                      <img src={shieldIcon} />
+                      <p>Verify my Account</p>
+                    </div>
+                  ) : (
+                    DiamondVerifyType === 2 && (
+                      <div className={classes.becomeSec}>
+                        <img src={shieldIcon} />
+                        <p>Approval Pending</p>
+                      </div>
+                    )
+                  )}
+                </Button>
               )}
-            </Button>
+            </>
           )}
           {verifyProfilePopup && (
             <LoginModal
@@ -327,7 +398,7 @@ const BioContainer = ({ isLoginuser }) => {
               close={handleVerifyPopupClose}
               AIclose={true}
               AIopen="Get Diamond"
-              AImessgae="Verified account feature is only for Diamond members and Influencers"
+              AImessgae="Account Verification feature is only for Premium, Diamond members and Influencers"
             />
           )}
 

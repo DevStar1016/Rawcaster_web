@@ -48,6 +48,7 @@ import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import useDataHandler from "../../Shared/ReduxCustomHooks";
 
 const Postmodal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
@@ -71,6 +72,8 @@ const Postmodal = ({ visible, onClose }) => {
     setdeletedMedia,
     resetForm,
   } = useContext(PostNuggetContext);
+  const { usePartialDisplayName } = useDataHandler();
+  const display_name = usePartialDisplayName();
   const { setPostContent } = useGlobalContext() ?? {};
   const [messageApi] = message.useMessage();
   const { isEdit } = useListNuggetContext();
@@ -203,7 +206,6 @@ const Postmodal = ({ visible, onClose }) => {
         }
         if (oldURL.current !== addHttp) {
           oldURL.current = addHttp;
-          console.log(addHttp, "addHttpaddHttp");
           const userData = {
             token,
             url,
@@ -299,7 +301,7 @@ const Postmodal = ({ visible, onClose }) => {
               currentTarget.src = defaultprofileImg;
             }}
           />
-          <p className={classes.name}>{loginUserData?.name}</p>
+          <p className={classes.name}>{display_name}</p>
           <Dropdown
             menu={{
               items: SHARED_TYPE,
@@ -494,7 +496,7 @@ const Postmodal = ({ visible, onClose }) => {
                 id="post_nugget_textarea"
                 ref={textinputRef}
                 className={classes.postTextarea}
-                placeholder={`What's on your mind, ${loginUserData?.name}!`}
+                placeholder={`What's on your mind, ${display_name}!`}
                 // onPaste={(event) => {
                 //   const pastedText = event.clipboardData.getData("text/plain");
                 //   if (
@@ -572,7 +574,7 @@ const Postmodal = ({ visible, onClose }) => {
                           }
                         }}
                       >
-                        Upgrade
+                        Ok
                       </Button>
                       <Button
                         className={classes.LaterBtn}
@@ -581,7 +583,7 @@ const Postmodal = ({ visible, onClose }) => {
                         danger
                         type="primary"
                       >
-                        Later
+                        Cancel
                       </Button>
                     </Space>
                   }

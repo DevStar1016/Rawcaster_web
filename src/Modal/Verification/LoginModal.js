@@ -18,7 +18,7 @@ import { useDispatch } from "react-redux";
 import { complementaryMembershipService } from "../../Services/ApiService";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
-const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
+const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useAuthToken();
@@ -67,6 +67,7 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
         </p>
 
         <div className={classes.actionBtn}>
+          {/* {!isAI ? ( */}
           <Button
             ghost
             type="primary"
@@ -84,9 +85,13 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
           >
             Later
           </Button>
+          {/* ) : null} */}
           <Button
             type="primary"
             onClick={() => {
+              // if (isAI) {
+              //   close();
+              // } else {
               if (AIopen) {
                 close();
                 if (loginUserData.complementary_status === 1) {
@@ -98,13 +103,14 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
                 navigate("/login");
                 close();
               }
+              // }
             }}
             style={{ marginLeft: "10px" }}
             htmlType="Continue"
             size="large"
             className={classes.reportBtn}
           >
-            {AIopen ? "Upgrade" : "Login"}
+            {isAI ? "Upgrade Now" : AIopen ? "Upgrade Now" : "Login"}
           </Button>
         </div>
       </div>

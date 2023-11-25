@@ -45,7 +45,11 @@ import {
   getUtcToSystemTime,
   userTimezonetoUtc,
 } from "../../../Shared/Utility";
-import { AddEventContext, useEventContext } from "../../../Shared/Context";
+import {
+  AddEventContext,
+  useEventContext,
+  useMainContext,
+} from "../../../Shared/Context";
 import dayjs from "dayjs";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import EventSuccessPage from "./EventSuccessPage";
@@ -808,13 +812,16 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             : DEFAULT_DATE_FORMAT
                         }
                         onChange={(date, dateString) => {
-                          setFieldValue("event_start_date", dateString);
+                          let Date = moment(
+                            dateString,
+                            userSettings
+                              ? userSettings.default_date_format
+                              : DEFAULT_DATE_FORMAT
+                          ).format("YYYY-MM-DD");
+                          setFieldValue("event_start_date", Date);
 
                           if (
-                            moment().isSame(
-                              moment(dateString, "YYYY-MM-DD"),
-                              "day"
-                            )
+                            moment().isSame(moment(Date, "YYYY-MM-DD"), "day")
                           ) {
                             if (
                               moment()
@@ -905,7 +912,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             <div
                               onClick={(e) => {
                                 if (
-                                  loginUserData?.user_status_id === 1 &&
+                                  loginUserData.user_status_id === 1 &&
                                   ele.isprimary
                                 ) {
                                   if (upgradePlanPopup) {
@@ -920,7 +927,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               <Checkbox
                                 checked={values[ele.type]}
                                 disabled={
-                                  loginUserData?.user_status_id === 1 &&
+                                  loginUserData.user_status_id === 1 &&
                                   ele.isprimary
                                 }
                                 onChange={(e) => {
@@ -1156,7 +1163,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                                 }
                               }}
                             >
-                              Upgrade
+                              Ok
                             </Button>
                             <Button
                               style={{
@@ -1176,7 +1183,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               danger
                               type="primary"
                             >
-                              Later
+                              Cancel
                             </Button>
                           </Space>
                         }

@@ -42,7 +42,9 @@ const ReferralsList = () => {
           </Tooltip>
           <img src={ele.profile_img} />
 
-          <p className={classes.name}>{decodeHtml(ele.display_name)}</p>
+          <Tooltip placement="topLeft" title={ele.display_name}>
+            <p className={classes.name}>{decodeHtml(ele.display_name)}</p>
+          </Tooltip>
 
           <div className={classes.clearfix}></div>
           <Tooltip placement="topLeft" title={ele.email_id}>

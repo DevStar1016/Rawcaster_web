@@ -27,6 +27,7 @@ import ReplyList from "./ReplyList";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 import { CommentReadoutSec, CommentTranslateSec } from "./Utility";
+import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 
 const CommentsList = ({ index }) => {
   const {
@@ -371,7 +372,19 @@ const CommentsList = ({ index }) => {
             <div className={classes.rightitem}>
               <div className="d-flex flex-row">
                 <div className={classes.cmtText}>
-                  <p>{decodeHtml(elem?.name)}</p>
+                  <p>
+                    {decodeHtml(elem?.name)}
+
+                    {elem && elem.account_verify_status === 1 && (
+                      <img
+                        src={DiamonVerified}
+                        className={classes.verifiedImg}
+                        // style={{
+                        //   display: "none",
+                        // }}
+                      />
+                    )}
+                  </p>
                   <span>
                     {elem.translated_text
                       ? decodeHtml(elem?.translated_text)

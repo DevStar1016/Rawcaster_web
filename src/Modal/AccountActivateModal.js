@@ -7,8 +7,37 @@
 import { Modal } from "antd";
 import classes from "./Modal.module.css";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { handleLoading } from "../Store/Redux/Reducer/DashboardReducer";
+import { JSONtoformdata, RemoveToken } from "../Shared/Utility";
+import { useAuthData } from "../Shared/Reduxfetcher";
+import { handleResetNuggets } from "../Store/Redux/Reducer/NuggetsReducer";
+import toast from "react-hot-toast";
+import { logoutService } from "../Services/ApiService";
 
 const AccountActivateModal = ({ open, close }) => {
+  const dispatch = useDispatch();
+  const loginUserData = useAuthData();
+  const handleLogout = () => {
+    dispatch(handleLoading(true));
+    let logutData = {
+      token: loginUserData?.token,
+    };
+    logoutService(JSONtoformdata(logutData))
+      .then((res) => {
+        if (res.data.status === 1) {
+          close();
+          RemoveToken(dispatch);
+          dispatch(handleResetNuggets());
+          window.location.assign("/");
+        } else if (res.data.status === 0) {
+          toast.remove("rawcaster");
+          toast.error(res.data.msg, { id: "rawcaster" });
+        }
+      })
+      .catch((err) => {})
+      .finally(() => {});
+  };
   return (
     <Modal open={open} footer={null} closable={false} centered>
       <div className={classes.AccountactiveSec}>
@@ -22,14 +51,17 @@ const AccountActivateModal = ({ open, close }) => {
           reactivate your account. Please go to Settings, click on General and
           switch from <span>Inactive</span> to <span>Active</span>.
         </p>
-        <Link
-          to="/setting"
-          onClick={() => {
-            close();
-          }}
-        >
-          Go to Settings
-        </Link>
+        <div className="d-flex justify-content-between flex-wrap">
+          <Link
+            to="/setting"
+            onClick={() => {
+              close();
+            }}
+          >
+            Go to Settings
+          </Link>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       </div>
     </Modal>
   );

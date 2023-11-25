@@ -5,7 +5,8 @@ import { useAuthToken } from "../../Shared/Reduxfetcher";
 import classes from "./Referal.module.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { debounce } from "lodash";
 
 /**
  * Handles sending an email to the specified contacts using the provided token.
@@ -67,7 +68,7 @@ export const EmailReferalContainer = ({ close }) => {
         ),
     }),
     onSubmit: (value) => {
-      handleInviteFriends(value.EmailList);
+      VInviteFriendsProgress(value.EmailList);
     },
   });
 
@@ -79,6 +80,11 @@ export const EmailReferalContainer = ({ close }) => {
       resetForm();
     });
   };
+
+  const VInviteFriendsProgress = useCallback(
+    debounce(handleInviteFriends, 2000),
+    []
+  );
 
   const handleCloseTag = (index) => {
     setValues((pre) => {

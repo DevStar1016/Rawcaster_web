@@ -23,14 +23,15 @@ justify-content: space-between;
   overflow: hidden !important;
 }
 .list p {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 85px;
-    margin: auto;
-    margin-bottom: 5px;
+  display: block;
+  white-space: nowrap;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 65px;
+  margin: auto;
+  margin-bottom: 5px;
 }
 .list img {    width: 100%; border-radius: 50px; margin-bottom: 3px;}
 .actionIcon { height: 23px; margin-left: 7px; cursor: pointer; }
