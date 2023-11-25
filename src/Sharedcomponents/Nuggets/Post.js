@@ -92,8 +92,6 @@ const Post = ({
   onSaveCountResult,
   Opened,
 }) => {
-  const { AccountAccessType } = useMainContext();
-  const { setNuggetCount } = useListNuggetContext();
   const source = useRef(null);
   const contentRef = useRef(null);
   const contentTextRef = useRef(null);
@@ -907,6 +905,16 @@ const Post = ({
     return <></>;
   };
 
+  const getDisplayName = (name, length = 20) => {
+    if (name) {
+      if (name.length > length) {
+        return name.substring(0, length) + "...";
+      }
+      return name;
+    }
+    return "User";
+  };
+
   return (
     <SingleNuggetContext.Provider value={SingleNuggetData}>
       {ele ? (
@@ -938,7 +946,7 @@ const Post = ({
                   handleProfileNavigate(finalData);
                 }}
               >
-                <p>{decodeHtml(ele?.user_name)}</p>{" "}
+                <p>{getDisplayName(ele.user_name)}</p>{" "}
                 {ele?.type === 2 && (
                   <span>
                     shared{" "}
@@ -954,7 +962,7 @@ const Post = ({
                         handleProfileNavigate(finalData);
                       }}
                     >
-                      {ele?.original_user_name}
+                      {getDisplayName(ele?.original_user_name)}
                     </span>
                     ′s nugget
                   </span>

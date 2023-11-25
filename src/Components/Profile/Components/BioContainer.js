@@ -37,9 +37,12 @@ import { useNavigate } from "react-router";
 import LoginModal from "../../../Modal/Verification/LoginModal";
 import { handleloginModalShow } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
+import useDataHandler from "../../../Shared/ReduxCustomHooks";
 
 const BioContainer = ({ isLoginuser }) => {
   const { AccountAccessType } = useMainContext();
+  const { usePartialDisplayName } = useDataHandler();
+  const displayName = usePartialDisplayName(5);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isAboutEdit, setisAboutEdit] = useState(false);
@@ -212,7 +215,7 @@ const BioContainer = ({ isLoginuser }) => {
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
         <h2>
-          About {profileData?.first_name}{" "}
+          About {displayName}{" "}
           {selectedCategory.length !== 0 && (
             <i className="material-icons">fiber_manual_record</i>
           )}

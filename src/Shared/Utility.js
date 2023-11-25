@@ -65,6 +65,16 @@ export const EncryptionString = (str) => {
   return window.btoa(str + ENCRIPTION_STRING);
 };
 
+export const getCustomPartialDisplayName = (displayName, length = 20) => {
+  if (displayName) {
+    if (displayName.length > length) {
+      return displayName.substring(0, length) + "...";
+    }
+    return displayName;
+  }
+  return "User";
+};
+
 /**
  * Decrypts a given string using the window.atob() function.
  * @param {string} str - The string to be decrypted.
