@@ -31,10 +31,17 @@ import { ClaimorVerifySEO } from "../SEO/SEOContent";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
 import { useMainContext } from "../../Shared/Context";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
+import { NAME_REGEX } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
-  first_name: yup.string().required(`Please input your First Name!`),
-  last_name: yup.string().required(`Please input your Last Name!`),
+  first_name: yup
+    .string()
+    .matches(NAME_REGEX, "Please input valid First Name")
+    .required(`Please input your First Name!`),
+  last_name: yup
+    .string()
+    .matches(NAME_REGEX, "Please input valid Last Name")
+    .required(`Please input your Last Name!`),
   telephone: yup
     .string()
     .min(5, "Mobile number must be atleast 5 characters")
