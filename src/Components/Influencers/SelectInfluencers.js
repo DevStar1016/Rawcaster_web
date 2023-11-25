@@ -29,10 +29,14 @@ import moment from "moment";
 import { DEFAULT_DATE_FORMAT } from "../../Shared/Constant";
 import { handleisFromGroup } from "../../Store/Redux/Reducer/UtilityReducer";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { useMainContext } from "../../Shared/Context";
+import useDataHandler from "../../Shared/ReduxCustomHooks";
 
 const SelectInfluencers = () => {
+  const { usePartialDisplayName } = useDataHandler();
   const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const dispatch = useDispatch();
+  const displayName = usePartialDisplayName();
   const navigate = useNavigate();
   const { isFromGroup } = useUtility();
   const loginUserData = useAuthData();
@@ -497,12 +501,20 @@ const SelectInfluencers = () => {
     return <InfluencerComponent ele={ele} />;
   }, []);
 
+  const getDisplayName = (length = 20) => {
+    if (loginUserData) {
+      if (loginUserData?.name.length > length) {
+        return loginUserData?.name.substring(0, length) + "...";
+      }
+      return loginUserData?.name;
+    }
+    return "User";
+  };
+
   return (
     <div className="mainWrapper innerContent">
       <div className={classes.headerSec}>
-        <h1>
-          Welcome {loginUserData?.name || "User"}- Select your influencers
-        </h1>
+        <h1>Welcome {displayName}- Select your influencers</h1>
         <div className={classes.btnSec}>
           <button
             onClick={() => {

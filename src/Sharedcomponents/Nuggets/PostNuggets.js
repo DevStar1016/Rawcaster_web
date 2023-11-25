@@ -37,11 +37,15 @@ import Postmodal from "../../Modal/Nugget/Postmodal";
 import { useParams } from "react-router";
 import profileImg from "../../Assets/Images/svg/userImg.svg";
 import { isArray } from "lodash";
+import useDataHandler from "../../Shared/ReduxCustomHooks";
 
 const PostNuggets = ({ isUserPostAvailable }) => {
+  const { usePartialDisplayName } = useDataHandler();
+  const displayName = usePartialDisplayName(15);
   const { postModalShow, setpostModalShow, PostContent, setPostContent } =
     useGlobalContext() ?? {};
   const { GetNuggetList, setisNuggetModify } = useListNuggetContext();
+
   const dispatch = useDispatch();
   const Token = useAuthToken();
   const params = useParams();
@@ -386,7 +390,7 @@ const PostNuggets = ({ isUserPostAvailable }) => {
                 }}
               >
                 <Input
-                  placeholder={`hey ${LoginUserData?.name}, share some nuggets...`}
+                  placeholder={`hey ${displayName}, share some nuggets...`}
                   className={classes.searchbar}
                   readOnly={true}
                 />
