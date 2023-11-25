@@ -305,10 +305,9 @@ const BioContainer = ({ isLoginuser }) => {
           ) : (
             <Skeleton active />
           )}
-          {(profileData?.last_verify_status !== null &&
-            profileData?.verification_reason !== null &&
-            DiamondVerifyType === 3) ||
-          DiamondVerifyType === 2 ? (
+          {profileData?.last_verify_status !== null &&
+          profileData?.verification_reason !== null &&
+          (DiamondVerifyType === 3 || DiamondVerifyType === 2) ? (
             <div className={classes.verifyAccountOutlineContainer}>
               <div className="d-flex align-items-center">
                 <span class="material-symbols-outlined text-danger">

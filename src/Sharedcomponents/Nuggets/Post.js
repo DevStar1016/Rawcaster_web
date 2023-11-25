@@ -362,6 +362,12 @@ const Post = ({
           }}
           className={classes.dropdownItem}
         >
+          <span
+            className={classes.share_link_icon}
+            style={{
+              display: ele.user_id === loginUserData?.user_id ? "none" : "",
+            }}
+          ></span>
           Share Link
         </div>
       ),
@@ -410,7 +416,7 @@ const Post = ({
       ),
     },
     {
-      key: 5,
+      key: 6,
       isLoginuser: false,
       isBoth: false,
       label: (
@@ -764,7 +770,8 @@ const Post = ({
       ele &&
       ele?.share_type === 1 &&
       // AccountAccessType === "diamond_and_above"
-      loginUserData?.user_status_id >= 4
+      (loginUserData?.user_status_id >= 4 ||
+        (loginUserData && ele.media_list[0].media_type === "image"))
     ) {
       return 1;
     } else {
