@@ -25,7 +25,7 @@ import { Typography } from "antd";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
-import { HandleVerifyModal } from "../Modal/DefaultModal";
+import { HandleVerifyModal, ShowLinkOpenModal } from "../Modal/DefaultModal";
 import { CustomParagraph } from "./UtilityComponents";
 import { fetchNuggetsbyId } from "../Store/Redux/Action";
 
@@ -815,8 +815,6 @@ export const fetchGoogleContacts = async () => {
  * @param {number} [partialShowLines=3] - The number of lines to show before truncating the text.
  * @param {ReactNode} children - The content to display.
  * @param {boolean} [isReadMore=true] - Whether to show the "Read More" functionality.
- * @param {boolean} isLinkopenModal - Whether to open a modal when a link is clicked.
- * @param {function} setisLinkopenModal - A function to set the state of isLinkopenModal.
  * @param {boolean} isReadMoreValid - A function to check if the "Read More" functionality is valid
  *  @param {boolean} isMetaDataAvailable - A function to check if the "Meta Data Available" functionality is valid
  * @param {function} MetaDataContent - A function to Display Meta Data
@@ -825,14 +823,11 @@ export const ReadMore = ({
   Influencer,
   partialShowLines = 3,
   children,
-  isLinkopenModal,
-  setisLinkopenModal,
   isReadMoreValid,
   onExpand,
   isMetaDataAvailable = false,
   MetaDataContent,
 }) => {
-  const [openUrl, setopenUrl] = useState("");
   const renderLink = ({ attributes, content }) => {
     const { href, ...props } = attributes;
     return (
@@ -843,8 +838,9 @@ export const ReadMore = ({
             if (href.includes("rawcaster")) {
               window.open(href);
             } else {
-              setopenUrl(href);
-              setisLinkopenModal(true);
+              ShowLinkOpenModal({
+                url: href,
+              });
             }
           }}
           {...props}
@@ -863,14 +859,6 @@ export const ReadMore = ({
             decodeHtml(content)
           )}
         </a>
-
-        <LinkOpenModal
-          open={isLinkopenModal}
-          url={openUrl}
-          close={() => {
-            setisLinkopenModal(false);
-          }}
-        />
       </>
     );
   };

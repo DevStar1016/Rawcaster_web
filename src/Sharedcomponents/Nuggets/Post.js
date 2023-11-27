@@ -76,6 +76,7 @@ import AgreedusersListModal from "../../Modal/Nugget/AgreedusersListModal";
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 import ProfileImg from "../../UIComponents/ProfileImg";
 import { isArray, isObject } from "lodash";
+import { ShowLinkOpenModal } from "../../Modal/DefaultModal";
 
 const Post = ({
   ele,
@@ -116,7 +117,6 @@ const Post = ({
   });
   const [iscollapse, setiscollapse] = useState(false);
   const [isvalidContent, setisvalidContent] = useState(false);
-  const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const [isReport, setisReport] = useState(false);
 
   const [ref] = useInView({
@@ -783,7 +783,9 @@ const Post = ({
         <div
           className={classes.PopoverShareLink}
           onClick={() => {
-            setisLinkopenModal(true);
+            ShowLinkOpenModal({
+              url: elem.url,
+            });
           }}
         >
           <div>
@@ -863,7 +865,9 @@ const Post = ({
         <div
           className={classes.metaLink}
           onClick={() => {
-            setisLinkopenModal(true);
+            ShowLinkOpenModal({
+              url: elem.url,
+            });
           }}
         >
           <div className={classes.shareLinkSec}>
@@ -1096,8 +1100,6 @@ const Post = ({
                     }}
                     isReadMore={isReadMore()}
                     isMetaDataAvailable={ele.metadata}
-                    isLinkopenModal={isLinkopenModal}
-                    setisLinkopenModal={setisLinkopenModal}
                     partialShowLines={getNumberofLines()}
                     partialHeight={getNumberofLines()}
                     onExpand={(status) => {

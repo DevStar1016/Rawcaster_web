@@ -34,7 +34,6 @@ import useDataHandler from "../../Shared/ReduxCustomHooks";
 
 const SelectInfluencers = () => {
   const { usePartialDisplayName } = useDataHandler();
-  const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const dispatch = useDispatch();
   const displayName = usePartialDisplayName();
   const navigate = useNavigate();
@@ -449,8 +448,6 @@ const SelectInfluencers = () => {
                 partialShowLines={1}
                 maxheight={"64px"}
                 isReadMore={false}
-                isLinkopenModal={isLinkopenModal}
-                setisLinkopenModal={setisLinkopenModal}
                 isReadMoreValid={() => {}}
               >
                 {ele?.bio_data}
@@ -461,8 +458,6 @@ const SelectInfluencers = () => {
                 partialShowLines={1}
                 maxheight={"64px"}
                 isReadMore={false}
-                isLinkopenModal={isLinkopenModal}
-                setisLinkopenModal={setisLinkopenModal}
                 isReadMoreValid={() => {}}
               >
                 {BioData}
