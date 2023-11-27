@@ -28,7 +28,7 @@ import PlacesAutocomplete from "react-places-autocomplete";
 import { useDispatch } from "react-redux";
 import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
-import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { HandleVerifyModal, ShowLinkOpenModal } from "../../Modal/DefaultModal";
 import { useMainContext } from "../../Shared/Context";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { NAME_REGEX } from "../../Shared/Constant";
@@ -109,6 +109,14 @@ const Claimaccount = () => {
             navigate(-1);
           },
           isCloseAvailable: false,
+        });
+      } else if (!display_user_id) {
+        ShowLinkOpenModal({
+          message:
+            "You are being redirected to our partner website for your ID verification..",
+          onSuccess: () => {
+            HandleClaimAccount(val);
+          },
         });
       } else {
         HandleClaimAccount(val);

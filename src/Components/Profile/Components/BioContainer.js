@@ -49,7 +49,7 @@ const BioContainer = ({ isLoginuser }) => {
   const {
     profileData,
     isLinkopenModal,
-    setisLinkopenModal,
+
     handleBecameFan,
     DiamondVerifyType,
   } = useProfileContext();
@@ -215,7 +215,8 @@ const BioContainer = ({ isLoginuser }) => {
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
         <h2>
-          About {displayName}{" "}
+          About{" "}
+          {selectedCategory.length !== 0 ? displayName : profileData?.name}{" "}
           {selectedCategory.length !== 0 && (
             <i className="material-icons">fiber_manual_record</i>
           )}
@@ -294,8 +295,6 @@ const BioContainer = ({ isLoginuser }) => {
             <ReadMore
               maxheight={"64px"}
               isReadMore={false}
-              isLinkopenModal={isLinkopenModal}
-              setisLinkopenModal={setisLinkopenModal}
               isReadMoreValid={() => {}}
             >
               {/**

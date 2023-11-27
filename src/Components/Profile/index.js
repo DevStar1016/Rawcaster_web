@@ -73,7 +73,6 @@ const Profile = () => {
     filteredConnectionCount: 0,
     isLoaded: true,
   });
-  const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const [profileData, setprofileData] = useState();
 
   /**
@@ -319,8 +318,7 @@ const Profile = () => {
     setFansList,
     profileData,
     setprofileData,
-    isLinkopenModal,
-    setisLinkopenModal,
+
     isLoginUser: getisLoginUser(),
     DiamondVerifyType: getDiamondVeifyType(),
     getFollowers,
