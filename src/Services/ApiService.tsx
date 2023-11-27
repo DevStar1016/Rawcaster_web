@@ -201,9 +201,13 @@ export const listNuggetsService = (
   data: FormData,
   signal: AbortSignal | undefined
 ) => {
-  return axios.post("listnuggets", data, {
-    signal,
-  });
+  if (signal) {
+    return axios.post("listnuggets", data, {
+      signal,
+    });
+  } else {
+    return axios.post("listnuggets", data);
+  }
 };
 
 export const addNuggetViewService = (data: FormData) => {
