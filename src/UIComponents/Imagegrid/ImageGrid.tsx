@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Image as AndImage, Modal } from "antd";
 import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ImageGrid.module.css";
 import BackgroundImg from "../../Assets/Images/png/audioImg.png";
@@ -65,12 +65,25 @@ function ImageGrid({
     },
   });
 
+  function download(url) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = "blob";
+    xhr.onreadystatechange = function (event) {
+      //@ts-ignore
+      console.log(event?.target?.status ?? "");
+    };
+    xhr.open("GET", url, true);
+    xhr.send();
+  }
+
   function isValidImg(URL: string) {
     var tester = new Image();
     tester.onload = () => {
       return true;
     };
-    tester.onerror = () => {
+
+    tester.onerror = (evet) => {
+      download(URL);
       return false;
     };
     tester.src = URL;
@@ -194,7 +207,7 @@ function ImageGrid({
           src={data.path}
           alt={data.path}
           style={{ zIndex: 0, aspectRatio: getAspectRatio(index) }}
-          onError={({ currentTarget }) => {
+          onError={({ currentTarget, ...evt }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = BackgroundImg;
           }}
