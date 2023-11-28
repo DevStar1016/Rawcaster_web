@@ -40,7 +40,6 @@ import { Checkbox, Dropdown, Image, Tooltip, message } from "antd";
 import { useChatBotContext, useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
-import { uploadChatAttachmentService } from "../../Services/ApiService";
 
 export const ChatInput = ({
   value = "",
@@ -80,7 +79,7 @@ export const ChatInput = ({
   const [AudioElement, setAudioElement] = useState();
   const timerRef = useRef(null);
   const recordingRef = useRef(null);
-  const [ChatMessage, setChatMessage] = useState(null);
+  const [ChatMessage, setChatMessage] = useState("");
   const loginUserData = useAuthData();
   const isSend = useRef(null);
   const [isChatContentValid, setisChatContentValid] = useState(true);
@@ -406,7 +405,8 @@ export const ChatInput = ({
             >
               mood
             </i>
-            <textarea
+            <input  
+              type="text"
               ref={textareaRef}
               className={classes.whatsapp_textarea}
               placeholder={
@@ -417,8 +417,27 @@ export const ChatInput = ({
               style={{
                 height: calculateInitialHeight(),
               }}
+              autoFocus
               value={ChatMessage}
-              rows={1}
+              onKeyDown={({ key }) => {
+                if (key === "Enter") {
+                  setisEmoji(false);
+                  if (isSendOnly) {
+                    if (onSendResponse) {
+                      onSendResponse(ChatMessage);
+                    }
+                    setChatMessage("");
+                  } else if (!disabled) {
+                    if (ChatMessage && ChatMessage.trim() !== "") {
+                      HandleSendMessage(ChatMessage);
+                      setTimeout(() => {
+                      setChatMessage("");
+                      setisChatContentValid(true);
+                      }, 0);
+                    }
+                  }
+                }
+              }}
               onChange={(e) => {
                 textareaRef.current.style.height = "auto";
                 textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;

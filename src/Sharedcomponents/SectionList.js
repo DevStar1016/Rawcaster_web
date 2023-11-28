@@ -31,9 +31,13 @@ const SectionList = ({
 
   useEffect(() => {
     // Focus on the last item when it's added
-    if (Data.length > 0 && containerRef.current && !isInitialLoaded.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
-      isInitialLoaded.current = true;
+  }, []);
+
+  useEffect(() => {
+    // Focus on the last item when it's added
+    if (Data.length > 0 && containerRef.current && containerRef.current.scrollTop > 10) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [Data]);
 
