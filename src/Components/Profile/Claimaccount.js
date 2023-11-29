@@ -32,6 +32,7 @@ import { HandleVerifyModal, ShowLinkOpenModal } from "../../Modal/DefaultModal";
 import { useMainContext } from "../../Shared/Context";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import { NAME_REGEX } from "../../Shared/Constant";
+import CountryCodeDropdown from "../../UIComponents/CountryCodeDropdown";
 
 const validationSchema = yup.object().shape({
   first_name: yup
@@ -42,9 +43,17 @@ const validationSchema = yup.object().shape({
     .string()
     .matches(NAME_REGEX, "Please input valid Last Name")
     .required(`Please input your Last Name!`),
+  country_id: yup.string(),
   telephone: yup
     .string()
     .min(5, "Mobile number must be atleast 5 characters")
+    .test("validate Number", "Enter valid Number", function (value, ctx) {
+      const { country_id } = this.parent;
+      if (value && !country_id) {
+        return ctx.createError({ message: "Country code is Required" });
+      }
+      return true;
+    })
     .required(`Please input your mobile number!`),
   dob: yup.string().required(`Please input your Date of Birth!`),
   email_id: yup
@@ -79,6 +88,8 @@ const Claimaccount = () => {
       last_name: "",
       telephone: "",
       dob: "",
+      country_code: "",
+      country_id: "",
       email_id: "",
       location: "",
     },
@@ -153,7 +164,6 @@ const Claimaccount = () => {
       influencer_id: display_user_id ? parseInt(display_user_id) : null,
       token: loginUserData?.token,
     };
-
     VerifyType(JSONtoformdata(filterValidObject(finalData)))
       .then((res) => {
         if (res.data.status === 1) {
@@ -209,6 +219,8 @@ const Claimaccount = () => {
         dob: loginUserData?.dob,
         email_id: loginUserData?.email_id,
         location: loginUserData?.geo_location,
+        country_code: loginUserData?.country_code,
+        country_id: loginUserData?.country_id,
       });
     }
   }, [loginUserData]);
@@ -295,15 +307,36 @@ const Claimaccount = () => {
                   <p className={classes.label}>
                     Mobile Number <span className="text-danger">*</span>{" "}
                   </p>
-                  <Input
-                    className={`${classes.textBox} `}
-                    maxLength={20}
-                    autoComplete="off"
-                    value={values.telephone}
-                    onChange={handleChange("telephone")}
-                    placeholder="Enter your mobile number"
-                    disabled={IsValidCredentials.mobile}
-                  />
+                  <div className="mobileInput">
+                    <CountryCodeDropdown
+                      width="25%"
+                      marginTop={5}
+                      status={
+                        touched.telephone && errors.telephone ? "error" : ""
+                      }
+                      isDisabled={IsValidCredentials.mobile}
+                      value={values.country_code}
+                      onSelectItem={(val) => {
+                        setValues((pre) => ({
+                          ...pre,
+                          country_code: val.label,
+                          country_id: val.key,
+                        }));
+                      }}
+                    />
+                    <Input
+                      className={`${classes.textBox} `}
+                      maxLength={20}
+                      style={{
+                        marginLeft: 10,
+                      }}
+                      autoComplete="off"
+                      value={values.telephone}
+                      onChange={handleChange("telephone")}
+                      placeholder="Enter your mobile number"
+                      disabled={IsValidCredentials.mobile}
+                    />
+                  </div>
                 </div>
                 {touched.telephone && (
                   <p className="ErrTxt">{errors?.telephone}</p>
@@ -336,6 +369,7 @@ const Claimaccount = () => {
                   <DateInputBox
                     isDisabled={isAccountVerified !== "unverified"}
                     displayDate={values.dob}
+                    isError={errors.dob && touched.dob}
                     onSelectDate={(date) => {
                       if (date !== "") {
                         setFieldValue("dob", moment(date).format("YYYY-MM-DD"));

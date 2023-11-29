@@ -35,6 +35,7 @@ import { handleReferenceID } from "../../Store/Redux/Reducer/AuthReducer";
 import { useAuth } from "../../Shared/Reduxfetcher";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
 import { VALIDATION_MESSAGES } from "../Settings/Constants";
+import CountryCodeDropdown from "../../UIComponents/CountryCodeDropdown";
 
 const SignupwithCredentials = () => {
   const { nugget_id } = useParams();
@@ -76,6 +77,15 @@ const SignupwithCredentials = () => {
         getLoginType().id === 1 ? EMAIL_REGEX : MOBILE_NUMBER_REGEX,
         `Please Enter Valid ${getLoginType().title}!`
       )
+      .test("validate Number", "Enter valid Number", function (value, ctx) {
+        const { country_id } = this.parent;
+        if (getLoginType().id === 2) {
+          if (value && !country_id) {
+            return ctx.createError({ message: "Country code is Required" });
+          }
+        }
+        return true;
+      })
       .required(`Please input your ${getLoginType().title}!`),
     password: yup
       .string()
@@ -86,40 +96,49 @@ const SignupwithCredentials = () => {
     dob: yup.string().required("Please input your Date of Birth!"),
   });
 
-  const { values, handleChange, handleSubmit, setFieldValue, errors, touched } =
-    useFormik({
-      initialValues: {
-        first_name: "",
-        email_id: "",
-        gender: "",
-        password: "",
-        dob: "",
-        geo_location: "",
-        latitude: "",
-        longitude: "",
-        other_gender: "",
-      },
-      validationSchema: validationSchema,
-      onSubmit: (values) => {
-        if (getLoginType().id === 2) {
-          HandleVerifyModal({
-            SubmitButtonTitle: "Continue",
-            closeButtonTitle: "Register with email",
-            primary: "success",
-            onSuccess: () => {
-              SignUpValidate();
-            },
-            onClose: () => {
-              navigate(getLoginType().pathname);
-            },
-            message:
-              VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE_BEFORE_SIGNUP,
-          });
-        } else {
-          SignUpValidate();
-        }
-      },
-    });
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    errors,
+    touched,
+    setValues,
+  } = useFormik({
+    initialValues: {
+      first_name: "",
+      email_id: "",
+      gender: "",
+      password: "",
+      dob: "",
+      country_code: "",
+      country_id: "",
+      geo_location: "",
+      latitude: "",
+      longitude: "",
+      other_gender: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      if (getLoginType().id === 2) {
+        HandleVerifyModal({
+          SubmitButtonTitle: "Continue",
+          closeButtonTitle: "Register with email",
+          primary: "success",
+          onSuccess: () => {
+            SignUpValidate();
+          },
+          onClose: () => {
+            navigate(getLoginType().pathname);
+          },
+          message:
+            VALIDATION_MESSAGES.MOBILE_NUMBER_VERIFIED_OPT_IN_ENABLE_BEFORE_SIGNUP,
+        });
+      } else {
+        SignUpValidate();
+      }
+    },
+  });
 
   useEffect(() => {
     // Your logic to clear the state when the route changes
@@ -160,6 +179,7 @@ const SignupwithCredentials = () => {
   const HandleSignup = (values, res = null) => {
     let signupValue = {
       ...values,
+
       display_name: values.first_name,
       confirm_password: values.password,
       auth_code: getAuthToken(values.email_id),
@@ -269,16 +289,38 @@ const SignupwithCredentials = () => {
                 )}
               </Form.Item>
               <p className={classes.label}>{getLoginType().title}</p>
+
               <Form.Item name="email_id">
-                <Input
-                  className={classes.textBox}
-                  placeholder={`Enter your ${getLoginType().title}`}
-                  autoComplete="off"
-                  value={values.email_id}
-                  onChange={handleChange("email_id")}
-                  maxLength={50}
-                  status={touched.email_id && errors.email_id ? "error" : ""}
-                />
+                <div className="d-flex flex-row mobileInput">
+                  {getLoginType().id === 2 && (
+                    <CountryCodeDropdown
+                      width="25%"
+                      status={
+                        touched.email_id && errors.email_id ? "error" : ""
+                      }
+                      value={values.country_code}
+                      onSelectItem={(val) => {
+                        setValues((pre) => ({
+                          ...pre,
+                          country_code: val.label,
+                          country_id: val.key,
+                        }));
+                      }}
+                    />
+                  )}
+                  <Input
+                    className={classes.textBox}
+                    placeholder={`Enter your ${getLoginType().title}`}
+                    autoComplete="off"
+                    value={values.email_id}
+                    onChange={handleChange("email_id")}
+                    maxLength={50}
+                    style={{
+                      marginLeft: getLoginType().id === 2 ? 10 : 0,
+                    }}
+                    status={touched.email_id && errors.email_id ? "error" : ""}
+                  />
+                </div>
                 <p className="ErrTxt">
                   {touched.email_id ? errors?.email_id : ""}
                 </p>
@@ -379,6 +421,7 @@ const SignupwithCredentials = () => {
               <Form.Item>
                 <DateInputBox
                   value={values.dob}
+                  isError={errors.dob && touched.dob}
                   status={errors.dob ? "error" : ""}
                   onSelectDate={(date) => {
                     if (date !== "") {

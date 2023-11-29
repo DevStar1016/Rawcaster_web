@@ -60,7 +60,7 @@
    -webkit-text-fill-color: inherit;
 -webkit-text-fill-color: initial;
 -webkit-text-fill-color: unset;
-height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
+height: 48px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
 .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px;  } 
 .textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
 .signupbtn { margin-top: 0px !important; font-weight: 300 !important; font-size: 14px !important;}

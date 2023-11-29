@@ -3,11 +3,7 @@
  * request headers.
  * @returns None
  */
-import axios, {
-  AxiosProgressEvent,
-  CancelToken,
-  GenericAbortSignal,
-} from "axios";
+import axios, { AxiosProgressEvent, CancelToken } from "axios";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
@@ -64,7 +60,7 @@ export const changePasswordService = (data: FormData) => {
   return axios.post("changepassword", data);
 };
 
-export const getCountylistService = (data: FormData) => {
+export const getCountylistService = (data?: FormData) => {
   return axios.post("getcountylist", data);
 };
 

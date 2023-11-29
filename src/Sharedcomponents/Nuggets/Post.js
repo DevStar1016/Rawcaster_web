@@ -480,7 +480,7 @@ const Post = ({
         resultData = resultData.filter((elem) => parseInt(elem.key) !== 4);
       }
       if (ele?.following) {
-        resultData = resultData.filter((elem) => parseInt(elem.key) !== 3);
+        resultData = resultData.filter((elem) => parseInt(elem.key) !== 6);
       }
 
       return resultData;
