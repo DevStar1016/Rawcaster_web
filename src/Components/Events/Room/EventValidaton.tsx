@@ -152,7 +152,7 @@ const EventValidaton = () => {
       Attendee
     );
     const meetingOptions = {
-      deviceLabels: finduserData?.isHost ? 
+      deviceLabels: (finduserData?.isHost || meetingSettings.type !== 2)? 
       DeviceLabels.AudioAndVideo : DeviceLabels.None,
     };
     try {
