@@ -65,17 +65,6 @@ function ImageGrid({
     },
   });
 
-  function download(url) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = "blob";
-    xhr.onreadystatechange = function (event) {
-      //@ts-ignore
-      console.log(event?.target?.status ?? "");
-    };
-    xhr.open("GET", url, true);
-    xhr.send();
-  }
-
   function isValidImg(URL: string) {
     var tester = new Image();
     tester.onload = () => {
@@ -83,7 +72,6 @@ function ImageGrid({
     };
 
     tester.onerror = (evet) => {
-      download(URL);
       return false;
     };
     tester.src = URL;

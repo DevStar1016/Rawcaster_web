@@ -16,6 +16,7 @@ const DateInputBox = ({
   onSelectDate,
   status = "",
   isDisabled = false,
+  isError,
 }) => {
   const [date, setDate] = useState({ year: "", month: "", day: "" });
 
@@ -167,12 +168,13 @@ const DateInputBox = ({
   }, [date]);
 
   const getStatus = (data) => {
-    if (isValidData(data)) {
+    if (isValidData(data) || !isError) {
       return "";
     } else {
-      return status;
+      return "error";
     }
   };
+
   return (
     <div className="dateinputBox">
       <div style={{ width: "42%" }}>

@@ -37,6 +37,7 @@ import moment from "moment";
 import { GENDER_TYPE, MOBILE_NUMBER_REGEX } from "../../../Shared/Constant";
 import ImageCropModal from "../../../Modal/ImageCropModal";
 import { useMainContext } from "../../../Shared/Context";
+import CountryCodeDropdown from "../../../UIComponents/CountryCodeDropdown";
 
 const UpdateProfile = () => {
   const { IsValidCredentials } = useMainContext();
@@ -77,10 +78,18 @@ const UpdateProfile = () => {
       .trim("The Location cannot include leading and trailing spaces")
       .strict(true)
       .required(`Please input your Location!`),
+    country_id: yup.string(),
     mobile_no: yup
       .string()
       .min(5, `Please input Valid Mobile Number!`)
-      .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`),
+      .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`)
+      .test("validate Number", "Enter valid Number", function (value, ctx) {
+        const { country_id } = this.parent;
+        if (value && !country_id) {
+          return ctx.createError({ message: "Country code is Required" });
+        }
+        return true;
+      }),
     // .required(`Please input your Mobile Number!`),
     email_id: yup.string().email(`Please input Valid Email Id!`),
   });
@@ -101,6 +110,8 @@ const UpdateProfile = () => {
       last_name: "",
       gender: "",
       other_gender: "",
+      country_id: "",
+      country_code: "",
       dob: "",
       email_id: "",
       mobile_no: "",
@@ -143,6 +154,8 @@ const UpdateProfile = () => {
           );
           setValues((pre) => ({
             ...pre,
+            country_id: profileData.country_id ?? "",
+            country_code: profileData.country_code ?? "",
             name: profileData.name,
             first_name: profileData.first_name,
             last_name: profileData.last_name,
@@ -533,6 +546,7 @@ const UpdateProfile = () => {
               <p className={classes.label}>Date of Birth</p>
               <DateInputBox
                 displayDate={values.dob}
+                isError={errors.dob && touched.dob}
                 isDisabled={isAccountVerified !== "unverified"}
                 onSelectDate={(date) => {
                   if (date !== "") {
@@ -681,21 +695,43 @@ const UpdateProfile = () => {
 
             <Col sm={12} xs={24}>
               <p className={classes.label}>Mobile Number</p>
-              <Form.Item>
-                <Input
-                  name="mobile_no"
-                  maxLength={15}
-                  className={`${classes.textBox}`}
-                  placeholder="Mobile Number"
+              <div className="mobileInput">
+                <CountryCodeDropdown
+                  width="25%"
                   status={touched.mobile_no && errors.mobile_no ? "error" : ""}
-                  value={values.mobile_no}
-                  disabled={IsValidCredentials.mobile}
-                  onChange={handleChange("mobile_no")}
+                  value={values.country_code}
+                  onSelectItem={(val) => {
+                    setValues((pre) => ({
+                      ...pre,
+                      country_code: val.label,
+                      country_id: val.key,
+                    }));
+                  }}
                 />
-                {touched.mobile_no && (
-                  <p className="ErrTxt">{errors?.mobile_no}</p>
-                )}
-              </Form.Item>
+                <Form.Item
+                  style={{
+                    width: "97%",
+                    marginLeft: 10,
+                    height: "auto",
+                  }}
+                >
+                  <Input
+                    name="mobile_no"
+                    maxLength={15}
+                    className={`${classes.textBox}`}
+                    placeholder="Mobile Number"
+                    status={
+                      touched.mobile_no && errors.mobile_no ? "error" : ""
+                    }
+                    value={values.mobile_no}
+                    disabled={IsValidCredentials.mobile}
+                    onChange={handleChange("mobile_no")}
+                  />
+                </Form.Item>
+              </div>
+              {touched.mobile_no && (
+                <p className="ErrTxt">{errors?.mobile_no}</p>
+              )}
             </Col>
             <Col sm={12} xs={24}>
               <p className={classes.label}>Email</p>
