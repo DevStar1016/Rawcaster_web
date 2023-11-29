@@ -1107,14 +1107,21 @@ export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
  * @param {string} url - The URL of the file to download.
  * @returns None
  */
-export const downloadurl = (url) => {
-  var file_path = url;
-  var a = document.createElement("A");
-  a.href = file_path;
-  a.download = file_path.substr(file_path.lastIndexOf("/") + 1);
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+export const downloadurl = async (url) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    var file_path = objectUrl;
+    var a = document.createElement("A");
+    a.href = file_path;
+    a.download = file_path.substr(file_path.lastIndexOf("/") + 1);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (error) {
+    toast.error("Something went wrong !");
+  }
 };
 
 /**
