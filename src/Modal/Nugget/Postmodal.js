@@ -632,7 +632,9 @@ const Postmodal = ({ visible, onClose }) => {
                 >
                   <span className="material-icons">close</span>
                 </div>
-                <p className={classes.title}>{MetaData[0].title}</p>
+                <p className={classes.title}>
+                  {MetaData[0].title ?? MetaData[0].url}
+                </p>
                 {MetaData[0].open_graph_image &&
                 MetaData[0].open_graph_image !== "" ? (
                   <img
