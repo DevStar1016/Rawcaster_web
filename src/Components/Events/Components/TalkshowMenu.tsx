@@ -66,7 +66,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
   return (
     <div className={`${styles.BottomContainer} ${styles.TalkshowMenu}`}>
       <div className={styles.menuContainer}>
-        <div
+      {(userdata?.isHost || userdata?.isCoHost) && ( <div
           className={`${styles.iconContainer} ${styles.switchIconSec} ${
             !muted ? styles.activeiconContainer : ""
           }`}
@@ -85,7 +85,7 @@ const TalkshowMenu = ({ isNewMessage, setisNewMessage }) => {
               expand_less
             </span>
           </Popover>
-        </div>
+        </div>)}
         {(userdata?.isHost || userdata?.isCoHost) && (
           <div
             className={`${styles.iconContainer} ${styles.switchIconSec} ${
