@@ -65,6 +65,7 @@ export const CustomParagraph = (props: CustomParagraphprops) => {
       >
         {children}
       </p>
+
       {isReadMoreEnable && (
         <span
           onClick={toggleReadMore}

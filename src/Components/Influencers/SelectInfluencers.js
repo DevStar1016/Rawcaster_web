@@ -388,6 +388,15 @@ const SelectInfluencers = () => {
 
   const InfluencerComponent = ({ ele }) => {
     const BioData = useReplaceBiodataHandler(ele);
+    const getBioData = () => {
+      if (ele?.bio_data && ele?.bio_data !== "") {
+        return ele?.bio_data;
+      } else if (typeof ele?.bio_data !== "string") {
+        return BioData;
+      }
+      return BioData;
+    };
+    console.log(getBioData());
     return (
       <Col xs={24} md={12} lg={8}>
         <div className={classes.influencers}>
@@ -441,29 +450,21 @@ const SelectInfluencers = () => {
               )}
             </p>
           </Tooltip>
-          <p className={classes.desc}>
-            {ele.bio_data && ele?.bio_data !== "" ? (
-              <ReadMore
-                Influencer={true}
-                partialShowLines={1}
-                maxheight={"64px"}
-                isReadMore={false}
-                isReadMoreValid={() => {}}
-              >
-                {ele?.bio_data}
-              </ReadMore>
-            ) : (
-              <ReadMore
-                Influencer={true}
-                partialShowLines={1}
-                maxheight={"64px"}
-                isReadMore={false}
-                isReadMoreValid={() => {}}
-              >
-                {BioData}
-              </ReadMore>
-            )}
-          </p>
+          {!isFetching && (
+            <p className={classes.desc}>
+              {getBioData() ? (
+                <ReadMore
+                  Influencer={true}
+                  partialShowLines={1}
+                  maxheight={"64px"}
+                  isReadMore={false}
+                  isReadMoreValid={() => {}}
+                >
+                  {getBioData()}
+                </ReadMore>
+              ) : null}
+            </p>
+          )}
           {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
             <Link className={classes.selectedBtn}>
               Selected <span className="material-symbols-outlined">done</span>
@@ -556,7 +557,8 @@ const SelectInfluencers = () => {
                   className={classes.searchIcon}
                   id="searchInfluencer"
                   onClick={() => {
-                    dispatch(handleLoading(true));
+                    // dispatch(handleLoading(true));
+                    setisFetching(true);
                     getInfluencerList(
                       1,
                       SearchValues.category,

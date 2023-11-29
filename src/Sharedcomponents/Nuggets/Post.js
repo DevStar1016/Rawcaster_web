@@ -263,6 +263,25 @@ const Post = ({
   };
 
   /**
+   * Determines if the element is downloadable based on its share type.
+   * @returns {number} - 1 if the element is downloadable, 2 otherwise.
+   */
+
+  const getisDownloadable = () => {
+    if (
+      ele &&
+      ele?.share_type === 1 &&
+      // AccountAccessType === "diamond_and_above"
+      (loginUserData?.user_status_id >= 4 ||
+        (loginUserData && ele.media_list[0].media_type === "image"))
+    ) {
+      return 1;
+    } else {
+      return 2;
+    }
+  };
+
+  /**
    * Handles blocking a user with the given ID.
    * @param {number} id - The ID of the user to block.
    * @returns None
@@ -438,6 +457,29 @@ const Post = ({
         </div>
       ),
     },
+    // {
+    //   key: 7,
+    //   isLoginuser: false,
+    //   isBoth: true,
+    //   label: (
+    //     <div
+    //       onClick={() => {
+    //         console.log("download");
+    //       }}
+    //       className={classes.dropdownItem}
+    //     >
+    //       <span
+    //         class="material-symbols-outlined"
+    //         style={{
+    //           display: ele.user_id === loginUserData?.user_id ? "none" : "",
+    //         }}
+    //       >
+    //         download
+    //       </span>
+    //       Download
+    //     </div>
+    //   ),
+    // },
   ];
 
   /**
@@ -462,6 +504,9 @@ const Post = ({
           if (ele.share_type !== 1) {
             resultData = resultData.filter((elem) => parseInt(elem.key) !== 3);
           }
+          if (!getisDownloadable()) {
+            resultData = resultData.filter((elem) => parseInt(elem.key) !== 7);
+          }
 
           return resultData;
         }
@@ -481,6 +526,10 @@ const Post = ({
       }
       if (ele?.following) {
         resultData = resultData.filter((elem) => parseInt(elem.key) !== 6);
+      }
+
+      if (!getisDownloadable()) {
+        resultData = resultData.filter((elem) => parseInt(elem.key) !== 7);
       }
 
       return resultData;
@@ -756,25 +805,6 @@ const Post = ({
     });
 
     return count + data?.length;
-  };
-
-  /**
-   * Determines if the element is downloadable based on its share type.
-   * @returns {number} - 1 if the element is downloadable, 2 otherwise.
-   */
-
-  const getisDownloadable = () => {
-    if (
-      ele &&
-      ele?.share_type === 1 &&
-      // AccountAccessType === "diamond_and_above"
-      (loginUserData?.user_status_id >= 4 ||
-        (loginUserData && ele.media_list[0].media_type === "image"))
-    ) {
-      return 1;
-    } else {
-      return 2;
-    }
   };
 
   const MetaDataContent = (elem, isPopover = false) => {
