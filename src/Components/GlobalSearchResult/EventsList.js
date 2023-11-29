@@ -117,7 +117,7 @@ const EventsList = () => {
    */
   useEffect(() => {
     if (isGlobalSearch || EventList?.length === 0) {
-      dispatch(handleLoading(true));
+      // dispatch(handleLoading(true));
       setisFetching(true);
       getEventList();
     }

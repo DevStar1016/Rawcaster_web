@@ -699,6 +699,7 @@ const UpdateProfile = () => {
                 <CountryCodeDropdown
                   width="25%"
                   status={touched.mobile_no && errors.mobile_no ? "error" : ""}
+                  isDisabled={IsValidCredentials.mobile}
                   value={values.country_code}
                   onSelectItem={(val) => {
                     setValues((pre) => ({

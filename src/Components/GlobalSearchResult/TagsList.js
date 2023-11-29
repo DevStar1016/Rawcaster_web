@@ -118,7 +118,7 @@ const TagsList = () => {
    */
   useEffect(() => {
     if (isGlobalSearch || TagsList?.length === 0) {
-      dispatch(handleLoading(true));
+      // dispatch(handleLoading(true));
       getTagsList();
       setisFetching(true);
     }
@@ -278,7 +278,9 @@ const TagsList = () => {
                               </span>
                             </div>
                           </Dropdown> */}
-                          <TagsChart Data={ele.trends} />
+                          {ele.trends && ele.trends.length !== 0 && (
+                            <TagsChart Data={ele.trends} />
+                          )}
                         </div>
                       </div>
                     );

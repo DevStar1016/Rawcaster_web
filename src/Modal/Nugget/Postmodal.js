@@ -574,7 +574,7 @@ const Postmodal = ({ visible, onClose }) => {
                           }
                         }}
                       >
-                        Ok
+                        Upgrade
                       </Button>
                       <Button
                         className={classes.LaterBtn}

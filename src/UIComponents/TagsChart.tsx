@@ -131,7 +131,7 @@ const TagsChart = ({ Data }: prop) => {
     }
   };
 
-  const data = {
+  const data = () => ({
     labels: getLabels(),
     datasets: [
       {
@@ -141,10 +141,9 @@ const TagsChart = ({ Data }: prop) => {
         backgroundColor: "#F2718D",
       },
     ],
-  };
-  return Data && Data?.length !== 0 ? (
-    <Line options={options} data={data} />
-  ) : null;
+  });
+
+  return <Line options={options} data={data()} />;
 };
 
 export default TagsChart;

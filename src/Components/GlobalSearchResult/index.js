@@ -30,22 +30,22 @@ const GlobalSearchResult = () => {
         >
           <Tab eventKey="Profile" title="Profile">
             <div className={classes.fullcontainer}>
-              <ProfileList />
+              {key === "Profile" && <ProfileList />}
             </div>
           </Tab>
           <Tab eventKey="Nuggets" title="Nuggets">
             {/* <div className={classes.fullcontainer}> */}
-            <Nuggets />
+            {key === "Nuggets" && <Nuggets />}
             {/* </div> */}
           </Tab>
           <Tab eventKey="Events" title="Events">
             <div className={classes.fullcontainer}>
-              <EventsList />
+              {key === "Events" && <EventsList />}
             </div>
           </Tab>
           <Tab eventKey="#Tags" title="#Tags">
             <div className={classes.fullcontainer}>
-              <TagsList />
+              {key === "#Tags" && <TagsList />}
             </div>
           </Tab>
         </Tabs>
