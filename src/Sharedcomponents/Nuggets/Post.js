@@ -798,7 +798,7 @@ const Post = ({
                     : "0px",
               }}
             >
-              {elem.title}
+              {elem.title ?? elem.url}
             </p>
             {elem.open_graph_image && elem.open_graph_image !== "" ? (
               <img
