@@ -13,14 +13,15 @@ import { fetchNotificationList } from "../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
 import { handleTabChange } from "../../Store/Redux/Reducer/NotificationsReducer";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 let TabsValues = [
-  { key: 0, id: 5, label: "Fans", children: null },
-  { key: 1, id: 4, label: "Groups", children: null },
-  { key: 2, id: 3, label: "Connections", children: null },
-  { key: 3, id: 2, label: "Events", children: null },
-  { key: 4, id: 1, label: "Nuggets", children: null },
-  { key: 5, id: 6, label: "Poll Resullts", children: null },
+  { key: 0, id: 5, label: "Fans", children: null, isShow: true },
+  { key: 1, id: 4, label: "Groups", children: null, isShow: true },
+  { key: 2, id: 3, label: "Connections", children: null, isShow: true },
+  { key: 3, id: 2, label: "Events", children: null, isShow: IS_CHIME_ENABLE },
+  { key: 4, id: 1, label: "Nuggets", children: null, isShow: true },
+  { key: 5, id: 6, label: "Poll Resullts", children: null, isShow: true },
 ];
 
 const ContentLayout = () => {
@@ -56,7 +57,7 @@ const ContentLayout = () => {
       <Tabs
         defaultActiveKey="1"
         tabPosition={"top"}
-        items={TabsValues}
+        items={TabsValues.filter((ele) => ele.isShow)}
         activeKey={selectedIndex}
         onChange={(key) => {
           const findId = TabsValues.find(

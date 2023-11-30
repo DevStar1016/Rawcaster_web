@@ -48,6 +48,7 @@ import Seo from "../SEO/Seo";
 import { ProfileSEO } from "../SEO/SEOContent";
 import { ScrollRestoration } from "react-router-dom";
 import { ShowUnclaimedAccountModal } from "../../Modal/DefaultModal";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const Profile = () => {
   const params = useParams();
@@ -394,7 +395,10 @@ const Profile = () => {
                     )}
                   </>
                 )}
-                {!getisLoginUser() && loginToken && <OthersEventListing />}
+
+                {IS_CHIME_ENABLE && !getisLoginUser() && loginToken && (
+                  <OthersEventListing />
+                )}
                 {getisLoginUser() && (
                   <>
                     {isSuccess ? (
@@ -484,7 +488,7 @@ const Profile = () => {
                     ) : (
                       <Skeleton active />
                     )}
-                    {isSuccess && (
+                    {isSuccess && IS_CHIME_ENABLE && (
                       <Eventslisting
                         isCreateEnabled={getisLoginUser()}
                         isSearchEnabled={true}

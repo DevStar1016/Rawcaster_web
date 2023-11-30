@@ -1163,7 +1163,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                                 }
                               }}
                             >
-                              Ok
+                              Upgrade
                             </Button>
                             <Button
                               style={{

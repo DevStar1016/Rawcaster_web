@@ -24,6 +24,8 @@ export const EMAIL_REGEX =
 // export const LOGIN_ID = /^(?:\d{5,16}|\w+@\w+\.\w{2,3})$/;
 // eslint-disable-next-line react-hooks/exhaustive-deps
 
+export const IS_CHIME_ENABLE = false;
+
 export const SHARED_TYPE = [
   { id: 1, key: 1, Value: "Public", label: "Public" },
   { id: 2, key: 2, Value: "Only me", label: "Only me" },

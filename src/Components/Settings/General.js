@@ -13,6 +13,7 @@ import {
   AccountStatus,
   DateTypeFormats,
   DefaultRawcasterPage,
+  DefaultRawcasterPageChimeDisabled,
   OptInStatus,
   ProfileswitchTypes,
   SettingsList,
@@ -40,6 +41,7 @@ import EmailorMobileUpdateModal from "../../Modal/Verification/EmailorMobileUpda
 import { ShowDefaultModal } from "../../Modal/DefaultModal";
 import { resendOtpService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const General = () => {
   const {
@@ -222,6 +224,7 @@ const General = () => {
                 DefaultRawcasterPage,
                 formikvalues.mobile_default_page
               )}
+              optionFilterProp={IS_CHIME_ENABLE ? undefined : "Event,Chat"}
               style={{ width: 200 }}
               placeholder="Search Default Rawcaster page"
               optionFilterProp="children"
@@ -233,7 +236,11 @@ const General = () => {
                   .toLowerCase()
                   .localeCompare((optionB?.label ?? "").toLowerCase())
               }
-              options={DefaultRawcasterPage}
+              options={
+                IS_CHIME_ENABLE
+                  ? DefaultRawcasterPage
+                  : DefaultRawcasterPageChimeDisabled
+              }
               onChange={(val) => {
                 setupdateValue("mobile_default_page", parseInt(val));
               }}
@@ -352,7 +359,11 @@ const General = () => {
 
             return (
               <>
-                <div>
+                <div
+                  style={{
+                    display: ele.isShow ? "" : "none",
+                  }}
+                >
                   <p className={classes.smallheading}>{ele.title} </p>
                   <Radio.Group
                     defaultValue={formikvalues[ele.keyword]}

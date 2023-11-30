@@ -32,6 +32,7 @@ import ReportGroup from "../../../Modal/Report/ReportGroup";
 import ImageCropModal from "../../../Modal/ImageCropModal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
 
 export const GroupHeader = () => {
   const {
@@ -640,7 +641,7 @@ export const EditGroupMembers = () => {
             </InputGroup>
           )}
 
-          {isChatSwichEnabled() && (
+          {IS_CHIME_ENABLE && isChatSwichEnabled() && (
             <div className={`${classes.chatEnabledSec} chatSwitch`}>
               <p>Chat:</p>
               <Switch

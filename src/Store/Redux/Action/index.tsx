@@ -207,15 +207,20 @@ export const fetchuserInfobyToken = createAsyncThunk(
             CHIME_SOCKET_EVENTS.JOIN_SOCKET
           );
         }
-
-        dispatch(
-          handleNotificationUnreadCount(data.profile.unread_notification_count)
-        );
-        dispatch(handleToken(token));
-        dispatch(fetchuserSettingsbyToken(token));
-        dispatch(handlenuggetToken(token));
-        dispatch(fetchFrindsbyId({ token }));
-        dispatch(fetchgroupsbyId({ token: token, user_id: finalData.user_id }));
+        setTimeout(() => {
+          dispatch(
+            handleNotificationUnreadCount(
+              data.profile.unread_notification_count
+            )
+          );
+          dispatch(handleToken(token));
+          dispatch(fetchuserSettingsbyToken(token));
+          dispatch(handlenuggetToken(token));
+          dispatch(fetchFrindsbyId({ token }));
+          dispatch(
+            fetchgroupsbyId({ token: token, user_id: finalData.user_id })
+          );
+        }, 1000);
 
         return { token: token, ...finalData };
       } else {

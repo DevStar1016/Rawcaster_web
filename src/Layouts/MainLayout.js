@@ -14,6 +14,7 @@ import mainlogo from "../Assets/Images/svg/rawcaster_logo.svg";
 import { Button, Drawer } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { IS_CHIME_ENABLE } from "../Shared/Constant";
 
 const MainLayout = () => {
   const { pathname } = useLocation();
@@ -33,12 +34,16 @@ const MainLayout = () => {
         <div className={`${classes.topbar} ${classes.onlydes}`}>
           <div className={classes.headermargin}>
             <Menu mode="horizontal">
-              <Menu.Item key="join">
-                <Link to="/joinmeeting">Join a meeting</Link>
-              </Menu.Item>
-              <Menu.Item key="Host">
-                <Link to="/login">Host a meeting</Link>
-              </Menu.Item>
+              {IS_CHIME_ENABLE && (
+                <>
+                  <Menu.Item key="join">
+                    <Link to="/joinmeeting">Join a meeting</Link>
+                  </Menu.Item>
+                  <Menu.Item key="Host">
+                    <Link to="/login">Host a meeting</Link>
+                  </Menu.Item>
+                </>
+              )}
               <Menu.Item key="download">
                 <Link to="/appdownloadscreen">Download</Link>
               </Menu.Item>
