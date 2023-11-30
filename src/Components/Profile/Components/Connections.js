@@ -28,6 +28,7 @@ import talkshowIcon from "../../../Assets/Images/svg/talkshowIcon.svg";
 import InfluencerSend from "../../../Modal/InfluencerSend";
 import { fetchuserInfobyToken } from "../../../Store/Redux/Action";
 import { useDispatch } from "react-redux";
+import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
 
 const ConnectionsList = ({
   title = "",
@@ -251,7 +252,7 @@ const ConnectionsList = ({
       <h2 className={classes.fansHeading}>
         <div className="d-flex flex-row ">
           {title} {!isLocked ? `(${ConnectionsList.allconnectionscount})` : ""}
-          {!isLocked && type === "fans" && isMyProfile && (
+          {!isLocked && type === "fans" && isMyProfile && IS_CHIME_ENABLE && (
             <div className={classes.actionSec}>
               <img
                 className={classes.actionIcon}

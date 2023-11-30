@@ -405,7 +405,7 @@ export const ChatInput = ({
             >
               mood
             </i>
-            <input  
+            <textarea
               type="text"
               ref={textareaRef}
               className={classes.whatsapp_textarea}
@@ -419,25 +419,25 @@ export const ChatInput = ({
               }}
               autoFocus
               value={ChatMessage}
-              onKeyDown={({ key }) => {
-                if (key === "Enter") {
-                  setisEmoji(false);
-                  if (isSendOnly) {
-                    if (onSendResponse) {
-                      onSendResponse(ChatMessage);
-                    }
-                    setChatMessage("");
-                  } else if (!disabled) {
-                    if (ChatMessage && ChatMessage.trim() !== "") {
-                      HandleSendMessage(ChatMessage);
-                      setTimeout(() => {
-                      setChatMessage("");
-                      setisChatContentValid(true);
-                      }, 0);
-                    }
-                  }
-                }
-              }}
+              // onKeyDown={({ key }) => {
+              //   if (key === "Enter") {
+              //     setisEmoji(false);
+              //     if (isSendOnly) {
+              //       if (onSendResponse) {
+              //         onSendResponse(ChatMessage);
+              //       }
+              //       setChatMessage("");
+              //     } else if (!disabled) {
+              //       if (ChatMessage && ChatMessage.trim() !== "") {
+              //         HandleSendMessage(ChatMessage);
+              //         setTimeout(() => {
+              //           setChatMessage("");
+              //           setisChatContentValid(true);
+              //         }, 0);
+              //       }
+              //     }
+              //   }
+              // }}
               onChange={(e) => {
                 textareaRef.current.style.height = "auto";
                 textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;

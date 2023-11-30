@@ -14,6 +14,7 @@ import {
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { handleloginModalShow } from "../../Store/Redux/Reducer/DashboardReducer";
 import { detectMob } from "../../Shared/Utility";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const Events = ({ ref = null, style = {} }) => {
   const dispatch = useDispatch();
@@ -68,7 +69,7 @@ const Events = ({ ref = null, style = {} }) => {
       {loginUserData === null && isSuccess ? (
         <BeforeAuthEvents />
       ) : (
-        <Eventslisting />
+        IS_CHIME_ENABLE && <Eventslisting />
       )}
     </div>
   );

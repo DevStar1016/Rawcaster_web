@@ -22,6 +22,7 @@ import { AutoIndividualCreateService } from "../../../Services/ApiService";
 import { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { handleUpdateIndividualArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
+import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
 
 const Friends = ({ friend, searchInput }) => {
   const { setisChatOpen } = useMainContext();
@@ -125,7 +126,7 @@ const Friends = ({ friend, searchInput }) => {
           ) : null}
         </div>
 
-        {
+        {IS_CHIME_ENABLE && (
           <div
             id={"menu_" + friend.user_id}
             className={`${classes.friendsmenu}`}
@@ -155,7 +156,7 @@ const Friends = ({ friend, searchInput }) => {
               />
             )}
           </div>
-        }
+        )}
       </div>
     </>
   );

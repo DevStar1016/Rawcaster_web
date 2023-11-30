@@ -1108,20 +1108,11 @@ export const BlobUrlToFile = async (blobUrl, fileName = "blobtofile") => {
  * @returns None
  */
 export const downloadurl = async (url) => {
-  try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    var file_path = objectUrl;
-    var a = document.createElement("A");
-    a.href = file_path;
-    a.download = file_path.substr(file_path.lastIndexOf("/") + 1);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  } catch (error) {
-    toast.error("Something went wrong !");
-  }
+  const a = document.createElement("a");
+
+  a.setAttribute("download", url.substr(url.lastIndexOf("/") + 1));
+  a.setAttribute("href", url);
+  a.click();
 };
 
 /**

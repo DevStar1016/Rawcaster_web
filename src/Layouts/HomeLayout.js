@@ -65,6 +65,7 @@ import ProfileImg from "../UIComponents/ProfileImg";
 import { useAppSelector } from "../Store/Redux/Config/Hooks";
 import { setCookie } from "../Store/Storage/Cookie";
 import { rootReducer } from "../Store/Redux/Config/RootReducer";
+import { IS_CHIME_ENABLE } from "../Shared/Constant";
 
 const HomeLayout = () => {
   const params = useParams();
@@ -232,12 +233,14 @@ const HomeLayout = () => {
               <div className={classes.rightMenus}>
                 {loginUserData && (
                   <div>
-                    <img
-                      style={{ borderRadius: "28px" }}
-                      src={LiveIcon}
-                      className={classes.liveIcon}
-                      alt="live_icon"
-                    />
+                    {IS_CHIME_ENABLE && (
+                      <img
+                        style={{ borderRadius: "28px" }}
+                        src={LiveIcon}
+                        className={classes.liveIcon}
+                        alt="live_icon"
+                      />
+                    )}
                     <img
                       src={ReferalIcon}
                       className={classes.liveIcon}

@@ -11,6 +11,7 @@ import classes from "./GlobalSearch.module.css";
 import ProfileList from "./ProfileList";
 import TagsList from "./TagsList";
 import { DecryptionString } from "../../Shared/Utility";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const GlobalSearchResult = () => {
   const [key, setKey] = useState("Profile");
@@ -38,11 +39,13 @@ const GlobalSearchResult = () => {
             {key === "Nuggets" && <Nuggets />}
             {/* </div> */}
           </Tab>
-          <Tab eventKey="Events" title="Events">
-            <div className={classes.fullcontainer}>
-              {key === "Events" && <EventsList />}
-            </div>
-          </Tab>
+          {IS_CHIME_ENABLE && (
+            <Tab eventKey="Events" title="Events">
+              <div className={classes.fullcontainer}>
+                {key === "Events" && <EventsList />}
+              </div>
+            </Tab>
+          )}
           <Tab eventKey="#Tags" title="#Tags">
             <div className={classes.fullcontainer}>
               {key === "#Tags" && <TagsList />}

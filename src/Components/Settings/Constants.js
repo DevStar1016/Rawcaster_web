@@ -1,5 +1,7 @@
 // General
 
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
+
 const primaryShare = [
   "Don’t Show",
   "Public",
@@ -28,6 +30,7 @@ export const SettingsList = [
     radioValue: primaryShare,
     groupid: 3,
     friendid: null,
+    isShow: true,
   },
   {
     title: "Location",
@@ -36,6 +39,7 @@ export const SettingsList = [
     radioValue: primaryShare,
     groupid: 3,
     friendid: null,
+    isShow: true,
   },
   {
     title: "DOB",
@@ -44,6 +48,7 @@ export const SettingsList = [
     radioValue: primaryShare,
     groupid: 3,
     friendid: null,
+    isShow: true,
   },
   {
     title: "Bio Data",
@@ -52,6 +57,7 @@ export const SettingsList = [
     radioValue: primaryShare,
     groupid: 3,
     friendid: null,
+    isShow: true,
   },
   {
     title: "Online Status",
@@ -60,6 +66,7 @@ export const SettingsList = [
     radioValue: primaryShare,
     groupid: 3,
     friendid: null,
+    isShow: true,
   },
   {
     title: "Nugget Display Option",
@@ -68,6 +75,7 @@ export const SettingsList = [
     radioValue: secondaryShare,
     groupid: 5,
     friendid: 3,
+    isShow: true,
   },
   {
     title: "Event Display Option",
@@ -76,6 +84,7 @@ export const SettingsList = [
     radioValue: secondaryShare,
     groupid: 5,
     friendid: 3,
+    isShow: IS_CHIME_ENABLE,
   },
 ];
 
@@ -91,6 +100,13 @@ export const DefaultRawcasterPage = [
   {
     value: "3",
     label: "Chat",
+  },
+];
+
+export const DefaultRawcasterPageChimeDisabled = [
+  {
+    value: "1",
+    label: "Nugget",
   },
 ];
 
@@ -137,12 +153,12 @@ export const NotificationTypes = [
     description:
       "Choose how you want to be notified when you receive a new nugget",
   },
-  {
-    title: "Events",
-    type: "events",
-    description:
-      "Choose how you want to be notified when you receive a new meeting invitation.",
-  },
+  // {
+  //   title: "Events",
+  //   type: "events",
+  //   description:
+  //     "Choose how you want to be notified when you receive a new meeting invitation.",
+  // },
 ];
 
 // Events

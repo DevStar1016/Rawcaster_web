@@ -374,6 +374,7 @@ const Nuggets = ({
     if (isReachedEnd && getHasNextPage() && !loading) {
       setloading(true);
       pageRef.current = pageRef.current + 1;
+      nuggetsRef.current = null;
       GetNuggetList(pageRef.current);
     }
   };

@@ -42,6 +42,7 @@ import {
   dateToShortDate,
   datetoString,
   decodeHtml,
+  downloadurl,
   getAuthenticated,
   getDataValueById,
   handleProfileNavigate,
@@ -273,7 +274,9 @@ const Post = ({
       ele?.share_type === 1 &&
       // AccountAccessType === "diamond_and_above"
       (loginUserData?.user_status_id >= 4 ||
-        (loginUserData && ele.media_list[0].media_type === "image"))
+        (loginUserData &&
+          ele.media_list.length !== 0 &&
+          ele.media_list[0].media_type === "image"))
     ) {
       return 1;
     } else {
@@ -332,7 +335,14 @@ const Post = ({
       key: 1,
       isLoginuser: true,
       isBoth: false,
-      label: <div onClick={() => onEdit(ele.nugget_id)}>Edit</div>,
+      label: (
+        <div
+          onClick={() => onEdit(ele.nugget_id)}
+          className={classes.dropdownItem}
+        >
+          <span class="material-symbols-outlined">edit_square</span>Edit
+        </div>
+      ),
     },
     {
       key: 2,
@@ -340,6 +350,7 @@ const Post = ({
       isBoth: false,
       label: (
         <div
+          className={classes.dropdownItem}
           onClick={() => {
             Modal.confirm({
               title: "Confirmation",
@@ -355,6 +366,7 @@ const Post = ({
             });
           }}
         >
+          <span class="material-symbols-outlined">cancel</span>
           Delete
         </div>
       ),
@@ -379,12 +391,7 @@ const Post = ({
           }}
           className={classes.dropdownItem}
         >
-          <span
-            className={classes.share_link_icon}
-            style={{
-              display: ele.user_id === loginUserData?.user_id ? "none" : "",
-            }}
-          ></span>
+          <span className={classes.share_link_icon}></span>
           Share Link
         </div>
       ),
@@ -457,29 +464,24 @@ const Post = ({
         </div>
       ),
     },
-    // {
-    //   key: 7,
-    //   isLoginuser: false,
-    //   isBoth: true,
-    //   label: (
-    //     <div
-    //       onClick={() => {
-    //         console.log("download");
-    //       }}
-    //       className={classes.dropdownItem}
-    //     >
-    //       <span
-    //         class="material-symbols-outlined"
-    //         style={{
-    //           display: ele.user_id === loginUserData?.user_id ? "none" : "",
-    //         }}
-    //       >
-    //         download
-    //       </span>
-    //       Download
-    //     </div>
-    //   ),
-    // },
+    {
+      key: 7,
+      isLoginuser: false,
+      isBoth: true,
+      label: (
+        <div
+          onClick={() => {
+            if (ele.media_list && ele.media_list.length !== 0) {
+              downloadurl(ele.media_list[0].path);
+            }
+          }}
+          className={classes.dropdownItem}
+        >
+          <span class="material-symbols-outlined">download</span>
+          Download
+        </div>
+      ),
+    },
   ];
 
   /**
@@ -504,7 +506,12 @@ const Post = ({
           if (ele.share_type !== 1) {
             resultData = resultData.filter((elem) => parseInt(elem.key) !== 3);
           }
-          if (!getisDownloadable()) {
+
+          if (
+            !getisDownloadable() ||
+            !ele.media_list ||
+            ele.media_list.length === 0
+          ) {
             resultData = resultData.filter((elem) => parseInt(elem.key) !== 7);
           }
 
@@ -528,7 +535,11 @@ const Post = ({
         resultData = resultData.filter((elem) => parseInt(elem.key) !== 6);
       }
 
-      if (!getisDownloadable()) {
+      if (
+        !getisDownloadable() ||
+        !ele.media_list ||
+        ele.media_list.length === 0
+      ) {
         resultData = resultData.filter((elem) => parseInt(elem.key) !== 7);
       }
 

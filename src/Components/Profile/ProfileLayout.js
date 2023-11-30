@@ -48,6 +48,7 @@ import {
   defaultprofileImg,
   defaultProfileBannerImg,
 } from "../../Shared/CommonConstants";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const ProfileLayout = ({
   children,
@@ -365,24 +366,26 @@ const ProfileLayout = ({
                   <div style={{ display: isLocked ? "none" : "" }}>
                     {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
 
-                    <div
-                      className={classes.actionIcon}
-                      style={{
-                        display: isLoginUser ? "" : "none",
-                      }}
-                    >
-                      <img
-                        src={msgIcon}
-                        alt="Message"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          if (setisInfluencerChatModalOpen) {
-                            setisInfluencerChatModalOpen({ show: true });
-                          }
+                    {IS_CHIME_ENABLE && (
+                      <div
+                        className={classes.actionIcon}
+                        style={{
+                          display: isLoginUser ? "" : "none",
                         }}
-                      />
-                      <img src={talkshowIcon} alt="Talkshow" />
-                    </div>
+                      >
+                        <img
+                          src={msgIcon}
+                          alt="Message"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            if (setisInfluencerChatModalOpen) {
+                              setisInfluencerChatModalOpen({ show: true });
+                            }
+                          }}
+                        />
+                        <img src={talkshowIcon} alt="Talkshow" />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
