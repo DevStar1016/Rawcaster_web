@@ -49,6 +49,7 @@ import {
   defaultProfileBannerImg,
 } from "../../Shared/CommonConstants";
 import { IS_CHIME_ENABLE } from "../../Shared/Constant";
+import { handleUpdateBecomeFan } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const ProfileLayout = ({
   children,
@@ -165,6 +166,12 @@ const ProfileLayout = ({
    */
   const UnfollowService = () => {
     handleUnFollowService(loginToken, profileData?.user_ref_id).then(() => {
+      dispatch(
+        handleUpdateBecomeFan({
+          user_id: profileData?.user_id,
+          status: false,
+        })
+      );
       setprofileData((pre) => ({
         ...pre,
         follow: false,

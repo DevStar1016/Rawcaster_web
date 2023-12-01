@@ -21,6 +21,7 @@ import {
   Switch,
   Tooltip,
   Empty,
+  Skeleton,
 } from "antd";
 import { toast } from "react-hot-toast";
 import tickIcon from "../../../Assets/Icons/png/tick.png";
@@ -53,6 +54,8 @@ export const GroupHeader = () => {
     handleReportGroup,
     handleExitGroup,
     close,
+    isImageUpdate,
+    setisImageUpdate,
   } = useConfigureGroupContext();
   const [isLogoEditable, setisLogoEditable] = useState(true);
   const [isReport, setisReport] = useState(false);
@@ -276,26 +279,32 @@ export const GroupHeader = () => {
             cursor: "pointer",
           }}
         >
-          <div className={classes.overLaySec}>
-            <span className="material-symbols-outlined">upload</span>
-          </div>
-          <img
-            src={
-              values?.group_icon && values.group_icon !== ""
-                ? typeof values.group_icon === "string"
-                  ? values.group_icon
-                  : URL.createObjectURL(values.group_icon)
-                : defaultGroupImg
-            }
-            style={{ borderRadius: "2px" }}
-            alt="gropup-icon"
-            width="44px"
-            height="44px"
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null; // prevents looping
-              currentTarget.src = defaultGroupImg;
-            }}
-          ></img>
+          {isImageUpdate ? (
+            <Skeleton.Avatar size="large" active />
+          ) : (
+            <>
+              <div className={classes.overLaySec}>
+                <span className="material-symbols-outlined">upload</span>
+              </div>
+              <img
+                src={
+                  values?.group_icon && values.group_icon !== ""
+                    ? typeof values.group_icon === "string"
+                      ? values.group_icon
+                      : URL.createObjectURL(values.group_icon)
+                    : defaultGroupImg
+                }
+                style={{ borderRadius: "2px" }}
+                alt="gropup-icon"
+                width="44px"
+                height="44px"
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  currentTarget.src = defaultGroupImg;
+                }}
+              ></img>
+            </>
+          )}
         </div>
         <input
           type="file"
@@ -365,6 +374,7 @@ export const GroupHeader = () => {
           src={URL.createObjectURL(tempGroupImage?.src)}
           ratio={tempGroupImage?.ratio}
           onSuccess={(val) => {
+            setisImageUpdate(true);
             if (GroupData && GroupData?.group_category !== 2) {
               const editData = {
                 group_name: values.group_name,

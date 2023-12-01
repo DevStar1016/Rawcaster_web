@@ -75,6 +75,20 @@ export const { actions, reducer } = createSlice({
         ];
       }
     },
+    handleUpdateBecomeFan: (state, action) => {
+      let filterData = [...state.Nuggets].map((ele) => {
+        if (ele.user_id === action.payload.user_id) {
+          return {
+            ...ele,
+            following: action.payload.status,
+          };
+        }
+        return ele;
+      });
+
+      //@ts-ignore
+      state.Nuggets = filterData;
+    },
     handleNuggetViewAPIUpdate: (state, action) => {
       let findData = [...state.Nuggets].map((ele, index) => {
         if (action.payload.includes(index) && ele.viewed === 0) {
@@ -216,6 +230,7 @@ export const {
   handleRemoveTranslate,
   handleNuggetFollowingUpdate,
   handleCancelRef,
+  handleUpdateBecomeFan,
 } = actions;
 
 export default reducer;

@@ -223,8 +223,8 @@ const SelectInfluencers = () => {
         if (res.data.status === 1) {
           setinfluencerCategory(res.data.influencer_category);
         } else if (res.data.status === 0) {
-          toast.remove("rawcaster");
-          toast.error(res.data.msg, { id: "rawcaster" });
+          // toast.remove("rawcaster");
+          // toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});

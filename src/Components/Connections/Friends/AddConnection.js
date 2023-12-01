@@ -27,6 +27,7 @@ import { HandleBecameaFan } from "../../../Shared/SharedAPIs";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { handleUpdateBecomeFan } from "../../../Store/Redux/Reducer/NuggetsReducer";
 
 const AddConnection = ({ open, close }) => {
   const token = useAuthToken();
@@ -146,6 +147,12 @@ const AddConnection = ({ open, close }) => {
                         onClick={(e) => {
                           e.stopPropagation();
                           HandleBecameaFan(token, ele.user_ref_id).then(() => {
+                            dispatch(
+                              handleUpdateBecomeFan({
+                                user_id: ele?.user_id,
+                                status: true,
+                              })
+                            );
                             let find = ProfileList.findIndex(
                               (elem) => elem.user_id === ele.user_id
                             );

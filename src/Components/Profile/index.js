@@ -38,6 +38,7 @@ import OthersEventListing from "../Events/OthersEventListing";
 import {
   handleNuggetFormData,
   handleResetNuggets,
+  handleUpdateBecomeFan,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { getfollowerfollowingService } from "./Components/Utility";
@@ -227,6 +228,12 @@ const Profile = () => {
         const ref_id = user_ref_id ? user_ref_id : profileData?.user_ref_id;
         HandleBecameaFan(token, ref_id)
           .then(() => {
+            dispatch(
+              handleUpdateBecomeFan({
+                user_id: profileData?.user_id,
+                status: true,
+              })
+            );
             if (!user_ref_id) {
               setprofileData((pre) => ({
                 ...pre,
