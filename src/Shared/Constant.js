@@ -64,7 +64,8 @@ export const MIN_CHARACTER_LIMIT = {
 // export const LOGIN_ID = /^(?:\d{5,16}|\w+@\w+\.\w{2,3})$/;
 // eslint-disable-next-line react-hooks/exhaustive-deps
 
-export const IS_CHIME_ENABLE = false;
+/** This is for Instant call feature in My Connection */
+export const IS_CHIME_ENABLE = true;
 
 export const SHARED_TYPE = [
   { id: 1, key: 1, Value: "Public", label: "Public" },
