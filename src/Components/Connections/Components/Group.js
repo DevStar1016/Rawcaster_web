@@ -6,6 +6,7 @@
  * @returns A React component representing a group in a connections list.
  */
 import React, { useState } from "react";
+import { Tooltip } from "antd";
 import { JSONtoformdata, decodeHtml } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
@@ -91,9 +92,23 @@ const Group = ({ group, searchInput, onClick }) => {
         </div>
         {IS_CHIME_ENABLE && (
           <div className={`${classes.friendsmenu}`}>
-            <img src={audiocall} alt={"audio call"} />
-            <img src={videocall} alt={"video call"} />
-            {isFetching === group.group_id ? (
+            <Tooltip
+              title={"Video call"}
+              color={"#F7965B"}
+            >
+              <img src={audiocall} alt={"audio call"} />
+            </Tooltip>
+            <Tooltip
+              title={"Video call"}
+              color={"#F7965B"}
+            >
+              <img src={videocall} alt={"video call"} />
+            </Tooltip>
+            <Tooltip
+              title={"Group chat"}
+              color={"#F7965B"}
+            >
+              {isFetching === group.group_id ? (
               <Spinner size="sm" className="ms-2" />
             ) : (
               <img
@@ -118,6 +133,7 @@ const Group = ({ group, searchInput, onClick }) => {
                 }}
               />
             )}
+            </Tooltip>
           </div>
         )}
       </div>

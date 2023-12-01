@@ -4,6 +4,7 @@
  * @param {string} searchInput - The search input used to filter the friends list.
  * @returns The JSX representation of a friend in the friends list.
  */
+import { Tooltip } from "antd";
 import {
   JSONtoformdata,
   decodeHtml,
@@ -131,30 +132,45 @@ const Friends = ({ friend, searchInput }) => {
             id={"menu_" + friend.user_id}
             className={`${classes.friendsmenu}`}
           >
-            <img src={audiocall} alt={"audio call"} />
-            <img src={videocall} alt={"video call"} />
-            {isFetching === friend.user_id ? (
-              <Spinner size="sm" className="ms-2" />
-            ) : (
-              <img
-                src={chatIcon}
-                alt={"Group Chat"}
-                onClick={(event) => {
-                  if (!isFetching) {
-                    event.stopPropagation();
-                    if (!friend.channel_arn || friend.channel_arn === "") {
-                      HandleIndividualCreate();
-                    } else {
-                      setisChatOpen({
-                        show: true,
-                        type: "friend",
-                        id: friend.user_id,
-                      });
+            <Tooltip
+              title={"Video call"}
+              color={friend.online ? "#5dbc3a" : "#F7965B"}
+            >
+              <img src={videocall} alt={"video call"} />
+            </Tooltip>
+            <Tooltip
+              title={"Audio call"}
+              color={friend.online ? "#5dbc3a" : "#F7965B"}
+            >
+              <img src={audiocall} alt={"audio call"} />
+            </Tooltip>
+            <Tooltip
+              title={"chat"}
+              color={friend.online ? "#5dbc3a" : "#F7965B"}
+            >
+              {isFetching === friend.user_id ? (
+                <Spinner size="sm" className="ms-2" />
+              ) : (
+                <img
+                  src={chatIcon}
+                  alt={"Group Chat"}
+                  onClick={(event) => {
+                    if (!isFetching) {
+                      event.stopPropagation();
+                      if (!friend.channel_arn || friend.channel_arn === "") {
+                        HandleIndividualCreate();
+                      } else {
+                        setisChatOpen({
+                          show: true,
+                          type: "friend",
+                          id: friend.user_id,
+                        });
+                      }
                     }
-                  }
-                }}
-              />
-            )}
+                  }}
+                />
+              )}
+            </Tooltip>
           </div>
         )}
       </div>
