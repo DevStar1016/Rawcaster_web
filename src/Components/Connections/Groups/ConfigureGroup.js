@@ -42,6 +42,7 @@ const ConfigureGroup = ({ groupId, close, open }) => {
   const { groupsList } = useDashboard();
   const friends = useFriends();
   const dispatch = useDispatch();
+  const [isImageUpdate, setisImageUpdate] = useState(false);
   const [GroupMembers, setGroupMembers] = useState([]);
   const [GroupData, setGroupData] = useState();
   const token = useAuthToken();
@@ -154,6 +155,13 @@ const ConfigureGroup = ({ groupId, close, open }) => {
                 id: groupId,
               })
             );
+            setGroupData(res.data.group_details);
+            const groupData = res.data.group_details;
+            setValues((pre) => ({
+              group_name: groupData?.group_name,
+              group_icon: groupData?.group_icon,
+              group_members: JSON.stringify(groupData?.group_member_ids),
+            }));
           } else {
             dispatch(handleAddGroupData(res.data.group_details));
           }
@@ -166,7 +174,10 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           });
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        setisImageUpdate(false);
+      });
   };
 
   /**
@@ -499,6 +510,8 @@ const ConfigureGroup = ({ groupId, close, open }) => {
           handleExitGroup,
           close,
           handleMemberChat,
+          isImageUpdate,
+          setisImageUpdate,
         }}
       >
         <div className={classes.AddGroupContainer}>

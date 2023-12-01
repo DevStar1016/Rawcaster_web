@@ -276,7 +276,10 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
             </>
           ) : (
             <>
-              {type === "influencers" && !isUser && loginToken ? (
+              {type === "influencers" &&
+              !isUser &&
+              loginToken &&
+              !ele.follow ? (
                 <span
                   className={`material-symbols-outlined ${classes.plusIcon}`}
                   style={{ display: "" }}
