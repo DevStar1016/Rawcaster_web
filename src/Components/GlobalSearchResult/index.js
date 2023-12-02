@@ -16,7 +16,7 @@ import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 const GlobalSearchResult = () => {
   const [key, setKey] = useState("Profile");
   const params = useParams();
-  const searchKey = params?.key ? DecryptionString(params?.key) : "";
+  const searchKey = params?.key ? DecryptionString(params?.key).trim() : "";
   return (
     <div>
       <div className={`searchNugets ${classes.mainContainer}`}>
