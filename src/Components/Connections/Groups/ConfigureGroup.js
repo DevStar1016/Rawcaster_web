@@ -298,6 +298,15 @@ const ConfigureGroup = ({ groupId, close, open }) => {
               ...res.data.memberdetails,
             ],
           };
+          setGroupData((pre) => ({
+            ...pre,
+            group_member_count: pre.group_member_count + 1,
+            group_members_list: [
+              ...pre.group_members_list,
+              ...res.data.memberdetails,
+            ],
+          }));
+          setGroupMembers((pre) => [...pre, ...res.data.memberdetails]);
           dispatch(
             handleUpdateGroupData({
               Group: updatedGroup,

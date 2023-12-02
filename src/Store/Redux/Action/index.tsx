@@ -14,6 +14,7 @@ import {
   JSONtoformdata,
   decodeHtml,
   getAuthToken,
+  getRawcaserToken,
   utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
@@ -113,10 +114,10 @@ export const fetchNuggetsbyId = createAsyncThunk(
     const { token, formData, signal } = listData;
     let nuggetData = {
       ...formData,
-      token: token,
+      token: getRawcaserToken() ? token : "RAWCAST",
     };
 
-    if (token) {
+    if (token || !getRawcaserToken()) {
       try {
         const { data } = await listNuggetsService(
           JSONtoformdata(nuggetData),
