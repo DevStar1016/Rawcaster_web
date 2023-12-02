@@ -157,7 +157,7 @@ const HomeLayout = () => {
             let filterData = { ...nuggetFormData };
             filterData.formData = {
               ...filterData.formData,
-              search_key: e.nativeEvent.target.value,
+              search_key: e.nativeEvent.target.value.trim(),
               user_id: null,
               page_number: 1,
             };
@@ -167,7 +167,9 @@ const HomeLayout = () => {
             dispatch(handleNuggetFormData(filterValidObject(filterData)));
             dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
             navigate(
-              `/globalsearch/${EncryptionString(e.nativeEvent.target.value)}`
+              `/globalsearch/${EncryptionString(
+                e.nativeEvent.target.value.trim()
+              )}`
             );
           }
         } else {

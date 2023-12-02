@@ -457,7 +457,7 @@ export const SelectConnections = () => {
             </InputGroup.Text>
           </InputGroup>
 
-          {isChatSwichEnabled() && (
+          {isChatSwichEnabled() && IS_CHIME_ENABLE && (
             <div className={`${classes.chatEnabledSec} chatSwitch`}>
               <p>Chat:</p>
               <Switch

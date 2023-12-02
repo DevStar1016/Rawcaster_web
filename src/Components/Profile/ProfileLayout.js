@@ -369,9 +369,13 @@ const ProfileLayout = ({
                 </div>
               )}
               <div className={classes.profilesSec}>
-                {isFansEnabled && (
+                {isFansEnabled ? (
                   <div style={{ display: isLocked ? "none" : "" }}>
-                    {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
+                    {loginUserData ? (
+                      <FansThumb isLoginUser={isLoginUser} />
+                    ) : (
+                      <div className={classes.fansList}></div>
+                    )}
 
                     {IS_CHIME_ENABLE && (
                       <div
@@ -394,6 +398,8 @@ const ProfileLayout = ({
                       </div>
                     )}
                   </div>
+                ) : (
+                  <div className={classes.fansList}></div>
                 )}
               </div>
             </div>
@@ -416,7 +422,9 @@ const ProfileLayout = ({
                     />
                   </div>
                 </Tooltip>
-              ) : null}
+              ) : (
+                <div></div>
+              )}
               {(profileData?.unclaimed_status === 1 ||
                 profileData?.unclaimed_status === 2) && (
                 <Button
