@@ -269,16 +269,20 @@ const Post = ({
    */
 
   const getisDownloadable = () => {
-    if (
-      ele &&
-      ele?.share_type === 1 &&
-      // AccountAccessType === "diamond_and_above"
-      (loginUserData?.user_status_id >= 4 ||
-        (loginUserData &&
+    if (ele && ele?.share_type === 1) {
+      if (loginUserData?.user_status_id >= 4) {
+        return 1;
+      } else if (loginUserData?.user_status_id >= 3) {
+        if (
+          loginUserData &&
           ele.media_list.length !== 0 &&
-          ele.media_list[0].media_type === "image"))
-    ) {
-      return 1;
+          ele.media_list[0].media_type === "image"
+        ) {
+          return 1;
+        }
+        return 2;
+      }
+      return 2;
     } else {
       return 2;
     }
@@ -507,11 +511,7 @@ const Post = ({
             resultData = resultData.filter((elem) => parseInt(elem.key) !== 3);
           }
 
-          if (
-            !getisDownloadable() ||
-            !ele.media_list ||
-            ele.media_list.length === 0
-          ) {
+          if (getisDownloadable() === 2) {
             resultData = resultData.filter((elem) => parseInt(elem.key) !== 7);
           }
 
@@ -535,11 +535,7 @@ const Post = ({
         resultData = resultData.filter((elem) => parseInt(elem.key) !== 6);
       }
 
-      if (
-        !getisDownloadable() ||
-        !ele.media_list ||
-        ele.media_list.length === 0
-      ) {
+      if (getisDownloadable() === 2) {
         resultData = resultData.filter((elem) => parseInt(elem.key) !== 7);
       }
 
