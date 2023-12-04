@@ -151,14 +151,16 @@
   }
   .locationIcon {
     float: left;
-    padding: 13px;
-    position: absolute;
+    padding: 13px 0;
     right: 0;
   }
   .locationIcon i {
     cursor: pointer;
   }
-  
+  .otpverifiedImg {
+    width: 25px;
+  height: 25px;
+  }
   .locationInputHeight {
     height: 52px !important;
   }

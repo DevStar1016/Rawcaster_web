@@ -22,6 +22,7 @@ import {
   isValidImageFile,
   JSONtoformdata,
 } from "../../../Shared/Utility";
+import DiamonVerified from "../../../Assets/Icons/svg/diamond_verified.svg";
 import DateInputBox from "../../../Sharedcomponents/DateInputBox";
 import classes from "./Profilverification.module.css";
 import * as yup from "yup";
@@ -448,6 +449,16 @@ const UpdateProfile = () => {
                   }
                   value={values?.first_name ? values?.first_name : ""}
                   onClick={() => {}}
+                  // suffix={
+                  //   <img
+                  //     src={DiamonVerified}
+                  //     className={classes.otpverifiedImg}
+                  //     style={{
+                  //       display:
+                  //         isAccountVerified === "verified" ? "block" : "none",
+                  //     }}
+                  //   />
+                  // }
                   disabled={isAccountVerified !== "unverified"}
                   onChange={(e) => {
                     setFieldValue("first_name", e.target.value);
@@ -469,6 +480,16 @@ const UpdateProfile = () => {
                   maxLength={50}
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
+                  // suffix={
+                  //   <img
+                  //     src={DiamonVerified}
+                  //     className={classes.otpverifiedImg}
+                  //     style={{
+                  //       display:
+                  //         isAccountVerified === "verified" ? "block" : "none",
+                  //     }}
+                  //   />
+                  // }
                   disabled={isAccountVerified !== "unverified"}
                   onChange={(e) => {
                     setFieldValue("last_name", e.target.value);
@@ -582,6 +603,21 @@ const UpdateProfile = () => {
                         id="geoLocation"
                         size="large"
                         className={`${classes.textBox} ${classes.locationInputHeight}`}
+                        suffix={
+                          <div
+                            className={classes.locationIcon}
+                            style={{ float: "left", padding: "13px 0" }}
+                          >
+                            <Tooltip title="get current location">
+                              <i
+                                className="material-icons pt-1"
+                                onClick={() => getCurrentLocation()}
+                              >
+                                location_on
+                              </i>
+                            </Tooltip>
+                          </div>
+                        }
                         maxLength={100}
                         {...getInputProps({
                           placeholder: "Search Places ...",
@@ -633,19 +669,7 @@ const UpdateProfile = () => {
                     </div>
                   )}
                 </PlacesAutocomplete>
-                <div
-                  className={classes.locationIcon}
-                  style={{ float: "left", padding: "13px" }}
-                >
-                  <Tooltip title="get current location">
-                    <i
-                      className="material-icons"
-                      onClick={() => getCurrentLocation()}
-                    >
-                      location_on
-                    </i>
-                  </Tooltip>
-                </div>
+
                 <div className="clearfix"></div>
                 {touched.geo_location && (
                   <p className="ErrTxt">{errors?.geo_location}</p>
@@ -727,6 +751,18 @@ const UpdateProfile = () => {
                     value={values.mobile_no}
                     disabled={IsValidCredentials.mobile}
                     onChange={handleChange("mobile_no")}
+                    suffix={
+                      <img
+                        src={DiamonVerified}
+                        className={classes.otpverifiedImg}
+                        style={{
+                          display:
+                            loginUserData.is_mobile_no_verified === 1
+                              ? "block"
+                              : "none",
+                        }}
+                      />
+                    }
                   />
                 </Form.Item>
               </div>
@@ -747,6 +783,18 @@ const UpdateProfile = () => {
                   status={touched.email_id && errors.email_id ? "error" : ""}
                   value={values.email_id}
                   onChange={handleChange("email_id")}
+                  suffix={
+                    <img
+                      src={DiamonVerified}
+                      className={classes.otpverifiedImg}
+                      style={{
+                        display:
+                          loginUserData.is_email_id_verified === 1
+                            ? "block"
+                            : "none",
+                      }}
+                    />
+                  }
                 />
                 {touched.email_id && (
                   <p className="ErrTxt">{errors?.email_id}</p>

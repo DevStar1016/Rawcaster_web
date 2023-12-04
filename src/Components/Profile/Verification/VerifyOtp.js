@@ -23,7 +23,6 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import VerifiedModal from "../../../Modal/Verification/VerifiedModal";
 import { fetchuserInfobyToken } from "../../../Store/Redux/Action";
-import { HandleVerifyModal } from "../../../Modal/DefaultModal";
 import { handleisFromGroup } from "../../../Store/Redux/Reducer/UtilityReducer";
 
 const validationSchema = yup.object().shape({

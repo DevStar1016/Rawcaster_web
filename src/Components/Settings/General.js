@@ -157,11 +157,12 @@ const General = () => {
     SubmitButtonTitle,
     closeButtonTitle,
     message,
+    isSubmitAvailable = true,
   }) => {
     ShowDefaultModal({
       open: true,
       isCloseAvailable: true,
-      isSubmitAvailable: true,
+      isSubmitAvailable,
       primary,
       onSuccess,
       SubmitButtonTitle,

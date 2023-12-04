@@ -38,6 +38,7 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
                   ...loginUserData,
                   user_status: res.data.user_status,
                   user_status_id: res.data.user_status_id,
+                  complementary_status: res.data.complementary_status ?? 0,
                 })
               );
             },
@@ -68,24 +69,27 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
 
         <div className={classes.actionBtn}>
           {/* {!isAI ? ( */}
-          <Button
-            ghost
-            type="primary"
-            htmlType="button"
-            onClick={() => {
-              if (AIclose) {
-                close();
-              } else {
-                removeSessionStorageData("influencerData");
-                close();
-              }
-            }}
-            size="large"
-            className={classes.cancelBtn}
-          >
-            Later
-          </Button>
+          {loginUserData?.complementary_status === 1 && (
+            <Button
+              ghost
+              type="primary"
+              htmlType="button"
+              onClick={() => {
+                if (AIclose) {
+                  close();
+                } else {
+                  removeSessionStorageData("influencerData");
+                  close();
+                }
+              }}
+              size="large"
+              className={classes.cancelBtn}
+            >
+              {"Later"}
+            </Button>
+          )}
           {/* ) : null} */}
+
           <Button
             type="primary"
             onClick={() => {
@@ -110,7 +114,13 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
             size="large"
             className={classes.reportBtn}
           >
-            {isAI ? "Upgrade Now" : AIopen ? "Upgrade Now" : "Login"}
+            {loginUserData?.complementary_status === 0
+              ? "OK"
+              : isAI
+              ? "Upgrade Now"
+              : AIopen
+              ? "Upgrade Now"
+              : "Login"}
           </Button>
         </div>
       </div>
