@@ -36,17 +36,24 @@ import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { CHARACTER_LIMIT, MIN_CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   username: yup
     .string()
-    .min(5, "Email or Phone Number Must be atleast 5 Characters")
+    .min(
+      MIN_CHARACTER_LIMIT.LOGIN_ID,
+      `Email or Phone Number Must be atleast ${MIN_CHARACTER_LIMIT.LOGIN_ID} Characters`
+    )
     .required(`Please input your Email or Phone Number!`),
   password: yup
     .string()
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .required("Please input your Password!"),
 });
 
@@ -186,7 +193,7 @@ const Login = () => {
                   value={values.username}
                   onChange={handleChange("username")}
                   status={touched.username && errors.username ? "error" : ""}
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.LOGIN_ID}
                   autoComplete="off"
                 />
                 {touched.username && (
@@ -201,7 +208,7 @@ const Login = () => {
                   placeholder="Password"
                   autoComplete="new-password"
                   value={values.password}
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.PASSWORD}
                   status={touched.password && errors.password ? "error" : ""}
                   onChange={handleChange("password")}
                 />

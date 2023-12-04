@@ -25,7 +25,7 @@ import { Typography } from "antd";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
-import {  ShowLinkOpenModal } from "../Modal/DefaultModal";
+import { ShowLinkOpenModal } from "../Modal/DefaultModal";
 import { CustomParagraph } from "./UtilityComponents";
 import { fetchNuggetsbyId } from "../Store/Redux/Action";
 

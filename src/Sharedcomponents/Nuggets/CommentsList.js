@@ -91,6 +91,16 @@ const CommentsList = ({ index }) => {
     editNuggetCommentService(JSONtoformdata(editComment))
       .then((res) => {
         if (res.data.status === 1) {
+          const { comment, comment_id } = res.data.edited_comment;
+          setCommentList((pre) => {
+            let tempData = [...pre];
+            const findind = tempData.findIndex(
+              (ele) => ele.comment_id === comment_id
+            );
+            tempData[findind].comment = comment;
+            return tempData;
+          });
+
           setisActiveEdit("");
         } else {
           toast.remove("rawcaster");

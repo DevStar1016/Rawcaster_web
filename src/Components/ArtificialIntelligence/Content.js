@@ -9,6 +9,7 @@ import { useAuthToken } from "../../Shared/Reduxfetcher";
 import ChatProfile from "../../Assets/Icons/svg/chat_r_logo.svg";
 import TypingContainer from "./TypingContainer";
 import { ChatInput } from "../../Sharedcomponents/Chat/utility";
+import { CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const ChatContent = () => {
   const token = useAuthToken();
@@ -198,7 +199,7 @@ const ChatContent = () => {
         <ChatInput
           disabled={!ChatEnabled}
           placeholderValue={PlaceHolderText}
-          chatTextMaxLength={100}
+          chatTextMaxLength={CHARACTER_LIMIT.CHAT_TEXT_MAX_LENGTH}
           HandleSendMessage={(ChatMessage) => {
             if (ChatMessage.trim() !== "") {
               setChatEnabled(false);

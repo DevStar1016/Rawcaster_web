@@ -16,11 +16,15 @@ import * as yup from "yup";
 import { getAuthToken, JSONtoformdata } from "../../Shared/Utility";
 import { forgotPasswordService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
+import { CHARACTER_LIMIT, MIN_CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   username: yup
     .string()
-    .min(5, "Login ID Must be atleast 5 Characters")
+    .min(
+      MIN_CHARACTER_LIMIT.LOGIN_ID,
+      `Email or Phone Number Must be atleast ${MIN_CHARACTER_LIMIT.LOGIN_ID} Characters`
+    )
     // .matches(LOGIN_ID, "Please Enter Valid Login ID")
     .required(`Please input your Login ID!`)
     .test("validate email", "Enter valid email", function (value) {
@@ -114,7 +118,7 @@ const ForgotPassword = () => {
                   value={values.username}
                   onChange={handleChange("username")}
                   status={errors.username ? "error" : ""}
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.LOGIN_ID}
                   autoComplete="off"
                 />
                 <p className="ErrTxt">{errors?.username}</p>

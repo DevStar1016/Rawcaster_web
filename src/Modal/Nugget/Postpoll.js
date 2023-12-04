@@ -18,6 +18,7 @@ import { complementaryMembershipService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import { useDispatch } from "react-redux";
+import { CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const Postpoll = ({ setisPoll }) => {
   const dispatch = useDispatch();
@@ -181,7 +182,7 @@ const Postpoll = ({ setisPoll }) => {
                         PollData.length >= 3 && classes.choicetextBox
                       }`}
                       placeholder={getChoiceTitle(index + 1)}
-                      maxLength={25}
+                      maxLength={CHARACTER_LIMIT.POLL_CHOICE}
                       autoComplete="off"
                       value={PollData[index].choiceData}
                       onChange={(e) => {

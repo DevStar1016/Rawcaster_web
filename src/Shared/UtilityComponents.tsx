@@ -46,6 +46,7 @@ export const CustomParagraph = (props: CustomParagraphprops) => {
       return !pre;
     });
   };
+  console.log(children);
 
   const style = {
     display: "-webkit-box",

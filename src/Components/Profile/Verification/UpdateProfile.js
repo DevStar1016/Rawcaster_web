@@ -35,7 +35,12 @@ import { useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { setLocalStorageData } from "../../../Store/Storage";
 import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
 import moment from "moment";
-import { GENDER_TYPE, MOBILE_NUMBER_REGEX } from "../../../Shared/Constant";
+import {
+  CHARACTER_LIMIT,
+  GENDER_TYPE,
+  MIN_CHARACTER_LIMIT,
+  MOBILE_NUMBER_REGEX,
+} from "../../../Shared/Constant";
 import ImageCropModal from "../../../Modal/ImageCropModal";
 import { useMainContext } from "../../../Shared/Context";
 import CountryCodeDropdown from "../../../UIComponents/CountryCodeDropdown";
@@ -55,11 +60,19 @@ const UpdateProfile = () => {
   const validationSchema = yup.object().shape({
     first_name: yup
       .string()
+      .max(
+        CHARACTER_LIMIT.FIRST_NAME,
+        `First Name cannot be longer than ${CHARACTER_LIMIT.FIRST_NAME} characters`
+      )
       .trim("The First Name cannot include leading and trailing spaces")
       .strict(true)
       .required(`Please input your First Name!`),
     last_name: yup
       .string()
+      .max(
+        CHARACTER_LIMIT.LAST_NAME,
+        `Last Name cannot be longer than ${CHARACTER_LIMIT.LAST_NAME} characters`
+      )
       .trim("The Last Name cannot include leading and trailing spaces")
       .strict(true)
       .required(`Please input your Last Name!`),
@@ -82,7 +95,10 @@ const UpdateProfile = () => {
     country_id: yup.string(),
     mobile_no: yup
       .string()
-      .min(5, `Please input Valid Mobile Number!`)
+      .min(
+        MIN_CHARACTER_LIMIT.MOBILE_NO,
+        `Mobile Number must be at least ${MIN_CHARACTER_LIMIT.MOBILE_NO} characters long`
+      )
       .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`)
       .test("validate Number", "Enter valid Number", function (value, ctx) {
         const { country_id } = this.parent;
@@ -443,7 +459,7 @@ const UpdateProfile = () => {
                   name="first_name"
                   className={classes.textBox}
                   placeholder="First Name"
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.FIRST_NAME}
                   status={
                     touched.first_name && errors.first_name ? "error" : ""
                   }
@@ -477,7 +493,7 @@ const UpdateProfile = () => {
                   name="last_name"
                   className={classes.textBox}
                   placeholder="Last Name"
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.LAST_NAME}
                   status={touched.last_name && errors.last_name ? "error" : ""}
                   value={values.last_name}
                   // suffix={
@@ -510,7 +526,7 @@ const UpdateProfile = () => {
                   placeholder="Display Name"
                   status={touched.name && errors.name ? "error" : ""}
                   value={values.name}
-                  maxLength={40}
+                  maxLength={CHARACTER_LIMIT.DISPLAY_NAME}
                   onChange={(e) => {
                     setFieldValue("name", e.target.value);
                   }}
@@ -549,7 +565,7 @@ const UpdateProfile = () => {
                   className={classes.textBox}
                   // disabled={isAccountVerified !== "unverified"}
                   placeholder="Gender"
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.GENDER}
                   status={
                     touched.other_gender && errors.other_gender ? "error" : ""
                   }
@@ -688,7 +704,7 @@ const UpdateProfile = () => {
                     touched.studied_at && errors.studied_at ? "error" : ""
                   }
                   value={values.studied_at}
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.STUDIED_AT}
                   onChange={(e) => {
                     setFieldValue("studied_at", e.target.value);
                   }}
@@ -708,7 +724,7 @@ const UpdateProfile = () => {
                   placeholder="Work At"
                   status={touched.work_at && errors.work_at ? "error" : ""}
                   value={values.work_at}
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.WORKED_AT}
                   onChange={(e) => {
                     setFieldValue("work_at", e.target.value);
                   }}
@@ -742,7 +758,7 @@ const UpdateProfile = () => {
                 >
                   <Input
                     name="mobile_no"
-                    maxLength={15}
+                    maxLength={CHARACTER_LIMIT.MOBILE_NO}
                     className={`${classes.textBox}`}
                     placeholder="Mobile Number"
                     status={
@@ -778,7 +794,7 @@ const UpdateProfile = () => {
                   size="large"
                   className={classes.textBox}
                   placeholder="Email"
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.EMAIL}
                   disabled={IsValidCredentials.email}
                   status={touched.email_id && errors.email_id ? "error" : ""}
                   value={values.email_id}
