@@ -94,6 +94,10 @@
     contain;
   cursor: pointer;
 }
+.otpverifiedImg {
+  width: 15px;
+height: 15px;
+}
 .verifiedImg {
 position: absolute;
 right: 2px;
@@ -360,12 +364,13 @@ margin-top: 0px !important;
   }
   .locationInputHeight {
     height: 52px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .locationIcon {
     float: left;
     padding: 13px;
-    position: absolute;
-    right: 0;
+  
   }
   .locationIcon i {
     cursor: pointer;

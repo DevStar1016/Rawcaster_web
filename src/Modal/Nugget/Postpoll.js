@@ -123,6 +123,7 @@ const Postpoll = ({ setisPoll }) => {
                   ...loginUserData,
                   user_status: res.data.user_status,
                   user_status_id: res.data.user_status_id,
+                  complementary_status: res.data.complementary_status ?? 0,
                 })
               );
             },
@@ -262,6 +263,12 @@ const Postpoll = ({ setisPoll }) => {
               message="Upgrade Your Plan"
               description="You have reached your character limit, to increase the limit upgrade your membership!"
               type="info"
+              style={{
+                alignItems:
+                  loginUserData.complementary_status === 1
+                    ? "flex-start"
+                    : "center",
+              }}
               action={
                 <Space direction="vertical">
                   <Button
@@ -276,17 +283,22 @@ const Postpoll = ({ setisPoll }) => {
                       }
                     }}
                   >
-                    Ok
+                    {loginUserData.complementary_status === 0
+                      ? "Ok"
+                      : "Upgrade"}
                   </Button>
-                  <Button
-                    className={classes.LaterBtn}
-                    onClick={handleLimitExceedsClose}
-                    size="small"
-                    danger
-                    type="primary"
-                  >
-                    Cancel
-                  </Button>
+
+                  {loginUserData.complementary_status === 1 && (
+                    <Button
+                      className={classes.LaterBtn}
+                      onClick={handleLimitExceedsClose}
+                      size="small"
+                      danger
+                      type="primary"
+                    >
+                      {"Cancel"}
+                    </Button>
+                  )}
                 </Space>
               }
             />
