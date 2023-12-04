@@ -348,14 +348,14 @@ cursor: pointer;
 }
 .reportModal .cancelBtn {
   background: #fff;
-  border: #103e7c 1px solid;
+  border: #f2718d 1px solid;
   border-radius: 4px;
   padding: 7px 25px;
-  color: #103e7c;
+  color: #f2718d;
 }
 .reportModal .reportBtn {
-  background: #103e7c;
-  border: #103e7c 1px solid;
+  background: #f2718d;
+  border: #f2718d 1px solid;
   border-radius: 4px;
   padding: 7px 25px;
   color: #fff;
