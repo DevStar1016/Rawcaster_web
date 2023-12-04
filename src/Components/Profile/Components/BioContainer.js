@@ -63,17 +63,20 @@ const BioContainer = ({ isLoginuser }) => {
     profileData,
     loginUserData && profileData?.user_id === loginUserData?.user_id
   );
-  const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
-    initialValues: {
-      bio_data:
-        typeof profileData?.bio_data === "string" ? profileData?.bio_data : "",
-      influencer_category: [],
-    },
-    enableReinitialize: true,
-    onSubmit: (values) => {
-      updateBioDataHandler(values);
-    },
-  });
+  const { values, handleSubmit, handleChange, setFieldValue, resetForm } =
+    useFormik({
+      initialValues: {
+        bio_data:
+          typeof profileData?.bio_data === "string"
+            ? profileData?.bio_data
+            : "",
+        influencer_category: [],
+      },
+      enableReinitialize: true,
+      onSubmit: (values) => {
+        updateBioDataHandler(values);
+      },
+    });
 
   /**
    * useEffect hook that runs when the profileData or influencerCategory changes.
@@ -211,6 +214,28 @@ const BioContainer = ({ isLoginuser }) => {
     return null;
   };
 
+  useEffect(() => {
+    if (!profileData) {
+      resetForm();
+    }
+  }, [profileData]);
+
+  const ReadMoreComponent = () => {
+    return (
+      <ReadMore
+        maxheight={"64px"}
+        isReadMore={false}
+        isReadMoreValid={() => {}}
+      >
+        {/**
+         * Retrieves the bio data from the values object. If the bio data is not available,
+         * it calls the useReplaceBiodataHandler function to generate the bio data from the profileData.
+         * @returns The bio data string.
+         */}
+        {getBioData()}
+      </ReadMore>
+    );
+  };
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
@@ -292,18 +317,7 @@ const BioContainer = ({ isLoginuser }) => {
       ) : (
         <>
           {isSuccess && profileData && getBioData() ? (
-            <ReadMore
-              maxheight={"64px"}
-              isReadMore={false}
-              isReadMoreValid={() => {}}
-            >
-              {/**
-               * Retrieves the bio data from the values object. If the bio data is not available,
-               * it calls the useReplaceBiodataHandler function to generate the bio data from the profileData.
-               * @returns The bio data string.
-               */}
-              {getBioData()}
-            </ReadMore>
+            ReadMoreComponent()
           ) : (
             <Skeleton active />
           )}

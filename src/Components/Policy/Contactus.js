@@ -20,6 +20,7 @@ import { contactusService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
+import { CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(`Please input your Name!`),
@@ -98,7 +99,7 @@ const Contactus = () => {
                 value={values.name}
                 onChange={handleChange("name")}
                 status={touched.name && errors.name ? "error" : ""}
-                maxLength={50}
+                maxLength={CHARACTER_LIMIT.DISPLAY_NAME}
                 autoComplete="off"
               />
               {touched.name && <p className="ErrTxt">{errors?.name}</p>}
@@ -112,7 +113,7 @@ const Contactus = () => {
                 value={values.email_id}
                 onChange={handleChange("email_id")}
                 status={touched.email_id && errors.email_id ? "error" : ""}
-                maxLength={50}
+                maxLength={CHARACTER_LIMIT.EMAIL}
                 autoComplete="off"
               />
               {touched.email_id && <p className="ErrTxt">{errors?.email_id}</p>}
@@ -126,7 +127,7 @@ const Contactus = () => {
                 value={values.subject}
                 onChange={handleChange("subject")}
                 status={touched.subject && errors.subject ? "error" : ""}
-                maxLength={50}
+                maxLength={CHARACTER_LIMIT.DEFAULT}
                 autoComplete="off"
               />
               {touched.subject && <p className="ErrTxt">{errors?.subject}</p>}
@@ -140,7 +141,7 @@ const Contactus = () => {
                 value={values.message}
                 onChange={handleChange("message")}
                 status={touched.message && errors.message ? "error" : ""}
-                maxLength={50}
+                maxLength={CHARACTER_LIMIT.DEFAULT}
                 autoComplete="off"
               />
               {touched.message && <p className="ErrTxt">{errors?.message}</p>}

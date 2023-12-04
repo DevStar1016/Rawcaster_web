@@ -11,25 +11,35 @@ import { JSONtoformdata, getAuthToken } from "../../Shared/Utility";
 import { changePasswordService } from "../../Services/ApiService";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
+import { CHARACTER_LIMIT, MIN_CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   old_password: yup
     .string()
     .trim("The Current Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "Current Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `Current Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .required("Please input your Current Password!"),
   new_password: yup
     .string()
     .trim("New Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "New Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `New Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .required("Please input your New Password!"),
   confirm_password: yup
     .string()
     .trim("The Confirm Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "Confirm Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `Confirm Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .oneOf(
       [yup.ref("new_password"), null],
       "New Password and Confirm Password must match"
@@ -111,7 +121,7 @@ const ChangePassword = () => {
             value={values.old_password}
             onChange={handleChange("old_password")}
             autoComplete="new-password"
-            maxLength={50}
+            maxLength={CHARACTER_LIMIT.PASSWORD}
             status={touched.old_password && errors.old_password ? "error" : ""}
           />
           {touched.old_password && (
@@ -126,6 +136,7 @@ const ChangePassword = () => {
             value={values.new_password}
             autoComplete="new-password"
             onChange={handleChange("new_password")}
+            maxLength={CHARACTER_LIMIT.PASSWORD}
             status={touched.new_password && errors.new_password ? "error" : ""}
           />
           {touched.new_password && (
@@ -139,6 +150,7 @@ const ChangePassword = () => {
             className={classes.textbox}
             value={values.confirm_password}
             autoComplete="new-password"
+            maxLength={CHARACTER_LIMIT.PASSWORD}
             onChange={handleChange("confirm_password")}
             status={
               touched.confirm_password && errors.confirm_password ? "error" : ""

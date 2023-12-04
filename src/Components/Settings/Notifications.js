@@ -184,7 +184,7 @@ const Notifications = () => {
       {OptinModal.status && (
         <EmailorMobileUpdateModal
           open={OptinModal.status}
-          type={OptinModal.isEmail ? "email_id" : "mobile_no"}
+          type={OptinModal.isEmail ? "email_id" : "mobile"}
           close={() => {
             setOptinModal({
               status: false,

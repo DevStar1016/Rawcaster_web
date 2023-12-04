@@ -70,6 +70,7 @@ const Nuggets = ({
   const [audio, setAudio] = useState(null);
   const [isPlaying, setisPlaying] = useState(null);
   const {
+    currentpage,
     Nuggets,
     isNuggetsLoading,
     nuggetFormData,
@@ -77,7 +78,6 @@ const Nuggets = ({
     DashboardfilterType,
   } = useNuggets();
   const nuggetsRef = useRef(null);
-
   const userData = getRawcaserToken();
   const [isloading, setisLoading] = useState(false);
   const [isReachedEnd, setisReachedEnd] = useState(false);
@@ -218,7 +218,7 @@ const Nuggets = ({
    * @returns {boolean} - true if there is a next page available, false otherwise.
    */
   const getHasNextPage = () => {
-    return totalpages && pageRef.current !== totalpages;
+    return totalpages && currentpage !== totalpages;
   };
 
   /**

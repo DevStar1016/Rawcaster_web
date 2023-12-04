@@ -24,23 +24,30 @@ import {
   setSessionStorageData,
 } from "../../Store/Storage";
 import moment from "moment";
+import { CHARACTER_LIMIT, MIN_CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   otp: yup
     .string()
-    .min(6, "Please Enter Valid OTP!")
+    .min(MIN_CHARACTER_LIMIT.OTP, "Please Enter Valid OTP!")
     .required(`Please input your OTP!`),
   new_password: yup
     .string()
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .required("Please input your Password!"),
   confirm_password: yup
     .string()
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `Current Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .oneOf([yup.ref("new_password"), null], "Passwords must match")
     .required("Please input your Password!"),
 });
@@ -294,7 +301,7 @@ const ResetPassword = () => {
                   status={
                     touched.new_password && errors.new_password ? "error" : ""
                   }
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.PASSWORD}
                   autoComplete="new_password"
                 />
                 {touched.new_password && (
@@ -313,7 +320,7 @@ const ResetPassword = () => {
                       ? "error"
                       : ""
                   }
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.PASSWORD}
                   autoComplete="new_password"
                 />
                 {touched.confirm_password && (

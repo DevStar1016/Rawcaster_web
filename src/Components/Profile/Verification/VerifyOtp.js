@@ -24,11 +24,12 @@ import moment from "moment";
 import VerifiedModal from "../../../Modal/Verification/VerifiedModal";
 import { fetchuserInfobyToken } from "../../../Store/Redux/Action";
 import { handleisFromGroup } from "../../../Store/Redux/Reducer/UtilityReducer";
+import { MIN_CHARACTER_LIMIT } from "../../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   otp: yup
     .string()
-    .min(6, "Please Enter Valid OTP!")
+    .min(MIN_CHARACTER_LIMIT.OTP, "Please Enter Valid OTP!")
     .required(`Please input your OTP!`),
 });
 

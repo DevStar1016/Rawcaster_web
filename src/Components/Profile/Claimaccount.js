@@ -31,22 +31,37 @@ import { ClaimorVerifySEO } from "../SEO/SEOContent";
 import { HandleVerifyModal, ShowLinkOpenModal } from "../../Modal/DefaultModal";
 import { useMainContext } from "../../Shared/Context";
 import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
-import { NAME_REGEX } from "../../Shared/Constant";
+import {
+  CHARACTER_LIMIT,
+  MIN_CHARACTER_LIMIT,
+  NAME_REGEX,
+} from "../../Shared/Constant";
 import CountryCodeDropdown from "../../UIComponents/CountryCodeDropdown";
 
 const validationSchema = yup.object().shape({
   first_name: yup
     .string()
+    .max(
+      CHARACTER_LIMIT.FIRST_NAME,
+      `Name cannot be longer than ${CHARACTER_LIMIT.FIRST_NAME} characters`
+    )
     .matches(NAME_REGEX, "Please input valid First Name")
     .required(`Please input your First Name!`),
   last_name: yup
     .string()
+    .max(
+      CHARACTER_LIMIT.LAST_NAME,
+      `Name cannot be longer than ${CHARACTER_LIMIT.LAST_NAME} characters`
+    )
     .matches(NAME_REGEX, "Please input valid Last Name")
     .required(`Please input your Last Name!`),
   country_id: yup.string(),
   telephone: yup
     .string()
-    .min(5, "Mobile number must be atleast 5 characters")
+    .min(
+      MIN_CHARACTER_LIMIT.MOBILE_NO,
+      `Mobile number must be atleast ${MIN_CHARACTER_LIMIT.MOBILE_NO} characters`
+    )
     .test("validate Number", "Enter valid Number", function (value, ctx) {
       const { country_id } = this.parent;
       if (value && !country_id) {
@@ -271,7 +286,7 @@ const Claimaccount = () => {
                   </p>
                   <Input
                     className={`${classes.textBox} `}
-                    maxLength={25}
+                    maxLength={CHARACTER_LIMIT.FIRST_NAME}
                     autoComplete="off"
                     value={values.first_name}
                     onChange={handleChange("first_name")}
@@ -290,7 +305,7 @@ const Claimaccount = () => {
                   </p>
                   <Input
                     className={`${classes.textBox} `}
-                    maxLength={25}
+                    maxLength={CHARACTER_LIMIT.LAST_NAME}
                     autoComplete="off"
                     value={values.last_name}
                     onChange={handleChange("last_name")}
@@ -326,7 +341,7 @@ const Claimaccount = () => {
                     />
                     <Input
                       className={`${classes.textBox} `}
-                      maxLength={20}
+                      maxLength={CHARACTER_LIMIT.MOBILE_NO}
                       style={{
                         marginLeft: 10,
                       }}
@@ -349,7 +364,7 @@ const Claimaccount = () => {
                   </p>
                   <Input
                     className={`${classes.textBox}`}
-                    maxLength={25}
+                    maxLength={CHARACTER_LIMIT.EMAIL}
                     autoComplete="off"
                     value={values.email_id}
                     onChange={handleChange("email_id")}
@@ -406,7 +421,7 @@ const Claimaccount = () => {
                             id="geoLocation"
                             size="large"
                             className={`${classes.textBox} ${classes.locationInputHeight}`}
-                            maxLength={100}
+                            maxLength={CHARACTER_LIMIT.GEO_LOCATION}
                             {...getInputProps({
                               placeholder: "Search Places ...",
                               className: "location-search-input",

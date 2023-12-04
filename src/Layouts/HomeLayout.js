@@ -74,13 +74,12 @@ const HomeLayout = () => {
   const unReadCount = useAppSelector(
     (state) => state.dashboard.notificationUnreadCount
   );
-
   const token = useAuthToken();
   const [postModalShow, setpostModalShow] = useState(false);
   const [PostContent, setPostContent] = useState(null);
   const { pathname } = useLocation();
   const { isSuccess } = useAuth();
-  const { nuggetFormData } = useNuggets();
+  const { nuggetFormData, DashboardfilterType } = useNuggets();
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
@@ -195,7 +194,7 @@ const HomeLayout = () => {
               <Link
                 className={classes.logopart}
                 onClick={() => {
-                  dispatch(handleDashboardFilterType(0));
+                  dispatch(handleDashboardFilterType(DashboardfilterType));
                 }}
                 to="/dashboard"
                 state={{

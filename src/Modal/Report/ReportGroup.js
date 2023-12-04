@@ -11,6 +11,7 @@ import classes from "./ReportGroup.module.css";
 import TextArea from "antd/es/input/TextArea";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { CHARACTER_LIMIT } from "../../Shared/Constant";
 const validationSchema = yup.object().shape({
   message: yup
     .string()
@@ -45,7 +46,7 @@ const ReportGroup = ({ open, close, onSuccess, msg }) => {
       <div className={classes.ReportSec}>
         <TextArea
           rows={4}
-          maxLength={500}
+          maxLength={CHARACTER_LIMIT.REPORT_MESSAGE}
           placeholder="Enter your message"
           value={values.message}
           onChange={handleChange("message")}

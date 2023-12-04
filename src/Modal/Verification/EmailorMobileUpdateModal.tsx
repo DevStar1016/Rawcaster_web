@@ -19,7 +19,10 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { handletwostepVerifyModalshow } from "../../Store/Redux/Reducer/DashboardReducer";
 import { useDispatch } from "react-redux";
-import { MOBILE_NUMBER_REGEX } from "../../Shared/Constant";
+import {
+  MIN_CHARACTER_LIMIT,
+  MOBILE_NUMBER_REGEX,
+} from "../../Shared/Constant";
 import CountryCodeDropdown from "../../UIComponents/CountryCodeDropdown";
 
 type EmailorMobileUpdateModalProps = {
@@ -50,7 +53,10 @@ function EmailorMobileUpdateModal({
         ? yup
             .string()
             .matches(MOBILE_NUMBER_REGEX, `Please Enter Valid Mobile Number!`)
-            .min(5, `Please input Valid Mobile Number!`)
+            .min(
+              MIN_CHARACTER_LIMIT.MOBILE_NO,
+              `Please input Valid Mobile Number!`
+            )
             .test(
               "validate Number",
               "Enter valid Number",
@@ -65,7 +71,12 @@ function EmailorMobileUpdateModal({
               }
             )
             .required(`Please input your Mobile number!`)
-        : yup.string().min(5, `Please input Valid Mobile Number!`),
+        : yup
+            .string()
+            .min(
+              MIN_CHARACTER_LIMIT.MOBILE_NO,
+              `Please input Valid Mobile Number!`
+            ),
   });
 
   const { values, setValues, touched, errors, handleSubmit, setFieldValue } =
