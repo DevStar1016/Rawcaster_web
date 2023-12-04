@@ -279,7 +279,8 @@ const Postpoll = ({ setisPoll }) => {
                       if (loginUserData.complementary_status === 1) {
                         ComplementaryMemberShip();
                       } else {
-                        navigate("/membership");
+                        handleLimitExceedsClose();
+                        // navigate("/membership");
                       }
                     }}
                   >
