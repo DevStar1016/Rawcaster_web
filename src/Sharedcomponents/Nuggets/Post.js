@@ -272,15 +272,12 @@ const Post = ({
     if (ele && ele?.share_type === 1) {
       if (loginUserData?.user_status_id >= 4) {
         return 1;
-      } else if (loginUserData?.user_status_id >= 3) {
-        if (
-          loginUserData &&
-          ele.media_list.length !== 0 &&
-          ele.media_list[0].media_type === "image"
-        ) {
-          return 1;
-        }
-        return 2;
+      } else if (
+        loginUserData &&
+        ele.media_list.length !== 0 &&
+        ele.media_list[0].media_type === "image"
+      ) {
+        return 1;
       }
       return 2;
     } else {
