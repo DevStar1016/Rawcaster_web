@@ -50,6 +50,9 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import useDataHandler from "../../Shared/ReduxCustomHooks";
 
+let cursorStart;
+let cursorEnd;
+
 const Postmodal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -499,6 +502,14 @@ const Postmodal = ({ visible, onClose }) => {
                 ref={textinputRef}
                 className={classes.postTextarea}
                 placeholder={`What's on your mind, ${display_name}!`}
+                onClick={(event) => {
+                  cursorStart = event.target.selectionStart;
+                  cursorEnd = event.target.selectionEnd;
+                }}
+                onKeyDown={(event) => {
+                  cursorStart = event.target.selectionStart;
+                  cursorEnd = event.target.selectionEnd;
+                }}
                 // onPaste={(event) => {
                 //   const pastedText = event.clipboardData.getData("text/plain");
                 //   if (
@@ -510,6 +521,7 @@ const Postmodal = ({ visible, onClose }) => {
                 // }}
                 value={values.content}
                 onChange={(e) => {
+                  cursorStart = e.target.selectionStart;
                   if (e.target.value.length <= getNuggetTextLength()) {
                     setFieldValue("content", e.target.value);
                     getLinkInfo(e.target.value);
@@ -521,10 +533,9 @@ const Postmodal = ({ visible, onClose }) => {
                       e.target.value.slice(0, getNuggetTextLength())
                     );
                     getLinkInfo(e.target.value.slice(0, getNuggetTextLength()));
-                    if (parseInt(loginUserData?.user_status_id) !== 4) {
-                      setisPostContentValid(false);
-                      setLimitExceeds(true);
-                    }
+
+                    setisPostContentValid(false);
+                    setLimitExceeds(true);
                   }
                 }}
               />
@@ -623,16 +634,21 @@ const Postmodal = ({ visible, onClose }) => {
                     "flags",
                   ]}
                   onEmojiSelect={(event, emojiObject) => {
-                    const input = document.getElementById(
-                      "post_nugget_textarea"
-                    );
-                    const value = input.value;
-                    const start = input.selectionStart;
-                    const end = input.selectionEnd;
-                    const newValue =
-                      value.slice(0, start) + event.native + value.slice(end);
-                    setFieldValue("content", newValue);
-                    input.selectionStart = input.selectionEnd = start + 1;
+                    if (values.content.length <= getNuggetTextLength()) {
+                      const value = values.content;
+                      const newValue =
+                        value.slice(0, cursorStart) +
+                        event.native +
+                        value.slice(cursorEnd);
+                      setFieldValue("content", newValue);
+                      cursorStart = cursorStart + event.native.length;
+                      cursorEnd = cursorEnd + event.native.length;
+                      setisPostContentValid(true);
+                      setLimitExceeds(false);
+                    } else {
+                      setisPostContentValid(false);
+                      setLimitExceeds(true);
+                    }
                   }}
                 />
               </div>

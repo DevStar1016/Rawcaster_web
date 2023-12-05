@@ -219,6 +219,10 @@ const ConnectionModal = ({
                   type={userType}
                   className={classes.modalOthersIcon}
                   getConnectionList={() => getConnectionList(values)}
+                  onClick={() => {
+                    console.log("sgygsuygsysg");
+                    onClose();
+                  }}
                 />
               );
             })}
