@@ -642,7 +642,6 @@ const UpdateProfile = () => {
                       />
                       <div className={classes.locationdrpmenu}>
                         {suggestions.map((suggestion) => {
-                          console.log(suggestions);
                           const style = suggestion.active
                             ? {
                                 backgroundColor: "#fafafa",

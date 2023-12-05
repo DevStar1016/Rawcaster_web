@@ -164,6 +164,8 @@ const Claimaccount = () => {
     }
   };
 
+  console.log(values, "values");
+
   const getisLoginuserId = () => {
     return parseInt(DecryptionString(params.user_id)) === loginUserData.user_id;
   };
@@ -215,6 +217,7 @@ const Claimaccount = () => {
   const getCurrentLocation = () => {
     getGeocodeData()
       .then((res) => {
+        console.log(res, "res");
         setFieldValue("location", res.address);
       })
       .catch((err) => {});
@@ -401,13 +404,13 @@ const Claimaccount = () => {
                   <p className={classes.label}>
                     Location <span className="text-danger">*</span>{" "}
                   </p>
-                  <Form.Item name="location">
+                  <Form.Item>
                     <PlacesAutocomplete
                       value={values.location}
                       onChange={handleChange("location")}
-                      onSelect={(val) => {
-                        setFieldValue("location", val);
-                      }}
+                      // onSelect={(val) => {
+                      //   setFieldValue("location", val);
+                      // }}
                       style={{ width: "90%" }}
                     >
                       {({
@@ -419,7 +422,9 @@ const Claimaccount = () => {
                         <div style={{ width: "100%", float: "left" }}>
                           <Input
                             id="geoLocation"
+                            name="location"
                             size="large"
+                            value={values.location}
                             className={`${classes.textBox} ${classes.locationInputHeight}`}
                             maxLength={CHARACTER_LIMIT.GEO_LOCATION}
                             suffix={
@@ -445,7 +450,6 @@ const Claimaccount = () => {
                           {suggestions && (
                             <div className={classes.locationdrpmenu}>
                               {suggestions.map((suggestion) => {
-                                console.log(suggestions);
                                 const style = suggestion.active
                                   ? {
                                       backgroundColor: "#fafafa",
