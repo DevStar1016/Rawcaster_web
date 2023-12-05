@@ -422,70 +422,77 @@ const Claimaccount = () => {
                             size="large"
                             className={`${classes.textBox} ${classes.locationInputHeight}`}
                             maxLength={CHARACTER_LIMIT.GEO_LOCATION}
+                            suffix={
+                              <div
+                                className={classes.locationIcon}
+                                style={{ float: "left", padding: "13px 0" }}
+                              >
+                                <Tooltip title="get current location">
+                                  <i
+                                    className="material-icons pt-1"
+                                    onClick={() => getCurrentLocation()}
+                                  >
+                                    location_on
+                                  </i>
+                                </Tooltip>
+                              </div>
+                            }
                             {...getInputProps({
                               placeholder: "Search Places ...",
                               className: "location-search-input",
                             })}
                           />
-                          <div className={classes.locationdrpmenu}>
-                            {suggestions.map((suggestion) => {
-                              const style = suggestion.active
-                                ? {
-                                    backgroundColor: "#fafafa",
-                                    cursor: "pointer",
-                                    width: "100%",
-                                    padding: "5px 10px",
-                                  }
-                                : {
-                                    backgroundColor: "#ffffff",
-                                    cursor: "pointer",
-                                    width: "100%",
-                                    padding: "5px 10px",
-                                  };
-                              const key = suggestion.placeId;
-                              return (
-                                <div
-                                  {...getSuggestionItemProps(suggestion, {
-                                    style,
-                                    key,
-                                  })}
-                                >
-                                  <span>{suggestion.description}</span>
-                                </div>
-                              );
-                            })}
-                            <div
-                              style={{
-                                backgroundColor: "#fff",
-                                cursor: "pointer",
-                                width: "100%",
-                                display:
-                                  suggestions.length > 0 ? "block" : "none",
-                                paddingBottom: "10px",
-                              }}
-                            >
-                              {/* <img
+                          {suggestions && (
+                            <div className={classes.locationdrpmenu}>
+                              {suggestions.map((suggestion) => {
+                                console.log(suggestions);
+                                const style = suggestion.active
+                                  ? {
+                                      backgroundColor: "#fafafa",
+                                      cursor: "pointer",
+                                      width: "100%",
+                                      padding: "5px 10px",
+                                    }
+                                  : {
+                                      backgroundColor: "#ffffff",
+                                      cursor: "pointer",
+                                      width: "100%",
+                                      padding: "5px 10px",
+                                    };
+                                const key = suggestion.placeId;
+                                return (
+                                  <div
+                                    {...getSuggestionItemProps(suggestion, {
+                                      style,
+                                      key,
+                                    })}
+                                  >
+                                    <span>{suggestion.description}</span>
+                                  </div>
+                                );
+                              })}
+                              <div
+                                style={{
+                                  backgroundColor: "#fff",
+                                  cursor: "pointer",
+                                  width: "100%",
+                                  display:
+                                    suggestions && suggestions.length > 0
+                                      ? "block"
+                                      : "none",
+                                  paddingBottom: "10px",
+                                }}
+                              >
+                                {/* <img
                           src={require("../../assets/powered_by_google_on_white_hdpi.png")}
                           style={{ float: "right", height: "20px" }}
                         ></img> */}
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       )}
                     </PlacesAutocomplete>
-                    <div
-                      className={classes.locationIcon}
-                      style={{ float: "left", padding: "13px" }}
-                    >
-                      <Tooltip title="get current location">
-                        <i
-                          className="material-icons"
-                          onClick={() => getCurrentLocation()}
-                        >
-                          location_on
-                        </i>
-                      </Tooltip>
-                    </div>
                   </Form.Item>
                   {touched.location && (
                     <p className="ErrTxt">{errors?.location}</p>
