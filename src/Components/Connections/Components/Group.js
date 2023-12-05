@@ -7,7 +7,7 @@
  */
 import React, { useState } from "react";
 import { Tooltip } from "antd";
-import { JSONtoformdata, decodeHtml } from "../../../Shared/Utility";
+import { JSONtoformdata, decodeHtml, getAuthToken } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
@@ -20,12 +20,14 @@ import { handleUpdateGroupArnData } from "../../../Store/Redux/Reducer/Dashboard
 import { Spinner } from "react-bootstrap";
 import { defaultGroupImg } from "../../../Shared/CommonConstants";
 import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
+import { instantCall } from "../../../Shared/Utility";
 
 const Group = ({ group, searchInput, onClick }) => {
   const { setisChatOpen } = useMainContext();
   const [isFetching, setisFetching] = useState(false);
   const dispatch = useDispatch();
   const token = useAuthToken();
+  const auth_code = getAuthToken(token);
   const HandleGroupCreate = () => {
     setisFetching(group.group_id);
     const FormData = {
@@ -96,13 +98,19 @@ const Group = ({ group, searchInput, onClick }) => {
               title={"Video call"}
               color={"#F7965B"}
             >
-              <img src={audiocall} alt={"audio call"} />
+              <img src={audiocall} alt={"audio call"} onClick={(e) => {
+                e.stopPropagation();
+                instantCall(token, auth_code, 'audio', group.group_members_list)}
+                }/>
             </Tooltip>
             <Tooltip
               title={"Video call"}
               color={"#F7965B"}
             >
-              <img src={videocall} alt={"video call"} />
+              <img src={videocall} alt={"video call"} onClick={(e) => {
+                e.stopPropagation();
+                instantCall(token, auth_code, 'video', group.group_members_list)}
+                }/>
             </Tooltip>
             <Tooltip
               title={"Group chat"}

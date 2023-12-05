@@ -8,6 +8,7 @@ import { Tooltip } from "antd";
 import {
   JSONtoformdata,
   decodeHtml,
+  getAuthToken,
   handleProfileNavigate,
 } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
@@ -24,6 +25,7 @@ import { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { handleUpdateIndividualArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
+import { instantCall } from "../../../Shared/Utility";
 
 const Friends = ({ friend, searchInput }) => {
   const { setisChatOpen } = useMainContext();
@@ -32,6 +34,7 @@ const Friends = ({ friend, searchInput }) => {
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
   const token = useAuthToken();
+  const auth_code = getAuthToken(token);
 
   const HandleIndividualCreate = () => {
     setisFetching(friend.user_id);
@@ -136,13 +139,19 @@ const Friends = ({ friend, searchInput }) => {
               title={"Video call"}
               color={friend.online ? "#5dbc3a" : "#F7965B"}
             >
-              <img src={videocall} alt={"video call"} />
+              <img src={videocall} alt={"video call"} onClick={(e) => {
+                e.stopPropagation();
+                instantCall(token, auth_code, 'video', [].concat(friend));
+              }}/>
             </Tooltip>
             <Tooltip
               title={"Audio call"}
               color={friend.online ? "#5dbc3a" : "#F7965B"}
             >
-              <img src={audiocall} alt={"audio call"} />
+              <img src={audiocall} alt={"audio call"} onClick={(e) => {
+                e.stopPropagation();
+                instantCall(token, auth_code, 'audio', [].concat(friend));
+              }}/>
             </Tooltip>
             <Tooltip
               title={"chat"}
