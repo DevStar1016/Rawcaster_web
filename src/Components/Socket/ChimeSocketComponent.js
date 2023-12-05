@@ -12,6 +12,7 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { useEvent } from "../../Sharedcomponents/EventProvider";
 import InviteCallPage from "../../Modal/Call/InviteCallPage"
+import { Button, notification, Space, Avatar } from "antd";
 
 const ChimeSocketComponent = () => {
   const EventWindowRef = useEventWindow();
@@ -20,8 +21,37 @@ const ChimeSocketComponent = () => {
   const { isVideoEnabled } = useToggleLocalMute();
   const { ref_id } = useParams();
   const { emit } = useEvent();
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
-  const [senderData, setSenderData] = useState({});
+
+  // Trigger Invite notification
+  const inviteMessage = (data) => {
+    const sender_id = data.sender_id;
+    const targetId = data.meeting_attendee_list?.filter(ele => String(ele.user_id) === String(userData?.user_id) && String(sender_id) !== String(userData?.user_id));
+    
+    if (targetId?.length) {
+      const key = `open${Date.now()}`;
+      const btn = (
+            <Space>
+              <Button type="link" size="middle" shape="round" onClick={() => {}}>
+                Decline
+              </Button>
+              <Button type="primary" size="middle" shape="round" onClick={() => {}}>
+                Accept
+              </Button>
+            </Space>
+          );
+      notification.open({
+        message: <h4 style={{marginLeft:'10px'}}>{data.sender_name}</h4>,
+        description: <h7>is calling you.<br/> {data.meeting_type} call link: {data.meeting_link}`</h7>,
+        icon: <Avatar size={35} src={<img src={`${data.profile_image}`}></img>} />,
+        placement: 'bottomLeft',
+        btn,
+        key,
+        onClose: () => {
+          console.warn("Hello world -> confirm btn clicked");
+        }
+      })
+    }
+  }
 
   // Socket Emitter from Parent Window to Child Window
 
@@ -34,6 +64,8 @@ const ChimeSocketComponent = () => {
       EventWindowRef.postMessage(EventData, "*");
     }
   };
+
+
 
   // Connect Socket URL
 
@@ -54,17 +86,8 @@ const ChimeSocketComponent = () => {
   //  Notifications Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
-      const user_id = userData.user_id;
-
       if (message.type === 'InviteCall') {
-        const data = message.event_detail;
-        const sender_id = data.sender_id;
-        const targetId = data.meeting_attendee_list?.filter(ele => String(ele.user_id) === String(user_id) && String(sender_id) !== String(user_id));
-
-        if (targetId?.length) {
-          console.log("HelloKIC", data);
-          alert(`${data.sender_name} is calling you to ${data.meeting_link}`);
-        }
+        inviteMessage(message.event_detail);
       } else if (message && message.type) {
         emit(message.type, message);
       }

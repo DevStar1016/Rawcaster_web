@@ -1144,7 +1144,7 @@ export const getParticipantCount = (numOfParticipants) => {
  * @param {string} auth_code - user auth code
  * @param {string} user_id - user_id
  * @param {string} type - audio | video call
- * @param {Array} user_id_list - user's id list of group.
+ * @param {Array} user_id_list - user's id list of group.The deign should be as we have it now… the code can reuse events code as implemented by chime team.. so feel free to do your work.. I have confidence that you will get something good to show soon…
  * @returns None
  */
 export const instantCall = (token, auth_code, userData, type = 'audio', user_id_list = []) => {
@@ -1161,7 +1161,7 @@ export const instantCall = (token, auth_code, userData, type = 'audio', user_id_
   ChimesendMessage(
     {
       type: "InviteCall",
-      event_detail: {sender_id: userData.user_id, sender_name: userData.name, meeting_id: '123123', meeting_link: "https://rawcaster.com/dashboard", meeting_attendee_list: user_id_list, meeting_type: type},
+      event_detail: {sender_id: userData.user_id, sender_name: userData.name, profile_image: userData.profile_image, meeting_id: '123123', meeting_link: "https://rawcaster.com/dashboard", meeting_attendee_list: user_id_list, meeting_type: type},
     },
     CHIME_SOCKET_EVENTS.NOTIFICATIONS
   );
