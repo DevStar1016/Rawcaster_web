@@ -51,6 +51,12 @@ const ChimeSocketComponent = () => {
   //  Notifications Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
+      const user_id = userData.user_id;
+      if (message.type === 'InviteCall' && user_id) {
+        console.log("inviteCall", message);
+        const targetId = message.meeting_attendee_list.filter(ele => String(ele) === String(user_id));
+        if (targetId?.length) alert("hello world");
+      }
       if (message && message.type) {
         emit(message.type, message);
       }

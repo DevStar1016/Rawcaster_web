@@ -28,6 +28,8 @@ import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
 import { ShowLinkOpenModal } from "../Modal/DefaultModal";
 import { CustomParagraph } from "./UtilityComponents";
 import { fetchNuggetsbyId } from "../Store/Redux/Action";
+import { ChimesendMessage } from "../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
 
 // Auth
 
@@ -1135,3 +1137,27 @@ export const getParticipantCount = (numOfParticipants) => {
     return numOfParticipants.toString();
   }
 };
+
+/**
+ * 1:1, group instant call
+ * @param {string} token - user auth token
+ * @param {string} auth_code - user auth code
+ * @param {string} type - audio | video call
+ * @param {Array} user_id_list - user's id list of group.
+ * @returns None
+ */
+export const instantCall = (token, auth_code, type = 'audio', user_id_list = []) => {
+  let requestData = {
+    token,
+    auth_code,
+    user_ids: JSON.stringify(user_id_list),
+    type
+  };
+  ChimesendMessage(
+    {
+      type: "InviteCall",
+      event_detail: {meeting_Id: '123123', meeting_Link: "https://rawcaster.com/dashboard", meeting_attendee_list, meeting_type},
+    },
+    CHIME_SOCKET_EVENTS.NOTIFICATIONS
+  );
+}
