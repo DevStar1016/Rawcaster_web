@@ -41,8 +41,7 @@ import useDataHandler from "../../../Shared/ReduxCustomHooks";
 
 const BioContainer = ({ isLoginuser }) => {
   const { AccountAccessType } = useMainContext();
-  const { usePartialDisplayName } = useDataHandler();
-  const displayName = usePartialDisplayName(5);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isAboutEdit, setisAboutEdit] = useState(false);
@@ -104,6 +103,16 @@ const BioContainer = ({ isLoginuser }) => {
       setFieldValue("bio_data", BioData);
     }
   }, [profileData, influencerCategory, BioData]);
+
+  const getPartialDisplayName = (length) => {
+    if (profileData && profileData.name) {
+      if (profileData.name.length > length) {
+        return profileData.name.substring(0, length) + "...";
+      }
+      return profileData?.name;
+    }
+    return "User";
+  };
 
   /**
    * Handles the update of bio data for a user profile.
@@ -241,7 +250,9 @@ const BioContainer = ({ isLoginuser }) => {
       <div className={classes.headingSec}>
         <h2>
           About{" "}
-          {selectedCategory.length !== 0 ? displayName : profileData?.name}{" "}
+          {selectedCategory.length !== 0
+            ? getPartialDisplayName(5)
+            : profileData?.name}{" "}
           {selectedCategory.length !== 0 && (
             <i className="material-icons">fiber_manual_record</i>
           )}

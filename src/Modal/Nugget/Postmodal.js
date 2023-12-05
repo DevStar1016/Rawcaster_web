@@ -623,10 +623,16 @@ const Postmodal = ({ visible, onClose }) => {
                     "flags",
                   ]}
                   onEmojiSelect={(event, emojiObject) => {
-                    setFieldValue(
-                      "content",
-                      values.content.concat(event.native)
+                    const input = document.getElementById(
+                      "post_nugget_textarea"
                     );
+                    const value = input.value;
+                    const start = input.selectionStart;
+                    const end = input.selectionEnd;
+                    const newValue =
+                      value.slice(0, start) + event.native + value.slice(end);
+                    setFieldValue("content", newValue);
+                    input.selectionStart = input.selectionEnd = start + 1;
                   }}
                 />
               </div>
