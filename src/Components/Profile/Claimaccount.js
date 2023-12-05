@@ -408,9 +408,9 @@ const Claimaccount = () => {
                     <PlacesAutocomplete
                       value={values.location}
                       onChange={handleChange("location")}
-                      // onSelect={(val) => {
-                      //   setFieldValue("location", val);
-                      // }}
+                      onSelect={(val) => {
+                        setFieldValue("location", val);
+                      }}
                       style={{ width: "90%" }}
                     >
                       {({

@@ -179,7 +179,13 @@ export const getConnectionData = (values) => {
   return promise;
 };
 
-export const UserProfile = ({ ele, type, getConnectionList, className }) => {
+export const UserProfile = ({
+  ele,
+  type,
+  getConnectionList,
+  className,
+  onClick,
+}) => {
   const dispatch = useDispatch();
   const { nuggetFormData } = useNuggets();
   const {
@@ -338,6 +344,9 @@ export const UserProfile = ({ ele, type, getConnectionList, className }) => {
               user_id: ele.user_id,
             };
             handleProfileNavigate(finalData);
+            if (onClick) {
+              onClick();
+            }
           }}
         />
       </Skeleton.Node>
