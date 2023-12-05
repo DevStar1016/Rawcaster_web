@@ -19,10 +19,13 @@ import { useNavigate } from "react-router";
 import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 import { useDispatch } from "react-redux";
 import { CHARACTER_LIMIT } from "../../Shared/Constant";
+import useDataHandler from "../../Shared/ReduxCustomHooks";
 
 const Postpoll = ({ setisPoll }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { useUpgradeDisplayMessage } = useDataHandler();
+  const { upgrade_message, isUpgradable } = useUpgradeDisplayMessage();
   const context = useContext(PostNuggetContext);
   const loginUserData = useAuthData();
   const token = useAuthToken();
@@ -254,15 +257,15 @@ const Postpoll = ({ setisPoll }) => {
             </div>
           </div>
         </div>
-        {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+        {LimitExceeds && (
           <div
             style={{ paddingTop: "20px" }}
             className={classes.alertContainer}
             id="Alertdiv"
           >
             <Alert
-              message="Upgrade Your Plan"
-              description="You have reached your character limit, to increase the limit upgrade your membership!"
+              message={isUpgradable ? "Upgrade Your Plan" : "Important Message"}
+              description={upgrade_message}
               type="info"
               style={{
                 alignItems:

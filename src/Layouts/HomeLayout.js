@@ -458,7 +458,7 @@ const HomeLayout = () => {
 
         {loginUserData &&
           loginUserData.user_status_id > 0 &&
-          pathname?.includes("dashboard") && (
+          pathname === "/dashboard" && (
             <div className={classes.chatbotsec}>
               <ArtificialIntelligence />
             </div>

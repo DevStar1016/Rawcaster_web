@@ -72,7 +72,8 @@ const Postmodal = ({ visible, onClose }) => {
     setdeletedMedia,
     resetForm,
   } = useContext(PostNuggetContext);
-  const { usePartialDisplayName } = useDataHandler();
+  const { usePartialDisplayName, useUpgradeDisplayMessage } = useDataHandler();
+  const { upgrade_message, isUpgradable } = useUpgradeDisplayMessage();
   const display_name = usePartialDisplayName();
   const { setPostContent } = useGlobalContext() ?? {};
   const [messageApi] = message.useMessage();
@@ -233,13 +234,13 @@ const Postmodal = ({ visible, onClose }) => {
    * If the login user data is not available, it returns 0.
    * @returns The length of the nugget text.
    */
-  const getNuggetTextLength = () => {
+  function getNuggetTextLength() {
     if (loginUserData) {
       return loginUserData?.nugget_content_length;
     } else {
       return 0;
     }
-  };
+  }
 
   /**
    * Handles the closing of the limit exceeds alert.
@@ -527,13 +528,7 @@ const Postmodal = ({ visible, onClose }) => {
                   }
                 }}
               />
-              {/* <LoginModal
-                  open={LimitExceeds}
-                 close={handleLimitExceedsClose}
-                   AIclose={true}
-                 AIopen="Upgrade"
-                  AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
-                 /> */}
+
               <img
                 width="24px"
                 alt="Add Emoji"
@@ -543,21 +538,23 @@ const Postmodal = ({ visible, onClose }) => {
                 onClick={() => setShowEmojis(!showEmojis)}
               />
             </div>
-            {!isPostContentValid && (
+            {/* {!isPostContentValid && (
               <p className="ErrTxt">
                 Post Content cannot be longer than {getNuggetTextLength() + " "}
                 characters
               </p>
-            )}
+            )} */}
             <div
               style={{ paddingTop: "20px" }}
               className={classes.alertContainer}
               id="Alertdiv"
             >
-              {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+              {LimitExceeds && (
                 <Alert
-                  message="Upgrade Your Plan"
-                  description="You have reached your character limit, to increase the limit upgrade your membership!"
+                  message={
+                    isUpgradable ? "Upgrade Your Plan" : "Important Message"
+                  }
+                  description={upgrade_message}
                   type="info"
                   style={{
                     alignItems:

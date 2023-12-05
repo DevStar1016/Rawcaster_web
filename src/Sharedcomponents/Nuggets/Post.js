@@ -270,7 +270,12 @@ const Post = ({
 
   const getisDownloadable = () => {
     if (ele && ele?.share_type === 1) {
-      if (loginUserData?.user_status_id >= 4) {
+      if (
+        loginUserData &&
+        loginUserData?.user_status_id >= 4 &&
+        ele.media_list &&
+        ele.media_list.length !== 0
+      ) {
         return 1;
       } else if (
         loginUserData &&
