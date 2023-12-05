@@ -225,8 +225,8 @@ const Eventslisting = ({
         <div className="d-flex flex-column">
           {isFetching ? (
             <div className="mt-5 d-flex flex-column justify-content-center">
-              {[...new Array(3)].map((ele) => {
-                return <EventLoaders />;
+              {[...new Array(3)].map((ele, index) => {
+                return <EventLoaders key={index} />;
               })}
             </div>
           ) : (
@@ -234,8 +234,9 @@ const Eventslisting = ({
               style={EventListData?.length === 0 ? { height: "inherit" } : {}}
               className={classes.EventListSec}
             >
-              {EventListData?.map((ele) => (
+              {EventListData?.map((ele, index) => (
                 <div
+                  key={index}
                   style={{
                     display: decodeHtml(ele.event_name)
                       .toLowerCase()
@@ -267,7 +268,7 @@ const Eventslisting = ({
                     }}
                   >
                     Load More
-                    <span class="material-symbols-outlined">arrow_forward</span>
+                    <span className="material-symbols-outlined">arrow_forward</span>
                   </div>
                 )}
               {(EventListData?.length === 0 || isEmptyEvents) && (

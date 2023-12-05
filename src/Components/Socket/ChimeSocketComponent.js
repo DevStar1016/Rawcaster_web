@@ -52,12 +52,12 @@ const ChimeSocketComponent = () => {
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
       const user_id = userData.user_id;
-      if (message.type === 'InviteCall' && user_id) {
-        console.log("inviteCall", message);
-        const targetId = message.meeting_attendee_list.filter(ele => String(ele) === String(user_id));
-        if (targetId?.length) alert("hello world");
-      }
-      if (message && message.type) {
+      const sender_id = message.event_detail.user_id;
+      console.log('message', message);
+      if (message.type === 'InviteCall') {
+        const targetId = message.event_detail.meeting_attendee_list?.filter(ele => String(ele.user_id) === String(user_id) && String(sender_id) !== String(user_id));
+        if (targetId?.length) alert(`${sender_id} is calling you to ${message.event_detail.meeting_id}`);
+      } else if (message && message.type) {
         emit(message.type, message);
       }
     });

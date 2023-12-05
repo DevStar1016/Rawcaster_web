@@ -13,7 +13,7 @@ import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
 import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { useMainContext } from "../../../Shared/Context";
-import { useAuthToken } from "../../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
 import { AutoChannelCreateService } from "../../../Services/ApiService";
 import { useDispatch } from "react-redux";
 import { handleUpdateGroupArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
@@ -28,6 +28,8 @@ const Group = ({ group, searchInput, onClick }) => {
   const dispatch = useDispatch();
   const token = useAuthToken();
   const auth_code = getAuthToken(token);
+  const userData = useAuthData();
+
   const HandleGroupCreate = () => {
     setisFetching(group.group_id);
     const FormData = {
@@ -95,12 +97,12 @@ const Group = ({ group, searchInput, onClick }) => {
         {IS_CHIME_ENABLE && (
           <div className={`${classes.friendsmenu}`}>
             <Tooltip
-              title={"Video call"}
+              title={"Audio call"}
               color={"#F7965B"}
             >
               <img src={audiocall} alt={"audio call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, 'audio', group.group_members_list)}
+                instantCall(token, auth_code, userData.user_id, 'audio', group.group_members_list)}
                 }/>
             </Tooltip>
             <Tooltip
@@ -109,7 +111,7 @@ const Group = ({ group, searchInput, onClick }) => {
             >
               <img src={videocall} alt={"video call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, 'video', group.group_members_list)}
+                instantCall(token, auth_code, userData.user_id, 'video', group.group_members_list)}
                 }/>
             </Tooltip>
             <Tooltip

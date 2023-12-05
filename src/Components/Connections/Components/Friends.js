@@ -18,7 +18,7 @@ import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
 import { useMainContext } from "../../../Shared/Context";
 import { AutoIndividualCreateService } from "../../../Services/ApiService";
 import { useState } from "react";
@@ -35,6 +35,7 @@ const Friends = ({ friend, searchInput }) => {
   const { nuggetFormData } = useNuggets();
   const token = useAuthToken();
   const auth_code = getAuthToken(token);
+  const userData = useAuthData();
 
   const HandleIndividualCreate = () => {
     setisFetching(friend.user_id);
@@ -141,7 +142,7 @@ const Friends = ({ friend, searchInput }) => {
             >
               <img src={videocall} alt={"video call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, 'video', [].concat(friend));
+                instantCall(token, auth_code, userData.user_id, 'video', [].concat(friend));
               }}/>
             </Tooltip>
             <Tooltip
@@ -150,7 +151,7 @@ const Friends = ({ friend, searchInput }) => {
             >
               <img src={audiocall} alt={"audio call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, 'audio', [].concat(friend));
+                instantCall(token, auth_code, userData.user_id, 'audio', [].concat(friend));
               }}/>
             </Tooltip>
             <Tooltip
