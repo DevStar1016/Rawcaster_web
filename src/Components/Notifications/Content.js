@@ -196,8 +196,9 @@ const Content = ({ elem }) => {
       {!isTabChange && Notifications.today.length !== 0 && (
         <>
           <h3>Today</h3>
-          {Notifications.today.map((ele) => (
+          {Notifications.today.map((ele, index) => (
             <NotificationsList
+              key={index}
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {
@@ -217,8 +218,9 @@ const Content = ({ elem }) => {
       {!isTabChange && Notifications.yesterday.length !== 0 && (
         <>
           <h3>Yesterday</h3>
-          {Notifications.yesterday.map((ele) => (
+          {Notifications.yesterday.map((ele, index) => (
             <NotificationsList
+              key={index}
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {
@@ -238,8 +240,9 @@ const Content = ({ elem }) => {
       {!isTabChange && Notifications.older.length !== 0 && (
         <>
           <h3>Older</h3>
-          {Notifications.older.map((ele) => (
+          {Notifications.older.map((ele, index) => (
             <NotificationsList
+              key={index}
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {

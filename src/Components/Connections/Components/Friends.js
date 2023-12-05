@@ -142,7 +142,7 @@ const Friends = ({ friend, searchInput }) => {
             >
               <img src={videocall} alt={"video call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, userData.user_id, 'video', [].concat(friend));
+                instantCall(token, auth_code, userData, 'Video', [].concat(friend));
               }}/>
             </Tooltip>
             <Tooltip
@@ -151,7 +151,7 @@ const Friends = ({ friend, searchInput }) => {
             >
               <img src={audiocall} alt={"audio call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, userData.user_id, 'audio', [].concat(friend));
+                instantCall(token, auth_code, userData, 'Audio', [].concat(friend));
               }}/>
             </Tooltip>
             <Tooltip

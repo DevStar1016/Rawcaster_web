@@ -1147,19 +1147,21 @@ export const getParticipantCount = (numOfParticipants) => {
  * @param {Array} user_id_list - user's id list of group.
  * @returns None
  */
-export const instantCall = (token, auth_code, id, type = 'audio', user_id_list = []) => {
+export const instantCall = (token, auth_code, userData, type = 'audio', user_id_list = []) => {
   let requestData = {
     token,
     auth_code,
-    id,
+    id: userData.user_id,
+    name: userData.name,
     user_id_list: JSON.stringify(user_id_list),
     type
   };
   // createMeeting and send meeting_link to friends
+
   ChimesendMessage(
     {
       type: "InviteCall",
-      event_detail: {user_id: id, meeting_Id: '123123', meeting_Link: "https://rawcaster.com/dashboard", meeting_attendee_list: user_id_list, meeting_type: type},
+      event_detail: {sender_id: userData.user_id, sender_name: userData.name, meeting_id: '123123', meeting_link: "https://rawcaster.com/dashboard", meeting_attendee_list: user_id_list, meeting_type: type},
     },
     CHIME_SOCKET_EVENTS.NOTIFICATIONS
   );

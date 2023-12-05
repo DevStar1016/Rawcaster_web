@@ -3,7 +3,7 @@ import {
   ChimesocketListen,
 } from "../../Services/SocketService";
 import { Outlet, useParams } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 import { useAuthData, useEventWindow } from "../../Shared/Reduxfetcher";
 import {
@@ -11,6 +11,7 @@ import {
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { useEvent } from "../../Sharedcomponents/EventProvider";
+import InviteCallPage from "../../Modal/Call/InviteCallPage"
 
 const ChimeSocketComponent = () => {
   const EventWindowRef = useEventWindow();
@@ -19,6 +20,8 @@ const ChimeSocketComponent = () => {
   const { isVideoEnabled } = useToggleLocalMute();
   const { ref_id } = useParams();
   const { emit } = useEvent();
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [senderData, setSenderData] = useState({});
 
   // Socket Emitter from Parent Window to Child Window
 
@@ -52,11 +55,16 @@ const ChimeSocketComponent = () => {
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
       const user_id = userData.user_id;
-      const sender_id = message.event_detail.user_id;
-      console.log('message', message);
+
       if (message.type === 'InviteCall') {
-        const targetId = message.event_detail.meeting_attendee_list?.filter(ele => String(ele.user_id) === String(user_id) && String(sender_id) !== String(user_id));
-        if (targetId?.length) alert(`${sender_id} is calling you to ${message.event_detail.meeting_id}`);
+        const data = message.event_detail;
+        const sender_id = data.sender_id;
+        const targetId = data.meeting_attendee_list?.filter(ele => String(ele.user_id) === String(user_id) && String(sender_id) !== String(user_id));
+
+        if (targetId?.length) {
+          console.log("HelloKIC", data);
+          alert(`${data.sender_name} is calling you to ${data.meeting_link}`);
+        }
       } else if (message && message.type) {
         emit(message.type, message);
       }
@@ -303,7 +311,7 @@ const ChimeSocketComponent = () => {
     };
   }, [EventWindowRef]);
 
-  return <Outlet />;
+  return <Outlet/>;
 };
 
 export default ChimeSocketComponent;

@@ -102,7 +102,7 @@ const Group = ({ group, searchInput, onClick }) => {
             >
               <img src={audiocall} alt={"audio call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, userData.user_id, 'audio', group.group_members_list)}
+                instantCall(token, auth_code, userData, 'Audio', group.group_members_list)}
                 }/>
             </Tooltip>
             <Tooltip
@@ -111,7 +111,7 @@ const Group = ({ group, searchInput, onClick }) => {
             >
               <img src={videocall} alt={"video call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, userData.user_id, 'video', group.group_members_list)}
+                instantCall(token, auth_code, userData, 'Video', group.group_members_list)}
                 }/>
             </Tooltip>
             <Tooltip
