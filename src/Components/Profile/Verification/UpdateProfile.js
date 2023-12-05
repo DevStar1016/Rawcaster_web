@@ -634,7 +634,7 @@ const UpdateProfile = () => {
                             </Tooltip>
                           </div>
                         }
-                        maxLength={100}
+                        maxLength={CHARACTER_LIMIT.GEO_LOCATION}
                         {...getInputProps({
                           placeholder: "Search Places ...",
                           className: "location-search-input",
@@ -642,6 +642,7 @@ const UpdateProfile = () => {
                       />
                       <div className={classes.locationdrpmenu}>
                         {suggestions.map((suggestion) => {
+                          console.log(suggestions);
                           const style = suggestion.active
                             ? {
                                 backgroundColor: "#fafafa",
@@ -672,7 +673,10 @@ const UpdateProfile = () => {
                             backgroundColor: "#fff",
                             cursor: "pointer",
                             width: "100%",
-                            display: suggestions.length > 0 ? "block" : "none",
+                            display:
+                              suggestions && suggestions.length > 0
+                                ? "block"
+                                : "none",
                             paddingBottom: "10px",
                           }}
                         >
