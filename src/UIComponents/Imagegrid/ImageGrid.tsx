@@ -817,7 +817,7 @@ function ImageGrid({
                 >
                   {imgArray?.map((ele: ImageProps, index: number) => {
                     return (
-                      <Carousel.Item>
+                      <Carousel.Item key={index}>
                         {ImageorSingleModal(ele, index)}
                       </Carousel.Item>
                     );

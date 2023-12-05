@@ -190,7 +190,7 @@ const Connections = ({ referral, profileClass }) => {
         />
         {searchInput && searchInput !== "" && (
           <span
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setsearchInput("");
             }}
@@ -234,7 +234,7 @@ const Connections = ({ referral, profileClass }) => {
         getValidConnections().friends.length === 0 &&
         !isFriendsLoading ? (
           <div
-            strong
+            strong="true"
             onClick={() => {
               if (searchInput === "") {
                 setisAddFriend(true);
@@ -264,7 +264,7 @@ const Connections = ({ referral, profileClass }) => {
           );
         })}
         {getValidConnections()?.friends.map((friend, index) => {
-          return <Friends friend={friend} searchInput={searchInput} />;
+          return <Friends friend={friend} searchInput={searchInput} key={index+friend.user_id}/>;
         })}
         {isFriendsLoading && (
           <>

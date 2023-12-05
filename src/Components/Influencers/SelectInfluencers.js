@@ -528,7 +528,7 @@ const SelectInfluencers = () => {
             {SelectedInfluencersList.length === 0 && !isBecomeFanSent
               ? "Skip this"
               : "Next"}
-            <span class="material-symbols-outlined">arrow_forward</span>
+            <span className="material-symbols-outlined">arrow_forward</span>
           </button>
         </div>
       </div>
@@ -593,7 +593,7 @@ const SelectInfluencers = () => {
                 }}
                 clearIcon={
                   <span style={{}} className={classes.clearIcon}>
-                    <span class="material-symbols-outlined">close</span>
+                    <span className="material-symbols-outlined">close</span>
                   </span>
                 }
               />
