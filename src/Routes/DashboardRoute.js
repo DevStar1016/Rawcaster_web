@@ -21,6 +21,7 @@ import HomeLayout from "../Layouts/HomeLayout";
 import ViewNugget from "../Sharedcomponents/Nuggets/ViewNugget";
 import { HomePrivateRoute } from "./PrivateRoute";
 import IdenfyVerification from "../Components/Idenfy/IdenfyVerification";
+import TypeDevelopment from "../Components/TypeDevelopment";
 
 export const DashboardRoute = [
   {
@@ -106,6 +107,10 @@ export const DashboardRoute = [
       {
         path: "cookiespolicy",
         element: <Cookiespolicy />,
+      },
+      {
+        path: "typedev",
+        element: <TypeDevelopment />,
       },
       {
         path: "dev",
