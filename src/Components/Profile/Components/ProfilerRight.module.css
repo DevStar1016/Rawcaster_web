@@ -33,7 +33,7 @@ justify-content: space-between;
   margin: auto;
   margin-bottom: 5px;
 }
-.list img {    width: 100%; border-radius: 50px; margin-bottom: 3px;}
+.list img {    width: 100%; height: 100%; border-radius: 50px; margin-bottom: 3px;}
 .actionIcon { height: 23px; margin-left: 7px; cursor: pointer; }
 .emptySec {
     display: flex;

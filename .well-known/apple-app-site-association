@@ -4,11 +4,29 @@
         "details": [
             {
                 "appID": "CR8PDZDGNZ.com.rawcaster.app",
-                "paths": ["*","*.rawcaster.com/join/event","*.rawcaster.com/join/golive","*.rawcaster.com/join/talkshow","*.rawcaster.com/index.php","*.rawcaster.com"]
+                "paths": [
+                    "*",
+                    "*.rawcaster.com/join/event",
+                    "*.rawcaster.com/join/golive",
+                    "*.rawcaster.com/join/talkshow",
+                    "*.rawcaster.com/nugget",
+                    "*.rawcaster.com/nugget/index.php",
+                    "*.rawcaster.com/viewprofile",
+                    "*.rawcaster.com/signup",
+                    "*.rawcaster.com"]
             },
             {
                 "appID": "CR8PDZDGNZ.com.rawcaster.app",
-                "paths": ["*","rawcaster.com/join/event","rawcaster.com/join/golive","rawcaster.com/join/talkshow","rawcaster.com/index.php","rawcaster.com"]
+                "paths": [
+                    "*",
+                    "rawcaster.com/join/event",
+                    "rawcaster.com/join/golive",
+                    "rawcaster.com/join/talkshow",
+                    "rawcaster.com/nugget",
+                    "rawcaster.com/nugget/index.php",
+                    "rawcaster.com/viewprofile",
+                    "rawcaster.com/signup",
+                    "rawcaster.com"]
             }
         ]
     }

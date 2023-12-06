@@ -24,7 +24,11 @@ import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { message } from "antd";
 import InviteFansModal from "../../Modal/Referal/InviteFansModal";
 import { handleSendEmail } from "../../Modal/Referal/utility";
-import { decodeHtml, fetchGoogleContacts } from "../../Shared/Utility";
+import {
+  decodeHtml,
+  fetchGoogleContacts,
+  handleCopyText,
+} from "../../Shared/Utility";
 import { useNavigate } from "react-router";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 
@@ -138,6 +142,9 @@ const InviteBox = () => {
           .includes(searchInput.toLowerCase())
     );
   };
+
+  const encodedURL = encodeURIComponent(shareUrl);
+  const encodedText = encodeURIComponent(shareMessage + " " + shareUrl);
 
   return (
     <div className={classes.inviteSec}>
@@ -254,11 +261,22 @@ const InviteBox = () => {
       {ShareList.map(({ title, img, Component, id }) => (
         <Component
           quote={
-            id === 4
+            id === 2
+              ? encodedText
+              : id === 4
               ? TwitterShareMsg + " " + shareUrl
               : shareMessage + " " + shareUrl
           }
-          url={shareUrl}
+          onClick={() => {
+            if (id === 2) {
+              const userAgent = navigator.userAgent;
+              if (userAgent.toLowerCase().includes("telegram")) {
+              } else {
+                handleCopyText(shareUrl, "Link copied to clipboard");
+              }
+            }
+          }}
+          url={id === 2 ? encodedURL : shareUrl}
         >
           <div className={classes.inviteContainer}>
             <div className={classes.iconSec}>
