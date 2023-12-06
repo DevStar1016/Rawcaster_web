@@ -62,6 +62,7 @@ const SelectedUsers = ({
               Groups?.map((group, index) => {
                 return (
                   <div
+                    key={index+group.group_id}
                     className={classes.friendslist}
                     style={{
                       position: "relative",
@@ -102,6 +103,7 @@ const SelectedUsers = ({
             {friends?.map((friend, index) => {
               return (
                 <div
+                  key={index+friend.user_id}
                   className={classes.friendslist}
                   style={{
                     position: "relative",

@@ -198,7 +198,7 @@ const Content = ({ elem }) => {
           <h3>Today</h3>
           {Notifications.today.map((ele, index) => (
             <NotificationsList
-              key={index}
+              key={index+String(ele.notification_id)}
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {
@@ -220,7 +220,7 @@ const Content = ({ elem }) => {
           <h3>Yesterday</h3>
           {Notifications.yesterday.map((ele, index) => (
             <NotificationsList
-              key={index}
+              key={index+String(ele.notification_id)}
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {
@@ -242,7 +242,7 @@ const Content = ({ elem }) => {
           <h3>Older</h3>
           {Notifications.older.map((ele, index) => (
             <NotificationsList
-              key={index}
+              key={index+String(ele.notification_id)}
               ele={ele}
               type={elem.id}
               handleUpdate={(id) => {

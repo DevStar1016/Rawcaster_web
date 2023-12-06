@@ -342,6 +342,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           });
           handleCloseEvent();
         }
+        console.log('Event-Test:----', filterValidObject(liveEventData), '\nTest-Add-Event:--------', res.data);
       })
       .catch((err) => {})
       .finally(() => {
@@ -906,9 +907,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   </Col>
                   <div className="my-2">
                     <Row>
-                      {EventSettings.map((ele) => {
+                      {EventSettings.map((ele, index) => {
                         return (
-                          <Col sm={6}>
+                          <Col sm={6} key={index}>
                             <div
                               onClick={(e) => {
                                 if (

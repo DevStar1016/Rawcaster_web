@@ -234,31 +234,37 @@ const Eventslisting = ({
               style={EventListData?.length === 0 ? { height: "inherit" } : {}}
               className={classes.EventListSec}
             >
-              {EventListData?.map((ele, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: decodeHtml(ele.event_name)
-                      .toLowerCase()
-                      .includes(SearchData.toLowerCase())
-                      ? "block"
-                      : "none",
-                  }}
-                >
-                  <Event
-                    ele={ele}
-                    setList={setEventListData}
-                    handleEdit={(ele) => {
-                      setEventData(ele);
-                      if (ele.type === 1) {
-                        setisEventOpen(true);
-                      } else if (ele.type === 2) {
-                        setisTalkshowOpen(true);
-                      }
+              {EventListData?.map((ele, index) =>
+                ele.event_name === "Instant Call" &&
+                ele.type === 1 &&
+                ele.event_type_id === 2 ? (
+                  <></>
+                ) : (
+                  <div
+                    key={index}
+                    style={{
+                      display: decodeHtml(ele.event_name)
+                        .toLowerCase()
+                        .includes(SearchData.toLowerCase())
+                        ? "block"
+                        : "none",
                     }}
-                  />
-                </div>
-              ))}
+                  >
+                    <Event
+                      ele={ele}
+                      setList={setEventListData}
+                      handleEdit={(ele) => {
+                        setEventData(ele);
+                        if (ele.type === 1) {
+                          setisEventOpen(true);
+                        } else if (ele.type === 2) {
+                          setisTalkshowOpen(true);
+                        }
+                      }}
+                    />
+                  </div>
+                )
+              )}
               {Pages.current_page !== Pages.total_pages &&
                 Pages.total_pages > 1 && (
                   <div
@@ -268,7 +274,9 @@ const Eventslisting = ({
                     }}
                   >
                     Load More
-                    <span className="material-symbols-outlined">arrow_forward</span>
+                    <span className="material-symbols-outlined">
+                      arrow_forward
+                    </span>
                   </div>
                 )}
               {(EventListData?.length === 0 || isEmptyEvents) && (

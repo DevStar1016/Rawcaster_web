@@ -30,6 +30,8 @@ import { CustomParagraph } from "./UtilityComponents";
 import { fetchNuggetsbyId } from "../Store/Redux/Action";
 import { ChimesendMessage } from "../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
+import { addEventService } from "../Services/ApiService";
+
 
 // Auth
 
@@ -1138,31 +1140,74 @@ export const getParticipantCount = (numOfParticipants) => {
   }
 };
 
+const arrayToString = (arr) => {
+  let str = '[';
+  arr.map(ele => {
+    str += String(ele.user_id)+',';
+  });
+  return str.slice(0, -1)+']'
+}
+
 /**
  * 1:1, group instant call
  * @param {string} token - user auth token
  * @param {string} auth_code - user auth code
- * @param {string} user_id - user_id
+ * @param {string} userData - loginUserData of Redux
+ * @param {string} userSettings - userSettings of Redux
  * @param {string} type - audio | video call
  * @param {Array} user_id_list - user's id list of group.The deign should be as we have it now… the code can reuse events code as implemented by chime team.. so feel free to do your work.. I have confidence that you will get something good to show soon…
  * @returns None
  */
-export const instantCall = (token, auth_code, userData, type = 'audio', user_id_list = []) => {
-  let requestData = {
-    token,
-    auth_code,
-    id: userData.user_id,
-    name: userData.name,
-    user_id_list: JSON.stringify(user_id_list),
-    type
-  };
-  // createMeeting and send meeting_link to friends
+export const instantCall = (token, auth_code, userData, userSettings, type = 'Audio', user_id_list = []) => {
+  const dateAndTime =
+      moment(new Date()).format("YYYY-MM-DD") +
+      " " +
+      moment(moment(new Date(), ["HH:mm"])).format("HH:mm:00");
+  let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
 
-  ChimesendMessage(
-    {
-      type: "InviteCall",
-      event_detail: {sender_id: userData.user_id, sender_name: userData.name, profile_image: userData.profile_image, meeting_id: '123123', meeting_link: "https://rawcaster.com/dashboard", meeting_attendee_list: user_id_list, meeting_type: type},
-    },
-    CHIME_SOCKET_EVENTS.NOTIFICATIONS
-  );
+  let requestData = {
+    event_title: 'Instant Call',
+    event_type: 2,
+    event_start_date: utcDateTime.format("YYYY-MM-DD"),
+    event_start_time: utcDateTime.format("HH:mm"),
+    waiting_room: userSettings?.waiting_room,
+    join_before_host: userSettings?.join_before_host,
+    sound_notify: 0,
+    user_screenshare: type === 'Audio' ? 0 : 1,
+    event_participants: String(userSettings?.max_event_participants_count),
+    event_message: `Instant call: ${type}`,
+    event_duration: (parseInt(userSettings.max_event_duration) < 10 ? '0': '') + String(userSettings.max_event_duration) + ':00',
+    event_layout: 1,
+    event_melody_id: 1,
+    event_melody_type: 1,
+    event_host_audio: type === 'Audio' ? 1 : 0,
+    event_host_video: type === 'Audio' ? 0 : 1,
+    event_guest_audio: type === 'Audio' ? 1 : 0,
+    event_guest_video: type === 'Audio' ? 0 : 1,
+    event_invite_friends: arrayToString([]),
+    token: String(token)
+  };
+
+  addEventService(JSONtoformdata(filterValidObject(requestData)))
+      .then((res) => {
+        console.log('\nTest-Add-Event:--------', res.data);
+        if (res.data.status === 1) {
+          alert('Helo world');
+          ChimesendMessage(
+            {
+              type: "InviteCall",
+              event_detail: {sender_id: userData.user_id, sender_name: userData.name, profile_image: userData.profile_image, meeting_link: "https://rawcaster.com/dashboard", meeting_attendee_list: user_id_list, meeting_type: type},
+            },
+            CHIME_SOCKET_EVENTS.NOTIFICATIONS
+          );
+        } else {
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
+        }
+      })
+      .catch((err) => {})
+
+  
 }

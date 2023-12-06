@@ -13,7 +13,7 @@ import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
 import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { useMainContext } from "../../../Shared/Context";
-import { useAuth, useAuthData, useAuthToken } from "../../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useAuthToken, useSettings } from "../../../Shared/Reduxfetcher";
 import { AutoChannelCreateService } from "../../../Services/ApiService";
 import { useDispatch } from "react-redux";
 import { handleUpdateGroupArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
@@ -29,6 +29,7 @@ const Group = ({ group, searchInput, onClick }) => {
   const token = useAuthToken();
   const auth_code = getAuthToken(token);
   const userData = useAuthData();
+  const userSettings = useSettings();
 
   const HandleGroupCreate = () => {
     setisFetching(group.group_id);
@@ -102,7 +103,7 @@ const Group = ({ group, searchInput, onClick }) => {
             >
               <img src={audiocall} alt={"audio call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, userData, 'Audio', group.group_members_list)}
+                instantCall(token, auth_code, userData, userSettings, 'Audio', group.group_members_list)}
                 }/>
             </Tooltip>
             <Tooltip
@@ -111,7 +112,7 @@ const Group = ({ group, searchInput, onClick }) => {
             >
               <img src={videocall} alt={"video call"} onClick={(e) => {
                 e.stopPropagation();
-                instantCall(token, auth_code, userData, 'Video', group.group_members_list)}
+                instantCall(token, auth_code, userData, userSettings, 'Video', group.group_members_list)}
                 }/>
             </Tooltip>
             <Tooltip

@@ -64,9 +64,10 @@ const Grouplist = () => {
       />
       {ConnectionData.length !== 0 ? (
         <div className={classes.listSec}>
-          {ConnectionData?.map((ele) => {
+          {ConnectionData?.map((ele, index) => {
             return (
               <div
+                key={index+ele.group_id}
                 className={`${classes.profileData} ${
                   isSelectedGroup(ele.group_id) ? classes.selectedItem : ""
                 }`}
