@@ -11,7 +11,6 @@ import {
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { useEvent } from "../../Sharedcomponents/EventProvider";
-import InviteCallPage from "../../Modal/Call/InviteCallPage"
 import { Button, notification, Space, Avatar } from "antd";
 
 const ChimeSocketComponent = () => {

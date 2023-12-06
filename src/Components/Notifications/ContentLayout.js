@@ -76,7 +76,7 @@ const ContentLayout = () => {
       />
       <SwipeableViews index={selectedIndex} onChangeIndex={handleChangeIndex}>
         {TabsValues.map((ele, index) => (
-          <Content elem={ele} key={index} />
+          <Content elem={ele} key={index+String(ele.key)} />
         ))}
       </SwipeableViews>
     </div>

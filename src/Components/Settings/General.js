@@ -596,7 +596,7 @@ const General = () => {
             <div className={`mt-2 ${classes.linespace}`}>
               {ProfileswitchTypes.map((elem, i) => {
                 return (
-                  <div className={classes.grp_switch}>
+                  <div className={classes.grp_switch} key={i+elem.title}>
                     <Switch
                       size="small"
                       checked={formikvalues[elem.type] === 1}
