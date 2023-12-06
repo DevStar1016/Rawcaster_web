@@ -60,7 +60,7 @@ export const changePasswordService = (data: FormData) => {
   return axios.post("changepassword", data);
 };
 
-export const getCountylistService = (data: FormData) => {
+export const getCountylistService = (data?: FormData) => {
   return axios.post("getcountylist", data);
 };
 
@@ -179,6 +179,9 @@ export const groupAbuseReportService = (data: FormData) => {
 export const exitFromGroupService = (data: FormData) => {
   return axios.post("exitfromgroup", data);
 };
+export const complementaryMembershipService = (data: FormData) => {
+  return axios.post("complementary_membership", data);
+};
 // Nugget services
 
 export const addNuggetsService = (
@@ -192,11 +195,15 @@ export const addNuggetsService = (
 
 export const listNuggetsService = (
   data: FormData,
-  token: CancelToken | undefined
+  signal: AbortSignal | undefined
 ) => {
-  return axios.post("listnuggets", data, {
-    cancelToken: token,
-  });
+  if (signal) {
+    return axios.post("listnuggets", data, {
+      signal,
+    });
+  } else {
+    return axios.post("listnuggets", data);
+  }
 };
 
 export const addNuggetViewService = (data: FormData) => {

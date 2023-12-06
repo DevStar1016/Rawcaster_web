@@ -5,7 +5,8 @@ import { useAuthToken } from "../../Shared/Reduxfetcher";
 import classes from "./Referal.module.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { debounce } from "lodash";
 
 /**
  * Handles sending an email to the specified contacts using the provided token.
@@ -14,11 +15,12 @@ import { useEffect, useRef } from "react";
  * @returns {Promise} - A promise that resolves when the email is successfully sent.
  */
 export const handleSendEmail = (token, contacts) => {
+  const ValidContact = typeof contacts === "string" ? [contacts] : contacts;
   let promise = new Promise((resolve, reject) => {
     let inviteData = {
       token: token,
       auth_code: getAuthToken(token),
-      email_id: JSON.stringify(contacts),
+      email_id: JSON.stringify(ValidContact),
     };
     inviteToRawcasterService(JSONtoformdata(inviteData))
       .then((res) => {
@@ -66,7 +68,7 @@ export const EmailReferalContainer = ({ close }) => {
         ),
     }),
     onSubmit: (value) => {
-      handleInviteFriends(value.EmailList);
+      VInviteFriendsProgress(value.EmailList);
     },
   });
 
@@ -78,6 +80,11 @@ export const EmailReferalContainer = ({ close }) => {
       resetForm();
     });
   };
+
+  const VInviteFriendsProgress = useCallback(
+    debounce(handleInviteFriends, 2000),
+    []
+  );
 
   const handleCloseTag = (index) => {
     setValues((pre) => {

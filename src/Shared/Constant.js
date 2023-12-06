@@ -1,6 +1,8 @@
 // PRIMARY CONSTANTS
+// export const DEFAULT_VIDEO =
+//   "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";
 export const DEFAULT_VIDEO =
-  "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";
+  "https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_83461699330855.mp4#t=0.001";
 export const DEFAULT_VIDEO_RAWCASTER =
   "https://rawcaster.s3.us-west-2.amazonaws.com/nuggets/video_47841690153307.mp4#t=0.001";
 export const SHARE_URL = "https://dev.rawcaster.com/join/";
@@ -19,8 +21,37 @@ export const MOBILE_NUMBER_REGEX = /^[0-9\s\-\+\(\)]{5,15}$/;
 export const EMAIL_REGEX =
   /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+// Character Limit
+export const CHARACTER_LIMIT = {
+  LOGIN_ID: 150,
+  FIRST_NAME: 50,
+  LAST_NAME: 50,
+  DISPLAY_NAME: 40,
+  MOBILE_NO: 15,
+  EMAIL: 50,
+  GENDER: 50,
+  STUDIED_AT: 50,
+  WORKED_AT: 50,
+  PASSWORD: 50,
+  GEO_LOCATION: 100,
+  DEFAULT: 50,
+  CHAT_TEXT_MAX_LENGTH: 100,
+  REPORT_MESSAGE: 500,
+  POLL_CHOICE: 25,
+  AGE: 2,
+};
+
+export const MIN_CHARACTER_LIMIT = {
+  MOBILE_NO: 5,
+  PASSWORD: 8,
+  LOGIN_ID: 5,
+  OTP: 6,
+};
+
 // export const LOGIN_ID = /^(?:\d{5,16}|\w+@\w+\.\w{2,3})$/;
 // eslint-disable-next-line react-hooks/exhaustive-deps
+
+export const IS_CHIME_ENABLE = false;
 
 export const SHARED_TYPE = [
   { id: 1, key: 1, Value: "Public", label: "Public" },

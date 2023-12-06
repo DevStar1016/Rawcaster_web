@@ -26,6 +26,13 @@
   width: calc(100% - 25px);
   float: left;
 }
+.verifiedImg {
+  height: 12px;
+  width: 12px;
+  margin-left: 5px;
+  margin-bottom: 2px;
+  margin-top: 5px;
+}
 .PopoverShareLink {
   display: flex;
   flex-direction: row;
@@ -120,6 +127,13 @@ border-radius: 30px;
   height: 20px;
   left: 33px;
   bottom: 0;
+}
+.proName {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+
 }
 .proName p {
   color: #1d1c1c;
@@ -520,7 +534,7 @@ border-radius: 30px;
 .proName {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 .othersnuggetSec {
   /* width: 60%; */

@@ -32,7 +32,6 @@ const Grouplist = () => {
     }
     if (shareWithData && share_type === 3) {
       let findData = groupsList.map((ele) => {
-        console.log(ele.my_group, "ele.my_group");
         if (shareWithData.includes(ele.group_id) && ele.my_group === 1) {
           return { ...ele, listname: decodeHtml(ele.group_name) };
         }

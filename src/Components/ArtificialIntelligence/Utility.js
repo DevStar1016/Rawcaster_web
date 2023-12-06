@@ -254,6 +254,12 @@ export const MessageContent = (props) => {
         setisFetching(false);
       });
   };
+  const getMessage = () => {
+    if (translated_text) {
+      return translated_text;
+    }
+    return message;
+  };
   return (
     <div
       className={
@@ -273,7 +279,15 @@ export const MessageContent = (props) => {
         </div>
         <div className={classes.content}>
           {/* <p className={classes.userNameSec}>David thompson</p> */}
-          <p>{translated_text ? translated_text : message}</p>
+          <p
+            style={{
+              wordBreak: getMessage().includes(" ")
+                ? "break-word"
+                : "break-all",
+            }}
+          >
+            {getMessage()}
+          </p>
           {props.created_at && (
             <span className={classes.timestamp}>
               {moment(props.created_at, "YYYY-MM-DD HH:mm:ss").format(
@@ -297,7 +311,6 @@ export const MessageContent = (props) => {
             <p
               className={translated_text ? classes.activeTranslate : ""}
               onClick={() => {
-                console.log("test");
                 if (translated_text) {
                   setMessages((pre) => {
                     let findIndex = pre.findIndex((elem, i) => i === index);

@@ -35,6 +35,14 @@ type UnclaimedModalProps = {
   onSuccess?: (value?: any | undefined) => void;
 };
 
+type LinkOpenModalProps = {
+  type?: string | undefined;
+  message?: string;
+  url?: string;
+  onClose?: (value?: any | undefined) => void;
+  onSuccess?: (value?: any | undefined) => void;
+};
+
 const VerifyContent = (props: GlobalModalProps) => {
   const {
     message,
@@ -186,6 +194,69 @@ export const ShowUnclaimedAccountModal = (props: UnclaimedModalProps) => {
     width: 600,
     centered: true,
     content: UnclaimedAccountContent(props),
+    footer: null,
+  });
+};
+
+const LinkOpenContent = (props: LinkOpenModalProps) => {
+  const defaultMessage =
+    "The site you have requested is not managed by Rawcaster.com, we cannot vouch for the contents of the site. We recommend, that you exercise precautions before you click unknown sites.";
+  const { onClose, url, onSuccess, message = defaultMessage, type } = props;
+  return (
+    <div className={classes.reportModal}>
+      <p style={{ fontSize: "16px", textIndent: "10px", marginTop: "15px" }}>
+        {message}
+      </p>
+
+      <div className={classes.actionBtn} style={{ marginTop: "22px" }}>
+        <Button
+          ghost
+          type="primary"
+          htmlType="button"
+          onClick={() => {
+            if (onClose) {
+              onClose();
+            }
+            Modal.destroyAll();
+          }}
+          size="large"
+          className={classes.cancelBtn}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            if (url) {
+              window.open(url, type);
+            } else if (onSuccess) {
+              onSuccess();
+            }
+
+            Modal.destroyAll();
+          }}
+          style={{ marginLeft: "10px" }}
+          htmlType="submit"
+          size="large"
+          className={classes.reportBtn}
+        >
+          Continue
+        </Button>
+      </div>
+      <p style={{ textAlign: "center", marginTop: "15px", fontSize: "12px" }}>
+        Rawcaster.com LLC
+      </p>
+    </div>
+  );
+};
+
+export const ShowLinkOpenModal = (props: LinkOpenModalProps) => {
+  Modal.confirm({
+    title: "Warning !",
+    icon: null,
+    width: 600,
+    centered: true,
+    content: LinkOpenContent(props),
     footer: null,
   });
 };

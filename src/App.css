@@ -15,7 +15,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 5px 0;
+  margin: 3px 0;
 }
 .inputsec { 
   width: 100%;
@@ -27,22 +27,32 @@ body {
 .ant-typography-expand {
   display: none;
 }
+.ant-select-status-error {
+  border-color: var(--dangerColor) !important;
+}
+.mobileInput {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-basis: content;
+  width: 100%;
+}
 .textBox {
   -webkit-text-fill-color: inherit;
 -webkit-text-fill-color: initial;
 -webkit-text-fill-color: unset;
-height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
+height: 48px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
 /* .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px; font-family: "DM Sans", sans-serif !important; }  */
 .textBox:focus, .textBox::selection, .textBox:hover,.textBox:active { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
 .ant-select-selector {
   border: none !important; 
-  height: 42px !important;
+  height: 45px !important;
   display: flex;
   align-items: center;
 }
 ::selection { background: #F2718D !important;}
 .dateinputBox .ant-select-selector {
-  height: 42px !important;
+  height: 45px !important;
   text-align: center;
 }
 
@@ -63,6 +73,9 @@ height: 45px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; }
 }
 .innerContent { padding-top: 60px; }
 .ant-form-item { margin-bottom: 20px !important;}
+.mobileInput .ant-form-item {
+  margin-bottom: 0px !important;
+}
 .mainWrapper { max-width: 1350px; width: 95%; margin: auto; }
 .ant-menu { border-bottom: none;}
 ::placeholder { font-weight: 300; font-size: 15px; color: #1D1C1C; opacity: 1 !important; }
@@ -310,6 +323,25 @@ color: #FFFFFF !important;
 .content_link,.content_link:hover {
   color: #563662 !important;
   text-decoration: none !important;
+}
+.read-more {
+  overflow: hidden;
+}
+
+.read-more__button {
+  display: inline;
+  background-color: transparent;
+  outline: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  cursor: pointer;
+  color: #007f8c;
+}
+
+.read-more__button:hover {
+  text-decoration: underline;
 }
 .content_link {
   width: 100%;

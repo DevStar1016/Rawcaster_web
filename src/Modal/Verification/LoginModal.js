@@ -12,12 +12,47 @@ import { Button, Modal } from "antd";
 import { useNavigate } from "react-router";
 import { removeSessionStorageData } from "../../Store/Storage";
 import classes from "../Modal.module.css";
-import { useAuthToken } from "../../Shared/Reduxfetcher";
+import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { HandleVerifyModal } from "../DefaultModal";
+import { useDispatch } from "react-redux";
+import { complementaryMembershipService } from "../../Services/ApiService";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
 
-const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
+const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useAuthToken();
+  const loginUserData = useAuthData();
+
+  const ComplementaryMemberShip = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    complementaryMembershipService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          HandleVerifyModal({
+            primary: "success",
+            onSuccess: () => {
+              dispatch(
+                handleLoginData({
+                  ...loginUserData,
+                  user_status: res.data.user_status,
+                  user_status_id: res.data.user_status_id,
+                  complementary_status: res.data.complementary_status ?? 0,
+                })
+              );
+            },
+            isCloseAvailable: false,
+            SubmitButtonTitle: "Ok",
+            message: res.data.msg,
+          });
+        } else {
+          navigate("/membership");
+        }
+      })
+      .catch((err) => {});
+  };
+
   return (
     <Modal centered open={open} closable={false} footer={null}>
       <div className={classes.profileModal}>
@@ -33,48 +68,59 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae }) => {
         </p>
 
         <div className={classes.actionBtn}>
+          {/* {!isAI ? ( */}
+          {loginUserData?.complementary_status === 1 && (
+            <Button
+              ghost
+              type="primary"
+              htmlType="button"
+              onClick={() => {
+                if (AIclose) {
+                  close();
+                } else {
+                  removeSessionStorageData("influencerData");
+                  close();
+                }
+              }}
+              size="large"
+              className={classes.cancelBtn}
+            >
+              {"Later"}
+            </Button>
+          )}
+          {/* ) : null} */}
+
           <Button
-            ghost
-            type="primary"
-            htmlType="button"
-            onClick={() => {
-              if (AIclose) {
-                close();
-              } else {
-                removeSessionStorageData("influencerData");
-                close();
-              }
-            }}
-            size="large"
-            className={classes.cancelBtn}
-          >
-            Later
-          </Button>
-          <Button
             type="primary"
             onClick={() => {
+              // if (isAI) {
+              //   close();
+              // } else {
               if (AIopen) {
                 close();
-                HandleVerifyModal({
-                  primary: "success",
-                  onSuccess: () => {},
-                  isCloseAvailable: false,
-                  SubmitButtonTitle: "Ok",
-                  message:
-                    "you have been granted a complementary upgrade for xx days",
-                });
-                // window.location.assign("/membership");
+                if (loginUserData.complementary_status === 1) {
+                  ComplementaryMemberShip();
+                } else {
+                  navigate("/membership");
+                }
               } else {
                 navigate("/login");
                 close();
               }
+              // }
             }}
             style={{ marginLeft: "10px" }}
             htmlType="Continue"
             size="large"
             className={classes.reportBtn}
           >
-            {AIopen ? "Upgrade" : "Login"}
+            {loginUserData?.complementary_status === 0
+              ? "OK"
+              : isAI
+              ? "Upgrade Now"
+              : AIopen
+              ? "Upgrade Now"
+              : "Login"}
           </Button>
         </div>
       </div>

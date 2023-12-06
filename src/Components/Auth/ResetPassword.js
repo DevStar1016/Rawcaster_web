@@ -24,23 +24,30 @@ import {
   setSessionStorageData,
 } from "../../Store/Storage";
 import moment from "moment";
+import { CHARACTER_LIMIT, MIN_CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const validationSchema = yup.object().shape({
   otp: yup
     .string()
-    .min(6, "Please Enter Valid OTP!")
+    .min(MIN_CHARACTER_LIMIT.OTP, "Please Enter Valid OTP!")
     .required(`Please input your OTP!`),
   new_password: yup
     .string()
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .required("Please input your Password!"),
   confirm_password: yup
     .string()
     .trim("The Password cannot include leading and trailing spaces")
     .strict(true)
-    .min(8, "Password must be at least 8 characters long")
+    .min(
+      MIN_CHARACTER_LIMIT.PASSWORD,
+      `Current Password must be at least ${MIN_CHARACTER_LIMIT.PASSWORD} characters long`
+    )
     .oneOf([yup.ref("new_password"), null], "Passwords must match")
     .required("Please input your Password!"),
 });
@@ -55,6 +62,7 @@ const ResetPassword = () => {
   };
   const [TimerValue, setTimerValue] = useState(state?.remaining_seconds || 60);
   const [otpRefId, setotpRefId] = useState();
+
   const { values, handleChange, handleSubmit, errors, touched, setFieldValue } =
     useFormik({
       initialValues: {
@@ -193,6 +201,7 @@ const ResetPassword = () => {
    */
   const handleresendOTP = () => {
     let ResendValues = {
+      sms_type: state?.sms_type,
       otp_ref_id: otpRefId,
       auth_code: getAuthToken(otpRefId),
     };
@@ -237,10 +246,7 @@ const ResetPassword = () => {
               />
             </Link>
             <h1 className={classes.heading_h1}>Reset Password</h1>
-            <p className={classes.subText}>
-              A one time passcode (OTP) has been sent to the email address you
-              provided
-            </p>
+            <p className={classes.subText}>{state.msg}</p>
             <Form
               name="rawcaster_reset_password"
               autoComplete={"off"}
@@ -295,7 +301,7 @@ const ResetPassword = () => {
                   status={
                     touched.new_password && errors.new_password ? "error" : ""
                   }
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.PASSWORD}
                   autoComplete="new_password"
                 />
                 {touched.new_password && (
@@ -314,7 +320,7 @@ const ResetPassword = () => {
                       ? "error"
                       : ""
                   }
-                  maxLength={50}
+                  maxLength={CHARACTER_LIMIT.PASSWORD}
                   autoComplete="new_password"
                 />
                 {touched.confirm_password && (

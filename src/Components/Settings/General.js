@@ -13,13 +13,19 @@ import {
   AccountStatus,
   DateTypeFormats,
   DefaultRawcasterPage,
+  DefaultRawcasterPageChimeDisabled,
   OptInStatus,
   ProfileswitchTypes,
   SettingsList,
   VALIDATION_MESSAGES,
 } from "./Constants";
 import { findValidDisplayAccentData, getValidDisplayData } from "./Utility";
-import { JSONtoformdata, decodeHtml, getAuthToken } from "../../Shared/Utility";
+import {
+  JSONtoformdata,
+  RemoveToken,
+  decodeHtml,
+  getAuthToken,
+} from "../../Shared/Utility";
 import {
   defaultGroupImg,
   defaultprofileImg,
@@ -28,12 +34,14 @@ import { useDispatch } from "react-redux";
 import {
   handleRemoveReadoutURL,
   handleRemoveTranslate,
+  handleResetNuggets,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { toast } from "react-hot-toast";
 import EmailorMobileUpdateModal from "../../Modal/Verification/EmailorMobileUpdateModal";
 import { ShowDefaultModal } from "../../Modal/DefaultModal";
 import { resendOtpService } from "../../Services/ApiService";
 import { useNavigate } from "react-router";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const General = () => {
   const {
@@ -149,11 +157,12 @@ const General = () => {
     SubmitButtonTitle,
     closeButtonTitle,
     message,
+    isSubmitAvailable = true,
   }) => {
     ShowDefaultModal({
       open: true,
       isCloseAvailable: true,
-      isSubmitAvailable: true,
+      isSubmitAvailable,
       primary,
       onSuccess,
       SubmitButtonTitle,
@@ -216,6 +225,7 @@ const General = () => {
                 DefaultRawcasterPage,
                 formikvalues.mobile_default_page
               )}
+              optionFilterProp={IS_CHIME_ENABLE ? undefined : "Event,Chat"}
               style={{ width: 200 }}
               placeholder="Search Default Rawcaster page"
               optionFilterProp="children"
@@ -227,7 +237,11 @@ const General = () => {
                   .toLowerCase()
                   .localeCompare((optionB?.label ?? "").toLowerCase())
               }
-              options={DefaultRawcasterPage}
+              options={
+                IS_CHIME_ENABLE
+                  ? DefaultRawcasterPage
+                  : DefaultRawcasterPageChimeDisabled
+              }
               onChange={(val) => {
                 setupdateValue("mobile_default_page", parseInt(val));
               }}
@@ -346,7 +360,11 @@ const General = () => {
 
             return (
               <>
-                <div>
+                <div
+                  style={{
+                    display: ele.isShow ? "" : "none",
+                  }}
+                >
                   <p className={classes.smallheading}>{ele.title} </p>
                   <Radio.Group
                     defaultValue={formikvalues[ele.keyword]}

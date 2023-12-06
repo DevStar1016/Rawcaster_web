@@ -21,7 +21,7 @@ import {
 import RenameModal from "../Components/RenameModal";
 import { toast } from "react-hot-toast";
 import { generatePath } from "react-router";
-import { handleCopyText } from "../../../Shared/Utility";
+import { getParticipantCount, handleCopyText } from "../../../Shared/Utility";
 import {
   AttendeeUserData,
   EventContextProp,
@@ -44,7 +44,6 @@ const TalkshowParticipants = () => {
     attendeesList,
     EventData,
     userdata,
-    MeetingSettings,
   }: EventContextProp = useEventRoomContext();
   const userData = useAuthData();
   const tempuserData = useEventTempAuthData();
@@ -127,51 +126,51 @@ const TalkshowParticipants = () => {
         ];
       }
       return [
-        {
-          key: "0",
-          label: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
-          onClick: () => {
-            Modal.confirm({
-              title: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
-              content: `Are you sure do you want to ${
-                !ele?.isCoHost ? "Promote" : "Remove"
-              } as Co Host for this User !`,
-              onOk: () => {
-                const hostList = attendeesList?.filter(
-                  (list) => list.isHost || list.isCoHost
-                );
+        // {
+        //   key: "0",
+        //   label: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
+        //   onClick: () => {
+        //     Modal.confirm({
+        //       title: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
+        //       content: `Are you sure do you want to ${
+        //         !ele?.isCoHost ? "Promote" : "Remove"
+        //       } as Co Host for this User !`,
+        //       onOk: () => {
+        //         const hostList = attendeesList?.filter(
+        //           (list) => list.isHost || list.isCoHost
+        //         );
 
-                if (ele?.isCoHost) {
-                  ChimesendMessage(
-                    {
-                      refId: EventData?.reference_id,
-                      hostId: userData?.user_id,
-                      userId: findAttendee?.userId,
-                    },
-                    CHIME_SOCKET_EVENTS.REMOVE_HOST
-                  );
-                } else {
-                  if (hostList.length < 4) {
-                    ChimesendMessage(
-                      {
-                        refId: EventData?.reference_id,
-                        hostId: userData?.user_id,
-                        userId: findAttendee?.userId,
-                      },
-                      CHIME_SOCKET_EVENTS.MAKE_HOST
-                    );
-                  } else {
-                    Modal.confirm({
-                      title: "You cannot add more than 3 co-hosts",
-                      onOk() {},
-                    });
-                  }
-                }
-              },
-              onCancel: () => {},
-            });
-          },
-        },
+        //         if (ele?.isCoHost) {
+        //           ChimesendMessage(
+        //             {
+        //               refId: EventData?.reference_id,
+        //               hostId: userData?.user_id,
+        //               userId: findAttendee?.userId,
+        //             },
+        //             CHIME_SOCKET_EVENTS.REMOVE_HOST
+        //           );
+        //         } else {
+        //           if (hostList.length < 4) {
+        //             ChimesendMessage(
+        //               {
+        //                 refId: EventData?.reference_id,
+        //                 hostId: userData?.user_id,
+        //                 userId: findAttendee?.userId,
+        //               },
+        //               CHIME_SOCKET_EVENTS.MAKE_HOST
+        //             );
+        //           } else {
+        //             Modal.confirm({
+        //               title: "You cannot add more than 3 co-hosts",
+        //               onOk() {},
+        //             });
+        //           }
+        //         }
+        //       },
+        //       onCancel: () => {},
+        //     });
+        //   },
+        // },
         {
           key: "1",
           label: "Rename user",
@@ -262,12 +261,13 @@ const TalkshowParticipants = () => {
                 }}
               />
             )}
-            {isYou ? (
+           {isYou && (userdata?.isHost || userdata?.isCoHost) ? (
               <LocalMicrophoneComponent
                 className={classes.micsmallIcon}
                 isAllowed={enabledSettings().localMicChangeAllowed}
               />
             ) : (
+              (findAttendee?.isHost || findAttendee?.isCoHost) && (
               <MicrophoneComponent
                 ele={ele}
                 attendee={findAttendee}
@@ -275,7 +275,7 @@ const TalkshowParticipants = () => {
                 className={classes.micsmallIcon}
                 isGlobal={false}
               />
-            )}
+            ))}
 
             {isYou && (userdata?.isHost || userdata?.isCoHost) ? (
               <LocalCameraComponent
@@ -375,6 +375,12 @@ const TalkshowParticipants = () => {
     );
   };
 
+  const getUserDetails = (externalUserId) => {
+    return attendeesList.find(
+      (attendee) => attendee.userRefId === externalUserId
+    );
+  };
+
   return (
     <Layout className={`${classes.popupContainer} ${classes.talkshowPopup}`}>
       <Header
@@ -389,7 +395,7 @@ const TalkshowParticipants = () => {
         <div className={classes.popupHeader}>
           <div>
             <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            <p>Participants</p>
+            <p>Participants {attendees?.length ?`( ${getParticipantCount(attendees.length)} )`: ""}</p>
           </div>
           <div>
             <i
@@ -431,9 +437,35 @@ const TalkshowParticipants = () => {
         </div>
       </Header>
       <Content className={classes.participantSec}>
-        {attendees.map((ele, index) => {
-          return ele ? AttendeeComponent({ ele }) : null;
-        })}
+                 {/* TODO Will Refactor this later */}
+                 {attendees
+          ?.filter(
+            (item) =>
+              getUserDetails(item.externalUserId)?.isHost
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              getUserDetails(item.externalUserId)?.isCoHost
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              getUserDetails(item.externalUserId)?.handRaised
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+          {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              !getUserDetails(item.externalUserId)?.handRaised
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
         <RenameModal
           key={renameAttendee?.userId}
           open={renameAttendee}

@@ -36,7 +36,6 @@ const Notifications = () => {
   const getValidData = (nuggetType, type, value) => {
     let SwitchType = formikvalues[nuggetType]?.split("");
     SwitchType[type] = value;
-    console.log(SwitchType?.join(""), "SwitchType?.join()");
     return SwitchType?.join("");
   };
 
@@ -185,7 +184,7 @@ const Notifications = () => {
       {OptinModal.status && (
         <EmailorMobileUpdateModal
           open={OptinModal.status}
-          type={OptinModal.isEmail ? "email_id" : "mobile_no"}
+          type={OptinModal.isEmail ? "email_id" : "mobile"}
           close={() => {
             setOptinModal({
               status: false,

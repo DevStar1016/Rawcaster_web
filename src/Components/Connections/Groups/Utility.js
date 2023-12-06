@@ -21,6 +21,7 @@ import {
   Switch,
   Tooltip,
   Empty,
+  Skeleton,
 } from "antd";
 import { toast } from "react-hot-toast";
 import tickIcon from "../../../Assets/Icons/png/tick.png";
@@ -32,6 +33,7 @@ import ReportGroup from "../../../Modal/Report/ReportGroup";
 import ImageCropModal from "../../../Modal/ImageCropModal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
 
 export const GroupHeader = () => {
   const {
@@ -52,6 +54,8 @@ export const GroupHeader = () => {
     handleReportGroup,
     handleExitGroup,
     close,
+    isImageUpdate,
+    setisImageUpdate,
   } = useConfigureGroupContext();
   const [isLogoEditable, setisLogoEditable] = useState(true);
   const [isReport, setisReport] = useState(false);
@@ -165,6 +169,21 @@ export const GroupHeader = () => {
                   </span>
                 </div>
               </Tooltip>
+              <Tooltip title="Share Group" color={"#F2718D"}>
+                <div className="d-flex justify-content-center">
+                  <span
+                    className="material-symbols-outlined"
+                    // style={{ display: getValidConnections() ? "" : "none" }}
+                    onClick={() => {
+                      navigator.clipboard.writeText(GroupData.referral_link);
+                      toast.remove("group");
+                      toast.success("Group Link Copied!", { id: "group" });
+                    }}
+                  >
+                    share
+                  </span>
+                </div>
+              </Tooltip>
             </>
           );
         } else {
@@ -260,26 +279,32 @@ export const GroupHeader = () => {
             cursor: "pointer",
           }}
         >
-          <div className={classes.overLaySec}>
-            <span className="material-symbols-outlined">upload</span>
-          </div>
-          <img
-            src={
-              values?.group_icon && values.group_icon !== ""
-                ? typeof values.group_icon === "string"
-                  ? values.group_icon
-                  : URL.createObjectURL(values.group_icon)
-                : defaultGroupImg
-            }
-            style={{ borderRadius: "2px" }}
-            alt="gropup-icon"
-            width="44px"
-            height="44px"
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null; // prevents looping
-              currentTarget.src = defaultGroupImg;
-            }}
-          ></img>
+          {isImageUpdate ? (
+            <Skeleton.Avatar size="large" active />
+          ) : (
+            <>
+              <div className={classes.overLaySec}>
+                <span className="material-symbols-outlined">upload</span>
+              </div>
+              <img
+                src={
+                  values?.group_icon && values.group_icon !== ""
+                    ? typeof values.group_icon === "string"
+                      ? values.group_icon
+                      : URL.createObjectURL(values.group_icon)
+                    : defaultGroupImg
+                }
+                style={{ borderRadius: "2px" }}
+                alt="gropup-icon"
+                width="44px"
+                height="44px"
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  currentTarget.src = defaultGroupImg;
+                }}
+              ></img>
+            </>
+          )}
         </div>
         <input
           type="file"
@@ -349,6 +374,7 @@ export const GroupHeader = () => {
           src={URL.createObjectURL(tempGroupImage?.src)}
           ratio={tempGroupImage?.ratio}
           onSuccess={(val) => {
+            setisImageUpdate(true);
             if (GroupData && GroupData?.group_category !== 2) {
               const editData = {
                 group_name: values.group_name,
@@ -431,7 +457,7 @@ export const SelectConnections = () => {
             </InputGroup.Text>
           </InputGroup>
 
-          {isChatSwichEnabled() && (
+          {isChatSwichEnabled() && IS_CHIME_ENABLE && (
             <div className={`${classes.chatEnabledSec} chatSwitch`}>
               <p>Chat:</p>
               <Switch
@@ -625,7 +651,7 @@ export const EditGroupMembers = () => {
             </InputGroup>
           )}
 
-          {isChatSwichEnabled() && (
+          {IS_CHIME_ENABLE && isChatSwichEnabled() && (
             <div className={`${classes.chatEnabledSec} chatSwitch`}>
               <p>Chat:</p>
               <Switch

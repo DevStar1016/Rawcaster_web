@@ -26,18 +26,50 @@ import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import moment from "moment";
 import PlacesAutocomplete from "react-places-autocomplete";
 import { useDispatch } from "react-redux";
-import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
 import Seo from "../SEO/Seo";
 import { ClaimorVerifySEO } from "../SEO/SEOContent";
-import { handleAccountVerifyStatus } from "../../Store/Redux/Reducer/AuthReducer";
+import { HandleVerifyModal, ShowLinkOpenModal } from "../../Modal/DefaultModal";
+import { useMainContext } from "../../Shared/Context";
+import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
+import {
+  CHARACTER_LIMIT,
+  MIN_CHARACTER_LIMIT,
+  NAME_REGEX,
+} from "../../Shared/Constant";
+import CountryCodeDropdown from "../../UIComponents/CountryCodeDropdown";
 
 const validationSchema = yup.object().shape({
-  first_name: yup.string().required(`Please input your First Name!`),
-  last_name: yup.string().required(`Please input your Last Name!`),
+  first_name: yup
+    .string()
+    .max(
+      CHARACTER_LIMIT.FIRST_NAME,
+      `Name cannot be longer than ${CHARACTER_LIMIT.FIRST_NAME} characters`
+    )
+    .matches(NAME_REGEX, "Please input valid First Name")
+    .required(`Please input your First Name!`),
+  last_name: yup
+    .string()
+    .max(
+      CHARACTER_LIMIT.LAST_NAME,
+      `Name cannot be longer than ${CHARACTER_LIMIT.LAST_NAME} characters`
+    )
+    .matches(NAME_REGEX, "Please input valid Last Name")
+    .required(`Please input your Last Name!`),
+  country_id: yup.string(),
   telephone: yup
     .string()
-    .min(5, "Telephone must be atleast 5 characters")
-    .required(`Please input your Telephone!`),
+    .min(
+      MIN_CHARACTER_LIMIT.MOBILE_NO,
+      `Mobile number must be atleast ${MIN_CHARACTER_LIMIT.MOBILE_NO} characters`
+    )
+    .test("validate Number", "Enter valid Number", function (value, ctx) {
+      const { country_id } = this.parent;
+      if (value && !country_id) {
+        return ctx.createError({ message: "Country code is Required" });
+      }
+      return true;
+    })
+    .required(`Please input your mobile number!`),
   dob: yup.string().required(`Please input your Date of Birth!`),
   email_id: yup
     .string()
@@ -48,6 +80,7 @@ const validationSchema = yup.object().shape({
 
 const Claimaccount = () => {
   const navigate = useNavigate();
+  const { isAccountVerified, IsValidCredentials } = useMainContext();
   const dispatch = useDispatch();
   const params = useParams();
   const display_user_id = params?.user_id
@@ -70,12 +103,50 @@ const Claimaccount = () => {
       last_name: "",
       telephone: "",
       dob: "",
+      country_code: "",
+      country_id: "",
       email_id: "",
       location: "",
     },
     validationSchema,
     onSubmit: (val) => {
-      HandleClaimAccount(val);
+      if (display_user_id && loginUserData?.account_verify_type === 0) {
+        HandleVerifyModal({
+          primary: "success",
+          message:
+            "Your profile should be a verified profile to claim an influencer profile",
+          SubmitButtonTitle: "Verify Account",
+          onSuccess: () => {
+            if (loginUserData.user_status_id >= 3) {
+              navigate("/verifyaccount");
+            } else {
+              navigate(-1);
+            }
+          },
+          isCloseAvailable: false,
+        });
+      } else if (display_user_id && loginUserData?.account_verify_type === 1) {
+        HandleVerifyModal({
+          primary: "success",
+          message:
+            "Your profile verification status is pending, you can claim an influencer profile only when verification status is success",
+          SubmitButtonTitle: "Back to Profile",
+          onSuccess: () => {
+            navigate(-1);
+          },
+          isCloseAvailable: false,
+        });
+      } else if (!display_user_id) {
+        ShowLinkOpenModal({
+          message:
+            "You are being redirected to our partner website for your ID verification..",
+          onSuccess: () => {
+            HandleClaimAccount(val);
+          },
+        });
+      } else {
+        HandleClaimAccount(val);
+      }
     },
   });
 
@@ -93,6 +164,8 @@ const Claimaccount = () => {
     }
   };
 
+  console.log(values, "values");
+
   const getisLoginuserId = () => {
     return parseInt(DecryptionString(params.user_id)) === loginUserData.user_id;
   };
@@ -108,18 +181,25 @@ const Claimaccount = () => {
       influencer_id: display_user_id ? parseInt(display_user_id) : null,
       token: loginUserData?.token,
     };
-
     VerifyType(JSONtoformdata(filterValidObject(finalData)))
       .then((res) => {
         if (res.data.status === 1) {
           // dispatch(handleAccountVerifyStatus(1));
           if (!display_user_id) {
-            window.open(res.data.redirect_url, "self");
+            window.open(res.data.redirect_url, "_self");
             // navigate(`/documentverify`, {
             //   state: {
             //     url: res.data.redirect_url,
             //   },
             // });
+          } else {
+            dispatch(
+              handleClaimAccount({
+                show: true,
+                msg: res.data.msg,
+              })
+            );
+            navigate(-1);
           }
         } else if (res.data.status === 0) {
           Modal.error({
@@ -137,6 +217,7 @@ const Claimaccount = () => {
   const getCurrentLocation = () => {
     getGeocodeData()
       .then((res) => {
+        console.log(res, "res");
         setFieldValue("location", res.address);
       })
       .catch((err) => {});
@@ -156,6 +237,8 @@ const Claimaccount = () => {
         dob: loginUserData?.dob,
         email_id: loginUserData?.email_id,
         location: loginUserData?.geo_location,
+        country_code: loginUserData?.country_code,
+        country_id: loginUserData?.country_id,
       });
     }
   }, [loginUserData]);
@@ -201,13 +284,17 @@ const Claimaccount = () => {
             <Row>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>First Name </p>
+                  <p className={classes.label}>
+                    First Name <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
-                    maxLength={25}
+                    maxLength={CHARACTER_LIMIT.FIRST_NAME}
                     autoComplete="off"
                     value={values.first_name}
                     onChange={handleChange("first_name")}
+                    placeholder="Enter your first name"
+                    disabled={isAccountVerified !== "unverified"}
                   />
                 </div>
                 {touched.first_name && (
@@ -216,13 +303,17 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Last Name </p>
+                  <p className={classes.label}>
+                    Last Name <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox} `}
-                    maxLength={25}
+                    maxLength={CHARACTER_LIMIT.LAST_NAME}
                     autoComplete="off"
                     value={values.last_name}
                     onChange={handleChange("last_name")}
+                    placeholder="Enter your last name"
+                    disabled={isAccountVerified !== "unverified"}
                   />
                 </div>
                 {touched.last_name && (
@@ -231,14 +322,39 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Telephone </p>
-                  <Input
-                    className={`${classes.textBox} `}
-                    maxLength={20}
-                    autoComplete="off"
-                    value={values.telephone}
-                    onChange={handleChange("telephone")}
-                  />
+                  <p className={classes.label}>
+                    Mobile Number <span className="text-danger">*</span>{" "}
+                  </p>
+                  <div className="mobileInput">
+                    <CountryCodeDropdown
+                      width="25%"
+                      marginTop={5}
+                      status={
+                        touched.telephone && errors.telephone ? "error" : ""
+                      }
+                      isDisabled={IsValidCredentials.mobile}
+                      value={values.country_code}
+                      onSelectItem={(val) => {
+                        setValues((pre) => ({
+                          ...pre,
+                          country_code: val.label,
+                          country_id: val.key,
+                        }));
+                      }}
+                    />
+                    <Input
+                      className={`${classes.textBox} `}
+                      maxLength={CHARACTER_LIMIT.MOBILE_NO}
+                      style={{
+                        marginLeft: 10,
+                      }}
+                      autoComplete="off"
+                      value={values.telephone}
+                      onChange={handleChange("telephone")}
+                      placeholder="Enter your mobile number"
+                      disabled={IsValidCredentials.mobile}
+                    />
+                  </div>
                 </div>
                 {touched.telephone && (
                   <p className="ErrTxt">{errors?.telephone}</p>
@@ -246,13 +362,17 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Email id </p>
+                  <p className={classes.label}>
+                    Email Id <span className="text-danger">*</span>{" "}
+                  </p>
                   <Input
                     className={`${classes.textBox}`}
-                    maxLength={25}
+                    maxLength={CHARACTER_LIMIT.EMAIL}
                     autoComplete="off"
                     value={values.email_id}
                     onChange={handleChange("email_id")}
+                    placeholder="Enter your email id"
+                    disabled={IsValidCredentials.email}
                   />
                 </div>
                 {touched.email_id && (
@@ -261,9 +381,13 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Date of Birth </p>
+                  <p className={classes.label}>
+                    Date of Birth <span className="text-danger">*</span>{" "}
+                  </p>
                   <DateInputBox
+                    isDisabled={isAccountVerified !== "unverified"}
                     displayDate={values.dob}
+                    isError={errors.dob && touched.dob}
                     onSelectDate={(date) => {
                       if (date !== "") {
                         setFieldValue("dob", moment(date).format("YYYY-MM-DD"));
@@ -277,8 +401,10 @@ const Claimaccount = () => {
               </Col>
               <Col md={6}>
                 <div className="my-2">
-                  <p className={classes.label}>Location</p>
-                  <Form.Item name="location">
+                  <p className={classes.label}>
+                    Location <span className="text-danger">*</span>{" "}
+                  </p>
+                  <Form.Item>
                     <PlacesAutocomplete
                       value={values.location}
                       onChange={handleChange("location")}
@@ -296,73 +422,81 @@ const Claimaccount = () => {
                         <div style={{ width: "100%", float: "left" }}>
                           <Input
                             id="geoLocation"
+                            name="location"
                             size="large"
+                            value={values.location}
                             className={`${classes.textBox} ${classes.locationInputHeight}`}
-                            maxLength={100}
+                            maxLength={CHARACTER_LIMIT.GEO_LOCATION}
+                            suffix={
+                              <div
+                                className={classes.locationIcon}
+                                style={{ float: "left", padding: "13px 0" }}
+                              >
+                                <Tooltip title="get current location">
+                                  <i
+                                    className="material-icons pt-1"
+                                    onClick={() => getCurrentLocation()}
+                                  >
+                                    location_on
+                                  </i>
+                                </Tooltip>
+                              </div>
+                            }
                             {...getInputProps({
                               placeholder: "Search Places ...",
                               className: "location-search-input",
                             })}
                           />
-                          <div className={classes.locationdrpmenu}>
-                            {suggestions.map((suggestion) => {
-                              const style = suggestion.active
-                                ? {
-                                    backgroundColor: "#fafafa",
-                                    cursor: "pointer",
-                                    width: "100%",
-                                    padding: "5px 10px",
-                                  }
-                                : {
-                                    backgroundColor: "#ffffff",
-                                    cursor: "pointer",
-                                    width: "100%",
-                                    padding: "5px 10px",
-                                  };
-                              const key = suggestion.placeId;
-                              return (
-                                <div
-                                  {...getSuggestionItemProps(suggestion, {
-                                    style,
-                                    key,
-                                  })}
-                                >
-                                  <span>{suggestion.description}</span>
-                                </div>
-                              );
-                            })}
-                            <div
-                              style={{
-                                backgroundColor: "#fff",
-                                cursor: "pointer",
-                                width: "100%",
-                                display:
-                                  suggestions.length > 0 ? "block" : "none",
-                                paddingBottom: "10px",
-                              }}
-                            >
-                              {/* <img
+                          {suggestions && (
+                            <div className={classes.locationdrpmenu}>
+                              {suggestions.map((suggestion) => {
+                                const style = suggestion.active
+                                  ? {
+                                      backgroundColor: "#fafafa",
+                                      cursor: "pointer",
+                                      width: "100%",
+                                      padding: "5px 10px",
+                                    }
+                                  : {
+                                      backgroundColor: "#ffffff",
+                                      cursor: "pointer",
+                                      width: "100%",
+                                      padding: "5px 10px",
+                                    };
+                                const key = suggestion.placeId;
+                                return (
+                                  <div
+                                    {...getSuggestionItemProps(suggestion, {
+                                      style,
+                                      key,
+                                    })}
+                                  >
+                                    <span>{suggestion.description}</span>
+                                  </div>
+                                );
+                              })}
+                              <div
+                                style={{
+                                  backgroundColor: "#fff",
+                                  cursor: "pointer",
+                                  width: "100%",
+                                  display:
+                                    suggestions && suggestions.length > 0
+                                      ? "block"
+                                      : "none",
+                                  paddingBottom: "10px",
+                                }}
+                              >
+                                {/* <img
                           src={require("../../assets/powered_by_google_on_white_hdpi.png")}
                           style={{ float: "right", height: "20px" }}
                         ></img> */}
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       )}
                     </PlacesAutocomplete>
-                    <div
-                      className={classes.locationIcon}
-                      style={{ float: "left", padding: "13px" }}
-                    >
-                      <Tooltip title="get current location">
-                        <i
-                          className="material-icons"
-                          onClick={() => getCurrentLocation()}
-                        >
-                          location_on
-                        </i>
-                      </Tooltip>
-                    </div>
                   </Form.Item>
                   {touched.location && (
                     <p className="ErrTxt">{errors?.location}</p>

@@ -40,7 +40,7 @@
     font-size: 20px;
     cursor: pointer;
 }
-.textBox { height: 54px; background: #fff; border-radius: 10px; border: 1px solid #ccc; padding-left: 20px; width: 100% !important;margin: 5px 0; }
+.textBox { height: 48px; background: #fff; border-radius: 10px; border: 1px solid #ccc; padding-left: 20px; width: 100% !important;margin: 5px 0; }
 /* .textBox::placeholder { color: #C3C3C3; font-size: 16px; }  */
 .textBox:focus, .textBox::selection, .textBox:hover { border: #191919 1px solid !important; outline: none !important; box-shadow: none !important; }
 .textarea { height: 100px !important; width: 100% !important; }
@@ -93,6 +93,10 @@
   -webkit-mask: url("../../Assets/Icons/svg/claim_account_white.svg") no-repeat center /
     contain;
   cursor: pointer;
+}
+.otpverifiedImg {
+  width: 15px;
+height: 15px;
 }
 .verifiedImg {
 position: absolute;
@@ -360,12 +364,13 @@ margin-top: 0px !important;
   }
   .locationInputHeight {
     height: 52px !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .locationIcon {
     float: left;
     padding: 13px;
-    position: absolute;
-    right: 0;
+  
   }
   .locationIcon i {
     cursor: pointer;
@@ -375,7 +380,7 @@ margin-top: 0px !important;
     -webkit-text-fill-color: inherit;
   -webkit-text-fill-color: initial;
   -webkit-text-fill-color: unset;
-  height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
+  height: 48px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
   .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px;  } 
   .textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
   .btnstyle,.disabledBtn { border-radius: 11px; background: #f2718d; color: #fff; border: none; padding: 5px; height: 50px; width: 30%;margin-top: 30px; font-weight: 600; font-size: 16px; }
@@ -384,6 +389,16 @@ margin-top: 0px !important;
 .thumbImg:hover, .fansList>div:hover{
   transform: translateY(-10px);
 
+}
+
+.verifyAccountOutlineContainer{
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 7px;
+  padding: 6px;
+}
+.verifyAccountOutlineContainer p{
+  /* color: var(--dangerColor); */
 }
 .thumbImg , .fansList>div{
   transition: 0.5s;

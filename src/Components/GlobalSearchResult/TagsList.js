@@ -85,7 +85,11 @@ const TagsList = () => {
           } else {
             setTagsList((pre) =>
               [...pre, ...res.data.tags].reduce((acc, current) => {
-                const x = acc.find((item) => item.tag === current.tag);
+                const x = acc.find(
+                  (item) =>
+                    item.tag === current.tag && item.country === current.country
+                );
+
                 if (!x) {
                   return acc.concat([current]);
                 } else {
@@ -94,6 +98,7 @@ const TagsList = () => {
               }, [])
             );
           }
+          pageRef.current = res.data.current_page_no;
           setPages({
             page: res.data.current_page_no,
             totalpage: res.data.total_pages,
@@ -106,7 +111,10 @@ const TagsList = () => {
       .finally(() => {
         dispatch(handleLoading(false));
         dispatch(handleisGlobalSearch(false));
-        setisFetching(false);
+        setTimeout(() => {
+          setisFetching(false);
+        }, 1000);
+        setloading(false);
       });
   };
 
@@ -118,7 +126,7 @@ const TagsList = () => {
    */
   useEffect(() => {
     if (isGlobalSearch || TagsList?.length === 0) {
-      dispatch(handleLoading(true));
+      // dispatch(handleLoading(true));
       getTagsList();
       setisFetching(true);
     }
@@ -148,6 +156,8 @@ const TagsList = () => {
     }
   };
 
+  console.log(isReachedEnd, "isReachedEnd");
+
   /**
    * Loads more data if there is a next page available.
    * If there is no next page, it sets the loading state to false and the isReachedEnd state to false.
@@ -173,28 +183,7 @@ const TagsList = () => {
   });
 
   /**
-   * Retrieves a list of unique tags from the TagsList array.
-   * @returns {Array} An array of unique tags.
-   */
-  const getValidTags = () => {
-    if (TagsList && TagsList.length !== 0) {
-      const filteredArr = TagsList.reduce((acc, current) => {
-        const x = acc.find((item) => item.tag === current.tag);
-        if (!x) {
-          return acc.concat([current]);
-        } else {
-          return acc;
-        }
-      }, []);
-
-      return filteredArr;
-    } else {
-      return [];
-    }
-  };
-
-  /**
-   * Adds a scroll event listener to the container element and removes it when the component unmounts.
+   * Adds a scroll event listener to the container element and removes it when the component is unmounted.
    * @returns None
    */
   useEffect(() => {
@@ -209,8 +198,34 @@ const TagsList = () => {
     };
   }, []);
 
+  /**
+   * Retrieves a list of unique tags from the TagsList array.
+   * @returns {Array} An array of unique tags.
+   */
+  const getValidTags = () => {
+    if (TagsList && TagsList.length !== 0) {
+      const filteredArr = TagsList.reduce((acc, current) => {
+        const x = acc.find(
+          (item) => item.tag === current.tag && item.country === current.country
+        );
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+
+      return filteredArr;
+    } else {
+      return [];
+    }
+  };
+
   return (
-    <>
+    <div
+      ref={containerRef}
+      className={`${classes.profileSec} ${classes.nopadding} w-100`}
+    >
       {getValidTags()?.length === 0 ? (
         <>
           {isFetching ? (
@@ -227,35 +242,28 @@ const TagsList = () => {
         </>
       ) : null}
 
-      {getValidTags()?.length === 0 ? (
-        <div></div>
-      ) : (
-        <div
-          ref={containerRef}
-          className={`${classes.nuggetSec} ${classes.nopadding} w-100`}
-        >
-          {getValidTags()?.length !== 0 && (
-            <>
-              {isFetching ? (
-                <div className="mt-5 w-100">
-                  {[...Array(6)].map((ele) => (
-                    <Skeleton active />
-                  ))}
-                </div>
-              ) : (
-                <div ref={rootRef}>
-                  {getValidTags().map((ele, index) => {
-                    return (
-                      <div className={classes.TagSec}>
-                        <div>
-                          <p className={classes.trendLoc}>
-                            Trending in {ele.country}
-                          </p>
-                          <p className={classes.trendTitle}>{ele.tag}</p>
-                          <p className="mt-1">{ele.nugget_count} Nuggets</p>
-                        </div>
-                        <div className={classes.graphSec}>
-                          <Dropdown
+      {getValidTags()?.length !== 0 && (
+        <>
+          {isFetching && Pages.totalpage ? (
+            <div className="mt-5 w-100">
+              {[...Array(6)].map((ele) => (
+                <Skeleton active />
+              ))}
+            </div>
+          ) : (
+            <div ref={rootRef}>
+              {getValidTags().map((ele, index) => {
+                return (
+                  <div className={classes.TagSec}>
+                    <div>
+                      <p className={classes.trendLoc}>
+                        Trending in {ele.country}
+                      </p>
+                      <p className={classes.trendTitle}>{ele.tag}</p>
+                      <p className="mt-1">{ele.nugget_count} Nuggets</p>
+                    </div>
+                    <div className={classes.graphSec}>
+                      {/* <Dropdown
                             menu={{
                               items: [
                                 {
@@ -277,24 +285,24 @@ const TagsList = () => {
                                 more_horiz
                               </span>
                             </div>
-                          </Dropdown>
-                          <TagsChart Data={ele.trends} />
-                        </div>
-                      </div>
-                    );
-                  })}
+                          </Dropdown> */}
+                      {ele.trends && ele.trends.length !== 0 && (
+                        <TagsChart Data={ele.trends} />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              {(loading || getHasNextPage()) && (
+                <div className="text-center py-2" ref={sentryRef}>
+                  <Skeleton active />
                 </div>
               )}
-            </>
-          )}
-          {(loading || getHasNextPage()) && (
-            <div className="text-center py-2" ref={sentryRef}>
-              <Skeleton active />
             </div>
           )}
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 

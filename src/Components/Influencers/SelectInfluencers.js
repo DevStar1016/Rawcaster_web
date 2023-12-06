@@ -20,18 +20,24 @@ import {
 import Checked from "../../Assets/Images/svg/Checked.svg";
 import unChecked from "../../Assets/Images/svg/UnChecked.svg";
 import { handleLoading } from "../../Store/Redux/Reducer/DashboardReducer";
-import { useAuth, useAuthData } from "../../Shared/Reduxfetcher";
+import { useAuth, useAuthData, useUtility } from "../../Shared/Reduxfetcher";
 import ProfileImg from "../../UIComponents/ProfileImg";
 import useReplaceBiodataHandler, {
   defaultRawcaterPage,
 } from "../Profile/Utility";
 import moment from "moment";
 import { DEFAULT_DATE_FORMAT } from "../../Shared/Constant";
+import { handleisFromGroup } from "../../Store/Redux/Reducer/UtilityReducer";
+import { HandleVerifyModal } from "../../Modal/DefaultModal";
+import { useMainContext } from "../../Shared/Context";
+import useDataHandler from "../../Shared/ReduxCustomHooks";
 
 const SelectInfluencers = () => {
-  const [isLinkopenModal, setisLinkopenModal] = useState(false);
+  const { usePartialDisplayName } = useDataHandler();
   const dispatch = useDispatch();
+  const displayName = usePartialDisplayName();
   const navigate = useNavigate();
+  const { isFromGroup } = useUtility();
   const loginUserData = useAuthData();
   const { userSettings } = useAuth();
   const [isBecomeFanSent, setisBecomeFanSent] = useState(false);
@@ -138,6 +144,20 @@ const SelectInfluencers = () => {
     return "";
   }
 
+  useEffect(() => {
+    if (isFromGroup) {
+      HandleVerifyModal({
+        primary: "success",
+        onSuccess: () => {
+          dispatch(handleisFromGroup(null));
+        },
+        isCloseAvailable: false,
+        SubmitButtonTitle: "Continue",
+        message: `You have been added to the group "${isFromGroup}"`,
+      });
+    }
+  }, [isFromGroup]);
+
   /**
    * Retrieves a list of influencers based on the specified page number, category, and search key.
    * @param {number} [page=1] - The page number to retrieve influencers from.
@@ -203,8 +223,8 @@ const SelectInfluencers = () => {
         if (res.data.status === 1) {
           setinfluencerCategory(res.data.influencer_category);
         } else if (res.data.status === 0) {
-          toast.remove("rawcaster");
-          toast.error(res.data.msg, { id: "rawcaster" });
+          // toast.remove("rawcaster");
+          // toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -368,6 +388,15 @@ const SelectInfluencers = () => {
 
   const InfluencerComponent = ({ ele }) => {
     const BioData = useReplaceBiodataHandler(ele);
+    const getBioData = () => {
+      if (ele?.bio_data && ele?.bio_data !== "") {
+        return ele?.bio_data;
+      } else if (typeof ele?.bio_data !== "string") {
+        return BioData;
+      }
+      return BioData;
+    };
+    console.log(getBioData());
     return (
       <Col xs={24} md={12} lg={8}>
         <div className={classes.influencers}>
@@ -414,36 +443,28 @@ const SelectInfluencers = () => {
             <p className={classes.name}>
               <p>{ele.display_name}</p>
 
-              <span className={classes.author}>{ele.category.toString()}</span>
+              {ele.category && (
+                <span className={classes.author}>
+                  {ele.category.toString()}
+                </span>
+              )}
             </p>
           </Tooltip>
-          <p className={classes.desc}>
-            {ele.bio_data && ele?.bio_data !== "" ? (
-              <ReadMore
-                Influencer={true}
-                partialShowLines={1}
-                maxheight={"64px"}
-                isReadMore={false}
-                isLinkopenModal={isLinkopenModal}
-                setisLinkopenModal={setisLinkopenModal}
-                isReadMoreValid={() => {}}
-              >
-                {ele?.bio_data}
-              </ReadMore>
-            ) : (
-              <ReadMore
-                Influencer={true}
-                partialShowLines={1}
-                maxheight={"64px"}
-                isReadMore={false}
-                isLinkopenModal={isLinkopenModal}
-                setisLinkopenModal={setisLinkopenModal}
-                isReadMoreValid={() => {}}
-              >
-                {BioData}
-              </ReadMore>
-            )}
-          </p>
+          {!isFetching && (
+            <p className={classes.desc}>
+              {getBioData() ? (
+                <ReadMore
+                  Influencer={true}
+                  partialShowLines={1}
+                  maxheight={"64px"}
+                  isReadMore={false}
+                  isReadMoreValid={() => {}}
+                >
+                  {getBioData()}
+                </ReadMore>
+              ) : null}
+            </p>
+          )}
           {SelectedInfluencersList.includes(ele?.user_ref_id) ? (
             <Link className={classes.selectedBtn}>
               Selected <span className="material-symbols-outlined">done</span>
@@ -476,12 +497,20 @@ const SelectInfluencers = () => {
     return <InfluencerComponent ele={ele} />;
   }, []);
 
+  const getDisplayName = (length = 20) => {
+    if (loginUserData) {
+      if (loginUserData?.name.length > length) {
+        return loginUserData?.name.substring(0, length) + "...";
+      }
+      return loginUserData?.name;
+    }
+    return "User";
+  };
+
   return (
     <div className="mainWrapper innerContent">
       <div className={classes.headerSec}>
-        <h1>
-          Welcome {loginUserData?.name || "User"}- Select your influencers
-        </h1>
+        <h1>Welcome {displayName}- Select your influencers</h1>
         <div className={classes.btnSec}>
           <button
             onClick={() => {
@@ -528,7 +557,8 @@ const SelectInfluencers = () => {
                   className={classes.searchIcon}
                   id="searchInfluencer"
                   onClick={() => {
-                    dispatch(handleLoading(true));
+                    // dispatch(handleLoading(true));
+                    setisFetching(true);
                     getInfluencerList(
                       1,
                       SearchValues.category,

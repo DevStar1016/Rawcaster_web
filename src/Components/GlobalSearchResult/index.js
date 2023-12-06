@@ -11,11 +11,12 @@ import classes from "./GlobalSearch.module.css";
 import ProfileList from "./ProfileList";
 import TagsList from "./TagsList";
 import { DecryptionString } from "../../Shared/Utility";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const GlobalSearchResult = () => {
   const [key, setKey] = useState("Profile");
   const params = useParams();
-  const searchKey = params?.key ? DecryptionString(params?.key) : "";
+  const searchKey = params?.key ? DecryptionString(params?.key).trim() : "";
   return (
     <div>
       <div className={`searchNugets ${classes.mainContainer}`}>
@@ -30,22 +31,24 @@ const GlobalSearchResult = () => {
         >
           <Tab eventKey="Profile" title="Profile">
             <div className={classes.fullcontainer}>
-              <ProfileList />
+              {key === "Profile" && <ProfileList />}
             </div>
           </Tab>
           <Tab eventKey="Nuggets" title="Nuggets">
             {/* <div className={classes.fullcontainer}> */}
-            <Nuggets />
+            {key === "Nuggets" && <Nuggets />}
             {/* </div> */}
           </Tab>
-          <Tab eventKey="Events" title="Events">
-            <div className={classes.fullcontainer}>
-              <EventsList />
-            </div>
-          </Tab>
+          {IS_CHIME_ENABLE && (
+            <Tab eventKey="Events" title="Events">
+              <div className={classes.fullcontainer}>
+                {key === "Events" && <EventsList />}
+              </div>
+            </Tab>
+          )}
           <Tab eventKey="#Tags" title="#Tags">
             <div className={classes.fullcontainer}>
-              <TagsList />
+              {key === "#Tags" && <TagsList />}
             </div>
           </Tab>
         </Tabs>

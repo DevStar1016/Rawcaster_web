@@ -19,6 +19,7 @@ import { Col, Row } from "react-bootstrap";
 import { useFormik } from "formik";
 import _debounce from "lodash/debounce";
 import { UserProfile } from "../../Components/Profile/Components/Utility";
+import { CHARACTER_LIMIT } from "../../Shared/Constant";
 
 const ConnectionModal = ({
   type,
@@ -179,7 +180,7 @@ const ConnectionModal = ({
               <InputNumber
                 min={1}
                 className={`${classes.locationSec} locationSearch ${classes.ageSec}`}
-                maxLength={2}
+                maxLength={CHARACTER_LIMIT.AGE}
                 defaultValue={values.age}
                 placeholder="Age"
                 onKeyDown={(e) => {
@@ -218,6 +219,10 @@ const ConnectionModal = ({
                   type={userType}
                   className={classes.modalOthersIcon}
                   getConnectionList={() => getConnectionList(values)}
+                  onClick={() => {
+                    console.log("sgygsuygsysg");
+                    onClose();
+                  }}
                 />
               );
             })}

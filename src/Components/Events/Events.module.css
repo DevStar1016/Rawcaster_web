@@ -32,6 +32,20 @@
   height: calc(100vh - 270px);
   overflow: auto;
 }
+.loadSec {
+width: fit-content;
+margin: auto;
+margin-top: 40px !important;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.loadSec span {
+  font-size: 14px;
+  margin-left: 10px;
+ 
+}
 
 .EventListSec::-webkit-scrollbar-thumb {
   background-color: transparent !important;

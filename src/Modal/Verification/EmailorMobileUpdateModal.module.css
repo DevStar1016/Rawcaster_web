@@ -2,7 +2,7 @@
     -webkit-text-fill-color: inherit;
  -webkit-text-fill-color: initial;
  -webkit-text-fill-color: unset;
- height: 52px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px; }
+ height: 48px; background: #fff; border-radius: 7px; border: 1px solid #E8EAEE; margin-bottom: 5px;width: 100%; }
  .textBox::placeholder { color: #99A0B0; padding: 15px 0px !important; font-size: 15px;  } 
  .textBox:focus, .textBox::selection, .textBox:hover { border: #F2718D 1px solid !important; outline: none !important; box-shadow: none !important; }
  p.label { font-family: 'DM Sans', sans-serif; color: #1D1C1C !important; font-size: 15px; margin-bottom: 3px !important; }

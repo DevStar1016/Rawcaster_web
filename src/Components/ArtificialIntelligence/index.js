@@ -8,7 +8,7 @@ import ChatContent from "./Content";
 import AIIcon from "../../Assets/Icons/svg/AI_icon.svg";
 import classes from "./ArtificialIntelligence.module.css";
 import { Button, Drawer, Popover } from "antd";
-import { ChatBotContext } from "../../Shared/Context";
+import { ChatBotContext, useMainContext } from "../../Shared/Context";
 import { detectMob } from "../../Shared/Utility";
 import { useLocation } from "react-router";
 import { useAuthData } from "../../Shared/Reduxfetcher";
@@ -119,7 +119,7 @@ const ArtificialIntelligence = () => {
         <Button
           className={classes.ChatBotBtn}
           onClick={() => {
-            if (loginUserData && loginUserData?.user_status_id > 1) {
+            if (loginUserData && loginUserData.user_status_id >= 3) {
               setisChatOpen(!isChatOpen);
             } else {
               setgetPremiumModal((pre) => !pre);
@@ -136,6 +136,7 @@ const ArtificialIntelligence = () => {
           AIclose={true}
           AIopen="Get Premium"
           AImessgae="To access this feature become a premium member!"
+          isAI={true}
         />
       )}
     </ChatBotContext.Provider>

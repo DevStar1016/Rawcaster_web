@@ -21,6 +21,7 @@ import { handleAccountActive } from "../../Store/Redux/Reducer/AuthReducer";
 import { fetchuserSettingsbyToken } from "../../Store/Redux/Action";
 import { Button, Result } from "antd";
 import { useNavigate } from "react-router";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const Settings = () => {
   const { userSettings } = useAuth();
@@ -374,15 +375,17 @@ const Settings = () => {
               >
                 Change Password
               </li>
-              <li
-                className={activeTab === 4 ? classes.active : ""}
-                onClick={() => {
-                  setActiveTab(4);
-                  setvisibleSideBar(false);
-                }}
-              >
-                Event Settings
-              </li>
+              {IS_CHIME_ENABLE && (
+                <li
+                  className={activeTab === 4 ? classes.active : ""}
+                  onClick={() => {
+                    setActiveTab(4);
+                    setvisibleSideBar(false);
+                  }}
+                >
+                  Event Settings
+                </li>
+              )}
             </ul>
           </div>
           <div className={classes.settingmobMenu}>
@@ -457,7 +460,7 @@ const Settings = () => {
                     Change Password
                   </Nav.Link>
                 </Nav.Item>
-                <Nav.Item>
+                {/* <Nav.Item>
                   <Nav.Link
                     className={activeTab === 5 ? classes.active : ""}
                     disabled={userSettings?.account_active_inactive === 0}
@@ -469,7 +472,7 @@ const Settings = () => {
                   >
                     Event Settings
                   </Nav.Link>
-                </Nav.Item>
+                </Nav.Item> */}
               </Nav>
             </div>
 

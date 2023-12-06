@@ -40,7 +40,6 @@ import { Checkbox, Dropdown, Image, Tooltip, message } from "antd";
 import { useChatBotContext, useChatContext } from "../../Shared/Context";
 import EmojiPicker from "../../UIComponents/EmojiPicker";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
-import { uploadChatAttachmentService } from "../../Services/ApiService";
 
 export const ChatInput = ({
   value = "",
@@ -59,6 +58,7 @@ export const ChatInput = ({
   onEditClose,
   onEdit,
   placeholderValue = "Enter Your Message Here ...",
+  chatTextMaxLength,
 }) => {
   const token = useAuthToken();
   const BotContext = useChatBotContext();
@@ -79,7 +79,7 @@ export const ChatInput = ({
   const [AudioElement, setAudioElement] = useState();
   const timerRef = useRef(null);
   const recordingRef = useRef(null);
-  const [ChatMessage, setChatMessage] = useState(null);
+  const [ChatMessage, setChatMessage] = useState("");
   const loginUserData = useAuthData();
   const isSend = useRef(null);
   const [isChatContentValid, setisChatContentValid] = useState(true);
@@ -300,7 +300,6 @@ export const ChatInput = ({
    * @returns None
    */
   const fetchAudioUrl = (filepath) => {
-    console.log(filepath, "filepath");
     // const formData = {
     //   token,
     //   chatattachment: file,
@@ -376,7 +375,8 @@ export const ChatInput = ({
       {contextHolder}
       {!isChatContentValid && (
         <p className="ErrTxt mx-auto text-center mb-1">
-          Message Content cannot be longer than {getNuggetTextLength() + " "}
+          Message Content cannot be longer than{" "}
+          {chatTextMaxLength ? chatTextMaxLength : getNuggetTextLength()}{" "}
           characters
         </p>
       )}
@@ -406,6 +406,7 @@ export const ChatInput = ({
               mood
             </i>
             <textarea
+              type="text"
               ref={textareaRef}
               className={classes.whatsapp_textarea}
               placeholder={
@@ -416,15 +417,46 @@ export const ChatInput = ({
               style={{
                 height: calculateInitialHeight(),
               }}
+              autoFocus
               value={ChatMessage}
-              rows={1}
+              // onKeyDown={({ key }) => {
+              //   if (key === "Enter") {
+              //     setisEmoji(false);
+              //     if (isSendOnly) {
+              //       if (onSendResponse) {
+              //         onSendResponse(ChatMessage);
+              //       }
+              //       setChatMessage("");
+              //     } else if (!disabled) {
+              //       if (ChatMessage && ChatMessage.trim() !== "") {
+              //         HandleSendMessage(ChatMessage);
+              //         setTimeout(() => {
+              //           setChatMessage("");
+              //           setisChatContentValid(true);
+              //         }, 0);
+              //       }
+              //     }
+              //   }
+              // }}
               onChange={(e) => {
                 textareaRef.current.style.height = "auto";
                 textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
                 if (onInput) {
                   onInput(e.target.value);
                 }
-                if (e.target.value.length <= getNuggetTextLength()) {
+                if (
+                  chatTextMaxLength &&
+                  e.target.value.length <= chatTextMaxLength
+                ) {
+                  setChatMessage(e.target.value);
+                  setisChatContentValid(true);
+                } else if (
+                  chatTextMaxLength &&
+                  e.target.value.length > chatTextMaxLength
+                ) {
+                  setChatMessage(e.target.value.slice(0, chatTextMaxLength));
+                  setisChatContentValid(false);
+                } else if (e.target.value.length <= getNuggetTextLength()) {
                   setChatMessage(e.target.value);
                   setisChatContentValid(true);
                 } else {
@@ -602,6 +634,7 @@ export const ChatInput = ({
                         if (ChatMessage && ChatMessage.trim() !== "") {
                           HandleSendMessage(ChatMessage);
                           setChatMessage("");
+                          setisChatContentValid(true);
                         }
                       }
                     }}
@@ -744,7 +777,7 @@ export const ChatInput = ({
               "flags",
             ]}
             onEmojiSelect={(e) => {
-              setChatMessage((pre) => pre.concat(e.native));
+              setChatMessage((pre) => (pre ? pre.concat(e.native) : e.native));
             }}
           />
         </div>
@@ -836,7 +869,6 @@ export const MessageContent = (props) => {
   };
 
   const GetValidComponent = () => {
-    console.log(type, "type");
     switch (true) {
       case type.includes("image"):
         return (
@@ -883,7 +915,6 @@ export const MessageContent = (props) => {
 
       default:
         if (file && file.type && Object.keys(file).length !== 0) {
-          console.log(file);
           const validcontent = file.type.split("/")[1];
           return (
             <div

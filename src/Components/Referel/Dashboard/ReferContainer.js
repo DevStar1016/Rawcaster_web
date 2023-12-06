@@ -20,7 +20,7 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { useAuthData } from "../../../Shared/Reduxfetcher";
-import { useReferalContext } from "../../../Shared/Context";
+import { useMainContext, useReferalContext } from "../../../Shared/Context";
 
 const shareMessage =
   "Hi, I have joined Rawcaster. A one-stop platform for all social media needs. I am asking all my friends and special people to join this platform to make it easier to reach everyone with content, personalized messages, Nuggets, and invitations to participate in my special events. I expect to see you there soon.\n";

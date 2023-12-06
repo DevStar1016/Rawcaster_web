@@ -60,7 +60,7 @@ const EventValidaton = () => {
     icon: null,
   });
   const [animatedEmoji, setAnimatedEmoji] = useState<ReactNode>();
-  const [meetingTimer, setMeetingTimer] = useState<boolean>();
+  const [meetingTimer, setMeetingTimer] = useState<number|null>(null);
 
   /* To get Rawcaster user or non Rawcaster User */
   const getUserData = () => {
@@ -152,7 +152,8 @@ const EventValidaton = () => {
       Attendee
     );
     const meetingOptions = {
-      deviceLabels: DeviceLabels.AudioAndVideo,
+      deviceLabels: (finduserData?.isHost || meetingSettings.type !== 2)? 
+      DeviceLabels.AudioAndVideo : DeviceLabels.None,
     };
     try {
       await meetingManager.join(meetingSessionConfiguration, meetingOptions);

@@ -14,8 +14,18 @@ import * as Yup from "yup";
 import { isArray } from "lodash";
 import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { HandleVerifyModal } from "../DefaultModal";
+import { complementaryMembershipService } from "../../Services/ApiService";
+import { useNavigate } from "react-router";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import { useDispatch } from "react-redux";
+import { CHARACTER_LIMIT } from "../../Shared/Constant";
+import useDataHandler from "../../Shared/ReduxCustomHooks";
 
 const Postpoll = ({ setisPoll }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { useUpgradeDisplayMessage } = useDataHandler();
+  const { upgrade_message, isUpgradable } = useUpgradeDisplayMessage();
   const context = useContext(PostNuggetContext);
   const loginUserData = useAuthData();
   const token = useAuthToken();
@@ -102,6 +112,36 @@ const Postpoll = ({ setisPoll }) => {
 
   const handleLimitExceedsClose = () => setLimitExceeds(false);
 
+  const ComplementaryMemberShip = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    complementaryMembershipService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          HandleVerifyModal({
+            primary: "success",
+            onSuccess: () => {
+              handleLimitExceedsClose();
+              dispatch(
+                handleLoginData({
+                  ...loginUserData,
+                  user_status: res.data.user_status,
+                  user_status_id: res.data.user_status_id,
+                  complementary_status: res.data.complementary_status ?? 0,
+                })
+              );
+            },
+            isCloseAvailable: false,
+            SubmitButtonTitle: "Ok",
+            message: res.data.msg,
+          });
+        } else {
+          navigate("/membership");
+        }
+      })
+      .catch((err) => {});
+  };
+
   return (
     <>
       <div className={classes.postTextcontent}>
@@ -145,7 +185,7 @@ const Postpoll = ({ setisPoll }) => {
                         PollData.length >= 3 && classes.choicetextBox
                       }`}
                       placeholder={getChoiceTitle(index + 1)}
-                      maxLength={25}
+                      maxLength={CHARACTER_LIMIT.POLL_CHOICE}
                       autoComplete="off"
                       value={PollData[index].choiceData}
                       onChange={(e) => {
@@ -217,16 +257,22 @@ const Postpoll = ({ setisPoll }) => {
             </div>
           </div>
         </div>
-        {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+        {LimitExceeds && (
           <div
             style={{ paddingTop: "20px" }}
             className={classes.alertContainer}
             id="Alertdiv"
           >
             <Alert
-              message="Upgrade Your Plan"
-              description="You have reached your character limit, to increase the limit upgrade your membership!"
+              message={isUpgradable ? "Upgrade Your Plan" : "Important Message"}
+              description={upgrade_message}
               type="info"
+              style={{
+                alignItems:
+                  loginUserData.complementary_status === 1
+                    ? "flex-start"
+                    : "center",
+              }}
               action={
                 <Space direction="vertical">
                   <Button
@@ -234,27 +280,30 @@ const Postpoll = ({ setisPoll }) => {
                     className={classes.upgradeBtn}
                     type="primary"
                     onClick={() => {
-                      HandleVerifyModal({
-                        primary: "success",
-                        onSuccess: () => {},
-                        isCloseAvailable: false,
-                        SubmitButtonTitle: "Ok",
-                        message:
-                          "you have been granted a complementary upgrade for xx days",
-                      });
+                      if (loginUserData.complementary_status === 1) {
+                        ComplementaryMemberShip();
+                      } else {
+                        handleLimitExceedsClose();
+                        // navigate("/membership");
+                      }
                     }}
                   >
-                    Upgrade
+                    {loginUserData.complementary_status === 0
+                      ? "Ok"
+                      : "Upgrade"}
                   </Button>
-                  <Button
-                    className={classes.LaterBtn}
-                    onClick={handleLimitExceedsClose}
-                    size="small"
-                    danger
-                    type="primary"
-                  >
-                    Later
-                  </Button>
+
+                  {loginUserData.complementary_status === 1 && (
+                    <Button
+                      className={classes.LaterBtn}
+                      onClick={handleLimitExceedsClose}
+                      size="small"
+                      danger
+                      type="primary"
+                    >
+                      {"Cancel"}
+                    </Button>
+                  )}
                 </Space>
               }
             />

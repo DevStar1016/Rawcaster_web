@@ -39,11 +39,23 @@ import SpecificConnectionorGroup from "./SpecificConnectionorGroup";
 import { parseInt } from "lodash";
 import ImageEditModal from "../ImageEditModal";
 import { useAuthToken } from "../../Shared/Reduxfetcher";
-import { GeturlmetadataService } from "../../Services/ApiService";
+import {
+  GeturlmetadataService,
+  complementaryMembershipService,
+} from "../../Services/ApiService";
 import { HandleVerifyModal } from "../DefaultModal";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
+import { handleLoginData } from "../../Store/Redux/Reducer/AuthReducer";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import useDataHandler from "../../Shared/ReduxCustomHooks";
+
+let cursorStart;
+let cursorEnd;
 
 const Postmodal = ({ visible, onClose }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     setFileValues,
     setNuggetValues,
@@ -63,7 +75,10 @@ const Postmodal = ({ visible, onClose }) => {
     setdeletedMedia,
     resetForm,
   } = useContext(PostNuggetContext);
-  const { setPostContent } = useGlobalContext();
+  const { usePartialDisplayName, useUpgradeDisplayMessage } = useDataHandler();
+  const { upgrade_message, isUpgradable } = useUpgradeDisplayMessage();
+  const display_name = usePartialDisplayName();
+  const { setPostContent } = useGlobalContext() ?? {};
   const [messageApi] = message.useMessage();
   const { isEdit } = useListNuggetContext();
   const textinputRef = useRef(null);
@@ -195,7 +210,6 @@ const Postmodal = ({ visible, onClose }) => {
         }
         if (oldURL.current !== addHttp) {
           oldURL.current = addHttp;
-          console.log(addHttp, "addHttpaddHttp");
           const userData = {
             token,
             url,
@@ -223,19 +237,49 @@ const Postmodal = ({ visible, onClose }) => {
    * If the login user data is not available, it returns 0.
    * @returns The length of the nugget text.
    */
-  const getNuggetTextLength = () => {
+  function getNuggetTextLength() {
     if (loginUserData) {
       return loginUserData?.nugget_content_length;
     } else {
       return 0;
     }
-  };
+  }
 
   /**
    * Handles the closing of the limit exceeds alert.
    * @returns None
    */
   const handleLimitExceedsClose = () => setLimitExceeds(false);
+
+  const ComplementaryMemberShip = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    complementaryMembershipService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          HandleVerifyModal({
+            primary: "success",
+            onSuccess: () => {
+              handleLimitExceedsClose();
+              dispatch(
+                handleLoginData({
+                  ...loginUserData,
+                  user_status: res.data.user_status,
+                  user_status_id: res.data.user_status_id,
+                  complementary_status: res.data.complementary_status ?? 0,
+                })
+              );
+            },
+            isCloseAvailable: false,
+            SubmitButtonTitle: "Ok",
+            message: res.data.msg,
+          });
+        } else {
+          navigate("/membership");
+        }
+      })
+      .catch((err) => {});
+  };
 
   return (
     <Modal
@@ -262,7 +306,7 @@ const Postmodal = ({ visible, onClose }) => {
               currentTarget.src = defaultprofileImg;
             }}
           />
-          <p className={classes.name}>{loginUserData?.name}</p>
+          <p className={classes.name}>{display_name}</p>
           <Dropdown
             menu={{
               items: SHARED_TYPE,
@@ -457,7 +501,15 @@ const Postmodal = ({ visible, onClose }) => {
                 id="post_nugget_textarea"
                 ref={textinputRef}
                 className={classes.postTextarea}
-                placeholder={`What's on your mind, ${loginUserData?.name}!`}
+                placeholder={`What's on your mind, ${display_name}!`}
+                onClick={(event) => {
+                  cursorStart = event.target.selectionStart;
+                  cursorEnd = event.target.selectionEnd;
+                }}
+                onKeyDown={(event) => {
+                  cursorStart = event.target.selectionStart;
+                  cursorEnd = event.target.selectionEnd;
+                }}
                 // onPaste={(event) => {
                 //   const pastedText = event.clipboardData.getData("text/plain");
                 //   if (
@@ -469,33 +521,25 @@ const Postmodal = ({ visible, onClose }) => {
                 // }}
                 value={values.content}
                 onChange={(e) => {
+                  cursorStart = e.target.selectionStart;
                   if (e.target.value.length <= getNuggetTextLength()) {
                     setFieldValue("content", e.target.value);
                     getLinkInfo(e.target.value);
                     setisPostContentValid(true);
                     setLimitExceeds(false);
                   } else {
-                    if (parseInt(loginUserData?.user_status_id) !== 4) {
-                      setFieldValue(
-                        "content",
-                        e.target.value.slice(0, getNuggetTextLength())
-                      );
-                      getLinkInfo(
-                        e.target.value.slice(0, getNuggetTextLength())
-                      );
-                      setisPostContentValid(false);
-                      setLimitExceeds(true);
-                    }
+                    setFieldValue(
+                      "content",
+                      e.target.value.slice(0, getNuggetTextLength())
+                    );
+                    getLinkInfo(e.target.value.slice(0, getNuggetTextLength()));
+
+                    setisPostContentValid(false);
+                    setLimitExceeds(true);
                   }
                 }}
               />
-              {/* <LoginModal
-                  open={LimitExceeds}
-                 close={handleLimitExceedsClose}
-                   AIclose={true}
-                 AIopen="Upgrade"
-                  AImessgae="You have reached your character limit, to increase the limit upgrade your membership!"
-                 /> */}
+
               <img
                 width="24px"
                 alt="Add Emoji"
@@ -505,22 +549,30 @@ const Postmodal = ({ visible, onClose }) => {
                 onClick={() => setShowEmojis(!showEmojis)}
               />
             </div>
-            {!isPostContentValid && (
+            {/* {!isPostContentValid && (
               <p className="ErrTxt">
                 Post Content cannot be longer than {getNuggetTextLength() + " "}
                 characters
               </p>
-            )}
+            )} */}
             <div
               style={{ paddingTop: "20px" }}
               className={classes.alertContainer}
               id="Alertdiv"
             >
-              {LimitExceeds && loginUserData?.user_status_id !== 4 && (
+              {LimitExceeds && (
                 <Alert
-                  message="Upgrade Your Plan"
-                  description="You have reached your character limit, to increase the limit upgrade your membership!"
+                  message={
+                    isUpgradable ? "Upgrade Your Plan" : "Important Message"
+                  }
+                  description={upgrade_message}
                   type="info"
+                  style={{
+                    alignItems:
+                      loginUserData.complementary_status === 1
+                        ? "flex-start"
+                        : "center",
+                  }}
                   action={
                     <Space direction="vertical">
                       <Button
@@ -528,28 +580,30 @@ const Postmodal = ({ visible, onClose }) => {
                         className={classes.upgradeBtn}
                         type="primary"
                         onClick={() => {
-                          HandleVerifyModal({
-                            primary: "success",
-                            onSuccess: () => {},
-                            isCloseAvailable: false,
-                            SubmitButtonTitle: "Ok",
-                            message:
-                              "you have been granted a complementary upgrade for xx days",
-                          });
-                          // window.location.assign("/membership");
+                          if (loginUserData.complementary_status === 1) {
+                            ComplementaryMemberShip();
+                          } else {
+                            handleLimitExceedsClose();
+                            // navigate("/membership");
+                          }
                         }}
                       >
-                        Upgrade
+                        {loginUserData.complementary_status === 1
+                          ? "Upgrade"
+                          : "Ok"}
                       </Button>
-                      <Button
-                        className={classes.LaterBtn}
-                        onClick={handleLimitExceedsClose}
-                        size="small"
-                        danger
-                        type="primary"
-                      >
-                        Later
-                      </Button>
+
+                      {loginUserData.complementary_status === 1 && (
+                        <Button
+                          className={classes.LaterBtn}
+                          onClick={handleLimitExceedsClose}
+                          size="small"
+                          danger
+                          type="primary"
+                        >
+                          {"Cancel"}
+                        </Button>
+                      )}
                     </Space>
                   }
                 />
@@ -580,10 +634,21 @@ const Postmodal = ({ visible, onClose }) => {
                     "flags",
                   ]}
                   onEmojiSelect={(event, emojiObject) => {
-                    setFieldValue(
-                      "content",
-                      values.content.concat(event.native)
-                    );
+                    if (values.content.length <= getNuggetTextLength()) {
+                      const value = values.content;
+                      const newValue =
+                        value.slice(0, cursorStart) +
+                        event.native +
+                        value.slice(cursorEnd);
+                      setFieldValue("content", newValue);
+                      cursorStart = cursorStart + event.native.length;
+                      cursorEnd = cursorEnd + event.native.length;
+                      setisPostContentValid(true);
+                      setLimitExceeds(false);
+                    } else {
+                      setisPostContentValid(false);
+                      setLimitExceeds(true);
+                    }
                   }}
                 />
               </div>
@@ -597,7 +662,9 @@ const Postmodal = ({ visible, onClose }) => {
                 >
                   <span className="material-icons">close</span>
                 </div>
-                <p className={classes.title}>{MetaData[0].title}</p>
+                <p className={classes.title}>
+                  {MetaData[0].title ?? MetaData[0].url}
+                </p>
                 {MetaData[0].open_graph_image &&
                 MetaData[0].open_graph_image !== "" ? (
                   <img

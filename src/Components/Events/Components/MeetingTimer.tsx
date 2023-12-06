@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
+import { useEventRoomContext } from "../../../Shared/Context";
+import { EventContextProp } from "./types";
 
 const MeetingTimer = () => {
   const [timer, setTimer] = useState("");
+  const { meetingTimer }: EventContextProp = useEventRoomContext();
 
   useEffect(() => {
-    let minutes = 5; // hardcoding for now
-    let seconds = minutes * 60;
+    const date = new Date(meetingTimer || 0);
+    let minutes = date.getMinutes();
+    let seconds = minutes * 60 + date.getSeconds();
 
     const countdownInterval = setInterval(() => {
       seconds--;

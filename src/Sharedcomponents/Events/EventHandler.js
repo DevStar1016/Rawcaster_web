@@ -48,17 +48,17 @@ const EventHandler = ({ title, isHost, ele }) => {
         message: ele,
       };
       EventWindowRef.postMessage(EventData, "*");
-      if (isHost) {
-        ChimesendMessage(
-          { refId: ele?.reference_id },
-          CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
-        );
-      } else {
+      // if (isHost) {
+      //   ChimesendMessage(
+      //     { refId: ele?.reference_id },
+      //     CHIME_SOCKET_EVENTS.CREATE_MEETING_ROOM
+      //   );
+      // } else {
         ChimesendMessage(
           { refId: ele?.reference_id },
           CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
         );
-      }
+      // }
       ChimesendMessage(
         {
           userId: userData?.user_id,

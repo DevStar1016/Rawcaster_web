@@ -51,3 +51,6 @@ export const useSocket = () => {
 export const useEventWindow = () => {
   return useAppSelector((state) => state.utility.eventWindowRef);
 };
+export const useUtility = () => {
+  return useAppSelector((state) => state.utility);
+};

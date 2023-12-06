@@ -53,15 +53,19 @@ import {
   fetchuserSettingsbyToken,
 } from "../Store/Redux/Action";
 import {
+  handleDashboardFilterType,
   handleNuggetFormData,
   handleResetNuggets,
 } from "../Store/Redux/Reducer/NuggetsReducer";
 import Notification from "../Components/Notifications";
 import ArtificialIntelligence from "../Components/ArtificialIntelligence";
-import { GlobalContext } from "../Shared/Context";
+import { GlobalContext, useMainContext } from "../Shared/Context";
 import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
 import ProfileImg from "../UIComponents/ProfileImg";
 import { useAppSelector } from "../Store/Redux/Config/Hooks";
+import { setCookie } from "../Store/Storage/Cookie";
+import { rootReducer } from "../Store/Redux/Config/RootReducer";
+import { IS_CHIME_ENABLE } from "../Shared/Constant";
 
 const HomeLayout = () => {
   const params = useParams();
@@ -75,7 +79,7 @@ const HomeLayout = () => {
   const [PostContent, setPostContent] = useState(null);
   const { pathname } = useLocation();
   const { isSuccess } = useAuth();
-  const { nuggetFormData } = useNuggets();
+  const { nuggetFormData, DashboardfilterType } = useNuggets();
   const [isshowSearchBox, setisshowSearchBox] = useState(false);
   const [searchData, setsearchData] = useState("");
   const loginUserData = useAuthData();
@@ -152,7 +156,7 @@ const HomeLayout = () => {
             let filterData = { ...nuggetFormData };
             filterData.formData = {
               ...filterData.formData,
-              search_key: e.nativeEvent.target.value,
+              search_key: e.nativeEvent.target.value.trim(),
               user_id: null,
               page_number: 1,
             };
@@ -162,7 +166,9 @@ const HomeLayout = () => {
             dispatch(handleNuggetFormData(filterValidObject(filterData)));
             dispatch(fetchNuggetsbyId(filterValidObject(filterData)));
             navigate(
-              `/globalsearch/${EncryptionString(e.nativeEvent.target.value)}`
+              `/globalsearch/${EncryptionString(
+                e.nativeEvent.target.value.trim()
+              )}`
             );
           }
         } else {
@@ -185,7 +191,16 @@ const HomeLayout = () => {
         <div className={`${classes.topheader}`}>
           <div className={classes.fullcontainer}>
             <div mode="horizontal" className="d-flex flex-row">
-              <Link className={classes.logopart} to="/dashboard">
+              <Link
+                className={classes.logopart}
+                onClick={() => {
+                  dispatch(handleDashboardFilterType(DashboardfilterType));
+                }}
+                to="/dashboard"
+                state={{
+                  isLogoPress: Math.floor(Math.random() * 6) + 1,
+                }}
+              >
                 <img
                   className="d-none d-sm-block"
                   src={RawcasterLogo}
@@ -219,18 +234,20 @@ const HomeLayout = () => {
               <div className={classes.rightMenus}>
                 {loginUserData && (
                   <div>
-                    <img
-                      style={{ borderRadius: "28px" }}
-                      src={LiveIcon}
-                      className={classes.liveIcon}
-                      alt="live_icon"
-                    />
+                    {IS_CHIME_ENABLE && (
+                      <img
+                        style={{ borderRadius: "28px" }}
+                        src={LiveIcon}
+                        className={classes.liveIcon}
+                        alt="live_icon"
+                      />
+                    )}
                     <img
                       src={ReferalIcon}
                       className={classes.liveIcon}
                       alt="referal_icon"
                       onClick={() => {
-                        console.log("test");
+                        dispatch(handleDashboardFilterType(0));
                         let filterData = {
                           token,
                           formData: {
@@ -441,7 +458,7 @@ const HomeLayout = () => {
 
         {loginUserData &&
           loginUserData.user_status_id > 0 &&
-          !pathname?.includes("viewprofile") && (
+          pathname === "/dashboard" && (
             <div className={classes.chatbotsec}>
               <ArtificialIntelligence />
             </div>

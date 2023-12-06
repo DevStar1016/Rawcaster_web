@@ -14,16 +14,19 @@ import {
   JSONtoformdata,
   decodeHtml,
   getAuthToken,
+  getRawcaserToken,
   utctoUserTimezone,
 } from "../../../Shared/Utility";
 import { getfollowerfollowingService } from "../../../Components/Profile/Components/Utility";
-import { handlenuggetToken } from "../Reducer/NuggetsReducer";
+import { handleCancelRef, handlenuggetToken } from "../Reducer/NuggetsReducer";
 import { handleToken } from "../Reducer/AuthReducer";
 import { connectChimeMessaging } from "../../../Services/Messaging/MessageService";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
 import moment from "moment";
 import { handleNotificationUnreadCount } from "../Reducer/DashboardReducer";
+import { GetThunkAPI } from "@reduxjs/toolkit/dist/createAsyncThunk";
+import axios from "axios";
 
 // Connections
 
@@ -108,16 +111,17 @@ export const fetchgfollowerfollowingList = createAsyncThunk(
 export const fetchNuggetsbyId = createAsyncThunk(
   "dashboard/fetchNuggetsbyId",
   async (listData: any) => {
-    const { token, formData } = listData;
+    const { token, formData, signal } = listData;
     let nuggetData = {
       ...formData,
-      token: token,
+      token: getRawcaserToken() ? token : "RAWCAST",
     };
-    if (token) {
+
+    if (token || !getRawcaserToken()) {
       try {
         const { data } = await listNuggetsService(
           JSONtoformdata(nuggetData),
-          undefined
+          signal
         );
         if (data.status === 1) {
           let resultData = {
@@ -204,15 +208,20 @@ export const fetchuserInfobyToken = createAsyncThunk(
             CHIME_SOCKET_EVENTS.JOIN_SOCKET
           );
         }
-
-        dispatch(
-          handleNotificationUnreadCount(data.profile.unread_notification_count)
-        );
-        dispatch(handleToken(token));
-        dispatch(fetchuserSettingsbyToken(token));
-        dispatch(handlenuggetToken(token));
-        dispatch(fetchFrindsbyId({ token }));
-        dispatch(fetchgroupsbyId({ token: token, user_id: finalData.user_id }));
+        setTimeout(() => {
+          dispatch(
+            handleNotificationUnreadCount(
+              data.profile.unread_notification_count
+            )
+          );
+          dispatch(handleToken(token));
+          dispatch(fetchuserSettingsbyToken(token));
+          dispatch(handlenuggetToken(token));
+          dispatch(fetchFrindsbyId({ token }));
+          dispatch(
+            fetchgroupsbyId({ token: token, user_id: finalData.user_id })
+          );
+        }, 1000);
 
         return { token: token, ...finalData };
       } else {

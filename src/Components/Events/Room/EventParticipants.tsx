@@ -21,7 +21,7 @@ import {
 import RenameModal from "../Components/RenameModal";
 import { toast } from "react-hot-toast";
 import { generatePath } from "react-router";
-import { handleCopyText } from "../../../Shared/Utility";
+import { getParticipantCount, handleCopyText } from "../../../Shared/Utility";
 import {
   AttendeeUserData,
   EventContextProp,
@@ -124,7 +124,7 @@ const EventParticipants = () => {
             onClick: () => {
               Modal.confirm({
                 title: "Remove User",
-                content: "Are you sure do you want to remove this User !",
+                content: " Are you sure you want to remove this participant?",
                 onOk: () => {
                   ChimesendMessage(
                     {
@@ -158,9 +158,9 @@ const EventParticipants = () => {
           onClick: () => {
             Modal.confirm({
               title: `${!ele?.isCoHost ? "Promote as" : "Remove"} Co Host`,
-              content: `Are you sure do you want to ${
+              content: `Are you sure you want to ${
                 !ele?.isCoHost ? "Promote" : "Remove"
-              } as Co Host for this User !`,
+              } this participant as co-host`,
               onOk: () => {
                 if (ele?.isCoHost) {
                   ChimesendMessage(
@@ -199,7 +199,7 @@ const EventParticipants = () => {
           onClick: () => {
             Modal.confirm({
               title: "Remove User",
-              content: "Are you sure do you want to remove this User !",
+              content: "Are you sure you want to remove this participant?",
               onOk: () => {
                 ChimesendMessage(
                   {
@@ -387,6 +387,12 @@ const EventParticipants = () => {
     );
   };
 
+  const getUserDetails = (externalUserId) => {
+    return attendeesList.find(
+      (attendee) => attendee.userRefId === externalUserId
+    );
+  };
+
   return (
     <Layout
       className={`${classes.popupContainer}
@@ -404,7 +410,12 @@ const EventParticipants = () => {
         <div className={classes.popupHeader}>
           <div>
             <i className={`${styles.participant_icon} ${styles.icon}`}></i>
-            <p>Event</p>
+            <p>
+              Participants{" "}
+              {attendees?.length
+                ? `( ${getParticipantCount(attendees.length)} )`
+                : ""}
+            </p>
           </div>
           <div>
             <i
@@ -489,9 +500,35 @@ const EventParticipants = () => {
         )}
       </Header>
       <Content className={classes.participantSec}>
-        {attendees.map((ele, index) => {
-          return ele ? AttendeeComponent({ ele }) : null;
-        })}
+         {/* TODO Will Refactor this later */}
+        {attendees
+          ?.filter(
+            (item) =>
+              getUserDetails(item.externalUserId)?.isHost
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              getUserDetails(item.externalUserId)?.isCoHost
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+        {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              getUserDetails(item.externalUserId)?.handRaised
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
+          {attendees
+          ?.filter(
+            (item) =>
+              !getUserDetails(item.externalUserId)?.isHost &&
+              !getUserDetails(item.externalUserId)?.isCoHost &&
+              !getUserDetails(item.externalUserId)?.handRaised
+          )
+          .map((ele) => (ele ? AttendeeComponent({ ele }) : null))}
         <RenameModal
           key={renameAttendee?.userId}
           open={renameAttendee}

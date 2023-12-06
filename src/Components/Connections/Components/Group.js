@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { handleUpdateGroupArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { defaultGroupImg } from "../../../Shared/CommonConstants";
+import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
 
 const Group = ({ group, searchInput, onClick }) => {
   const { setisChatOpen } = useMainContext();
@@ -88,35 +89,37 @@ const Group = ({ group, searchInput, onClick }) => {
             </span>
           </div>
         </div>
-        <div className={`${classes.friendsmenu}`}>
-          <img src={audiocall} alt={"audio call"} />
-          <img src={videocall} alt={"video call"} />
-          {isFetching === group.group_id ? (
-            <Spinner size="sm" className="ms-2" />
-          ) : (
-            <img
-              src={chatIcon}
-              alt={"Group Chat"}
-              onClick={(event) => {
-                if (!isFetching) {
-                  event.stopPropagation();
-                  if (
-                    group.my_group === 1 &&
-                    (!group.channel_arn || group.channel_arn === "")
-                  ) {
-                    HandleGroupCreate();
-                  } else {
-                    setisChatOpen({
-                      show: true,
-                      type: "group",
-                      id: group.group_id,
-                    });
+        {IS_CHIME_ENABLE && (
+          <div className={`${classes.friendsmenu}`}>
+            <img src={audiocall} alt={"audio call"} />
+            <img src={videocall} alt={"video call"} />
+            {isFetching === group.group_id ? (
+              <Spinner size="sm" className="ms-2" />
+            ) : (
+              <img
+                src={chatIcon}
+                alt={"Group Chat"}
+                onClick={(event) => {
+                  if (!isFetching) {
+                    event.stopPropagation();
+                    if (
+                      group.my_group === 1 &&
+                      (!group.channel_arn || group.channel_arn === "")
+                    ) {
+                      HandleGroupCreate();
+                    } else {
+                      setisChatOpen({
+                        show: true,
+                        type: "group",
+                        id: group.group_id,
+                      });
+                    }
                   }
-                }
-              }}
-            />
-          )}
-        </div>
+                }}
+              />
+            )}
+          </div>
+        )}
       </div>
     </>
   );

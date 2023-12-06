@@ -1,9 +1,9 @@
-import { Modal } from "antd";
+import { Image as AndImage, Modal } from "antd";
 import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ImageGrid.module.css";
 import BackgroundImg from "../../Assets/Images/png/audioImg.png";
 import { useInView } from "react-hook-inview";
-import { useNuggets } from "../../Shared/Reduxfetcher";
+import { useAuthData, useNuggets } from "../../Shared/Reduxfetcher";
 import AudioPlayer from "../../Sharedcomponents/AudioPlayer";
 import { Carousel } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -70,7 +70,8 @@ function ImageGrid({
     tester.onload = () => {
       return true;
     };
-    tester.onerror = () => {
+
+    tester.onerror = (evet) => {
       return false;
     };
     tester.src = URL;
@@ -159,8 +160,13 @@ function ImageGrid({
             controls={false}
             disablePictureInPicture
             playsInline={false}
-            controlsList="nodownload"
-            style={{ width: "100%", height: "100%", borderRadius: 10 }}
+            controlsList={downloadable === 1 ? "download" : "nodownload"}
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 10,
+              // backgroundColor: "red",
+            }}
           ></video>
           <span className={`material-symbols-outlined ${classes.thumbPlayBtn}`}>
             play_circle
@@ -189,7 +195,7 @@ function ImageGrid({
           src={data.path}
           alt={data.path}
           style={{ zIndex: 0, aspectRatio: getAspectRatio(index) }}
-          onError={({ currentTarget }) => {
+          onError={({ currentTarget, ...evt }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = BackgroundImg;
           }}
@@ -202,6 +208,7 @@ function ImageGrid({
             url={data.path}
             audioId={`audioSingleId${data.media_id}`}
             isPreview={isPreview}
+            isDownloadEnable={downloadable === 1}
           />
         </>
       );
@@ -222,7 +229,7 @@ function ImageGrid({
             disablePictureInPicture
             className={classes.SingleVideoBg}
             playsInline
-            controlsList="nodownload"
+            controlsList={downloadable === 1 ? "download" : "nodownload"}
             muted={!isPreview && isNuggetMuted}
             onPlayCapture={(e: any) => {
               if (player && player.id !== `videoSingleId${data.media_id}`) {
@@ -259,6 +266,7 @@ function ImageGrid({
             url={data.path}
             audioId={`audioSingleId${data.media_id}`}
             isPreview={isPreview}
+            isDownloadEnable={downloadable === 1}
           />
         </>
       );
@@ -291,7 +299,7 @@ function ImageGrid({
           className="video-item"
           disablePictureInPicture
           playsInline
-          controlsList="nodownload"
+          controlsList={downloadable === 1 ? "download" : "nodownload"}
           muted={isNuggetMuted}
           onPlayCapture={(e: any) => {
             if (player && player.id !== `modal_video_${i}`) {
@@ -339,6 +347,7 @@ function ImageGrid({
             url={data.path}
             audioId={`audioSingleId${data.media_id}`}
             isPreview={undefined}
+            isDownloadEnable={downloadable === 1}
           />
         </>
       );
@@ -396,6 +405,7 @@ function ImageGrid({
             isThumb={isThumb}
             audioId={`audioSingleId${data.media_id}`}
             isPreview={undefined}
+            isDownloadEnable={downloadable === 1}
           />
         </>
       );
@@ -422,7 +432,9 @@ function ImageGrid({
             }}
             disablePictureInPicture
             playsInline
-            controlsList="nodownload"
+            controlsList={
+              !isThumb && downloadable === 1 ? "download" : "nodownload"
+            }
             muted={isNuggetMuted}
             onVolumeChange={volumechanged}
             src={`${data.path}#t=0.001`}

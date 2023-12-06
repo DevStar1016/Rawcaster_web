@@ -38,6 +38,7 @@ import OthersEventListing from "../Events/OthersEventListing";
 import {
   handleNuggetFormData,
   handleResetNuggets,
+  handleUpdateBecomeFan,
 } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { fetchNuggetsbyId } from "../../Store/Redux/Action";
 import { getfollowerfollowingService } from "./Components/Utility";
@@ -48,6 +49,7 @@ import Seo from "../SEO/Seo";
 import { ProfileSEO } from "../SEO/SEOContent";
 import { ScrollRestoration } from "react-router-dom";
 import { ShowUnclaimedAccountModal } from "../../Modal/DefaultModal";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
 
 const Profile = () => {
   const params = useParams();
@@ -73,7 +75,6 @@ const Profile = () => {
     filteredConnectionCount: 0,
     isLoaded: true,
   });
-  const [isLinkopenModal, setisLinkopenModal] = useState(false);
   const [profileData, setprofileData] = useState();
 
   /**
@@ -91,9 +92,9 @@ const Profile = () => {
    */
   const getuserprofile = (id) => {
     let otherprofileValue = {
-      token: loginToken,
+      token: loginToken ? loginToken : "RAWCAST",
       user_id: id,
-      auth_code: getAuthToken(loginToken),
+      auth_code: getAuthToken(loginToken ? loginToken : "RAWCAST"),
     };
     getOthersProfileService(JSONtoformdata(otherprofileValue))
       .then((res) => {
@@ -102,15 +103,17 @@ const Profile = () => {
           if (res.data.profile.lock_nugget === 1) {
             getprofile();
           }
-          // if (res.data.profile.unclaimed_status === 1) {
-          //   ShowUnclaimedAccountModal({
-          //     message: "This is Unclaimed Account",
-          //     isSubmitAvailable: false,
-          //   });
-          //   setTimeout(() => {
-          //     Modal.destroyAll();
-          //   }, 5000);
-          // }
+          if (res.data.profile.unclaimed_status === 1) {
+            ShowUnclaimedAccountModal({
+              message:
+                "Rawcaster generated profile Page to be claimed by the owner",
+              isSubmitAvailable: true,
+              SubmitButtonTitle: "OK",
+            });
+            setTimeout(() => {
+              Modal.destroyAll();
+            }, 5000);
+          }
         }
       })
       .catch((err) => {});
@@ -124,21 +127,20 @@ const Profile = () => {
    * @returns None
    */
   const getprofile = () => {
-    if (loginToken) {
-      let filterData = { ...nuggetFormData };
-      console.log(nuggetFormData);
-      if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
-        filterData.formData = {
-          user_id: display_user_id,
-          page_number: 1,
-          nugget_type: 0,
-          token: loginToken,
-        };
-        dispatch(handleResetNuggets());
-        dispatch(handleNuggetFormData(filterData));
-        dispatch(fetchNuggetsbyId(filterData));
-      }
+    // if (loginToken) {
+    let filterData = { ...nuggetFormData };
+    if (filterData?.formData?.search_key || filterData?.formData?.user_id) {
+      filterData.formData = {
+        user_id: display_user_id,
+        page_number: 1,
+        nugget_type: 0,
+        token: loginToken ? loginToken : "RAWCAST",
+      };
+      dispatch(handleResetNuggets());
+      dispatch(handleNuggetFormData(filterData));
+      dispatch(fetchNuggetsbyId(filterData));
     }
+    // }
   };
 
   /**
@@ -152,17 +154,17 @@ const Profile = () => {
    * @returns None
    */
   useEffect(() => {
-    if (loginUserData) {
-      if (getisLoginUser()) {
-        if (loginUserData) {
-          setprofileData(loginUserData);
-          getprofile();
-        }
-      } else {
-        setprofileData();
-        getuserprofile(display_user_id);
+    // if (loginUserData) {
+    if (getisLoginUser()) {
+      if (loginUserData) {
+        setprofileData(loginUserData);
+        getprofile();
       }
+    } else {
+      setprofileData();
+      getuserprofile(display_user_id);
     }
+    // }
   }, [display_user_id, loginUserData]);
 
   /**
@@ -174,7 +176,7 @@ const Profile = () => {
     let promise = new Promise((resolve, reject) => {
       let fansList = {
         ...filterValues,
-        token: loginToken,
+        token: loginToken ? loginToken : "RAWCAST",
         type: 2,
         page_number: page,
       };
@@ -226,6 +228,12 @@ const Profile = () => {
         const ref_id = user_ref_id ? user_ref_id : profileData?.user_ref_id;
         HandleBecameaFan(token, ref_id)
           .then(() => {
+            dispatch(
+              handleUpdateBecomeFan({
+                user_id: profileData?.user_id,
+                status: true,
+              })
+            );
             if (!user_ref_id) {
               setprofileData((pre) => ({
                 ...pre,
@@ -318,8 +326,7 @@ const Profile = () => {
     setFansList,
     profileData,
     setprofileData,
-    isLinkopenModal,
-    setisLinkopenModal,
+
     isLoginUser: getisLoginUser(),
     DiamondVerifyType: getDiamondVeifyType(),
     getFollowers,
@@ -330,6 +337,8 @@ const Profile = () => {
     setisInfluencerChatModalOpen,
     isInfluencerChatModalOpen,
   };
+
+  const getUserData = () => profileData;
   return (
     <ProfileContext.Provider value={profileValue}>
       <Seo
@@ -393,7 +402,10 @@ const Profile = () => {
                     )}
                   </>
                 )}
-                {!getisLoginUser() && <OthersEventListing />}
+
+                {IS_CHIME_ENABLE && !getisLoginUser() && loginToken && (
+                  <OthersEventListing />
+                )}
                 {getisLoginUser() && (
                   <>
                     {isSuccess ? (
@@ -483,12 +495,12 @@ const Profile = () => {
                     ) : (
                       <Skeleton active />
                     )}
-                    {isSuccess && (
+                    {isSuccess && IS_CHIME_ENABLE && (
                       <Eventslisting
                         isCreateEnabled={getisLoginUser()}
                         isSearchEnabled={true}
                         isUser={true}
-                        userData={profileData}
+                        userData={getUserData()}
                       />
                     )}
                   </>

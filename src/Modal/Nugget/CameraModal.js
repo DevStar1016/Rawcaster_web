@@ -33,6 +33,12 @@ const CameraModal = ({
   const [PreviewMedia, setPreviewMedia] = useState();
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    if (minutes === 5 && seconds === 0) {
+      stopRecording();
+    }
+  }, [seconds, minutes]);
+
   /**
    * Callback function that is triggered when recording starts.
    * Calls the 'start' function to begin the recording process.

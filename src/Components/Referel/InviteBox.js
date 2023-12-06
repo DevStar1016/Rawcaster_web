@@ -11,7 +11,7 @@ import ReferalIcon from "../../Assets/Icons/svg/Referal.svg";
 import FansIcon from "../../Assets/Icons/svg/Other_fans.svg";
 import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
 import TelegramIcon from "../../Assets/Icons/svg/telegram.svg";
-import TwitterIcon from "../../Assets/Icons/svg/twitterIcon.svg";
+import TwitterIcon from "../../Assets/Icons/svg/twitter_x_logo.svg";
 import linkedinIcon from "../../Assets/Icons/svg/LinkedinIcon.svg";
 import {
   FacebookShareButton,
@@ -24,7 +24,11 @@ import { useAuthData, useAuthToken } from "../../Shared/Reduxfetcher";
 import { message } from "antd";
 import InviteFansModal from "../../Modal/Referal/InviteFansModal";
 import { handleSendEmail } from "../../Modal/Referal/utility";
-import { fetchGoogleContacts } from "../../Shared/Utility";
+import {
+  decodeHtml,
+  fetchGoogleContacts,
+  handleCopyText,
+} from "../../Shared/Utility";
 import { useNavigate } from "react-router";
 import { defaultprofileImg } from "../../Shared/CommonConstants";
 
@@ -54,7 +58,7 @@ const ShareList = [
   },
   {
     id: 4,
-    title: "Twitter",
+    title: "X",
     img: TwitterIcon,
     Component: TwitterShareButton,
   },
@@ -73,6 +77,8 @@ const InviteBox = () => {
   const [isGmailOpen, setisGmailOpen] = useState(false);
   const [isInviteFansOpen, setisInviteFansOpen] = useState(false);
   const [SentedEmails, setSentedEmails] = useState([]);
+  const [searchInput, setsearchInput] = useState("");
+
   const profileData = useAuthData();
 
   const shareUrl = profileData?.referral_link || "";
@@ -125,6 +131,21 @@ const InviteBox = () => {
       });
   };
 
+  const getValidContacts = () => {
+    return contactList.filter(
+      (contact) =>
+        decodeHtml(contact.title)
+          .toLowerCase()
+          .includes(searchInput.toLowerCase()) ||
+        decodeHtml(contact.email)
+          .toLowerCase()
+          .includes(searchInput.toLowerCase())
+    );
+  };
+
+  const encodedURL = encodeURIComponent(shareUrl);
+  const encodedText = encodeURIComponent(shareMessage + " " + shareUrl);
+
   return (
     <div className={classes.inviteSec}>
       <div className={classes.inviteBox}>
@@ -166,47 +187,68 @@ const InviteBox = () => {
 
         {isGmailOpen && contactList && (
           <div className={classes.resultSec}>
-            {contactList.length !== 0 ? (
+            <div className={classes.inputSec}>
+              <input
+                className={classes.textBox}
+                onChange={(e) => setsearchInput(e.target.value)}
+                value={searchInput}
+                placeholder="Search Contacts"
+                autoComplete="off"
+              />
+              {searchInput && searchInput !== "" && (
+                <span
+                  class="material-symbols-outlined"
+                  onClick={() => {
+                    setsearchInput("");
+                  }}
+                >
+                  cancel
+                </span>
+              )}
+            </div>
+            {getValidContacts().length !== 0 ? (
               <>
-                {contactList.sort().map((ele, ind) => (
-                  <div key={ind} className={classes.contacts}>
-                    <div className={classes.profileSec}>
-                      <img
-                        width="25px"
-                        height={"25px"}
-                        alt={"User_Img"}
-                        src={ele?.profile_img}
-                        onError={({ currentTarget }) => {
-                          currentTarget.onerror = null;
-                          currentTarget.src = defaultprofileImg;
-                        }}
-                      ></img>
-                      <div className={classes.NameSec}>
-                        <p
-                          className={classes.name}
-                          style={{
-                            width: 180,
+                {getValidContacts()
+                  .sort()
+                  .map((ele, ind) => (
+                    <div key={ind} className={classes.contacts}>
+                      <div className={classes.profileSec}>
+                        <img
+                          width="25px"
+                          height={"25px"}
+                          alt={"User_Img"}
+                          src={ele?.profile_img}
+                          onError={({ currentTarget }) => {
+                            currentTarget.onerror = null;
+                            currentTarget.src = defaultprofileImg;
+                          }}
+                        ></img>
+                        <div className={classes.NameSec}>
+                          <p
+                            className={classes.name}
+                            style={{
+                              width: 180,
+                            }}
+                          >
+                            {ele.title}
+                          </p>
+                          <p className={classes.email}>{ele.email}</p>
+                        </div>
+                      </div>
+                      {SentedEmails.includes(ele.email) ? (
+                        <span className="material-symbols-outlined">done</span>
+                      ) : (
+                        <div
+                          className={classes.inviteBtn}
+                          onClick={() => {
+                            handleInviteFriends(ele.email);
                           }}
                         >
-                          {ele.title}
-                        </p>
-                        <p className={classes.email}>{ele.email}</p>
-                      </div>
+                          invite
+                        </div>
+                      )}
                     </div>
-                    {SentedEmails.includes(ele.email) ? (
-                      <span className="material-symbols-outlined">done</span>
-                    ) : (
-                      <div
-                        className={classes.inviteBtn}
-                        onClick={() => {
-                          handleInviteFriends(ele.email);
-                        }}
-                      >
-                        invite
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  ))}
               </>
             ) : (
               <div className={classes.EmptyResultSec}>
@@ -219,11 +261,22 @@ const InviteBox = () => {
       {ShareList.map(({ title, img, Component, id }) => (
         <Component
           quote={
-            id === 4
+            id === 2
+              ? encodedText
+              : id === 4
               ? TwitterShareMsg + " " + shareUrl
               : shareMessage + " " + shareUrl
           }
-          url={shareUrl}
+          onClick={() => {
+            if (id === 2) {
+              const userAgent = navigator.userAgent;
+              if (userAgent.toLowerCase().includes("telegram")) {
+              } else {
+                handleCopyText(shareUrl, "Link copied to clipboard");
+              }
+            }
+          }}
+          url={id === 2 ? encodedURL : shareUrl}
         >
           <div className={classes.inviteContainer}>
             <div className={classes.iconSec}>

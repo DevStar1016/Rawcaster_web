@@ -11,6 +11,7 @@
  */
 import React, { useRef, useState } from "react";
 import msgIcon from "../../Assets/Images/svg/msgIcon.svg";
+import linkIcon from "../../Assets/Icons/svg/link_secondary.svg";
 import talkshowIcon from "../../Assets/Images/svg/talkshowIcon.svg";
 import FansThumb from "./Components/FansThumb";
 import { toast } from "react-hot-toast";
@@ -31,19 +32,25 @@ import {
 import classes from "./Profile.module.css";
 import { updateProfileService } from "../../Services/ApiService";
 import { useDispatch } from "react-redux";
-import { Button, Dropdown, Image, Modal, Skeleton, Spin } from "antd";
+import { Button, Dropdown, Image, Modal, Skeleton, Spin, Tooltip } from "antd";
 import ImageCropModal from "../../Modal/ImageCropModal";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { fetchuserInfobyToken } from "../../Store/Redux/Action";
 import AddFriendIcon from "../../Assets/Icons/svg/profile_add_friend.svg";
 import ClaimAccountModal from "../../Modal/Connections/ClaimAccountModal";
-import { handleClaimAccount } from "../../Store/Redux/Reducer/DashboardReducer";
+import {
+  handleClaimAccount,
+  handleloginModalShow,
+} from "../../Store/Redux/Reducer/DashboardReducer";
 import { handleUnFollowService, handleUnFriendService } from "./Utility";
+
 import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 import {
   defaultprofileImg,
   defaultProfileBannerImg,
 } from "../../Shared/CommonConstants";
+import { IS_CHIME_ENABLE } from "../../Shared/Constant";
+import { handleUpdateBecomeFan } from "../../Store/Redux/Reducer/NuggetsReducer";
 
 const ProfileLayout = ({
   children,
@@ -160,6 +167,12 @@ const ProfileLayout = ({
    */
   const UnfollowService = () => {
     handleUnFollowService(loginToken, profileData?.user_ref_id).then(() => {
+      dispatch(
+        handleUpdateBecomeFan({
+          user_id: profileData?.user_id,
+          status: false,
+        })
+      );
       setprofileData((pre) => ({
         ...pre,
         follow: false,
@@ -187,7 +200,11 @@ const ProfileLayout = ({
               okButtonProps: {
                 danger: true,
               },
-              content: <div>Are you sure to Unfollow this User ?</div>,
+              content: (
+                <div>
+                  Are you sure you want to stop being a fan of this Influencer?
+                </div>
+              ),
               onOk: () => {
                 UnfollowService();
               },
@@ -340,7 +357,7 @@ const ProfileLayout = ({
           </div>
           <div className="d-md-flex flex-row justify-content-between">
             <div className="d-flex flex-row align-items-baseline">
-              {isAddFriend() && !Addfriend && (
+              {isAddFriend() && !Addfriend && loginToken && (
                 <div className="ms-3">
                   <img
                     src={AddFriendIcon}
@@ -353,43 +370,75 @@ const ProfileLayout = ({
                 </div>
               )}
               <div className={classes.profilesSec}>
-                {isFansEnabled && (
+                {isFansEnabled ? (
                   <div style={{ display: isLocked ? "none" : "" }}>
-                    {loginUserData && <FansThumb isLoginUser={isLoginUser} />}
+                    {loginUserData ? (
+                      <FansThumb isLoginUser={isLoginUser} />
+                    ) : (
+                      <div className={classes.fansList}></div>
+                    )}
 
-                    <div
-                      className={classes.actionIcon}
-                      style={{
-                        display: isLoginUser ? "" : "none",
-                      }}
-                    >
-                      <img
-                        src={msgIcon}
-                        alt="Message"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          if (setisInfluencerChatModalOpen) {
-                            setisInfluencerChatModalOpen({ show: true });
-                          }
+                    {IS_CHIME_ENABLE && (
+                      <div
+                        className={classes.actionIcon}
+                        style={{
+                          display: isLoginUser ? "" : "none",
                         }}
-                      />
-                      <img src={talkshowIcon} alt="Talkshow" />
-                    </div>
+                      >
+                        <img
+                          src={msgIcon}
+                          alt="Message"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            if (setisInfluencerChatModalOpen) {
+                              setisInfluencerChatModalOpen({ show: true });
+                            }
+                          }}
+                        />
+                        <img src={talkshowIcon} alt="Talkshow" />
+                      </div>
+                    )}
                   </div>
+                ) : (
+                  <div className={classes.fansList}></div>
                 )}
               </div>
             </div>
 
             <div className={classes.claimBtnSec}>
+              {loginToken ? (
+                <Tooltip title="Copy Link" color={"#F2718D"}>
+                  <div className="d-flex justify-content-center">
+                    <img
+                      src={linkIcon}
+                      alt="Link"
+                      style={{ cursor: "pointer", height: "40px" }}
+                      onClick={() => {
+                        navigator.clipboard.writeText(profileData?.profile_url);
+                        toast.remove("profile");
+                        toast.success("Profile Link Copied!", {
+                          id: "profile",
+                        });
+                      }}
+                    />
+                  </div>
+                </Tooltip>
+              ) : (
+                <div></div>
+              )}
               {(profileData?.unclaimed_status === 1 ||
                 profileData?.unclaimed_status === 2) && (
                 <Button
                   className={`${classes.becomeafanbtn} mx-4`}
                   onClickCapture={() => {
-                    if (profileData?.unclaimed_status === 1) {
-                      navigate(
-                        `/claim/${EncryptionString(profileData.user_id)}`
-                      );
+                    if (loginToken) {
+                      if (profileData?.unclaimed_status === 1) {
+                        navigate(
+                          `/claim/${EncryptionString(profileData.user_id)}`
+                        );
+                      }
+                    } else {
+                      dispatch(handleloginModalShow(true));
                     }
                   }}
                 >
@@ -400,7 +449,7 @@ const ProfileLayout = ({
                     : ""}
                 </Button>
               )}
-              {getValidItems().length !== 0 && (
+              {getValidItems().length !== 0 && loginToken && (
                 <Dropdown
                   placement="bottomRight"
                   menu={{

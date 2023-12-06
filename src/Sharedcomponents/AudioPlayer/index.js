@@ -16,7 +16,13 @@ import { handleisNuggetMuted } from "../../Store/Redux/Reducer/NuggetsReducer";
 import { useMainContext } from "../../Shared/Context";
 import { Spinner } from "react-bootstrap";
 
-const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
+const AudioPlayer = ({
+  url,
+  isThumb = false,
+  audioId,
+  isPreview,
+  isDownloadEnable = false,
+}) => {
   const { isNuggetMuted } = useDashboard();
   const dispatch = useDispatch();
   const { player, setplayer } = useMainContext();
@@ -246,12 +252,28 @@ const AudioPlayer = ({ url, isThumb = false, audioId, isPreview }) => {
                     {isNaN(parseInt(duration)) ? "-" : formatTime(duration)}
                   </span>
                 </div>
-                <div className={classes.muteSec} onClick={() => toggleMute()}>
-                  <i
-                    className={
-                      isMuted ? classes.un_mute_icon : classes.mute_icon
-                    }
-                  ></i>
+                <div className="d-flex align-items-center flex-row">
+                  <div className={classes.muteSec} onClick={() => toggleMute()}>
+                    <i
+                      className={
+                        isMuted ? classes.un_mute_icon : classes.mute_icon
+                      }
+                    ></i>
+                  </div>
+                  {isDownloadEnable && (
+                    <div
+                      onClick={() => {
+                        if (audio?.src) {
+                          window.open(audio?.src);
+                        }
+                      }}
+                      className={`${classes.muteSec} ms-2 d-flex align-items-center justify-content-center`}
+                    >
+                      <span class="material-symbols-outlined fs-5 lh-0 text-white">
+                        download
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               <input

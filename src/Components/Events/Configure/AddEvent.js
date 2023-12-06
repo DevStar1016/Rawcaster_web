@@ -34,6 +34,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { toast } from "react-hot-toast";
 import {
   addEventService,
+  complementaryMembershipService,
   editEventService,
   viewEventsService,
 } from "../../../Services/ApiService";
@@ -44,7 +45,11 @@ import {
   getUtcToSystemTime,
   userTimezonetoUtc,
 } from "../../../Shared/Utility";
-import { AddEventContext, useEventContext } from "../../../Shared/Context";
+import {
+  AddEventContext,
+  useEventContext,
+  useMainContext,
+} from "../../../Shared/Context";
 import dayjs from "dayjs";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import EventSuccessPage from "./EventSuccessPage";
@@ -54,8 +59,13 @@ import {
 } from "../../../Services/ServiceConstants";
 import { DEFAULT_DATE_FORMAT } from "../../../Shared/Constant";
 import { HandleVerifyModal } from "../../../Modal/DefaultModal";
+import { handleLoginData } from "../../../Store/Redux/Reducer/AuthReducer";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { getEvents, ActiveEvent } = useEventContext();
   const token = useAuthToken();
   const { userSettings, loginUserData } = useAuth();
@@ -146,11 +156,26 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
               });
             } else if (
               currentDuration.isAfter(
-                moment().add(userSettings?.max_event_duration, "hours")
+                moment()
+                  .add(
+                    moment(userSettings.max_event_duration, "HH:mm").get(
+                      "hours"
+                    ),
+                    "hours"
+                  )
+                  .add(
+                    moment(userSettings.max_event_duration, "HH:mm").get(
+                      "minutes"
+                    ),
+                    "minutes"
+                  )
               )
             ) {
               return this.createError({
-                message: `Max Allowed hours is ${userSettings?.max_event_duration}`,
+                message: `Max Allowed hours is ${moment(
+                  userSettings.max_event_duration,
+                  "HH:mm"
+                ).get("hours")}`,
               });
             }
             return true;
@@ -234,7 +259,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       event_guest_audio: userSettings?.participant_audio,
       event_guest_video: userSettings?.participant_video,
       event_participants: userSettings?.max_event_participants_count,
-      event_duration: moment(userSettings?.max_event_duration, "H").format(
+      event_duration: moment(userSettings?.max_event_duration, "HH:mm").format(
         "HH:mm"
       ),
       event_banner: userSettings?.meeting_header_image,
@@ -453,9 +478,10 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           event_guest_audio: userSettings?.participant_audio,
           event_guest_video: userSettings?.participant_video,
           event_participants: userSettings?.max_event_participants_count,
-          event_duration: moment(userSettings?.max_event_duration, "H").format(
+          event_duration: moment(
+            userSettings?.max_event_duration,
             "HH:mm"
-          ),
+          ).format("HH:mm"),
           event_banner: userSettings?.meeting_header_image,
         }));
       }
@@ -484,6 +510,56 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
       scrollToUpgrade();
     }
   }, [upgradePlanPopup]);
+
+  // function convertToDoubleDigit(number) {
+  //   if (number >= 0 && number <= 9) {
+  //     return `0${number}`;
+  //   } else {
+  //     return number.toString();
+  //   }
+  // }
+
+  const getDisabledHours = () => {
+    let filteredArray = [...new Array(24)].map((ele, index) => {
+      if (
+        parseInt(
+          moment(userSettings.max_event_duration, "HH:mm").get("hours")
+        ) < index
+      ) {
+        return index;
+      }
+    });
+    return filteredArray.filter((ele) => ele);
+  };
+
+  const ComplementaryMemberShip = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    complementaryMembershipService(formData)
+      .then((res) => {
+        if (res.data.status === 1) {
+          HandleVerifyModal({
+            primary: "success",
+            onSuccess: () => {
+              setupgradePlanPopup(false);
+              dispatch(
+                handleLoginData({
+                  ...loginUserData,
+                  user_status: res.data.user_status,
+                  user_status_id: res.data.user_status_id,
+                })
+              );
+            },
+            isCloseAvailable: false,
+            SubmitButtonTitle: "Ok",
+            message: res.data.msg,
+          });
+        } else {
+          navigate("/membership");
+        }
+      })
+      .catch((err) => {});
+  };
 
   return (
     <AddEventContext.Provider
@@ -736,13 +812,16 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             : DEFAULT_DATE_FORMAT
                         }
                         onChange={(date, dateString) => {
-                          setFieldValue("event_start_date", dateString);
+                          let Date = moment(
+                            dateString,
+                            userSettings
+                              ? userSettings.default_date_format
+                              : DEFAULT_DATE_FORMAT
+                          ).format("YYYY-MM-DD");
+                          setFieldValue("event_start_date", Date);
 
                           if (
-                            moment().isSame(
-                              moment(dateString, "YYYY-MM-DD"),
-                              "day"
-                            )
+                            moment().isSame(moment(Date, "YYYY-MM-DD"), "day")
                           ) {
                             if (
                               moment()
@@ -778,9 +857,8 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                           )
                         ) {
                           if (
-                            moment()
-                              .add(15, "minutes")
-                              .isSameOrAfter(moment(res, "hh:mm A"))
+                            moment().add(15, "minutes").format("HH:mm") <=
+                            moment(res, "hh:mm A").format("HH:mm")
                           ) {
                             setFieldValue(
                               "event_start_time",
@@ -834,7 +912,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             <div
                               onClick={(e) => {
                                 if (
-                                  loginUserData?.user_status_id === 1 &&
+                                  loginUserData.user_status_id === 1 &&
                                   ele.isprimary
                                 ) {
                                   if (upgradePlanPopup) {
@@ -849,7 +927,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               <Checkbox
                                 checked={values[ele.type]}
                                 disabled={
-                                  loginUserData?.user_status_id === 1 &&
+                                  loginUserData.user_status_id === 1 &&
                                   ele.isprimary
                                 }
                                 onChange={(e) => {
@@ -934,18 +1012,23 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                         hideDisabledOptions={true}
                         minuteStep={15}
                         disabledMinutes={(h) => {
-                          if (h >= 10) {
+                          const validDuration =
+                            moment(
+                              userSettings.max_event_duration,
+                              "HH:mm"
+                            ).get("hours") ?? 10;
+                          if (h >= validDuration) {
                             // If the hour is 10, disable minutes after 0.
                             return [15, 30, 45];
+                          } else if (h <= 0) {
+                            return [0];
                           } else {
                             // If the hour is greater than 10, all minutes are disabled.
                             return [];
                           }
                         }}
                         disabledHours={() => {
-                          return [
-                            11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-                          ];
+                          return getDisabledHours();
                         }}
                       />
                     </Form.Item>
@@ -1042,9 +1125,18 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                             ? `To add more than ${userSettings?.max_event_participants_count} participants upgrade your membership!`
                             : errors?.event_duration
                             ? `To host event for longer than ${
-                                userSettings?.max_event_duration === 1
-                                  ? `${userSettings?.max_event_duration} hour`
-                                  : `${userSettings?.max_event_duration} hours`
+                                moment(
+                                  userSettings.max_event_duration,
+                                  "HH:mm"
+                                ).get("hours") === 1
+                                  ? `${moment(
+                                      userSettings.max_event_duration,
+                                      "HH:mm"
+                                    ).get("hours")} hour`
+                                  : `${moment(
+                                      userSettings.max_event_duration,
+                                      "HH:mm"
+                                    ).get("hours")} hours`
                               } upgrade your membership!`
                             : "To access this feature upgrade your membership!"
                         }
@@ -1064,15 +1156,11 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               }}
                               type="primary"
                               onClick={() => {
-                                HandleVerifyModal({
-                                  primary: "success",
-                                  onSuccess: () => {},
-                                  isCloseAvailable: false,
-                                  SubmitButtonTitle: "Ok",
-                                  message:
-                                    "you have been granted a complementary upgrade for xx days",
-                                });
-                                // window.location.assign("/membership");
+                                if (loginUserData.complementary_status === 1) {
+                                  ComplementaryMemberShip();
+                                } else {
+                                  navigate("/membership");
+                                }
                               }}
                             >
                               Upgrade
@@ -1095,7 +1183,7 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                               danger
                               type="primary"
                             >
-                              Later
+                              Cancel
                             </Button>
                           </Space>
                         }

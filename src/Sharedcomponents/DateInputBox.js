@@ -11,7 +11,13 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 
 var ValidAge = 13;
-const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
+const DateInputBox = ({
+  displayDate = "",
+  onSelectDate,
+  status = "",
+  isDisabled = false,
+  isError,
+}) => {
   const [date, setDate] = useState({ year: "", month: "", day: "" });
 
   const isValidData = (value) => {
@@ -162,12 +168,13 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
   }, [date]);
 
   const getStatus = (data) => {
-    if (isValidData(data)) {
+    if (isValidData(data) || !isError) {
       return "";
     } else {
-      return status;
+      return "error";
     }
   };
+
   return (
     <div className="dateinputBox">
       <div style={{ width: "42%" }}>
@@ -175,6 +182,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
           style={{ width: "100%" }}
           value={getMonth(date.month)}
           className="textBox"
+          disabled={isDisabled}
           status={getStatus(date.month)}
           placeholder="Month"
           options={getMonths()}
@@ -194,6 +202,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
           style={{ width: "100%" }}
           placeholder="Day"
           className="textBox"
+          disabled={isDisabled}
           status={getStatus(date.day)}
           value={getDay()}
           options={getDays(date.month, date.year)}
@@ -209,6 +218,7 @@ const DateInputBox = ({ displayDate = "", onSelectDate, status = "" }) => {
           options={getyears()}
           status={getStatus(date.year)}
           value={getYear(date.year)}
+          disabled={isDisabled}
           placeholder="Year"
           onSelect={(value) => {
             setDate((pre) => ({ ...pre, year: value }));

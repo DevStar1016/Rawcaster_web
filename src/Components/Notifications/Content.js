@@ -46,7 +46,6 @@ const Content = ({ elem }) => {
         page_number: page,
         notification_type: elem.id,
       };
-      console.log(formData);
       dispatch(fetchNotificationList({ token, ...formData })).finally(() => {
         isFetching.current = false;
       });
@@ -99,7 +98,6 @@ const Content = ({ elem }) => {
    * @returns None
    */
   const loadMore = () => {
-    console.log("test");
     if (!getHasNextPage()) {
       isEndReached.current = false;
     } else if (isEndReached.current && getHasNextPage() && !isLoading) {
@@ -179,7 +177,6 @@ const Content = ({ elem }) => {
         Notifications.yesterday.length <
         9
     ) {
-      console.log(Notifications.current_page_no);
       // getFansData(Notifications.current_page_no);
     }
   }, [Notifications]);

@@ -21,6 +21,7 @@ import HomeLayout from "../Layouts/HomeLayout";
 import ViewNugget from "../Sharedcomponents/Nuggets/ViewNugget";
 import { HomePrivateRoute } from "./PrivateRoute";
 import IdenfyVerification from "../Components/Idenfy/IdenfyVerification";
+import TypeDevelopment from "../Components/TypeDevelopment";
 
 export const DashboardRoute = [
   {
@@ -36,10 +37,7 @@ export const DashboardRoute = [
             path: "/selectinfluencers",
             element: <SelectInfluencers />,
           },
-          {
-            path: "/viewprofile/:user_id",
-            element: <Profile />,
-          },
+
           {
             path: "/setting",
             element: <Settings />,
@@ -91,6 +89,10 @@ export const DashboardRoute = [
         element: <Dashboard />,
       },
       {
+        path: "/viewprofile/:user_id",
+        element: <Profile />,
+      },
+      {
         path: "/globalsearch/:key",
         element: <GlobalSearchResult />,
       },
@@ -105,6 +107,10 @@ export const DashboardRoute = [
       {
         path: "cookiespolicy",
         element: <Cookiespolicy />,
+      },
+      {
+        path: "typedev",
+        element: <TypeDevelopment />,
       },
       {
         path: "dev",

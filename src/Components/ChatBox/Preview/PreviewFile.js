@@ -201,7 +201,6 @@ const PreviewFile = () => {
                 }),
               };
               sendMessage(val && val !== "" ? val : " null", metaData);
-              console.log(metaData);
               setMessages((pre) => [
                 {
                   ...convertMessageFormat({

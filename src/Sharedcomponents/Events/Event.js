@@ -12,6 +12,7 @@ import { useAuth, useAuthToken } from "../../Shared/Reduxfetcher";
 import {
   JSONtoformdata,
   decodeHtml,
+  getCustomPartialDisplayName,
   shareEventDate,
   utctoUserTimezone,
   utctoUserTimezonewithAbbr,
@@ -29,11 +30,12 @@ import {
 } from "react-share";
 import FaceBookIcon from "../../Assets/Icons/svg/facebook.svg";
 import WhatsappIcon from "../../Assets/Icons/svg/whatsapp.svg";
-import TwitterIcon from "../../Assets/Icons/svg/twitterIcon.svg";
+import TwitterIcon from "../../Assets/Icons/svg/twitter_x_logo.svg";
 import GmailIcon from "../../Assets/Icons/svg/gmail_icon.svg";
 import EventHandler from "./EventHandler";
 
 const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
+  const displayName = getCustomPartialDisplayName(ele.original_user_name);
   const { userSettings, loginUserData } = useAuth();
   const navigate = useNavigate();
   const token = useAuthToken();
@@ -278,9 +280,7 @@ const Event = ({ ele, handleEdit, setList, isOthers = false }) => {
               </div>
             )}
           </div>
-          <p className={classes.host}>
-            Hosted by {decodeHtml(ele.original_user_name)}
-          </p>
+          <p className={classes.host}>Hosted by {decodeHtml(displayName)}</p>
           <p className={classes.des}>{ele.message}</p>
           {isOthers ? (
             <p className={classes.iconsec}>

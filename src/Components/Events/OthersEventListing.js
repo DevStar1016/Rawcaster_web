@@ -66,7 +66,7 @@ const OthersEventListing = () => {
         ))}
       </Row>
       {EventListData?.length === 0 && (
-        <div className="text-center">No events found</div>
+        <div className="text-center">No new or future events found</div>
       )}
     </div>
   );

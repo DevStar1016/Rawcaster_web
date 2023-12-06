@@ -5,16 +5,26 @@
  */
 import React, { useEffect } from "react";
 import { useAuth, useAuthToken } from "../../../Shared/Reduxfetcher";
-import { useProfileContext } from "../../../Shared/Context";
+import { useMainContext, useProfileContext } from "../../../Shared/Context";
 import {
   JSONtoformdata,
   ReadMore,
   decodeHtml,
   getAuthToken,
+  getAuthenticated,
 } from "../../../Shared/Utility";
 import useReplaceBiodataHandler from "../Utility";
 import classes from "../Profile.module.css";
-import { Button, Input, Select, Skeleton, Spin, Tooltip } from "antd";
+import {
+  Alert,
+  Button,
+  Input,
+  Select,
+  Skeleton,
+  Space,
+  Spin,
+  Tooltip,
+} from "antd";
 import { useState } from "react";
 import { useFormik } from "formik";
 import {
@@ -25,14 +35,20 @@ import { toast } from "react-hot-toast";
 import shieldIcon from "../../../Assets/Icons/svg/claim_account_white.svg";
 import { useNavigate } from "react-router";
 import LoginModal from "../../../Modal/Verification/LoginModal";
+import { handleloginModalShow } from "../../../Store/Redux/Reducer/DashboardReducer";
+import { useDispatch } from "react-redux";
+import useDataHandler from "../../../Shared/ReduxCustomHooks";
 
 const BioContainer = ({ isLoginuser }) => {
+  const { AccountAccessType } = useMainContext();
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isAboutEdit, setisAboutEdit] = useState(false);
   const {
     profileData,
     isLinkopenModal,
-    setisLinkopenModal,
+
     handleBecameFan,
     DiamondVerifyType,
   } = useProfileContext();
@@ -46,17 +62,20 @@ const BioContainer = ({ isLoginuser }) => {
     profileData,
     loginUserData && profileData?.user_id === loginUserData?.user_id
   );
-  const { values, handleSubmit, handleChange, setFieldValue } = useFormik({
-    initialValues: {
-      bio_data:
-        typeof profileData?.bio_data === "string" ? profileData?.bio_data : "",
-      influencer_category: [],
-    },
-    enableReinitialize: true,
-    onSubmit: (values) => {
-      updateBioDataHandler(values);
-    },
-  });
+  const { values, handleSubmit, handleChange, setFieldValue, resetForm } =
+    useFormik({
+      initialValues: {
+        bio_data:
+          typeof profileData?.bio_data === "string"
+            ? profileData?.bio_data
+            : "",
+        influencer_category: [],
+      },
+      enableReinitialize: true,
+      onSubmit: (values) => {
+        updateBioDataHandler(values);
+      },
+    });
 
   /**
    * useEffect hook that runs when the profileData or influencerCategory changes.
@@ -81,10 +100,19 @@ const BioContainer = ({ isLoginuser }) => {
     }
 
     if (profileData && profileData?.bio_data === "") {
-      console.log(profileData, "profileData");
       setFieldValue("bio_data", BioData);
     }
   }, [profileData, influencerCategory, BioData]);
+
+  const getPartialDisplayName = (length) => {
+    if (profileData && profileData.name) {
+      if (profileData.name.length > length) {
+        return profileData.name.substring(0, length) + "...";
+      }
+      return profileData?.name;
+    }
+    return "User";
+  };
 
   /**
    * Handles the update of bio data for a user profile.
@@ -157,8 +185,8 @@ const BioContainer = ({ isLoginuser }) => {
             })
           );
         } else if (res.data.status === 0) {
-          toast.remove("rawcaster");
-          toast.error(res.data.msg, { id: "rawcaster" });
+          // toast.remove("rawcaster");
+          // toast.error(res.data.msg, { id: "rawcaster" });
         }
       })
       .catch((err) => {});
@@ -183,11 +211,48 @@ const BioContainer = ({ isLoginuser }) => {
   };
   const handleVerifyPopupClose = () => setverifyProfilePopup(false);
 
+  const getBioData = () => {
+    if (typeof profileData?.bio_data === "string") {
+      if (values.bio_data !== "") {
+        return values?.bio_data;
+      } else if (typeof profileData?.bio_data !== "string") {
+        return BioData;
+      }
+      return profileData?.bio_data;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (!profileData) {
+      resetForm();
+    }
+  }, [profileData]);
+
+  const ReadMoreComponent = () => {
+    return (
+      <ReadMore
+        maxheight={"64px"}
+        isReadMore={false}
+        isReadMoreValid={() => {}}
+      >
+        {/**
+         * Retrieves the bio data from the values object. If the bio data is not available,
+         * it calls the useReplaceBiodataHandler function to generate the bio data from the profileData.
+         * @returns The bio data string.
+         */}
+        {getBioData()}
+      </ReadMore>
+    );
+  };
   return (
     <div className={classes.profileIntro}>
       <div className={classes.headingSec}>
         <h2>
-          About {profileData?.first_name}{" "}
+          About{" "}
+          {selectedCategory.length !== 0
+            ? getPartialDisplayName(5)
+            : profileData?.name}{" "}
           {selectedCategory.length !== 0 && (
             <i className="material-icons">fiber_manual_record</i>
           )}
@@ -262,60 +327,94 @@ const BioContainer = ({ isLoginuser }) => {
         </div>
       ) : (
         <>
-          {isSuccess && profileData ? (
-            <ReadMore
-              maxheight={"64px"}
-              isReadMore={false}
-              isLinkopenModal={isLinkopenModal}
-              setisLinkopenModal={setisLinkopenModal}
-              isReadMoreValid={() => {}}
-            >
-              {/**
-               * Retrieves the bio data from the values object. If the bio data is not available,
-               * it calls the useReplaceBiodataHandler function to generate the bio data from the profileData.
-               * @returns The bio data string.
-               */}
-              {values?.bio_data !== "" ? values?.bio_data : BioData}
-            </ReadMore>
+          {isSuccess && profileData && getBioData() ? (
+            ReadMoreComponent()
           ) : (
             <Skeleton active />
           )}
-
-          {(DiamondVerifyType === 3 || DiamondVerifyType === 2) && (
-            <Button
-              className={`${classes.becomeafanbtn} ${classes.verifyAccount} ${
-                DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
-              }`}
-              onClickCapture={() => {
-                if (
-                  DiamondVerifyType === 3 &&
-                  loginUserData?.user_status_id === 4
-                ) {
-                  navigate("/verifyaccount");
-                } else {
-                  setverifyProfilePopup((pre) => !pre);
-                }
-              }}
-              disabled={DiamondVerifyType === 2}
-              style={{
-                display: "flex",
-                background: "#E26386",
-              }}
-            >
-              {DiamondVerifyType === 3 ? (
+          {profileData?.last_verify_status !== null &&
+          profileData?.verification_reason !== null &&
+          (DiamondVerifyType === 3 || DiamondVerifyType === 2) ? (
+            <div className={classes.verifyAccountOutlineContainer}>
+              <div className="d-flex align-items-center">
+                <span class="material-symbols-outlined text-danger">
+                  cancel
+                </span>
+                <p
+                  className="text-danger ms-2 mb-1"
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "normal",
+                  }}
+                >
+                  {profileData?.last_verify_status || ""}
+                </p>
+              </div>
+              <p className="text-danger ms-4 ps-2 mb-1">
+                {profileData?.verification_reason || ""}
+              </p>
+              <Button
+                className={`${classes.becomeafanbtn} ${classes.verifyAccount}`}
+                style={{
+                  display: "flex",
+                  background: "#E26386",
+                }}
+                onClickCapture={() => {
+                  if (
+                    DiamondVerifyType === 3 &&
+                    loginUserData?.user_status_id === 4
+                  ) {
+                    navigate("/verifyaccount");
+                  }
+                }}
+              >
                 <div className={classes.becomeSec}>
                   <img src={shieldIcon} />
                   <p>Verify my Account</p>
                 </div>
-              ) : (
-                DiamondVerifyType === 2 && (
-                  <div className={classes.becomeSec}>
-                    <img src={shieldIcon} />
-                    <p>Approval Pending</p>
-                  </div>
-                )
+              </Button>
+            </div>
+          ) : (
+            <>
+              {(DiamondVerifyType === 3 || DiamondVerifyType === 2) && (
+                <Button
+                  className={`${classes.becomeafanbtn} ${
+                    classes.verifyAccount
+                  } ${
+                    DiamondVerifyType === 2 ? classes.disabledverifyAccount : ""
+                  }`}
+                  onClickCapture={() => {
+                    if (
+                      DiamondVerifyType === 3 &&
+                      loginUserData.user_status_id >= 3
+                    ) {
+                      navigate("/verifyaccount");
+                    } else {
+                      setverifyProfilePopup((pre) => !pre);
+                    }
+                  }}
+                  disabled={DiamondVerifyType === 2}
+                  style={{
+                    display: "flex",
+                    background: "#E26386",
+                  }}
+                >
+                  {DiamondVerifyType === 3 ? (
+                    <div className={classes.becomeSec}>
+                      <img src={shieldIcon} />
+                      <p>Verify my Account</p>
+                    </div>
+                  ) : (
+                    DiamondVerifyType === 2 && (
+                      <div className={classes.becomeSec}>
+                        <img src={shieldIcon} />
+                        <p>Approval Pending</p>
+                      </div>
+                    )
+                  )}
+                </Button>
               )}
-            </Button>
+            </>
           )}
           {verifyProfilePopup && (
             <LoginModal
@@ -323,7 +422,7 @@ const BioContainer = ({ isLoginuser }) => {
               close={handleVerifyPopupClose}
               AIclose={true}
               AIopen="Get Diamond"
-              AImessgae="To access this feature become a diamond member!"
+              AImessgae="Account Verification feature is only for Premium, Diamond members and Influencers"
             />
           )}
 
@@ -331,11 +430,15 @@ const BioContainer = ({ isLoginuser }) => {
             <Button
               className={classes.becomeafanbtn}
               onClickCapture={() => {
-                if (BecameFanStatus === "") {
-                  setBecameFanStatus("pending");
-                  handleBecameFan().then(() => {
-                    setBecameFanStatus("");
-                  });
+                if (getAuthenticated()) {
+                  if (BecameFanStatus === "") {
+                    setBecameFanStatus("pending");
+                    handleBecameFan().then(() => {
+                      setBecameFanStatus("");
+                    });
+                  }
+                } else {
+                  dispatch(handleloginModalShow(true));
                 }
               }}
               style={{
