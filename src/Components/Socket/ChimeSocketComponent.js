@@ -58,7 +58,7 @@ const ChimeSocketComponent = () => {
         </Space>
       );
       notification.open({
-        message: 'Invite Call',
+        message: "Invite Call",
         description: (
           <Card
             style={{
@@ -73,15 +73,14 @@ const ChimeSocketComponent = () => {
             />
           </Card>
         ),
-        icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+        icon: <SmileOutlined style={{ color: "#108ee9" }} />,
         // icon: (
         //   <Avatar src={<img src={userData.profile_image}></img>} />
         // ),
         placement: "bottomLeft",
         btn,
         key,
-        onClose: () => {
-        },
+        onClose: () => {},
       });
     }
   };

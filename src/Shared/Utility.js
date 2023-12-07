@@ -1200,27 +1200,8 @@ export const instantCall = (
     event_guest_video: type === "Audio" ? 0 : 1,
     event_invite_friends: arrayToString([userData]),
     token: String(token),
+    user_id_list
   };
 
-  addEventService(JSONtoformdata(filterValidObject(requestData)))
-      .then((res) => {
-        if (res.data.status === 1) {
-          HandlePopup(res.data.event_detail);
-          ChimesendMessage(
-            {
-              type: "InviteCall",
-              event_detail: {sender_id: userData.user_id, sender_name: userData.name, profile_image: userData.profile_image, meeting_link: `${window.location.origin}/room/${res.data.ref_id}`, meeting_attendee_list: user_id_list, meeting_type: type},
-            },
-            CHIME_SOCKET_EVENTS.NOTIFICATIONS
-          );
-        } else {
-          toast.remove("Error");
-          toast.error(res.data.msg, {
-            id: "Error",
-          });
-        }
-      })
-      .catch((err) => {
-        console.error('Errors occured in instant-call', err);
-      })
+  HandlePopup(requestData);
 };
