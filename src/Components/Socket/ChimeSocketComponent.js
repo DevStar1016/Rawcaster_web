@@ -82,6 +82,7 @@ const ChimeSocketComponent = () => {
         placement: "bottomLeft",
         btn,
         key,
+        duration: 10,
         onClose: () => {},
       });
     }

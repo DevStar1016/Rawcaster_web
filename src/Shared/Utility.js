@@ -1194,7 +1194,7 @@ export const instantCall = (
     event_host_video: type === "Audio" ? 0 : 1,
     event_guest_audio: type === "Audio" ? 1 : 0,
     event_guest_video: type === "Audio" ? 0 : 1,
-    event_invite_friends: arrayToString([userData]),
+    event_invite_friends: arrayToString(user_id_list),
     token: String(token),
     user_id_list
   };
