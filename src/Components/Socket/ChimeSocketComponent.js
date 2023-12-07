@@ -11,7 +11,9 @@ import {
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { useEvent } from "../../Sharedcomponents/EventProvider";
-import { Button, notification, Space, Avatar } from "antd";
+import { Button, notification, Space, Avatar, Card } from "antd";
+import { SmileOutlined } from "@ant-design/icons";
+const { Meta } = Card;
 
 const ChimeSocketComponent = () => {
   const EventWindowRef = useEventWindow();
@@ -24,33 +26,65 @@ const ChimeSocketComponent = () => {
   // Trigger Invite notification
   const inviteMessage = (data) => {
     const sender_id = data.sender_id;
-    const targetId = data.meeting_attendee_list?.filter(ele => String(ele.user_id) === String(userData?.user_id) && String(sender_id) !== String(userData?.user_id));
-    
+    const targetId = data.meeting_attendee_list?.filter(
+      (ele) =>
+        String(ele.user_id) === String(userData?.user_id) &&
+        String(sender_id) !== String(userData?.user_id)
+    );
+
     if (targetId?.length) {
       const key = `open${Date.now()}`;
       const btn = (
-            <Space>
-              <Button type="link" size="middle" shape="round" onClick={() => {}}>
-                Decline
-              </Button>
-              <Button type="primary" size="middle" shape="round" onClick={() => {}}>
-                Accept
-              </Button>
-            </Space>
-          );
+        <Space>
+          <Button
+            type="link"
+            size="middle"
+            shape="round"
+            onClick={() => notification.destroy()}
+          >
+            Decline
+          </Button>
+          <Button
+            type="primary"
+            size="middle"
+            shape="round"
+            onClick={() => {
+              notification.destroy();
+              window.open(`${data.meeting_link}`, "_blank", { popup: true });
+            }}
+          >
+            Accept
+          </Button>
+        </Space>
+      );
       notification.open({
-        message: <h4 style={{marginLeft:'10px'}}>{data.sender_name}</h4>,
-        description: <h7>is calling you.<br/> {data.meeting_type} call link: {data.meeting_link}`</h7>,
-        icon: <Avatar size={35} src={<img src={`${data.profile_image}`}></img>} />,
-        placement: 'bottomLeft',
+        message: 'Invite Call',
+        description: (
+          <Card
+            style={{
+              width: 300,
+              marginTop: 16,
+            }}
+          >
+            <Meta
+              avatar={<Avatar src={`${data.profile_image}`} />}
+              title={`${data.sender_name} `}
+              description={`is calling you to ${data.meeting_type} meeting `}
+            />
+          </Card>
+        ),
+        icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+        // icon: (
+        //   <Avatar src={<img src={userData.profile_image}></img>} />
+        // ),
+        placement: "bottomLeft",
         btn,
         key,
         onClose: () => {
-          console.warn("Hello world -> confirm btn clicked");
-        }
-      })
+        },
+      });
     }
-  }
+  };
 
   // Socket Emitter from Parent Window to Child Window
 
@@ -63,8 +97,6 @@ const ChimeSocketComponent = () => {
       EventWindowRef.postMessage(EventData, "*");
     }
   };
-
-
 
   // Connect Socket URL
 
@@ -85,7 +117,7 @@ const ChimeSocketComponent = () => {
   //  Notifications Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
-      if (message.type === 'InviteCall') {
+      if (message.type === "InviteCall") {
         inviteMessage(message.event_detail);
       } else if (message && message.type) {
         emit(message.type, message);
@@ -333,7 +365,7 @@ const ChimeSocketComponent = () => {
     };
   }, [EventWindowRef]);
 
-  return <Outlet/>;
+  return <Outlet />;
 };
 
 export default ChimeSocketComponent;

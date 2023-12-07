@@ -7,27 +7,39 @@
  */
 import React, { useState } from "react";
 import { Tooltip } from "antd";
-import { JSONtoformdata, decodeHtml, getAuthToken } from "../../../Shared/Utility";
+import {
+  JSONtoformdata,
+  decodeHtml,
+  getAuthToken,
+  instantCall,
+} from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
 import audiocall from "../../../Assets/Icons/svg/audiocall.svg";
 import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { useMainContext } from "../../../Shared/Context";
-import { useAuth, useAuthData, useAuthToken, useSettings } from "../../../Shared/Reduxfetcher";
+import {
+  useAuth,
+  useAuthData,
+  useAuthToken,
+  useSettings,
+} from "../../../Shared/Reduxfetcher";
 import { AutoChannelCreateService } from "../../../Services/ApiService";
 import { useDispatch } from "react-redux";
 import { handleUpdateGroupArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { Spinner } from "react-bootstrap";
 import { defaultGroupImg } from "../../../Shared/CommonConstants";
 import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
-import { instantCall } from "../../../Shared/Utility";
+import { handleEventWindowRef } from "../../../Store/Redux/Reducer/UtilityReducer";
+import { ChimesendMessage } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { nanoid } from "@reduxjs/toolkit";
 
 const Group = ({ group, searchInput, onClick }) => {
   const { setisChatOpen } = useMainContext();
   const [isFetching, setisFetching] = useState(false);
   const dispatch = useDispatch();
   const token = useAuthToken();
-  const auth_code = getAuthToken(token);
   const userData = useAuthData();
   const userSettings = useSettings();
 
@@ -58,6 +70,45 @@ const Group = ({ group, searchInput, onClick }) => {
         setisFetching(false);
       });
   };
+
+  /**
+   * Handles the opending and manipulation of a popup window for a instant call
+   * @param {Object} data - Add private event param
+   * @returns None
+   */
+  const HandlePopup = (data) => {
+    const EventWindowRef = window.open(`room/${data.reference_id}`, "_blank", {
+      popup: true,
+    });
+    dispatch(handleEventWindowRef(EventWindowRef));
+
+    EventWindowRef.onload = () => {
+      const EventData = {
+        type: 'EventData',
+        message: data,
+      };
+      EventWindowRef.postMessage(EventData, "*");
+      ChimesendMessage(
+        { refId: data?.reference_id },
+        CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+      );
+      ChimesendMessage(
+        {
+          userId: userData.user_id,
+          userRefId: userData.user_ref_id ?? nanoid(),
+          refId: data?.reference_id,
+          name: userData?.name,
+          image: userData?.profile_image,
+        },
+        CHIME_SOCKET_EVENTS.JOIN_REQUEST
+      )
+    };
+
+    EventWindowRef.onclose = (e) => {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <>
       <div
@@ -97,53 +148,67 @@ const Group = ({ group, searchInput, onClick }) => {
         </div>
         {IS_CHIME_ENABLE && (
           <div className={`${classes.friendsmenu}`}>
-            <Tooltip
-              title={"Audio call"}
-              color={"#F7965B"}
-            >
-              <img src={audiocall} alt={"audio call"} onClick={(e) => {
-                e.stopPropagation();
-                instantCall(token, auth_code, userData, userSettings, 'Audio', group.group_members_list)}
-                }/>
-            </Tooltip>
-            <Tooltip
-              title={"Video call"}
-              color={"#F7965B"}
-            >
-              <img src={videocall} alt={"video call"} onClick={(e) => {
-                e.stopPropagation();
-                instantCall(token, auth_code, userData, userSettings, 'Video', group.group_members_list)}
-                }/>
-            </Tooltip>
-            <Tooltip
-              title={"Group chat"}
-              color={"#F7965B"}
-            >
-              {isFetching === group.group_id ? (
-              <Spinner size="sm" className="ms-2" />
-            ) : (
+            <Tooltip title={"Video call"} color={"#F7965B"}>
               <img
-                src={chatIcon}
-                alt={"Group Chat"}
-                onClick={(event) => {
-                  if (!isFetching) {
-                    event.stopPropagation();
-                    if (
-                      group.my_group === 1 &&
-                      (!group.channel_arn || group.channel_arn === "")
-                    ) {
-                      HandleGroupCreate();
-                    } else {
-                      setisChatOpen({
-                        show: true,
-                        type: "group",
-                        id: group.group_id,
-                      });
-                    }
-                  }
+                src={videocall}
+                alt={"video call"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  instantCall(
+                    token,
+                    userData,
+                    userSettings,
+                    "Video",
+                    group.group_members_list,
+                    HandlePopup
+                  );
                 }}
               />
-            )}
+            </Tooltip>
+            <Tooltip title={"Audio call"} color={"#F7965B"}>
+              <img
+                src={audiocall}
+                alt={"audio call"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  instantCall(
+                    token,
+                    userData,
+                    userSettings,
+                    "Audio",
+                    group.group_members_list,
+                    HandlePopup
+                  );
+                }}
+              />
+            </Tooltip>
+
+            <Tooltip title={"Group chat"} color={"#F7965B"}>
+              {isFetching === group.group_id ? (
+                <Spinner size="sm" className="ms-2" />
+              ) : (
+                <img
+                  src={chatIcon}
+                  alt={"Group Chat"}
+                  onClick={(event) => {
+                    if (!isFetching) {
+                      event.stopPropagation();
+                      if (
+                        group.my_group === 1 &&
+                        (!group.channel_arn || group.channel_arn === "")
+                      ) {
+                        HandleGroupCreate();
+                      } else {
+                        setisChatOpen({
+                          show: true,
+                          type: "group",
+                          id: group.group_id,
+                        });
+                      }
+                    }
+                  }}
+                />
+              )}
             </Tooltip>
           </div>
         )}
