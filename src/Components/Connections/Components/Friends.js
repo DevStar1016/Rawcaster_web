@@ -33,7 +33,10 @@ import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
 import { handleEventWindowRef } from "../../../Store/Redux/Reducer/UtilityReducer";
 import { ChimesendMessage } from "../../../Services/SocketService";
 import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { addEventService } from "../../../Services/ApiService";
+import { filterValidObject } from "../../../Shared/Utility";
 import { nanoid } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 const Friends = ({ friend, searchInput }) => {
   const { setisChatOpen } = useMainContext();
@@ -78,15 +81,42 @@ const Friends = ({ friend, searchInput }) => {
    * @param {Object} data - Add private event param
    * @returns None
    */
+
   const HandlePopup = (data) => {
-    const EventWindowRef = window.open(`room/${data.reference_id}`, "_blank", {
-      popup: true,
-    });
-    dispatch(handleEventWindowRef(EventWindowRef));
+    const EventWindowRef = window.open("", "_blank", { popup: true });
+    addEventService(JSONtoformdata(filterValidObject(data)))
+      .then((res) => {
+        if (res.data.status === 1) {
+          EventWindowRef.location.href = `${window.location.origin}/room/${res.data.ref_id}`;
+          dispatch(EventWindowRef);
+          ChimesendMessage(
+            {
+              type: "InviteCall",
+              event_detail: {
+                sender_id: userData.user_id,
+                sender_name: userData.name,
+                profile_image: userData.profile_image,
+                meeting_link: `${window.location.origin}/room/${res.data.ref_id}`,
+                meeting_attendee_list: data.user_id_list,
+                meeting_type: data.event_screenshare === 0 ? "Audio" : "Video",
+              },
+            },
+            CHIME_SOCKET_EVENTS.NOTIFICATIONS
+          );
+        } else {
+          toast.remove("Error");
+          toast.error(res.data.msg, {
+            id: "Error",
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Errors occured in instant-call", err);
+      });
 
     EventWindowRef.onload = () => {
       const EventData = {
-        type: 'EventData',
+        type: "EventData",
         message: data,
       };
       EventWindowRef.postMessage(EventData, "*");
@@ -103,14 +133,14 @@ const Friends = ({ friend, searchInput }) => {
           image: userData?.profile_image,
         },
         CHIME_SOCKET_EVENTS.JOIN_REQUEST
-      )
+      );
     };
 
     EventWindowRef.onclose = (e) => {
       e.stopPropagation();
     }
   };
-  
+
   return (
     <>
       <div
