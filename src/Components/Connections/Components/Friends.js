@@ -8,8 +8,8 @@ import { Tooltip } from "antd";
 import {
   JSONtoformdata,
   decodeHtml,
-  getAuthToken,
   handleProfileNavigate,
+  instantCall,
 } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
@@ -18,14 +18,22 @@ import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { useAuthData, useAuthToken, useNuggets, useSettings } from "../../../Shared/Reduxfetcher";
+import {
+  useAuthData,
+  useAuthToken,
+  useNuggets,
+  useSettings,
+} from "../../../Shared/Reduxfetcher";
 import { useMainContext } from "../../../Shared/Context";
 import { AutoIndividualCreateService } from "../../../Services/ApiService";
 import { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { handleUpdateIndividualArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
-import { instantCall } from "../../../Shared/Utility";
+import { handleEventWindowRef } from "../../../Store/Redux/Reducer/UtilityReducer";
+import { ChimesendMessage } from "../../../Services/SocketService";
+import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
+import { nanoid } from "@reduxjs/toolkit";
 
 const Friends = ({ friend, searchInput }) => {
   const { setisChatOpen } = useMainContext();
@@ -34,7 +42,6 @@ const Friends = ({ friend, searchInput }) => {
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
   const token = useAuthToken();
-  const auth_code = getAuthToken(token);
   const userData = useAuthData();
   const userSettings = useSettings();
 
@@ -65,6 +72,45 @@ const Friends = ({ friend, searchInput }) => {
         setisFetching(false);
       });
   };
+
+  /**
+   * Handles the opending and manipulation of a popup window for a instant call
+   * @param {Object} data - Add private event param
+   * @returns None
+   */
+  const HandlePopup = (data) => {
+    const EventWindowRef = window.open(`room/${data.reference_id}`, "_blank", {
+      popup: true,
+    });
+    dispatch(handleEventWindowRef(EventWindowRef));
+
+    EventWindowRef.onload = () => {
+      const EventData = {
+        type: 'EventData',
+        message: data,
+      };
+      EventWindowRef.postMessage(EventData, "*");
+      ChimesendMessage(
+        { refId: data?.reference_id },
+        CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+      );
+      ChimesendMessage(
+        {
+          userId: userData.user_id,
+          userRefId: userData.user_ref_id ?? nanoid(),
+          refId: data?.reference_id,
+          name: userData?.name,
+          image: userData?.profile_image,
+        },
+        CHIME_SOCKET_EVENTS.JOIN_REQUEST
+      )
+    };
+
+    EventWindowRef.onclose = (e) => {
+      e.stopPropagation();
+    }
+  };
+  
   return (
     <>
       <div
@@ -141,19 +187,41 @@ const Friends = ({ friend, searchInput }) => {
               title={"Video call"}
               color={friend.online ? "#5dbc3a" : "#F7965B"}
             >
-              <img src={videocall} alt={"video call"} onClick={(e) => {
-                e.stopPropagation();
-                instantCall(token, auth_code, userData, userSettings, 'Video', [].concat(friend));
-              }}/>
+              <img
+                src={videocall}
+                alt={"video call"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  instantCall(
+                    token,
+                    userData,
+                    userSettings,
+                    "Video",
+                    [].concat(friend),
+                    HandlePopup
+                  );
+                }}
+              />
             </Tooltip>
             <Tooltip
               title={"Audio call"}
               color={friend.online ? "#5dbc3a" : "#F7965B"}
             >
-              <img src={audiocall} alt={"audio call"} onClick={(e) => {
-                e.stopPropagation();
-                instantCall(token, auth_code, userData, userSettings, 'Audio', [].concat(friend));
-              }}/>
+              <img
+                src={audiocall}
+                alt={"audio call"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  instantCall(
+                    token,
+                    userData,
+                    userSettings,
+                    "Audio",
+                    [].concat(friend),
+                    HandlePopup
+                  );
+                }}
+              />
             </Tooltip>
             <Tooltip
               title={"chat"}
