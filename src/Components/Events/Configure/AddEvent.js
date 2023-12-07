@@ -342,7 +342,6 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
           });
           handleCloseEvent();
         }
-        console.log('Event-Test:----', filterValidObject(liveEventData), '\nTest-Add-Event:--------', res.data);
       })
       .catch((err) => {})
       .finally(() => {

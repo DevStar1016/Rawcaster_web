@@ -12,7 +12,7 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { useEvent } from "../../Sharedcomponents/EventProvider";
 import { Button, notification, Space, Avatar, Card } from "antd";
-import { SmileOutlined } from "@ant-design/icons";
+import { PhoneTwoTone, VideoCameraTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 const { Meta } = Card;
 
 const ChimeSocketComponent = () => {
@@ -31,11 +31,10 @@ const ChimeSocketComponent = () => {
         String(ele.user_id) === String(userData?.user_id) &&
         String(sender_id) !== String(userData?.user_id)
     );
-
     if (targetId?.length) {
       const key = `open${Date.now()}`;
       const btn = (
-        <Space>
+        <Space style={{marginBottom: 10, marginLeft:'auto', marginRight:'auto' }}>
           <Button
             type="link"
             size="middle"
@@ -50,7 +49,7 @@ const ChimeSocketComponent = () => {
             shape="round"
             onClick={() => {
               notification.destroy();
-              window.open(`${data.meeting_link}`, "_blank", { popup: true });
+              window.open(`${data?.meeting_link}`, "_blank", { popup: true });
             }}
           >
             Accept
@@ -58,25 +57,28 @@ const ChimeSocketComponent = () => {
         </Space>
       );
       notification.open({
-        message: "Invite Call",
+        message: '',
         description: (
           <Card
             style={{
               width: 300,
-              marginTop: 16,
+              marginLeft: 30,
+              marginTop: 30,
+              marginBottom: 10,
             }}
+            cover={
+              <img
+              alt="image"
+              src={require("../../Assets/Images/notification_back.jpg")}></img>
+            }
           >
             <Meta
-              avatar={<Avatar src={`${data.profile_image}`} />}
+              avatar={<Avatar src={`${data?.profile_image}`} />}
               title={`${data.sender_name} `}
               description={`is calling you to ${data.meeting_type} meeting `}
             />
           </Card>
         ),
-        icon: <SmileOutlined style={{ color: "#108ee9" }} />,
-        // icon: (
-        //   <Avatar src={<img src={userData.profile_image}></img>} />
-        // ),
         placement: "bottomLeft",
         btn,
         key,

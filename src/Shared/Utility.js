@@ -28,10 +28,6 @@ import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
 import { ShowLinkOpenModal } from "../Modal/DefaultModal";
 import { CustomParagraph } from "./UtilityComponents";
 import { fetchNuggetsbyId } from "../Store/Redux/Action";
-import { ChimesendMessage } from "../Services/SocketService";
-import { CHIME_SOCKET_EVENTS } from "../Services/ServiceConstants";
-import { addEventService } from "../Services/ApiService";
-
 // Auth
 
 /**
@@ -1202,6 +1198,5 @@ export const instantCall = (
     token: String(token),
     user_id_list
   };
-
   HandlePopup(requestData);
 };

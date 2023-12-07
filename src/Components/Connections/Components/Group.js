@@ -85,7 +85,7 @@ const Group = ({ group, searchInput, onClick }) => {
       .then((res) => {
         if (res.data.status === 1) {
           EventWindowRef.location.href = `${window.location.origin}/room/${res.data.ref_id}`;
-          dispatch(EventWindowRef);
+          dispatch(handleEventWindowRef(EventWindowRef));
           ChimesendMessage(
             {
               type: "InviteCall",
