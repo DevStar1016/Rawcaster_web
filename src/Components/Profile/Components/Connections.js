@@ -43,6 +43,7 @@ const ConnectionsList = ({
     getFollowers,
     isInfluencerChatModalOpen,
     setisInfluencerChatModalOpen,
+    setisRemoveInfluencer,
   } = useProfileContext();
   const params = useParams();
   const loginUserData = useAuthData();
@@ -135,6 +136,7 @@ const ConnectionsList = ({
       })
       .catch((err) => {})
       .finally(() => {
+        setisRemoveInfluencer(false);
         setisLoadMore(false);
         setisLoadingConnection(false);
       });
@@ -158,6 +160,7 @@ const ConnectionsList = ({
       })
       .catch((err) => {})
       .finally(() => {
+        setisRemoveInfluencer(false);
         setisLoadMore(false);
         setisLoadingConnection(false);
       });
@@ -170,6 +173,7 @@ const ConnectionsList = ({
       })
       .catch((err) => {})
       .finally(() => {
+        setisRemoveInfluencer(false);
         setisLoadMore(false);
         setisLoadingConnection(false);
       });

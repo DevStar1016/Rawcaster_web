@@ -47,7 +47,7 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
             message: res.data.msg,
           });
         } else {
-          navigate("/membership");
+          // navigate("/membership");
         }
       })
       .catch((err) => {});
@@ -96,12 +96,14 @@ const LoginModal = ({ open, close, AIopen, AIclose, AImessgae, isAI }) => {
               // if (isAI) {
               //   close();
               // } else {
+
               if (AIopen) {
                 close();
                 if (loginUserData.complementary_status === 1) {
                   ComplementaryMemberShip();
                 } else {
-                  navigate("/membership");
+                  close();
+                  // navigate("/membership");
                 }
               } else {
                 navigate("/login");
