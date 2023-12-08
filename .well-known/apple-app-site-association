@@ -10,7 +10,6 @@
                     "*.rawcaster.com/join/golive",
                     "*.rawcaster.com/join/talkshow",
                     "*.rawcaster.com/nugget",
-                    "*.rawcaster.com/nugget/index.php",
                     "*.rawcaster.com/viewprofile",
                     "*.rawcaster.com/signup",
                     "*.rawcaster.com"]
@@ -23,7 +22,6 @@
                     "rawcaster.com/join/golive",
                     "rawcaster.com/join/talkshow",
                     "rawcaster.com/nugget",
-                    "rawcaster.com/nugget/index.php",
                     "rawcaster.com/viewprofile",
                     "rawcaster.com/signup",
                     "rawcaster.com"]

@@ -906,9 +906,9 @@ const AddEvent = ({ isEventOpen, setisEventOpen, data }) => {
                   </Col>
                   <div className="my-2">
                     <Row>
-                      {EventSettings.map((ele) => {
+                      {EventSettings.map((ele, index) => {
                         return (
-                          <Col sm={6}>
+                          <Col sm={6} key={index}>
                             <div
                               onClick={(e) => {
                                 if (

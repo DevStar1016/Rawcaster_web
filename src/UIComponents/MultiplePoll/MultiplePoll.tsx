@@ -342,7 +342,9 @@ const MultiplePoll = ({
                       : "#FFF",
                 }}
               >
-                {result.option_name}
+                {result.option_name.length >= 30
+                  ? result.option_name.slice(0, 30) + "..."
+                  : result.option_name}
               </p>
             </div>
             {(pollVotedData.isVoted || !getVotesTiming()) && (

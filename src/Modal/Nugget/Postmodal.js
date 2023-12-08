@@ -275,7 +275,7 @@ const Postmodal = ({ visible, onClose }) => {
             message: res.data.msg,
           });
         } else {
-          navigate("/membership");
+          // navigate("/membership");
         }
       })
       .catch((err) => {});

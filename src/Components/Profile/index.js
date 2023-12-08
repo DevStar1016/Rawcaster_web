@@ -60,6 +60,7 @@ const Profile = () => {
   const [isInfluencerChatModalOpen, setisInfluencerChatModalOpen] = useState({
     show: false,
   });
+  const [isRemoveInfluencer, setisRemoveInfluencer] = useState(false);
   const navigate = useNavigate();
   const { isSuccess } = useAuth();
   const { nuggetFormData } = useNuggets();
@@ -326,7 +327,8 @@ const Profile = () => {
     setFansList,
     profileData,
     setprofileData,
-
+    isRemoveInfluencer,
+    setisRemoveInfluencer,
     isLoginUser: getisLoginUser(),
     DiamondVerifyType: getDiamondVeifyType(),
     getFollowers,

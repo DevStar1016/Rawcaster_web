@@ -3,7 +3,7 @@ import {
   ChimesocketListen,
 } from "../../Services/SocketService";
 import { Outlet, useParams } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CHIME_SOCKET_EVENTS } from "../../Services/ServiceConstants";
 import { useAuthData, useEventWindow } from "../../Shared/Reduxfetcher";
 import {
@@ -11,14 +11,120 @@ import {
   useToggleLocalMute,
 } from "amazon-chime-sdk-component-library-react";
 import { useEvent } from "../../Sharedcomponents/EventProvider";
+import { Button, notification, Space, Avatar, Card } from "antd";
+import { handleEventWindowRef } from "../../Store/Redux/Reducer/UtilityReducer";
+import { useDispatch } from "react-redux";
+import { nanoid } from "@reduxjs/toolkit";
+const { Meta } = Card;
 
 const ChimeSocketComponent = () => {
   const EventWindowRef = useEventWindow();
   const userData = useAuthData();
+  const dispatch = useDispatch();
   const { muted } = useLocalVideo();
   const { isVideoEnabled } = useToggleLocalMute();
   const { ref_id } = useParams();
   const { emit } = useEvent();
+
+  const HandlePopup = (data) => {
+    const EventWindowRef = window.open(`/room/${data?.reference_id}`, "_blank", {
+      popup: true,
+    });
+    dispatch(handleEventWindowRef(EventWindowRef));
+
+    EventWindowRef.onload = () => {
+      const EventData = {
+        type: "EventData",
+        message: data,
+      };
+      EventWindowRef.postMessage(EventData, "*");
+        ChimesendMessage(
+          { refId: data?.reference_id },
+          CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+        );
+      ChimesendMessage(
+        {
+          userId: userData?.user_id,
+          userRefId: userData?.user_ref_id ?? nanoid(),
+          refId: data?.reference_id,
+          name: userData?.name,
+          image: userData?.profile_image,
+        },
+        CHIME_SOCKET_EVENTS.JOIN_REQUEST
+      );
+    };
+
+    EventWindowRef.onclose = (e) => {
+      e.stopPropagation();
+    };
+    // when the popup unloads
+  };
+
+  // Trigger Invite notification
+  const inviteMessage = (data) => {
+    const sender_id = data.original_user_id;
+    const targetId = data.invite_friends_id?.filter(
+      (ele) =>
+        String(ele) === String(userData?.user_id) &&
+        String(sender_id) !== String(userData?.user_id)
+    );
+    if (targetId?.length) {
+      const key = `open${Date.now()}`;
+      const btn = (
+        <Space style={{marginBottom: 10, marginLeft:'auto', marginRight:'auto' }}>
+          <Button
+            type="link"
+            size="middle"
+            shape="round"
+            onClick={() => notification.destroy()}
+          >
+            Decline
+          </Button>
+          <Button
+            type="primary"
+            size="middle"
+            shape="round"
+            onClick={() => {
+              notification.destroy();
+              HandlePopup(data);
+              }
+            }
+          >
+            Accept
+          </Button>
+        </Space>
+      );
+      notification.open({
+        message: '',
+        description: (
+          <Card
+            style={{
+              width: 300,
+              marginLeft: 30,
+              marginTop: 30,
+              marginBottom: 10,
+            }}
+            cover={
+              <img
+              alt="image"
+              src={require("../../Assets/Images/notification_back.jpg")}></img>
+            }
+          >
+            <Meta
+              avatar={<Avatar src={`${data?.profile_image}`} />}
+              title={`${data.sender_name} `}
+              description={`is calling you to ${data.meeting_type} meeting `}
+            />
+          </Card>
+        ),
+        placement: "bottomLeft",
+        btn,
+        key,
+        duration: 10,
+        onClose: () => {},
+      });
+    }
+  };
 
   // Socket Emitter from Parent Window to Child Window
 
@@ -51,7 +157,10 @@ const ChimeSocketComponent = () => {
   //  Notifications Received Here - Socket
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
-      if (message && message.type) {
+      if (message.type === "InviteCall") {
+        emit(message.type, message.event_detail);
+        inviteMessage(message.event_detail);
+      } else if (message && message.type) {
         emit(message.type, message);
       }
     });

@@ -1,3 +1,9 @@
+// BASE URL
+const DEV_BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
+const PRODUCTION_BASE_URL = "https://api.rawcaster.com/rawcaster/";
+export const BASE_URL =
+  process.env.NODE_ENV === "production" ? PRODUCTION_BASE_URL : DEV_BASE_URL;
+
 // PRIMARY CONSTANTS
 // export const DEFAULT_VIDEO =
 //   "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";
@@ -51,7 +57,8 @@ export const MIN_CHARACTER_LIMIT = {
 // export const LOGIN_ID = /^(?:\d{5,16}|\w+@\w+\.\w{2,3})$/;
 // eslint-disable-next-line react-hooks/exhaustive-deps
 
-export const IS_CHIME_ENABLE = false;
+/** This is for Instant call feature in My Connection */
+export const IS_CHIME_ENABLE = true;
 
 export const SHARED_TYPE = [
   { id: 1, key: 1, Value: "Public", label: "Public" },
