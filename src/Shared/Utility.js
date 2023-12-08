@@ -1171,7 +1171,6 @@ export const instantCall = (
     " " +
     moment(moment(new Date(), ["HH:mm"])).format("HH:mm:00");
   let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
-
   let requestData = {
     event_title: "Instant Call",
     event_type: 2,
@@ -1183,10 +1182,7 @@ export const instantCall = (
     user_screenshare: type === "Audio" ? 0 : 1,
     event_participants: String(userSettings?.max_event_participants_count),
     event_message: `Instant call: ${type}`,
-    event_duration:
-      (parseInt(userSettings.max_event_duration) < 10 ? "0" : "") +
-      String(userSettings.max_event_duration) +
-      ":00",
+    event_duration: userSettings.max_event_duration,
     event_layout: 1,
     event_melody_id: 1,
     event_melody_type: 1,
