@@ -4,8 +4,9 @@
  * @returns None
  */
 import axios, { AxiosProgressEvent, CancelToken } from "axios";
+import { BASE_URL } from "../Shared/Constant";
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+axios.defaults.baseURL = BASE_URL;
 
 axios.interceptors.request.use(
   async (request) => {

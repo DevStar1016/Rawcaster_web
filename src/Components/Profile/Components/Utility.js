@@ -194,6 +194,8 @@ export const UserProfile = ({
     handleBecameFan,
     handleAddUser,
     setprofileData,
+    isRemoveInfluencer,
+    setisRemoveInfluencer,
   } = useProfileContext();
   const navigate = useNavigate();
   const loginuserData = useAuthData();
@@ -252,7 +254,7 @@ export const UserProfile = ({
                 </>
               ) : null}
 
-              {type === "influencers" && !isUser ? (
+              {type === "influencers" && !isUser && !isRemoveInfluencer ? (
                 <span
                   className={`material-symbols-outlined  ${classes.plusIcon} ${classes.removeIcon}`}
                   style={{ display: "" }}
@@ -266,6 +268,7 @@ export const UserProfile = ({
                       },
                       content: <div>Are you sure to Unfollow this User ?</div>,
                       onOk: () => {
+                        setisRemoveInfluencer(true);
                         handleUnFollowService(
                           loginToken,
                           ele?.user_ref_id

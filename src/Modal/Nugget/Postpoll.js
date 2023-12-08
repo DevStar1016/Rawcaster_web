@@ -136,7 +136,7 @@ const Postpoll = ({ setisPoll }) => {
             message: res.data.msg,
           });
         } else {
-          navigate("/membership");
+          // navigate("/membership");
         }
       })
       .catch((err) => {});

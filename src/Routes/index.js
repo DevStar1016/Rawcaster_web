@@ -7,6 +7,9 @@ import { ProfileRoute } from "./ProfileRoutes";
 import ChimeSocketComponent from "../Components/Socket/ChimeSocketComponent";
 import { Button, Result, Typography } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
+import Privacypolicy from "../Components/Policy/Privacypolicy";
+import TermsandConditions from "../Components/Policy/TermsandConditions";
+import Cookiespolicy from "../Components/Policy/CookiePolicy";
 
 function ErrorBoundary() {
   let error = useRouteError();
@@ -93,6 +96,18 @@ export const routerpaths = [
         path: "/",
         element: <ChimeSocketComponent />,
         children: [...EventRoute],
+      },
+      {
+        path: "/mobileprivacypolicy",
+        element: <Privacypolicy />,
+      },
+      {
+        path: "/mobiletermsandconditions",
+        element: <TermsandConditions />,
+      },
+      {
+        path: "/mobilecookiespolicy",
+        element: <Cookiespolicy />,
       },
     ],
   },

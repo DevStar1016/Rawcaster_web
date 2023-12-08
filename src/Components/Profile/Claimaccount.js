@@ -21,6 +21,7 @@ import {
   AccountVerifyService,
   AddClaimAccountService,
 } from "../../Services/ApiService";
+import DiamonVerified from "../../Assets/Icons/svg/diamond_verified.svg";
 import { Col, Row } from "react-bootstrap";
 import DateInputBox from "../../Sharedcomponents/DateInputBox";
 import moment from "moment";
@@ -353,6 +354,18 @@ const Claimaccount = () => {
                       onChange={handleChange("telephone")}
                       placeholder="Enter your mobile number"
                       disabled={IsValidCredentials.mobile}
+                      suffix={
+                        <img
+                          src={DiamonVerified}
+                          className={classes.otpverifiedImg}
+                          style={{
+                            display:
+                              loginUserData.is_mobile_no_verified === 1
+                                ? "block"
+                                : "none",
+                          }}
+                        />
+                      }
                     />
                   </div>
                 </div>
@@ -373,6 +386,18 @@ const Claimaccount = () => {
                     onChange={handleChange("email_id")}
                     placeholder="Enter your email id"
                     disabled={IsValidCredentials.email}
+                    suffix={
+                      <img
+                        src={DiamonVerified}
+                        className={classes.otpverifiedImg}
+                        style={{
+                          display:
+                            loginUserData.is_email_id_verified === 1
+                              ? "block"
+                              : "none",
+                        }}
+                      />
+                    }
                   />
                 </div>
                 {touched.email_id && (

@@ -1,3 +1,9 @@
+// BASE URL
+const DEV_BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
+const PRODUCTION_BASE_URL = "https://api.rawcaster.com/rawcaster/";
+export const BASE_URL =
+  process.env.NODE_ENV === "production" ? PRODUCTION_BASE_URL : DEV_BASE_URL;
+
 // PRIMARY CONSTANTS
 // export const DEFAULT_VIDEO =
 //   "https://rawcaster.com/rawadmin/uploads/default/myluckyzone.mp4#t=0.001";

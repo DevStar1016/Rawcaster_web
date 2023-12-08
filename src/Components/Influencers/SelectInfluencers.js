@@ -602,60 +602,68 @@ const SelectInfluencers = () => {
         </Row>
         <Row gutter={10}>
           <Col sm={12} className={classes.selectInfluencerText}>
-            <Tooltip
-              title={
-                influencerList?.length === 0
-                  ? ""
-                  : SelectedInfluencersList?.length !== influencerList?.length
-                  ? "Select All"
-                  : "Unselect All"
-              }
-              destroyTooltipOnHide={influencerList?.length === 0}
-            >
-              <Checkbox
-                className={
-                  SelectedInfluencersList?.length < influencerList?.length ||
-                  influencerList?.length === 0 ||
-                  influencerList?.filter(
-                    (ele) =>
-                      !SelectedInfluencersList?.includes(ele?.user_ref_id)
-                  )?.length > 0
-                    ? classes.selectAllCheck
-                    : `${classes.selectAllChecked} ${classes.selectAllCheck}`
-                }
-                onClick={() => {
-                  if (
-                    SelectedInfluencersList?.length < influencerList?.length ||
-                    influencerList?.length === 0 ||
-                    influencerList?.filter(
-                      (ele) =>
-                        !SelectedInfluencersList?.includes(ele?.user_ref_id)
-                    )?.length > 0
-                  ) {
-                    handleSelectAllInfluencers(true);
-                  } else {
-                    handleSelectAllInfluencers(false);
+            {influencerList?.length !== 0 && (
+              <>
+                <Tooltip
+                  title={
+                    influencerList?.length === 0
+                      ? ""
+                      : SelectedInfluencersList?.length !==
+                        influencerList?.length
+                      ? "Select All"
+                      : "Unselect All"
                   }
-                }}
-                checked={
-                  SelectedInfluencersList?.length < influencerList?.length ||
-                  influencerList?.length === 0 ||
-                  influencerList?.filter(
-                    (ele) =>
-                      !SelectedInfluencersList?.includes(ele?.user_ref_id)
-                  )?.length > 0
-                    ? false
-                    : true
-                }
-                disabled={influencerList?.length === 0}
-              />
-            </Tooltip>
-            Selected Influencers (
-            {SelectAllInfluencer
-              ? influencersCount -
-                (influencerList?.length - SelectedInfluencersList?.length)
-              : SelectedInfluencersList.length}
-            )
+                  destroyTooltipOnHide={influencerList?.length === 0}
+                >
+                  <Checkbox
+                    className={
+                      SelectedInfluencersList?.length <
+                        influencerList?.length ||
+                      influencerList?.length === 0 ||
+                      influencerList?.filter(
+                        (ele) =>
+                          !SelectedInfluencersList?.includes(ele?.user_ref_id)
+                      )?.length > 0
+                        ? classes.selectAllCheck
+                        : `${classes.selectAllChecked} ${classes.selectAllCheck}`
+                    }
+                    onClick={() => {
+                      if (
+                        SelectedInfluencersList?.length <
+                          influencerList?.length ||
+                        influencerList?.length === 0 ||
+                        influencerList?.filter(
+                          (ele) =>
+                            !SelectedInfluencersList?.includes(ele?.user_ref_id)
+                        )?.length > 0
+                      ) {
+                        handleSelectAllInfluencers(true);
+                      } else {
+                        handleSelectAllInfluencers(false);
+                      }
+                    }}
+                    checked={
+                      SelectedInfluencersList?.length <
+                        influencerList?.length ||
+                      influencerList?.length === 0 ||
+                      influencerList?.filter(
+                        (ele) =>
+                          !SelectedInfluencersList?.includes(ele?.user_ref_id)
+                      )?.length > 0
+                        ? false
+                        : true
+                    }
+                    disabled={influencerList?.length === 0}
+                  />
+                </Tooltip>
+                Selected Influencers (
+                {SelectAllInfluencer
+                  ? influencersCount -
+                    (influencerList?.length - SelectedInfluencersList?.length)
+                  : SelectedInfluencersList.length}
+                )
+              </>
+            )}
           </Col>
           <Col className={classes.selectAllContainer} sm={12}>
             {/* <Col>
