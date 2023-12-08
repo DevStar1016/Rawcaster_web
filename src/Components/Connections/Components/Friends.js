@@ -83,22 +83,52 @@ const Friends = ({ friend, searchInput }) => {
    */
 
   const HandlePopup = (data) => {
-    const EventWindowRef = window.open("", "_blank", { popup: true });
     addEventService(JSONtoformdata(filterValidObject(data)))
-      .then((res) => {
+      .then(async (res) => {
         if (res.data.status === 1) {
-          EventWindowRef.location.href = `${window.location.origin}/room/${res.data.ref_id}`;
+          const EventWindowRef = window.open(
+            `${window.location.origin}/room/${res.data.ref_id}`,
+            "_blank",
+            { popup: true }
+          );
+
           dispatch(handleEventWindowRef(EventWindowRef));
+          EventWindowRef.onload = () => {
+            const EventData = {
+              type: "EventData",
+              message: { ...res.data.event_detail, type: 1 },
+            };
+            EventWindowRef.postMessage(EventData, "*");
+            ChimesendMessage(
+              { refId: res.data.event_detail?.reference_id },
+              CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+            );
+            ChimesendMessage(
+              {
+                userId: userData.user_id,
+                userRefId: userData.user_ref_id ?? nanoid(),
+                refId: res.data.event_detail?.reference_id,
+                name: userData?.name,
+                image: userData?.profile_image,
+              },
+              CHIME_SOCKET_EVENTS.JOIN_REQUEST
+            );
+          };
+
+          EventWindowRef.onclose = (e) => {
+            e.stopPropagation();
+          };
+          await new Promise((resolve, reject) => {
+            resolve(setTimeout(() => {}, 2000));
+          });
           ChimesendMessage(
             {
               type: "InviteCall",
               event_detail: {
-                sender_id: userData.user_id,
-                sender_name: userData.name,
+                ...res.data.event_detail,
                 profile_image: userData.profile_image,
-                meeting_link: `${window.location.origin}/room/${res.data.ref_id}`,
-                meeting_attendee_list: data.user_id_list,
                 meeting_type: data.event_screenshare === 0 ? "Audio" : "Video",
+                sender_name: userData.name,
               },
             },
             CHIME_SOCKET_EVENTS.NOTIFICATIONS
@@ -113,32 +143,6 @@ const Friends = ({ friend, searchInput }) => {
       .catch((err) => {
         console.error("Errors occured in instant-call", err);
       });
-
-    EventWindowRef.onload = () => {
-      const EventData = {
-        type: "EventData",
-        message: data,
-      };
-      EventWindowRef.postMessage(EventData, "*");
-      ChimesendMessage(
-        { refId: data?.reference_id },
-        CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
-      );
-      ChimesendMessage(
-        {
-          userId: userData.user_id,
-          userRefId: userData.user_ref_id ?? nanoid(),
-          refId: data?.reference_id,
-          name: userData?.name,
-          image: userData?.profile_image,
-        },
-        CHIME_SOCKET_EVENTS.JOIN_REQUEST
-      );
-    };
-
-    EventWindowRef.onclose = (e) => {
-      e.stopPropagation();
-    }
   };
 
   return (

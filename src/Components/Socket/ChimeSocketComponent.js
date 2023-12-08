@@ -12,23 +12,60 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { useEvent } from "../../Sharedcomponents/EventProvider";
 import { Button, notification, Space, Avatar, Card } from "antd";
-import { PhoneTwoTone, VideoCameraTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
+import { handleEventWindowRef } from "../../Store/Redux/Reducer/UtilityReducer";
+import { useDispatch } from "react-redux";
+import { nanoid } from "@reduxjs/toolkit";
 const { Meta } = Card;
 
 const ChimeSocketComponent = () => {
   const EventWindowRef = useEventWindow();
   const userData = useAuthData();
+  const dispatch = useDispatch();
   const { muted } = useLocalVideo();
   const { isVideoEnabled } = useToggleLocalMute();
   const { ref_id } = useParams();
   const { emit } = useEvent();
 
+  const HandlePopup = (data) => {
+    const EventWindowRef = window.open(`/room/${data?.reference_id}`, "_blank", {
+      popup: true,
+    });
+    dispatch(handleEventWindowRef(EventWindowRef));
+
+    EventWindowRef.onload = () => {
+      const EventData = {
+        type: "EventData",
+        message: data,
+      };
+      EventWindowRef.postMessage(EventData, "*");
+        ChimesendMessage(
+          { refId: data?.reference_id },
+          CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
+        );
+      ChimesendMessage(
+        {
+          userId: userData?.user_id,
+          userRefId: userData?.user_ref_id ?? nanoid(),
+          refId: data?.reference_id,
+          name: userData?.name,
+          image: userData?.profile_image,
+        },
+        CHIME_SOCKET_EVENTS.JOIN_REQUEST
+      );
+    };
+
+    EventWindowRef.onclose = (e) => {
+      e.stopPropagation();
+    };
+    // when the popup unloads
+  };
+
   // Trigger Invite notification
   const inviteMessage = (data) => {
-    const sender_id = data.sender_id;
-    const targetId = data.meeting_attendee_list?.filter(
+    const sender_id = data.original_user_id;
+    const targetId = data.invite_friends_id?.filter(
       (ele) =>
-        String(ele.user_id) === String(userData?.user_id) &&
+        String(ele) === String(userData?.user_id) &&
         String(sender_id) !== String(userData?.user_id)
     );
     if (targetId?.length) {
@@ -49,8 +86,9 @@ const ChimeSocketComponent = () => {
             shape="round"
             onClick={() => {
               notification.destroy();
-              window.open(`${data?.meeting_link}`, "_blank", { popup: true });
-            }}
+              HandlePopup(data);
+              }
+            }
           >
             Accept
           </Button>
@@ -120,6 +158,7 @@ const ChimeSocketComponent = () => {
   useEffect(() => {
     ChimesocketListen.on(CHIME_SOCKET_EVENTS.NOTIFICATIONS, (message) => {
       if (message.type === "InviteCall") {
+        emit(message.type, message.event_detail);
         inviteMessage(message.event_detail);
       } else if (message && message.type) {
         emit(message.type, message);
