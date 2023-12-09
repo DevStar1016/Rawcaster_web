@@ -8,7 +8,7 @@ COPY declaration.d.ts ./
 COPY public/ public/
 COPY src/ src/
 RUN npm install -force
-RUN npm run build
+RUN npm run build:prod
 COPY .well-known/ /app/build/.well-known/
 
 FROM nginx:1.23.2-alpine
