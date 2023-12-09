@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package.json ./
 COPY tsconfig.json ./
 COPY .env ./
+COPY dev.env ./
+COPY prod.env ./
 COPY declaration.d.ts ./
 COPY public/ public/
 COPY src/ src/
