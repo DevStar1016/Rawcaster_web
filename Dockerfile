@@ -4,11 +4,13 @@ WORKDIR /app
 COPY package.json ./
 COPY tsconfig.json ./
 COPY .env ./
+COPY dev.env ./
+COPY prod.env ./
 COPY declaration.d.ts ./
 COPY public/ public/
 COPY src/ src/
 RUN npm install -force
-RUN npm run build:prod
+RUN npm run build:dev
 COPY .well-known/ /app/build/.well-known/
 
 FROM nginx:1.23.2-alpine
