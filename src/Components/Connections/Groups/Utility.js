@@ -477,8 +477,9 @@ export const SelectConnections = () => {
       </h2>
       {getSearchData().length ? (
         <div className={classes.ConnectionList}>
-          {getSearchData()?.map((ele) => (
+          {getSearchData()?.map((ele, index) => (
             <div
+              key={index}
               className={`d-flex flex-row justify-content-between align-items-center ${classes.addFriends}`}
               style={{
                 background:
@@ -675,8 +676,9 @@ export const EditGroupMembers = () => {
           </div>
 
           <>
-            {[...Array(GroupData?.group_member_count)]?.map((ele) => (
+            {[...Array(GroupData?.group_member_count)]?.map((ele, index) => (
               <div
+                key={index}
                 className={`d-flex flex-row justify-content-between align-items-center ${classes.groupListSec}`}
               >
                 <div
@@ -715,8 +717,8 @@ export const EditGroupMembers = () => {
         <>
           {getSearchData().length !== 0 ? (
             <div className={`${classes.ConnectionList} my-2`}>
-              {getSearchData()?.map((ele) => (
-                <div className="d-flex flex-row justify-content-between align-items-center">
+              {getSearchData()?.map((ele, index) => (
+                <div className="d-flex flex-row justify-content-between align-items-center" key={index}>
                   <div
                     className={classes.friends}
                     onClick={() => {

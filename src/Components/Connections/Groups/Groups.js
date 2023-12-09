@@ -38,7 +38,7 @@ const Groups = () => {
         />
         {searchInput && searchInput !== "" && (
           <span
-            class="material-symbols-outlined"
+            className="material-symbols-outlined"
             onClick={() => {
               setsearchInput("");
             }}
@@ -86,6 +86,7 @@ const Groups = () => {
         {getValidGroups()?.map((group) => {
           return (
             <Group
+              key={group.group_id}
               group={group}
               searchInput={searchInput}
               onClick={() => {
@@ -96,8 +97,8 @@ const Groups = () => {
         })}
         {isGroupLoading ? (
           <>
-            {[...Array(4)].map((ele) => (
-              <Skeleton avatar paragraph={{ rows: 0 }} />
+            {[...Array(4)].map((ele, index) => (
+              <Skeleton avatar paragraph={{ rows: 0 }} key={index} />
             ))}
           </>
         ) : null}

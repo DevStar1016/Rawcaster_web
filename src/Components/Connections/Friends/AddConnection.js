@@ -113,7 +113,7 @@ const AddConnection = ({ open, close }) => {
         >
           {isFetching || isLoading ? <Spin /> : null}
           {ProfileList?.length > 0
-            ? ProfileList.map((ele) => (
+            ? ProfileList.map((ele, index) => (
                 <div
                   onClick={() => {
                     let finalData = {
@@ -125,6 +125,7 @@ const AddConnection = ({ open, close }) => {
                     handleProfileNavigate(finalData);
                   }}
                   className={classes.profileData}
+                  key={index + ele.user_ref_id}
                 >
                   <div className={classes.leftSec}>
                     <img
