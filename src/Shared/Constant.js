@@ -1,6 +1,6 @@
 // BASE URL
-// const LOCAL_BASE_URL = "http://192.168.1.162:8003/rawcaster/";
-const LOCAL_BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
+const LOCAL_BASE_URL = "http://192.168.1.162:8003/rawcaster/";
+const LOCAL_DEV_BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
 const DEV_BASE_URL = "https://devapi.rawcaster.com/rawcaster/";
 const PRODUCTION_BASE_URL = "https://api.rawcaster.com/rawcaster/";
 export const BASE_URL =
@@ -8,7 +8,9 @@ export const BASE_URL =
     ? PRODUCTION_BASE_URL
     : process.env.REACT_APP_ENV === "DEVELOPMENT"
     ? DEV_BASE_URL
-    : LOCAL_BASE_URL;
+    : process.env.NODE_ENV === "development"
+    ? LOCAL_BASE_URL
+    : LOCAL_DEV_BASE_URL;
 
 // PRIMARY CONSTANTS
 // export const DEFAULT_VIDEO =
