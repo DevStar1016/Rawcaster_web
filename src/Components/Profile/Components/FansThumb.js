@@ -39,7 +39,6 @@ const FansThumb = () => {
       {getList(FansList.connections)?.map((ele, index) => (
         <img
           className={classes.thumbImg}
-          key={index}
           alt="User_img"
           src={ele.profile_img ? ele.profile_img : ""}
           onError={({ currentTarget }) => {

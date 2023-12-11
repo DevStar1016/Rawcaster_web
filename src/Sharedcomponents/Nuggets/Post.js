@@ -346,7 +346,7 @@ const Post = ({
           onClick={() => onEdit(ele.nugget_id)}
           className={classes.dropdownItem}
         >
-          <span className="material-symbols-outlined">edit_square</span>Edit
+          <span class="material-symbols-outlined">edit_square</span>Edit
         </div>
       ),
     },
@@ -372,7 +372,7 @@ const Post = ({
             });
           }}
         >
-          <span className="material-symbols-outlined">cancel</span>
+          <span class="material-symbols-outlined">cancel</span>
           Delete
         </div>
       ),
@@ -483,7 +483,7 @@ const Post = ({
           }}
           className={classes.dropdownItem}
         >
-          <span className="material-symbols-outlined">download</span>
+          <span class="material-symbols-outlined">download</span>
           Download
         </div>
       ),

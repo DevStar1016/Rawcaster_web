@@ -213,9 +213,9 @@ const ConnectionsList = ({
   }, [loginToken, isLoading]);
 
   const PrivacySkeleton = ({ isLoading }) => {
-    return [...Array(8)].map((ele, index) => {
+    return [...Array(8)].map((ele) => {
       return (
-        <div className={classes.list} key={index}>
+        <div className={classes.list}>
           <Skeleton.Node
             active={false}
             style={{
@@ -306,9 +306,8 @@ const ConnectionsList = ({
             <>
               {ConnectionsList.allconnectionscount !== 0 ? (
                 <div className={`${classes.listSec} `}>
-                  {ConnectionsList.connections.map((ele, index) => (
+                  {ConnectionsList.connections.map((ele) => (
                     <UserProfile
-                      key={index}
                       ele={ele}
                       type={type}
                       className={classes.othersIcon}

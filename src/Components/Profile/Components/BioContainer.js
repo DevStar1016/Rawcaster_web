@@ -337,7 +337,7 @@ const BioContainer = ({ isLoginuser }) => {
           (DiamondVerifyType === 3 || DiamondVerifyType === 2) ? (
             <div className={classes.verifyAccountOutlineContainer}>
               <div className="d-flex align-items-center">
-                <span className="material-symbols-outlined text-danger">
+                <span class="material-symbols-outlined text-danger">
                   cancel
                 </span>
                 <p

@@ -269,7 +269,7 @@ const AudioPlayer = ({
                       }}
                       className={`${classes.muteSec} ms-2 d-flex align-items-center justify-content-center`}
                     >
-                      <span className="material-symbols-outlined fs-5 lh-0 text-white">
+                      <span class="material-symbols-outlined fs-5 lh-0 text-white">
                         download
                       </span>
                     </div>

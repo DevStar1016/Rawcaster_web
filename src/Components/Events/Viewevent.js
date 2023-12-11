@@ -120,7 +120,7 @@ const Viewevent = () => {
                   <span className={`material-symbols-rounded`}>done</span>
                 ) : (
                   <span
-                    className="material-symbols-outlined"
+                    class="material-symbols-outlined"
                     onClick={() => {
                       handleCopyText(getInviteLink()).then(() => {
                         setisCopied(true);

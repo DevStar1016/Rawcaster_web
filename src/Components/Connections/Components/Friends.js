@@ -4,12 +4,10 @@
  * @param {string} searchInput - The search input used to filter the friends list.
  * @returns The JSX representation of a friend in the friends list.
  */
-import { Tooltip } from "antd";
 import {
   JSONtoformdata,
   decodeHtml,
   handleProfileNavigate,
-  instantCall,
 } from "../../../Shared/Utility";
 import classes from "../Connections.module.css";
 import videocall from "../../../Assets/Icons/svg/videocall.svg";
@@ -18,25 +16,13 @@ import chatIcon from "../../../Assets/Icons/svg/Chats/chat_icon.svg";
 import { defaultprofileImg } from "../../../Shared/CommonConstants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import {
-  useAuthData,
-  useAuthToken,
-  useNuggets,
-  useSettings,
-} from "../../../Shared/Reduxfetcher";
+import { useAuthToken, useNuggets } from "../../../Shared/Reduxfetcher";
 import { useMainContext } from "../../../Shared/Context";
 import { AutoIndividualCreateService } from "../../../Services/ApiService";
 import { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { handleUpdateIndividualArnData } from "../../../Store/Redux/Reducer/DashboardReducer";
 import { IS_CHIME_ENABLE } from "../../../Shared/Constant";
-import { handleEventWindowRef } from "../../../Store/Redux/Reducer/UtilityReducer";
-import { ChimesendMessage } from "../../../Services/SocketService";
-import { CHIME_SOCKET_EVENTS } from "../../../Services/ServiceConstants";
-import { addEventService } from "../../../Services/ApiService";
-import { filterValidObject } from "../../../Shared/Utility";
-import { nanoid } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
 
 const Friends = ({ friend, searchInput }) => {
   const { setisChatOpen } = useMainContext();
@@ -45,8 +31,6 @@ const Friends = ({ friend, searchInput }) => {
   const navigate = useNavigate();
   const { nuggetFormData } = useNuggets();
   const token = useAuthToken();
-  const userData = useAuthData();
-  const userSettings = useSettings();
 
   const HandleIndividualCreate = () => {
     setisFetching(friend.user_id);
@@ -75,76 +59,6 @@ const Friends = ({ friend, searchInput }) => {
         setisFetching(false);
       });
   };
-
-  /**
-   * Handles the opending and manipulation of a popup window for a instant call
-   * @param {Object} data - Add private event param
-   * @returns None
-   */
-
-  const HandlePopup = (data) => {
-    addEventService(JSONtoformdata(filterValidObject(data)))
-      .then(async (res) => {
-        if (res.data.status === 1) {
-          const EventWindowRef = window.open(
-            `${window.location.origin}/room/${res.data.ref_id}`,
-            "_blank",
-            { popup: true }
-          );
-
-          dispatch(handleEventWindowRef(EventWindowRef));
-          EventWindowRef.onload = () => {
-            const EventData = {
-              type: "EventData",
-              message: { ...res.data.event_detail, type: 1 },
-            };
-            EventWindowRef.postMessage(EventData, "*");
-            ChimesendMessage(
-              { refId: res.data.event_detail?.reference_id },
-              CHIME_SOCKET_EVENTS.JOIN_MEETING_ROOM
-            );
-            ChimesendMessage(
-              {
-                userId: userData.user_id,
-                userRefId: userData.user_ref_id ?? nanoid(),
-                refId: res.data.event_detail?.reference_id,
-                name: userData?.name,
-                image: userData?.profile_image,
-              },
-              CHIME_SOCKET_EVENTS.JOIN_REQUEST
-            );
-          };
-
-          EventWindowRef.onclose = (e) => {
-            e.stopPropagation();
-          };
-          await new Promise((resolve, reject) => {
-            resolve(setTimeout(() => {}, 2000));
-          });
-          ChimesendMessage(
-            {
-              type: "InviteCall",
-              event_detail: {
-                ...res.data.event_detail,
-                profile_image: userData.profile_image,
-                meeting_type: data.event_screenshare === 0 ? "Audio" : "Video",
-                sender_name: userData.name,
-              },
-            },
-            CHIME_SOCKET_EVENTS.NOTIFICATIONS
-          );
-        } else {
-          toast.remove("Error");
-          toast.error(res.data.msg, {
-            id: "Error",
-          });
-        }
-      })
-      .catch((err) => {
-        console.error("Errors occured in instant-call", err);
-      });
-  };
-
   return (
     <>
       <div
@@ -217,73 +131,30 @@ const Friends = ({ friend, searchInput }) => {
             id={"menu_" + friend.user_id}
             className={`${classes.friendsmenu}`}
           >
-            <Tooltip
-              title={"Video call"}
-              color={friend.online ? "#5dbc3a" : "#F7965B"}
-            >
+            <img src={audiocall} alt={"audio call"} />
+            <img src={videocall} alt={"video call"} />
+            {isFetching === friend.user_id ? (
+              <Spinner size="sm" className="ms-2" />
+            ) : (
               <img
-                src={videocall}
-                alt={"video call"}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  instantCall(
-                    token,
-                    userData,
-                    userSettings,
-                    "Video",
-                    [].concat(friend),
-                    HandlePopup
-                  );
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              title={"Audio call"}
-              color={friend.online ? "#5dbc3a" : "#F7965B"}
-            >
-              <img
-                src={audiocall}
-                alt={"audio call"}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  instantCall(
-                    token,
-                    userData,
-                    userSettings,
-                    "Audio",
-                    [].concat(friend),
-                    HandlePopup
-                  );
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              title={"chat"}
-              color={friend.online ? "#5dbc3a" : "#F7965B"}
-            >
-              {isFetching === friend.user_id ? (
-                <Spinner size="sm" className="ms-2" />
-              ) : (
-                <img
-                  src={chatIcon}
-                  alt={"Group Chat"}
-                  onClick={(event) => {
-                    if (!isFetching) {
-                      event.stopPropagation();
-                      if (!friend.channel_arn || friend.channel_arn === "") {
-                        HandleIndividualCreate();
-                      } else {
-                        setisChatOpen({
-                          show: true,
-                          type: "friend",
-                          id: friend.user_id,
-                        });
-                      }
+                src={chatIcon}
+                alt={"Group Chat"}
+                onClick={(event) => {
+                  if (!isFetching) {
+                    event.stopPropagation();
+                    if (!friend.channel_arn || friend.channel_arn === "") {
+                      HandleIndividualCreate();
+                    } else {
+                      setisChatOpen({
+                        show: true,
+                        type: "friend",
+                        id: friend.user_id,
+                      });
                     }
-                  }}
-                />
-              )}
-            </Tooltip>
+                  }
+                }}
+              />
+            )}
           </div>
         )}
       </div>

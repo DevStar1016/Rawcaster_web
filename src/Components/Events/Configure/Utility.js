@@ -723,10 +723,9 @@ export const Connections = ({ onResult, values, onDeleteData }) => {
       </div>
       {friendsList?.length === 0 && <Empty />}
       <div style={{ marginTop: "6px", clear: "both" }}>
-        {filterFriendList.slice(0, 10).map((f, index) => {
+        {filterFriendList.slice(0, 10).map((f) => {
           return (
             <span
-              key={index + f.email_id}
               style={{ cursor: "pointer" }}
               className={classes.displayuser}
               onClick={() => selectFriendHandler(f)}
@@ -899,10 +898,9 @@ export const Groups = ({ onResult, values, onDeleteData }) => {
       </div>
       {groupsList?.length === 0 && <Empty />}
       <div style={{ marginTop: "6px", clear: "both" }}>
-        {filterGroupList.slice(0, 10).map((f, index) => {
+        {filterGroupList.slice(0, 10).map((f) => {
           return (
             <span
-              key={index + f.group_id}
               style={{ cursor: "pointer" }}
               className={classes.displayuser}
               onClick={() => selectGroupHandler(f)}

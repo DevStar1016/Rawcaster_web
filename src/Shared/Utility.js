@@ -28,6 +28,7 @@ import { DEFAULT_DATE_FORMAT, ENCRIPTION_STRING } from "./Constant";
 import { ShowLinkOpenModal } from "../Modal/DefaultModal";
 import { CustomParagraph } from "./UtilityComponents";
 import { fetchNuggetsbyId } from "../Store/Redux/Action";
+
 // Auth
 
 /**
@@ -1133,66 +1134,4 @@ export const getParticipantCount = (numOfParticipants) => {
   } else {
     return numOfParticipants.toString();
   }
-};
-
-/**
- * [1, 2, 3] => "[1, 2, 3]"
- * @param {Array} arr
- * @returns "arr"
- */
-
-const arrayToString = (arr) => {
-  let str = "[";
-  arr.map((ele) => {
-    str += String(ele.user_id) + ",";
-  });
-  return str.slice(0, -1) + "]";
-};
-
-/**
- * 1:1, group instant call
- * @param {string} token - user auth token
- * @param {string} userData - loginUserData of Redux
- * @param {string} userSettings - userSettings of Redux
- * @param {string} type - audio | video call
- * @param {Array} user_id_list - user's id list of group.The deign should be as we have it now… the code can reuse events code as implemented by chime team.. so feel free to do your work.. I have confidence that you will get something good to show soon…
- * @returns None
- */
-export const instantCall = (
-  token,
-  userData,
-  userSettings,
-  type = "Audio",
-  user_id_list = [],
-  HandlePopup
-) => {
-  const dateAndTime =
-    moment(new Date()).format("YYYY-MM-DD") +
-    " " +
-    moment(moment(new Date(), ["HH:mm"])).format("HH:mm:00");
-  let utcDateTime = userTimezonetoUtc(dateAndTime, userSettings?.time_zone);
-  let requestData = {
-    event_title: "Instant Call",
-    event_type: 2,
-    event_start_date: utcDateTime.format("YYYY-MM-DD"),
-    event_start_time: utcDateTime.format("HH:mm"),
-    waiting_room: userSettings?.waiting_room,
-    join_before_host: userSettings?.join_before_host,
-    sound_notify: 0,
-    user_screenshare: type === "Audio" ? 0 : 1,
-    event_participants: String(userSettings?.max_event_participants_count),
-    event_message: `Instant call: ${type}`,
-    event_duration: userSettings.max_event_duration,
-    event_layout: 1,
-    event_melody_id: 1,
-    event_melody_type: 1,
-    event_host_audio: type === "Audio" ? 1 : 0,
-    event_host_video: type === "Audio" ? 0 : 1,
-    event_guest_audio: type === "Audio" ? 1 : 0,
-    event_guest_video: type === "Audio" ? 0 : 1,
-    event_invite_friends: arrayToString(user_id_list),
-    token: String(token),
-    user_id_list
-  };
-  HandlePopup(requestData);
 };

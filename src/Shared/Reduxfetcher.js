@@ -54,7 +54,3 @@ export const useEventWindow = () => {
 export const useUtility = () => {
   return useAppSelector((state) => state.utility);
 };
-
-export const useSettings = () => {
-  return useAppSelector((state) => state.auth.userSettings)
-}
