@@ -367,7 +367,6 @@ const InfluencerSend = ({ open, close, user }) => {
             {NuggetData?.map((ele, index) => {
               return (
                 <ChatDocument
-                  key={index}
                   ele={ele.file}
                   index={index}
                   setNuggetData={setNuggetData}

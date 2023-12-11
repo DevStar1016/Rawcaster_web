@@ -197,7 +197,7 @@ const InviteBox = () => {
               />
               {searchInput && searchInput !== "" && (
                 <span
-                  className="material-symbols-outlined"
+                  class="material-symbols-outlined"
                   onClick={() => {
                     setsearchInput("");
                   }}

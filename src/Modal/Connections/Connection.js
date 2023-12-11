@@ -220,6 +220,7 @@ const ConnectionModal = ({
                   className={classes.modalOthersIcon}
                   getConnectionList={() => getConnectionList(values)}
                   onClick={() => {
+                    console.log("sgygsuygsysg");
                     onClose();
                   }}
                 />

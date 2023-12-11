@@ -225,8 +225,8 @@ const Eventslisting = ({
         <div className="d-flex flex-column">
           {isFetching ? (
             <div className="mt-5 d-flex flex-column justify-content-center">
-              {[...new Array(3)].map((ele, index) => {
-                return <EventLoaders key={index} />;
+              {[...new Array(3)].map((ele) => {
+                return <EventLoaders />;
               })}
             </div>
           ) : (
@@ -234,37 +234,30 @@ const Eventslisting = ({
               style={EventListData?.length === 0 ? { height: "inherit" } : {}}
               className={classes.EventListSec}
             >
-              {EventListData?.map((ele, index) =>
-                ele.event_name === "Instant Call" &&
-                ele.type === 1 &&
-                ele.event_type_id === 2 ? (
-                  <></>
-                ) : (
-                  <div
-                    key={index}
-                    style={{
-                      display: decodeHtml(ele.event_name)
-                        .toLowerCase()
-                        .includes(SearchData.toLowerCase())
-                        ? "block"
-                        : "none",
+              {EventListData?.map((ele) => (
+                <div
+                  style={{
+                    display: decodeHtml(ele.event_name)
+                      .toLowerCase()
+                      .includes(SearchData.toLowerCase())
+                      ? "block"
+                      : "none",
+                  }}
+                >
+                  <Event
+                    ele={ele}
+                    setList={setEventListData}
+                    handleEdit={(ele) => {
+                      setEventData(ele);
+                      if (ele.type === 1) {
+                        setisEventOpen(true);
+                      } else if (ele.type === 2) {
+                        setisTalkshowOpen(true);
+                      }
                     }}
-                  >
-                    <Event
-                      ele={ele}
-                      setList={setEventListData}
-                      handleEdit={(ele) => {
-                        setEventData(ele);
-                        if (ele.type === 1) {
-                          setisEventOpen(true);
-                        } else if (ele.type === 2) {
-                          setisTalkshowOpen(true);
-                        }
-                      }}
-                    />
-                  </div>
-                )
-              )}
+                  />
+                </div>
+              ))}
               {Pages.current_page !== Pages.total_pages &&
                 Pages.total_pages > 1 && (
                   <div
@@ -274,9 +267,7 @@ const Eventslisting = ({
                     }}
                   >
                     Load More
-                    <span className="material-symbols-outlined">
-                      arrow_forward
-                    </span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
                   </div>
                 )}
               {(EventListData?.length === 0 || isEmptyEvents) && (

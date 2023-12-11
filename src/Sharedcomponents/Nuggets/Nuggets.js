@@ -442,8 +442,8 @@ const Nuggets = ({
                 <img src={NuggetLock} alt="nugget_lock" />
               </div>
             )}
-            {[...Array(7)].map((index) => (
-              <NuggetLoaders loading={false} key={index} />
+            {[...Array(7)].map(() => (
+              <NuggetLoaders loading={false} />
             ))}
           </div>
         </div>
@@ -604,15 +604,15 @@ const Nuggets = ({
           )}
           {isNuggetModify?.type === "add" && (
             <div className="mt-3">
-              <NuggetLoaders loading={true} key={1}/>
+              <NuggetLoaders loading={true} />
             </div>
           )}
 
           <>
             {isNuggetsLoading || totalpages === null || isloading ? (
               <div className="mt-3">
-                {[...Array(6)].map((index) => (
-                  <NuggetLoaders loading={true} key={index}/>
+                {[...Array(6)].map(() => (
+                  <NuggetLoaders loading={true} />
                 ))}
               </div>
             ) : (
@@ -630,7 +630,6 @@ const Nuggets = ({
                     {NuggetsData?.map((ele, index) => {
                       return (
                         <Spin
-                          key={index}
                           tip="Please Wait..."
                           size="small"
                           spinning={
